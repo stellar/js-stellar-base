@@ -73,7 +73,9 @@ gulp.task('test:node', function() {
 gulp.task('test:browser', ["build:browser"], function (done) {
   var karma = require('karma').server;
 
-  karma.start({ configFile: __dirname + '/karma.conf.js' }, done);
+  karma.start({ configFile: __dirname + '/karma.conf.js' },  function() {
+        done();
+    });
 });
 
 gulp.task('clean', function () {
