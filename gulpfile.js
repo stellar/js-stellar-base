@@ -60,7 +60,7 @@ gulp.task('build:browser', ['lint:src'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('test:node', function() {
+gulp.task('test:node', ['build:node'], function() {
   require("babel/register", {
     ignore: /node_modules/
   });

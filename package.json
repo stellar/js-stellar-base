@@ -50,7 +50,9 @@
     "webpack": "^1.7.3"
   },
   "dependencies": {
+    "ed25519": "0.0.2",
     "js-xdr": "0.0.1",
-    "sha.js": "^2.3.6"
+    "sha.js": "^2.3.6",
+    "tweetnacl": "^0.13.0"
   }
 }

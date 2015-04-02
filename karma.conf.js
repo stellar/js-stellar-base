@@ -1,7 +1,7 @@
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
-    browsers : ['PhantomJS', "Firefox"],
+    browsers : ["Firefox"],
 
     files: [
       'dist/stellar-base.js',
