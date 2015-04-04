@@ -1,4 +1,4 @@
-// Automatically generated on 2015-04-02T13:13:59-07:00
+// Automatically generated on 2015-04-04T14:47:06-07:00
 // DO NOT EDIT or your changes may be overwritten
         
 /* jshint maxstatements:2147483647  */
@@ -49,14 +49,14 @@ xdr.typedef("Uint64", xdr.uhyper());
 //   typedef opaque Value<>;
 //
 // ===========================================================================
-xdr.typedef("Value", xdr.opaque());
+xdr.typedef("Value", xdr.varOpaque());
 
 // === xdr source ============================================================
 //
 //   typedef opaque Evidence<>;
 //
 // ===========================================================================
-xdr.typedef("Evidence", xdr.opaque());
+xdr.typedef("Evidence", xdr.varOpaque());
 
 // === xdr source ============================================================
 //
@@ -858,8 +858,8 @@ xdr.struct("PaymentOp", [
   ["destination", xdr.lookup("AccountId")],
   ["currency", xdr.lookup("Currency")],
   ["amount", xdr.lookup("Int64")],
-  ["memo", xdr.opaque(32)],
-  ["sourceMemo", xdr.opaque(32)],
+  ["memo", xdr.varOpaque(32)],
+  ["sourceMemo", xdr.varOpaque(32)],
   ["path", xdr.varArray(xdr.lookup("Currency"), 5)],
   ["sendMax", xdr.lookup("Int64")],
 ]);
