@@ -31,8 +31,8 @@ export class Keypair {
   }
 
   static random() {
-    let keys = nacl.sign.keyPair();
-    return new this(keys.publicKey, keys.secretKey);
+    let seed = nacl.randomBytes(32);
+    return this.fromRawSeed(seed);
   }
 
   constructor(keysAndSeed) {
