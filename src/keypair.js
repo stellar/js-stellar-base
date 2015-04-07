@@ -22,7 +22,7 @@ export class Keypair {
   }
 
   static master() {
-    return this.fromRawSeed("masterpassphrasemasterpassphrase");
+    return this.fromRawSeed("allmylifemyhearthasbeensearching");
   }
 
   static fromAddress(address) {
