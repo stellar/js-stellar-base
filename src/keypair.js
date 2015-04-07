@@ -27,7 +27,7 @@ export class Keypair {
 
   static fromAddress(address) {
     let publicKey = base58.decodeBase58Check("accountId", address);
-    return this.new({publicKey});
+    return new this({publicKey});
   }
 
   static random() {
