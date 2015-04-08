@@ -56,3 +56,7 @@ StellarBase.decodeBase58Check("account_id", encoded) // => Buffer([0,0,0])
 StellarBase.decodeBase58Check("seed", encoded) # => throws Error: invalid version byte.  expected 0, got 33
 
 ```
+
+## Contributing
+
+Please [see CONTRIBUTING.md for details](CONTRIBUTING.md).
