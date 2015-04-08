@@ -1,5 +1,8 @@
 # JS Stellar Base
 
+[![Build Status](https://travis-ci.org/stellar/js-stellar-base.svg)](https://travis-ci.org/stellar/js-stellar-base)
+[![Code Climate](https://codeclimate.com/github/stellar/js-stellar-base/badges/gpa.svg)](https://codeclimate.com/github/stellar/js-stellar-base)
+
 The stellar-base library is the lowest-level stellar helper library.  It consists of classes
 to read, write, hash, and sign the xdr structures that are used in stellar-core.
 
