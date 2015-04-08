@@ -8,4 +8,4 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 notifications:
   slack:
-    secure: q2z7sQIuc3sqGnRoHdmbOBcsvvffK3abJRL+qd/7Kh0ET/BtN6QJqM5O2IZwttFiDjVF5+lyIU0VEHBGyGoru5ovyRl7aOW6kq2uxJqdZrZcsQqz2Uug1M0RZG/1wSG7E2MbRdO0UGoJUCWxmXxAIRdg/cD0zEgAPxBjPc4m+aQ=
+    secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
