@@ -50,6 +50,7 @@
     "webpack": "^1.7.3"
   },
   "dependencies": {
+    "babel-runtime": "^4.7.16",
     "ed25519": "0.0.2",
     "js-xdr": "0.0.1",
     "lodash": "^3.6.0",
