@@ -9,6 +9,7 @@ GIT
       treetop (~> 1.5.3)
 
 GEM
+  remote: https://rubygems.org/
   specs:
     activesupport (4.2.1)
       i18n (~> 0.7)
