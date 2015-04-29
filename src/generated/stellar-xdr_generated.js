@@ -1,4 +1,4 @@
-// Automatically generated on 2015-04-29T12:01:45-07:00
+// Automatically generated on 2015-04-29T13:04:21-07:00
 // DO NOT EDIT or your changes may be overwritten
         
 /* jshint maxstatements:2147483647  */
@@ -1210,7 +1210,7 @@ xdr.union("PaymentResult", {
   arms: {
     multi: xdr.lookup("PaymentSuccessMultiResult"),
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1287,7 +1287,7 @@ xdr.union("CreateOfferSuccessResultOffer", {
   arms: {
     offer: xdr.lookup("OfferEntry"),
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1334,7 +1334,7 @@ xdr.union("CreateOfferResult", {
   arms: {
     success: xdr.lookup("CreateOfferSuccessResult"),
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1378,7 +1378,7 @@ xdr.union("SetOptionsResult", {
   },
   arms: {
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1422,7 +1422,7 @@ xdr.union("ChangeTrustResult", {
   },
   arms: {
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1464,7 +1464,7 @@ xdr.union("AllowTrustResult", {
   },
   arms: {
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1508,7 +1508,7 @@ xdr.union("AccountMergeResult", {
   },
   arms: {
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1561,7 +1561,7 @@ xdr.union("InflationResult", {
   arms: {
     payouts: xdr.varArray(xdr.lookup("InflationPayout"), 2147483647),
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1662,7 +1662,7 @@ xdr.union("OperationResult", {
   arms: {
     tr: xdr.lookup("OperationResultTr"),
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================
@@ -1725,7 +1725,7 @@ xdr.union("TransactionResultResult", {
   arms: {
     results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
   },
-  defaultArm: "void",
+  defaultArm: xdr.void(),
 });
 
 // === xdr source ============================================================

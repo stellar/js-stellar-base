@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:stellar/xdrgen.git
-  revision: b39e02130ea087eea9638a030a0ee1173fe4f36b
+  revision: 0795ee055dc5645041626aa91cad14781028877d
   specs:
     xdrgen (0.0.1)
       activesupport (~> 4)
@@ -25,7 +25,7 @@ GEM
     json (1.8.2)
     memoist (0.11.0)
     method_source (0.8.2)
-    minitest (5.5.1)
+    minitest (5.6.1)
     multipart-post (2.0.0)
     netrc (0.10.3)
     octokit (3.8.0)
