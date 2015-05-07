@@ -1,4 +1,4 @@
-// Automatically generated on 2015-04-29T13:04:21-07:00
+// Automatically generated on 2015-05-07T08:05:18-07:00
 // DO NOT EDIT or your changes may be overwritten
         
 /* jshint maxstatements:2147483647  */
@@ -231,12 +231,14 @@ xdr.struct("Signer", [
 //
 //   enum AccountFlags
 //   { // masks for each flag
-//       AUTH_REQUIRED_FLAG = 0x1
+//       AUTH_REQUIRED_FLAG = 0x1,
+//       AUTH_REVOCABLE_FLAG = 0x2
 //   };
 //
 // ===========================================================================
 xdr.enum("AccountFlags", {
   authRequiredFlag: 1,
+  authRevocableFlag: 2,
 });
 
 // === xdr source ============================================================
@@ -255,6 +257,8 @@ xdr.enum("AccountFlags", {
 //       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 //       Thresholds thresholds;
 //   
+//       string32 homeDomain; // can be used for reverse federation and memo lookup
+//   
 //       Signer signers<20>; // possible signers for this account
 //   };
 //
@@ -267,6 +271,7 @@ xdr.struct("AccountEntry", [
   ["inflationDest", xdr.option(xdr.lookup("AccountId"))],
   ["flags", xdr.lookup("Uint32")],
   ["thresholds", xdr.lookup("Thresholds")],
+  ["homeDomain", xdr.lookup("String32")],
   ["signers", xdr.varArray(xdr.lookup("Signer"), 20)],
 ]);
 
@@ -897,6 +902,8 @@ xdr.struct("CreateOfferOp", [
 //   
 //       Thresholds* thresholds; // update the thresholds for the account
 //   
+//   	string32* homeDomain;  // sets the home domain
+//   
 //       // Add, update or remove a signer for the account
 //       // signer is deleted if the weight is 0
 //       Signer* signer;
@@ -908,6 +915,7 @@ xdr.struct("SetOptionsOp", [
   ["clearFlags", xdr.option(xdr.lookup("Uint32"))],
   ["setFlags", xdr.option(xdr.lookup("Uint32"))],
   ["thresholds", xdr.option(xdr.lookup("Thresholds"))],
+  ["homeDomain", xdr.option(xdr.lookup("String32"))],
   ["signer", xdr.option(xdr.lookup("Signer"))],
 ]);
 
@@ -992,7 +1000,7 @@ xdr.struct("AllowTrustOp", [
 //       case ACCOUNT_MERGE:
 //           uint256 destination;
 //       case INFLATION:
-//           uint32 inflationSeq;
+//           void;
 //       }
 //
 // ===========================================================================
@@ -1006,7 +1014,7 @@ xdr.union("OperationBody", {
     changeTrust: "changeTrustOp",
     allowTrust: "allowTrustOp",
     accountMerge: "destination",
-    inflation: "inflationSeq",
+    inflation: xdr.void(),
   },
   arms: {
     paymentOp: xdr.lookup("PaymentOp"),
@@ -1015,7 +1023,6 @@ xdr.union("OperationBody", {
     changeTrustOp: xdr.lookup("ChangeTrustOp"),
     allowTrustOp: xdr.lookup("AllowTrustOp"),
     destination: xdr.lookup("Uint256"),
-    inflationSeq: xdr.lookup("Uint32"),
   },
 });
 
@@ -1043,7 +1050,7 @@ xdr.union("OperationBody", {
 //       case ACCOUNT_MERGE:
 //           uint256 destination;
 //       case INFLATION:
-//           uint32 inflationSeq;
+//           void;
 //       }
 //       body;
 //   };
@@ -1053,6 +1060,61 @@ xdr.struct("Operation", [
   ["sourceAccount", xdr.option(xdr.lookup("AccountId"))],
   ["body", xdr.lookup("OperationBody")],
 ]);
+
+// === xdr source ============================================================
+//
+//   enum MemoType
+//   {
+//       MEMO_TYPE_NONE = 0,
+//       MEMO_TYPE_TEXT = 1,
+//   	MEMO_TYPE_ID = 2,
+//       MEMO_TYPE_HASH = 3,
+//   	MEMO_TYPE_RETURN =4
+//   };
+//
+// ===========================================================================
+xdr.enum("MemoType", {
+  memoTypeNone: 0,
+  memoTypeText: 1,
+  memoTypeId: 2,
+  memoTypeHash: 3,
+  memoTypeReturn: 4,
+});
+
+// === xdr source ============================================================
+//
+//   union Memo switch (MemoType type)
+//   {
+//   	case MEMO_TYPE_NONE:
+//   		void;
+//       case MEMO_TYPE_TEXT:
+//   		string text<28>;
+//   	case MEMO_TYPE_ID:
+//   		uint64 id;
+//       case MEMO_TYPE_HASH:
+//   		Hash hash;         // the hash of what to pull from the content server
+//   	case MEMO_TYPE_RETURN:
+//   		Hash retHash;      // the hash of the tx you are rejecting
+//   };
+//
+// ===========================================================================
+xdr.union("Memo", {
+  switchOn: xdr.lookup("MemoType"),
+  switchName: "type",
+  switches: {
+    memoTypeNone: xdr.void(),
+    memoTypeText: "text",
+    memoTypeId: "id",
+    memoTypeHash: "hash",
+    memoTypeReturn: "retHash",
+  },
+  arms: {
+    text: xdr.string(28),
+    id: xdr.lookup("Uint64"),
+    hash: xdr.lookup("Hash"),
+    retHash: xdr.lookup("Hash"),
+  },
+});
 
 // === xdr source ============================================================
 //
@@ -1072,6 +1134,8 @@ xdr.struct("Operation", [
 //       uint32 minLedger;
 //       uint32 maxLedger;
 //   
+//   	Memo memo;
+//   
 //       Operation operations<100>;
 //   };
 //
@@ -1082,6 +1146,7 @@ xdr.struct("Transaction", [
   ["seqNum", xdr.lookup("SequenceNumber")],
   ["minLedger", xdr.lookup("Uint32")],
   ["maxLedger", xdr.lookup("Uint32")],
+  ["memo", xdr.lookup("Memo")],
   ["operations", xdr.varArray(xdr.lookup("Operation"), 100)],
 ]);
 
@@ -1347,7 +1412,8 @@ xdr.union("CreateOfferResult", {
 //       SET_OPTIONS_LOW_RESERVE = -1,      // not enough funds to add a signer
 //       SET_OPTIONS_TOO_MANY_SIGNERS = -2, // max number of signers already reached
 //       SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
-//       SET_OPTIONS_INVALID_INFLATION = -4 // inflation account does not exist
+//       SET_OPTIONS_INVALID_INFLATION = -4,// inflation account does not exist
+//       SET_OPTIONS_CANT_CHANGE = -5      // can no longer change this option
 //   };
 //
 // ===========================================================================
@@ -1357,6 +1423,7 @@ xdr.enum("SetOptionsResultCode", {
   setOptionsTooManySigner: -2,
   setOptionsBadFlag: -3,
   setOptionsInvalidInflation: -4,
+  setOptionsCantChange: -5,
 });
 
 // === xdr source ============================================================
@@ -1434,7 +1501,8 @@ xdr.union("ChangeTrustResult", {
 //       // codes considered as "failure" for the operation
 //       ALLOW_TRUST_MALFORMED = -1,         // currency is not ISO4217
 //       ALLOW_TRUST_NO_TRUST_LINE = -2,     // trustor does not have a trustline
-//       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3 // source account does not require trust
+//       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3, // source account does not require trust
+//       ALLOW_TRUST_CANT_REVOKE = -4 // source account can't revoke trust
 //   };
 //
 // ===========================================================================
@@ -1443,6 +1511,7 @@ xdr.enum("AllowTrustResultCode", {
   allowTrustMalformed: -1,
   allowTrustNoTrustLine: -2,
   allowTrustTrustNotRequired: -3,
+  allowTrustCantRevoke: -4,
 });
 
 // === xdr source ============================================================
@@ -1820,6 +1889,13 @@ xdr.typedef("Hash", xdr.opaque(32));
 //
 // ===========================================================================
 xdr.typedef("Thresholds", xdr.opaque(4));
+
+// === xdr source ============================================================
+//
+//   typedef string string32<32>;
+//
+// ===========================================================================
+xdr.typedef("String32", xdr.string(32));
 
 // === xdr source ============================================================
 //
