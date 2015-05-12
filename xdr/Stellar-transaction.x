@@ -39,9 +39,6 @@ struct PaymentOp
     Currency currency;     // what they end up with
     int64 amount;          // amount they end up with
 
-    opaque memo<32>;
-    opaque sourceMemo<32>; // used to return a payment
-
     // payment over path
     Currency path<5>; // what hops it must go through to get there
     int64 sendMax; // the maximum amount of the source currency (==path[0]) to
@@ -86,7 +83,7 @@ struct SetOptionsOp
 
     Thresholds* thresholds; // update the thresholds for the account
 
-	string32* homeDomain;  // sets the home domain
+    string32* homeDomain; // sets the home domain
 
     // Add, update or remove a signer for the account
     // signer is deleted if the weight is 0
@@ -120,8 +117,8 @@ struct AllowTrustOp
     AccountID trustor;
     union switch (CurrencyType type)
     {
-    // NATIVE is not allowed
-    case ISO4217:
+    // CURRENCY_TYPE_NATIVE is not allowed
+    case CURRENCY_TYPE_ALPHANUM:
         opaque currencyCode[4];
 
         // add other currency types here in the future
@@ -180,23 +177,23 @@ enum MemoType
 {
     MEMO_TYPE_NONE = 0,
     MEMO_TYPE_TEXT = 1,
-	MEMO_TYPE_ID = 2,
+    MEMO_TYPE_ID = 2,
     MEMO_TYPE_HASH = 3,
-	MEMO_TYPE_RETURN =4
+    MEMO_TYPE_RETURN = 4
 };
 
 union Memo switch (MemoType type)
 {
-	case MEMO_TYPE_NONE:
-		void;
-    case MEMO_TYPE_TEXT:
-		string text<28>;
-	case MEMO_TYPE_ID:
-		uint64 id;
-    case MEMO_TYPE_HASH:
-		Hash hash;         // the hash of what to pull from the content server
-	case MEMO_TYPE_RETURN:
-		Hash retHash;      // the hash of the tx you are rejecting
+case MEMO_TYPE_NONE:
+    void;
+case MEMO_TYPE_TEXT:
+    string text<28>;
+case MEMO_TYPE_ID:
+    uint64 id;
+case MEMO_TYPE_HASH:
+    Hash hash; // the hash of what to pull from the content server
+case MEMO_TYPE_RETURN:
+    Hash retHash; // the hash of the tx you are rejecting
 };
 
 /* a transaction is a container for a set of operations
@@ -212,9 +209,8 @@ struct Transaction
     // account used to run the transaction
     AccountID sourceAccount;
 
-    // maximum fee this transaction can collect
-    // the transaction is aborted if the fee is higher
-    int32 maxFee;
+    // the fee the sourceAccount will pay 
+    int32 fee;
 
     // sequence number to consume in the account
     SequenceNumber seqNum;
@@ -223,7 +219,7 @@ struct Transaction
     uint32 minLedger;
     uint32 maxLedger;
 
-	Memo memo;
+    Memo memo;
 
     Operation operations<100>;
 };
@@ -357,8 +353,8 @@ enum SetOptionsResultCode
     SET_OPTIONS_LOW_RESERVE = -1,      // not enough funds to add a signer
     SET_OPTIONS_TOO_MANY_SIGNERS = -2, // max number of signers already reached
     SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
-    SET_OPTIONS_INVALID_INFLATION = -4,// inflation account does not exist
-    SET_OPTIONS_CANT_CHANGE = -5      // can no longer change this option
+    SET_OPTIONS_INVALID_INFLATION = -4, // inflation account does not exist
+    SET_OPTIONS_CANT_CHANGE = -5        // can no longer change this option
 };
 
 union SetOptionsResult switch (SetOptionsResultCode code)
@@ -397,9 +393,10 @@ enum AllowTrustResultCode
     // codes considered as "success" for the operation
     ALLOW_TRUST_SUCCESS = 0,
     // codes considered as "failure" for the operation
-    ALLOW_TRUST_MALFORMED = -1,         // currency is not ISO4217
-    ALLOW_TRUST_NO_TRUST_LINE = -2,     // trustor does not have a trustline
-    ALLOW_TRUST_TRUST_NOT_REQUIRED = -3, // source account does not require trust
+    ALLOW_TRUST_MALFORMED = -1,     // currency is not CURRENCY_TYPE_ALPHANUM
+    ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
+    ALLOW_TRUST_TRUST_NOT_REQUIRED =
+        -3,                      // source account does not require trust
     ALLOW_TRUST_CANT_REVOKE = -4 // source account can't revoke trust
 };
 
