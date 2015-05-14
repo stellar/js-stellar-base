@@ -100,7 +100,7 @@ var StellarBase =
 
 	var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
 
-	// Automatically generated on 2015-05-12T11:11:27-07:00
+	// Automatically generated on 2015-05-13T18:26:47-07:00
 	// DO NOT EDIT or your changes may be overwritten
 
 	/* jshint maxstatements:2147483647  */
@@ -802,24 +802,39 @@ var StellarBase =
 	  //
 	  //   enum OperationType
 	  //   {
-	  //       PAYMENT = 0,
-	  //       CREATE_OFFER = 1,
-	  //       SET_OPTIONS = 2,
-	  //       CHANGE_TRUST = 3,
-	  //       ALLOW_TRUST = 4,
-	  //       ACCOUNT_MERGE = 5,
-	  //       INFLATION = 6
+	  //       CREATE_ACCOUNT = 0,
+	  //       PAYMENT = 1,
+	  //       PATH_PAYMENT = 2,
+	  //       CREATE_OFFER = 3,
+	  //       SET_OPTIONS = 4,
+	  //       CHANGE_TRUST = 5,
+	  //       ALLOW_TRUST = 6,
+	  //       ACCOUNT_MERGE = 7,
+	  //       INFLATION = 8
 	  //   };
 	  //
 	  // ===========================================================================
 	  xdr["enum"]("OperationType", {
-	    payment: 0,
-	    createOffer: 1,
-	    setOption: 2,
-	    changeTrust: 3,
-	    allowTrust: 4,
-	    accountMerge: 5,
-	    inflation: 6 });
+	    createAccount: 0,
+	    payment: 1,
+	    pathPayment: 2,
+	    createOffer: 3,
+	    setOption: 4,
+	    changeTrust: 5,
+	    allowTrust: 6,
+	    accountMerge: 7,
+	    inflation: 8 });
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct CreateAccountOp
+	  //   {
+	  //       AccountID destination; // account to create
+	  //       int64 startingBalance; // amount they end up with
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("CreateAccountOp", [["destination", xdr.lookup("AccountId")], ["startingBalance", xdr.lookup("Int64")]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -828,16 +843,29 @@ var StellarBase =
 	  //       AccountID destination; // recipient of the payment
 	  //       Currency currency;     // what they end up with
 	  //       int64 amount;          // amount they end up with
-	  //  
-	  //       // payment over path
-	  //       Currency path<5>; // what hops it must go through to get there
-	  //       int64 sendMax; // the maximum amount of the source currency (==path[0]) to
-	  //                      // send (excluding fees).
-	  //                      // The operation will fail if can't be met
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.struct("PaymentOp", [["destination", xdr.lookup("AccountId")], ["currency", xdr.lookup("Currency")], ["amount", xdr.lookup("Int64")], ["path", xdr.varArray(xdr.lookup("Currency"), 5)], ["sendMax", xdr.lookup("Int64")]]);
+	  xdr.struct("PaymentOp", [["destination", xdr.lookup("AccountId")], ["currency", xdr.lookup("Currency")], ["amount", xdr.lookup("Int64")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct PathPaymentOp
+	  //   {
+	  //       Currency sendCurrency; // currency we pay with
+	  //       int64 sendMax;         // the maximum amount of sendCurrency to
+	  //                              // send (excluding fees).
+	  //                              // The operation will fail if can't be met
+	  //  
+	  //       AccountID destination; // recipient of the payment
+	  //       Currency destCurrency; // what they end up with
+	  //       int64 destAmount;      // amount they end up with
+	  //  
+	  //       Currency path<5>; // additional hops it must go through to get there
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("PathPaymentOp", [["sendCurrency", xdr.lookup("Currency")], ["sendMax", xdr.lookup("Int64")], ["destination", xdr.lookup("AccountId")], ["destCurrency", xdr.lookup("Currency")], ["destAmount", xdr.lookup("Int64")], ["path", xdr.varArray(xdr.lookup("Currency"), 5)]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -934,8 +962,12 @@ var StellarBase =
 	  //
 	  //   union switch (OperationType type)
 	  //       {
+	  //       case CREATE_ACCOUNT:
+	  //           CreateAccountOp createAccountOp;
 	  //       case PAYMENT:
 	  //           PaymentOp paymentOp;
+	  //       case PATH_PAYMENT:
+	  //           PathPaymentOp pathPaymentOp;
 	  //       case CREATE_OFFER:
 	  //           CreateOfferOp createOfferOp;
 	  //       case SET_OPTIONS:
@@ -955,7 +987,9 @@ var StellarBase =
 	    switchOn: xdr.lookup("OperationType"),
 	    switchName: "type",
 	    switches: {
+	      createAccount: "createAccountOp",
 	      payment: "paymentOp",
+	      pathPayment: "pathPaymentOp",
 	      createOffer: "createOfferOp",
 	      setOption: "setOptionsOp",
 	      changeTrust: "changeTrustOp",
@@ -963,7 +997,9 @@ var StellarBase =
 	      accountMerge: "destination",
 	      inflation: xdr["void"]() },
 	    arms: {
+	      createAccountOp: xdr.lookup("CreateAccountOp"),
 	      paymentOp: xdr.lookup("PaymentOp"),
+	      pathPaymentOp: xdr.lookup("PathPaymentOp"),
 	      createOfferOp: xdr.lookup("CreateOfferOp"),
 	      setOptionsOp: xdr.lookup("SetOptionsOp"),
 	      changeTrustOp: xdr.lookup("ChangeTrustOp"),
@@ -981,8 +1017,12 @@ var StellarBase =
 	  //  
 	  //       union switch (OperationType type)
 	  //       {
+	  //       case CREATE_ACCOUNT:
+	  //           CreateAccountOp createAccountOp;
 	  //       case PAYMENT:
 	  //           PaymentOp paymentOp;
+	  //       case PATH_PAYMENT:
+	  //           PathPaymentOp pathPaymentOp;
 	  //       case CREATE_OFFER:
 	  //           CreateOfferOp createOfferOp;
 	  //       case SET_OPTIONS:
@@ -1006,34 +1046,34 @@ var StellarBase =
 	  //
 	  //   enum MemoType
 	  //   {
-	  //       MEMO_TYPE_NONE = 0,
-	  //       MEMO_TYPE_TEXT = 1,
-	  //       MEMO_TYPE_ID = 2,
-	  //       MEMO_TYPE_HASH = 3,
-	  //       MEMO_TYPE_RETURN = 4
+	  //       MEMO_NONE = 0,
+	  //       MEMO_TEXT = 1,
+	  //       MEMO_ID = 2,
+	  //       MEMO_HASH = 3,
+	  //       MEMO_RETURN = 4
 	  //   };
 	  //
 	  // ===========================================================================
 	  xdr["enum"]("MemoType", {
-	    memoTypeNone: 0,
-	    memoTypeText: 1,
-	    memoTypeId: 2,
-	    memoTypeHash: 3,
-	    memoTypeReturn: 4 });
+	    memoNone: 0,
+	    memoText: 1,
+	    memoId: 2,
+	    memoHash: 3,
+	    memoReturn: 4 });
 
 	  // === xdr source ============================================================
 	  //
 	  //   union Memo switch (MemoType type)
 	  //   {
-	  //   case MEMO_TYPE_NONE:
+	  //   case MEMO_NONE:
 	  //       void;
-	  //   case MEMO_TYPE_TEXT:
+	  //   case MEMO_TEXT:
 	  //       string text<28>;
-	  //   case MEMO_TYPE_ID:
+	  //   case MEMO_ID:
 	  //       uint64 id;
-	  //   case MEMO_TYPE_HASH:
+	  //   case MEMO_HASH:
 	  //       Hash hash; // the hash of what to pull from the content server
-	  //   case MEMO_TYPE_RETURN:
+	  //   case MEMO_RETURN:
 	  //       Hash retHash; // the hash of the tx you are rejecting
 	  //   };
 	  //
@@ -1042,16 +1082,27 @@ var StellarBase =
 	    switchOn: xdr.lookup("MemoType"),
 	    switchName: "type",
 	    switches: {
-	      memoTypeNone: xdr["void"](),
-	      memoTypeText: "text",
-	      memoTypeId: "id",
-	      memoTypeHash: "hash",
-	      memoTypeReturn: "retHash" },
+	      memoNone: xdr["void"](),
+	      memoText: "text",
+	      memoId: "id",
+	      memoHash: "hash",
+	      memoReturn: "retHash" },
 	    arms: {
 	      text: xdr.string(28),
 	      id: xdr.lookup("Uint64"),
 	      hash: xdr.lookup("Hash"),
 	      retHash: xdr.lookup("Hash") } });
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct TimeBounds
+	  //   {
+	  //       uint64 minTime;
+	  //       uint64 maxTime;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("TimeBounds", [["minTime", xdr.lookup("Uint64")], ["maxTime", xdr.lookup("Uint64")]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -1066,9 +1117,8 @@ var StellarBase =
 	  //       // sequence number to consume in the account
 	  //       SequenceNumber seqNum;
 	  //  
-	  //       // validity range (inclusive) for the ledger sequence number
-	  //       uint32 minLedger;
-	  //       uint32 maxLedger;
+	  //       // validity range (inclusive) for the last ledger close time
+	  //       TimeBounds* timeBounds;
 	  //  
 	  //       Memo memo;
 	  //  
@@ -1076,7 +1126,7 @@ var StellarBase =
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.struct("Transaction", [["sourceAccount", xdr.lookup("AccountId")], ["fee", xdr.lookup("Int32")], ["seqNum", xdr.lookup("SequenceNumber")], ["minLedger", xdr.lookup("Uint32")], ["maxLedger", xdr.lookup("Uint32")], ["memo", xdr.lookup("Memo")], ["operations", xdr.varArray(xdr.lookup("Operation"), 100)]]);
+	  xdr.struct("Transaction", [["sourceAccount", xdr.lookup("AccountId")], ["fee", xdr.lookup("Int32")], ["seqNum", xdr.lookup("SequenceNumber")], ["timeBounds", xdr.option(xdr.lookup("TimeBounds"))], ["memo", xdr.lookup("Memo")], ["operations", xdr.varArray(xdr.lookup("Operation"), 100)]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -1109,11 +1159,52 @@ var StellarBase =
 
 	  // === xdr source ============================================================
 	  //
+	  //   enum CreateAccountResultCode
+	  //   {
+	  //       // codes considered as "success" for the operation
+	  //       CREATE_ACCOUNT_SUCCESS = 0, // account was created
+	  //  
+	  //       // codes considered as "failure" for the operation
+	  //       CREATE_ACCOUNT_MALFORMED = 1,   // invalid destination
+	  //       CREATE_ACCOUNT_UNDERFUNDED = 2, // not enough funds in source account
+	  //       CREATE_ACCOUNT_LOW_RESERVE =
+	  //           3, // would create an account below the min reserve
+	  //       CREATE_ACCOUNT_ALREADY_EXIST = 4 // account already exists
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr["enum"]("CreateAccountResultCode", {
+	    createAccountSuccess: 0,
+	    createAccountMalformed: 1,
+	    createAccountUnderfunded: 2,
+	    createAccountLowReserve: 3,
+	    createAccountAlreadyExist: 4 });
+
+	  // === xdr source ============================================================
+	  //
+	  //   union CreateAccountResult switch (CreateAccountResultCode code)
+	  //   {
+	  //   case CREATE_ACCOUNT_SUCCESS:
+	  //       void;
+	  //   default:
+	  //       void;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.union("CreateAccountResult", {
+	    switchOn: xdr.lookup("CreateAccountResultCode"),
+	    switchName: "code",
+	    switches: {
+	      createAccountSuccess: xdr["void"]() },
+	    arms: {},
+	    defaultArm: xdr["void"]() });
+
+	  // === xdr source ============================================================
+	  //
 	  //   enum PaymentResultCode
 	  //   {
 	  //       // codes considered as "success" for the operation
-	  //       PAYMENT_SUCCESS = 0,       // simple payment success
-	  //       PAYMENT_SUCCESS_MULTI = 1, // multi-path payment success
+	  //       PAYMENT_SUCCESS = 0, // payment successfuly completed
 	  //  
 	  //       // codes considered as "failure" for the operation
 	  //       PAYMENT_MALFORMED = -1,      // bad input
@@ -1121,25 +1212,68 @@ var StellarBase =
 	  //       PAYMENT_NO_DESTINATION = -3, // destination account does not exist
 	  //       PAYMENT_NO_TRUST = -4, // destination missing a trust line for currency
 	  //       PAYMENT_NOT_AUTHORIZED = -5, // destination not authorized to hold currency
-	  //       PAYMENT_LINE_FULL = -6,      // destination would go above their limit
-	  //       PAYMENT_TOO_FEW_OFFERS = -7, // not enough offers to satisfy path payment
-	  //       PAYMENT_OVER_SENDMAX = -8,   // multi-path payment could not satisfy sendmax
-	  //       PAYMENT_LOW_RESERVE = -9 // would create an account below the min reserve
+	  //       PAYMENT_LINE_FULL = -6       // destination would go above their limit
 	  //   };
 	  //
 	  // ===========================================================================
 	  xdr["enum"]("PaymentResultCode", {
 	    paymentSuccess: 0,
-	    paymentSuccessMulti: 1,
 	    paymentMalformed: -1,
 	    paymentUnderfunded: -2,
 	    paymentNoDestination: -3,
 	    paymentNoTrust: -4,
 	    paymentNotAuthorized: -5,
-	    paymentLineFull: -6,
-	    paymentTooFewOffer: -7,
-	    paymentOverSendmax: -8,
-	    paymentLowReserve: -9 });
+	    paymentLineFull: -6 });
+
+	  // === xdr source ============================================================
+	  //
+	  //   union PaymentResult switch (PaymentResultCode code)
+	  //   {
+	  //   case PAYMENT_SUCCESS:
+	  //       void;
+	  //   default:
+	  //       void;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.union("PaymentResult", {
+	    switchOn: xdr.lookup("PaymentResultCode"),
+	    switchName: "code",
+	    switches: {
+	      paymentSuccess: xdr["void"]() },
+	    arms: {},
+	    defaultArm: xdr["void"]() });
+
+	  // === xdr source ============================================================
+	  //
+	  //   enum PathPaymentResultCode
+	  //   {
+	  //       // codes considered as "success" for the operation
+	  //       PATH_PAYMENT_SUCCESS = 0, // success
+	  //  
+	  //       // codes considered as "failure" for the operation
+	  //       PATH_PAYMENT_MALFORMED = -1,      // bad input
+	  //       PATH_PAYMENT_UNDERFUNDED = -2,    // not enough funds in source account
+	  //       PATH_PAYMENT_NO_DESTINATION = -3, // destination account does not exist
+	  //       PATH_PAYMENT_NO_TRUST = -4, // destination missing a trust line for currency
+	  //       PATH_PAYMENT_NOT_AUTHORIZED =
+	  //           -5,                      // destination not authorized to hold currency
+	  //       PATH_PAYMENT_LINE_FULL = -6, // destination would go above their limit
+	  //       PATH_PAYMENT_TOO_FEW_OFFERS = -7, // not enough offers to satisfy path
+	  //       PATH_PAYMENT_OVER_SENDMAX = -8    // could not satisfy sendmax
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr["enum"]("PathPaymentResultCode", {
+	    pathPaymentSuccess: 0,
+	    pathPaymentMalformed: -1,
+	    pathPaymentUnderfunded: -2,
+	    pathPaymentNoDestination: -3,
+	    pathPaymentNoTrust: -4,
+	    pathPaymentNotAuthorized: -5,
+	    pathPaymentLineFull: -6,
+	    pathPaymentTooFewOffer: -7,
+	    pathPaymentOverSendmax: -8 });
 
 	  // === xdr source ============================================================
 	  //
@@ -1155,36 +1289,37 @@ var StellarBase =
 
 	  // === xdr source ============================================================
 	  //
-	  //   struct PaymentSuccessMultiResult
-	  //   {
-	  //       ClaimOfferAtom offers<>;
-	  //       SimplePaymentResult last;
-	  //   };
+	  //   struct
+	  //       {
+	  //           ClaimOfferAtom offers<>;
+	  //           SimplePaymentResult last;
+	  //       }
 	  //
 	  // ===========================================================================
-	  xdr.struct("PaymentSuccessMultiResult", [["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)], ["last", xdr.lookup("SimplePaymentResult")]]);
+	  xdr.struct("PathPaymentResultSuccess", [["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)], ["last", xdr.lookup("SimplePaymentResult")]]);
 
 	  // === xdr source ============================================================
 	  //
-	  //   union PaymentResult switch (PaymentResultCode code)
+	  //   union PathPaymentResult switch (PathPaymentResultCode code)
 	  //   {
-	  //   case PAYMENT_SUCCESS:
-	  //       void;
-	  //   case PAYMENT_SUCCESS_MULTI:
-	  //       PaymentSuccessMultiResult multi;
+	  //   case PATH_PAYMENT_SUCCESS:
+	  //       struct
+	  //       {
+	  //           ClaimOfferAtom offers<>;
+	  //           SimplePaymentResult last;
+	  //       } success;
 	  //   default:
 	  //       void;
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.union("PaymentResult", {
-	    switchOn: xdr.lookup("PaymentResultCode"),
+	  xdr.union("PathPaymentResult", {
+	    switchOn: xdr.lookup("PathPaymentResultCode"),
 	    switchName: "code",
 	    switches: {
-	      paymentSuccess: xdr["void"](),
-	      paymentSuccessMulti: "multi" },
+	      pathPaymentSuccess: "success" },
 	    arms: {
-	      multi: xdr.lookup("PaymentSuccessMultiResult") },
+	      success: xdr.lookup("PathPaymentResultSuccess") },
 	    defaultArm: xdr["void"]() });
 
 	  // === xdr source ============================================================
@@ -1529,8 +1664,12 @@ var StellarBase =
 	  //
 	  //   union switch (OperationType type)
 	  //       {
+	  //       case CREATE_ACCOUNT:
+	  //           CreateAccountResult createAccountResult;
 	  //       case PAYMENT:
 	  //           PaymentResult paymentResult;
+	  //       case PATH_PAYMENT:
+	  //           PathPaymentResult pathPaymentResult;
 	  //       case CREATE_OFFER:
 	  //           CreateOfferResult createOfferResult;
 	  //       case SET_OPTIONS:
@@ -1550,7 +1689,9 @@ var StellarBase =
 	    switchOn: xdr.lookup("OperationType"),
 	    switchName: "type",
 	    switches: {
+	      createAccount: "createAccountResult",
 	      payment: "paymentResult",
+	      pathPayment: "pathPaymentResult",
 	      createOffer: "createOfferResult",
 	      setOption: "setOptionsResult",
 	      changeTrust: "changeTrustResult",
@@ -1558,7 +1699,9 @@ var StellarBase =
 	      accountMerge: "accountMergeResult",
 	      inflation: "inflationResult" },
 	    arms: {
+	      createAccountResult: xdr.lookup("CreateAccountResult"),
 	      paymentResult: xdr.lookup("PaymentResult"),
+	      pathPaymentResult: xdr.lookup("PathPaymentResult"),
 	      createOfferResult: xdr.lookup("CreateOfferResult"),
 	      setOptionsResult: xdr.lookup("SetOptionsResult"),
 	      changeTrustResult: xdr.lookup("ChangeTrustResult"),
@@ -1573,8 +1716,12 @@ var StellarBase =
 	  //   case opINNER:
 	  //       union switch (OperationType type)
 	  //       {
+	  //       case CREATE_ACCOUNT:
+	  //           CreateAccountResult createAccountResult;
 	  //       case PAYMENT:
 	  //           PaymentResult paymentResult;
+	  //       case PATH_PAYMENT:
+	  //           PathPaymentResult pathPaymentResult;
 	  //       case CREATE_OFFER:
 	  //           CreateOfferResult createOfferResult;
 	  //       case SET_OPTIONS:
@@ -1613,16 +1760,17 @@ var StellarBase =
 	  //  
 	  //       txFAILED = -2, // one of the operations failed (but none were applied)
 	  //  
-	  //       txBAD_LEDGER = -3,        // ledger is not in range [minLeder; maxLedger]
-	  //       txMISSING_OPERATION = -4, // no operation was specified
-	  //       txBAD_SEQ = -5,           // sequence number does not match source account
+	  //       txTOO_EARLY = -3,         // ledger closeTime before minTime
+	  //       txTOO_LATE = -4,          // ledger closeTime after maxTime
+	  //       txMISSING_OPERATION = -5, // no operation was specified
+	  //       txBAD_SEQ = -6,           // sequence number does not match source account
 	  //  
-	  //       txBAD_AUTH = -6,             // not enough signatures to perform transaction
-	  //       txINSUFFICIENT_BALANCE = -7, // fee would bring account below reserve
-	  //       txNO_ACCOUNT = -8,           // source account not found
-	  //       txINSUFFICIENT_FEE = -9,     // max fee is too small
-	  //       txBAD_AUTH_EXTRA = -10,      // too many signatures on transaction
-	  //       txINTERNAL_ERROR = -11       // an unknown error occured
+	  //       txBAD_AUTH = -7,             // not enough signatures to perform transaction
+	  //       txINSUFFICIENT_BALANCE = -8, // fee would bring account below reserve
+	  //       txNO_ACCOUNT = -9,           // source account not found
+	  //       txINSUFFICIENT_FEE = -10,    // fee is too small
+	  //       txBAD_AUTH_EXTRA = -11,      // too many signatures on transaction
+	  //       txINTERNAL_ERROR = -12       // an unknown error occured
 	  //   };
 	  //
 	  // ===========================================================================
@@ -1630,15 +1778,16 @@ var StellarBase =
 	    txSuccess: 0,
 	    txDuplicate: -1,
 	    txFailed: -2,
-	    txBadLedger: -3,
-	    txMissingOperation: -4,
-	    txBadSeq: -5,
-	    txBadAuth: -6,
-	    txInsufficientBalance: -7,
-	    txNoAccount: -8,
-	    txInsufficientFee: -9,
-	    txBadAuthExtra: -10,
-	    txInternalError: -11 });
+	    txTooEarly: -3,
+	    txTooLate: -4,
+	    txMissingOperation: -5,
+	    txBadSeq: -6,
+	    txBadAuth: -7,
+	    txInsufficientBalance: -8,
+	    txNoAccount: -9,
+	    txInsufficientFee: -10,
+	    txBadAuthExtra: -11,
+	    txInternalError: -12 });
 
 	  // === xdr source ============================================================
 	  //
@@ -1881,7 +2030,7 @@ var StellarBase =
 	  (function () {
 	    // NOTE: we use commonjs style require here because es6 imports
 	    // can only occur at the top level.  thanks, obama.
-	    var ed25519 = __webpack_require__(13);
+	    var ed25519 = __webpack_require__(12);
 
 	    actualMethods.sign = function (data, secretKey) {
 	      data = new Buffer(data);
@@ -1922,7 +2071,7 @@ var StellarBase =
 	    };
 	  })();
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 6 */
@@ -2061,7 +2210,7 @@ var StellarBase =
 
 	  return Keypair;
 	})();
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 7 */
@@ -2177,7 +2326,7 @@ var StellarBase =
 	  return true;
 	}
 	// decimal 33
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 8 */
@@ -2201,9 +2350,9 @@ var StellarBase =
 
 	"use strict";
 
-	var _defaults = __webpack_require__(26)["default"];
+	var _defaults = __webpack_require__(27)["default"];
 
-	var _interopRequireWildcard = __webpack_require__(27)["default"];
+	var _interopRequireWildcard = __webpack_require__(28)["default"];
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -2337,6 +2486,12 @@ var StellarBase =
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./build/Release/native.node\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -3671,13 +3826,7 @@ var StellarBase =
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./build/Release/native.node\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 14 */
@@ -17901,7 +18050,7 @@ var StellarBase =
 	    }
 	  } else if (true) {
 	    // Node.js.
-	    crypto = __webpack_require__(56);
+	    crypto = __webpack_require__(55);
 	    if (crypto) {
 	      nacl.setPRNG(function(x, n) {
 	        var i, v = crypto.randomBytes(n);
@@ -17914,7 +18063,7 @@ var StellarBase =
 
 	})(typeof module !== 'undefined' && module.exports ? module.exports : (window.nacl = window.nacl || {}));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 16 */
@@ -17922,9 +18071,9 @@ var StellarBase =
 
 	"use strict";
 
-	var _defaults = __webpack_require__(26)["default"];
+	var _defaults = __webpack_require__(27)["default"];
 
-	var _interopRequireWildcard = __webpack_require__(27)["default"];
+	var _interopRequireWildcard = __webpack_require__(28)["default"];
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -17980,7 +18129,7 @@ var StellarBase =
 
 	var _toConsumableArray = __webpack_require__(50)["default"];
 
-	var _interopRequireWildcard = __webpack_require__(27)["default"];
+	var _interopRequireWildcard = __webpack_require__(28)["default"];
 
 	var _interopRequire = __webpack_require__(51)["default"];
 
@@ -18000,7 +18149,7 @@ var StellarBase =
 	var map = _lodash.map;
 	var pick = _lodash.pick;
 
-	var sequencify = _interopRequire(__webpack_require__(55));
+	var sequencify = _interopRequire(__webpack_require__(56));
 
 	// types is the root
 	var types = {};
@@ -18360,7 +18509,7 @@ var StellarBase =
 	 * operation was added.
 	 */
 
-	var inherits = __webpack_require__(65)
+	var inherits = __webpack_require__(69)
 	var Hash = __webpack_require__(57)
 
 	var W = new Array(80)
@@ -18452,7 +18601,7 @@ var StellarBase =
 	module.exports = Sha
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 19 */
@@ -18467,7 +18616,7 @@ var StellarBase =
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(65)
+	var inherits = __webpack_require__(69)
 	var Hash = __webpack_require__(57)
 
 	var W = new Array(80)
@@ -18555,7 +18704,7 @@ var StellarBase =
 	module.exports = Sha1
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 20 */
@@ -18569,7 +18718,7 @@ var StellarBase =
 	 *
 	 */
 
-	var inherits = __webpack_require__(65)
+	var inherits = __webpack_require__(69)
 	var SHA256 = __webpack_require__(21)
 	var Hash = __webpack_require__(57)
 
@@ -18614,7 +18763,7 @@ var StellarBase =
 
 	module.exports = Sha224
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 21 */
@@ -18628,7 +18777,7 @@ var StellarBase =
 	 *
 	 */
 
-	var inherits = __webpack_require__(65)
+	var inherits = __webpack_require__(69)
 	var Hash = __webpack_require__(57)
 
 	var K = [
@@ -18770,13 +18919,13 @@ var StellarBase =
 
 	module.exports = Sha256
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(65)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(69)
 	var SHA512 = __webpack_require__(23);
 	var Hash = __webpack_require__(57)
 
@@ -18833,13 +18982,13 @@ var StellarBase =
 
 	module.exports = Sha384
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(65)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(69)
 	var Hash = __webpack_require__(57)
 
 	var K = [
@@ -19085,7 +19234,7 @@ var StellarBase =
 
 	module.exports = Sha512
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 24 */
@@ -21615,7 +21764,8 @@ var StellarBase =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 26 */
+/* 26 */,
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21641,7 +21791,7 @@ var StellarBase =
 	exports.__esModule = true;
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21655,7 +21805,6 @@ var StellarBase =
 	exports.__esModule = true;
 
 /***/ },
-/* 28 */,
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -21669,7 +21818,7 @@ var StellarBase =
 
 	var isNumber = __webpack_require__(14).isNumber;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Int = {
 
@@ -21716,7 +21865,7 @@ var StellarBase =
 
 	var _inherits = __webpack_require__(49)["default"];
 
-	var _get = __webpack_require__(60)["default"];
+	var _get = __webpack_require__(61)["default"];
 
 	var _createClass = __webpack_require__(48)["default"];
 
@@ -21728,9 +21877,9 @@ var StellarBase =
 	  value: true
 	});
 
-	var Long = _interopRequire(__webpack_require__(64));
+	var Long = _interopRequire(__webpack_require__(68));
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Hyper = exports.Hyper = (function (_Long) {
 	  function Hyper(low, high) {
@@ -21800,7 +21949,7 @@ var StellarBase =
 
 	var isNumber = __webpack_require__(14).isNumber;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var UnsignedInt = {
 
@@ -21851,7 +22000,7 @@ var StellarBase =
 
 	var _inherits = __webpack_require__(49)["default"];
 
-	var _get = __webpack_require__(60)["default"];
+	var _get = __webpack_require__(61)["default"];
 
 	var _createClass = __webpack_require__(48)["default"];
 
@@ -21863,9 +22012,9 @@ var StellarBase =
 	  value: true
 	});
 
-	var Long = _interopRequire(__webpack_require__(64));
+	var Long = _interopRequire(__webpack_require__(68));
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var UnsignedHyper = exports.UnsignedHyper = (function (_Long) {
 	  function UnsignedHyper(low, high) {
@@ -21936,7 +22085,7 @@ var StellarBase =
 
 	var isNumber = __webpack_require__(14).isNumber;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Float = {
 
@@ -21973,7 +22122,7 @@ var StellarBase =
 
 	var isNumber = __webpack_require__(14).isNumber;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Double = {
 
@@ -22008,7 +22157,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Quadruple = {
 	  /* jshint unused: false */
@@ -22044,7 +22193,7 @@ var StellarBase =
 
 	var isBoolean = __webpack_require__(14).isBoolean;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Bool = {
 	  read: function read(io) {
@@ -22097,7 +22246,7 @@ var StellarBase =
 
 	var isString = __webpack_require__(14).isString;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var String = exports.String = (function () {
 	  function String() {
@@ -22148,7 +22297,7 @@ var StellarBase =
 	})();
 
 	includeIoMixin(String.prototype);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 38 */
@@ -22168,7 +22317,7 @@ var StellarBase =
 
 	var calculatePadding = __webpack_require__(62).calculatePadding;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Opaque = exports.Opaque = (function () {
 	  function Opaque(length) {
@@ -22206,7 +22355,7 @@ var StellarBase =
 	})();
 
 	includeIoMixin(Opaque.prototype);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 39 */
@@ -22230,7 +22379,7 @@ var StellarBase =
 
 	var calculatePadding = __webpack_require__(62).calculatePadding;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var VarOpaque = exports.VarOpaque = (function () {
 	  function VarOpaque() {
@@ -22275,7 +22424,7 @@ var StellarBase =
 	})();
 
 	includeIoMixin(VarOpaque.prototype);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 40 */
@@ -22300,7 +22449,7 @@ var StellarBase =
 	var times = _lodash.times;
 	var isArray = _lodash.isArray;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Array = exports.Array = (function () {
 	  function Array(childType, length) {
@@ -22387,7 +22536,7 @@ var StellarBase =
 	var times = _lodash.times;
 	var isArray = _lodash.isArray;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var VarArray = exports.VarArray = (function () {
 	  function VarArray(childType) {
@@ -22479,7 +22628,7 @@ var StellarBase =
 	var isNull = _lodash.isNull;
 	var isUndefined = _lodash.isUndefined;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Option = exports.Option = (function () {
 	  function Option(childType) {
@@ -22540,7 +22689,7 @@ var StellarBase =
 
 	var isUndefined = __webpack_require__(14).isUndefined;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Void = {
 	  /* jshint unused: false */
@@ -22574,7 +22723,7 @@ var StellarBase =
 
 	var _inherits = __webpack_require__(49)["default"];
 
-	var _get = __webpack_require__(60)["default"];
+	var _get = __webpack_require__(61)["default"];
 
 	var _core = __webpack_require__(59)["default"];
 
@@ -22591,7 +22740,7 @@ var StellarBase =
 	var each = _lodash.each;
 	var vals = _lodash.values;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Enum = exports.Enum = (function () {
 	  function Enum(name, value) {
@@ -22701,7 +22850,7 @@ var StellarBase =
 
 	var _inherits = __webpack_require__(49)["default"];
 
-	var _get = __webpack_require__(60)["default"];
+	var _get = __webpack_require__(61)["default"];
 
 	var _slicedToArray = __webpack_require__(63)["default"];
 
@@ -22720,7 +22869,7 @@ var StellarBase =
 	var isUndefined = _lodash.isUndefined;
 	var zipObject = _lodash.zipObject;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Struct = exports.Struct = (function () {
 	  function Struct(attributes) {
@@ -22828,7 +22977,7 @@ var StellarBase =
 
 	var _inherits = __webpack_require__(49)["default"];
 
-	var _get = __webpack_require__(60)["default"];
+	var _get = __webpack_require__(61)["default"];
 
 	var _core = __webpack_require__(59)["default"];
 
@@ -22845,7 +22994,7 @@ var StellarBase =
 
 	var Void = __webpack_require__(43).Void;
 
-	var includeIoMixin = _interopRequire(__webpack_require__(61));
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
 
 	var Union = exports.Union = (function () {
 	  function Union(aSwitch, value) {
@@ -23249,6 +23398,66 @@ var StellarBase =
 /* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(64)
+
+	function error () {
+	  var m = [].slice.call(arguments).join(' ')
+	  throw new Error([
+	    m,
+	    'we accept pull requests',
+	    'http://github.com/dominictarr/crypto-browserify'
+	    ].join('\n'))
+	}
+
+	exports.createHash = __webpack_require__(65)
+
+	exports.createHmac = __webpack_require__(66)
+
+	exports.randomBytes = function(size, callback) {
+	  if (callback && callback.call) {
+	    try {
+	      callback.call(this, undefined, new Buffer(rng(size)))
+	    } catch (err) { callback(err) }
+	  } else {
+	    return new Buffer(rng(size))
+	  }
+	}
+
+	function each(a, f) {
+	  for(var i in a)
+	    f(a[i], i)
+	}
+
+	exports.getHashes = function () {
+	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
+	}
+
+	var p = __webpack_require__(67)(exports)
+	exports.pbkdf2 = p.pbkdf2
+	exports.pbkdf2Sync = p.pbkdf2Sync
+
+
+	// the least I can do is make error messages for the rest of the node.js/crypto api.
+	each(['createCredentials'
+	, 'createCipher'
+	, 'createCipheriv'
+	, 'createDecipher'
+	, 'createDecipheriv'
+	, 'createSign'
+	, 'createVerify'
+	, 'createDiffieHellman'
+	], function (name) {
+	  exports[name] = function () {
+	    error('sorry,', name, 'is not implemented yet')
+	  }
+	})
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/*jshint node:true */
 
 	"use strict";
@@ -23296,66 +23505,6 @@ var StellarBase =
 
 	module.exports = sequence;
 
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(66)
-
-	function error () {
-	  var m = [].slice.call(arguments).join(' ')
-	  throw new Error([
-	    m,
-	    'we accept pull requests',
-	    'http://github.com/dominictarr/crypto-browserify'
-	    ].join('\n'))
-	}
-
-	exports.createHash = __webpack_require__(67)
-
-	exports.createHmac = __webpack_require__(68)
-
-	exports.randomBytes = function(size, callback) {
-	  if (callback && callback.call) {
-	    try {
-	      callback.call(this, undefined, new Buffer(rng(size)))
-	    } catch (err) { callback(err) }
-	  } else {
-	    return new Buffer(rng(size))
-	  }
-	}
-
-	function each(a, f) {
-	  for(var i in a)
-	    f(a[i], i)
-	}
-
-	exports.getHashes = function () {
-	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
-	}
-
-	var p = __webpack_require__(69)(exports)
-	exports.pbkdf2 = p.pbkdf2
-	exports.pbkdf2Sync = p.pbkdf2Sync
-
-
-	// the least I can do is make error messages for the rest of the node.js/crypto api.
-	each(['createCredentials'
-	, 'createCipher'
-	, 'createCipheriv'
-	, 'createDecipher'
-	, 'createDecipheriv'
-	, 'createSign'
-	, 'createVerify'
-	, 'createDiffieHellman'
-	], function (name) {
-	  exports[name] = function () {
-	    error('sorry,', name, 'is not implemented yet')
-	  }
-	})
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
 
 /***/ },
 /* 57 */
@@ -23431,7 +23580,7 @@ var StellarBase =
 
 	module.exports = Hash
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 58 */
@@ -25915,54 +26064,6 @@ var StellarBase =
 
 	"use strict";
 
-	var _core = __webpack_require__(59)["default"];
-
-	exports["default"] = function get(_x, _x2, _x3) {
-	  var _again = true;
-
-	  _function: while (_again) {
-	    _again = false;
-	    var object = _x,
-	        property = _x2,
-	        receiver = _x3;
-	    desc = parent = getter = undefined;
-
-	    var desc = _core.Object.getOwnPropertyDescriptor(object, property);
-
-	    if (desc === undefined) {
-	      var parent = _core.Object.getPrototypeOf(object);
-
-	      if (parent === null) {
-	        return undefined;
-	      } else {
-	        _x = parent;
-	        _x2 = property;
-	        _x3 = receiver;
-	        _again = true;
-	        continue _function;
-	      }
-	    } else if ("value" in desc && desc.writable) {
-	      return desc.value;
-	    } else {
-	      var getter = desc.get;
-
-	      if (getter === undefined) {
-	        return undefined;
-	      }
-
-	      return getter.call(receiver);
-	    }
-	  }
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
 	module.exports = includeIoMixin;
 
 	var Cursor = __webpack_require__(70).Cursor;
@@ -26021,6 +26122,54 @@ var StellarBase =
 	}
 
 /***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _core = __webpack_require__(59)["default"];
+
+	exports["default"] = function get(_x, _x2, _x3) {
+	  var _again = true;
+
+	  _function: while (_again) {
+	    _again = false;
+	    var object = _x,
+	        property = _x2,
+	        receiver = _x3;
+	    desc = parent = getter = undefined;
+
+	    var desc = _core.Object.getOwnPropertyDescriptor(object, property);
+
+	    if (desc === undefined) {
+	      var parent = _core.Object.getPrototypeOf(object);
+
+	      if (parent === null) {
+	        return undefined;
+	      } else {
+	        _x = parent;
+	        _x2 = property;
+	        _x3 = receiver;
+	        _again = true;
+	        continue _function;
+	      }
+	    } else if ("value" in desc && desc.writable) {
+	      return desc.value;
+	    } else {
+	      var getter = desc.get;
+
+	      if (getter === undefined) {
+	        return undefined;
+	      }
+
+	      return getter.call(receiver);
+	    }
+	  }
+	};
+
+	exports.__esModule = true;
+
+/***/ },
 /* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -26076,59 +26225,6 @@ var StellarBase =
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 Copyright 2013 Daniel Wirtz <dcode@dcode.io>
-	 Copyright 2009 The Closure Library Authors. All Rights Reserved.
-
-	 Licensed under the Apache License, Version 2.0 (the "License");
-	 you may not use this file except in compliance with the License.
-	 You may obtain a copy of the License at
-
-	 http://www.apache.org/licenses/LICENSE-2.0
-
-	 Unless required by applicable law or agreed to in writing, software
-	 distributed under the License is distributed on an "AS-IS" BASIS,
-	 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 See the License for the specific language governing permissions and
-	 limitations under the License.
-	 */
-
-	module.exports = __webpack_require__(72);
-
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	if (typeof Object.create === 'function') {
-	  // implementation from standard node.js 'util' module
-	  module.exports = function inherits(ctor, superCtor) {
-	    ctor.super_ = superCtor
-	    ctor.prototype = Object.create(superCtor.prototype, {
-	      constructor: {
-	        value: ctor,
-	        enumerable: false,
-	        writable: true,
-	        configurable: true
-	      }
-	    });
-	  };
-	} else {
-	  // old school shim for old browsers
-	  module.exports = function inherits(ctor, superCtor) {
-	    ctor.super_ = superCtor
-	    var TempCtor = function () {}
-	    TempCtor.prototype = superCtor.prototype
-	    ctor.prototype = new TempCtor()
-	    ctor.prototype.constructor = ctor
-	  }
-	}
-
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
@@ -26156,16 +26252,16 @@ var StellarBase =
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(13).Buffer))
 
 /***/ },
-/* 67 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(74)
 
-	var md5 = toConstructor(__webpack_require__(73))
-	var rmd160 = toConstructor(__webpack_require__(78))
+	var md5 = toConstructor(__webpack_require__(72))
+	var rmd160 = toConstructor(__webpack_require__(76))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -26193,13 +26289,13 @@ var StellarBase =
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
-/* 68 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(67)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(65)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -26243,10 +26339,10 @@ var StellarBase =
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
-/* 69 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var pbkdf2Export = __webpack_require__(75)
@@ -26260,6 +26356,59 @@ var StellarBase =
 	  exports.pbkdf2Sync = exported.pbkdf2Sync
 
 	  return exports
+	}
+
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 Copyright 2013 Daniel Wirtz <dcode@dcode.io>
+	 Copyright 2009 The Closure Library Authors. All Rights Reserved.
+
+	 Licensed under the Apache License, Version 2.0 (the "License");
+	 you may not use this file except in compliance with the License.
+	 You may obtain a copy of the License at
+
+	 http://www.apache.org/licenses/LICENSE-2.0
+
+	 Unless required by applicable law or agreed to in writing, software
+	 distributed under the License is distributed on an "AS-IS" BASIS,
+	 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 See the License for the specific language governing permissions and
+	 limitations under the License.
+	 */
+
+	module.exports = __webpack_require__(73);
+
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	if (typeof Object.create === 'function') {
+	  // implementation from standard node.js 'util' module
+	  module.exports = function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor
+	    ctor.prototype = Object.create(superCtor.prototype, {
+	      constructor: {
+	        value: ctor,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	  };
+	} else {
+	  // old school shim for old browsers
+	  module.exports = function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor
+	    var TempCtor = function () {}
+	    TempCtor.prototype = superCtor.prototype
+	    ctor.prototype = new TempCtor()
+	    ctor.prototype.constructor = ctor
+	  }
 	}
 
 
@@ -26281,7 +26430,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var BaseCursor = _interopRequire(__webpack_require__(77));
+	var BaseCursor = _interopRequire(__webpack_require__(78));
 
 	var calculatePadding = __webpack_require__(62).calculatePadding;
 
@@ -26310,7 +26459,7 @@ var StellarBase =
 
 	  return Cursor;
 	})(BaseCursor);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 71 */
@@ -26320,6 +26469,167 @@ var StellarBase =
 
 /***/ },
 /* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+	 * Digest Algorithm, as defined in RFC 1321.
+	 * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+	 * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+	 * Distributed under the BSD License
+	 * See http://pajhome.org.uk/crypt/md5 for more info.
+	 */
+
+	var helpers = __webpack_require__(77);
+
+	/*
+	 * Calculate the MD5 of an array of little-endian words, and a bit length
+	 */
+	function core_md5(x, len)
+	{
+	  /* append padding */
+	  x[len >> 5] |= 0x80 << ((len) % 32);
+	  x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+	  var a =  1732584193;
+	  var b = -271733879;
+	  var c = -1732584194;
+	  var d =  271733878;
+
+	  for(var i = 0; i < x.length; i += 16)
+	  {
+	    var olda = a;
+	    var oldb = b;
+	    var oldc = c;
+	    var oldd = d;
+
+	    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
+	    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+	    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+	    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+	    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
+	    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
+	    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
+	    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
+	    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
+	    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
+	    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
+	    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
+	    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
+	    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
+	    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
+	    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+	    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+	    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+	    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+	    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
+	    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+	    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+	    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+	    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+	    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+	    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+	    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+	    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+	    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+	    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+	    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+	    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+	    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+	    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+	    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+	    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+	    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
+	    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
+	    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
+	    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
+	    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
+	    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
+	    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
+	    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
+	    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
+	    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
+	    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
+	    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
+
+	    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
+	    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
+	    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
+	    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
+	    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
+	    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
+	    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
+	    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
+	    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
+	    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
+	    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
+	    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
+	    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
+	    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
+	    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
+	    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
+
+	    a = safe_add(a, olda);
+	    b = safe_add(b, oldb);
+	    c = safe_add(c, oldc);
+	    d = safe_add(d, oldd);
+	  }
+	  return Array(a, b, c, d);
+
+	}
+
+	/*
+	 * These functions implement the four basic operations the algorithm uses.
+	 */
+	function md5_cmn(q, a, b, x, s, t)
+	{
+	  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
+	}
+	function md5_ff(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+	}
+	function md5_gg(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+	}
+	function md5_hh(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+	}
+	function md5_ii(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+	}
+
+	/*
+	 * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+	 * to work around bugs in some JS interpreters.
+	 */
+	function safe_add(x, y)
+	{
+	  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+	  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+	  return (msw << 16) | (lsw & 0xFFFF);
+	}
+
+	/*
+	 * Bitwise rotate a 32-bit number to the left.
+	 */
+	function bit_rol(num, cnt)
+	{
+	  return (num << cnt) | (num >>> (32 - cnt));
+	}
+
+	module.exports = function md5(buf) {
+	  return helpers.hash(buf, core_md5, 16);
+	};
+
+
+/***/ },
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {/*
@@ -27258,7 +27568,7 @@ var StellarBase =
 
 	    /* CommonJS */ if ("function" === 'function' && typeof module === 'object' && module && typeof exports === 'object' && exports)
 	        module["exports"] = Long;
-	    /* AMD */ else if ("function" === 'function' && __webpack_require__(76)["amd"])
+	    /* AMD */ else if ("function" === 'function' && __webpack_require__(79)["amd"])
 	        !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return Long; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    /* Global */ else
 	        (global["dcodeIO"] = global["dcodeIO"] || {})["Long"] = Long;
@@ -27266,167 +27576,6 @@ var StellarBase =
 	})(this);
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(54)(module)))
-
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	 * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
-	 * Digest Algorithm, as defined in RFC 1321.
-	 * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
-	 * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
-	 * Distributed under the BSD License
-	 * See http://pajhome.org.uk/crypt/md5 for more info.
-	 */
-
-	var helpers = __webpack_require__(79);
-
-	/*
-	 * Calculate the MD5 of an array of little-endian words, and a bit length
-	 */
-	function core_md5(x, len)
-	{
-	  /* append padding */
-	  x[len >> 5] |= 0x80 << ((len) % 32);
-	  x[(((len + 64) >>> 9) << 4) + 14] = len;
-
-	  var a =  1732584193;
-	  var b = -271733879;
-	  var c = -1732584194;
-	  var d =  271733878;
-
-	  for(var i = 0; i < x.length; i += 16)
-	  {
-	    var olda = a;
-	    var oldb = b;
-	    var oldc = c;
-	    var oldd = d;
-
-	    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
-	    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
-	    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
-	    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
-	    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
-	    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
-	    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
-	    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
-	    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
-	    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
-	    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
-	    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
-	    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
-	    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
-	    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
-	    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
-
-	    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
-	    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
-	    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
-	    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
-	    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
-	    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
-	    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
-	    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
-	    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
-	    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
-	    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
-	    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
-	    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
-	    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
-	    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
-	    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
-
-	    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
-	    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
-	    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
-	    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
-	    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
-	    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
-	    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
-	    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
-	    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
-	    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
-	    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
-	    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
-	    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
-	    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
-	    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
-	    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
-
-	    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
-	    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
-	    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
-	    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
-	    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
-	    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
-	    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
-	    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
-	    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
-	    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
-	    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
-	    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
-	    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
-	    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
-	    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
-	    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
-
-	    a = safe_add(a, olda);
-	    b = safe_add(b, oldb);
-	    c = safe_add(c, oldc);
-	    d = safe_add(d, oldd);
-	  }
-	  return Array(a, b, c, d);
-
-	}
-
-	/*
-	 * These functions implement the four basic operations the algorithm uses.
-	 */
-	function md5_cmn(q, a, b, x, s, t)
-	{
-	  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
-	}
-	function md5_ff(a, b, c, d, x, s, t)
-	{
-	  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
-	}
-	function md5_gg(a, b, c, d, x, s, t)
-	{
-	  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
-	}
-	function md5_hh(a, b, c, d, x, s, t)
-	{
-	  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
-	}
-	function md5_ii(a, b, c, d, x, s, t)
-	{
-	  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
-	}
-
-	/*
-	 * Add integers, wrapping at 2^32. This uses 16-bit operations internally
-	 * to work around bugs in some JS interpreters.
-	 */
-	function safe_add(x, y)
-	{
-	  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-	  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-	  return (msw << 16) | (lsw & 0xFFFF);
-	}
-
-	/*
-	 * Bitwise rotate a 32-bit number to the left.
-	 */
-	function bit_rol(num, cnt)
-	{
-	  return (num << cnt) | (num >>> (32 - cnt));
-	}
-
-	module.exports = function md5(buf) {
-	  return helpers.hash(buf, core_md5, 16);
-	};
-
 
 /***/ },
 /* 74 */
@@ -27438,7 +27587,7 @@ var StellarBase =
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(12).Buffer
+	var Buffer = __webpack_require__(13).Buffer
 	var Hash   = __webpack_require__(80)(Buffer)
 
 	exports.sha1 = __webpack_require__(81)(Buffer, Hash)
@@ -27535,17 +27684,263 @@ var StellarBase =
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
+	/* WEBPACK VAR INJECTION */(function(Buffer) {
+	module.exports = ripemd160
 
+
+
+	/*
+	CryptoJS v3.1.2
+	code.google.com/p/crypto-js
+	(c) 2009-2013 by Jeff Mott. All rights reserved.
+	code.google.com/p/crypto-js/wiki/License
+	*/
+	/** @preserve
+	(c) 2012 by Cédric Mesnil. All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+	    - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+	    - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	*/
+
+	// Constants table
+	var zl = [
+	    0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
+	    7,  4, 13,  1, 10,  6, 15,  3, 12,  0,  9,  5,  2, 14, 11,  8,
+	    3, 10, 14,  4,  9, 15,  8,  1,  2,  7,  0,  6, 13, 11,  5, 12,
+	    1,  9, 11, 10,  0,  8, 12,  4, 13,  3,  7, 15, 14,  5,  6,  2,
+	    4,  0,  5,  9,  7, 12,  2, 10, 14,  1,  3,  8, 11,  6, 15, 13];
+	var zr = [
+	    5, 14,  7,  0,  9,  2, 11,  4, 13,  6, 15,  8,  1, 10,  3, 12,
+	    6, 11,  3,  7,  0, 13,  5, 10, 14, 15,  8, 12,  4,  9,  1,  2,
+	    15,  5,  1,  3,  7, 14,  6,  9, 11,  8, 12,  2, 10,  0,  4, 13,
+	    8,  6,  4,  1,  3, 11, 15,  0,  5, 12,  2, 13,  9,  7, 10, 14,
+	    12, 15, 10,  4,  1,  5,  8,  7,  6,  2, 13, 14,  0,  3,  9, 11];
+	var sl = [
+	     11, 14, 15, 12,  5,  8,  7,  9, 11, 13, 14, 15,  6,  7,  9,  8,
+	    7, 6,   8, 13, 11,  9,  7, 15,  7, 12, 15,  9, 11,  7, 13, 12,
+	    11, 13,  6,  7, 14,  9, 13, 15, 14,  8, 13,  6,  5, 12,  7,  5,
+	      11, 12, 14, 15, 14, 15,  9,  8,  9, 14,  5,  6,  8,  6,  5, 12,
+	    9, 15,  5, 11,  6,  8, 13, 12,  5, 12, 13, 14, 11,  8,  5,  6 ];
+	var sr = [
+	    8,  9,  9, 11, 13, 15, 15,  5,  7,  7,  8, 11, 14, 14, 12,  6,
+	    9, 13, 15,  7, 12,  8,  9, 11,  7,  7, 12,  7,  6, 15, 13, 11,
+	    9,  7, 15, 11,  8,  6,  6, 14, 12, 13,  5, 14, 13, 13,  7,  5,
+	    15,  5,  8, 11, 14, 14,  6, 14,  6,  9, 12,  9, 12,  5, 15,  8,
+	    8,  5, 12,  9, 12,  5, 14,  6,  8, 13,  6,  5, 15, 13, 11, 11 ];
+
+	var hl =  [ 0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E];
+	var hr =  [ 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000];
+
+	var bytesToWords = function (bytes) {
+	  var words = [];
+	  for (var i = 0, b = 0; i < bytes.length; i++, b += 8) {
+	    words[b >>> 5] |= bytes[i] << (24 - b % 32);
+	  }
+	  return words;
+	};
+
+	var wordsToBytes = function (words) {
+	  var bytes = [];
+	  for (var b = 0; b < words.length * 32; b += 8) {
+	    bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+	  }
+	  return bytes;
+	};
+
+	var processBlock = function (H, M, offset) {
+
+	  // Swap endian
+	  for (var i = 0; i < 16; i++) {
+	    var offset_i = offset + i;
+	    var M_offset_i = M[offset_i];
+
+	    // Swap
+	    M[offset_i] = (
+	        (((M_offset_i << 8)  | (M_offset_i >>> 24)) & 0x00ff00ff) |
+	        (((M_offset_i << 24) | (M_offset_i >>> 8))  & 0xff00ff00)
+	    );
+	  }
+
+	  // Working variables
+	  var al, bl, cl, dl, el;
+	  var ar, br, cr, dr, er;
+
+	  ar = al = H[0];
+	  br = bl = H[1];
+	  cr = cl = H[2];
+	  dr = dl = H[3];
+	  er = el = H[4];
+	  // Computation
+	  var t;
+	  for (var i = 0; i < 80; i += 1) {
+	    t = (al +  M[offset+zl[i]])|0;
+	    if (i<16){
+	        t +=  f1(bl,cl,dl) + hl[0];
+	    } else if (i<32) {
+	        t +=  f2(bl,cl,dl) + hl[1];
+	    } else if (i<48) {
+	        t +=  f3(bl,cl,dl) + hl[2];
+	    } else if (i<64) {
+	        t +=  f4(bl,cl,dl) + hl[3];
+	    } else {// if (i<80) {
+	        t +=  f5(bl,cl,dl) + hl[4];
+	    }
+	    t = t|0;
+	    t =  rotl(t,sl[i]);
+	    t = (t+el)|0;
+	    al = el;
+	    el = dl;
+	    dl = rotl(cl, 10);
+	    cl = bl;
+	    bl = t;
+
+	    t = (ar + M[offset+zr[i]])|0;
+	    if (i<16){
+	        t +=  f5(br,cr,dr) + hr[0];
+	    } else if (i<32) {
+	        t +=  f4(br,cr,dr) + hr[1];
+	    } else if (i<48) {
+	        t +=  f3(br,cr,dr) + hr[2];
+	    } else if (i<64) {
+	        t +=  f2(br,cr,dr) + hr[3];
+	    } else {// if (i<80) {
+	        t +=  f1(br,cr,dr) + hr[4];
+	    }
+	    t = t|0;
+	    t =  rotl(t,sr[i]) ;
+	    t = (t+er)|0;
+	    ar = er;
+	    er = dr;
+	    dr = rotl(cr, 10);
+	    cr = br;
+	    br = t;
+	  }
+	  // Intermediate hash value
+	  t    = (H[1] + cl + dr)|0;
+	  H[1] = (H[2] + dl + er)|0;
+	  H[2] = (H[3] + el + ar)|0;
+	  H[3] = (H[4] + al + br)|0;
+	  H[4] = (H[0] + bl + cr)|0;
+	  H[0] =  t;
+	};
+
+	function f1(x, y, z) {
+	  return ((x) ^ (y) ^ (z));
+	}
+
+	function f2(x, y, z) {
+	  return (((x)&(y)) | ((~x)&(z)));
+	}
+
+	function f3(x, y, z) {
+	  return (((x) | (~(y))) ^ (z));
+	}
+
+	function f4(x, y, z) {
+	  return (((x) & (z)) | ((y)&(~(z))));
+	}
+
+	function f5(x, y, z) {
+	  return ((x) ^ ((y) |(~(z))));
+	}
+
+	function rotl(x,n) {
+	  return (x<<n) | (x>>>(32-n));
+	}
+
+	function ripemd160(message) {
+	  var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0];
+
+	  if (typeof message == 'string')
+	    message = new Buffer(message, 'utf8');
+
+	  var m = bytesToWords(message);
+
+	  var nBitsLeft = message.length * 8;
+	  var nBitsTotal = message.length * 8;
+
+	  // Add padding
+	  m[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+	  m[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
+	      (((nBitsTotal << 8)  | (nBitsTotal >>> 24)) & 0x00ff00ff) |
+	      (((nBitsTotal << 24) | (nBitsTotal >>> 8))  & 0xff00ff00)
+	  );
+
+	  for (var i=0 ; i<m.length; i += 16) {
+	    processBlock(H, m, i);
+	  }
+
+	  // Swap endian
+	  for (var i = 0; i < 5; i++) {
+	      // Shortcut
+	    var H_i = H[i];
+
+	    // Swap
+	    H[i] = (((H_i << 8)  | (H_i >>> 24)) & 0x00ff00ff) |
+	          (((H_i << 24) | (H_i >>> 8))  & 0xff00ff00);
+	  }
+
+	  var digestbytes = wordsToBytes(H);
+	  return new Buffer(digestbytes);
+	}
+
+
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
+	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
+	var chrsz = 8;
+
+	function toArray(buf, bigEndian) {
+	  if ((buf.length % intSize) !== 0) {
+	    var len = buf.length + (intSize - (buf.length % intSize));
+	    buf = Buffer.concat([buf, zeroBuffer], len);
+	  }
+
+	  var arr = [];
+	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
+	  for (var i = 0; i < buf.length; i += intSize) {
+	    arr.push(fn.call(buf, i));
+	  }
+	  return arr;
+	}
+
+	function toBuffer(arr, size, bigEndian) {
+	  var buf = new Buffer(size);
+	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
+	  for (var i = 0; i < arr.length; i++) {
+	    fn.call(buf, arr[i], i * 4, true);
+	  }
+	  return buf;
+	}
+
+	function hash(buf, fn, hashSize, bigEndian) {
+	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
+	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
+	  return toBuffer(arr, hashSize, bigEndian);
+	}
+
+	module.exports = { hash: hash };
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+
+/***/ },
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var Cursor = function(buffer)
@@ -27793,260 +28188,14 @@ var StellarBase =
 
 	module.exports = Cursor;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
-
-/***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {
-	module.exports = ripemd160
-
-
-
-	/*
-	CryptoJS v3.1.2
-	code.google.com/p/crypto-js
-	(c) 2009-2013 by Jeff Mott. All rights reserved.
-	code.google.com/p/crypto-js/wiki/License
-	*/
-	/** @preserve
-	(c) 2012 by Cédric Mesnil. All rights reserved.
-
-	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-	    - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-	    - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-	*/
-
-	// Constants table
-	var zl = [
-	    0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
-	    7,  4, 13,  1, 10,  6, 15,  3, 12,  0,  9,  5,  2, 14, 11,  8,
-	    3, 10, 14,  4,  9, 15,  8,  1,  2,  7,  0,  6, 13, 11,  5, 12,
-	    1,  9, 11, 10,  0,  8, 12,  4, 13,  3,  7, 15, 14,  5,  6,  2,
-	    4,  0,  5,  9,  7, 12,  2, 10, 14,  1,  3,  8, 11,  6, 15, 13];
-	var zr = [
-	    5, 14,  7,  0,  9,  2, 11,  4, 13,  6, 15,  8,  1, 10,  3, 12,
-	    6, 11,  3,  7,  0, 13,  5, 10, 14, 15,  8, 12,  4,  9,  1,  2,
-	    15,  5,  1,  3,  7, 14,  6,  9, 11,  8, 12,  2, 10,  0,  4, 13,
-	    8,  6,  4,  1,  3, 11, 15,  0,  5, 12,  2, 13,  9,  7, 10, 14,
-	    12, 15, 10,  4,  1,  5,  8,  7,  6,  2, 13, 14,  0,  3,  9, 11];
-	var sl = [
-	     11, 14, 15, 12,  5,  8,  7,  9, 11, 13, 14, 15,  6,  7,  9,  8,
-	    7, 6,   8, 13, 11,  9,  7, 15,  7, 12, 15,  9, 11,  7, 13, 12,
-	    11, 13,  6,  7, 14,  9, 13, 15, 14,  8, 13,  6,  5, 12,  7,  5,
-	      11, 12, 14, 15, 14, 15,  9,  8,  9, 14,  5,  6,  8,  6,  5, 12,
-	    9, 15,  5, 11,  6,  8, 13, 12,  5, 12, 13, 14, 11,  8,  5,  6 ];
-	var sr = [
-	    8,  9,  9, 11, 13, 15, 15,  5,  7,  7,  8, 11, 14, 14, 12,  6,
-	    9, 13, 15,  7, 12,  8,  9, 11,  7,  7, 12,  7,  6, 15, 13, 11,
-	    9,  7, 15, 11,  8,  6,  6, 14, 12, 13,  5, 14, 13, 13,  7,  5,
-	    15,  5,  8, 11, 14, 14,  6, 14,  6,  9, 12,  9, 12,  5, 15,  8,
-	    8,  5, 12,  9, 12,  5, 14,  6,  8, 13,  6,  5, 15, 13, 11, 11 ];
-
-	var hl =  [ 0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E];
-	var hr =  [ 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000];
-
-	var bytesToWords = function (bytes) {
-	  var words = [];
-	  for (var i = 0, b = 0; i < bytes.length; i++, b += 8) {
-	    words[b >>> 5] |= bytes[i] << (24 - b % 32);
-	  }
-	  return words;
-	};
-
-	var wordsToBytes = function (words) {
-	  var bytes = [];
-	  for (var b = 0; b < words.length * 32; b += 8) {
-	    bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
-	  }
-	  return bytes;
-	};
-
-	var processBlock = function (H, M, offset) {
-
-	  // Swap endian
-	  for (var i = 0; i < 16; i++) {
-	    var offset_i = offset + i;
-	    var M_offset_i = M[offset_i];
-
-	    // Swap
-	    M[offset_i] = (
-	        (((M_offset_i << 8)  | (M_offset_i >>> 24)) & 0x00ff00ff) |
-	        (((M_offset_i << 24) | (M_offset_i >>> 8))  & 0xff00ff00)
-	    );
-	  }
-
-	  // Working variables
-	  var al, bl, cl, dl, el;
-	  var ar, br, cr, dr, er;
-
-	  ar = al = H[0];
-	  br = bl = H[1];
-	  cr = cl = H[2];
-	  dr = dl = H[3];
-	  er = el = H[4];
-	  // Computation
-	  var t;
-	  for (var i = 0; i < 80; i += 1) {
-	    t = (al +  M[offset+zl[i]])|0;
-	    if (i<16){
-	        t +=  f1(bl,cl,dl) + hl[0];
-	    } else if (i<32) {
-	        t +=  f2(bl,cl,dl) + hl[1];
-	    } else if (i<48) {
-	        t +=  f3(bl,cl,dl) + hl[2];
-	    } else if (i<64) {
-	        t +=  f4(bl,cl,dl) + hl[3];
-	    } else {// if (i<80) {
-	        t +=  f5(bl,cl,dl) + hl[4];
-	    }
-	    t = t|0;
-	    t =  rotl(t,sl[i]);
-	    t = (t+el)|0;
-	    al = el;
-	    el = dl;
-	    dl = rotl(cl, 10);
-	    cl = bl;
-	    bl = t;
-
-	    t = (ar + M[offset+zr[i]])|0;
-	    if (i<16){
-	        t +=  f5(br,cr,dr) + hr[0];
-	    } else if (i<32) {
-	        t +=  f4(br,cr,dr) + hr[1];
-	    } else if (i<48) {
-	        t +=  f3(br,cr,dr) + hr[2];
-	    } else if (i<64) {
-	        t +=  f2(br,cr,dr) + hr[3];
-	    } else {// if (i<80) {
-	        t +=  f1(br,cr,dr) + hr[4];
-	    }
-	    t = t|0;
-	    t =  rotl(t,sr[i]) ;
-	    t = (t+er)|0;
-	    ar = er;
-	    er = dr;
-	    dr = rotl(cr, 10);
-	    cr = br;
-	    br = t;
-	  }
-	  // Intermediate hash value
-	  t    = (H[1] + cl + dr)|0;
-	  H[1] = (H[2] + dl + er)|0;
-	  H[2] = (H[3] + el + ar)|0;
-	  H[3] = (H[4] + al + br)|0;
-	  H[4] = (H[0] + bl + cr)|0;
-	  H[0] =  t;
-	};
-
-	function f1(x, y, z) {
-	  return ((x) ^ (y) ^ (z));
-	}
-
-	function f2(x, y, z) {
-	  return (((x)&(y)) | ((~x)&(z)));
-	}
-
-	function f3(x, y, z) {
-	  return (((x) | (~(y))) ^ (z));
-	}
-
-	function f4(x, y, z) {
-	  return (((x) & (z)) | ((y)&(~(z))));
-	}
-
-	function f5(x, y, z) {
-	  return ((x) ^ ((y) |(~(z))));
-	}
-
-	function rotl(x,n) {
-	  return (x<<n) | (x>>>(32-n));
-	}
-
-	function ripemd160(message) {
-	  var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0];
-
-	  if (typeof message == 'string')
-	    message = new Buffer(message, 'utf8');
-
-	  var m = bytesToWords(message);
-
-	  var nBitsLeft = message.length * 8;
-	  var nBitsTotal = message.length * 8;
-
-	  // Add padding
-	  m[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
-	  m[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
-	      (((nBitsTotal << 8)  | (nBitsTotal >>> 24)) & 0x00ff00ff) |
-	      (((nBitsTotal << 24) | (nBitsTotal >>> 8))  & 0xff00ff00)
-	  );
-
-	  for (var i=0 ; i<m.length; i += 16) {
-	    processBlock(H, m, i);
-	  }
-
-	  // Swap endian
-	  for (var i = 0; i < 5; i++) {
-	      // Shortcut
-	    var H_i = H[i];
-
-	    // Swap
-	    H[i] = (((H_i << 8)  | (H_i >>> 24)) & 0x00ff00ff) |
-	          (((H_i << 24) | (H_i >>> 8))  & 0xff00ff00);
-	  }
-
-	  var digestbytes = wordsToBytes(H);
-	  return new Buffer(digestbytes);
-	}
-
-
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ },
 /* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
-	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
-	var chrsz = 8;
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
-	function toArray(buf, bigEndian) {
-	  if ((buf.length % intSize) !== 0) {
-	    var len = buf.length + (intSize - (buf.length % intSize));
-	    buf = Buffer.concat([buf, zeroBuffer], len);
-	  }
-
-	  var arr = [];
-	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
-	  for (var i = 0; i < buf.length; i += intSize) {
-	    arr.push(fn.call(buf, i));
-	  }
-	  return arr;
-	}
-
-	function toBuffer(arr, size, bigEndian) {
-	  var buf = new Buffer(size);
-	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
-	  for (var i = 0; i < arr.length; i++) {
-	    fn.call(buf, arr[i], i * 4, true);
-	  }
-	  return buf;
-	}
-
-	function hash(buf, fn, hashSize, bigEndian) {
-	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
-	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
-	  return toBuffer(arr, hashSize, bigEndian);
-	}
-
-	module.exports = { hash: hash };
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
 
 /***/ },
 /* 80 */
