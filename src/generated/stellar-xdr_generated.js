@@ -1,4 +1,4 @@
-// Automatically generated on 2015-05-12T11:11:27-07:00
+// Automatically generated on 2015-05-13T18:26:47-07:00
 // DO NOT EDIT or your changes may be overwritten
         
 /* jshint maxstatements:2147483647  */
@@ -832,25 +832,43 @@ xdr.struct("DecoratedSignature", [
 //
 //   enum OperationType
 //   {
-//       PAYMENT = 0,
-//       CREATE_OFFER = 1,
-//       SET_OPTIONS = 2,
-//       CHANGE_TRUST = 3,
-//       ALLOW_TRUST = 4,
-//       ACCOUNT_MERGE = 5,
-//       INFLATION = 6
+//       CREATE_ACCOUNT = 0,
+//       PAYMENT = 1,
+//       PATH_PAYMENT = 2,
+//       CREATE_OFFER = 3,
+//       SET_OPTIONS = 4,
+//       CHANGE_TRUST = 5,
+//       ALLOW_TRUST = 6,
+//       ACCOUNT_MERGE = 7,
+//       INFLATION = 8
 //   };
 //
 // ===========================================================================
 xdr.enum("OperationType", {
-  payment: 0,
-  createOffer: 1,
-  setOption: 2,
-  changeTrust: 3,
-  allowTrust: 4,
-  accountMerge: 5,
-  inflation: 6,
+  createAccount: 0,
+  payment: 1,
+  pathPayment: 2,
+  createOffer: 3,
+  setOption: 4,
+  changeTrust: 5,
+  allowTrust: 6,
+  accountMerge: 7,
+  inflation: 8,
 });
+
+// === xdr source ============================================================
+//
+//   struct CreateAccountOp
+//   {
+//       AccountID destination; // account to create
+//       int64 startingBalance; // amount they end up with
+//   };
+//
+// ===========================================================================
+xdr.struct("CreateAccountOp", [
+  ["destination", xdr.lookup("AccountId")],
+  ["startingBalance", xdr.lookup("Int64")],
+]);
 
 // === xdr source ============================================================
 //
@@ -859,12 +877,6 @@ xdr.enum("OperationType", {
 //       AccountID destination; // recipient of the payment
 //       Currency currency;     // what they end up with
 //       int64 amount;          // amount they end up with
-//   
-//       // payment over path
-//       Currency path<5>; // what hops it must go through to get there
-//       int64 sendMax; // the maximum amount of the source currency (==path[0]) to
-//                      // send (excluding fees).
-//                      // The operation will fail if can't be met
 //   };
 //
 // ===========================================================================
@@ -872,8 +884,32 @@ xdr.struct("PaymentOp", [
   ["destination", xdr.lookup("AccountId")],
   ["currency", xdr.lookup("Currency")],
   ["amount", xdr.lookup("Int64")],
-  ["path", xdr.varArray(xdr.lookup("Currency"), 5)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct PathPaymentOp
+//   {
+//       Currency sendCurrency; // currency we pay with
+//       int64 sendMax;         // the maximum amount of sendCurrency to
+//                              // send (excluding fees).
+//                              // The operation will fail if can't be met
+//   
+//       AccountID destination; // recipient of the payment
+//       Currency destCurrency; // what they end up with
+//       int64 destAmount;      // amount they end up with
+//   
+//       Currency path<5>; // additional hops it must go through to get there
+//   };
+//
+// ===========================================================================
+xdr.struct("PathPaymentOp", [
+  ["sendCurrency", xdr.lookup("Currency")],
   ["sendMax", xdr.lookup("Int64")],
+  ["destination", xdr.lookup("AccountId")],
+  ["destCurrency", xdr.lookup("Currency")],
+  ["destAmount", xdr.lookup("Int64")],
+  ["path", xdr.varArray(xdr.lookup("Currency"), 5)],
 ]);
 
 // === xdr source ============================================================
@@ -994,8 +1030,12 @@ xdr.struct("AllowTrustOp", [
 //
 //   union switch (OperationType type)
 //       {
+//       case CREATE_ACCOUNT:
+//           CreateAccountOp createAccountOp;
 //       case PAYMENT:
 //           PaymentOp paymentOp;
+//       case PATH_PAYMENT:
+//           PathPaymentOp pathPaymentOp;
 //       case CREATE_OFFER:
 //           CreateOfferOp createOfferOp;
 //       case SET_OPTIONS:
@@ -1015,7 +1055,9 @@ xdr.union("OperationBody", {
   switchOn: xdr.lookup("OperationType"),
   switchName: "type",
   switches: {
+    createAccount: "createAccountOp",
     payment: "paymentOp",
+    pathPayment: "pathPaymentOp",
     createOffer: "createOfferOp",
     setOption: "setOptionsOp",
     changeTrust: "changeTrustOp",
@@ -1024,7 +1066,9 @@ xdr.union("OperationBody", {
     inflation: xdr.void(),
   },
   arms: {
+    createAccountOp: xdr.lookup("CreateAccountOp"),
     paymentOp: xdr.lookup("PaymentOp"),
+    pathPaymentOp: xdr.lookup("PathPaymentOp"),
     createOfferOp: xdr.lookup("CreateOfferOp"),
     setOptionsOp: xdr.lookup("SetOptionsOp"),
     changeTrustOp: xdr.lookup("ChangeTrustOp"),
@@ -1044,8 +1088,12 @@ xdr.union("OperationBody", {
 //   
 //       union switch (OperationType type)
 //       {
+//       case CREATE_ACCOUNT:
+//           CreateAccountOp createAccountOp;
 //       case PAYMENT:
 //           PaymentOp paymentOp;
+//       case PATH_PAYMENT:
+//           PathPaymentOp pathPaymentOp;
 //       case CREATE_OFFER:
 //           CreateOfferOp createOfferOp;
 //       case SET_OPTIONS:
@@ -1072,35 +1120,35 @@ xdr.struct("Operation", [
 //
 //   enum MemoType
 //   {
-//       MEMO_TYPE_NONE = 0,
-//       MEMO_TYPE_TEXT = 1,
-//       MEMO_TYPE_ID = 2,
-//       MEMO_TYPE_HASH = 3,
-//       MEMO_TYPE_RETURN = 4
+//       MEMO_NONE = 0,
+//       MEMO_TEXT = 1,
+//       MEMO_ID = 2,
+//       MEMO_HASH = 3,
+//       MEMO_RETURN = 4
 //   };
 //
 // ===========================================================================
 xdr.enum("MemoType", {
-  memoTypeNone: 0,
-  memoTypeText: 1,
-  memoTypeId: 2,
-  memoTypeHash: 3,
-  memoTypeReturn: 4,
+  memoNone: 0,
+  memoText: 1,
+  memoId: 2,
+  memoHash: 3,
+  memoReturn: 4,
 });
 
 // === xdr source ============================================================
 //
 //   union Memo switch (MemoType type)
 //   {
-//   case MEMO_TYPE_NONE:
+//   case MEMO_NONE:
 //       void;
-//   case MEMO_TYPE_TEXT:
+//   case MEMO_TEXT:
 //       string text<28>;
-//   case MEMO_TYPE_ID:
+//   case MEMO_ID:
 //       uint64 id;
-//   case MEMO_TYPE_HASH:
+//   case MEMO_HASH:
 //       Hash hash; // the hash of what to pull from the content server
-//   case MEMO_TYPE_RETURN:
+//   case MEMO_RETURN:
 //       Hash retHash; // the hash of the tx you are rejecting
 //   };
 //
@@ -1109,11 +1157,11 @@ xdr.union("Memo", {
   switchOn: xdr.lookup("MemoType"),
   switchName: "type",
   switches: {
-    memoTypeNone: xdr.void(),
-    memoTypeText: "text",
-    memoTypeId: "id",
-    memoTypeHash: "hash",
-    memoTypeReturn: "retHash",
+    memoNone: xdr.void(),
+    memoText: "text",
+    memoId: "id",
+    memoHash: "hash",
+    memoReturn: "retHash",
   },
   arms: {
     text: xdr.string(28),
@@ -1125,20 +1173,33 @@ xdr.union("Memo", {
 
 // === xdr source ============================================================
 //
+//   struct TimeBounds
+//   {
+//       uint64 minTime;
+//       uint64 maxTime;
+//   };
+//
+// ===========================================================================
+xdr.struct("TimeBounds", [
+  ["minTime", xdr.lookup("Uint64")],
+  ["maxTime", xdr.lookup("Uint64")],
+]);
+
+// === xdr source ============================================================
+//
 //   struct Transaction
 //   {
 //       // account used to run the transaction
 //       AccountID sourceAccount;
 //   
-//       // the fee the sourceAccount will pay 
+//       // the fee the sourceAccount will pay
 //       int32 fee;
 //   
 //       // sequence number to consume in the account
 //       SequenceNumber seqNum;
 //   
-//       // validity range (inclusive) for the ledger sequence number
-//       uint32 minLedger;
-//       uint32 maxLedger;
+//       // validity range (inclusive) for the last ledger close time
+//       TimeBounds* timeBounds;
 //   
 //       Memo memo;
 //   
@@ -1150,8 +1211,7 @@ xdr.struct("Transaction", [
   ["sourceAccount", xdr.lookup("AccountId")],
   ["fee", xdr.lookup("Int32")],
   ["seqNum", xdr.lookup("SequenceNumber")],
-  ["minLedger", xdr.lookup("Uint32")],
-  ["maxLedger", xdr.lookup("Uint32")],
+  ["timeBounds", xdr.option(xdr.lookup("TimeBounds"))],
   ["memo", xdr.lookup("Memo")],
   ["operations", xdr.varArray(xdr.lookup("Operation"), 100)],
 ]);
@@ -1195,11 +1255,56 @@ xdr.struct("ClaimOfferAtom", [
 
 // === xdr source ============================================================
 //
+//   enum CreateAccountResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       CREATE_ACCOUNT_SUCCESS = 0, // account was created
+//   
+//       // codes considered as "failure" for the operation
+//       CREATE_ACCOUNT_MALFORMED = 1,   // invalid destination
+//       CREATE_ACCOUNT_UNDERFUNDED = 2, // not enough funds in source account
+//       CREATE_ACCOUNT_LOW_RESERVE =
+//           3, // would create an account below the min reserve
+//       CREATE_ACCOUNT_ALREADY_EXIST = 4 // account already exists
+//   };
+//
+// ===========================================================================
+xdr.enum("CreateAccountResultCode", {
+  createAccountSuccess: 0,
+  createAccountMalformed: 1,
+  createAccountUnderfunded: 2,
+  createAccountLowReserve: 3,
+  createAccountAlreadyExist: 4,
+});
+
+// === xdr source ============================================================
+//
+//   union CreateAccountResult switch (CreateAccountResultCode code)
+//   {
+//   case CREATE_ACCOUNT_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("CreateAccountResult", {
+  switchOn: xdr.lookup("CreateAccountResultCode"),
+  switchName: "code",
+  switches: {
+    createAccountSuccess: xdr.void(),
+  },
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
 //   enum PaymentResultCode
 //   {
 //       // codes considered as "success" for the operation
-//       PAYMENT_SUCCESS = 0,       // simple payment success
-//       PAYMENT_SUCCESS_MULTI = 1, // multi-path payment success
+//       PAYMENT_SUCCESS = 0, // payment successfuly completed
 //   
 //       // codes considered as "failure" for the operation
 //       PAYMENT_MALFORMED = -1,      // bad input
@@ -1207,25 +1312,72 @@ xdr.struct("ClaimOfferAtom", [
 //       PAYMENT_NO_DESTINATION = -3, // destination account does not exist
 //       PAYMENT_NO_TRUST = -4, // destination missing a trust line for currency
 //       PAYMENT_NOT_AUTHORIZED = -5, // destination not authorized to hold currency
-//       PAYMENT_LINE_FULL = -6,      // destination would go above their limit
-//       PAYMENT_TOO_FEW_OFFERS = -7, // not enough offers to satisfy path payment
-//       PAYMENT_OVER_SENDMAX = -8,   // multi-path payment could not satisfy sendmax
-//       PAYMENT_LOW_RESERVE = -9 // would create an account below the min reserve
+//       PAYMENT_LINE_FULL = -6       // destination would go above their limit
 //   };
 //
 // ===========================================================================
 xdr.enum("PaymentResultCode", {
   paymentSuccess: 0,
-  paymentSuccessMulti: 1,
   paymentMalformed: -1,
   paymentUnderfunded: -2,
   paymentNoDestination: -3,
   paymentNoTrust: -4,
   paymentNotAuthorized: -5,
   paymentLineFull: -6,
-  paymentTooFewOffer: -7,
-  paymentOverSendmax: -8,
-  paymentLowReserve: -9,
+});
+
+// === xdr source ============================================================
+//
+//   union PaymentResult switch (PaymentResultCode code)
+//   {
+//   case PAYMENT_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("PaymentResult", {
+  switchOn: xdr.lookup("PaymentResultCode"),
+  switchName: "code",
+  switches: {
+    paymentSuccess: xdr.void(),
+  },
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
+//   enum PathPaymentResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       PATH_PAYMENT_SUCCESS = 0, // success
+//   
+//       // codes considered as "failure" for the operation
+//       PATH_PAYMENT_MALFORMED = -1,      // bad input
+//       PATH_PAYMENT_UNDERFUNDED = -2,    // not enough funds in source account
+//       PATH_PAYMENT_NO_DESTINATION = -3, // destination account does not exist
+//       PATH_PAYMENT_NO_TRUST = -4, // destination missing a trust line for currency
+//       PATH_PAYMENT_NOT_AUTHORIZED =
+//           -5,                      // destination not authorized to hold currency
+//       PATH_PAYMENT_LINE_FULL = -6, // destination would go above their limit
+//       PATH_PAYMENT_TOO_FEW_OFFERS = -7, // not enough offers to satisfy path
+//       PATH_PAYMENT_OVER_SENDMAX = -8    // could not satisfy sendmax
+//   };
+//
+// ===========================================================================
+xdr.enum("PathPaymentResultCode", {
+  pathPaymentSuccess: 0,
+  pathPaymentMalformed: -1,
+  pathPaymentUnderfunded: -2,
+  pathPaymentNoDestination: -3,
+  pathPaymentNoTrust: -4,
+  pathPaymentNotAuthorized: -5,
+  pathPaymentLineFull: -6,
+  pathPaymentTooFewOffer: -7,
+  pathPaymentOverSendmax: -8,
 });
 
 // === xdr source ============================================================
@@ -1246,40 +1398,41 @@ xdr.struct("SimplePaymentResult", [
 
 // === xdr source ============================================================
 //
-//   struct PaymentSuccessMultiResult
-//   {
-//       ClaimOfferAtom offers<>;
-//       SimplePaymentResult last;
-//   };
+//   struct
+//       {
+//           ClaimOfferAtom offers<>;
+//           SimplePaymentResult last;
+//       }
 //
 // ===========================================================================
-xdr.struct("PaymentSuccessMultiResult", [
+xdr.struct("PathPaymentResultSuccess", [
   ["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)],
   ["last", xdr.lookup("SimplePaymentResult")],
 ]);
 
 // === xdr source ============================================================
 //
-//   union PaymentResult switch (PaymentResultCode code)
+//   union PathPaymentResult switch (PathPaymentResultCode code)
 //   {
-//   case PAYMENT_SUCCESS:
-//       void;
-//   case PAYMENT_SUCCESS_MULTI:
-//       PaymentSuccessMultiResult multi;
+//   case PATH_PAYMENT_SUCCESS:
+//       struct
+//       {
+//           ClaimOfferAtom offers<>;
+//           SimplePaymentResult last;
+//       } success;
 //   default:
 //       void;
 //   };
 //
 // ===========================================================================
-xdr.union("PaymentResult", {
-  switchOn: xdr.lookup("PaymentResultCode"),
+xdr.union("PathPaymentResult", {
+  switchOn: xdr.lookup("PathPaymentResultCode"),
   switchName: "code",
   switches: {
-    paymentSuccess: xdr.void(),
-    paymentSuccessMulti: "multi",
+    pathPaymentSuccess: "success",
   },
   arms: {
-    multi: xdr.lookup("PaymentSuccessMultiResult"),
+    success: xdr.lookup("PathPaymentResultSuccess"),
   },
   defaultArm: xdr.void(),
 });
@@ -1661,8 +1814,12 @@ xdr.enum("OperationResultCode", {
 //
 //   union switch (OperationType type)
 //       {
+//       case CREATE_ACCOUNT:
+//           CreateAccountResult createAccountResult;
 //       case PAYMENT:
 //           PaymentResult paymentResult;
+//       case PATH_PAYMENT:
+//           PathPaymentResult pathPaymentResult;
 //       case CREATE_OFFER:
 //           CreateOfferResult createOfferResult;
 //       case SET_OPTIONS:
@@ -1682,7 +1839,9 @@ xdr.union("OperationResultTr", {
   switchOn: xdr.lookup("OperationType"),
   switchName: "type",
   switches: {
+    createAccount: "createAccountResult",
     payment: "paymentResult",
+    pathPayment: "pathPaymentResult",
     createOffer: "createOfferResult",
     setOption: "setOptionsResult",
     changeTrust: "changeTrustResult",
@@ -1691,7 +1850,9 @@ xdr.union("OperationResultTr", {
     inflation: "inflationResult",
   },
   arms: {
+    createAccountResult: xdr.lookup("CreateAccountResult"),
     paymentResult: xdr.lookup("PaymentResult"),
+    pathPaymentResult: xdr.lookup("PathPaymentResult"),
     createOfferResult: xdr.lookup("CreateOfferResult"),
     setOptionsResult: xdr.lookup("SetOptionsResult"),
     changeTrustResult: xdr.lookup("ChangeTrustResult"),
@@ -1708,8 +1869,12 @@ xdr.union("OperationResultTr", {
 //   case opINNER:
 //       union switch (OperationType type)
 //       {
+//       case CREATE_ACCOUNT:
+//           CreateAccountResult createAccountResult;
 //       case PAYMENT:
 //           PaymentResult paymentResult;
+//       case PATH_PAYMENT:
+//           PathPaymentResult pathPaymentResult;
 //       case CREATE_OFFER:
 //           CreateOfferResult createOfferResult;
 //       case SET_OPTIONS:
@@ -1751,16 +1916,17 @@ xdr.union("OperationResult", {
 //   
 //       txFAILED = -2, // one of the operations failed (but none were applied)
 //   
-//       txBAD_LEDGER = -3,        // ledger is not in range [minLeder; maxLedger]
-//       txMISSING_OPERATION = -4, // no operation was specified
-//       txBAD_SEQ = -5,           // sequence number does not match source account
+//       txTOO_EARLY = -3,         // ledger closeTime before minTime
+//       txTOO_LATE = -4,          // ledger closeTime after maxTime
+//       txMISSING_OPERATION = -5, // no operation was specified
+//       txBAD_SEQ = -6,           // sequence number does not match source account
 //   
-//       txBAD_AUTH = -6,             // not enough signatures to perform transaction
-//       txINSUFFICIENT_BALANCE = -7, // fee would bring account below reserve
-//       txNO_ACCOUNT = -8,           // source account not found
-//       txINSUFFICIENT_FEE = -9,     // max fee is too small
-//       txBAD_AUTH_EXTRA = -10,      // too many signatures on transaction
-//       txINTERNAL_ERROR = -11       // an unknown error occured
+//       txBAD_AUTH = -7,             // not enough signatures to perform transaction
+//       txINSUFFICIENT_BALANCE = -8, // fee would bring account below reserve
+//       txNO_ACCOUNT = -9,           // source account not found
+//       txINSUFFICIENT_FEE = -10,    // fee is too small
+//       txBAD_AUTH_EXTRA = -11,      // too many signatures on transaction
+//       txINTERNAL_ERROR = -12       // an unknown error occured
 //   };
 //
 // ===========================================================================
@@ -1768,15 +1934,16 @@ xdr.enum("TransactionResultCode", {
   txSuccess: 0,
   txDuplicate: -1,
   txFailed: -2,
-  txBadLedger: -3,
-  txMissingOperation: -4,
-  txBadSeq: -5,
-  txBadAuth: -6,
-  txInsufficientBalance: -7,
-  txNoAccount: -8,
-  txInsufficientFee: -9,
-  txBadAuthExtra: -10,
-  txInternalError: -11,
+  txTooEarly: -3,
+  txTooLate: -4,
+  txMissingOperation: -5,
+  txBadSeq: -6,
+  txBadAuth: -7,
+  txInsufficientBalance: -8,
+  txNoAccount: -9,
+  txInsufficientFee: -10,
+  txBadAuthExtra: -11,
+  txInternalError: -12,
 });
 
 // === xdr source ============================================================
