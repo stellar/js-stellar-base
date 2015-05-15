@@ -78,7 +78,7 @@ var StellarBase =
 	exports.verify = _signing.verify;
 	exports.Keypair = __webpack_require__(6).Keypair;
 
-	var _jsXdr = __webpack_require__(9);
+	var _jsXdr = __webpack_require__(8);
 
 	exports.UnsignedHyper = _jsXdr.UnsignedHyper;
 	exports.Hyper = _jsXdr.Hyper;
@@ -89,7 +89,7 @@ var StellarBase =
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(8);
+	module.exports = __webpack_require__(10);
 
 
 /***/ },
@@ -100,13 +100,13 @@ var StellarBase =
 
 	var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
 
-	// Automatically generated on 2015-05-13T18:26:47-07:00
+	// Automatically generated on 2015-05-15T09:32:46-06:00
 	// DO NOT EDIT or your changes may be overwritten
 
 	/* jshint maxstatements:2147483647  */
 	/* jshint esnext:true  */
 
-	var XDR = _interopRequireWildcard(__webpack_require__(9));
+	var XDR = _interopRequireWildcard(__webpack_require__(8));
 
 	var types = XDR.config(function (xdr) {
 
@@ -579,16 +579,6 @@ var StellarBase =
 
 	  // === xdr source ============================================================
 	  //
-	  //   struct TransactionMeta
-	  //   {
-	  //       BucketEntry entries<>;
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr.struct("TransactionMeta", [["entries", xdr.varArray(xdr.lookup("BucketEntry"), 2147483647)]]);
-
-	  // === xdr source ============================================================
-	  //
 	  //   struct TransactionHistoryEntry
 	  //   {
 	  //       uint32 ledgerSeq;
@@ -619,6 +609,56 @@ var StellarBase =
 	  //
 	  // ===========================================================================
 	  xdr.struct("LedgerHeaderHistoryEntry", [["hash", xdr.lookup("Hash")], ["header", xdr.lookup("LedgerHeader")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   enum LedgerEntryChangeType
+	  //   {
+	  //       LEDGER_ENTRY_CREATED = 0, // entry was added to the ledger
+	  //       LEDGER_ENTRY_UPDATED = 1, // entry was modified in the ledger
+	  //       LEDGER_ENTRY_REMOVED = 2  // entry was removed from the ledger
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr["enum"]("LedgerEntryChangeType", {
+	    ledgerEntryCreated: 0,
+	    ledgerEntryUpdated: 1,
+	    ledgerEntryRemoved: 2 });
+
+	  // === xdr source ============================================================
+	  //
+	  //   union LedgerEntryChange switch (LedgerEntryChangeType type)
+	  //   {
+	  //   case LEDGER_ENTRY_CREATED:
+	  //       LedgerEntry created;
+	  //   case LEDGER_ENTRY_UPDATED:
+	  //       LedgerEntry updated;
+	  //   case LEDGER_ENTRY_REMOVED:
+	  //       LedgerKey removed;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.union("LedgerEntryChange", {
+	    switchOn: xdr.lookup("LedgerEntryChangeType"),
+	    switchName: "type",
+	    switches: {
+	      ledgerEntryCreated: "created",
+	      ledgerEntryUpdated: "updated",
+	      ledgerEntryRemoved: "removed" },
+	    arms: {
+	      created: xdr.lookup("LedgerEntry"),
+	      updated: xdr.lookup("LedgerEntry"),
+	      removed: xdr.lookup("LedgerKey") } });
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct TransactionMeta
+	  //   {
+	  //       LedgerEntryChange changes<>;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("TransactionMeta", [["changes", xdr.varArray(xdr.lookup("LedgerEntryChange"), 2147483647)]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -1756,38 +1796,35 @@ var StellarBase =
 	  //   {
 	  //       txSUCCESS = 0, // all operations succeeded
 	  //  
-	  //       txDUPLICATE = -1, // transaction was already submited
+	  //       txFAILED = -1, // one of the operations failed (but none were applied)
 	  //  
-	  //       txFAILED = -2, // one of the operations failed (but none were applied)
+	  //       txTOO_EARLY = -2,         // ledger closeTime before minTime
+	  //       txTOO_LATE = -3,          // ledger closeTime after maxTime
+	  //       txMISSING_OPERATION = -4, // no operation was specified
+	  //       txBAD_SEQ = -5,           // sequence number does not match source account
 	  //  
-	  //       txTOO_EARLY = -3,         // ledger closeTime before minTime
-	  //       txTOO_LATE = -4,          // ledger closeTime after maxTime
-	  //       txMISSING_OPERATION = -5, // no operation was specified
-	  //       txBAD_SEQ = -6,           // sequence number does not match source account
-	  //  
-	  //       txBAD_AUTH = -7,             // not enough signatures to perform transaction
-	  //       txINSUFFICIENT_BALANCE = -8, // fee would bring account below reserve
-	  //       txNO_ACCOUNT = -9,           // source account not found
-	  //       txINSUFFICIENT_FEE = -10,    // fee is too small
-	  //       txBAD_AUTH_EXTRA = -11,      // too many signatures on transaction
-	  //       txINTERNAL_ERROR = -12       // an unknown error occured
+	  //       txBAD_AUTH = -6,             // not enough signatures to perform transaction
+	  //       txINSUFFICIENT_BALANCE = -7, // fee would bring account below reserve
+	  //       txNO_ACCOUNT = -8,           // source account not found
+	  //       txINSUFFICIENT_FEE = -9,     // fee is too small
+	  //       txBAD_AUTH_EXTRA = -10,      // too many signatures on transaction
+	  //       txINTERNAL_ERROR = -11       // an unknown error occured
 	  //   };
 	  //
 	  // ===========================================================================
 	  xdr["enum"]("TransactionResultCode", {
 	    txSuccess: 0,
-	    txDuplicate: -1,
-	    txFailed: -2,
-	    txTooEarly: -3,
-	    txTooLate: -4,
-	    txMissingOperation: -5,
-	    txBadSeq: -6,
-	    txBadAuth: -7,
-	    txInsufficientBalance: -8,
-	    txNoAccount: -9,
-	    txInsufficientFee: -10,
-	    txBadAuthExtra: -11,
-	    txInternalError: -12 });
+	    txFailed: -1,
+	    txTooEarly: -2,
+	    txTooLate: -3,
+	    txMissingOperation: -4,
+	    txBadSeq: -5,
+	    txBadAuth: -6,
+	    txInsufficientBalance: -7,
+	    txNoAccount: -8,
+	    txInsufficientFee: -9,
+	    txBadAuthExtra: -10,
+	    txInternalError: -11 });
 
 	  // === xdr source ============================================================
 	  //
@@ -1990,7 +2027,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var sha256 = __webpack_require__(11).sha256;
+	var sha256 = __webpack_require__(12).sha256;
 
 	function hash(data) {
 	  var hasher = new sha256();
@@ -2030,7 +2067,7 @@ var StellarBase =
 	  (function () {
 	    // NOTE: we use commonjs style require here because es6 imports
 	    // can only occur at the top level.  thanks, obama.
-	    var ed25519 = __webpack_require__(12);
+	    var ed25519 = __webpack_require__(13);
 
 	    actualMethods.sign = function (data, secretKey) {
 	      data = new Buffer(data);
@@ -2071,7 +2108,7 @@ var StellarBase =
 	    };
 	  })();
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 6 */
@@ -2210,7 +2247,7 @@ var StellarBase =
 
 	  return Keypair;
 	})();
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 7 */
@@ -2228,7 +2265,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var bs58 = _interopRequire(__webpack_require__(10));
+	var bs58 = _interopRequire(__webpack_require__(9));
 
 	var _lodash = __webpack_require__(14);
 
@@ -2326,33 +2363,17 @@ var StellarBase =
 	  return true;
 	}
 	// decimal 33
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
-
-	if (global._babelPolyfill) {
-	  throw new Error("only one instance of babel/polyfill is allowed");
-	}
-	global._babelPolyfill = true;
-
-	__webpack_require__(24);
-
-	__webpack_require__(25);
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 
-	var _defaults = __webpack_require__(27)["default"];
+	var _defaults = __webpack_require__(25)["default"];
 
-	var _interopRequireWildcard = __webpack_require__(28)["default"];
+	var _interopRequireWildcard = __webpack_require__(26)["default"];
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -2367,7 +2388,7 @@ var StellarBase =
 	var config = _config.config;
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// vendored from http://cryptocoinjs.com/modules/misc/bs58/
@@ -2466,32 +2487,23 @@ var StellarBase =
 	};
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var exports = module.exports = function (alg) {
-	  var Alg = exports[alg.toLowerCase()]
-	  if(!Alg) throw new Error(alg + ' is not supported (we accept pull requests)')
-	  return new Alg()
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	if (global._babelPolyfill) {
+	  throw new Error("only one instance of babel/polyfill is allowed");
 	}
+	global._babelPolyfill = true;
 
+	__webpack_require__(53);
 
-	exports.sha = __webpack_require__(18)
-	exports.sha1 = __webpack_require__(19)
-	exports.sha224 = __webpack_require__(20)
-	exports.sha256 = __webpack_require__(21)
-	exports.sha384 = __webpack_require__(22)
-	exports.sha512 = __webpack_require__(23)
-
+	__webpack_require__(54);
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./build/Release/native.node\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-/***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -2501,9 +2513,9 @@ var StellarBase =
 	 * @license  MIT
 	 */
 
-	var base64 = __webpack_require__(58)
-	var ieee754 = __webpack_require__(52)
-	var isArray = __webpack_require__(53)
+	var base64 = __webpack_require__(55)
+	var ieee754 = __webpack_require__(50)
+	var isArray = __webpack_require__(51)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -3826,7 +3838,32 @@ var StellarBase =
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var exports = module.exports = function (alg) {
+	  var Alg = exports[alg.toLowerCase()]
+	  if(!Alg) throw new Error(alg + ' is not supported (we accept pull requests)')
+	  return new Alg()
+	}
+
+
+	exports.sha = __webpack_require__(18)
+	exports.sha1 = __webpack_require__(19)
+	exports.sha224 = __webpack_require__(20)
+	exports.sha256 = __webpack_require__(21)
+	exports.sha384 = __webpack_require__(22)
+	exports.sha512 = __webpack_require__(23)
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./build/Release/native.node\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 /***/ },
 /* 14 */
@@ -15636,7 +15673,7 @@ var StellarBase =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(54)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(52)(module), (function() { return this; }())))
 
 /***/ },
 /* 15 */
@@ -18050,7 +18087,7 @@ var StellarBase =
 	    }
 	  } else if (true) {
 	    // Node.js.
-	    crypto = __webpack_require__(55);
+	    crypto = __webpack_require__(56);
 	    if (crypto) {
 	      nacl.setPRNG(function(x, n) {
 	        var i, v = crypto.randomBytes(n);
@@ -18063,7 +18100,7 @@ var StellarBase =
 
 	})(typeof module !== 'undefined' && module.exports ? module.exports : (window.nacl = window.nacl || {}));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 16 */
@@ -18071,13 +18108,17 @@ var StellarBase =
 
 	"use strict";
 
-	var _defaults = __webpack_require__(27)["default"];
+	var _defaults = __webpack_require__(25)["default"];
 
-	var _interopRequireWildcard = __webpack_require__(28)["default"];
+	var _interopRequireWildcard = __webpack_require__(26)["default"];
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	_defaults(exports, _interopRequireWildcard(__webpack_require__(27)));
+
+	_defaults(exports, _interopRequireWildcard(__webpack_require__(28)));
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(29)));
 
@@ -18111,27 +18152,23 @@ var StellarBase =
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(44)));
 
-	_defaults(exports, _interopRequireWildcard(__webpack_require__(45)));
-
-	_defaults(exports, _interopRequireWildcard(__webpack_require__(46)));
-
 /***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _classCallCheck = __webpack_require__(47)["default"];
+	var _classCallCheck = __webpack_require__(45)["default"];
 
-	var _createClass = __webpack_require__(48)["default"];
+	var _createClass = __webpack_require__(46)["default"];
 
-	var _inherits = __webpack_require__(49)["default"];
+	var _inherits = __webpack_require__(47)["default"];
 
-	var _toConsumableArray = __webpack_require__(50)["default"];
+	var _toConsumableArray = __webpack_require__(48)["default"];
 
-	var _interopRequireWildcard = __webpack_require__(28)["default"];
+	var _interopRequireWildcard = __webpack_require__(26)["default"];
 
-	var _interopRequire = __webpack_require__(51)["default"];
+	var _interopRequire = __webpack_require__(49)["default"];
 
 	exports.config = config;
 	Object.defineProperty(exports, "__esModule", {
@@ -18149,7 +18186,7 @@ var StellarBase =
 	var map = _lodash.map;
 	var pick = _lodash.pick;
 
-	var sequencify = _interopRequire(__webpack_require__(56));
+	var sequencify = _interopRequire(__webpack_require__(58));
 
 	// types is the root
 	var types = {};
@@ -18509,7 +18546,7 @@ var StellarBase =
 	 * operation was added.
 	 */
 
-	var inherits = __webpack_require__(69)
+	var inherits = __webpack_require__(68)
 	var Hash = __webpack_require__(57)
 
 	var W = new Array(80)
@@ -18601,7 +18638,7 @@ var StellarBase =
 	module.exports = Sha
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 19 */
@@ -18616,7 +18653,7 @@ var StellarBase =
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(69)
+	var inherits = __webpack_require__(68)
 	var Hash = __webpack_require__(57)
 
 	var W = new Array(80)
@@ -18704,7 +18741,7 @@ var StellarBase =
 	module.exports = Sha1
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 20 */
@@ -18718,7 +18755,7 @@ var StellarBase =
 	 *
 	 */
 
-	var inherits = __webpack_require__(69)
+	var inherits = __webpack_require__(68)
 	var SHA256 = __webpack_require__(21)
 	var Hash = __webpack_require__(57)
 
@@ -18763,7 +18800,7 @@ var StellarBase =
 
 	module.exports = Sha224
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 21 */
@@ -18777,7 +18814,7 @@ var StellarBase =
 	 *
 	 */
 
-	var inherits = __webpack_require__(69)
+	var inherits = __webpack_require__(68)
 	var Hash = __webpack_require__(57)
 
 	var K = [
@@ -18919,13 +18956,13 @@ var StellarBase =
 
 	module.exports = Sha256
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(69)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(68)
 	var SHA512 = __webpack_require__(23);
 	var Hash = __webpack_require__(57)
 
@@ -18982,13 +19019,13 @@ var StellarBase =
 
 	module.exports = Sha384
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(69)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(68)
 	var Hash = __webpack_require__(57)
 
 	var K = [
@@ -19234,10 +19271,1641 @@ var StellarBase =
 
 	module.exports = Sha512
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
-/* 24 */
+/* 24 */,
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _core = __webpack_require__(59)["default"];
+
+	exports["default"] = function (obj, defaults) {
+	  var keys = _core.Object.getOwnPropertyNames(defaults);
+
+	  for (var i = 0; i < keys.length; i++) {
+	    var key = keys[i];
+
+	    var value = _core.Object.getOwnPropertyDescriptor(defaults, key);
+
+	    if (value && value.configurable && obj[key] === undefined) {
+	      Object.defineProperty(obj, key, value);
+	    }
+	  }
+
+	  return obj;
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports["default"] = function (obj) {
+	  return obj && obj.__esModule ? obj : {
+	    "default": obj
+	  };
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var isNumber = __webpack_require__(14).isNumber;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Int = {
+
+	  read: function read(io) {
+	    return io.readInt32BE();
+	  },
+
+	  write: function write(value, io) {
+	    if (!isNumber(value)) {
+	      throw new Error("XDR Write Error: not a number");
+	    }
+
+	    if (Math.floor(value) !== value) {
+	      throw new Error("XDR Write Error: not an integer");
+	    }
+
+	    io.writeInt32BE(value);
+	  },
+
+	  isValid: function isValid(value) {
+	    if (!isNumber(value)) {
+	      return false;
+	    }
+	    if (Math.floor(value) !== value) {
+	      return false;
+	    }
+
+	    return value >= Int.MIN_VALUE && value <= Int.MAX_VALUE;
+	  } };
+
+	exports.Int = Int;
+	Int.MAX_VALUE = Math.pow(2, 31) - 1;
+	Int.MIN_VALUE = -Math.pow(2, 31);
+
+	includeIoMixin(Int);
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _inherits = __webpack_require__(47)["default"];
+
+	var _get = __webpack_require__(61)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _core = __webpack_require__(59)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Long = _interopRequire(__webpack_require__(69));
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Hyper = exports.Hyper = (function (_Long) {
+	  function Hyper(low, high) {
+	    _classCallCheck(this, Hyper);
+
+	    _get(_core.Object.getPrototypeOf(Hyper.prototype), "constructor", this).call(this, low, high, false);
+	  }
+
+	  _inherits(Hyper, _Long);
+
+	  _createClass(Hyper, null, {
+	    read: {
+	      value: function read(io) {
+	        var high = io.readInt32BE();
+	        var low = io.readInt32BE();
+	        return this.fromBits(low, high);
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (!(value instanceof this)) {
+	          throw new Error("XDR Write Error: " + value + " is not a Hyper");
+	        }
+
+	        io.writeInt32BE(value.high);
+	        io.writeInt32BE(value.low);
+	      }
+	    },
+	    fromString: {
+	      value: function fromString(string) {
+	        var result = _get(_core.Object.getPrototypeOf(Hyper), "fromString", this).call(this, string, false);
+	        return new this(result.low, result.high);
+	      }
+	    },
+	    fromBits: {
+	      value: function fromBits(low, high) {
+	        var result = _get(_core.Object.getPrototypeOf(Hyper), "fromBits", this).call(this, low, high, false);
+	        return new this(result.low, result.high);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return value instanceof this;
+	      }
+	    }
+	  });
+
+	  return Hyper;
+	})(Long);
+
+	includeIoMixin(Hyper);
+
+	Hyper.MAX_VALUE = new Hyper(Long.MAX_VALUE.low, Long.MAX_VALUE.high);
+	Hyper.MIN_VALUE = new Hyper(Long.MIN_VALUE.low, Long.MIN_VALUE.high);
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var isNumber = __webpack_require__(14).isNumber;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var UnsignedInt = {
+
+	  read: function read(io) {
+	    return io.readUInt32BE();
+	  },
+
+	  write: function write(value, io) {
+	    if (!isNumber(value)) {
+	      throw new Error("XDR Write Error: not a number");
+	    }
+
+	    if (Math.floor(value) !== value) {
+	      throw new Error("XDR Write Error: not an integer");
+	    }
+
+	    if (value < 0) {
+	      throw new Error("XDR Write Error: negative number " + value);
+	    }
+
+	    io.writeUInt32BE(value);
+	  },
+
+	  isValid: function isValid(value) {
+	    if (!isNumber(value)) {
+	      return false;
+	    }
+	    if (Math.floor(value) !== value) {
+	      return false;
+	    }
+
+	    return value >= UnsignedInt.MIN_VALUE && value <= UnsignedInt.MAX_VALUE;
+	  } };
+
+	exports.UnsignedInt = UnsignedInt;
+	UnsignedInt.MAX_VALUE = Math.pow(2, 32) - 1;
+	UnsignedInt.MIN_VALUE = 0;
+
+	includeIoMixin(UnsignedInt);
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _inherits = __webpack_require__(47)["default"];
+
+	var _get = __webpack_require__(61)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _core = __webpack_require__(59)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Long = _interopRequire(__webpack_require__(69));
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var UnsignedHyper = exports.UnsignedHyper = (function (_Long) {
+	  function UnsignedHyper(low, high) {
+	    _classCallCheck(this, UnsignedHyper);
+
+	    _get(_core.Object.getPrototypeOf(UnsignedHyper.prototype), "constructor", this).call(this, low, high, true);
+	  }
+
+	  _inherits(UnsignedHyper, _Long);
+
+	  _createClass(UnsignedHyper, null, {
+	    read: {
+	      value: function read(io) {
+	        var high = io.readInt32BE();
+	        var low = io.readInt32BE();
+	        return this.fromBits(low, high);
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (!(value instanceof this)) {
+	          throw new Error("XDR Write Error: " + value + " is not an UnsignedHyper");
+	        }
+
+	        io.writeInt32BE(value.high);
+	        io.writeInt32BE(value.low);
+	      }
+	    },
+	    fromString: {
+	      value: function fromString(string) {
+	        var result = _get(_core.Object.getPrototypeOf(UnsignedHyper), "fromString", this).call(this, string, true);
+	        return new this(result.low, result.high);
+	      }
+	    },
+	    fromBits: {
+	      value: function fromBits(low, high) {
+	        var result = _get(_core.Object.getPrototypeOf(UnsignedHyper), "fromBits", this).call(this, low, high, true);
+	        return new this(result.low, result.high);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return value instanceof this;
+	      }
+	    }
+	  });
+
+	  return UnsignedHyper;
+	})(Long);
+
+	includeIoMixin(UnsignedHyper);
+
+	UnsignedHyper.MAX_VALUE = new UnsignedHyper(Long.MAX_UNSIGNED_VALUE.low, Long.MAX_UNSIGNED_VALUE.high);
+
+	UnsignedHyper.MIN_VALUE = new UnsignedHyper(Long.MIN_VALUE.low, Long.MIN_VALUE.high);
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var isNumber = __webpack_require__(14).isNumber;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Float = {
+
+	  read: function read(io) {
+	    return io.readFloatBE();
+	  },
+
+	  write: function write(value, io) {
+	    if (!isNumber(value)) {
+	      throw new Error("XDR Write Error: not a number");
+	    }
+
+	    io.writeFloatBE(value);
+	  },
+
+	  isValid: function isValid(value) {
+	    return isNumber(value);
+	  } };
+
+	exports.Float = Float;
+	includeIoMixin(Float);
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var isNumber = __webpack_require__(14).isNumber;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Double = {
+
+	  read: function read(io) {
+	    return io.readDoubleBE();
+	  },
+
+	  write: function write(value, io) {
+	    if (!isNumber(value)) {
+	      throw new Error("XDR Write Error: not a number");
+	    }
+
+	    io.writeDoubleBE(value);
+	  },
+
+	  isValid: function isValid(value) {
+	    return isNumber(value);
+	  } };
+
+	exports.Double = Double;
+	includeIoMixin(Double);
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Quadruple = {
+	  /* jshint unused: false */
+
+	  read: function read(io) {
+	    throw new Error("XDR Read Error: quadruple not supported");
+	  },
+
+	  write: function write(value, io) {
+	    throw new Error("XDR Write Error: quadruple not supported");
+	  },
+
+	  isValid: function isValid(value) {
+	    return false;
+	  } };
+
+	exports.Quadruple = Quadruple;
+	includeIoMixin(Quadruple);
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Int = __webpack_require__(27).Int;
+
+	var isBoolean = __webpack_require__(14).isBoolean;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Bool = {
+	  read: function read(io) {
+	    var value = Int.read(io);
+
+	    switch (value) {
+	      case 0:
+	        return false;
+	      case 1:
+	        return true;
+	      default:
+	        throw new Error("XDR Read Error: Got " + value + " when trying to read a bool");
+	    }
+	  },
+
+	  write: function write(value, io) {
+	    var intVal = value ? 1 : 0;
+	    return Int.write(intVal, io);
+	  },
+
+	  isValid: function isValid(value) {
+	    return isBoolean(value);
+	  }
+	};
+
+	exports.Bool = Bool;
+	includeIoMixin(Bool);
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Int = __webpack_require__(27).Int;
+
+	var UnsignedInt = __webpack_require__(29).UnsignedInt;
+
+	var calculatePadding = __webpack_require__(62).calculatePadding;
+
+	var isString = __webpack_require__(14).isString;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var String = exports.String = (function () {
+	  function String() {
+	    var maxLength = arguments[0] === undefined ? UnsignedInt.MAX_VALUE : arguments[0];
+
+	    _classCallCheck(this, String);
+
+	    this._maxLength = maxLength;
+	  }
+
+	  _createClass(String, {
+	    read: {
+	      value: function read(io) {
+	        var length = Int.read(io);
+
+	        if (length > this._maxLength) {
+	          throw new Error("XDR Read Error: Saw " + length + " length String," + ("max allowed is " + this._maxLength));
+	        }
+	        var padding = calculatePadding(length);
+	        var result = io.slice(length);
+	        io.slice(padding); //consume padding
+	        return result.buffer().toString("ascii");
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (value.length > this._maxLength) {
+	          throw new Error("XDR Write Error: Got " + value.length + " bytes," + ("max allows is " + this._maxLength));
+	        }
+
+	        if (!isString(value)) {
+	          throw new Error("XDR Write Error: " + value + " is not a string,");
+	        }
+	        var buffer = new Buffer(value, "ascii");
+
+	        Int.write(value.length, io);
+	        io.writeBufferPadded(buffer);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return isString(value) && value.length <= this._maxLength;
+	      }
+	    }
+	  });
+
+	  return String;
+	})();
+
+	includeIoMixin(String.prototype);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var calculatePadding = __webpack_require__(62).calculatePadding;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Opaque = exports.Opaque = (function () {
+	  function Opaque(length) {
+	    _classCallCheck(this, Opaque);
+
+	    this._length = length;
+	    this._padding = calculatePadding(length);
+	  }
+
+	  _createClass(Opaque, {
+	    read: {
+	      value: function read(io) {
+	        var result = io.slice(this._length);
+	        io.slice(this._padding); //consume padding
+	        return result.buffer();
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (value.length !== this._length) {
+	          throw new Error("XDR Write Error: Got " + value.length + " bytes, expected " + this._length);
+	        }
+
+	        io.writeBufferPadded(value);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return Buffer.isBuffer(value) && value.length === this._length;
+	      }
+	    }
+	  });
+
+	  return Opaque;
+	})();
+
+	includeIoMixin(Opaque.prototype);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Int = __webpack_require__(27).Int;
+
+	var UnsignedInt = __webpack_require__(29).UnsignedInt;
+
+	var calculatePadding = __webpack_require__(62).calculatePadding;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var VarOpaque = exports.VarOpaque = (function () {
+	  function VarOpaque() {
+	    var maxLength = arguments[0] === undefined ? UnsignedInt.MAX_VALUE : arguments[0];
+
+	    _classCallCheck(this, VarOpaque);
+
+	    this._maxLength = maxLength;
+	  }
+
+	  _createClass(VarOpaque, {
+	    read: {
+	      value: function read(io) {
+	        var length = Int.read(io);
+
+	        if (length > this._maxLength) {
+	          throw new Error("XDR Read Error: Saw " + length + " length VarOpaque," + ("max allowed is " + this._maxLength));
+	        }
+	        var padding = calculatePadding(length);
+	        var result = io.slice(length);
+	        io.slice(padding); //consume padding
+	        return result.buffer();
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (value.length > this._maxLength) {
+	          throw new Error("XDR Write Error: Got " + value.length + " bytes," + ("max allows is " + this._maxLength));
+	        }
+	        Int.write(value.length, io);
+	        io.writeBufferPadded(value);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return Buffer.isBuffer(value) && value.length <= this._maxLength;
+	      }
+	    }
+	  });
+
+	  return VarOpaque;
+	})();
+
+	includeIoMixin(VarOpaque.prototype);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _lodash = __webpack_require__(14);
+
+	var all = _lodash.all;
+	var each = _lodash.each;
+	var times = _lodash.times;
+	var isArray = _lodash.isArray;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Array = exports.Array = (function () {
+	  function Array(childType, length) {
+	    _classCallCheck(this, Array);
+
+	    this._childType = childType;
+	    this._length = length;
+	  }
+
+	  _createClass(Array, {
+	    read: {
+	      value: function read(io) {
+	        var _this = this;
+
+	        return times(this._length, function () {
+	          return _this._childType.read(io);
+	        });
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        var _this = this;
+
+	        if (!isArray(value)) {
+	          throw new Error("XDR Write Error: value is not array");
+	        }
+
+	        if (value.length !== this._length) {
+	          throw new Error("XDR Write Error: Got array of size " + value.length + "," + ("expected " + this._length));
+	        }
+
+	        each(value, function (child) {
+	          return _this._childType.write(child, io);
+	        });
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        var _this = this;
+
+	        if (!isArray(value)) {
+	          return false;
+	        }
+	        if (value.length !== this._length) {
+	          return false;
+	        }
+
+	        return all(value, function (child) {
+	          return _this._childType.isValid(child);
+	        });
+	      }
+	    }
+	  });
+
+	  return Array;
+	})();
+
+	includeIoMixin(Array.prototype);
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Int = __webpack_require__(27).Int;
+
+	var UnsignedInt = __webpack_require__(29).UnsignedInt;
+
+	var _lodash = __webpack_require__(14);
+
+	var all = _lodash.all;
+	var each = _lodash.each;
+	var times = _lodash.times;
+	var isArray = _lodash.isArray;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var VarArray = exports.VarArray = (function () {
+	  function VarArray(childType) {
+	    var maxLength = arguments[1] === undefined ? UnsignedInt.MAX_VALUE : arguments[1];
+
+	    _classCallCheck(this, VarArray);
+
+	    this._childType = childType;
+	    this._maxLength = maxLength;
+	  }
+
+	  _createClass(VarArray, {
+	    read: {
+	      value: function read(io) {
+	        var _this = this;
+
+	        var length = Int.read(io);
+
+	        if (length > this._maxLength) {
+	          throw new Error("XDR Read Error: Saw " + length + " length VarArray," + ("max allowed is " + this._maxLength));
+	        }
+
+	        return times(length, function () {
+	          return _this._childType.read(io);
+	        });
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        var _this = this;
+
+	        if (!isArray(value)) {
+	          throw new Error("XDR Write Error: value is not array");
+	        }
+
+	        if (value.length > this._maxLength) {
+	          throw new Error("XDR Write Error: Got array of size " + value.length + "," + ("max allowed is " + this._maxLength));
+	        }
+
+	        Int.write(value.length, io);
+	        each(value, function (child) {
+	          return _this._childType.write(child, io);
+	        });
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        var _this = this;
+
+	        if (!isArray(value)) {
+	          return false;
+	        }
+	        if (value.length > this._maxLength) {
+	          return false;
+	        }
+
+	        return all(value, function (child) {
+	          return _this._childType.isValid(child);
+	        });
+	      }
+	    }
+	  });
+
+	  return VarArray;
+	})();
+
+	includeIoMixin(VarArray.prototype);
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Bool = __webpack_require__(34).Bool;
+
+	var _lodash = __webpack_require__(14);
+
+	var isNull = _lodash.isNull;
+	var isUndefined = _lodash.isUndefined;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Option = exports.Option = (function () {
+	  function Option(childType) {
+	    _classCallCheck(this, Option);
+
+	    this._childType = childType;
+	  }
+
+	  _createClass(Option, {
+	    read: {
+	      value: function read(io) {
+	        if (Bool.read(io)) {
+	          return this._childType.read(io);
+	        }
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        var isPresent = !(isNull(value) || isUndefined(value));
+
+	        Bool.write(isPresent, io);
+
+	        if (isPresent) {
+	          this._childType.write(value, io);
+	        }
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        if (isNull(value)) {
+	          return true;
+	        }
+	        if (isUndefined(value)) {
+	          return true;
+	        }
+
+	        return this._childType.isValid(value);
+	      }
+	    }
+	  });
+
+	  return Option;
+	})();
+
+	includeIoMixin(Option.prototype);
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var isUndefined = __webpack_require__(14).isUndefined;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Void = {
+	  /* jshint unused: false */
+
+	  read: function read(io) {
+	    return undefined;
+	  },
+
+	  write: function write(value, io) {
+	    if (!isUndefined(value)) {
+	      throw new Error("XDR Write Error: trying to write value to a void slot");
+	    }
+	  },
+
+	  isValid: function isValid(value) {
+	    return isUndefined(value);
+	  } };
+
+	exports.Void = Void;
+	includeIoMixin(Void);
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _inherits = __webpack_require__(47)["default"];
+
+	var _get = __webpack_require__(61)["default"];
+
+	var _core = __webpack_require__(59)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var Int = __webpack_require__(27).Int;
+
+	var _lodash = __webpack_require__(14);
+
+	var each = _lodash.each;
+	var vals = _lodash.values;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Enum = exports.Enum = (function () {
+	  function Enum(name, value) {
+	    _classCallCheck(this, Enum);
+
+	    this.name = name;
+	    this.value = value;
+	  }
+
+	  _createClass(Enum, null, {
+	    read: {
+	      value: function read(io) {
+	        var intVal = Int.read(io);
+
+	        if (!this._byValue.has(intVal)) {
+	          throw new Error("XDR Read Error: Unknown " + this.enumName + " member for value " + intVal);
+	        }
+
+	        return this._byValue.get(intVal);
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (!(value instanceof this)) {
+	          throw new Error("XDR Write Error: Unknown " + value + " is not a " + this.enumName);
+	        }
+
+	        Int.write(value.value, io);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return value instanceof this;
+	      }
+	    },
+	    members: {
+	      value: function members() {
+	        return this._members;
+	      }
+	    },
+	    values: {
+	      value: function values() {
+	        return vals(this._members);
+	      }
+	    },
+	    fromName: {
+	      value: function fromName(name) {
+	        var result = this._members[name];
+
+	        if (!result) {
+	          throw new Error("" + name + " is not a member of " + this.enumName);
+	        }
+
+	        return result;
+	      }
+	    },
+	    create: {
+	      value: function create(name, members) {
+	        var ChildEnum = (function (_Enum) {
+	          var _class = function ChildEnum() {
+	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	              args[_key] = arguments[_key];
+	            }
+
+	            _classCallCheck(this, _class);
+
+	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
+	          };
+
+	          _inherits(_class, _Enum);
+
+	          return _class;
+	        })(Enum);
+
+	        ChildEnum.enumName = name;
+	        ChildEnum._members = {};
+	        ChildEnum._byValue = new _core.Map();
+
+	        each(members, function (value, key) {
+	          var inst = new ChildEnum(key, value);
+	          ChildEnum._members[key] = inst;
+	          ChildEnum._byValue.set(value, inst);
+	          ChildEnum[key] = function () {
+	            return inst;
+	          };
+	        });
+
+	        return ChildEnum;
+	      }
+	    }
+	  });
+
+	  return Enum;
+	})();
+
+	includeIoMixin(Enum);
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _inherits = __webpack_require__(47)["default"];
+
+	var _get = __webpack_require__(61)["default"];
+
+	var _slicedToArray = __webpack_require__(63)["default"];
+
+	var _core = __webpack_require__(59)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _lodash = __webpack_require__(14);
+
+	var each = _lodash.each;
+	var map = _lodash.map;
+	var isUndefined = _lodash.isUndefined;
+	var zipObject = _lodash.zipObject;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Struct = exports.Struct = (function () {
+	  function Struct(attributes) {
+	    _classCallCheck(this, Struct);
+
+	    this._attributes = attributes || {};
+	  }
+
+	  _createClass(Struct, null, {
+	    read: {
+	      value: function read(io) {
+	        var fields = map(this._fields, function (field) {
+	          var _field = _slicedToArray(field, 2);
+
+	          var name = _field[0];
+	          var type = _field[1];
+
+	          var value = type.read(io);
+	          return [name, value];
+	        });
+
+	        return new this(zipObject(fields));
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (!(value instanceof this)) {
+	          throw new Error("XDR Write Error: " + value + " is not a " + this.structName);
+	        }
+	        each(this._fields, function (field) {
+	          var _field = _slicedToArray(field, 2);
+
+	          var name = _field[0];
+	          var type = _field[1];
+
+	          var attribute = value._attributes[name];
+	          type.write(attribute, io);
+	        });
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return value instanceof this;
+	      }
+	    },
+	    create: {
+	      value: function create(name, fields) {
+	        var ChildStruct = (function (_Struct) {
+	          var _class = function ChildStruct() {
+	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	              args[_key] = arguments[_key];
+	            }
+
+	            _classCallCheck(this, _class);
+
+	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
+	          };
+
+	          _inherits(_class, _Struct);
+
+	          return _class;
+	        })(Struct);
+
+	        ChildStruct.structName = name;
+
+	        ChildStruct._fields = fields;
+
+	        each(fields, function (field) {
+	          var _field = _slicedToArray(field, 1);
+
+	          var fieldName = _field[0];
+
+	          ChildStruct.prototype[fieldName] = readOrWriteAttribute(fieldName);
+	        });
+
+	        return ChildStruct;
+	      }
+	    }
+	  });
+
+	  return Struct;
+	})();
+
+	includeIoMixin(Struct);
+
+	function readOrWriteAttribute(name) {
+	  return function (value) {
+	    if (!isUndefined(value)) {
+	      this._attributes[name] = value;
+	    }
+
+	    return this._attributes[name];
+	  };
+	}
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(45)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _inherits = __webpack_require__(47)["default"];
+
+	var _get = __webpack_require__(61)["default"];
+
+	var _core = __webpack_require__(59)["default"];
+
+	var _interopRequire = __webpack_require__(49)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _lodash = __webpack_require__(14);
+
+	var each = _lodash.each;
+	var isUndefined = _lodash.isUndefined;
+
+	var Void = __webpack_require__(41).Void;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(60));
+
+	var Union = exports.Union = (function () {
+	  function Union(aSwitch, value) {
+	    _classCallCheck(this, Union);
+
+	    this.set(aSwitch, value);
+	  }
+
+	  _createClass(Union, {
+	    set: {
+	      value: function set(aSwitch, value) {
+	        if (!(aSwitch instanceof this.constructor._switchOn)) {
+	          aSwitch = this.constructor._switchOn.fromName(aSwitch);
+	        }
+
+	        this._switch = aSwitch;
+	        this._arm = this.constructor.armForSwitch(this._switch);
+	        this._armType = this.constructor.armTypeForArm(this._arm);
+	        this._value = value;
+	      }
+	    },
+	    get: {
+	      value: function get() {
+	        var armName = arguments[0] === undefined ? this._arm : arguments[0];
+
+	        if (this._arm !== Void && this._arm !== armName) {
+	          throw new Error("" + armName + " not set");
+	        }
+	        return this._value;
+	      }
+	    },
+	    "switch": {
+	      value: function _switch() {
+	        return this._switch;
+	      }
+	    },
+	    arm: {
+	      value: function arm() {
+	        return this._arm;
+	      }
+	    },
+	    armType: {
+	      value: function armType() {
+	        return this._armType;
+	      }
+	    },
+	    value: {
+	      value: function value() {
+	        return this._value;
+	      }
+	    }
+	  }, {
+	    armForSwitch: {
+	      value: function armForSwitch(aSwitch) {
+
+	        var arm = this._switches.get(aSwitch);
+
+	        if (isUndefined(arm)) {
+	          throw new Error("Bad union switch: " + aSwitch);
+	        }
+
+	        return arm;
+	      }
+	    },
+	    armTypeForArm: {
+	      value: function armTypeForArm(arm) {
+	        if (arm === Void) {
+	          return Void;
+	        } else {
+	          return this._arms[arm];
+	        }
+	      }
+	    },
+	    read: {
+	      value: function read(io) {
+	        var aSwitch = this._switchOn.read(io);
+	        var arm = this.armForSwitch(aSwitch);
+	        var armType = this.armTypeForArm(arm);
+	        var value = armType.read(io);
+	        return new this(aSwitch, value);
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (!(value instanceof this)) {
+	          throw new Error("XDR Write Error: " + value + " is not a " + this.unionName);
+	        }
+
+	        this._switchOn.write(value["switch"](), io);
+	        value.armType().write(value.value(), io);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return value instanceof this;
+	      }
+	    },
+	    create: {
+	      value: function create(name, config) {
+	        var ChildUnion = (function (_Union) {
+	          var _class = function ChildUnion() {
+	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	              args[_key] = arguments[_key];
+	            }
+
+	            _classCallCheck(this, _class);
+
+	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
+	          };
+
+	          _inherits(_class, _Union);
+
+	          return _class;
+	        })(Union);
+
+	        ChildUnion.unionName = name;
+	        ChildUnion._switchOn = config.switchOn;
+	        ChildUnion._switches = new _core.Map();
+	        ChildUnion._arms = config.arms;
+
+	        each(ChildUnion._switchOn.values(), function (aSwitch) {
+
+	          // build the enum => arm map
+	          var arm = config.switches[aSwitch.name] || config.defaultArm;
+	          ChildUnion._switches.set(aSwitch, arm);
+
+	          // Add enum-based constrocutors
+	          ChildUnion[aSwitch.name] = function (value) {
+	            return new ChildUnion(aSwitch, value);
+	          };
+
+	          // Add enum-based "set" helpers
+	          ChildUnion.prototype[aSwitch.name] = function (value) {
+	            return this.set(aSwitch, value);
+	          };
+	        });
+
+	        // Add arm accessor helpers
+	        each(ChildUnion._arms, function (type, name) {
+	          if (type === Void) {
+	            return;
+	          }
+
+	          ChildUnion.prototype[name] = function () {
+	            return this.get(name);
+	          };
+	        });
+
+	        return ChildUnion;
+	      }
+	    }
+	  });
+
+	  return Union;
+	})();
+
+	includeIoMixin(Union);
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports["default"] = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports["default"] = (function () {
+	  function defineProperties(target, props) {
+	    for (var key in props) {
+	      var prop = props[key];
+	      prop.configurable = true;
+	      if (prop.value) prop.writable = true;
+	    }
+
+	    Object.defineProperties(target, props);
+	  }
+
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	})();
+
+	exports.__esModule = true;
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports["default"] = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) subClass.__proto__ = superClass;
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _core = __webpack_require__(59)["default"];
+
+	exports["default"] = function (arr) {
+	  if (Array.isArray(arr)) {
+	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+	    return arr2;
+	  } else {
+	    return _core.Array.from(arr);
+	  }
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports["default"] = function (obj) {
+	  return obj && obj.__esModule ? obj["default"] : obj;
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports.read = function(buffer, offset, isLE, mLen, nBytes) {
+	  var e, m,
+	      eLen = nBytes * 8 - mLen - 1,
+	      eMax = (1 << eLen) - 1,
+	      eBias = eMax >> 1,
+	      nBits = -7,
+	      i = isLE ? (nBytes - 1) : 0,
+	      d = isLE ? -1 : 1,
+	      s = buffer[offset + i];
+
+	  i += d;
+
+	  e = s & ((1 << (-nBits)) - 1);
+	  s >>= (-nBits);
+	  nBits += eLen;
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+	  m = e & ((1 << (-nBits)) - 1);
+	  e >>= (-nBits);
+	  nBits += mLen;
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+	  if (e === 0) {
+	    e = 1 - eBias;
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity);
+	  } else {
+	    m = m + Math.pow(2, mLen);
+	    e = e - eBias;
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
+	};
+
+	exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c,
+	      eLen = nBytes * 8 - mLen - 1,
+	      eMax = (1 << eLen) - 1,
+	      eBias = eMax >> 1,
+	      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
+	      i = isLE ? 0 : (nBytes - 1),
+	      d = isLE ? 1 : -1,
+	      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+
+	  value = Math.abs(value);
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0;
+	    e = eMax;
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2);
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--;
+	      c *= 2;
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c;
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias);
+	    }
+	    if (value * c >= 2) {
+	      e++;
+	      c /= 2;
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0;
+	      e = eMax;
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen);
+	      e = e + eBias;
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+	      e = 0;
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+
+	  e = (e << mLen) | m;
+	  eLen += mLen;
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+
+	  buffer[offset + i - d] |= s * 128;
+	};
+
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * isArray
+	 */
+
+	var isArray = Array.isArray;
+
+	/**
+	 * toString
+	 */
+
+	var str = Object.prototype.toString;
+
+	/**
+	 * Whether or not the given `val`
+	 * is an array.
+	 *
+	 * example:
+	 *
+	 *        isArray([]);
+	 *        // > true
+	 *        isArray(arguments);
+	 *        // > false
+	 *        isArray('');
+	 *        // > false
+	 *
+	 * @param {mixed} val
+	 * @return {bool}
+	 */
+
+	module.exports = isArray || function (val) {
+	  return !! val && '[object Array]' == str.call(val);
+	};
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21220,7 +22888,7 @@ var StellarBase =
 	}(typeof self != 'undefined' && self.Math === Math ? self : Function('return this')(), true);
 
 /***/ },
-/* 25 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -21764,1826 +23432,7 @@ var StellarBase =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 26 */,
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _core = __webpack_require__(59)["default"];
-
-	exports["default"] = function (obj, defaults) {
-	  var keys = _core.Object.getOwnPropertyNames(defaults);
-
-	  for (var i = 0; i < keys.length; i++) {
-	    var key = keys[i];
-
-	    var value = _core.Object.getOwnPropertyDescriptor(defaults, key);
-
-	    if (value && value.configurable && obj[key] === undefined) {
-	      Object.defineProperty(obj, key, value);
-	    }
-	  }
-
-	  return obj;
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports["default"] = function (obj) {
-	  return obj && obj.__esModule ? obj : {
-	    "default": obj
-	  };
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var isNumber = __webpack_require__(14).isNumber;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Int = {
-
-	  read: function read(io) {
-	    return io.readInt32BE();
-	  },
-
-	  write: function write(value, io) {
-	    if (!isNumber(value)) {
-	      throw new Error("XDR Write Error: not a number");
-	    }
-
-	    if (Math.floor(value) !== value) {
-	      throw new Error("XDR Write Error: not an integer");
-	    }
-
-	    io.writeInt32BE(value);
-	  },
-
-	  isValid: function isValid(value) {
-	    if (!isNumber(value)) {
-	      return false;
-	    }
-	    if (Math.floor(value) !== value) {
-	      return false;
-	    }
-
-	    return value >= Int.MIN_VALUE && value <= Int.MAX_VALUE;
-	  } };
-
-	exports.Int = Int;
-	Int.MAX_VALUE = Math.pow(2, 31) - 1;
-	Int.MIN_VALUE = -Math.pow(2, 31);
-
-	includeIoMixin(Int);
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _inherits = __webpack_require__(49)["default"];
-
-	var _get = __webpack_require__(61)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _core = __webpack_require__(59)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Long = _interopRequire(__webpack_require__(68));
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Hyper = exports.Hyper = (function (_Long) {
-	  function Hyper(low, high) {
-	    _classCallCheck(this, Hyper);
-
-	    _get(_core.Object.getPrototypeOf(Hyper.prototype), "constructor", this).call(this, low, high, false);
-	  }
-
-	  _inherits(Hyper, _Long);
-
-	  _createClass(Hyper, null, {
-	    read: {
-	      value: function read(io) {
-	        var high = io.readInt32BE();
-	        var low = io.readInt32BE();
-	        return this.fromBits(low, high);
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (!(value instanceof this)) {
-	          throw new Error("XDR Write Error: " + value + " is not a Hyper");
-	        }
-
-	        io.writeInt32BE(value.high);
-	        io.writeInt32BE(value.low);
-	      }
-	    },
-	    fromString: {
-	      value: function fromString(string) {
-	        var result = _get(_core.Object.getPrototypeOf(Hyper), "fromString", this).call(this, string, false);
-	        return new this(result.low, result.high);
-	      }
-	    },
-	    fromBits: {
-	      value: function fromBits(low, high) {
-	        var result = _get(_core.Object.getPrototypeOf(Hyper), "fromBits", this).call(this, low, high, false);
-	        return new this(result.low, result.high);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return value instanceof this;
-	      }
-	    }
-	  });
-
-	  return Hyper;
-	})(Long);
-
-	includeIoMixin(Hyper);
-
-	Hyper.MAX_VALUE = new Hyper(Long.MAX_VALUE.low, Long.MAX_VALUE.high);
-	Hyper.MIN_VALUE = new Hyper(Long.MIN_VALUE.low, Long.MIN_VALUE.high);
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var isNumber = __webpack_require__(14).isNumber;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var UnsignedInt = {
-
-	  read: function read(io) {
-	    return io.readUInt32BE();
-	  },
-
-	  write: function write(value, io) {
-	    if (!isNumber(value)) {
-	      throw new Error("XDR Write Error: not a number");
-	    }
-
-	    if (Math.floor(value) !== value) {
-	      throw new Error("XDR Write Error: not an integer");
-	    }
-
-	    if (value < 0) {
-	      throw new Error("XDR Write Error: negative number " + value);
-	    }
-
-	    io.writeUInt32BE(value);
-	  },
-
-	  isValid: function isValid(value) {
-	    if (!isNumber(value)) {
-	      return false;
-	    }
-	    if (Math.floor(value) !== value) {
-	      return false;
-	    }
-
-	    return value >= UnsignedInt.MIN_VALUE && value <= UnsignedInt.MAX_VALUE;
-	  } };
-
-	exports.UnsignedInt = UnsignedInt;
-	UnsignedInt.MAX_VALUE = Math.pow(2, 32) - 1;
-	UnsignedInt.MIN_VALUE = 0;
-
-	includeIoMixin(UnsignedInt);
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _inherits = __webpack_require__(49)["default"];
-
-	var _get = __webpack_require__(61)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _core = __webpack_require__(59)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Long = _interopRequire(__webpack_require__(68));
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var UnsignedHyper = exports.UnsignedHyper = (function (_Long) {
-	  function UnsignedHyper(low, high) {
-	    _classCallCheck(this, UnsignedHyper);
-
-	    _get(_core.Object.getPrototypeOf(UnsignedHyper.prototype), "constructor", this).call(this, low, high, true);
-	  }
-
-	  _inherits(UnsignedHyper, _Long);
-
-	  _createClass(UnsignedHyper, null, {
-	    read: {
-	      value: function read(io) {
-	        var high = io.readInt32BE();
-	        var low = io.readInt32BE();
-	        return this.fromBits(low, high);
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (!(value instanceof this)) {
-	          throw new Error("XDR Write Error: " + value + " is not an UnsignedHyper");
-	        }
-
-	        io.writeInt32BE(value.high);
-	        io.writeInt32BE(value.low);
-	      }
-	    },
-	    fromString: {
-	      value: function fromString(string) {
-	        var result = _get(_core.Object.getPrototypeOf(UnsignedHyper), "fromString", this).call(this, string, true);
-	        return new this(result.low, result.high);
-	      }
-	    },
-	    fromBits: {
-	      value: function fromBits(low, high) {
-	        var result = _get(_core.Object.getPrototypeOf(UnsignedHyper), "fromBits", this).call(this, low, high, true);
-	        return new this(result.low, result.high);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return value instanceof this;
-	      }
-	    }
-	  });
-
-	  return UnsignedHyper;
-	})(Long);
-
-	includeIoMixin(UnsignedHyper);
-
-	UnsignedHyper.MAX_VALUE = new UnsignedHyper(Long.MAX_UNSIGNED_VALUE.low, Long.MAX_UNSIGNED_VALUE.high);
-
-	UnsignedHyper.MIN_VALUE = new UnsignedHyper(Long.MIN_VALUE.low, Long.MIN_VALUE.high);
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var isNumber = __webpack_require__(14).isNumber;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Float = {
-
-	  read: function read(io) {
-	    return io.readFloatBE();
-	  },
-
-	  write: function write(value, io) {
-	    if (!isNumber(value)) {
-	      throw new Error("XDR Write Error: not a number");
-	    }
-
-	    io.writeFloatBE(value);
-	  },
-
-	  isValid: function isValid(value) {
-	    return isNumber(value);
-	  } };
-
-	exports.Float = Float;
-	includeIoMixin(Float);
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var isNumber = __webpack_require__(14).isNumber;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Double = {
-
-	  read: function read(io) {
-	    return io.readDoubleBE();
-	  },
-
-	  write: function write(value, io) {
-	    if (!isNumber(value)) {
-	      throw new Error("XDR Write Error: not a number");
-	    }
-
-	    io.writeDoubleBE(value);
-	  },
-
-	  isValid: function isValid(value) {
-	    return isNumber(value);
-	  } };
-
-	exports.Double = Double;
-	includeIoMixin(Double);
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Quadruple = {
-	  /* jshint unused: false */
-
-	  read: function read(io) {
-	    throw new Error("XDR Read Error: quadruple not supported");
-	  },
-
-	  write: function write(value, io) {
-	    throw new Error("XDR Write Error: quadruple not supported");
-	  },
-
-	  isValid: function isValid(value) {
-	    return false;
-	  } };
-
-	exports.Quadruple = Quadruple;
-	includeIoMixin(Quadruple);
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Int = __webpack_require__(29).Int;
-
-	var isBoolean = __webpack_require__(14).isBoolean;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Bool = {
-	  read: function read(io) {
-	    var value = Int.read(io);
-
-	    switch (value) {
-	      case 0:
-	        return false;
-	      case 1:
-	        return true;
-	      default:
-	        throw new Error("XDR Read Error: Got " + value + " when trying to read a bool");
-	    }
-	  },
-
-	  write: function write(value, io) {
-	    var intVal = value ? 1 : 0;
-	    return Int.write(intVal, io);
-	  },
-
-	  isValid: function isValid(value) {
-	    return isBoolean(value);
-	  }
-	};
-
-	exports.Bool = Bool;
-	includeIoMixin(Bool);
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Int = __webpack_require__(29).Int;
-
-	var UnsignedInt = __webpack_require__(31).UnsignedInt;
-
-	var calculatePadding = __webpack_require__(62).calculatePadding;
-
-	var isString = __webpack_require__(14).isString;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var String = exports.String = (function () {
-	  function String() {
-	    var maxLength = arguments[0] === undefined ? UnsignedInt.MAX_VALUE : arguments[0];
-
-	    _classCallCheck(this, String);
-
-	    this._maxLength = maxLength;
-	  }
-
-	  _createClass(String, {
-	    read: {
-	      value: function read(io) {
-	        var length = Int.read(io);
-
-	        if (length > this._maxLength) {
-	          throw new Error("XDR Read Error: Saw " + length + " length String," + ("max allowed is " + this._maxLength));
-	        }
-	        var padding = calculatePadding(length);
-	        var result = io.slice(length);
-	        io.slice(padding); //consume padding
-	        return result.buffer().toString("ascii");
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (value.length > this._maxLength) {
-	          throw new Error("XDR Write Error: Got " + value.length + " bytes," + ("max allows is " + this._maxLength));
-	        }
-
-	        if (!isString(value)) {
-	          throw new Error("XDR Write Error: " + value + " is not a string,");
-	        }
-	        var buffer = new Buffer(value, "ascii");
-
-	        Int.write(value.length, io);
-	        io.writeBufferPadded(buffer);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return isString(value) && value.length <= this._maxLength;
-	      }
-	    }
-	  });
-
-	  return String;
-	})();
-
-	includeIoMixin(String.prototype);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var calculatePadding = __webpack_require__(62).calculatePadding;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Opaque = exports.Opaque = (function () {
-	  function Opaque(length) {
-	    _classCallCheck(this, Opaque);
-
-	    this._length = length;
-	    this._padding = calculatePadding(length);
-	  }
-
-	  _createClass(Opaque, {
-	    read: {
-	      value: function read(io) {
-	        var result = io.slice(this._length);
-	        io.slice(this._padding); //consume padding
-	        return result.buffer();
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (value.length !== this._length) {
-	          throw new Error("XDR Write Error: Got " + value.length + " bytes, expected " + this._length);
-	        }
-
-	        io.writeBufferPadded(value);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return Buffer.isBuffer(value) && value.length === this._length;
-	      }
-	    }
-	  });
-
-	  return Opaque;
-	})();
-
-	includeIoMixin(Opaque.prototype);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Int = __webpack_require__(29).Int;
-
-	var UnsignedInt = __webpack_require__(31).UnsignedInt;
-
-	var calculatePadding = __webpack_require__(62).calculatePadding;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var VarOpaque = exports.VarOpaque = (function () {
-	  function VarOpaque() {
-	    var maxLength = arguments[0] === undefined ? UnsignedInt.MAX_VALUE : arguments[0];
-
-	    _classCallCheck(this, VarOpaque);
-
-	    this._maxLength = maxLength;
-	  }
-
-	  _createClass(VarOpaque, {
-	    read: {
-	      value: function read(io) {
-	        var length = Int.read(io);
-
-	        if (length > this._maxLength) {
-	          throw new Error("XDR Read Error: Saw " + length + " length VarOpaque," + ("max allowed is " + this._maxLength));
-	        }
-	        var padding = calculatePadding(length);
-	        var result = io.slice(length);
-	        io.slice(padding); //consume padding
-	        return result.buffer();
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (value.length > this._maxLength) {
-	          throw new Error("XDR Write Error: Got " + value.length + " bytes," + ("max allows is " + this._maxLength));
-	        }
-	        Int.write(value.length, io);
-	        io.writeBufferPadded(value);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return Buffer.isBuffer(value) && value.length <= this._maxLength;
-	      }
-	    }
-	  });
-
-	  return VarOpaque;
-	})();
-
-	includeIoMixin(VarOpaque.prototype);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _lodash = __webpack_require__(14);
-
-	var all = _lodash.all;
-	var each = _lodash.each;
-	var times = _lodash.times;
-	var isArray = _lodash.isArray;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Array = exports.Array = (function () {
-	  function Array(childType, length) {
-	    _classCallCheck(this, Array);
-
-	    this._childType = childType;
-	    this._length = length;
-	  }
-
-	  _createClass(Array, {
-	    read: {
-	      value: function read(io) {
-	        var _this = this;
-
-	        return times(this._length, function () {
-	          return _this._childType.read(io);
-	        });
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        var _this = this;
-
-	        if (!isArray(value)) {
-	          throw new Error("XDR Write Error: value is not array");
-	        }
-
-	        if (value.length !== this._length) {
-	          throw new Error("XDR Write Error: Got array of size " + value.length + "," + ("expected " + this._length));
-	        }
-
-	        each(value, function (child) {
-	          return _this._childType.write(child, io);
-	        });
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        var _this = this;
-
-	        if (!isArray(value)) {
-	          return false;
-	        }
-	        if (value.length !== this._length) {
-	          return false;
-	        }
-
-	        return all(value, function (child) {
-	          return _this._childType.isValid(child);
-	        });
-	      }
-	    }
-	  });
-
-	  return Array;
-	})();
-
-	includeIoMixin(Array.prototype);
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Int = __webpack_require__(29).Int;
-
-	var UnsignedInt = __webpack_require__(31).UnsignedInt;
-
-	var _lodash = __webpack_require__(14);
-
-	var all = _lodash.all;
-	var each = _lodash.each;
-	var times = _lodash.times;
-	var isArray = _lodash.isArray;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var VarArray = exports.VarArray = (function () {
-	  function VarArray(childType) {
-	    var maxLength = arguments[1] === undefined ? UnsignedInt.MAX_VALUE : arguments[1];
-
-	    _classCallCheck(this, VarArray);
-
-	    this._childType = childType;
-	    this._maxLength = maxLength;
-	  }
-
-	  _createClass(VarArray, {
-	    read: {
-	      value: function read(io) {
-	        var _this = this;
-
-	        var length = Int.read(io);
-
-	        if (length > this._maxLength) {
-	          throw new Error("XDR Read Error: Saw " + length + " length VarArray," + ("max allowed is " + this._maxLength));
-	        }
-
-	        return times(length, function () {
-	          return _this._childType.read(io);
-	        });
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        var _this = this;
-
-	        if (!isArray(value)) {
-	          throw new Error("XDR Write Error: value is not array");
-	        }
-
-	        if (value.length > this._maxLength) {
-	          throw new Error("XDR Write Error: Got array of size " + value.length + "," + ("max allowed is " + this._maxLength));
-	        }
-
-	        Int.write(value.length, io);
-	        each(value, function (child) {
-	          return _this._childType.write(child, io);
-	        });
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        var _this = this;
-
-	        if (!isArray(value)) {
-	          return false;
-	        }
-	        if (value.length > this._maxLength) {
-	          return false;
-	        }
-
-	        return all(value, function (child) {
-	          return _this._childType.isValid(child);
-	        });
-	      }
-	    }
-	  });
-
-	  return VarArray;
-	})();
-
-	includeIoMixin(VarArray.prototype);
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Bool = __webpack_require__(36).Bool;
-
-	var _lodash = __webpack_require__(14);
-
-	var isNull = _lodash.isNull;
-	var isUndefined = _lodash.isUndefined;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Option = exports.Option = (function () {
-	  function Option(childType) {
-	    _classCallCheck(this, Option);
-
-	    this._childType = childType;
-	  }
-
-	  _createClass(Option, {
-	    read: {
-	      value: function read(io) {
-	        if (Bool.read(io)) {
-	          return this._childType.read(io);
-	        }
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        var isPresent = !(isNull(value) || isUndefined(value));
-
-	        Bool.write(isPresent, io);
-
-	        if (isPresent) {
-	          this._childType.write(value, io);
-	        }
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        if (isNull(value)) {
-	          return true;
-	        }
-	        if (isUndefined(value)) {
-	          return true;
-	        }
-
-	        return this._childType.isValid(value);
-	      }
-	    }
-	  });
-
-	  return Option;
-	})();
-
-	includeIoMixin(Option.prototype);
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var isUndefined = __webpack_require__(14).isUndefined;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Void = {
-	  /* jshint unused: false */
-
-	  read: function read(io) {
-	    return undefined;
-	  },
-
-	  write: function write(value, io) {
-	    if (!isUndefined(value)) {
-	      throw new Error("XDR Write Error: trying to write value to a void slot");
-	    }
-	  },
-
-	  isValid: function isValid(value) {
-	    return isUndefined(value);
-	  } };
-
-	exports.Void = Void;
-	includeIoMixin(Void);
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _inherits = __webpack_require__(49)["default"];
-
-	var _get = __webpack_require__(61)["default"];
-
-	var _core = __webpack_require__(59)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var Int = __webpack_require__(29).Int;
-
-	var _lodash = __webpack_require__(14);
-
-	var each = _lodash.each;
-	var vals = _lodash.values;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Enum = exports.Enum = (function () {
-	  function Enum(name, value) {
-	    _classCallCheck(this, Enum);
-
-	    this.name = name;
-	    this.value = value;
-	  }
-
-	  _createClass(Enum, null, {
-	    read: {
-	      value: function read(io) {
-	        var intVal = Int.read(io);
-
-	        if (!this._byValue.has(intVal)) {
-	          throw new Error("XDR Read Error: Unknown " + this.enumName + " member for value " + intVal);
-	        }
-
-	        return this._byValue.get(intVal);
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (!(value instanceof this)) {
-	          throw new Error("XDR Write Error: Unknown " + value + " is not a " + this.enumName);
-	        }
-
-	        Int.write(value.value, io);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return value instanceof this;
-	      }
-	    },
-	    members: {
-	      value: function members() {
-	        return this._members;
-	      }
-	    },
-	    values: {
-	      value: function values() {
-	        return vals(this._members);
-	      }
-	    },
-	    fromName: {
-	      value: function fromName(name) {
-	        var result = this._members[name];
-
-	        if (!result) {
-	          throw new Error("" + name + " is not a member of " + this.enumName);
-	        }
-
-	        return result;
-	      }
-	    },
-	    create: {
-	      value: function create(name, members) {
-	        var ChildEnum = (function (_Enum) {
-	          var _class = function ChildEnum() {
-	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	              args[_key] = arguments[_key];
-	            }
-
-	            _classCallCheck(this, _class);
-
-	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
-	          };
-
-	          _inherits(_class, _Enum);
-
-	          return _class;
-	        })(Enum);
-
-	        ChildEnum.enumName = name;
-	        ChildEnum._members = {};
-	        ChildEnum._byValue = new _core.Map();
-
-	        each(members, function (value, key) {
-	          var inst = new ChildEnum(key, value);
-	          ChildEnum._members[key] = inst;
-	          ChildEnum._byValue.set(value, inst);
-	          ChildEnum[key] = function () {
-	            return inst;
-	          };
-	        });
-
-	        return ChildEnum;
-	      }
-	    }
-	  });
-
-	  return Enum;
-	})();
-
-	includeIoMixin(Enum);
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _inherits = __webpack_require__(49)["default"];
-
-	var _get = __webpack_require__(61)["default"];
-
-	var _slicedToArray = __webpack_require__(63)["default"];
-
-	var _core = __webpack_require__(59)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _lodash = __webpack_require__(14);
-
-	var each = _lodash.each;
-	var map = _lodash.map;
-	var isUndefined = _lodash.isUndefined;
-	var zipObject = _lodash.zipObject;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Struct = exports.Struct = (function () {
-	  function Struct(attributes) {
-	    _classCallCheck(this, Struct);
-
-	    this._attributes = attributes || {};
-	  }
-
-	  _createClass(Struct, null, {
-	    read: {
-	      value: function read(io) {
-	        var fields = map(this._fields, function (field) {
-	          var _field = _slicedToArray(field, 2);
-
-	          var name = _field[0];
-	          var type = _field[1];
-
-	          var value = type.read(io);
-	          return [name, value];
-	        });
-
-	        return new this(zipObject(fields));
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (!(value instanceof this)) {
-	          throw new Error("XDR Write Error: " + value + " is not a " + this.structName);
-	        }
-	        each(this._fields, function (field) {
-	          var _field = _slicedToArray(field, 2);
-
-	          var name = _field[0];
-	          var type = _field[1];
-
-	          var attribute = value._attributes[name];
-	          type.write(attribute, io);
-	        });
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return value instanceof this;
-	      }
-	    },
-	    create: {
-	      value: function create(name, fields) {
-	        var ChildStruct = (function (_Struct) {
-	          var _class = function ChildStruct() {
-	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	              args[_key] = arguments[_key];
-	            }
-
-	            _classCallCheck(this, _class);
-
-	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
-	          };
-
-	          _inherits(_class, _Struct);
-
-	          return _class;
-	        })(Struct);
-
-	        ChildStruct.structName = name;
-
-	        ChildStruct._fields = fields;
-
-	        each(fields, function (field) {
-	          var _field = _slicedToArray(field, 1);
-
-	          var fieldName = _field[0];
-
-	          ChildStruct.prototype[fieldName] = readOrWriteAttribute(fieldName);
-	        });
-
-	        return ChildStruct;
-	      }
-	    }
-	  });
-
-	  return Struct;
-	})();
-
-	includeIoMixin(Struct);
-
-	function readOrWriteAttribute(name) {
-	  return function (value) {
-	    if (!isUndefined(value)) {
-	      this._attributes[name] = value;
-	    }
-
-	    return this._attributes[name];
-	  };
-	}
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(47)["default"];
-
-	var _createClass = __webpack_require__(48)["default"];
-
-	var _inherits = __webpack_require__(49)["default"];
-
-	var _get = __webpack_require__(61)["default"];
-
-	var _core = __webpack_require__(59)["default"];
-
-	var _interopRequire = __webpack_require__(51)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _lodash = __webpack_require__(14);
-
-	var each = _lodash.each;
-	var isUndefined = _lodash.isUndefined;
-
-	var Void = __webpack_require__(43).Void;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(60));
-
-	var Union = exports.Union = (function () {
-	  function Union(aSwitch, value) {
-	    _classCallCheck(this, Union);
-
-	    this.set(aSwitch, value);
-	  }
-
-	  _createClass(Union, {
-	    set: {
-	      value: function set(aSwitch, value) {
-	        if (!(aSwitch instanceof this.constructor._switchOn)) {
-	          aSwitch = this.constructor._switchOn.fromName(aSwitch);
-	        }
-
-	        this._switch = aSwitch;
-	        this._arm = this.constructor.armForSwitch(this._switch);
-	        this._armType = this.constructor.armTypeForArm(this._arm);
-	        this._value = value;
-	      }
-	    },
-	    get: {
-	      value: function get() {
-	        var armName = arguments[0] === undefined ? this._arm : arguments[0];
-
-	        if (this._arm !== Void && this._arm !== armName) {
-	          throw new Error("" + armName + " not set");
-	        }
-	        return this._value;
-	      }
-	    },
-	    "switch": {
-	      value: function _switch() {
-	        return this._switch;
-	      }
-	    },
-	    arm: {
-	      value: function arm() {
-	        return this._arm;
-	      }
-	    },
-	    armType: {
-	      value: function armType() {
-	        return this._armType;
-	      }
-	    },
-	    value: {
-	      value: function value() {
-	        return this._value;
-	      }
-	    }
-	  }, {
-	    armForSwitch: {
-	      value: function armForSwitch(aSwitch) {
-
-	        var arm = this._switches.get(aSwitch);
-
-	        if (isUndefined(arm)) {
-	          throw new Error("Bad union switch: " + aSwitch);
-	        }
-
-	        return arm;
-	      }
-	    },
-	    armTypeForArm: {
-	      value: function armTypeForArm(arm) {
-	        if (arm === Void) {
-	          return Void;
-	        } else {
-	          return this._arms[arm];
-	        }
-	      }
-	    },
-	    read: {
-	      value: function read(io) {
-	        var aSwitch = this._switchOn.read(io);
-	        var arm = this.armForSwitch(aSwitch);
-	        var armType = this.armTypeForArm(arm);
-	        var value = armType.read(io);
-	        return new this(aSwitch, value);
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (!(value instanceof this)) {
-	          throw new Error("XDR Write Error: " + value + " is not a " + this.unionName);
-	        }
-
-	        this._switchOn.write(value["switch"](), io);
-	        value.armType().write(value.value(), io);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return value instanceof this;
-	      }
-	    },
-	    create: {
-	      value: function create(name, config) {
-	        var ChildUnion = (function (_Union) {
-	          var _class = function ChildUnion() {
-	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	              args[_key] = arguments[_key];
-	            }
-
-	            _classCallCheck(this, _class);
-
-	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
-	          };
-
-	          _inherits(_class, _Union);
-
-	          return _class;
-	        })(Union);
-
-	        ChildUnion.unionName = name;
-	        ChildUnion._switchOn = config.switchOn;
-	        ChildUnion._switches = new _core.Map();
-	        ChildUnion._arms = config.arms;
-
-	        each(ChildUnion._switchOn.values(), function (aSwitch) {
-
-	          // build the enum => arm map
-	          var arm = config.switches[aSwitch.name] || config.defaultArm;
-	          ChildUnion._switches.set(aSwitch, arm);
-
-	          // Add enum-based constrocutors
-	          ChildUnion[aSwitch.name] = function (value) {
-	            return new ChildUnion(aSwitch, value);
-	          };
-
-	          // Add enum-based "set" helpers
-	          ChildUnion.prototype[aSwitch.name] = function (value) {
-	            return this.set(aSwitch, value);
-	          };
-	        });
-
-	        // Add arm accessor helpers
-	        each(ChildUnion._arms, function (type, name) {
-	          if (type === Void) {
-	            return;
-	          }
-
-	          ChildUnion.prototype[name] = function () {
-	            return this.get(name);
-	          };
-	        });
-
-	        return ChildUnion;
-	      }
-	    }
-	  });
-
-	  return Union;
-	})();
-
-	includeIoMixin(Union);
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports["default"] = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports["default"] = (function () {
-	  function defineProperties(target, props) {
-	    for (var key in props) {
-	      var prop = props[key];
-	      prop.configurable = true;
-	      if (prop.value) prop.writable = true;
-	    }
-
-	    Object.defineProperties(target, props);
-	  }
-
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	})();
-
-	exports.__esModule = true;
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports["default"] = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) subClass.__proto__ = superClass;
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _core = __webpack_require__(59)["default"];
-
-	exports["default"] = function (arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-	    return arr2;
-	  } else {
-	    return _core.Array.from(arr);
-	  }
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports["default"] = function (obj) {
-	  return obj && obj.__esModule ? obj["default"] : obj;
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports.read = function(buffer, offset, isLE, mLen, nBytes) {
-	  var e, m,
-	      eLen = nBytes * 8 - mLen - 1,
-	      eMax = (1 << eLen) - 1,
-	      eBias = eMax >> 1,
-	      nBits = -7,
-	      i = isLE ? (nBytes - 1) : 0,
-	      d = isLE ? -1 : 1,
-	      s = buffer[offset + i];
-
-	  i += d;
-
-	  e = s & ((1 << (-nBits)) - 1);
-	  s >>= (-nBits);
-	  nBits += eLen;
-	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
-
-	  m = e & ((1 << (-nBits)) - 1);
-	  e >>= (-nBits);
-	  nBits += mLen;
-	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
-
-	  if (e === 0) {
-	    e = 1 - eBias;
-	  } else if (e === eMax) {
-	    return m ? NaN : ((s ? -1 : 1) * Infinity);
-	  } else {
-	    m = m + Math.pow(2, mLen);
-	    e = e - eBias;
-	  }
-	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-	};
-
-	exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
-	  var e, m, c,
-	      eLen = nBytes * 8 - mLen - 1,
-	      eMax = (1 << eLen) - 1,
-	      eBias = eMax >> 1,
-	      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
-	      i = isLE ? 0 : (nBytes - 1),
-	      d = isLE ? 1 : -1,
-	      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
-
-	  value = Math.abs(value);
-
-	  if (isNaN(value) || value === Infinity) {
-	    m = isNaN(value) ? 1 : 0;
-	    e = eMax;
-	  } else {
-	    e = Math.floor(Math.log(value) / Math.LN2);
-	    if (value * (c = Math.pow(2, -e)) < 1) {
-	      e--;
-	      c *= 2;
-	    }
-	    if (e + eBias >= 1) {
-	      value += rt / c;
-	    } else {
-	      value += rt * Math.pow(2, 1 - eBias);
-	    }
-	    if (value * c >= 2) {
-	      e++;
-	      c /= 2;
-	    }
-
-	    if (e + eBias >= eMax) {
-	      m = 0;
-	      e = eMax;
-	    } else if (e + eBias >= 1) {
-	      m = (value * c - 1) * Math.pow(2, mLen);
-	      e = e + eBias;
-	    } else {
-	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-	      e = 0;
-	    }
-	  }
-
-	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
-
-	  e = (e << mLen) | m;
-	  eLen += mLen;
-	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
-
-	  buffer[offset + i - d] |= s * 128;
-	};
-
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/**
-	 * isArray
-	 */
-
-	var isArray = Array.isArray;
-
-	/**
-	 * toString
-	 */
-
-	var str = Object.prototype.toString;
-
-	/**
-	 * Whether or not the given `val`
-	 * is an array.
-	 *
-	 * example:
-	 *
-	 *        isArray([]);
-	 *        // > true
-	 *        isArray(arguments);
-	 *        // > false
-	 *        isArray('');
-	 *        // > false
-	 *
-	 * @param {mixed} val
-	 * @return {bool}
-	 */
-
-	module.exports = isArray || function (val) {
-	  return !! val && '[object Array]' == str.call(val);
-	};
-
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
 /* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(64)
-
-	function error () {
-	  var m = [].slice.call(arguments).join(' ')
-	  throw new Error([
-	    m,
-	    'we accept pull requests',
-	    'http://github.com/dominictarr/crypto-browserify'
-	    ].join('\n'))
-	}
-
-	exports.createHash = __webpack_require__(65)
-
-	exports.createHmac = __webpack_require__(66)
-
-	exports.randomBytes = function(size, callback) {
-	  if (callback && callback.call) {
-	    try {
-	      callback.call(this, undefined, new Buffer(rng(size)))
-	    } catch (err) { callback(err) }
-	  } else {
-	    return new Buffer(rng(size))
-	  }
-	}
-
-	function each(a, f) {
-	  for(var i in a)
-	    f(a[i], i)
-	}
-
-	exports.getHashes = function () {
-	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
-	}
-
-	var p = __webpack_require__(67)(exports)
-	exports.pbkdf2 = p.pbkdf2
-	exports.pbkdf2Sync = p.pbkdf2Sync
-
-
-	// the least I can do is make error messages for the rest of the node.js/crypto api.
-	each(['createCredentials'
-	, 'createCipher'
-	, 'createCipheriv'
-	, 'createDecipher'
-	, 'createDecipheriv'
-	, 'createSign'
-	, 'createVerify'
-	, 'createDiffieHellman'
-	], function (name) {
-	  exports[name] = function () {
-	    error('sorry,', name, 'is not implemented yet')
-	  }
-	})
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint node:true */
-
-	"use strict";
-
-	var sequence = function (tasks, names, results, nest) {
-		var i, name, node, e, j;
-		nest = nest || [];
-		for (i = 0; i < names.length; i++) {
-			name = names[i];
-			// de-dup results
-			if (results.indexOf(name) === -1) {
-				node = tasks[name];
-				if (!node) {
-					e = new Error('task "'+name+'" is not defined');
-					e.missingTask = name;
-					e.taskList = [];
-					for (j in tasks) {
-						if (tasks.hasOwnProperty(j)) {
-							e.taskList.push(tasks[j].name);
-						}
-					}
-					throw e;
-				}
-				if (nest.indexOf(name) > -1) {
-					nest.push(name);
-					e = new Error('Recursive dependencies detected: '+nest.join(' -> '));
-					e.recursiveTasks = nest;
-					e.taskList = [];
-					for (j in tasks) {
-						if (tasks.hasOwnProperty(j)) {
-							e.taskList.push(tasks[j].name);
-						}
-					}
-					throw e;
-				}
-				if (node.dep.length) {
-					nest.push(name);
-					sequence(tasks, node.dep, results, nest); // recurse
-					nest.pop(name);
-				}
-				results.push(name);
-			}
-		}
-	};
-
-	module.exports = sequence;
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {//prototype class for hash functions
-	function Hash (blockSize, finalSize) {
-	  this._block = new Buffer(blockSize) //new Uint32Array(blockSize/4)
-	  this._finalSize = finalSize
-	  this._blockSize = blockSize
-	  this._len = 0
-	  this._s = 0
-	}
-
-	Hash.prototype.update = function (data, enc) {
-	  if ("string" === typeof data) {
-	    enc = enc || "utf8"
-	    data = new Buffer(data, enc)
-	  }
-
-	  var l = this._len += data.length
-	  var s = this._s || 0
-	  var f = 0
-	  var buffer = this._block
-
-	  while (s < l) {
-	    var t = Math.min(data.length, f + this._blockSize - (s % this._blockSize))
-	    var ch = (t - f)
-
-	    for (var i = 0; i < ch; i++) {
-	      buffer[(s % this._blockSize) + i] = data[i + f]
-	    }
-
-	    s += ch
-	    f += ch
-
-	    if ((s % this._blockSize) === 0) {
-	      this._update(buffer)
-	    }
-	  }
-	  this._s = s
-
-	  return this
-	}
-
-	Hash.prototype.digest = function (enc) {
-	  // Suppose the length of the message M, in bits, is l
-	  var l = this._len * 8
-
-	  // Append the bit 1 to the end of the message
-	  this._block[this._len % this._blockSize] = 0x80
-
-	  // and then k zero bits, where k is the smallest non-negative solution to the equation (l + 1 + k) === finalSize mod blockSize
-	  this._block.fill(0, this._len % this._blockSize + 1)
-
-	  if (l % (this._blockSize * 8) >= this._finalSize * 8) {
-	    this._update(this._block)
-	    this._block.fill(0)
-	  }
-
-	  // to this append the block which is equal to the number l written in binary
-	  // TODO: handle case where l is > Math.pow(2, 29)
-	  this._block.writeInt32BE(l, this._blockSize - 4)
-
-	  var hash = this._update(this._block) || this._hash()
-
-	  return enc ? hash.toString(enc) : hash
-	}
-
-	Hash.prototype._update = function () {
-	  throw new Error('_update must be implemented by subclass')
-	}
-
-	module.exports = Hash
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
-
-/***/ },
-/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -23710,6 +23559,194 @@ var StellarBase =
 		exports.toByteArray = b64ToByteArray
 		exports.fromByteArray = uint8ToBase64
 	}(false ? (this.base64js = {}) : exports))
+
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(64)
+
+	function error () {
+	  var m = [].slice.call(arguments).join(' ')
+	  throw new Error([
+	    m,
+	    'we accept pull requests',
+	    'http://github.com/dominictarr/crypto-browserify'
+	    ].join('\n'))
+	}
+
+	exports.createHash = __webpack_require__(65)
+
+	exports.createHmac = __webpack_require__(66)
+
+	exports.randomBytes = function(size, callback) {
+	  if (callback && callback.call) {
+	    try {
+	      callback.call(this, undefined, new Buffer(rng(size)))
+	    } catch (err) { callback(err) }
+	  } else {
+	    return new Buffer(rng(size))
+	  }
+	}
+
+	function each(a, f) {
+	  for(var i in a)
+	    f(a[i], i)
+	}
+
+	exports.getHashes = function () {
+	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
+	}
+
+	var p = __webpack_require__(67)(exports)
+	exports.pbkdf2 = p.pbkdf2
+	exports.pbkdf2Sync = p.pbkdf2Sync
+
+
+	// the least I can do is make error messages for the rest of the node.js/crypto api.
+	each(['createCredentials'
+	, 'createCipher'
+	, 'createCipheriv'
+	, 'createDecipher'
+	, 'createDecipheriv'
+	, 'createSign'
+	, 'createVerify'
+	, 'createDiffieHellman'
+	], function (name) {
+	  exports[name] = function () {
+	    error('sorry,', name, 'is not implemented yet')
+	  }
+	})
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {//prototype class for hash functions
+	function Hash (blockSize, finalSize) {
+	  this._block = new Buffer(blockSize) //new Uint32Array(blockSize/4)
+	  this._finalSize = finalSize
+	  this._blockSize = blockSize
+	  this._len = 0
+	  this._s = 0
+	}
+
+	Hash.prototype.update = function (data, enc) {
+	  if ("string" === typeof data) {
+	    enc = enc || "utf8"
+	    data = new Buffer(data, enc)
+	  }
+
+	  var l = this._len += data.length
+	  var s = this._s || 0
+	  var f = 0
+	  var buffer = this._block
+
+	  while (s < l) {
+	    var t = Math.min(data.length, f + this._blockSize - (s % this._blockSize))
+	    var ch = (t - f)
+
+	    for (var i = 0; i < ch; i++) {
+	      buffer[(s % this._blockSize) + i] = data[i + f]
+	    }
+
+	    s += ch
+	    f += ch
+
+	    if ((s % this._blockSize) === 0) {
+	      this._update(buffer)
+	    }
+	  }
+	  this._s = s
+
+	  return this
+	}
+
+	Hash.prototype.digest = function (enc) {
+	  // Suppose the length of the message M, in bits, is l
+	  var l = this._len * 8
+
+	  // Append the bit 1 to the end of the message
+	  this._block[this._len % this._blockSize] = 0x80
+
+	  // and then k zero bits, where k is the smallest non-negative solution to the equation (l + 1 + k) === finalSize mod blockSize
+	  this._block.fill(0, this._len % this._blockSize + 1)
+
+	  if (l % (this._blockSize * 8) >= this._finalSize * 8) {
+	    this._update(this._block)
+	    this._block.fill(0)
+	  }
+
+	  // to this append the block which is equal to the number l written in binary
+	  // TODO: handle case where l is > Math.pow(2, 29)
+	  this._block.writeInt32BE(l, this._blockSize - 4)
+
+	  var hash = this._update(this._block) || this._hash()
+
+	  return enc ? hash.toString(enc) : hash
+	}
+
+	Hash.prototype._update = function () {
+	  throw new Error('_update must be implemented by subclass')
+	}
+
+	module.exports = Hash
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint node:true */
+
+	"use strict";
+
+	var sequence = function (tasks, names, results, nest) {
+		var i, name, node, e, j;
+		nest = nest || [];
+		for (i = 0; i < names.length; i++) {
+			name = names[i];
+			// de-dup results
+			if (results.indexOf(name) === -1) {
+				node = tasks[name];
+				if (!node) {
+					e = new Error('task "'+name+'" is not defined');
+					e.missingTask = name;
+					e.taskList = [];
+					for (j in tasks) {
+						if (tasks.hasOwnProperty(j)) {
+							e.taskList.push(tasks[j].name);
+						}
+					}
+					throw e;
+				}
+				if (nest.indexOf(name) > -1) {
+					nest.push(name);
+					e = new Error('Recursive dependencies detected: '+nest.join(' -> '));
+					e.recursiveTasks = nest;
+					e.taskList = [];
+					for (j in tasks) {
+						if (tasks.hasOwnProperty(j)) {
+							e.taskList.push(tasks[j].name);
+						}
+					}
+					throw e;
+				}
+				if (node.dep.length) {
+					nest.push(name);
+					sequence(tasks, node.dep, results, nest); // recurse
+					nest.pop(name);
+				}
+				results.push(name);
+			}
+		}
+	};
+
+	module.exports = sequence;
 
 
 /***/ },
@@ -26252,7 +26289,7 @@ var StellarBase =
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(11).Buffer))
 
 /***/ },
 /* 65 */
@@ -26289,7 +26326,7 @@ var StellarBase =
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 66 */
@@ -26339,7 +26376,7 @@ var StellarBase =
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 67 */
@@ -26361,30 +26398,6 @@ var StellarBase =
 
 /***/ },
 /* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	 Copyright 2013 Daniel Wirtz <dcode@dcode.io>
-	 Copyright 2009 The Closure Library Authors. All Rights Reserved.
-
-	 Licensed under the Apache License, Version 2.0 (the "License");
-	 you may not use this file except in compliance with the License.
-	 You may obtain a copy of the License at
-
-	 http://www.apache.org/licenses/LICENSE-2.0
-
-	 Unless required by applicable law or agreed to in writing, software
-	 distributed under the License is distributed on an "AS-IS" BASIS,
-	 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 See the License for the specific language governing permissions and
-	 limitations under the License.
-	 */
-
-	module.exports = __webpack_require__(73);
-
-
-/***/ },
-/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	if (typeof Object.create === 'function') {
@@ -26413,24 +26426,48 @@ var StellarBase =
 
 
 /***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 Copyright 2013 Daniel Wirtz <dcode@dcode.io>
+	 Copyright 2009 The Closure Library Authors. All Rights Reserved.
+
+	 Licensed under the Apache License, Version 2.0 (the "License");
+	 you may not use this file except in compliance with the License.
+	 You may obtain a copy of the License at
+
+	 http://www.apache.org/licenses/LICENSE-2.0
+
+	 Unless required by applicable law or agreed to in writing, software
+	 distributed under the License is distributed on an "AS-IS" BASIS,
+	 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 See the License for the specific language governing permissions and
+	 limitations under the License.
+	 */
+
+	module.exports = __webpack_require__(73);
+
+
+/***/ },
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
 
-	var _classCallCheck = __webpack_require__(47)["default"];
+	var _classCallCheck = __webpack_require__(45)["default"];
 
-	var _inherits = __webpack_require__(49)["default"];
+	var _inherits = __webpack_require__(47)["default"];
 
-	var _createClass = __webpack_require__(48)["default"];
+	var _createClass = __webpack_require__(46)["default"];
 
-	var _interopRequire = __webpack_require__(51)["default"];
+	var _interopRequire = __webpack_require__(49)["default"];
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
-	var BaseCursor = _interopRequire(__webpack_require__(78));
+	var BaseCursor = _interopRequire(__webpack_require__(77));
 
 	var calculatePadding = __webpack_require__(62).calculatePadding;
 
@@ -26459,7 +26496,7 @@ var StellarBase =
 
 	  return Cursor;
 	})(BaseCursor);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 71 */
@@ -26480,7 +26517,7 @@ var StellarBase =
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(77);
+	var helpers = __webpack_require__(78);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -27575,7 +27612,7 @@ var StellarBase =
 
 	})(this);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(54)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(52)(module)))
 
 /***/ },
 /* 74 */
@@ -27587,7 +27624,7 @@ var StellarBase =
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(13).Buffer
+	var Buffer = __webpack_require__(11).Buffer
 	var Hash   = __webpack_require__(80)(Buffer)
 
 	exports.sha1 = __webpack_require__(81)(Buffer, Hash)
@@ -27684,7 +27721,7 @@ var StellarBase =
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 76 */
@@ -27896,51 +27933,10 @@ var StellarBase =
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
-	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
-	var chrsz = 8;
-
-	function toArray(buf, bigEndian) {
-	  if ((buf.length % intSize) !== 0) {
-	    var len = buf.length + (intSize - (buf.length % intSize));
-	    buf = Buffer.concat([buf, zeroBuffer], len);
-	  }
-
-	  var arr = [];
-	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
-	  for (var i = 0; i < buf.length; i += intSize) {
-	    arr.push(fn.call(buf, i));
-	  }
-	  return arr;
-	}
-
-	function toBuffer(arr, size, bigEndian) {
-	  var buf = new Buffer(size);
-	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
-	  for (var i = 0; i < arr.length; i++) {
-	    fn.call(buf, arr[i], i * 4, true);
-	  }
-	  return buf;
-	}
-
-	function hash(buf, fn, hashSize, bigEndian) {
-	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
-	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
-	  return toBuffer(arr, hashSize, bigEndian);
-	}
-
-	module.exports = { hash: hash };
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
-
-/***/ },
-/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var Cursor = function(buffer)
@@ -28188,7 +28184,48 @@ var StellarBase =
 
 	module.exports = Cursor;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
+	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
+	var chrsz = 8;
+
+	function toArray(buf, bigEndian) {
+	  if ((buf.length % intSize) !== 0) {
+	    var len = buf.length + (intSize - (buf.length % intSize));
+	    buf = Buffer.concat([buf, zeroBuffer], len);
+	  }
+
+	  var arr = [];
+	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
+	  for (var i = 0; i < buf.length; i += intSize) {
+	    arr.push(fn.call(buf, i));
+	  }
+	  return arr;
+	}
+
+	function toBuffer(arr, size, bigEndian) {
+	  var buf = new Buffer(size);
+	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
+	  for (var i = 0; i < arr.length; i++) {
+	    fn.call(buf, arr[i], i * 4, true);
+	  }
+	  return buf;
+	}
+
+	function hash(buf, fn, hashSize, bigEndian) {
+	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
+	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
+	  return toBuffer(arr, hashSize, bigEndian);
+	}
+
+	module.exports = { hash: hash };
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
 
 /***/ },
 /* 79 */
