@@ -4,7 +4,8 @@
   "description": "Low level stellar support library",
   "main": "lib/index.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "docs": "./node_modules/.bin/jsdoc ./src/ -d docs/"
   },
   "keywords": [
     "stellar"
