@@ -57,7 +57,11 @@ gulp.task('build:browser', ['lint:src'], function() {
     }))
     .pipe(plugins.rename('stellar-base.js'))
     .pipe(gulp.dest('dist'))
-    .pipe(plugins.uglify())
+    .pipe(plugins.uglify({
+      output: {
+        ascii_only: true
+      }
+    }))
     .pipe(plugins.rename('stellar-base.min.js'))
     .pipe(gulp.dest('dist'));
 });
