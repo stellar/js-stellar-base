@@ -1,4 +1,4 @@
-import {decodeBase58Check} from "./base58.js";
+import {decodeBase58Check} from "./base58";
 
 /**
 * @class Account
