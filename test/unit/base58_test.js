@@ -38,16 +38,17 @@ describe('StellarBase#encodeBase58', function() {
 });
 
 
-let unencoded        = "hello world";
-let unencodedBuffer  = new Buffer(unencoded, 'utf8');
-let accountIdEncoded = "gpvQBfBaMiGQZ2xUqW9KNR";
-let seedEncoded      = "n3GdokGwy1qJ11qLmsTzoL";
+var keypair          = StellarBase.Keypair.master();
+let unencodedBuffer  = keypair.publicKey();
+let unencoded        = unencodedBuffer.toString();
+let accountIdEncoded = keypair.address();
+let seedEncoded      = StellarBase.encodeBase58Check("seed", unencodedBuffer);
 
 describe('StellarBase#decodeBase58Check', function() {
   
   it("decodes correctly", function() {
-    expectBuffersToBeEqual(StellarBase.decodeBase58Check("accountId", "gpvQBfBaMiGQZ2xUqW9KNR"), unencodedBuffer);
-    expectBuffersToBeEqual(StellarBase.decodeBase58Check("seed", "n3GdokGwy1qJ11qLmsTzoL"), unencodedBuffer);
+    expectBuffersToBeEqual(StellarBase.decodeBase58Check("accountId", accountIdEncoded), unencodedBuffer);
+    expectBuffersToBeEqual(StellarBase.decodeBase58Check("seed", seedEncoded), unencodedBuffer);
   });
 
   it("throws an error when the version byte is not defined", function() {
@@ -69,11 +70,6 @@ describe('StellarBase#decodeBase58Check', function() {
 
 describe('StellarBase#encodeBase58Check', function() {
   
-  it("encodes a string correctly", function() {
-    expect(StellarBase.encodeBase58Check("accountId", unencoded)).to.eql(accountIdEncoded);
-    expect(StellarBase.encodeBase58Check("seed", unencoded)).to.eql(seedEncoded);
-  });
-
   it("encodes a buffer correctly", function() {
     expect(StellarBase.encodeBase58Check("accountId", unencodedBuffer)).to.eql(accountIdEncoded);
     expect(StellarBase.encodeBase58Check("seed", unencodedBuffer)).to.eql(seedEncoded);
