@@ -130,24 +130,43 @@ describe('Operation', function() {
         });
     });
 
-    describe(".createOffer", function () {
-        it("creates a createOfferOp", function () {
+    describe(".manageOffer", function () {
+        it("creates a manageOfferOp", function () {
             var opts = {};
             opts.takerGets = new StellarBase.Currency("USD", "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb");
             opts.takerPays = new StellarBase.Currency("USD", "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb");
             opts.amount = 1000;
             opts.price = 3.07;
             opts.offerId = 1;
-            let op = StellarBase.Operation.createOffer(opts);
+            let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation._attributes);
-            expect(obj.type).to.be.equal("createOffer");
+            expect(obj.type).to.be.equal("manageOffer");
             expect(obj.takerGets.equals(opts.takerGets)).to.be.true;
             expect(obj.takerPays.equals(opts.takerPays)).to.be.true;
             expect(Number(obj.amount)).to.be.equal(opts.amount);
             expect(obj.price).to.be.equal(opts.price);
             expect(Number(obj.offerId)).to.be.equal(opts.offerId);
+        });
+    });
+
+    describe(".createPassiveOffer", function () {
+        it("creates a createPassiveOfferOp", function () {
+            var opts = {};
+            opts.takerGets = new StellarBase.Currency("USD", "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb");
+            opts.takerPays = new StellarBase.Currency("USD", "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb");
+            opts.amount = 1000;
+            opts.price = 3.07;
+            let op = StellarBase.Operation.createPassiveOffer(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation._attributes);
+            expect(obj.type).to.be.equal("createPassiveOffer");
+            expect(obj.takerGets.equals(opts.takerGets)).to.be.true;
+            expect(obj.takerPays.equals(opts.takerPays)).to.be.true;
+            expect(Number(obj.amount)).to.be.equal(opts.amount);
+            expect(obj.price).to.be.equal(opts.price);
         });
     });
 

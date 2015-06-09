@@ -244,17 +244,17 @@ export class Operation {
     }
 
     /**
-    * Returns a XDR CreateOfferOp. A "create offer" operation creates, updates, or
-    * deletes an offer for the account.
+    * Returns a XDR ManageOfferOp. A "manage offer" operation creates, updates, or
+    * deletes an offer.
     * @param {object} opts
     * @param {Currency} takerGets - What you're selling.
     * @param {Currency} takerPays - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number} price - The exchange rate ratio (takerpay / takerget)
     * @param {string} offerId - If 0, will create a new offer. Otherwise, edits an exisiting offer.
-    * @returns {xdr.CreateOfferOp}
+    * @returns {xdr.ManageOfferOp}
     */
-    static createOffer(opts) {
+    static manageOffer(opts) {
         let attributes = {};
         attributes.takerGets = opts.takerGets.toXdrObject();
         attributes.takerPays = opts.takerPays.toXdrObject();
@@ -265,10 +265,43 @@ export class Operation {
             d: approx[1]
         });
         attributes.offerId = UnsignedHyper.fromString(String(opts.offerId));
-        let createOfferOp = new xdr.CreateOfferOp(attributes);
+        let manageOfferOp = new xdr.ManageOfferOp(attributes);
 
         let opAttributes = {};
-        opAttributes.body = xdr.OperationBody.createOffer(createOfferOp);
+        opAttributes.body = xdr.OperationBody.manageOffer(manageOfferOp);
+        if (opts.source) {
+            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
+        }
+        let op = new xdr.Operation(opAttributes);
+        return op;
+    }
+
+    /**
+    * Returns a XDR CreatePasiveOfferOp. A "create passive offer" operation creates an
+    * offer that won't consume a counter offer that exactly matches this offer. This is
+    * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
+    * to manage this offer after using this operation to create it.
+    * @param {object} opts
+    * @param {Currency} takerGets - What you're selling.
+    * @param {Currency} takerPays - What you're buying.
+    * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
+    * @param {number} price - The exchange rate ratio (takerpay / takerget)
+    * @returns {xdr.CreatePassiveOfferOp}
+    */
+    static createPassiveOffer(opts) {
+        let attributes = {};
+        attributes.takerGets = opts.takerGets.toXdrObject();
+        attributes.takerPays = opts.takerPays.toXdrObject();
+        attributes.amount = Hyper.fromString(String(opts.amount));
+        let approx = best_r(opts.price);
+        attributes.price = new xdr.Price({
+            n: approx[0],
+            d: approx[1]
+        });
+        let createPassiveOfferOp = new xdr.CreatePassiveOfferOp(attributes);
+
+        let opAttributes = {};
+        opAttributes.body = xdr.OperationBody.createPassiveOffer(createPassiveOfferOp);
         if (opts.source) {
             opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
         }
@@ -383,13 +416,20 @@ export class Operation {
                     obj.homeDomain = attrs.homeDomain;
                 }
                 break;
-            case "createOffer":
-                obj.type = "createOffer";
+            case "manageOffer":
+                obj.type = "manageOffer";
                 obj.takerGets = Currency.fromOperation(attrs.takerGets);
                 obj.takerPays = Currency.fromOperation(attrs.takerPays);
                 obj.amount = attrs.amount.toString();
                 obj.price = attrs.price._attributes.n / attrs.price._attributes.d;
                 obj.offerId = attrs.offerId.toString();
+                break;
+            case "createPassiveOffer":
+                obj.type = "createPassiveOffer";
+                obj.takerGets = Currency.fromOperation(attrs.takerGets);
+                obj.takerPays = Currency.fromOperation(attrs.takerPays);
+                obj.amount = attrs.amount.toString();
+                obj.price = attrs.price._attributes.n / attrs.price._attributes.d;
                 break;
             case "accountMerge":
                 obj.type = "accountMerge";
