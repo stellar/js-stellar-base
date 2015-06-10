@@ -21055,7 +21055,7 @@ var StellarBase =
 
 	        if (typeof envelope === "string") {
 	            var buffer = new Buffer(envelope, "hex");
-	            envelope = xdr.TransactionEnvelope.fromXdr(buffer);
+	            envelope = xdr.TransactionEnvelope.fromXDR(buffer);
 	        }
 	        // since this transaction is immutable, save the tx
 	        this.tx = envelope._attributes.tx;
