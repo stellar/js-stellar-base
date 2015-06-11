@@ -21,7 +21,7 @@ export class Transaction {
     constructor(envelope) {
         if (typeof envelope === "string") {
             let buffer = new Buffer(envelope, "hex");
-            envelope = xdr.TransactionEnvelope.fromXdr(buffer);
+            envelope = xdr.TransactionEnvelope.fromXDR(buffer);
         }
         // since this transaction is immutable, save the tx
         this.tx = envelope._attributes.tx;
