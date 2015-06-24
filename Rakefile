@@ -13,7 +13,7 @@ namespace :xdr do
     "src/xdr/Stellar-transaction.x",
     "src/xdr/Stellar-types.x",
     "src/overlay/StellarXDR.x",
-    "src/scp/SCPXDR.x",
+    "src/scp/Stellar-SCP.x",
   ]
 
   task :update => [:download, :generate]

@@ -12,6 +12,7 @@ namespace stellar
 */
 struct LedgerHeader
 {
+    uint32 ledgerVersion;
     Hash previousLedgerHash; // hash of the previous ledger header
     Hash txSetHash;          // the tx set that was SCP confirmed
     Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
@@ -30,8 +31,8 @@ struct LedgerHeader
     int32 baseFee;     // base fee per operation in stroops
     int32 baseReserve; // account base reserve in stroops
 
-    Hash skipList[4];  // hashes of ledgers in the past. allows you to jump back
-                       // in time without walking the chain back ledger by ledger
+    Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
+                      // in time without walking the chain back ledger by ledger
 };
 
 /* Entries used to define the bucket list */
