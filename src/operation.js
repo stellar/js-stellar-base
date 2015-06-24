@@ -202,6 +202,7 @@ export class Operation {
     * @param {string} [opts.signer.address] - The address of the new signer.
     * @param {number} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
+    * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.SetOptionsOp}
     */
     static setOptions(opts) {
@@ -252,6 +253,7 @@ export class Operation {
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number} price - The exchange rate ratio (takerpay / takerget)
     * @param {string} offerId - If 0, will create a new offer. Otherwise, edits an exisiting offer.
+    * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ManageOfferOp}
     */
     static manageOffer(opts) {
@@ -286,6 +288,7 @@ export class Operation {
     * @param {Currency} takerPays - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number} price - The exchange rate ratio (takerpay / takerget)
+    * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.CreatePassiveOfferOp}
     */
     static createPassiveOffer(opts) {
@@ -313,7 +316,7 @@ export class Operation {
     * Transfers native balance to destination account.
     * @param {object} opts
     * @param {string} opts.destination - Destination to merge the source account into.
-
+    * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.AccountMergeOp}
     */
     static accountMerge(opts) {
