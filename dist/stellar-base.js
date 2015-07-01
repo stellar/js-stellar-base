@@ -2622,11 +2622,11 @@ var StellarBase =
 	exports.xdr = xdr;
 	exports.hash = __webpack_require__(16).hash;
 
-	var _signing = __webpack_require__(77);
+	var _signing = __webpack_require__(75);
 
 	exports.sign = _signing.sign;
 	exports.verify = _signing.verify;
-	exports.Keypair = __webpack_require__(80).Keypair;
+	exports.Keypair = __webpack_require__(78).Keypair;
 
 	var _jsXdr = __webpack_require__(34);
 
@@ -20580,6 +20580,7 @@ var StellarBase =
 	            * @param {string} [opts.signer.address] - The address of the new signer.
 	            * @param {number} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
 	            * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
+	            * @param {string} [opts.source] - The source account (defaults to transaction source).
 	            * @returns {xdr.SetOptionsOp}
 	            */
 
@@ -20633,6 +20634,7 @@ var StellarBase =
 	            * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
 	            * @param {number} price - The exchange rate ratio (takerpay / takerget)
 	            * @param {string} offerId - If 0, will create a new offer. Otherwise, edits an exisiting offer.
+	            * @param {string} [opts.source] - The source account (defaults to transaction source).
 	            * @returns {xdr.ManageOfferOp}
 	            */
 
@@ -20670,6 +20672,7 @@ var StellarBase =
 	            * @param {Currency} takerPays - What you're buying.
 	            * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
 	            * @param {number} price - The exchange rate ratio (takerpay / takerget)
+	            * @param {string} [opts.source] - The source account (defaults to transaction source).
 	            * @returns {xdr.CreatePassiveOfferOp}
 	            */
 
@@ -20700,7 +20703,8 @@ var StellarBase =
 	            * Transfers native balance to destination account.
 	            * @param {object} opts
 	            * @param {string} opts.destination - Destination to merge the source account into.
-	             * @returns {xdr.AccountMergeOp}
+	            * @param {string} [opts.source] - The source account (defaults to transaction source).
+	            * @returns {xdr.AccountMergeOp}
 	            */
 
 	            value: function accountMerge(opts) {
@@ -21262,7 +21266,7 @@ var StellarBase =
 
 	var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
 
-	// Automatically generated on 2015-06-08T13:36:19-07:00
+	// Automatically generated on 2015-06-24T16:04:11-07:00
 	// DO NOT EDIT or your changes may be overwritten
 
 	/* jshint maxstatements:2147483647  */
@@ -21271,173 +21275,6 @@ var StellarBase =
 	var XDR = _interopRequireWildcard(__webpack_require__(34));
 
 	var types = XDR.config(function (xdr) {
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef opaque Signature[64];
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Signature", xdr.opaque(64));
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef opaque Hash[32];
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Hash", xdr.opaque(32));
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef opaque uint256[32];
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Uint256", xdr.opaque(32));
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef unsigned int uint32;
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Uint32", xdr.uint());
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef unsigned hyper uint64;
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Uint64", xdr.uhyper());
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef opaque Value<>;
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Value", xdr.varOpaque());
-
-	  // === xdr source ============================================================
-	  //
-	  //   typedef opaque Evidence<>;
-	  //
-	  // ===========================================================================
-	  xdr.typedef("Evidence", xdr.varOpaque());
-
-	  // === xdr source ============================================================
-	  //
-	  //   struct SCPBallot
-	  //   {
-	  //       uint32 counter; // n
-	  //       Value value;    // x
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr.struct("ScpBallot", [["counter", xdr.lookup("Uint32")], ["value", xdr.lookup("Value")]]);
-
-	  // === xdr source ============================================================
-	  //
-	  //   enum SCPStatementType
-	  //   {
-	  //       PREPARING = 0,
-	  //       PREPARED = 1,
-	  //       COMMITTING = 2,
-	  //       COMMITTED = 3
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr["enum"]("ScpStatementType", {
-	    preparing: 0,
-	    prepared: 1,
-	    committing: 2,
-	    committed: 3 });
-
-	  // === xdr source ============================================================
-	  //
-	  //   struct
-	  //           {
-	  //               SCPBallot excepted<>; // B_c
-	  //               SCPBallot* prepared;  // p
-	  //           }
-	  //
-	  // ===========================================================================
-	  xdr.struct("ScpStatementPrepare", [["excepted", xdr.varArray(xdr.lookup("ScpBallot"), 2147483647)], ["prepared", xdr.option(xdr.lookup("ScpBallot"))]]);
-
-	  // === xdr source ============================================================
-	  //
-	  //   union switch (SCPStatementType type)
-	  //       {
-	  //       case PREPARING:
-	  //           struct
-	  //           {
-	  //               SCPBallot excepted<>; // B_c
-	  //               SCPBallot* prepared;  // p
-	  //           } prepare;
-	  //       case PREPARED:
-	  //       case COMMITTING:
-	  //       case COMMITTED:
-	  //           void;
-	  //       }
-	  //
-	  // ===========================================================================
-	  xdr.union("ScpStatementPledges", {
-	    switchOn: xdr.lookup("ScpStatementType"),
-	    switchName: "type",
-	    switches: {
-	      preparing: "prepare",
-	      prepared: xdr["void"](),
-	      committing: xdr["void"](),
-	      committed: xdr["void"]() },
-	    arms: {
-	      prepare: xdr.lookup("ScpStatementPrepare") } });
-
-	  // === xdr source ============================================================
-	  //
-	  //   struct SCPStatement
-	  //   {
-	  //       uint64 slotIndex;   // i
-	  //       SCPBallot ballot;   // b
-	  //       Hash quorumSetHash; // D
-	  //
-	  //       union switch (SCPStatementType type)
-	  //       {
-	  //       case PREPARING:
-	  //           struct
-	  //           {
-	  //               SCPBallot excepted<>; // B_c
-	  //               SCPBallot* prepared;  // p
-	  //           } prepare;
-	  //       case PREPARED:
-	  //       case COMMITTING:
-	  //       case COMMITTED:
-	  //           void;
-	  //       }
-	  //       pledges;
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr.struct("ScpStatement", [["slotIndex", xdr.lookup("Uint64")], ["ballot", xdr.lookup("ScpBallot")], ["quorumSetHash", xdr.lookup("Hash")], ["pledges", xdr.lookup("ScpStatementPledges")]]);
-
-	  // === xdr source ============================================================
-	  //
-	  //   struct SCPEnvelope
-	  //   {
-	  //       uint256 nodeID; // v
-	  //       SCPStatement statement;
-	  //       Signature signature;
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr.struct("ScpEnvelope", [["nodeId", xdr.lookup("Uint256")], ["statement", xdr.lookup("ScpStatement")], ["signature", xdr.lookup("Signature")]]);
-
-	  // === xdr source ============================================================
-	  //
-	  //   struct SCPQuorumSet
-	  //   {
-	  //       uint32 threshold;
-	  //   	Hash validators<>;
-	  //       SCPQuorumSet innerSets<>;
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr.struct("ScpQuorumSet", [["threshold", xdr.lookup("Uint32")], ["validators", xdr.varArray(xdr.lookup("Hash"), 2147483647)]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -21469,7 +21306,7 @@ var StellarBase =
 	  //
 	  //   enum AccountFlags
 	  //   { // masks for each flag
-	  //
+	  //  
 	  //       // if set, TrustLines are created with authorized set to "false"
 	  //       // requiring the issuer to set it for each TrustLine
 	  //       AUTH_REQUIRED_FLAG = 0x1,
@@ -21494,13 +21331,13 @@ var StellarBase =
 	  //                                 // drives the reserve
 	  //       AccountID* inflationDest; // Account to vote during inflation
 	  //       uint32 flags;             // see AccountFlags
-	  //
+	  //  
 	  //       // fields used for signatures
 	  //       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 	  //       Thresholds thresholds;
-	  //
+	  //  
 	  //       string32 homeDomain; // can be used for reverse federation and memo lookup
-	  //
+	  //  
 	  //       Signer signers<20>; // possible signers for this account
 	  //   };
 	  //
@@ -21527,7 +21364,7 @@ var StellarBase =
 	  //       Currency currency;   // currency (with issuer)
 	  //       int64 balance;       // how much of this currency the user has.
 	  //                            // Currency defines the unit for this;
-	  //
+	  //  
 	  //       int64 limit;  // balance cannot be above this
 	  //       uint32 flags; // see TrustLineFlags
 	  //   };
@@ -21556,7 +21393,7 @@ var StellarBase =
 	  //       Currency takerGets; // A
 	  //       Currency takerPays; // B
 	  //       int64 amount;       // amount of A
-	  //
+	  //  
 	  //       /* price for this offer:
 	  //           price of A in terms of B
 	  //           price=AmountB/AmountA=priceNumerator/priceDenominator
@@ -21575,10 +21412,10 @@ var StellarBase =
 	  //   {
 	  //   case ACCOUNT:
 	  //       AccountEntry account;
-	  //
+	  //  
 	  //   case TRUSTLINE:
 	  //       TrustLineEntry trustLine;
-	  //
+	  //  
 	  //   case OFFER:
 	  //       OfferEntry offer;
 	  //   };
@@ -21600,30 +21437,31 @@ var StellarBase =
 	  //
 	  //   struct LedgerHeader
 	  //   {
+	  //       uint32 ledgerVersion;
 	  //       Hash previousLedgerHash; // hash of the previous ledger header
 	  //       Hash txSetHash;          // the tx set that was SCP confirmed
 	  //       Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
 	  //       Hash bucketListHash;     // hash of the ledger state
-	  //
+	  //  
 	  //       uint32 ledgerSeq; // sequence number of this ledger
 	  //       uint64 closeTime; // network close time
-	  //
+	  //  
 	  //       int64 totalCoins; // total number of stroops in existence
-	  //
+	  //  
 	  //       int64 feePool;       // fees burned since last inflation run
 	  //       uint32 inflationSeq; // inflation sequence number
-	  //
+	  //  
 	  //       uint64 idPool; // last used global ID, used for generating objects
-	  //
+	  //  
 	  //       int32 baseFee;     // base fee per operation in stroops
 	  //       int32 baseReserve; // account base reserve in stroops
-	  //
-	  //       Hash skipList[4];  // hashes of ledgers in the past. allows you to jump back
-	  //                          // in time without walking the chain back ledger by ledger
+	  //  
+	  //       Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
+	  //                         // in time without walking the chain back ledger by ledger
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.struct("LedgerHeader", [["previousLedgerHash", xdr.lookup("Hash")], ["txSetHash", xdr.lookup("Hash")], ["txSetResultHash", xdr.lookup("Hash")], ["bucketListHash", xdr.lookup("Hash")], ["ledgerSeq", xdr.lookup("Uint32")], ["closeTime", xdr.lookup("Uint64")], ["totalCoins", xdr.lookup("Int64")], ["feePool", xdr.lookup("Int64")], ["inflationSeq", xdr.lookup("Uint32")], ["idPool", xdr.lookup("Uint64")], ["baseFee", xdr.lookup("Int32")], ["baseReserve", xdr.lookup("Int32")], ["skipList", xdr.array(xdr.lookup("Hash"), 4)]]);
+	  xdr.struct("LedgerHeader", [["ledgerVersion", xdr.lookup("Uint32")], ["previousLedgerHash", xdr.lookup("Hash")], ["txSetHash", xdr.lookup("Hash")], ["txSetResultHash", xdr.lookup("Hash")], ["bucketListHash", xdr.lookup("Hash")], ["ledgerSeq", xdr.lookup("Uint32")], ["closeTime", xdr.lookup("Uint64")], ["totalCoins", xdr.lookup("Int64")], ["feePool", xdr.lookup("Int64")], ["inflationSeq", xdr.lookup("Uint32")], ["idPool", xdr.lookup("Uint64")], ["baseFee", xdr.lookup("Int32")], ["baseReserve", xdr.lookup("Int32")], ["skipList", xdr.array(xdr.lookup("Hash"), 4)]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -21666,14 +21504,14 @@ var StellarBase =
 	  //       {
 	  //           AccountID accountID;
 	  //       } account;
-	  //
+	  //  
 	  //   case TRUSTLINE:
 	  //       struct
 	  //       {
 	  //           AccountID accountID;
 	  //           Currency currency;
 	  //       } trustLine;
-	  //
+	  //  
 	  //   case OFFER:
 	  //       struct
 	  //       {
@@ -21714,7 +21552,7 @@ var StellarBase =
 	  //   {
 	  //   case LIVEENTRY:
 	  //       LedgerEntry liveEntry;
-	  //
+	  //  
 	  //   case DEADENTRY:
 	  //       LedgerKey deadEntry;
 	  //   };
@@ -21847,27 +21685,16 @@ var StellarBase =
 
 	  // === xdr source ============================================================
 	  //
-	  //   struct StellarBallotValue
+	  //   struct StellarValue
 	  //   {
+	  //       uint32 ledgerVersion;
 	  //       Hash txSetHash;
 	  //       uint64 closeTime;
 	  //       uint32 baseFee;
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.struct("StellarBallotValue", [["txSetHash", xdr.lookup("Hash")], ["closeTime", xdr.lookup("Uint64")], ["baseFee", xdr.lookup("Uint32")]]);
-
-	  // === xdr source ============================================================
-	  //
-	  //   struct StellarBallot
-	  //   {
-	  //       uint256 nodeID;
-	  //       Signature signature;
-	  //       StellarBallotValue value;
-	  //   };
-	  //
-	  // ===========================================================================
-	  xdr.struct("StellarBallot", [["nodeId", xdr.lookup("Uint256")], ["signature", xdr.lookup("Signature")], ["value", xdr.lookup("StellarBallotValue")]]);
+	  xdr.struct("StellarValue", [["ledgerVersion", xdr.lookup("Uint32")], ["txSetHash", xdr.lookup("Hash")], ["closeTime", xdr.lookup("Uint64")], ["baseFee", xdr.lookup("Uint32")]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -21884,14 +21711,15 @@ var StellarBase =
 	  //
 	  //   struct Hello
 	  //   {
-	  //       int protocolVersion;
+	  //       uint32 ledgerVersion;
+	  //       uint32 overlayVersion;
 	  //       string versionStr<100>;
 	  //       int listeningPort;
-	  //       opaque peerID[32];
+	  //       NodeID peerID;
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.struct("Hello", [["protocolVersion", xdr.int()], ["versionStr", xdr.string(100)], ["listeningPort", xdr.int()], ["peerId", xdr.opaque(32)]]);
+	  xdr.struct("Hello", [["ledgerVersion", xdr.lookup("Uint32")], ["overlayVersion", xdr.lookup("Uint32")], ["versionStr", xdr.string(100)], ["listeningPort", xdr.int()], ["peerId", xdr.lookup("NodeId")]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -21912,15 +21740,15 @@ var StellarBase =
 	  //       ERROR_MSG = 0,
 	  //       HELLO = 1,
 	  //       DONT_HAVE = 2,
-	  //
+	  //  
 	  //       GET_PEERS = 3, // gets a list of peers this guy knows about
 	  //       PEERS = 4,
-	  //
+	  //  
 	  //       GET_TX_SET = 5, // gets a particular txset by hash
 	  //       TX_SET = 6,
-	  //
+	  //  
 	  //       TRANSACTION = 7, // pass on a tx you have heard about
-	  //
+	  //  
 	  //       // SCP
 	  //       GET_SCP_QUORUMSET = 8,
 	  //       SCP_QUORUMSET = 9,
@@ -21966,15 +21794,15 @@ var StellarBase =
 	  //       void;
 	  //   case PEERS:
 	  //       PeerAddress peers<>;
-	  //
+	  //  
 	  //   case GET_TX_SET:
 	  //       uint256 txSetHash;
 	  //   case TX_SET:
 	  //       TransactionSet txSet;
-	  //
+	  //  
 	  //   case TRANSACTION:
 	  //       TransactionEnvelope transaction;
-	  //
+	  //  
 	  //   // SCP
 	  //   case GET_SCP_QUORUMSET:
 	  //       uint256 qSetHash;
@@ -22014,6 +21842,255 @@ var StellarBase =
 
 	  // === xdr source ============================================================
 	  //
+	  //   typedef opaque Signature[64];
+	  //
+	  // ===========================================================================
+	  xdr.typedef("Signature", xdr.opaque(64));
+
+	  // === xdr source ============================================================
+	  //
+	  //   typedef opaque Hash[32];
+	  //
+	  // ===========================================================================
+	  xdr.typedef("Hash", xdr.opaque(32));
+
+	  // === xdr source ============================================================
+	  //
+	  //   typedef opaque uint256[32];
+	  //
+	  // ===========================================================================
+	  xdr.typedef("Uint256", xdr.opaque(32));
+
+	  // === xdr source ============================================================
+	  //
+	  //   typedef unsigned int uint32;
+	  //
+	  // ===========================================================================
+	  xdr.typedef("Uint32", xdr.uint());
+
+	  // === xdr source ============================================================
+	  //
+	  //   typedef unsigned hyper uint64;
+	  //
+	  // ===========================================================================
+	  xdr.typedef("Uint64", xdr.uhyper());
+
+	  // === xdr source ============================================================
+	  //
+	  //   typedef opaque Value<>;
+	  //
+	  // ===========================================================================
+	  xdr.typedef("Value", xdr.varOpaque());
+
+	  // === xdr source ============================================================
+	  //
+	  //   typedef opaque NodeID[32];
+	  //
+	  // ===========================================================================
+	  xdr.typedef("NodeId", xdr.opaque(32));
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct SCPBallot
+	  //   {
+	  //       uint32 counter; // n
+	  //       Value value;    // x
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpBallot", [["counter", xdr.lookup("Uint32")], ["value", xdr.lookup("Value")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   enum SCPStatementType
+	  //   {
+	  //       SCP_ST_PREPARE = 0,
+	  //       SCP_ST_CONFIRM = 1,
+	  //       SCP_ST_EXTERNALIZE = 2,
+	  //       SCP_ST_NOMINATE = 3
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr["enum"]("ScpStatementType", {
+	    scpStPrepare: 0,
+	    scpStConfirm: 1,
+	    scpStExternalize: 2,
+	    scpStNominate: 3 });
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct SCPNomination
+	  //   {
+	  //       Hash quorumSetHash; // D
+	  //       Value votes<>;      // X
+	  //       Value accepted<>;   // Y
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpNomination", [["quorumSetHash", xdr.lookup("Hash")], ["votes", xdr.varArray(xdr.lookup("Value"), 2147483647)], ["accepted", xdr.varArray(xdr.lookup("Value"), 2147483647)]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct
+	  //           {
+	  //               Hash quorumSetHash;       // D
+	  //               SCPBallot ballot;         // b
+	  //               SCPBallot* prepared;      // p
+	  //               SCPBallot* preparedPrime; // p'
+	  //               uint32 nC;                // n_c
+	  //               uint32 nP;                // n_P
+	  //           }
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpStatementPrepare", [["quorumSetHash", xdr.lookup("Hash")], ["ballot", xdr.lookup("ScpBallot")], ["prepared", xdr.option(xdr.lookup("ScpBallot"))], ["preparedPrime", xdr.option(xdr.lookup("ScpBallot"))], ["nC", xdr.lookup("Uint32")], ["nP", xdr.lookup("Uint32")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct
+	  //           {
+	  //               Hash quorumSetHash; // D
+	  //               uint32 nPrepared;   // n_p
+	  //               SCPBallot commit;   // c
+	  //               uint32 nP;          // n_P
+	  //           }
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpStatementConfirm", [["quorumSetHash", xdr.lookup("Hash")], ["nPrepared", xdr.lookup("Uint32")], ["commit", xdr.lookup("ScpBallot")], ["nP", xdr.lookup("Uint32")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct
+	  //           {
+	  //               SCPBallot commit; // c
+	  //               uint32 nP;        // n_P
+	  //               // not from the paper, but useful to build tooling to
+	  //               // traverse the graph based off only the latest statement
+	  //               Hash commitQuorumSetHash; // D used before EXTERNALIZE
+	  //           }
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpStatementExternalize", [["commit", xdr.lookup("ScpBallot")], ["nP", xdr.lookup("Uint32")], ["commitQuorumSetHash", xdr.lookup("Hash")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   union switch (SCPStatementType type)
+	  //       {
+	  //       case SCP_ST_PREPARE:
+	  //           struct
+	  //           {
+	  //               Hash quorumSetHash;       // D
+	  //               SCPBallot ballot;         // b
+	  //               SCPBallot* prepared;      // p
+	  //               SCPBallot* preparedPrime; // p'
+	  //               uint32 nC;                // n_c
+	  //               uint32 nP;                // n_P
+	  //           } prepare;
+	  //       case SCP_ST_CONFIRM:
+	  //           struct
+	  //           {
+	  //               Hash quorumSetHash; // D
+	  //               uint32 nPrepared;   // n_p
+	  //               SCPBallot commit;   // c
+	  //               uint32 nP;          // n_P
+	  //           } confirm;
+	  //       case SCP_ST_EXTERNALIZE:
+	  //           struct
+	  //           {
+	  //               SCPBallot commit; // c
+	  //               uint32 nP;        // n_P
+	  //               // not from the paper, but useful to build tooling to
+	  //               // traverse the graph based off only the latest statement
+	  //               Hash commitQuorumSetHash; // D used before EXTERNALIZE
+	  //           } externalize;
+	  //       case SCP_ST_NOMINATE:
+	  //           SCPNomination nominate;
+	  //       }
+	  //
+	  // ===========================================================================
+	  xdr.union("ScpStatementPledges", {
+	    switchOn: xdr.lookup("ScpStatementType"),
+	    switchName: "type",
+	    switches: {
+	      scpStPrepare: "prepare",
+	      scpStConfirm: "confirm",
+	      scpStExternalize: "externalize",
+	      scpStNominate: "nominate" },
+	    arms: {
+	      prepare: xdr.lookup("ScpStatementPrepare"),
+	      confirm: xdr.lookup("ScpStatementConfirm"),
+	      externalize: xdr.lookup("ScpStatementExternalize"),
+	      nominate: xdr.lookup("ScpNomination") } });
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct SCPStatement
+	  //   {
+	  //       NodeID nodeID;    // v
+	  //       uint64 slotIndex; // i
+	  //  
+	  //       union switch (SCPStatementType type)
+	  //       {
+	  //       case SCP_ST_PREPARE:
+	  //           struct
+	  //           {
+	  //               Hash quorumSetHash;       // D
+	  //               SCPBallot ballot;         // b
+	  //               SCPBallot* prepared;      // p
+	  //               SCPBallot* preparedPrime; // p'
+	  //               uint32 nC;                // n_c
+	  //               uint32 nP;                // n_P
+	  //           } prepare;
+	  //       case SCP_ST_CONFIRM:
+	  //           struct
+	  //           {
+	  //               Hash quorumSetHash; // D
+	  //               uint32 nPrepared;   // n_p
+	  //               SCPBallot commit;   // c
+	  //               uint32 nP;          // n_P
+	  //           } confirm;
+	  //       case SCP_ST_EXTERNALIZE:
+	  //           struct
+	  //           {
+	  //               SCPBallot commit; // c
+	  //               uint32 nP;        // n_P
+	  //               // not from the paper, but useful to build tooling to
+	  //               // traverse the graph based off only the latest statement
+	  //               Hash commitQuorumSetHash; // D used before EXTERNALIZE
+	  //           } externalize;
+	  //       case SCP_ST_NOMINATE:
+	  //           SCPNomination nominate;
+	  //       }
+	  //       pledges;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpStatement", [["nodeId", xdr.lookup("NodeId")], ["slotIndex", xdr.lookup("Uint64")], ["pledges", xdr.lookup("ScpStatementPledges")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct SCPEnvelope
+	  //   {
+	  //       SCPStatement statement;
+	  //       Signature signature;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpEnvelope", [["statement", xdr.lookup("ScpStatement")], ["signature", xdr.lookup("Signature")]]);
+
+	  // === xdr source ============================================================
+	  //
+	  //   struct SCPQuorumSet
+	  //   {
+	  //       uint32 threshold;
+	  //       Hash validators<>;
+	  //       SCPQuorumSet innerSets<>;
+	  //   };
+	  //
+	  // ===========================================================================
+	  xdr.struct("ScpQuorumSet", [["threshold", xdr.lookup("Uint32")], ["validators", xdr.varArray(xdr.lookup("Hash"), 2147483647)], ["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)]]);
+
+	  // === xdr source ============================================================
+	  //
 	  //   struct DecoratedSignature
 	  //   {
 	  //       opaque hint[4];    // first 4 bytes of the public key, used as a hint
@@ -22031,7 +22108,7 @@ var StellarBase =
 	  //       PAYMENT = 1,
 	  //       PATH_PAYMENT = 2,
 	  //       MANAGE_OFFER = 3,
-	  //   	CREATE_PASSIVE_OFFER = 4,
+	  //       CREATE_PASSIVE_OFFER = 4,
 	  //       SET_OPTIONS = 5,
 	  //       CHANGE_TRUST = 6,
 	  //       ALLOW_TRUST = 7,
@@ -22083,11 +22160,11 @@ var StellarBase =
 	  //       int64 sendMax;         // the maximum amount of sendCurrency to
 	  //                              // send (excluding fees).
 	  //                              // The operation will fail if can't be met
-	  //
+	  //  
 	  //       AccountID destination; // recipient of the payment
 	  //       Currency destCurrency; // what they end up with
 	  //       int64 destAmount;      // amount they end up with
-	  //
+	  //  
 	  //       Currency path<5>; // additional hops it must go through to get there
 	  //   };
 	  //
@@ -22102,7 +22179,7 @@ var StellarBase =
 	  //       Currency takerPays;
 	  //       int64 amount; // amount taker gets. if set to 0, delete the offer
 	  //       Price price;  // =takerPaysAmount/takerGetsAmount
-	  //
+	  //  
 	  //       // 0=create a new offer, otherwise edit an existing offer
 	  //       uint64 offerID;
 	  //   };
@@ -22128,14 +22205,14 @@ var StellarBase =
 	  //   struct SetOptionsOp
 	  //   {
 	  //       AccountID* inflationDest; // sets the inflation destination
-	  //
+	  //  
 	  //       uint32* clearFlags; // which flags to clear
 	  //       uint32* setFlags;   // which flags to set
-	  //
+	  //  
 	  //       Thresholds* thresholds; // update the thresholds for the account
-	  //
+	  //  
 	  //       string32* homeDomain; // sets the home domain
-	  //
+	  //  
 	  //       // Add, update or remove a signer for the account
 	  //       // signer is deleted if the weight is 0
 	  //       Signer* signer;
@@ -22149,7 +22226,7 @@ var StellarBase =
 	  //   struct ChangeTrustOp
 	  //   {
 	  //       Currency line;
-	  //
+	  //  
 	  //       // if limit is set to 0, deletes the trust line
 	  //       int64 limit;
 	  //   };
@@ -22164,7 +22241,7 @@ var StellarBase =
 	  //       // CURRENCY_TYPE_NATIVE is not allowed
 	  //       case CURRENCY_TYPE_ALPHANUM:
 	  //           opaque currencyCode[4];
-	  //
+	  //  
 	  //           // add other currency types here in the future
 	  //       }
 	  //
@@ -22187,11 +22264,11 @@ var StellarBase =
 	  //       // CURRENCY_TYPE_NATIVE is not allowed
 	  //       case CURRENCY_TYPE_ALPHANUM:
 	  //           opaque currencyCode[4];
-	  //
+	  //  
 	  //           // add other currency types here in the future
 	  //       }
 	  //       currency;
-	  //
+	  //  
 	  //       bool authorize;
 	  //   };
 	  //
@@ -22210,7 +22287,7 @@ var StellarBase =
 	  //           PathPaymentOp pathPaymentOp;
 	  //       case MANAGE_OFFER:
 	  //           ManageOfferOp manageOfferOp;
-	  //   	case CREATE_PASSIVE_OFFER:
+	  //       case CREATE_PASSIVE_OFFER:
 	  //           CreatePassiveOfferOp createPassiveOfferOp;
 	  //       case SET_OPTIONS:
 	  //           SetOptionsOp setOptionsOp;
@@ -22219,7 +22296,7 @@ var StellarBase =
 	  //       case ALLOW_TRUST:
 	  //           AllowTrustOp allowTrustOp;
 	  //       case ACCOUNT_MERGE:
-	  //           uint256 destination;
+	  //           AccountID destination;
 	  //       case INFLATION:
 	  //           void;
 	  //       }
@@ -22248,7 +22325,7 @@ var StellarBase =
 	      setOptionsOp: xdr.lookup("SetOptionsOp"),
 	      changeTrustOp: xdr.lookup("ChangeTrustOp"),
 	      allowTrustOp: xdr.lookup("AllowTrustOp"),
-	      destination: xdr.lookup("Uint256") } });
+	      destination: xdr.lookup("AccountId") } });
 
 	  // === xdr source ============================================================
 	  //
@@ -22258,7 +22335,7 @@ var StellarBase =
 	  //       // if not set, the runtime defaults to "account" specified at
 	  //       // the transaction level
 	  //       AccountID* sourceAccount;
-	  //
+	  //  
 	  //       union switch (OperationType type)
 	  //       {
 	  //       case CREATE_ACCOUNT:
@@ -22269,7 +22346,7 @@ var StellarBase =
 	  //           PathPaymentOp pathPaymentOp;
 	  //       case MANAGE_OFFER:
 	  //           ManageOfferOp manageOfferOp;
-	  //   	case CREATE_PASSIVE_OFFER:
+	  //       case CREATE_PASSIVE_OFFER:
 	  //           CreatePassiveOfferOp createPassiveOfferOp;
 	  //       case SET_OPTIONS:
 	  //           SetOptionsOp setOptionsOp;
@@ -22278,7 +22355,7 @@ var StellarBase =
 	  //       case ALLOW_TRUST:
 	  //           AllowTrustOp allowTrustOp;
 	  //       case ACCOUNT_MERGE:
-	  //           uint256 destination;
+	  //           AccountID destination;
 	  //       case INFLATION:
 	  //           void;
 	  //       }
@@ -22356,18 +22433,18 @@ var StellarBase =
 	  //   {
 	  //       // account used to run the transaction
 	  //       AccountID sourceAccount;
-	  //
+	  //  
 	  //       // the fee the sourceAccount will pay
 	  //       int32 fee;
-	  //
+	  //  
 	  //       // sequence number to consume in the account
 	  //       SequenceNumber seqNum;
-	  //
+	  //  
 	  //       // validity range (inclusive) for the last ledger close time
 	  //       TimeBounds* timeBounds;
-	  //
+	  //  
 	  //       Memo memo;
-	  //
+	  //  
 	  //       Operation operations<100>;
 	  //   };
 	  //
@@ -22392,16 +22469,18 @@ var StellarBase =
 	  //       // emited to identify the offer
 	  //       AccountID offerOwner; // Account that owns the offer
 	  //       uint64 offerID;
-	  //
+	  //  
 	  //       // amount and currency taken from the owner
 	  //       Currency currencyClaimed;
 	  //       int64 amountClaimed;
-	  //
-	  //       // should we also include the amount that the owner gets in return?
+	  //  
+	  //       // amount and currencysent to the owner
+	  //       Currency currencySend;
+	  //       int64 amountSend;
 	  //   };
 	  //
 	  // ===========================================================================
-	  xdr.struct("ClaimOfferAtom", [["offerOwner", xdr.lookup("AccountId")], ["offerId", xdr.lookup("Uint64")], ["currencyClaimed", xdr.lookup("Currency")], ["amountClaimed", xdr.lookup("Int64")]]);
+	  xdr.struct("ClaimOfferAtom", [["offerOwner", xdr.lookup("AccountId")], ["offerId", xdr.lookup("Uint64")], ["currencyClaimed", xdr.lookup("Currency")], ["amountClaimed", xdr.lookup("Int64")], ["currencySend", xdr.lookup("Currency")], ["amountSend", xdr.lookup("Int64")]]);
 
 	  // === xdr source ============================================================
 	  //
@@ -22409,7 +22488,7 @@ var StellarBase =
 	  //   {
 	  //       // codes considered as "success" for the operation
 	  //       CREATE_ACCOUNT_SUCCESS = 0, // account was created
-	  //
+	  //  
 	  //       // codes considered as "failure" for the operation
 	  //       CREATE_ACCOUNT_MALFORMED = 1,   // invalid destination
 	  //       CREATE_ACCOUNT_UNDERFUNDED = 2, // not enough funds in source account
@@ -22451,7 +22530,7 @@ var StellarBase =
 	  //   {
 	  //       // codes considered as "success" for the operation
 	  //       PAYMENT_SUCCESS = 0, // payment successfuly completed
-	  //
+	  //  
 	  //       // codes considered as "failure" for the operation
 	  //       PAYMENT_MALFORMED = -1,      // bad input
 	  //       PAYMENT_UNDERFUNDED = -2,    // not enough funds in source account
@@ -22496,7 +22575,7 @@ var StellarBase =
 	  //   {
 	  //       // codes considered as "success" for the operation
 	  //       PATH_PAYMENT_SUCCESS = 0, // success
-	  //
+	  //  
 	  //       // codes considered as "failure" for the operation
 	  //       PATH_PAYMENT_MALFORMED = -1,      // bad input
 	  //       PATH_PAYMENT_UNDERFUNDED = -2,    // not enough funds in source account
@@ -22574,7 +22653,7 @@ var StellarBase =
 	  //   {
 	  //       // codes considered as "success" for the operation
 	  //       MANAGE_OFFER_SUCCESS = 0,
-	  //
+	  //  
 	  //       // codes considered as "failure" for the operation
 	  //       MANAGE_OFFER_MALFORMED = -1,      // generated offer would be invalid
 	  //       MANAGE_OFFER_NO_TRUST = -2,       // can't hold what it's buying
@@ -22582,11 +22661,11 @@ var StellarBase =
 	  //       MANAGE_OFFER_LINE_FULL = -4,      // can't receive more of what it's buying
 	  //       MANAGE_OFFER_UNDERFUNDED = -5,    // doesn't hold what it's trying to sell
 	  //       MANAGE_OFFER_CROSS_SELF = -6,     // would cross an offer from the same user
-	  //
+	  //  
 	  //       // update errors
 	  //       MANAGE_OFFER_NOT_FOUND = -7, // offerID does not match an existing offer
 	  //       MANAGE_OFFER_MISMATCH = -8,  // currencies don't match offer
-	  //
+	  //  
 	  //       MANAGE_OFFER_LOW_RESERVE = -9 // not enough funds to create a new Offer
 	  //   };
 	  //
@@ -22646,7 +22725,7 @@ var StellarBase =
 	  //   {
 	  //       // offers that got claimed while creating this offer
 	  //       ClaimOfferAtom offersClaimed<>;
-	  //
+	  //  
 	  //       union switch (ManageOfferEffect effect)
 	  //       {
 	  //       case MANAGE_OFFER_CREATED:
@@ -22693,7 +22772,7 @@ var StellarBase =
 	  //       SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
 	  //       SET_OPTIONS_INVALID_INFLATION = -4, // inflation account does not exist
 	  //       SET_OPTIONS_CANT_CHANGE = -5,       // can no longer change this option
-	  //       SET_OPTIONS_UNKNOWN_FLAG = -6		// can't set an unknown flag
+	  //       SET_OPTIONS_UNKNOWN_FLAG = -6       // can't set an unknown flag
 	  //   };
 	  //
 	  // ===========================================================================
@@ -22774,9 +22853,9 @@ var StellarBase =
 	  //       // codes considered as "failure" for the operation
 	  //       ALLOW_TRUST_MALFORMED = -1,     // currency is not CURRENCY_TYPE_ALPHANUM
 	  //       ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
-	  //   									// source account does not require trust
+	  //                                       // source account does not require trust
 	  //       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-	  //       ALLOW_TRUST_CANT_REVOKE = -4    // source account can't revoke trust
+	  //       ALLOW_TRUST_CANT_REVOKE = -4 // source account can't revoke trust
 	  //   };
 	  //
 	  // ===========================================================================
@@ -22897,7 +22976,7 @@ var StellarBase =
 	  //   enum OperationResultCode
 	  //   {
 	  //       opINNER = 0, // inner object result is valid
-	  //
+	  //  
 	  //       opBAD_AUTH = -1,  // not enough signatures to perform operation
 	  //       opNO_ACCOUNT = -2 // source account was not found
 	  //   };
@@ -23009,14 +23088,14 @@ var StellarBase =
 	  //   enum TransactionResultCode
 	  //   {
 	  //       txSUCCESS = 0, // all operations succeeded
-	  //
+	  //  
 	  //       txFAILED = -1, // one of the operations failed (but none were applied)
-	  //
+	  //  
 	  //       txTOO_EARLY = -2,         // ledger closeTime before minTime
 	  //       txTOO_LATE = -3,          // ledger closeTime after maxTime
 	  //       txMISSING_OPERATION = -4, // no operation was specified
 	  //       txBAD_SEQ = -5,           // sequence number does not match source account
-	  //
+	  //  
 	  //       txBAD_AUTH = -6,             // not enough signatures to perform transaction
 	  //       txINSUFFICIENT_BALANCE = -7, // fee would bring account below reserve
 	  //       txNO_ACCOUNT = -8,           // source account not found
@@ -23067,7 +23146,7 @@ var StellarBase =
 	  //   struct TransactionResult
 	  //   {
 	  //       int64 feeCharged; // actual fee charged for the transaction
-	  //
+	  //  
 	  //       union switch (TransactionResultCode code)
 	  //       {
 	  //       case txSUCCESS:
@@ -23161,14 +23240,14 @@ var StellarBase =
 	  //   {
 	  //   case CURRENCY_TYPE_NATIVE:
 	  //       void;
-	  //
+	  //  
 	  //   case CURRENCY_TYPE_ALPHANUM:
 	  //       struct
 	  //       {
 	  //           opaque currencyCode[4];
 	  //           AccountID issuer;
 	  //       } alphaNum;
-	  //
+	  //  
 	  //       // add other currency types here in the future
 	  //   };
 	  //
@@ -23195,9 +23274,6 @@ var StellarBase =
 	});
 	module.exports = types;
 
-	// commenting below until recursive lookups are supported
-	//["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
-
 /***/ },
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
@@ -23214,7 +23290,7 @@ var StellarBase =
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(38)));
 
-	var _config = __webpack_require__(74);
+	var _config = __webpack_require__(72);
 
 	_defaults(exports, _interopRequireWildcard(_config));
 
@@ -25626,6 +25702,8 @@ var StellarBase =
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(40)));
 
+	_defaults(exports, _interopRequireWildcard(__webpack_require__(58)));
+
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(59)));
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(60)));
@@ -25634,9 +25712,9 @@ var StellarBase =
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(62)));
 
-	_defaults(exports, _interopRequireWildcard(__webpack_require__(63)));
-
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(39)));
+
+	_defaults(exports, _interopRequireWildcard(__webpack_require__(63)));
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(64)));
 
@@ -25652,9 +25730,7 @@ var StellarBase =
 
 	_defaults(exports, _interopRequireWildcard(__webpack_require__(70)));
 
-	_defaults(exports, _interopRequireWildcard(__webpack_require__(71)));
-
-	_defaults(exports, _interopRequireWildcard(__webpack_require__(73)));
+	_defaults(exports, _interopRequireWildcard(__webpack_require__(74)));
 
 /***/ },
 /* 39 */
@@ -27163,30 +27239,6 @@ var StellarBase =
 /* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 Copyright 2013 Daniel Wirtz <dcode@dcode.io>
-	 Copyright 2009 The Closure Library Authors. All Rights Reserved.
-
-	 Licensed under the Apache License, Version 2.0 (the "License");
-	 you may not use this file except in compliance with the License.
-	 You may obtain a copy of the License at
-
-	 http://www.apache.org/licenses/LICENSE-2.0
-
-	 Unless required by applicable law or agreed to in writing, software
-	 distributed under the License is distributed on an "AS-IS" BASIS,
-	 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 See the License for the specific language governing permissions and
-	 limitations under the License.
-	 */
-
-	module.exports = __webpack_require__(57);
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {/*
 	 Copyright 2013 Daniel Wirtz <dcode@dcode.io>
 	 Copyright 2009 The Closure Library Authors. All Rights Reserved.
@@ -27753,6 +27805,8 @@ var StellarBase =
 	     * @expose
 	     */
 	    Long.prototype.greaterThanOrEqual = function(other) {
+	        if (!Long.isLong(other))
+	            other = Long.fromValue(other);
 	        return this.compare(other) >= 0;
 	    };
 
@@ -28123,7 +28177,7 @@ var StellarBase =
 
 	    /* CommonJS */ if ("function" === 'function' && typeof module === 'object' && module && typeof exports === 'object' && exports)
 	        module["exports"] = Long;
-	    /* AMD */ else if ("function" === 'function' && __webpack_require__(58)["amd"])
+	    /* AMD */ else if ("function" === 'function' && __webpack_require__(57)["amd"])
 	        !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return Long; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    /* Global */ else
 	        (global["dcodeIO"] = global["dcodeIO"] || {})["Long"] = Long;
@@ -28133,14 +28187,14 @@ var StellarBase =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 59 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28221,7 +28275,7 @@ var StellarBase =
 	UnsignedHyper.MIN_VALUE = new UnsignedHyper(Long.MIN_VALUE.low, Long.MIN_VALUE.high);
 
 /***/ },
-/* 60 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28258,7 +28312,7 @@ var StellarBase =
 	includeIoMixin(Float);
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28295,7 +28349,7 @@ var StellarBase =
 	includeIoMixin(Double);
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28327,7 +28381,7 @@ var StellarBase =
 	includeIoMixin(Quadruple);
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28372,7 +28426,7 @@ var StellarBase =
 	includeIoMixin(Bool);
 
 /***/ },
-/* 64 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
@@ -28430,7 +28484,7 @@ var StellarBase =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).Buffer))
 
 /***/ },
-/* 65 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
@@ -28499,7 +28553,7 @@ var StellarBase =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).Buffer))
 
 /***/ },
-/* 66 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28582,7 +28636,7 @@ var StellarBase =
 	includeIoMixin(Array.prototype);
 
 /***/ },
-/* 67 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28678,7 +28732,7 @@ var StellarBase =
 	includeIoMixin(VarArray.prototype);
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28693,7 +28747,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var Bool = __webpack_require__(63).Bool;
+	var Bool = __webpack_require__(62).Bool;
 
 	var _lodash = __webpack_require__(14);
 
@@ -28748,7 +28802,7 @@ var StellarBase =
 	includeIoMixin(Option.prototype);
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28784,7 +28838,7 @@ var StellarBase =
 	includeIoMixin(Void);
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28870,7 +28924,7 @@ var StellarBase =
 	      }
 	    },
 	    create: {
-	      value: function create(name, members) {
+	      value: function create(context, name, members) {
 	        var ChildEnum = (function (_Enum) {
 	          var _class = function ChildEnum() {
 	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -28888,6 +28942,8 @@ var StellarBase =
 	        })(Enum);
 
 	        ChildEnum.enumName = name;
+	        context.results[name] = ChildEnum;
+
 	        ChildEnum._members = {};
 	        ChildEnum._byValue = new _core.Map();
 
@@ -28911,7 +28967,7 @@ var StellarBase =
 	includeIoMixin(Enum);
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28924,7 +28980,7 @@ var StellarBase =
 
 	var _get = __webpack_require__(55)["default"];
 
-	var _slicedToArray = __webpack_require__(72)["default"];
+	var _slicedToArray = __webpack_require__(71)["default"];
 
 	var _core = __webpack_require__(36)["default"];
 
@@ -28940,6 +28996,8 @@ var StellarBase =
 	var map = _lodash.map;
 	var isUndefined = _lodash.isUndefined;
 	var zipObject = _lodash.zipObject;
+
+	var Reference = __webpack_require__(72).Reference;
 
 	var includeIoMixin = _interopRequire(__webpack_require__(42));
 
@@ -28988,7 +29046,7 @@ var StellarBase =
 	      }
 	    },
 	    create: {
-	      value: function create(name, fields) {
+	      value: function create(context, name, fields) {
 	        var ChildStruct = (function (_Struct) {
 	          var _class = function ChildStruct() {
 	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -29007,9 +29065,22 @@ var StellarBase =
 
 	        ChildStruct.structName = name;
 
-	        ChildStruct._fields = fields;
+	        context.results[name] = ChildStruct;
 
-	        each(fields, function (field) {
+	        ChildStruct._fields = fields.map(function (_ref) {
+	          var _ref2 = _slicedToArray(_ref, 2);
+
+	          var name = _ref2[0];
+	          var field = _ref2[1];
+
+	          if (field instanceof Reference) {
+	            field = field.resolve(context);
+	          }
+
+	          return [name, field];
+	        });
+
+	        each(ChildStruct._fields, function (field) {
 	          var _field = _slicedToArray(field, 1);
 
 	          var fieldName = _field[0];
@@ -29038,7 +29109,7 @@ var StellarBase =
 	}
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -29066,7 +29137,7 @@ var StellarBase =
 	exports.__esModule = true;
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -29076,196 +29147,6 @@ var StellarBase =
 	var _createClass = __webpack_require__(46)["default"];
 
 	var _inherits = __webpack_require__(45)["default"];
-
-	var _get = __webpack_require__(55)["default"];
-
-	var _core = __webpack_require__(36)["default"];
-
-	var _interopRequire = __webpack_require__(41)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _lodash = __webpack_require__(14);
-
-	var each = _lodash.each;
-	var isUndefined = _lodash.isUndefined;
-
-	var Void = __webpack_require__(69).Void;
-
-	var includeIoMixin = _interopRequire(__webpack_require__(42));
-
-	var Union = exports.Union = (function () {
-	  function Union(aSwitch, value) {
-	    _classCallCheck(this, Union);
-
-	    this.set(aSwitch, value);
-	  }
-
-	  _createClass(Union, {
-	    set: {
-	      value: function set(aSwitch, value) {
-	        if (!(aSwitch instanceof this.constructor._switchOn)) {
-	          aSwitch = this.constructor._switchOn.fromName(aSwitch);
-	        }
-
-	        this._switch = aSwitch;
-	        this._arm = this.constructor.armForSwitch(this._switch);
-	        this._armType = this.constructor.armTypeForArm(this._arm);
-	        this._value = value;
-	      }
-	    },
-	    get: {
-	      value: function get() {
-	        var armName = arguments[0] === undefined ? this._arm : arguments[0];
-
-	        if (this._arm !== Void && this._arm !== armName) {
-	          throw new Error("" + armName + " not set");
-	        }
-	        return this._value;
-	      }
-	    },
-	    "switch": {
-	      value: function _switch() {
-	        return this._switch;
-	      }
-	    },
-	    arm: {
-	      value: function arm() {
-	        return this._arm;
-	      }
-	    },
-	    armType: {
-	      value: function armType() {
-	        return this._armType;
-	      }
-	    },
-	    value: {
-	      value: function value() {
-	        return this._value;
-	      }
-	    }
-	  }, {
-	    armForSwitch: {
-	      value: function armForSwitch(aSwitch) {
-
-	        var arm = this._switches.get(aSwitch);
-
-	        if (isUndefined(arm)) {
-	          throw new Error("Bad union switch: " + aSwitch);
-	        }
-
-	        return arm;
-	      }
-	    },
-	    armTypeForArm: {
-	      value: function armTypeForArm(arm) {
-	        if (arm === Void) {
-	          return Void;
-	        } else {
-	          return this._arms[arm];
-	        }
-	      }
-	    },
-	    read: {
-	      value: function read(io) {
-	        var aSwitch = this._switchOn.read(io);
-	        var arm = this.armForSwitch(aSwitch);
-	        var armType = this.armTypeForArm(arm);
-	        var value = armType.read(io);
-	        return new this(aSwitch, value);
-	      }
-	    },
-	    write: {
-	      value: function write(value, io) {
-	        if (!(value instanceof this)) {
-	          throw new Error("XDR Write Error: " + value + " is not a " + this.unionName);
-	        }
-
-	        this._switchOn.write(value["switch"](), io);
-	        value.armType().write(value.value(), io);
-	      }
-	    },
-	    isValid: {
-	      value: function isValid(value) {
-	        return value instanceof this;
-	      }
-	    },
-	    create: {
-	      value: function create(name, config) {
-	        var ChildUnion = (function (_Union) {
-	          var _class = function ChildUnion() {
-	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	              args[_key] = arguments[_key];
-	            }
-
-	            _classCallCheck(this, _class);
-
-	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
-	          };
-
-	          _inherits(_class, _Union);
-
-	          return _class;
-	        })(Union);
-
-	        ChildUnion.unionName = name;
-	        ChildUnion._switchOn = config.switchOn;
-	        ChildUnion._switches = new _core.Map();
-	        ChildUnion._arms = config.arms;
-
-	        each(ChildUnion._switchOn.values(), function (aSwitch) {
-
-	          // build the enum => arm map
-	          var arm = config.switches[aSwitch.name] || config.defaultArm;
-	          ChildUnion._switches.set(aSwitch, arm);
-
-	          // Add enum-based constrocutors
-	          ChildUnion[aSwitch.name] = function (value) {
-	            return new ChildUnion(aSwitch, value);
-	          };
-
-	          // Add enum-based "set" helpers
-	          ChildUnion.prototype[aSwitch.name] = function (value) {
-	            return this.set(aSwitch, value);
-	          };
-	        });
-
-	        // Add arm accessor helpers
-	        each(ChildUnion._arms, function (type, name) {
-	          if (type === Void) {
-	            return;
-	          }
-
-	          ChildUnion.prototype[name] = function () {
-	            return this.get(name);
-	          };
-	        });
-
-	        return ChildUnion;
-	      }
-	    }
-	  });
-
-	  return Union;
-	})();
-
-	includeIoMixin(Union);
-
-/***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _classCallCheck = __webpack_require__(44)["default"];
-
-	var _createClass = __webpack_require__(46)["default"];
-
-	var _inherits = __webpack_require__(45)["default"];
-
-	var _toConsumableArray = __webpack_require__(75)["default"];
 
 	var _interopRequireWildcard = __webpack_require__(37)["default"];
 
@@ -29287,7 +29168,7 @@ var StellarBase =
 	var map = _lodash.map;
 	var pick = _lodash.pick;
 
-	var sequencify = _interopRequire(__webpack_require__(76));
+	var sequencify = _interopRequire(__webpack_require__(73));
 
 	// types is the root
 	var types = {};
@@ -29302,7 +29183,7 @@ var StellarBase =
 	  return types;
 	}
 
-	var Reference = (function () {
+	var Reference = exports.Reference = (function () {
 	  function Reference() {
 	    _classCallCheck(this, Reference);
 	  }
@@ -29311,7 +29192,7 @@ var StellarBase =
 	    resolve: {
 	      /* jshint unused: false */
 
-	      value: function resolve(definitions) {
+	      value: function resolve(context) {
 	        throw new Error("implement resolve in child class");
 	      }
 	    }
@@ -29331,8 +29212,9 @@ var StellarBase =
 
 	  _createClass(SimpleReference, {
 	    resolve: {
-	      value: function resolve(definitions) {
-	        return definitions[this.name];
+	      value: function resolve(context) {
+	        var defn = context.definitions[this.name];
+	        return defn.resolve(context);
 	      }
 	    }
 	  });
@@ -29356,8 +29238,8 @@ var StellarBase =
 
 	  _createClass(ArrayReference, {
 	    resolve: {
-	      value: function resolve(definitions) {
-	        var resolvedChild = this.childReference.resolve(definitions);
+	      value: function resolve(context) {
+	        var resolvedChild = this.childReference.resolve(context);
 	        if (this.variable) {
 	          return new XDR.VarArray(resolvedChild, this.length);
 	        } else {
@@ -29382,8 +29264,8 @@ var StellarBase =
 
 	  _createClass(OptionReference, {
 	    resolve: {
-	      value: function resolve(definitions) {
-	        var resolvedChild = this.childReference.resolve(definitions);
+	      value: function resolve(context) {
+	        var resolvedChild = this.childReference.resolve(context);
 	        return new XDR.Option(resolvedChild);
 	      }
 	    }
@@ -29393,64 +29275,28 @@ var StellarBase =
 	})(Reference);
 
 	var Definition = (function () {
-	  function Definition(constructor, name) {
-	    var _this = this;
-
-	    for (var _len = arguments.length, config = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	      config[_key - 2] = arguments[_key];
-	    }
-
+	  function Definition(constructor, name, config) {
 	    _classCallCheck(this, Definition);
 
 	    this.constructor = constructor;
 	    this.name = name;
 	    this.config = config;
-	    this.dep = [];
-
-	    // walk the defintion config for Reference objects, push their names onto
-	    // this.deps so we can use sequencify to order our resolutions
-	    this._walkConfig(this.config, function (value) {
-	      if (value instanceof Reference) {
-	        _this.dep.push(value.name);
-	      }
-	    });
 	  }
 
 	  _createClass(Definition, {
-	    create: {
-	      value: function create(deps) {
-	        this._walkConfig(this.config, function (value, key, parent) {
-	          if (!(value instanceof Reference)) {
-	            return;
-	          }
+	    resolve: {
 
-	          var dep = value.resolve(deps);
+	      // resolve calls the constructor of this definition with the provided context
+	      // and this definitions config values.  The definitions constructor should
+	      // populate the final type on `context.results`, and may refer to other
+	      // definitions through `context.definitions`
 
-	          if (!dep) {
-	            // throw if the reference couldn't be resolved
-	            throw new Error("XDR Error:" + value.name + " could not be resolved.");
-	          } else {
-	            // overwrite the reference with the concrete value
-	            parent[key] = dep;
-	          }
-	        });
+	      value: function resolve(context) {
+	        if (this.name in context.results) {
+	          return context.results[this.name];
+	        }
 
-	        // actually create the concrete definition
-	        return this.constructor.apply(this, [this.name].concat(_toConsumableArray(this.config)));
-	      }
-	    },
-	    _walkConfig: {
-	      value: function _walkConfig(current, fn) {
-	        var _this = this;
-
-	        each(current, function (value, key) {
-	          fn(value, key, current);
-
-	          // recurse if the value is a nested object
-	          if (isPlainObject(value) || isArray(value)) {
-	            _this._walkConfig(value, fn);
-	          }
-	        });
+	        return this.constructor(context, this.name, this.config);
 	      }
 	    }
 	  });
@@ -29489,8 +29335,12 @@ var StellarBase =
 	      value: function typedef(name, config) {
 	        // let the reference resoltion system do it's thing
 	        // the "constructor" for a typedef just returns the resolved value
-	        var createTypedef = function (name, args) {
-	          return args;
+	        var createTypedef = function (context, name, value) {
+	          if (value instanceof Reference) {
+	            value = value.resolve(context);
+	          }
+	          context.results[name] = value;
+	          return value;
 	        };
 
 	        var result = new Definition(createTypedef, name, config);
@@ -29499,9 +29349,11 @@ var StellarBase =
 	    },
 	    "const": {
 	      value: function _const(name, config) {
-	        var createConst = function (name, args) {
-	          return args;
+	        var createConst = function (context, name, value) {
+	          context.results[name] = value;
+	          return value;
 	        };
+
 	        var result = new Definition(createConst, name, config);
 	        this.define(name, result);
 	      }
@@ -29611,22 +29463,11 @@ var StellarBase =
 	      value: function resolve() {
 	        var _this = this;
 
-	        var sequence = [];
-	        sequencify(this._definitions, map(this._definitions, function (d) {
-	          return d.name;
-	        }), sequence);
-
-	        each(sequence, function (name) {
-	          var defn = _this._definitions[name];
-	          var deps = pick.apply(undefined, [_this._destination].concat(_toConsumableArray(defn.dep)));
-	          var result = defn.create(deps);
-
-	          //Ensure we aren't redefining a name
-	          if (!isUndefined(_this._destination[name])) {
-	            throw new Error("XDR Error:" + name + " is already defined");
-	          }
-
-	          _this._destination[name] = result;
+	        each(this._definitions, function (defn, name) {
+	          defn.resolve({
+	            definitions: _this._definitions,
+	            results: _this._destination
+	          });
 	        });
 	      }
 	    }
@@ -29636,27 +29477,7 @@ var StellarBase =
 	})();
 
 /***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _core = __webpack_require__(36)["default"];
-
-	exports["default"] = function (arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-	    return arr2;
-	  } else {
-	    return _core.Array.from(arr);
-	  }
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 76 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*jshint node:true */
@@ -29708,7 +29529,218 @@ var StellarBase =
 
 
 /***/ },
-/* 77 */
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _classCallCheck = __webpack_require__(44)["default"];
+
+	var _createClass = __webpack_require__(46)["default"];
+
+	var _inherits = __webpack_require__(45)["default"];
+
+	var _get = __webpack_require__(55)["default"];
+
+	var _core = __webpack_require__(36)["default"];
+
+	var _interopRequire = __webpack_require__(41)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _lodash = __webpack_require__(14);
+
+	var each = _lodash.each;
+	var isUndefined = _lodash.isUndefined;
+
+	var Void = __webpack_require__(68).Void;
+
+	var Reference = __webpack_require__(72).Reference;
+
+	var includeIoMixin = _interopRequire(__webpack_require__(42));
+
+	var Union = exports.Union = (function () {
+	  function Union(aSwitch, value) {
+	    _classCallCheck(this, Union);
+
+	    this.set(aSwitch, value);
+	  }
+
+	  _createClass(Union, {
+	    set: {
+	      value: function set(aSwitch, value) {
+	        if (!(aSwitch instanceof this.constructor._switchOn)) {
+	          aSwitch = this.constructor._switchOn.fromName(aSwitch);
+	        }
+
+	        this._switch = aSwitch;
+	        this._arm = this.constructor.armForSwitch(this._switch);
+	        this._armType = this.constructor.armTypeForArm(this._arm);
+	        this._value = value;
+	      }
+	    },
+	    get: {
+	      value: function get() {
+	        var armName = arguments[0] === undefined ? this._arm : arguments[0];
+
+	        if (this._arm !== Void && this._arm !== armName) {
+	          throw new Error("" + armName + " not set");
+	        }
+	        return this._value;
+	      }
+	    },
+	    "switch": {
+	      value: function _switch() {
+	        return this._switch;
+	      }
+	    },
+	    arm: {
+	      value: function arm() {
+	        return this._arm;
+	      }
+	    },
+	    armType: {
+	      value: function armType() {
+	        return this._armType;
+	      }
+	    },
+	    value: {
+	      value: function value() {
+	        return this._value;
+	      }
+	    }
+	  }, {
+	    armForSwitch: {
+	      value: function armForSwitch(aSwitch) {
+
+	        var arm = this._switches.get(aSwitch);
+
+	        if (isUndefined(arm)) {
+	          throw new Error("Bad union switch: " + aSwitch);
+	        }
+
+	        return arm;
+	      }
+	    },
+	    armTypeForArm: {
+	      value: function armTypeForArm(arm) {
+	        if (arm === Void) {
+	          return Void;
+	        } else {
+	          return this._arms[arm];
+	        }
+	      }
+	    },
+	    read: {
+	      value: function read(io) {
+	        var aSwitch = this._switchOn.read(io);
+	        var arm = this.armForSwitch(aSwitch);
+	        var armType = this.armTypeForArm(arm);
+	        var value = armType.read(io);
+	        return new this(aSwitch, value);
+	      }
+	    },
+	    write: {
+	      value: function write(value, io) {
+	        if (!(value instanceof this)) {
+	          throw new Error("XDR Write Error: " + value + " is not a " + this.unionName);
+	        }
+
+	        this._switchOn.write(value["switch"](), io);
+	        value.armType().write(value.value(), io);
+	      }
+	    },
+	    isValid: {
+	      value: function isValid(value) {
+	        return value instanceof this;
+	      }
+	    },
+	    create: {
+	      value: function create(context, name, config) {
+	        var ChildUnion = (function (_Union) {
+	          var _class = function ChildUnion() {
+	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	              args[_key] = arguments[_key];
+	            }
+
+	            _classCallCheck(this, _class);
+
+	            _get(_core.Object.getPrototypeOf(_class.prototype), "constructor", this).apply(this, args);
+	          };
+
+	          _inherits(_class, _Union);
+
+	          return _class;
+	        })(Union);
+
+	        ChildUnion.unionName = name;
+	        context.results[name] = ChildUnion;
+
+	        if (config.switchOn instanceof Reference) {
+	          ChildUnion._switchOn = config.switchOn.resolve(context);
+	        } else {
+	          ChildUnion._switchOn = config.switchOn;
+	        }
+
+	        ChildUnion._switches = new _core.Map();
+	        ChildUnion._arms = {};
+
+	        each(config.arms, function (value, name) {
+	          if (value instanceof Reference) {
+	            value = value.resolve(context);
+	          }
+
+	          ChildUnion._arms[name] = value;
+	        });
+
+	        // resolve default arm
+	        var defaultArm = config.defaultArm;
+	        if (defaultArm instanceof Reference) {
+	          defaultArm = defaultArm.resolve(context);
+	        }
+
+	        each(ChildUnion._switchOn.values(), function (aSwitch) {
+
+	          // build the enum => arm map
+	          var arm = config.switches[aSwitch.name] || defaultArm;
+	          ChildUnion._switches.set(aSwitch, arm);
+
+	          // Add enum-based constrocutors
+	          ChildUnion[aSwitch.name] = function (value) {
+	            return new ChildUnion(aSwitch, value);
+	          };
+
+	          // Add enum-based "set" helpers
+	          ChildUnion.prototype[aSwitch.name] = function (value) {
+	            return this.set(aSwitch, value);
+	          };
+	        });
+
+	        // Add arm accessor helpers
+	        each(ChildUnion._arms, function (type, name) {
+	          if (type === Void) {
+	            return;
+	          }
+
+	          ChildUnion.prototype[name] = function () {
+	            return this.get(name);
+	          };
+	        });
+
+	        return ChildUnion;
+	      }
+	    }
+	  });
+
+	  return Union;
+	})();
+
+	includeIoMixin(Union);
+
+/***/ },
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
@@ -29739,7 +29771,7 @@ var StellarBase =
 	  (function () {
 	    // NOTE: we use commonjs style require here because es6 imports
 	    // can only occur at the top level.  thanks, obama.
-	    var ed25519 = __webpack_require__(78);
+	    var ed25519 = __webpack_require__(76);
 
 	    actualMethods.sign = function (data, secretKey) {
 	      data = new Buffer(data);
@@ -29783,14 +29815,14 @@ var StellarBase =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).Buffer))
 
 /***/ },
-/* 78 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./build/Release/native.node\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 /***/ },
-/* 79 */,
-/* 80 */
+/* 77 */,
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
@@ -29807,7 +29839,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var _signing = __webpack_require__(77);
+	var _signing = __webpack_require__(75);
 
 	var sign = _signing.sign;
 	var verify = _signing.verify;
