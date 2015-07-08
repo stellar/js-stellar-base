@@ -17,8 +17,9 @@ describe('Currency', function() {
         it("parses a ISO4217 currency object", function () {
             var currency = new StellarBase.Currency("USD", "gspbxqXqEUZkiCCEFFCN9Vu4FLucdjLLdLcsV6E82Qc1T7ehsTC");
             var xdr = currency.toXdrObject();
-            expect(xdr.toXDR("hex").toString())
-                .to.be.equal("0000000155534400899b2840ed5636c56ddc5f14b23975f79f1ba2388d2694e4c56ecdddc960e5ef");
+
+            expect(xdr).to.be.instanceof(StellarBase.xdr.Currency);
+            expect(() => xdr.toXDR('hex')).to.not.throw();
         });
     });
 });

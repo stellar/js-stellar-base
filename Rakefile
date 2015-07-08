@@ -22,8 +22,9 @@ namespace :xdr do
     require 'octokit'
     require 'base64'
     require 'fileutils'
+    FileUtils.rm_rf "xdr"
     FileUtils.mkdir_p "xdr"
-    
+
     client = Octokit::Client.new(:netrc => true)
 
     HAYASHI_XDR.each do |src|
@@ -41,8 +42,8 @@ namespace :xdr do
 
     paths = Pathname.glob("xdr/**/*.x")
     compilation = Xdrgen::Compilation.new(
-      paths, 
-      output_dir: "src/generated", 
+      paths,
+      output_dir: "src/generated",
       namespace:  "stellar-xdr",
       language:   :javascript
     )

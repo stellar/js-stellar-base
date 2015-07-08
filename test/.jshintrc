@@ -1,5 +1,6 @@
 {
   "esnext": true,
   "node": true,
-  "expr": true
+  "expr": true,
+  "-W033": true
 }

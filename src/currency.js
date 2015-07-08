@@ -17,16 +17,19 @@ export class Currency {
 
     /**
     * Returns a currency object from its XDR object representation.
-    * @param {xdr.Currency.iso4217} xdr - The currency xdr object.
+    * @param {xdr.Currency} cx - The currency xdr object.
     */
-    static fromOperation(xdr) {
-        if (xdr._switch.name == "currencyTypeNative") {
-            return this.native();
-        } else {
-            let code = xdr._value._attributes.currencyCode;
-            let issuer = encodeBase58Check("accountId", xdr._value._attributes.issuer);
-            return new this(code, issuer);
-        }
+    static fromOperation(cx) {
+      switch(cx.switch()) {
+        case xdr.CurrencyType.currencyTypeNative():
+          return this.native();
+        case xdr.CurrencyType.currencyTypeAlphanum():
+          let anum = cx.alphaNum();
+          let issuer = encodeBase58Check("accountId", anum.issuer().ed25519());
+          return new this(anum.currencyCode(), issuer);
+        default:
+          throw new Error(`Invalid currency type: ${cx.switch().name}`);
+      }
     }
 
     /**
@@ -55,13 +58,13 @@ export class Currency {
         if (this.isNative()) {
             return xdr.Currency.currencyTypeNative();
         } else {
-            // need to pad the currency code with the null byte
             var currencyType = new xdr.CurrencyAlphaNum({
                 currencyCode: this.code,
-                issuer: Keypair.fromAddress(this.issuer).publicKey()
+                issuer: Keypair.fromAddress(this.issuer).accountId()
             });
-            var currency = xdr.Currency.currencyTypeAlphanum();
-            currency.set("currencyTypeAlphanum", currencyType);
+
+            // return  xdr.Currency.currencyTypeAlphanum(currencyType);
+            var currency = new xdr.Currency("currencyTypeAlphanum", currencyType);
 
             return currency;
         }

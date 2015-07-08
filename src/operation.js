@@ -25,15 +25,14 @@ export class Operation {
             throw new Error("Must provide a starting balance");
         }
         let attributes = {};
-        attributes.destination  = Keypair.fromAddress(opts.destination).publicKey();
+        attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.startingBalance = Hyper.fromString(String(opts.startingBalance));
         let createAccount = new xdr.CreateAccountOp(attributes);
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.createAccount(createAccount);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -59,16 +58,15 @@ export class Operation {
         }
 
         let attributes = {};
-        attributes.destination  = Keypair.fromAddress(opts.destination).publicKey();
+        attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.currency     = opts.currency.toXdrObject();
         attributes.amount       = Hyper.fromString(String(opts.amount));
         let payment = new xdr.PaymentOp(attributes);
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.payment(payment);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -108,7 +106,7 @@ export class Operation {
         let attributes = {};
         attributes.sendCurrency = opts.sendCurrency.toXdrObject();
         attributes.sendMax      = Hyper.fromString(String(opts.sendMax));
-        attributes.destination  = Keypair.fromAddress(opts.destination).publicKey();
+        attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.destCurrency = opts.destCurrency.toXdrObject();
         attributes.destAmount       = Hyper.fromString(String(opts.destAmount));
         attributes.path         = opts.path ? opts.path : [];
@@ -116,9 +114,8 @@ export class Operation {
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.pathPayment(payment);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -146,9 +143,8 @@ export class Operation {
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -165,7 +161,7 @@ export class Operation {
     */
     static allowTrust(opts) {
         let attributes = {};
-        attributes.trustor = Keypair.fromAddress(opts.trustor).publicKey();
+        attributes.trustor = Keypair.fromAddress(opts.trustor).accountId();
         let code = opts.currencyCode.length == 3 ? opts.currencyCode + "\0" : opts.currencyCode;
         attributes.currency = xdr.AllowTrustOpCurrency.currencyTypeAlphanum(code);
         attributes.authorize = opts.authorize;
@@ -173,9 +169,8 @@ export class Operation {
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.allowTrust(allowTrustOp);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -207,39 +202,33 @@ export class Operation {
     */
     static setOptions(opts) {
         let attributes = {};
+
         if (opts.inflationDest) {
-            attributes.inflationDest = Keypair.fromAddress(opts.inflationDest).publicKey();
+            attributes.inflationDest = Keypair.fromAddress(opts.inflationDest).accountId();
         }
-        if (opts.clearFlags) {
-            attributes.clearFlags = opts.clearFlags;
-        }
-        if (opts.setFlags) {
-            attributes.setFlags = opts.setFlags;
-        }
-        if (opts.thresholds) {
-            var thresholds = [];
-            thresholds[0] = 0xFF & opts.thresholds.weight;
-            thresholds[1] = 0xFF & opts.thresholds.low;
-            thresholds[2] = 0xFF & opts.thresholds.medium;
-            thresholds[3] = 0xFF & opts.thresholds.high;
-            attributes.thresholds = thresholds;
-        }
+
+        attributes.clearFlags = opts.clearFlags;
+        attributes.setFlags = opts.setFlags;
+        attributes.masterWeight = opts.masterWeight;
+        attributes.lowThreshold = opts.lowThreshold;
+        attributes.medThreshold = opts.medThreshold;
+        attributes.highThreshold = opts.highThreshold;
+        attributes.homeDomain = opts.homeDomain;
+
         if (opts.signer) {
             let signer = new xdr.Signer({
-                pubKey: Keypair.fromAddress(opts.signer.address).publicKey(),
+                pubKey: Keypair.fromAddress(opts.signer.address).accountId(),
                 weight: opts.signer.weight
             });
             attributes.signer = signer;
         }
-        if (opts.homeDomain) {
-            attributes.homeDomain = opts.homeDomain;
-        }
+
         let setOptionsOp = new xdr.SetOptionsOp(attributes);
+
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.setOption(setOptionsOp);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -271,9 +260,8 @@ export class Operation {
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.manageOffer(manageOfferOp);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -305,9 +293,8 @@ export class Operation {
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.createPassiveOffer(createPassiveOfferOp);
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -322,11 +309,10 @@ export class Operation {
     static accountMerge(opts) {
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.accountMerge(
-            Keypair.fromAddress(opts.destination).publicKey()
+            Keypair.fromAddress(opts.destination).accountId()
         );
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
+
         let op = new xdr.Operation(opAttributes);
         return op;
     }
@@ -340,11 +326,15 @@ export class Operation {
     static inflation(opts={}) {
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.inflation();
-        if (opts.source) {
-            opAttributes.sourceAccount = Keypair.fromAddress(opts.source).publicKey();
-        }
+        this.setSourceAccount(opAttributes, opts);
         let op = new xdr.Operation(opAttributes);
         return op;
+    }
+
+    static setSourceAccount(opAttributes, opts) {
+      if (opts.source) {
+          opAttributes.sourceAccount = Keypair.fromAddress(opts.source).accountId();
+      }
     }
 
     /**
@@ -354,17 +344,22 @@ export class Operation {
     * @return {object}
     */
     static operationToObject(operation) {
+        function accountIdtoAddress(accountId) {
+          return encodeBase58Check("accountId", accountId.ed25519());
+        }
+
+
         let obj = {};
         let attrs = operation.body._value && operation.body._value._attributes;
-        switch (operation.body._switch.name) {
+        switch (operation.body.switch().name) {
             case "createAccount":
                 obj.type = "createAccount";
-                obj.destination = encodeBase58Check("accountId", attrs.destination);
+                obj.destination = accountIdtoAddress(attrs.destination);
                 obj.startingBalance = attrs.startingBalance.toString();
                 break;
             case "payment":
                 obj.type = "payment";
-                obj.destination = encodeBase58Check("accountId", attrs.destination);
+                obj.destination = accountIdtoAddress(attrs.destination);
                 obj.currency = Currency.fromOperation(attrs.currency);
                 obj.amount = attrs.amount.toString();
                 break;
@@ -372,7 +367,7 @@ export class Operation {
                 obj.type = "pathPayment";
                 obj.sendCurrency = Currency.fromOperation(attrs.sendCurrency);
                 obj.sendMax = attrs.sendMax.toString();
-                obj.destination = encodeBase58Check("accountId", attrs.destination);
+                obj.destination = accountIdtoAddress(attrs.destination);
                 obj.destCurrency = Currency.fromOperation(attrs.destCurrency);
                 obj.destAmount = attrs.destAmount.toString();
                 obj.path = attrs.path;
@@ -383,7 +378,7 @@ export class Operation {
                 break;
             case "allowTrust":
                 obj.type = "allowTrust";
-                obj.trustor = encodeBase58Check("accountId", attrs.trustor);
+                obj.trustor = accountIdtoAddress(attrs.trustor);
                 obj.currencyCode = attrs.currency._value.toString();
                 if (obj.currencyCode[3] === "\0") {
                     obj.currencyCode = obj.currencyCode.slice(0,3);
@@ -393,30 +388,22 @@ export class Operation {
             case "setOption":
                 obj.type = "setOptions";
                 if (attrs.inflationDest) {
-                    obj.inflationDest = encodeBase58Check("accountId", attrs.inflationDest);
+                    obj.inflationDest = accountIdtoAddress(attrs.inflationDest);
                 }
-                if (attrs.clearFlags) {
-                    obj.clearFlags = attrs.clearFlags;
-                }
-                if (attrs.setFlags) {
-                    obj.setFlags = attrs.setFlags;
-                }
-                if (attrs.thresholds) {
-                    obj.thresholds = {
-                        weight: Number(attrs.thresholds[0]),
-                        low: Number(attrs.thresholds[1]),
-                        medium: Number(attrs.thresholds[2]),
-                        high: Number(attrs.thresholds[3]),
-                    };
-                }
+
+                obj.clearFlags = attrs.clearFlags;
+                obj.setFlags = attrs.setFlags;
+                obj.masterWeight = attrs.masterWeight;
+                obj.lowThreshold = attrs.lowThreshold;
+                obj.medThreshold = attrs.medThreshold;
+                obj.highThreshold = attrs.highThreshold;
+                obj.homeDomain = attrs.homeDomain;
+
                 if (attrs.signer) {
                     let signer = {};
-                    signer.address = encodeBase58Check("accountId", attrs.signer._attributes.pubKey);
+                    signer.address = accountIdtoAddress(attrs.signer._attributes.pubKey);
                     signer.weight = attrs.signer._attributes.weight;
                     obj.signer = signer;
-                }
-                if (attrs.homeDomain) {
-                    obj.homeDomain = attrs.homeDomain;
                 }
                 break;
             case "manageOffer":
@@ -436,7 +423,7 @@ export class Operation {
                 break;
             case "accountMerge":
                 obj.type = "accountMerge";
-                obj.destination = encodeBase58Check("accountId", operation.body._value);
+                obj.destination = accountIdtoAddress(operation.body._value);
                 break;
             case "inflation":
                 obj.type = "inflation";

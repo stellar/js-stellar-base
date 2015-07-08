@@ -7,6 +7,49 @@
 namespace stellar
 {
 
+typedef PublicKey AccountID;
+typedef opaque Thresholds[4];
+typedef string string32<32>;
+typedef uint64 SequenceNumber;
+
+enum CurrencyType
+{
+    CURRENCY_TYPE_NATIVE = 0,
+    CURRENCY_TYPE_ALPHANUM = 1
+};
+
+union Currency switch (CurrencyType type)
+{
+case CURRENCY_TYPE_NATIVE:
+    void;
+
+case CURRENCY_TYPE_ALPHANUM:
+    struct
+    {
+        opaque currencyCode[4];
+        AccountID issuer;
+    } alphaNum;
+
+    // add other currency types here in the future
+};
+
+// price in fractional representation
+struct Price
+{
+    int32 n; // numerator
+    int32 d; // denominator
+};
+
+// the 'Thresholds' type is packed uint8_t values
+// defined by these indexes
+enum ThresholdIndexes
+{
+    THRESHOLD_MASTER_WEIGHT = 0,
+    THRESHOLD_LOW = 1,
+    THRESHOLD_MED = 2,
+    THRESHOLD_HIGH = 3
+};
+
 enum LedgerEntryType
 {
     ACCOUNT = 0,
@@ -16,7 +59,7 @@ enum LedgerEntryType
 
 struct Signer
 {
-    uint256 pubKey;
+    AccountID pubKey;
     uint32 weight; // really only need 1byte
 };
 
@@ -50,13 +93,21 @@ struct AccountEntry
     AccountID* inflationDest; // Account to vote during inflation
     uint32 flags;             // see AccountFlags
 
+    string32 homeDomain; // can be used for reverse federation and memo lookup
+
     // fields used for signatures
     // thresholds stores unsigned bytes: [weight of master|low|medium|high]
     Thresholds thresholds;
 
-    string32 homeDomain; // can be used for reverse federation and memo lookup
-
     Signer signers<20>; // possible signers for this account
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
 };
 
 /* TrustLineEntry
@@ -80,6 +131,14 @@ struct TrustLineEntry
 
     int64 limit;  // balance cannot be above this
     uint32 flags; // see TrustLineFlags
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
 };
 
 enum OfferEntryFlags
@@ -110,17 +169,33 @@ struct OfferEntry
     */
     Price price;
     uint32 flags; // see OfferEntryFlags
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
 };
 
 union LedgerEntry switch (LedgerEntryType type)
 {
 case ACCOUNT:
     AccountEntry account;
-
 case TRUSTLINE:
     TrustLineEntry trustLine;
-
 case OFFER:
     OfferEntry offer;
 };
+
+// list of all envelope types used in the application
+// those are prefixes used when building signatures for
+// the respective envelopes
+enum EnvelopeType
+{
+    ENVELOPE_TYPE_SCP = 1,
+    ENVELOPE_TYPE_TX = 2
+};
+
 }

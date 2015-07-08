@@ -4,7 +4,7 @@ let master      = StellarBase.Keypair.master();
 let destination = StellarBase.Keypair.fromSeed("sfmwkyBAPKz85JxLKtbrTmMnvnUbzYbjcps27QnhUfuUxKenARa");
 
 let tx = new StellarBase.xdr.Transaction({
-  sourceAccount: master.publicKey(),
+  sourceAccount: master.accountId(),
   maxFee:        1000,
   seqNum:        StellarBase.xdr.SequenceNumber.fromString("1"),
   minLedger:     0,
@@ -12,7 +12,7 @@ let tx = new StellarBase.xdr.Transaction({
 })
 
 let payment = new StellarBase.xdr.PaymentOp({
-  destination: destination.publicKey(),
+  destination: destination.accountId(),
   currency:    StellarBase.xdr.Currency.native(),
   path:        [],
   amount:      StellarBase.Hyper.fromString("200000000"),

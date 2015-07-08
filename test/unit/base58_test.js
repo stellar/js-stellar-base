@@ -1,6 +1,6 @@
 
 describe('StellarBase#decodeBase58', function() {
-  
+
   it("decodes correctly", function() {
 
     expectBuffersToBeEqual(StellarBase.decodeBase58("z"), new Buffer([0x39]));
@@ -17,7 +17,7 @@ describe('StellarBase#decodeBase58', function() {
 
 
 describe('StellarBase#encodeBase58', function() {
-  
+
   it("encodes a buffer correctly", function() {
     expect(StellarBase.encodeBase58(new Buffer([0x39]))).to.eql("z");
     expect(StellarBase.encodeBase58(new Buffer([0x00, 0x00, 0x00, 0x39]))).to.eql("gggz");
@@ -39,13 +39,13 @@ describe('StellarBase#encodeBase58', function() {
 
 
 var keypair          = StellarBase.Keypair.master();
-let unencodedBuffer  = keypair.publicKey();
+let unencodedBuffer  = keypair.rawPublicKey();
 let unencoded        = unencodedBuffer.toString();
 let accountIdEncoded = keypair.address();
 let seedEncoded      = StellarBase.encodeBase58Check("seed", unencodedBuffer);
 
 describe('StellarBase#decodeBase58Check', function() {
-  
+
   it("decodes correctly", function() {
     expectBuffersToBeEqual(StellarBase.decodeBase58Check("accountId", accountIdEncoded), unencodedBuffer);
     expectBuffersToBeEqual(StellarBase.decodeBase58Check("seed", seedEncoded), unencodedBuffer);
@@ -69,7 +69,7 @@ describe('StellarBase#decodeBase58Check', function() {
 
 
 describe('StellarBase#encodeBase58Check', function() {
-  
+
   it("encodes a buffer correctly", function() {
     expect(StellarBase.encodeBase58Check("accountId", unencodedBuffer)).to.eql(accountIdEncoded);
     expect(StellarBase.encodeBase58Check("seed", unencodedBuffer)).to.eql(seedEncoded);

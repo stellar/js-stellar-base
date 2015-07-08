@@ -44,12 +44,22 @@ export class Keypair {
     }
   }
 
+  accountId() {
+    return new xdr.AccountId.keyTypesEd25519(this._publicKey);
+  }
+
   publicKey() {
+    return new xdr.PublicKey.keyTypesEd25519(this._publicKey);
+  }
+
+  rawPublicKey() {
     return this._publicKey;
   }
 
-  publicKeyHint() {
-    return this._publicKey.slice(0,4);
+  signatureHint() {
+    let a = this.accountId().toXDR();
+
+    return a.slice(a.length - 4);
   }
 
   address() {
@@ -78,7 +88,7 @@ export class Keypair {
 
   signDecorated(data) {
     let signature = this.sign(data);
-    let hint      = this.publicKeyHint();
+    let hint      = this.signatureHint();
 
     return new xdr.DecoratedSignature({hint, signature});
   }

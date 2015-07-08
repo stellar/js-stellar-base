@@ -9,8 +9,8 @@ namespace stellar
 
 struct DecoratedSignature
 {
-    opaque hint[4];    // first 4 bytes of the public key, used as a hint
-    uint512 signature; // actual signature
+    SignatureHint hint;  // first 4 bytes of the public key, used as a hint
+    Signature signature; // actual signature
 };
 
 enum OperationType
@@ -132,7 +132,11 @@ struct SetOptionsOp
     uint32* clearFlags; // which flags to clear
     uint32* setFlags;   // which flags to set
 
-    Thresholds* thresholds; // update the thresholds for the account
+    // account threshold manipulation
+    uint32* masterWeight; // weight of the master account
+    uint32* lowThreshold;
+    uint32* medThreshold;
+    uint32* highThreshold;
 
     string32* homeDomain; // sets the home domain
 
@@ -202,7 +206,7 @@ Result: InflationResult
 struct Operation
 {
     // sourceAccount is the account used to run the operation
-    // if not set, the runtime defaults to "account" specified at
+    // if not set, the runtime defaults to "sourceAccount" specified at
     // the transaction level
     AccountID* sourceAccount;
 
@@ -275,7 +279,7 @@ struct Transaction
     AccountID sourceAccount;
 
     // the fee the sourceAccount will pay
-    int32 fee;
+    uint32 fee;
 
     // sequence number to consume in the account
     SequenceNumber seqNum;
@@ -286,6 +290,14 @@ struct Transaction
     Memo memo;
 
     Operation operations<100>;
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
 };
 
 /* A TransactionEnvelope wraps a transaction with signatures. */
@@ -321,11 +333,11 @@ enum CreateAccountResultCode
     CREATE_ACCOUNT_SUCCESS = 0, // account was created
 
     // codes considered as "failure" for the operation
-    CREATE_ACCOUNT_MALFORMED = 1,   // invalid destination
-    CREATE_ACCOUNT_UNDERFUNDED = 2, // not enough funds in source account
+    CREATE_ACCOUNT_MALFORMED = -1,   // invalid destination
+    CREATE_ACCOUNT_UNDERFUNDED = -2, // not enough funds in source account
     CREATE_ACCOUNT_LOW_RESERVE =
-        3, // would create an account below the min reserve
-    CREATE_ACCOUNT_ALREADY_EXIST = 4 // account already exists
+        -3, // would create an account below the min reserve
+    CREATE_ACCOUNT_ALREADY_EXIST = -4 // account already exists
 };
 
 union CreateAccountResult switch (CreateAccountResultCode code)
@@ -344,12 +356,14 @@ enum PaymentResultCode
     PAYMENT_SUCCESS = 0, // payment successfuly completed
 
     // codes considered as "failure" for the operation
-    PAYMENT_MALFORMED = -1,      // bad input
-    PAYMENT_UNDERFUNDED = -2,    // not enough funds in source account
-    PAYMENT_NO_DESTINATION = -3, // destination account does not exist
-    PAYMENT_NO_TRUST = -4, // destination missing a trust line for currency
-    PAYMENT_NOT_AUTHORIZED = -5, // destination not authorized to hold currency
-    PAYMENT_LINE_FULL = -6       // destination would go above their limit
+    PAYMENT_MALFORMED = -1,          // bad input
+    PAYMENT_UNDERFUNDED = -2,        // not enough funds in source account
+    PAYMENT_SRC_NO_TRUST = -3,       // no trust line on source account
+    PAYMENT_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
+    PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
+    PAYMENT_NO_TRUST = -6, // destination missing a trust line for currency
+    PAYMENT_NOT_AUTHORIZED = -7, // destination not authorized to hold currency
+    PAYMENT_LINE_FULL = -8       // destination would go above their limit
 };
 
 union PaymentResult switch (PaymentResultCode code)
@@ -368,15 +382,16 @@ enum PathPaymentResultCode
     PATH_PAYMENT_SUCCESS = 0, // success
 
     // codes considered as "failure" for the operation
-    PATH_PAYMENT_MALFORMED = -1,      // bad input
-    PATH_PAYMENT_UNDERFUNDED = -2,    // not enough funds in source account
-    PATH_PAYMENT_NO_DESTINATION = -3, // destination account does not exist
-    PATH_PAYMENT_NO_TRUST = -4, // destination missing a trust line for currency
-    PATH_PAYMENT_NOT_AUTHORIZED =
-        -5,                      // destination not authorized to hold currency
-    PATH_PAYMENT_LINE_FULL = -6, // destination would go above their limit
-    PATH_PAYMENT_TOO_FEW_OFFERS = -7, // not enough offers to satisfy path
-    PATH_PAYMENT_OVER_SENDMAX = -8    // could not satisfy sendmax
+    PATH_PAYMENT_MALFORMED = -1,          // bad input
+    PATH_PAYMENT_UNDERFUNDED = -2,        // not enough funds in source account
+    PATH_PAYMENT_SRC_NO_TRUST = -3,       // no trust line on source account
+    PATH_PAYMENT_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
+    PATH_PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
+    PATH_PAYMENT_NO_TRUST = -6,       // dest missing a trust line for currency
+    PATH_PAYMENT_NOT_AUTHORIZED = -7, // dest not authorized to hold currency
+    PATH_PAYMENT_LINE_FULL = -8,      // dest would go above their limit
+    PATH_PAYMENT_TOO_FEW_OFFERS = -9, // not enough offers to satisfy path
+    PATH_PAYMENT_OVER_SENDMAX = -10   // could not satisfy sendmax
 };
 
 struct SimplePaymentResult
@@ -406,18 +421,20 @@ enum ManageOfferResultCode
     MANAGE_OFFER_SUCCESS = 0,
 
     // codes considered as "failure" for the operation
-    MANAGE_OFFER_MALFORMED = -1,      // generated offer would be invalid
-    MANAGE_OFFER_NO_TRUST = -2,       // can't hold what it's buying
-    MANAGE_OFFER_NOT_AUTHORIZED = -3, // not authorized to sell or buy
-    MANAGE_OFFER_LINE_FULL = -4,      // can't receive more of what it's buying
-    MANAGE_OFFER_UNDERFUNDED = -5,    // doesn't hold what it's trying to sell
-    MANAGE_OFFER_CROSS_SELF = -6,     // would cross an offer from the same user
+    MANAGE_OFFER_MALFORMED = -1,     // generated offer would be invalid
+    MANAGE_OFFER_SELL_NO_TRUST = -2, // no trust line for what we're selling
+    MANAGE_OFFER_BUY_NO_TRUST = -3,  // no trust line for what we're buying
+    MANAGE_OFFER_SELL_NOT_AUTHORIZED = -4, // not authorized to sell
+    MANAGE_OFFER_BUY_NOT_AUTHORIZED = -5,  // not authorized to buy
+    MANAGE_OFFER_LINE_FULL = -6,   // can't receive more of what it's buying
+    MANAGE_OFFER_UNDERFUNDED = -7, // doesn't hold what it's trying to sell
+    MANAGE_OFFER_CROSS_SELF = -8,  // would cross an offer from the same user
 
     // update errors
-    MANAGE_OFFER_NOT_FOUND = -7, // offerID does not match an existing offer
-    MANAGE_OFFER_MISMATCH = -8,  // currencies don't match offer
+    MANAGE_OFFER_NOT_FOUND = -9, // offerID does not match an existing offer
+    MANAGE_OFFER_MISMATCH = -10, // currencies don't match offer
 
-    MANAGE_OFFER_LOW_RESERVE = -9 // not enough funds to create a new Offer
+    MANAGE_OFFER_LOW_RESERVE = -11 // not enough funds to create a new Offer
 };
 
 enum ManageOfferEffect
@@ -461,9 +478,11 @@ enum SetOptionsResultCode
     SET_OPTIONS_LOW_RESERVE = -1,      // not enough funds to add a signer
     SET_OPTIONS_TOO_MANY_SIGNERS = -2, // max number of signers already reached
     SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
-    SET_OPTIONS_INVALID_INFLATION = -4, // inflation account does not exist
-    SET_OPTIONS_CANT_CHANGE = -5,       // can no longer change this option
-    SET_OPTIONS_UNKNOWN_FLAG = -6       // can't set an unknown flag
+    SET_OPTIONS_INVALID_INFLATION = -4,      // inflation account does not exist
+    SET_OPTIONS_CANT_CHANGE = -5,            // can no longer change this option
+    SET_OPTIONS_UNKNOWN_FLAG = -6,           // can't set an unknown flag
+    SET_OPTIONS_THRESHOLD_OUT_OF_RANGE = -7, // bad value for weight/threshold
+    SET_OPTIONS_BAD_SIGNER = -8              // signer cannot be masterkey
 };
 
 union SetOptionsResult switch (SetOptionsResultCode code)
@@ -548,7 +567,7 @@ enum InflationResultCode
     INFLATION_NOT_TIME = -1
 };
 
-struct inflationPayout // or use PaymentResultAtom to limit types?
+struct InflationPayout // or use PaymentResultAtom to limit types?
 {
     AccountID destination;
     int64 amount;
@@ -557,7 +576,7 @@ struct inflationPayout // or use PaymentResultAtom to limit types?
 union InflationResult switch (InflationResultCode code)
 {
 case INFLATION_SUCCESS:
-    inflationPayout payouts<>;
+    InflationPayout payouts<>;
 default:
     void;
 };
@@ -635,5 +654,13 @@ struct TransactionResult
         void;
     }
     result;
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
 };
 }

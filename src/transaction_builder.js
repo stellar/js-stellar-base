@@ -92,10 +92,11 @@ export class TransactionBuilder {
     */
     build() {
         var attrs = {
-          sourceAccount: Keypair.fromAddress(this.source.address).publicKey(),
+          sourceAccount: Keypair.fromAddress(this.source.address).accountId(),
           fee:           this.fee,
           seqNum:        xdr.SequenceNumber.fromString(String(Number(this.source.sequence) + 1)),
-          memo:          this.memo
+          memo:          this.memo,
+          ext:           new xdr.TransactionExt(0),
         };
         if (this.timebounds) {
             attrs.timeBounds = new xdr.TimeBounds(this.timebounds);

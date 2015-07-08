@@ -101,12 +101,11 @@ describe('Operation', function() {
             opts.inflationDest = "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb";
             opts.clearFlags = 1;
             opts.setFlags = 1;
-            opts.thresholds = {
-                weight: 0,
-                low: 1,
-                medium: 2,
-                high: 3
-            };
+            opts.masterWeight = 0;
+            opts.lowThreshold = 1;
+            opts.medThreshold = 2;
+            opts.highThreshold = 3;
+
             opts.signer = {
                 address: "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb",
                 weight: 1
@@ -116,14 +115,16 @@ describe('Operation', function() {
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation._attributes);
+
             expect(obj.type).to.be.equal("setOptions");
             expect(obj.inflationDest).to.be.equal(opts.inflationDest);
             expect(obj.clearFlags).to.be.equal(opts.clearFlags);
             expect(obj.setFlags).to.be.equal(opts.setFlags);
-            expect(obj.thresholds.weight).to.be.equal(opts.thresholds.weight);
-            expect(obj.thresholds.low).to.be.equal(opts.thresholds.low);
-            expect(obj.thresholds.medium).to.be.equal(opts.thresholds.medium);
-            expect(obj.thresholds.high).to.be.equal(opts.thresholds.high);
+            expect(obj.masterWeight).to.be.equal(opts.masterWeight);
+            expect(obj.lowThreshold).to.be.equal(opts.lowThreshold);
+            expect(obj.medThreshold).to.be.equal(opts.medThreshold);
+            expect(obj.highThreshold).to.be.equal(opts.highThreshold);
+
             expect(obj.signer.address).to.be.equal(opts.signer.address);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
             expect(obj.homeDomain).to.be.equal(opts.homeDomain);
