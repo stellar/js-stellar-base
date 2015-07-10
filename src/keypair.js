@@ -86,6 +86,11 @@ export class Keypair {
     return sign(data, this._secretKey);
   }
 
+  verify(data, signature) {
+    return verify(data, signature, this._publicKey);
+  }
+
+
   signDecorated(data) {
     let signature = this.sign(data);
     let hint      = this.signatureHint();
