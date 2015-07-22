@@ -58,8 +58,11 @@ export function encodeCheck(versionByteName, data) {
 }
 
 function calculateChecksum(payload) {
-  let checksum = ("0000"+crc.crc16xmodem(payload).toString(16)).slice(-4); // Padding to 2 bytes
-  return new Buffer(checksum.match(/.{2}/g).reverse().join(""), 'hex'); // Little-endian
+  // This code calculates CRC16-XModem checksum of payload
+  // and returns it as Buffer in little-endian order.
+  let checksum = new Buffer(2);
+  checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
+  return checksum;
 }
 
 function verifyChecksum(expected, actual) {
