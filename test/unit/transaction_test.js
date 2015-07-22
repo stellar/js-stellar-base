@@ -25,4 +25,24 @@ describe('Transaction', function() {
     done();
   });
 
+
+  it("signs correctly", function() {
+    let source      = new StellarBase.Account("gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wn", 0);
+    let destination = "gsbkQ1tG4fEqk1sApdeQYZG9r19yVm28m2Zz72gRGjoDKTHi7UL";
+    let currency    = StellarBase.Currency.native();
+    let amount      = "2000";
+    let signer      = StellarBase.Keypair.master();
+
+    let tx = new StellarBase.TransactionBuilder(source)
+                .addOperation(StellarBase.Operation.payment({destination, currency, amount}))
+                .addSigner(signer)
+                .build();
+
+    let env = tx.toEnvelope();
+
+    let rawSig = env.signatures()[0].signature();
+    let verified = signer.verify(tx.hash(), rawSig);
+    expect(verified).to.equal(true);
+  });
+
 });

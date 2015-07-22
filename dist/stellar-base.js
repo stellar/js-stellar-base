@@ -2670,6 +2670,8 @@ var StellarBase =
 
 	var Operation = __webpack_require__(10).Operation;
 
+	var map = __webpack_require__(21).map;
+
 	var MAX_FEE = 1000;
 	var MIN_LEDGER = 0;
 	var MAX_LEDGER = 4294967295; // max uint32
@@ -2695,46 +2697,79 @@ var StellarBase =
 	        }
 	        // since this transaction is immutable, save the tx
 	        this.tx = envelope.tx();
-	        this.source = encodeBase58Check("accountId", envelope.tx().sourceAccount().ed25519());
-	        this.fee = envelope._attributes.tx._attributes.fee;
-	        this.sequence = envelope._attributes.tx._attributes.seqNum.toString();
-	        this.minLedger = envelope._attributes.tx._attributes.minLedger;
-	        this.maxLedger = envelope._attributes.tx._attributes.maxLedger;
-	        var operations = envelope._attributes.tx._attributes.operations;
-	        this.operations = [];
-	        for (var i = 0; i < operations.length; i++) {
-	            this.operations[i] = Operation.operationToObject(operations[i]._attributes);
-	        }
-	        var signatures = envelope._attributes.signatures;
-	        this.signatures = [];
-	        for (var i = 0; i < signatures.length; i++) {
-	            this.signatures[i] = signatures[i];
-	        }
+	        this.source = encodeBase58Check("accountId", this.tx.sourceAccount().ed25519());
+	        this.fee = this.tx.fee();
+	        this.sequence = this.tx.seqNum().toString();
+
+	        var operations = this.tx.operations() || [];
+	        this.operations = map(operations, function (op) {
+	            return Operation.operationToObject(op._attributes);
+	        });
+
+	        var signatures = envelope.signatures() || [];
+	        this.signatures = map(signatures, function (s) {
+	            return s;
+	        });
 	    }
 
 	    _createClass(Transaction, {
-	        addSignature: {
-
-	            /**
-	            * Adds a signature to this transaction.
-	            * @param signature
-	            */
-
-	            value: function addSignature(signature) {
-	                this.signatures.push(signature);
-	            }
-	        },
 	        sign: {
 
 	            /**
 	            * Signs the transaction with the given Keypair.
-	            * @param {Keypair} keypair
+	            * @param {Keypair[]} keypairs
 	            */
 
-	            value: function sign(keypair) {
-	                var tx_raw = this.tx.toXDR();
-	                var tx_hash = hash(tx_raw);
-	                return keypair.signDecorated(tx_hash);
+	            value: function sign() {
+	                for (var _len = arguments.length, keypairs = Array(_len), _key = 0; _key < _len; _key++) {
+	                    keypairs[_key] = arguments[_key];
+	                }
+
+	                var txHash = this.hash();
+	                var newSigs = map(keypairs, function (kp) {
+	                    return kp.signDecorated(txHash);
+	                });
+	                this.signatures.concat(newSigs);
+	            }
+	        },
+	        hash: {
+
+	            /**
+	            * Returns a hash for this transaction, suitable for signing.
+	            */
+
+	            value: (function (_hash) {
+	                var _hashWrapper = function hash() {
+	                    return _hash.apply(this, arguments);
+	                };
+
+	                _hashWrapper.toString = function () {
+	                    return _hash.toString();
+	                };
+
+	                return _hashWrapper;
+	            })(function () {
+	                return hash(this.signatureBase());
+	            })
+	        },
+	        signatureBase: {
+
+	            /**
+	            * Returns the "signature base" of this transaction, which is the value
+	            * that, when hashed, should be signed to create a signature that
+	            * validators on the Stellar Network will accept.
+	            *
+	            * It is composed of a 4 prefix bytes followed by the xdr-encoded form
+	            * of this transaction.
+	            */
+
+	            value: function signatureBase() {
+	                return Buffer.concat([this.signatureBasePrefix(), this.tx.toXDR()]);
+	            }
+	        },
+	        signatureBasePrefix: {
+	            value: function signatureBasePrefix() {
+	                return xdr.EnvelopeType.envelopeTypeTx().toXDR();
 	            }
 	        },
 	        toEnvelope: {
@@ -2763,6 +2798,8 @@ var StellarBase =
 
 	"use strict";
 
+	var _toConsumableArray = function (arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } };
+
 	var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
@@ -2784,6 +2821,8 @@ var StellarBase =
 	var Transaction = __webpack_require__(7).Transaction;
 
 	var Memo = __webpack_require__(11).Memo;
+
+	var map = __webpack_require__(21).map;
 
 	var FEE = 1000;
 	var MIN_LEDGER = 0;
@@ -2896,22 +2935,16 @@ var StellarBase =
 	                if (this.timebounds) {
 	                    attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
 	                }
-	                var tx = new xdr.Transaction(attrs);
+	                var xtx = new xdr.Transaction(attrs);
+	                xtx.operations(this.operations);
+	                var xenv = new xdr.TransactionEnvelope({ tx: xtx });
+
+	                var tx = new Transaction(xenv);
+
+	                tx.sign.apply(tx, _toConsumableArray(this.signers));
 
 	                this.source.sequence = this.source.sequence + 1;
-
-	                tx.operations(this.operations);
-
-	                var tx_raw = tx.toXDR();
-
-	                var tx_hash = hash(tx_raw);
-	                var signatures = [];
-	                for (var i = 0; i < this.signers.length; i++) {
-	                    signatures.push(this.signers[i].signDecorated(tx_hash));
-	                }
-	                var envelope = new xdr.TransactionEnvelope({ tx: tx, signatures: signatures });
-
-	                return new Transaction(envelope);
+	                return tx;
 	            }
 	        }
 	    });
@@ -28849,7 +28882,7 @@ var StellarBase =
 	  value: true
 	});
 
-	var BaseCursor = _interopRequire(__webpack_require__(82));
+	var BaseCursor = _interopRequire(__webpack_require__(83));
 
 	var calculatePadding = __webpack_require__(67).calculatePadding;
 
@@ -28899,7 +28932,7 @@ var StellarBase =
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(83);
+	var helpers = __webpack_require__(82);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -29379,6 +29412,47 @@ var StellarBase =
 /* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
+	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
+	var chrsz = 8;
+
+	function toArray(buf, bigEndian) {
+	  if ((buf.length % intSize) !== 0) {
+	    var len = buf.length + (intSize - (buf.length % intSize));
+	    buf = Buffer.concat([buf, zeroBuffer], len);
+	  }
+
+	  var arr = [];
+	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
+	  for (var i = 0; i < buf.length; i += intSize) {
+	    arr.push(fn.call(buf, i));
+	  }
+	  return arr;
+	}
+
+	function toBuffer(arr, size, bigEndian) {
+	  var buf = new Buffer(size);
+	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
+	  for (var i = 0; i < arr.length; i++) {
+	    fn.call(buf, arr[i], i * 4, true);
+	  }
+	  return buf;
+	}
+
+	function hash(buf, fn, hashSize, bigEndian) {
+	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
+	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
+	  return toBuffer(arr, hashSize, bigEndian);
+	}
+
+	module.exports = { hash: hash };
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var Cursor = function(buffer)
 	{
 		if (!(this instanceof Cursor))
@@ -29623,47 +29697,6 @@ var StellarBase =
 	};
 
 	module.exports = Cursor;
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
-
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
-	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
-	var chrsz = 8;
-
-	function toArray(buf, bigEndian) {
-	  if ((buf.length % intSize) !== 0) {
-	    var len = buf.length + (intSize - (buf.length % intSize));
-	    buf = Buffer.concat([buf, zeroBuffer], len);
-	  }
-
-	  var arr = [];
-	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
-	  for (var i = 0; i < buf.length; i += intSize) {
-	    arr.push(fn.call(buf, i));
-	  }
-	  return arr;
-	}
-
-	function toBuffer(arr, size, bigEndian) {
-	  var buf = new Buffer(size);
-	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
-	  for (var i = 0; i < arr.length; i++) {
-	    fn.call(buf, arr[i], i * 4, true);
-	  }
-	  return buf;
-	}
-
-	function hash(buf, fn, hashSize, bigEndian) {
-	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
-	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
-	  return toBuffer(arr, hashSize, bigEndian);
-	}
-
-	module.exports = { hash: hash };
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
