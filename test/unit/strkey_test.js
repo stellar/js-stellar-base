@@ -12,8 +12,8 @@ describe('StellarBase#decodeCheck', function() {
   });
 
   it("throws an error when the version byte is not defined", function() {
-    expect(() => StellarBase.decodeCheck("notreal", "gpvQBfBaMiGQZ2xUqW9KNR")).to.throw(/notreal is not a valid/);
-    expect(() => StellarBase.decodeCheck("broken", "n3GdokGwy1qJ11qLmsTzoL")).to.throw(/broken is not a valid/);
+    expect(() => StellarBase.decodeCheck("notreal", "GBPXXOA5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL")).to.throw(/notreal is not a valid/);
+    expect(() => StellarBase.decodeCheck("broken", "SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU")).to.throw(/broken is not a valid/);
   });
 
   it("throws an error when the version byte is wrong", function() {
