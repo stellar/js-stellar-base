@@ -25,10 +25,10 @@ In addition to the code generated from the XDR definition files (see [js-xdr](ht
 var StellarBase = require("stellar-base");
 
 // Create a keypair from a stellar secret seed
-var signer = StellarBase.Keypair.fromSeed("s3tUdZbCmLoMdrZ6nhqztatMFaiD85P54oVj93g1NeSBwWQpTnE");
+var signer = StellarBase.Keypair.fromSeed("SDSIBVHCCWHK7MZSGWJRLYTAESAZ6O4OQU4QS4YJQAQ2EGJXRJW7PYD3");
 
 // Create a keypair from a stellar address
-var verifier = StellarBase.Keypair.fromAddress("gsTe6bDX54bPwtUAm2TER4shBF8nQNVtEvB8fmRkRoWvq3Y8XmY")
+var verifier = StellarBase.Keypair.fromAddress("GDADKSW7B4WZAKFZ7YHESAEZQ5JC7WYSLTUNRTBTAY3R3JRZWXMNKXPN")
 
 // Produce a stellar compliant "decorated signature" that is compliant with stellar transactions
 var sig = signer.signDecorated("Hello world!") 
@@ -38,25 +38,20 @@ console.log(sig.signature()) // displays the 32 byte buffer of the signature
 
 ```
 
-This library also provides an impementation of base58 and base58check encoding, with support for the stellar alphabet:
+This library also provides an impementation of StrCheck encoding:
 
 ```javascript
 var StellarBase = require("stellar-base");
 
-var encoded = StellarBase.encodeBase58([0,0,0]); //  => "ggg"
-StellarBase.decodeBase58(encoded) // => Buffer([0,0,0])
-
-// we can also use check encoding
-
-StellarBase.encodeBase58Check("account_id", [0,0,0]) // => "gggghbdQd2"
-StellarBase.encodeBase58Check("seed", [0,0,0]) // => "aX9UTew55Eh"
+StellarBase.encodeCheck("accountId", [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]) // => "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF"
+StellarBase.encodeCheck("seed", [0,0,0]) // => "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSU2"
 
 // To prevent interpretation mistakes, you must pass the expected version byte
 // when decoding a check-encoded value
 
-encoded = StellarBase.encodeBase58Check("account_id", [0,0,0])
-StellarBase.decodeBase58Check("account_id", encoded) // => Buffer([0,0,0])
-StellarBase.decodeBase58Check("seed", encoded) # => throws Error: invalid version byte.  expected 0, got 33
+var encoded = StellarBase.encodeCheck("accountId", [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+StellarBase.decodeCheck("accountId", encoded) // => Buffer([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+StellarBase.decodeCheck("seed", encoded) // => throws Error: invalid version byte.
 
 ```
 
