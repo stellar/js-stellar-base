@@ -1,4 +1,4 @@
-import {decodeBase58Check} from "./base58";
+import {decodeCheck} from "./strkey";
 
 /**
 * @class Account
@@ -10,7 +10,7 @@ export class Account {
     */
     static isValidAddress(address) {
         try {
-            decodeBase58Check("accountId", address);
+            decodeCheck("accountId", address);
         } catch(err) {
             return false;
         }

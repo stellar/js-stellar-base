@@ -1,6 +1,6 @@
 import {xdr, hash} from "./index";
 
-import {encodeBase58Check} from "./base58";
+import {encodeCheck} from "./strkey";
 import {Operation} from "./operation";
 
 let MAX_FEE      = 1000;
@@ -25,7 +25,7 @@ export class Transaction {
         }
         // since this transaction is immutable, save the tx
         this.tx = envelope.tx();
-        this.source = encodeBase58Check("accountId", envelope.tx().sourceAccount().ed25519());
+        this.source = encodeCheck("accountId", envelope.tx().sourceAccount().ed25519());
         this.fee = envelope._attributes.tx._attributes.fee;
         this.sequence = envelope._attributes.tx._attributes.seqNum.toString();
         this.minLedger = envelope._attributes.tx._attributes.minLedger;

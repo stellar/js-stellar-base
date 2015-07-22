@@ -1,5 +1,5 @@
 import {xdr, Keypair} from "./index";
-import {encodeBase58Check} from "./base58";
+import {encodeCheck} from "./strkey";
 
 /**
 * Currency class represents a currency, either the native currency ("XLM")
@@ -25,7 +25,7 @@ export class Currency {
           return this.native();
         case xdr.CurrencyType.currencyTypeAlphanum():
           let anum = cx.alphaNum();
-          let issuer = encodeBase58Check("accountId", anum.issuer().ed25519());
+          let issuer = encodeCheck("accountId", anum.issuer().ed25519());
           return new this(anum.currencyCode(), issuer);
         default:
           throw new Error(`Invalid currency type: ${cx.switch().name}`);

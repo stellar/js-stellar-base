@@ -13,4 +13,4 @@ export {Operation} from "./operation";
 export {Memo} from "./memo";
 export {Account} from "./account";
 
-export * from "./base58";
+export * from "./strkey";

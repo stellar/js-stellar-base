@@ -3,17 +3,18 @@
 describe('Keypair.fromSeed', function() {
 
   it("creates a keypair correctly", function() {
-    let seed = "s9aaUNPaT9t1x7vCeDzQYvLZDm5XxSUKkwnqQowV6D3kMr678uZ";
+    let seed = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
     let kp = StellarBase.Keypair.fromSeed(seed);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.address()).to.eql("gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu");
+    expect(kp.address()).to.eql("GDFQVQCYYB7GKCGSCUSIQYXTPLV5YJ3XWDMWGQMDNM4EAXAL7LITIBQ7");
     expect(kp.seed()).to.eql(seed);
   });
 
-  it("throw an error if the arg isn't base58check encoded as a seed", function() {
+  it("throw an error if the arg isn't strkey encoded as a seed", function() {
 
     expect(() => StellarBase.Keypair.fromSeed("hel0")).to.throw()
+    expect(() => StellarBase.Keypair.fromSeed("SBWUBZ3SIPLLF5CCXLWUB2Z6UBTYAW34KVXOLRQ5HDAZG4ZY7MHNBWJ1")).to.throw()
     expect(() => StellarBase.Keypair.fromSeed("masterpassphrasemasterpassphrase")).to.throw()
     expect(() => StellarBase.Keypair.fromSeed("gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu")).to.throw()
 
@@ -28,8 +29,8 @@ describe('Keypair.fromRawSeed', function() {
     let kp = StellarBase.Keypair.fromRawSeed(seed);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.address()).to.eql("gM4gu1GLe3vm8LKFfRJcmTt1eaEuQEbo61a8BVkGcou78m21K7");
-    expect(kp.seed()).to.eql("sfyjodTxbwLtRToZvi6yQ1KnpZriwTJ7n6nrASFR6goRviCU3Ff");
+    expect(kp.address()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
+    expect(kp.seed()).to.eql("SBWWC43UMVZHAYLTONYGQ4TBONSW2YLTORSXE4DBONZXA2DSMFZWLP2R");
     expect(kp.rawPublicKey().toString("hex")).to.eql("2e3c35010749c1de3d9a5bdd6a31c12458768da5ce87cca6aad63ebbaaef7432");
   });
 
@@ -46,14 +47,13 @@ describe('Keypair.fromRawSeed', function() {
 describe('Keypair.fromAddress', function() {
 
   it("creates a keypair correctly", function() {
-    let kp = StellarBase.Keypair.fromAddress("gM4gu1GLe3vm8LKFfRJcmTt1eaEuQEbo61a8BVkGcou78m21K7");
+    let kp = StellarBase.Keypair.fromAddress("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.address()).to.eql("gM4gu1GLe3vm8LKFfRJcmTt1eaEuQEbo61a8BVkGcou78m21K7");
+    expect(kp.address()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
     expect(kp.rawPublicKey().toString("hex")).to.eql("2e3c35010749c1de3d9a5bdd6a31c12458768da5ce87cca6aad63ebbaaef7432");
   });
 
-  it("throw an error if the arg isn't base58check encoded as a accountid", function() {
-
+  it("throw an error if the arg isn't strkey encoded as a accountid", function() {
     expect(() => StellarBase.Keypair.fromAddress("hel0")).to.throw()
     expect(() => StellarBase.Keypair.fromAddress("masterpassphrasemasterpassphrase")).to.throw()
     expect(() => StellarBase.Keypair.fromAddress("sfyjodTxbwLtRToZvi6yQ1KnpZriwTJ7n6nrASFR6goRviCU3Ff")).to.throw()
