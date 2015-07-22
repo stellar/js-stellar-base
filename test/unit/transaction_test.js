@@ -1,8 +1,8 @@
 describe('Transaction', function() {
 
   it("constructs Transaction object from a TransactionEnvelope", function(done) {
-    let source      = new StellarBase.Account("GDBY5F7J2BNYLZGCJGX6QXAPXEYN32KVKJU7HE4UALTNGRKPDWMVO6TR", 0);
-    let destination = "GA5LIOWVBQRLDZI23MYAERI5FLUU67JWPWMQD3QEJA5Z5RDCOGXRCBAV";
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", 0);
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
     let currency    = StellarBase.Currency.native();
     let amount      = "2000";
 

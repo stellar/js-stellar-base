@@ -2,7 +2,7 @@ describe('Operation', function() {
 
     describe(".createAccount()", function () {
         it("creates a createAccountOp", function () {
-            var destination = "GDK7J46N74A337HHV4VJZKEOSXQRSXZBXLKNNVRGMXVFHAVOMVZF37OH";
+            var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var startingBalance = 1000;
             let op = StellarBase.Operation.createAccount({
                 destination: destination,
@@ -19,9 +19,9 @@ describe('Operation', function() {
 
     describe(".payment()", function () {
         it("creates a paymentOp", function () {
-            var destination = "GB7ANT5Q6PZ6KJGAXGQ63ZX3TM7BBLANJTUJ4SQOAHRVWQL6HNVJPYLZ";
+            var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var amount = 1000;
-            var currency = new StellarBase.Currency("USD", "GCXWEXWOVDMNBLLDRX3V3MBOP2AZY5SKJL4RAVCTA7Q64NKTJ6GTEHCQ");
+            var currency = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             let op = StellarBase.Operation.payment({
                 destination: destination,
                 currency: currency,
@@ -39,10 +39,10 @@ describe('Operation', function() {
 
     describe(".pathPayment()", function () {
         it("creates a pathPaymentOp", function() {
-            var sendCurrency = new StellarBase.Currency("USD", "GA4NDEGZKVQSXTSQT6TWPONNNKN7ITFRAAOI5QI3A44PWRBKHCDJCRW2");
+            var sendCurrency = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             var sendMax = 1000;
-            var destination = "GBSIVQD4MB3SWZCMRG7NX7ADNEWNF5O4ZVX7IIXS2XD23WJGBEGSQJL6";
-            var destCurrency = new StellarBase.Currency("USD", "GCUOUBZS2F2HNYOCSRJTAWOTDQZL6SHZ7LLSHUBMIZLVPL7HKPB4GZUM");
+            var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+            var destCurrency = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             var destAmount = 1000;
             let op = StellarBase.Operation.pathPayment({
                 sendCurrency: sendCurrency,
@@ -65,7 +65,7 @@ describe('Operation', function() {
 
     describe(".changeTrust()", function () {
         it("creates a changeTrustOp", function () {
-            let currency = new StellarBase.Currency("USD", "GD6SLNMPDE42WDZ2PYPURHCWZ44LBAKZKVGF2O6G4DEKSOBMF7GKEPFF");
+            let currency = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             let op = StellarBase.Operation.changeTrust({currency: currency});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
@@ -77,7 +77,7 @@ describe('Operation', function() {
 
     describe(".allowTrust()", function () {
         it("creates a allowTrustOp", function () {
-            let trustor = "GCL3U2JMIBQWK766CTC6CBENW3VQS6NM6ZDAOU3QUTA256FN66PTYA27";
+            let trustor = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
             let currencyCode = "USD";
             let authorize = true;
             let op = StellarBase.Operation.allowTrust({
@@ -98,7 +98,7 @@ describe('Operation', function() {
     describe(".setOptions()", function () {
         it("creates a setOptionsOp", function () {
             var opts = {};
-            opts.inflationDest = "GD2AOL7JJJCZJTXCQZV4K2Y7QBS7CHVGQYSIDJCYKQZQW7ZIH57RNKQ6";
+            opts.inflationDest = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
             opts.clearFlags = 1;
             opts.setFlags = 1;
             opts.masterWeight = 0;
@@ -107,7 +107,7 @@ describe('Operation', function() {
             opts.highThreshold = 3;
 
             opts.signer = {
-                address: "GBKQO4X25JAA7NRPYXKOEDGIUWQT2E6NQZ3ECFHX73J2VSYIY3XTMEIS",
+                address: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
                 weight: 1
             };
             opts.homeDomain = "www.example.com";
@@ -134,8 +134,8 @@ describe('Operation', function() {
     describe(".manageOffer", function () {
         it("creates a manageOfferOp", function () {
             var opts = {};
-            opts.takerGets = new StellarBase.Currency("USD", "GC26WKQKDEMVTKHK34SXEFB2IBPT32JOA2AGWVUSIJHAZA2XKPZ2Y26Q");
-            opts.takerPays = new StellarBase.Currency("USD", "GC26WKQKDEMVTKHK34SXEFB2IBPT32JOA2AGWVUSIJHAZA2XKPZ2Y26Q");
+            opts.takerGets = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.takerPays = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.amount = 1000;
             opts.price = 3.07;
             opts.offerId = 1;
@@ -155,8 +155,8 @@ describe('Operation', function() {
     describe(".createPassiveOffer", function () {
         it("creates a createPassiveOfferOp", function () {
             var opts = {};
-            opts.takerGets = new StellarBase.Currency("USD", "GD7YPO22TTSKFOUVUPAYFTDLASANU4OWYXPHKR2OUZDVYEB3C2H455HM");
-            opts.takerPays = new StellarBase.Currency("USD", "GD7YPO22TTSKFOUVUPAYFTDLASANU4OWYXPHKR2OUZDVYEB3C2H455HM");
+            opts.takerGets = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.takerPays = new StellarBase.Currency("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.amount = 1000;
             opts.price = 3.07;
             let op = StellarBase.Operation.createPassiveOffer(opts);
@@ -174,7 +174,7 @@ describe('Operation', function() {
     describe(".accountMerge", function () {
         it("creates a accountMergeOp", function () {
             var opts = {};
-            opts.destination = "GB4WXN5E2SAKP45QP33QOOXWCQ6ZBUHSAVEDEIZDQ3WNFQLUKDXUZOPV";
+            opts.destination = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
             let op = StellarBase.Operation.accountMerge(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));

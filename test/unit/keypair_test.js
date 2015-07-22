@@ -3,11 +3,11 @@
 describe('Keypair.fromSeed', function() {
 
   it("creates a keypair correctly", function() {
-    let seed = "SBWUBZ3SIPLLF5CCXLWUB2Z6UBTYAW34KVXOLRQ5HDAZG4ZY7MHNBWJO";
+    let seed = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
     let kp = StellarBase.Keypair.fromSeed(seed);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.address()).to.eql("GB4SMIWQKNQIVY4BX5LPGSW3EPR23CFE3EWIL3UPOT5L3ATHWIGMGKYJ");
+    expect(kp.address()).to.eql("GDFQVQCYYB7GKCGSCUSIQYXTPLV5YJ3XWDMWGQMDNM4EAXAL7LITIBQ7");
     expect(kp.seed()).to.eql(seed);
   });
 
@@ -47,10 +47,10 @@ describe('Keypair.fromRawSeed', function() {
 describe('Keypair.fromAddress', function() {
 
   it("creates a keypair correctly", function() {
-    let kp = StellarBase.Keypair.fromAddress("GAEW2L7KXHCTNGX6SVHQS3QOP3GOSKQPWLD75WYT2C3VKHYQ5TXBJLBD");
+    let kp = StellarBase.Keypair.fromAddress("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.address()).to.eql("GAEW2L7KXHCTNGX6SVHQS3QOP3GOSKQPWLD75WYT2C3VKHYQ5TXBJLBD");
-    expect(kp.rawPublicKey().toString("hex")).to.eql("096d2feab9c5369afe954f096e0e7ecce92a0fb2c7fedb13d0b7551f10ecee14");
+    expect(kp.address()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
+    expect(kp.rawPublicKey().toString("hex")).to.eql("2e3c35010749c1de3d9a5bdd6a31c12458768da5ce87cca6aad63ebbaaef7432");
   });
 
   it("throw an error if the arg isn't strkey encoded as a accountid", function() {

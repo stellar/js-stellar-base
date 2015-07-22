@@ -7,8 +7,8 @@ describe('TransactionBuilder', function() {
         var currency;
         var transaction;
         beforeEach(function () {
-            source = new StellarBase.Account("GD42PMZLG7O2URVTUUWAFGI36ZGGFD3H6MN4UN452YBIBHX3WUYTTXXV", 0);
-            destination = "GBMZKARX4XDCEOWFFHF7FJNJUOF66LHOS3Q55QPGQBC6QJ7IOIH46ZBF";
+            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
+            destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
             amount = "1000";
             currency = StellarBase.Currency.native();
 
