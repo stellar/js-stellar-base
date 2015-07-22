@@ -15,7 +15,7 @@ describe('Currency', function() {
         });
 
         it("parses a ISO4217 currency object", function () {
-            var currency = new StellarBase.Currency("USD", "gspbxqXqEUZkiCCEFFCN9Vu4FLucdjLLdLcsV6E82Qc1T7ehsTC");
+            var currency = new StellarBase.Currency("USD", "GAV4RUTR7VDXTBM7HACQBEDD6Y5CHJVYWFIGPCYEKKSS6TRDYIAPHUYV");
             var xdr = currency.toXdrObject();
 
             expect(xdr).to.be.instanceof(StellarBase.xdr.Currency);

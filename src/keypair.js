@@ -1,6 +1,6 @@
 
 import {sign, verify} from "./signing";
-import * as base58 from "./base58";
+import * as strkey from "./strkey";
 import {default as xdr} from "./generated/stellar-xdr_generated";
 
 let nacl = require("tweetnacl");
@@ -8,7 +8,7 @@ let nacl = require("tweetnacl");
 export class Keypair {
 
   static fromSeed(seed) {
-    let rawSeed = base58.decodeBase58Check("seed", seed);
+    let rawSeed = strkey.decodeCheck("seed", seed);
     return this.fromRawSeed(rawSeed);
   }
 
@@ -26,7 +26,7 @@ export class Keypair {
   }
 
   static fromAddress(address) {
-    let publicKey = base58.decodeBase58Check("accountId", address);
+    let publicKey = strkey.decodeCheck("accountId", address);
     return new this({publicKey});
   }
 
@@ -63,11 +63,11 @@ export class Keypair {
   }
 
   address() {
-    return base58.encodeBase58Check("accountId", this._publicKey);
+    return strkey.encodeCheck("accountId", this._publicKey);
   }
 
   seed() {
-    return base58.encodeBase58Check("seed", this._secretSeed);
+    return strkey.encodeCheck("seed", this._secretSeed);
   }
 
   rawSeed() {
