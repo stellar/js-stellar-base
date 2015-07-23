@@ -38,7 +38,7 @@ console.log(sig.signature()) // displays the 32 byte buffer of the signature
 
 ```
 
-This library also provides an impementation of StrCheck encoding:
+This library also provides an implementation of StrCheck encoding:
 
 ```javascript
 var StellarBase = require("stellar-base");
