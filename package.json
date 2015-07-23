@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
+    "axios": "^0.5.4",
     "babel": "^4.7.16",
     "babel-core": "^4.7.16",
     "babel-loader": "^4.3.0",
