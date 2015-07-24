@@ -4,6 +4,7 @@ import {Account} from "./account";
 import {Operation} from "./operation";
 import {Transaction} from "./transaction";
 import {Memo} from "./memo";
+import {map} from "lodash";
 
 let FEE      = 1000;
 let MIN_LEDGER   = 0;
@@ -101,21 +102,14 @@ export class TransactionBuilder {
         if (this.timebounds) {
             attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
         }
-        let tx = new xdr.Transaction(attrs);
+        let xtx = new xdr.Transaction(attrs);
+        xtx.operations(this.operations);
+        let xenv = new xdr.TransactionEnvelope({tx:xtx});
+
+        let tx = new Transaction(xenv);
+        tx.sign(...this.signers);
 
         this.source.sequence = this.source.sequence + 1;
-
-        tx.operations(this.operations);
-
-        let tx_raw = tx.toXDR();
-
-        let tx_hash    = hash(tx_raw);
-        let signatures = [];
-        for (var i = 0; i < this.signers.length; i++) {
-            signatures.push(this.signers[i].signDecorated(tx_hash));
-        }
-        let envelope = new xdr.TransactionEnvelope({tx, signatures});
-
-        return new Transaction(envelope);
+        return tx;
     }
 }

@@ -2,6 +2,7 @@ import {xdr, hash} from "./index";
 
 import {encodeCheck} from "./strkey";
 import {Operation} from "./operation";
+import {map, each} from "lodash";
 
 let MAX_FEE      = 1000;
 let MIN_LEDGER   = 0;
@@ -24,40 +25,56 @@ export class Transaction {
             envelope = xdr.TransactionEnvelope.fromXDR(buffer);
         }
         // since this transaction is immutable, save the tx
-        this.tx = envelope.tx();
-        this.source = encodeCheck("accountId", envelope.tx().sourceAccount().ed25519());
-        this.fee = envelope._attributes.tx._attributes.fee;
-        this.sequence = envelope._attributes.tx._attributes.seqNum.toString();
-        this.minLedger = envelope._attributes.tx._attributes.minLedger;
-        this.maxLedger = envelope._attributes.tx._attributes.maxLedger;
-        let operations = envelope._attributes.tx._attributes.operations;
-        this.operations = [];
-        for (let i = 0; i < operations.length; i++) {
-            this.operations[i] = Operation.operationToObject(operations[i]._attributes);
-        }
-        let signatures = envelope._attributes.signatures;
-        this.signatures = [];
-        for (let i = 0; i < signatures.length; i++) {
-            this.signatures[i] = signatures[i];
-        }
-    }
+        this.tx       = envelope.tx();
+        this.source   = encodeCheck("accountId", envelope.tx().sourceAccount().ed25519());
+        this.fee      = this.tx.fee();
+        this.sequence = this.tx.seqNum().toString();
 
-    /**
-    * Adds a signature to this transaction.
-    * @param signature
-    */
-    addSignature(signature) {
-        this.signatures.push(signature);
+        let operations  = this.tx.operations() || [];
+        this.operations = map(operations, op => {
+          return Operation.operationToObject(op._attributes);
+        });
+
+        let signatures = envelope.signatures() || [];
+        this.signatures = map(signatures, s => s);
     }
 
     /**
     * Signs the transaction with the given Keypair.
-    * @param {Keypair} keypair
+    * @param {Keypair[]} keypairs
     */
-    sign(keypair) {
-        let tx_raw = this.tx.toXDR();
-        let tx_hash = hash(tx_raw);
-        return keypair.signDecorated(tx_hash);
+    sign(...keypairs) {
+        let txHash = this.hash();
+        let newSigs = each(keypairs, kp => {
+          let sig = kp.signDecorated(txHash);
+          this.signatures.push(sig);
+        });
+    }
+
+    /**
+    * Returns a hash for this transaction, suitable for signing.
+    */
+    hash() {
+        return hash(this.signatureBase());
+    }
+
+    /**
+    * Returns the "signature base" of this transaction, which is the value
+    * that, when hashed, should be signed to create a signature that
+    * validators on the Stellar Network will accept.
+    *
+    * It is composed of a 4 prefix bytes followed by the xdr-encoded form
+    * of this transaction.
+    */
+    signatureBase() {
+        return Buffer.concat([
+            this.signatureBasePrefix(),
+            this.tx.toXDR(),
+        ]);
+    }
+
+    signatureBasePrefix() {
+        return xdr.EnvelopeType.envelopeTypeTx().toXDR();
     }
 
     /**
