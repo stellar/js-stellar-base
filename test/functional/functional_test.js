@@ -14,16 +14,6 @@ describe('Functional test', function() {
   keyPairs['alice'] = StellarBase.Keypair.fromRawSeed("alice000000000000000000000000000");
   keyPairs['bob'] = StellarBase.Keypair.fromRawSeed("bob00000000000000000000000000000");
 
-  let accountAlice;
-  let keysAlice = {
-    public: "gsQx3Uofqu2SMHCwzvpeDPjENJF8d9N9GXmnsAQqD6nhMwypbXG",
-    seed: "sfjGjkUHxr5wffg4NPkdFK3fJyT9PjXyu1gAMwHiKdgdXsb3sZ1"
-  };
-
-  let keysBob = {
-    public: 'gs3uhS4n248kCAVJrAw2eirZt88pnEXUq2sB9AcD3fDMJAwSKbN'
-  };
-
   function fetchAccount(publicKey) {
     return axios.get(baseUrl + '/accounts/' + publicKey)
       .then(function(response) {
@@ -31,18 +21,6 @@ describe('Functional test', function() {
         return response.data;
       })
   }
-
-  before(function(done) {
-    this.timeout(20e3);
-    fetchAccountsSequence().then(done, done)
-  })
-
-  it("show addresses", function(done) {
-    _.each(keyPairs, function(value, key) {
-      console.log("address %s %s", value.address(), key);
-    });
-    done()
-  });
 
   function fetchAccountsSequence() {
 
@@ -76,34 +54,6 @@ describe('Functional test', function() {
       })
   }
 
-  it.skip("create account", function(done) {
-    var destination = keysBob.public;
-    var startingBalance = 1000;
-    let createAccountOp = StellarBase.Operation.createAccount({
-      destination: destination,
-      startingBalance: startingBalance
-    });
-
-    var keyPairAlice = StellarBase.Keypair.fromSeed(keysAlice.seed);
-
-    let input = new StellarBase.TransactionBuilder(accountAlice)
-      .addOperation(createAccountOp)
-      .addSigner(keyPairAlice)
-      .build()
-      .toEnvelope()
-      .toXDR('hex');
-
-    return axios.post(baseUrl + '/transactions', {
-        tx: input
-      })
-      .then(function(response) {
-        console.log(response.data);
-        assert(response.data);
-        assert.equal(response.data.result, 'received');
-      })
-      .then(done, done);
-  });
-
   function sendPayment(accountSource, keyPair, option) {
     console.log('sendPayment');
     assert(accountSource);
@@ -124,25 +74,6 @@ describe('Functional test', function() {
       })
   }
 
-  it("gateway issue 1000 GBP to the bond issuer", function(done) {
-    let option = {
-      destination: keyPairs['issuer'].address(),
-      currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
-      amount: 1000
-    }
-    sendPayment(accounts['gateway'], keyPairs['gateway'], option)
-    .then(done, done)
-  });
-
-  it("alice sends native currency to bob", function(done) {
-    let option = {
-      destination: keyPairs['bob'].address(),
-      currency: StellarBase.Currency.native(),
-      amount: 5 * 10e6
-    }
-    sendPayment(accounts['alice'], keyPairs['alice'], option)
-    .then(done, done)
-  });
 
   function setTrust(account, keyPair, options) {
     console.log("setTrust")
@@ -165,6 +96,67 @@ describe('Functional test', function() {
       })
   }
 
+  before(function(done) {
+    this.timeout(20e3);
+    fetchAccountsSequence().then(done, done)
+  })
+
+  it("show addresses", function(done) {
+    _.each(keyPairs, function(value, key) {
+      console.log("address %s %s", value.address(), key);
+    });
+    done()
+  });
+
+  it.skip("create account", function(done) {
+    var destination = accounts['bob'].address;
+    var startingBalance = 1000;
+    let createAccountOp = StellarBase.Operation.createAccount({
+      destination: destination,
+      startingBalance: startingBalance
+    });
+
+    let input = new StellarBase.TransactionBuilder(keyPairs['alice'])
+      .addOperation(createAccountOp)
+      .addSigner(keyPairs['alice'])
+      .build()
+      .toEnvelope()
+      .toXDR('hex');
+
+    return axios.post(baseUrl + '/transactions', {
+        tx: input
+      })
+      .then(function(response) {
+        console.log(response.data);
+        assert(response.data);
+        assert.equal(response.data.result, 'received');
+      })
+      .then(done, done);
+  });
+
+
+
+  it("gateway issue 1000 GBP to the bond issuer", function(done) {
+    let option = {
+      destination: keyPairs['issuer'].address(),
+      currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+      amount: 1000
+    }
+    sendPayment(accounts['gateway'], keyPairs['gateway'], option)
+      .then(done, done)
+  });
+
+  it("alice sends native currency to bob", function(done) {
+    let option = {
+      destination: keyPairs['bob'].address(),
+      currency: StellarBase.Currency.native(),
+      amount: 5 * 10e6
+    }
+    sendPayment(accounts['alice'], keyPairs['alice'], option)
+      .then(done, done)
+  });
+
+
   it("set trust all", function(done) {
     let option = {
       trustor: keyPairs['gateway'].address(),
@@ -178,37 +170,6 @@ describe('Functional test', function() {
       })
       .then(function() {})
       .then(done, done);
-  });
-
-  it.skip("set trust alice", function(done) {
-    let trustor = keyPairs['gateway'].address();
-    let currencyCode = "USD";
-    let authorize = true;
-
-    let opTrust = StellarBase.Operation.allowTrust({
-      trustor: trustor,
-      currencyCode: currencyCode,
-      authorize: authorize
-    });
-
-    var keyPairAlice = StellarBase.Keypair.fromSeed(keysAlice.seed);
-
-    let input = new StellarBase.TransactionBuilder(accountAlice)
-      .addSigner(keyPairAlice)
-      .addOperation(opTrust)
-      .build()
-      .toEnvelope()
-      .toXDR('hex');
-
-    return axios.post(baseUrl + '/transactions', {
-        tx: input
-      })
-      .then(function(response) {
-        //console.log(response.data);
-        assert(response.data);
-        assert.equal(response.data.result, 'received');
-      })
-      .then(done, done)
   });
 
   it("alice sends an invalid transaction", function(done) {
