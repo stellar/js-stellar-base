@@ -40,8 +40,8 @@ export class Currency {
     * @param {string} issuer - The address of the issuer.
     */
     constructor(code, issuer) {
-        if (code.length != 3 && code.length != 4) {
-            throw new Error("Currency code must be 3 or 4 characters");
+        if (code.length > 12) {
+            throw new Error("Asset code must be less than 12 characters");
         }
         if (String(code).toLowerCase() !== "xlm" && !issuer) {
             throw new Error("Issuer cannot be null");
