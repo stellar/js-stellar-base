@@ -134,7 +134,7 @@ export class Operation {
     static changeTrust(opts) {
         let attributes      = {};
         attributes.line     = opts.currency.toXdrObject();
-        let limit           = opts.limit ? limit : "9223372036854775807";
+        let limit           = opts.limit ? opts.limit : "9223372036854775807";
         attributes.limit    = Hyper.fromString(limit);
         if (opts.source) {
             attributes.source   = opts.source ? opts.source.masterKeypair : null;

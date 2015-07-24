@@ -76,8 +76,8 @@ describe('Functional test', function() {
 
 
   function setTrust(account, keyPair, options) {
-    console.log("setTrust")
-    let opTrust = StellarBase.Operation.allowTrust(options);
+    console.log("setTrust ", options)
+    let opTrust = StellarBase.Operation.changeTrust(options);
 
     let input = new StellarBase.TransactionBuilder(account)
       .addSigner(keyPair)
@@ -156,12 +156,10 @@ describe('Functional test', function() {
       .then(done, done)
   });
 
-
   it("set trust all", function(done) {
     let option = {
-      trustor: keyPairs['gateway'].address(),
-      currencyCode: 'GBP',
-      authorize: true
+      currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+      limit: "1000000"
     }
 
     var names = ['issuer', 'alice', 'bob'];
