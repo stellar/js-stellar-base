@@ -14,10 +14,18 @@ describe('Functional test', function() {
   keyPairs['alice'] = StellarBase.Keypair.fromRawSeed("alice000000000000000000000000000");
   keyPairs['bob'] = StellarBase.Keypair.fromRawSeed("bob00000000000000000000000000000");
 
-  function fetchAccount(publicKey) {
-    return axios.get(baseUrl + '/accounts/' + publicKey)
+  function fetchAccount(address) {
+    return axios.get(baseUrl + '/accounts/' + address)
       .then(function(response) {
         console.log("fetchAccount ", response.data.balances)
+        return response.data;
+      })
+  }
+
+  function getOffers(address){
+    return axios.get(baseUrl + '/accounts/' + address + '/offers')
+      .then(function(response) {
+        console.log("getOffers ", response.data)
         return response.data;
       })
   }
@@ -98,6 +106,26 @@ describe('Functional test', function() {
       //console.log("address %s %s", value.address(), key);
     });
     done()
+  });
+
+  it("show offers", function(done) {
+    return Promise.each(_.map(keyPairs, function(value, key) {
+        return {
+          name: key,
+          keyPair: value
+        }
+      }), function(item) {
+        var name = item['name'];
+        var keyPair = item['keyPair'];
+        var address = keyPair.address()
+        console.log("show offer %s %s", name, address)
+        return getOffers(address)
+          .then(function(offers) {
+            console.log("address %s %s", name, JSON.stringify(offers, null, 4));
+          })
+      })
+      .then(function(){})
+      .then(done, done);
   });
 
   it.skip("create account", function(done) {
@@ -190,7 +218,21 @@ describe('Functional test', function() {
       offerId:1
     };
 
-    manageOffer(accounts['gateway'], keyPairs['gateway'], options)
+    manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+      .then(done, done)
+  });
+
+  it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
+
+    var options = {
+      takerGets:new StellarBase.Currency("GBP", accounts['gateway'].address),
+      takerPays:new StellarBase.Currency("SBO", accounts['gateway'].address),
+      amount:1,
+      price:1000,
+      offerId:2
+    };
+
+    manageOffer(accounts['alice'], keyPairs['alice'], options)
       .then(done, done)
   });
 
