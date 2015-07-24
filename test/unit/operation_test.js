@@ -63,7 +63,7 @@ describe('Operation', function() {
         });
     });
 
-    describe(".changeTrust()", function () {
+    describe(".changeTrust() without limit", function () {
         it("creates a changeTrustOp", function () {
             let currency = new StellarBase.Currency("USD", "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb");
             let op = StellarBase.Operation.changeTrust({currency: currency});
@@ -72,6 +72,20 @@ describe('Operation', function() {
             var obj = StellarBase.Operation.operationToObject(operation._attributes);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line.equals(currency)).to.be.true;
+        });
+    });
+
+    describe(".changeTrust() with limit", function () {
+        it("creates a changeTrustOp", function () {
+            let currency = new StellarBase.Currency("EUR", "gsZRJCfkv69PBw1Cz8qJfb9k4i3EXiJenxdrYKCog3mWbk5thPb");
+            let limit = "1000000";
+            let op = StellarBase.Operation.changeTrust({currency: currency, limit:limit});
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation._attributes);
+            expect(obj.type).to.be.equal("changeTrust");
+            expect(obj.line.equals(currency)).to.be.true;
+            expect(obj.limit.low.toString()).to.equal(limit);
         });
     });
 

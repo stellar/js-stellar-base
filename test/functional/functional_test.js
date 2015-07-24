@@ -103,7 +103,7 @@ describe('Functional test', function() {
 
   it("show addresses", function(done) {
     _.each(keyPairs, function(value, key) {
-      console.log("address %s %s", value.address(), key);
+      //console.log("address %s %s", value.address(), key);
     });
     done()
   });

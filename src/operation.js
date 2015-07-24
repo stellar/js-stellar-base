@@ -375,6 +375,7 @@ export class Operation {
             case "changeTrust":
                 obj.type = "changeTrust";
                 obj.line = Currency.fromOperation(attrs.line);
+                obj.limit = attrs.limit;
                 break;
             case "allowTrust":
                 obj.type = "allowTrust";
