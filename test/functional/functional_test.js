@@ -4,7 +4,7 @@ let axios = require('axios');
 let _ = require('lodash');
 
 describe('Functional test', function() {
-  this.timeout(10e3);
+  this.timeout(20e3);
   let baseUrl = 'https://horizon-testnet.stellar.org';
   let accounts = {};
   let keyPairs = {};
@@ -26,6 +26,14 @@ describe('Functional test', function() {
     return axios.get(baseUrl + '/accounts/' + address + '/offers')
       .then(function(response) {
         console.log("getOffers ", response.data)
+        return response.data;
+      })
+  }
+
+  function getTransactions(address){
+    return axios.get(baseUrl + '/accounts/' + address + '/transactions')
+      .then(function(response) {
+        console.log("getTransactions", response.data)
         return response.data;
       })
   }
@@ -90,7 +98,7 @@ describe('Functional test', function() {
     return sendTransaction(accountSource, keyPair, StellarBase.Operation.manageOffer(option));
   }
 
-  function setTrust(account, keyPair, options) {
+  function setTrust(accountSource, keyPair, options) {
     console.log("setTrust ", options)
     let opTrust = StellarBase.Operation.changeTrust(options);
     return sendTransaction(accountSource, keyPair, opTrust);
@@ -127,6 +135,27 @@ describe('Functional test', function() {
       .then(function(){})
       .then(done, done);
   });
+
+  it("show transactions", function(done) {
+    return Promise.each(_.map(keyPairs, function(value, key) {
+        return {
+          name: key,
+          keyPair: value
+        }
+      }), function(item) {
+        var name = item['name'];
+        var keyPair = item['keyPair'];
+        var address = keyPair.address()
+        console.log("show transactions %s %s", name, address)
+        return getTransactions(address)
+          .then(function(transactions) {
+            console.log("address %s %s", name, JSON.stringify(transactions, null, 4));
+          })
+      })
+      .then(function(){})
+      .then(done, done);
+  });
+
 
   it.skip("create account", function(done) {
     var destination = accounts['bob'].address;
