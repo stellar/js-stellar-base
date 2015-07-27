@@ -18030,8 +18030,10 @@ var StellarBase =
 	        if (String(code).toLowerCase() !== "xlm" && !issuer) {
 	            throw new Error("Issuer cannot be null");
 	        }
+
 	        // pad code with null bytes if necessary
-	        this.code = padRight(code, 12, "\u0000");
+	        var padLength = code.length <= 4 ? 4 : 12;
+	        this.code = padRight(code, padLength, "\u0000");
 	        this.issuer = issuer;
 	    }
 
