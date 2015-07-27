@@ -30,6 +30,34 @@ describe('Functional test:', function() {
       })
   }
 
+  function cancelOffers(name) {
+    console.log("cancelOffers ", name);
+    let address = accounts[name].address;
+    assert(address);
+    return axios.get(baseUrl + '/accounts/' + address + '/offers')
+      .then(function(response) {
+        console.log("getOffers\n", response.data)
+        console.log("#Offers\n", response.data._embedded.records.length);
+        var orderIds = _.pluck(response.data._embedded.records, "id");
+        return orderIds;
+      })
+      .then(function(orderIds) {
+        console.log(orderIds);
+        return Promise.each(orderIds, function(orderId) {
+          var options = {
+            takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
+            takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
+            amount: 0,
+            price: 1,
+            offerId: orderId
+          };
+
+          return manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+        })
+      })
+      .then(function() {})
+  }
+
   function getAccountTransactions(address) {
     return axios.get(baseUrl + '/accounts/' + address + '/transactions')
       .then(function(response) {
@@ -99,6 +127,12 @@ describe('Functional test:', function() {
         assert(response.data.hash);
         //return response.data.hash;
       })
+      .catch(function(error){
+        console.error('sendTransaction\n', error);
+        var errorMessage = StellarBase.xdr.TransactionResult.fromXDR(new Buffer(error.data.error, "hex"));
+        console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
+        throw error;
+      })
       /*
       .then(function(hash) {
         return Promise.delay(5e3)
@@ -129,6 +163,11 @@ describe('Functional test:', function() {
   }
 
   before(function(done) {
+    this.timeout(20e3);
+    fetchAccountsSequence().then(done, done)
+  })
+
+  after(function(done) {
     this.timeout(20e3);
     fetchAccountsSequence().then(done, done)
   })
@@ -272,13 +311,31 @@ describe('Functional test:', function() {
 
 
   describe('trading: ', function() {
-    it("bond issuer creates a sell order of 1 bond for 1000 GBP", function(done) {
+    it("bond issuer cancels its orders", function(done) {
+
+    cancelOffers('issuer')
+    .then(done, done)
+    /*
+      var options = {
+        takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
+        takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
+        amount: 0,
+        price: 1000,
+        offerId: 4
+      };
+
+      manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+        .then(done, done)
+        */
+    });
+
+    it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
 
       var options = {
         takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
         takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
-        amount: 1,
-        price: 1,
+        amount: 10,
+        price: 1000,
         offerId: 0
       };
 
@@ -291,7 +348,7 @@ describe('Functional test:', function() {
       var options = {
         takerGets: new StellarBase.Currency("GBP", accounts['gateway'].address),
         takerPays: new StellarBase.Currency("SBO", accounts['gateway'].address),
-        amount: 1,
+        amount: 1000,
         price: 1,
         offerId: 0
       };
