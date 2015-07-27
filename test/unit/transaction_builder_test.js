@@ -4,18 +4,18 @@ describe('TransactionBuilder', function() {
         var source;
         var destination;
         var amount;
-        var currency;
+        var asset;
         var transaction;
         beforeEach(function () {
             source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
             destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
             amount = "1000";
-            currency = StellarBase.Currency.native();
+            asset = StellarBase.Asset.native();
 
             transaction = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({
                     destination: destination,
-                    currency: currency,
+                    asset: asset,
                     amount: amount
                 }))
                 .build();

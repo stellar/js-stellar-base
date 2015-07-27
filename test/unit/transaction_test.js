@@ -3,11 +3,11 @@ describe('Transaction', function() {
   it("constructs Transaction object from a TransactionEnvelope", function(done) {
     let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", 0);
     let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
-    let currency    = StellarBase.Currency.native();
+    let asset       = StellarBase.Asset.native();
     let amount      = "2000";
 
     let input = new StellarBase.TransactionBuilder(source)
-                .addOperation(StellarBase.Operation.payment({destination, currency, amount}))
+                .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
                 .build()
                 .toEnvelope()
                 .toXDR('hex');
@@ -29,12 +29,12 @@ describe('Transaction', function() {
   it("signs correctly", function() {
     let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", 0);
     let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
-    let currency    = StellarBase.Currency.native();
+    let asset       = StellarBase.Asset.native();
     let amount      = "2000";
     let signer      = StellarBase.Keypair.master();
 
     let tx = new StellarBase.TransactionBuilder(source)
-                .addOperation(StellarBase.Operation.payment({destination, currency, amount}))
+                .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
                 .addSigner(signer)
                 .build();
 

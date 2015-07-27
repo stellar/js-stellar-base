@@ -45,11 +45,11 @@ export class Keypair {
   }
 
   accountId() {
-    return new xdr.AccountId.keyTypesEd25519(this._publicKey);
+    return new xdr.AccountId.keyTypeEd25519(this._publicKey);
   }
 
   publicKey() {
-    return new xdr.PublicKey.keyTypesEd25519(this._publicKey);
+    return new xdr.PublicKey.keyTypeEd25519(this._publicKey);
   }
 
   rawPublicKey() {
