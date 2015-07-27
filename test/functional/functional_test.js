@@ -17,7 +17,7 @@ describe('Functional test', function() {
   function fetchAccount(address) {
     return axios.get(baseUrl + '/accounts/' + address)
       .then(function(response) {
-        console.log("fetchAccount ", response.data.balances)
+        console.log("fetchAccount\n", response.data.balances)
         return response.data;
       })
   }
@@ -25,13 +25,21 @@ describe('Functional test', function() {
   function getOffers(address){
     return axios.get(baseUrl + '/accounts/' + address + '/offers')
       .then(function(response) {
-        console.log("getOffers ", response.data)
+        console.log("getOffers\n", response.data)
         return response.data;
       })
   }
 
-  function getTransactions(address){
+  function getAccountTransactions(address){
     return axios.get(baseUrl + '/accounts/' + address + '/transactions')
+      .then(function(response) {
+        console.log("getAccountTransactions", response.data)
+        return response.data;
+      })
+  }
+
+  function getTransactions(hash){
+    return axios.get(baseUrl + '/transactions/' + hash)
       .then(function(response) {
         console.log("getTransactions", response.data)
         return response.data;
@@ -82,19 +90,20 @@ describe('Functional test', function() {
         tx: input
       })
       .then(function(response) {
-        console.log('sendTransaction ', response.data);
+        console.log('sendTransaction\n', response.data);
         assert(response.data);
         assert.equal(response.data.result, 'received');
+        assert(response.data.hash);
       })
   }
 
   function sendPayment(accountSource, keyPair, option) {
-    console.log('sendPayment ', option);
+    console.log('sendPayment\n', option);
     return sendTransaction(accountSource, keyPair, StellarBase.Operation.payment(option));
   }
 
   function manageOffer(accountSource, keyPair, option) {
-    console.log('manageOffer ', option);
+    console.log('manageOffer\n', option);
     return sendTransaction(accountSource, keyPair, StellarBase.Operation.manageOffer(option));
   }
 
@@ -147,7 +156,7 @@ describe('Functional test', function() {
         var keyPair = item['keyPair'];
         var address = keyPair.address()
         console.log("show transactions %s %s", name, address)
-        return getTransactions(address)
+        return getAccountTransactions(address)
           .then(function(transactions) {
             console.log("address %s %s", name, JSON.stringify(transactions, null, 4));
           })
@@ -227,6 +236,15 @@ describe('Functional test', function() {
       .then(done, done);
   });
 
+  it("alice sends 1 GBP to bob", function(done) {
+    let option = {
+      destination: keyPairs['bob'].address(),
+      currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+      amount: 1
+    }
+    sendPayment(accounts['alice'], keyPairs['alice'], option).then(done, done);
+  });
+
   it("gateway issue 100 bonds to the issuer", function(done) {
     let option = {
       destination: keyPairs['issuer'].address(),
@@ -243,7 +261,7 @@ describe('Functional test', function() {
       takerGets:new StellarBase.Currency("SBO", accounts['gateway'].address),
       takerPays:new StellarBase.Currency("GBP", accounts['gateway'].address),
       amount:1,
-      price:1000,
+      price:1,
       offerId:1
     };
 
@@ -257,7 +275,7 @@ describe('Functional test', function() {
       takerGets:new StellarBase.Currency("GBP", accounts['gateway'].address),
       takerPays:new StellarBase.Currency("SBO", accounts['gateway'].address),
       amount:1,
-      price:1000,
+      price:1,
       offerId:2
     };
 
