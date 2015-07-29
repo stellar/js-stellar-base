@@ -3,6 +3,32 @@ let Promise = require('bluebird');
 let axios = require('axios');
 let _ = require('lodash');
 
+/**
+
+Accounts:
+
+* gateway: the account used for issuing the assets: currency + security.
+* security issuer: the account owned by the entity that issue the security.
+* alice and bob: investors that intend to buy & sell securities.
+
+Phases:
+
+1. Accounts are created by funding them with the native stellar currency called lumnen.
+
+2. Trust lines are set from the investors/security issuer to the gateway for all assets.
+
+3. Gateway issues securities to the security issuer.
+
+4. Investors sends currency through a traditional bank transfer to the gateway's bank account. The gateway then issues currency to the investors on the ledger.
+
+5. The issuer creates a sell order to exchange securities against currency, i.e selling order of 1000 bonds @ 1000£/bond
+
+6. Alice creates a buy order that matches the previous sell order, i.e buy order of 10 bonds @ 1000£/bond
+When the order is matched, Alice now have 10 bonds and the issuer has 990 bonds and 10k£
+
+7. Alice is now free to create a sell order at any price that may be bought by Bob or any other investors.
+
+**/
 describe('Functional test:', function() {
   this.timeout(40e3);
   let baseUrl = 'https://horizon-testnet.stellar.org';
@@ -125,9 +151,9 @@ describe('Functional test:', function() {
         assert(response.data);
         assert.equal(response.data.result, 'received');
         assert(response.data.hash);
-        //return response.data.hash;
+        return response.data;
       })
-      .catch(function(error){
+      .catch(function(error) {
         console.error('sendTransaction\n', error);
         var errorMessage = StellarBase.xdr.TransactionResult.fromXDR(new Buffer(error.data.error, "hex"));
         console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
@@ -311,22 +337,9 @@ describe('Functional test:', function() {
 
 
   describe('trading: ', function() {
-    it("bond issuer cancels its orders", function(done) {
-
-    cancelOffers('issuer')
-    .then(done, done)
-    /*
-      var options = {
-        takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
-        takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
-        amount: 0,
-        price: 1000,
-        offerId: 4
-      };
-
-      manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+    it("bond issuer cancels all orders", function(done) {
+      cancelOffers('issuer')
         .then(done, done)
-        */
     });
 
     it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
@@ -334,12 +347,15 @@ describe('Functional test:', function() {
       var options = {
         takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
         takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
-        amount: 10,
-        price: 1000,
+        amount: 1,
+        price: 1,
         offerId: 0
       };
 
       manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+        .then(function() {
+          return Promise.delay(5e3)
+        })
         .then(done, done)
     });
 
@@ -348,12 +364,21 @@ describe('Functional test:', function() {
       var options = {
         takerGets: new StellarBase.Currency("GBP", accounts['gateway'].address),
         takerPays: new StellarBase.Currency("SBO", accounts['gateway'].address),
-        amount: 1000,
+        amount: 1,
         price: 1,
         offerId: 0
       };
 
       manageOffer(accounts['alice'], keyPairs['alice'], options)
+        .then(function(result) {
+          return Promise.delay(6e3)
+            .then(function() {
+              return getTransaction(result.hash)
+            })
+        })
+        .then(function() {
+
+        })
         .then(done, done)
     });
   })
