@@ -322,7 +322,10 @@ describe('Functional test:', function() {
       currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
       amount: 1
     }
-    sendPayment(accounts['alice'], keyPairs['alice'], option).then(done, done);
+    
+    sendPayment(accounts['alice'], keyPairs['alice'], option)
+      .then(function() {})
+      .then(done, done);
   });
 
   it("gateway issue 100 bonds to the issuer", function(done) {
