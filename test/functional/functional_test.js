@@ -322,7 +322,7 @@ describe('Functional test:', function() {
       currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
       amount: 1
     }
-    
+
     sendPayment(accounts['alice'], keyPairs['alice'], option)
       .then(function() {})
       .then(done, done);
@@ -335,6 +335,7 @@ describe('Functional test:', function() {
       amount: 100
     }
     sendPayment(accounts['gateway'], keyPairs['gateway'], option)
+      .then(function() {})
       .then(done, done)
   });
 
@@ -393,6 +394,7 @@ describe('Functional test:', function() {
       amount: 5 * 10e6
     }
     sendPayment(accounts['alice'], keyPairs['alice'], option)
+      .then(function() {})
       .then(done, done)
   });
 
