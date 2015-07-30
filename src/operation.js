@@ -1,5 +1,5 @@
 import {xdr, Keypair, Hyper, UnsignedHyper, hash} from "./index";
-import {encodeBase58Check} from "./base58";
+import {encodeCheck} from "./strkey";
 import {Currency} from "./currency";
 import {best_r} from "./util/continued_fraction";
 
@@ -345,7 +345,7 @@ export class Operation {
     */
     static operationToObject(operation) {
         function accountIdtoAddress(accountId) {
-          return encodeBase58Check("accountId", accountId.ed25519());
+          return encodeCheck("accountId", accountId.ed25519());
         }
 
 

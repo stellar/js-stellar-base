@@ -1,6 +1,6 @@
 import {xdr, hash} from "./index";
 
-import {encodeBase58Check} from "./base58";
+import {encodeCheck} from "./strkey";
 import {Operation} from "./operation";
 import {map, each} from "lodash";
 
@@ -25,10 +25,10 @@ export class Transaction {
             envelope = xdr.TransactionEnvelope.fromXDR(buffer);
         }
         // since this transaction is immutable, save the tx
-        this.tx         = envelope.tx();
-        this.source     = encodeBase58Check("accountId", this.tx.sourceAccount().ed25519());
-        this.fee        = this.tx.fee();
-        this.sequence   = this.tx.seqNum().toString();
+        this.tx       = envelope.tx();
+        this.source   = encodeCheck("accountId", envelope.tx().sourceAccount().ed25519());
+        this.fee      = this.tx.fee();
+        this.sequence = this.tx.seqNum().toString();
 
         let operations  = this.tx.operations() || [];
         this.operations = map(operations, op => {

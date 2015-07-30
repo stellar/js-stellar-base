@@ -1,8 +1,8 @@
 describe('Transaction', function() {
 
   it("constructs Transaction object from a TransactionEnvelope", function(done) {
-    let source      = new StellarBase.Account("gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wn", 0);
-    let destination = "gsbkQ1tG4fEqk1sApdeQYZG9r19yVm28m2Zz72gRGjoDKTHi7UL";
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", 0);
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
     let currency    = StellarBase.Currency.native();
     let amount      = "2000";
 
@@ -27,8 +27,8 @@ describe('Transaction', function() {
 
 
   it("signs correctly", function() {
-    let source      = new StellarBase.Account("gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wn", 0);
-    let destination = "gsbkQ1tG4fEqk1sApdeQYZG9r19yVm28m2Zz72gRGjoDKTHi7UL";
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", 0);
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
     let currency    = StellarBase.Currency.native();
     let amount      = "2000";
     let signer      = StellarBase.Keypair.master();
