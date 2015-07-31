@@ -31,10 +31,14 @@ When the order is matched, Alice now have 10 bonds and the issuer has 990 bonds 
 **/
 describe('Functional test:', function() {
   this.timeout(40e3);
-  let baseUrl = 'https://horizon-testnet.stellar.org';
+  //let baseUrl = 'https://horizon-testnet.stellar.org';
+  let baseUrl = 'http://52.6.108.145:3000';
   let accounts = {};
   let keyPairs = {};
   //let url = 'http://localhost:8000';
+  let keyPairMaster = StellarBase.Keypair.fromRawSeed("allmylifemyhearthasbeensearching");
+  var accountMaster;
+  let keyPairFriendBot =  StellarBase.Keypair.fromSeed('SCAAUH3T2ZOBYO56V2QRIG4GX7YLYLG6T3IEMDZY4REURV6JIMPJK2AW');
   keyPairs['gateway'] = StellarBase.Keypair.fromRawSeed("gateway0000000000000000000000000");
   keyPairs['issuer'] = StellarBase.Keypair.fromRawSeed("issuer00000000000000000000000000");
   keyPairs['alice'] = StellarBase.Keypair.fromRawSeed("alice000000000000000000000000000");
@@ -120,7 +124,7 @@ describe('Functional test:', function() {
             accounts[name] = new StellarBase.Account(address, account.sequence);
           })
           .catch(function(err) {
-            console.log("account does not exist")
+            console.log("account error ", err)
             return axios.get(baseUrl + '/friendbot?addr=' + address)
               .then(function(response) {
                 console.log("friendbot ", response.data)
@@ -155,8 +159,11 @@ describe('Functional test:', function() {
       })
       .catch(function(error) {
         console.error('sendTransaction\n', error);
-        var errorMessage = StellarBase.xdr.TransactionResult.fromXDR(new Buffer(error.data.error, "hex"));
-        console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
+        if (error.data.error) {
+          var errorMessage = StellarBase.xdr.TransactionResult.fromXDR(new Buffer(error.data.error, "hex"));
+          console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
+        }
+
         throw error;
       })
       /*
@@ -188,228 +195,245 @@ describe('Functional test:', function() {
     return sendTransaction(accountSource, keyPair, opTrust);
   }
 
-  before(function(done) {
-    this.timeout(20e3);
-    fetchAccountsSequence().then(done, done)
-  })
-
-  after(function(done) {
-    this.timeout(20e3);
-    fetchAccountsSequence().then(done, done)
-  })
-
-  it("show addresses", function(done) {
-    _.each(keyPairs, function(value, key) {
-      //console.log("address %s %s", value.address(), key);
-    });
-    done()
-  });
-
-  it("show offers", function(done) {
-    return Promise.each(_.map(keyPairs, function(value, key) {
-        return {
-          name: key,
-          keyPair: value
-        }
-      }), function(item) {
-        var name = item['name'];
-        var keyPair = item['keyPair'];
-        var address = keyPair.address()
-        console.log("show offer %s %s", name, address)
-        return getOffers(address)
-          .then(function(offers) {
-            console.log("address %s %s", name, JSON.stringify(offers, null, 4));
-          })
+  function initAccount(address) {
+    return fetchAccount(address)
+      .then(function(accountData) {
+        return new StellarBase.Account(address, accountData.sequence);
       })
-      .then(function() {})
-      .then(done, done);
-  });
+  }
 
-  it("show transactions", function(done) {
-    return Promise.each(_.map(keyPairs, function(value, key) {
-        return {
-          name: key,
-          keyPair: value
-        }
-      }), function(item) {
-        var name = item['name'];
-        var keyPair = item['keyPair'];
-        var address = keyPair.address()
-        console.log("show transactions %s %s", name, address)
-        return getAccountTransactions(address)
-          .then(function(transactions) {
-            console.log("address %s %s", name, JSON.stringify(transactions, null, 4));
-          })
-      })
-      .then(function() {})
-      .then(done, done);
-  });
-
-
-  it.skip("create account", function(done) {
-    var destination = accounts['bob'].address;
+  function createAccount(accountMaster, fromKeyPair, destination){
     var startingBalance = 1000;
     let createAccountOp = StellarBase.Operation.createAccount({
       destination: destination,
       startingBalance: startingBalance
     });
+    return sendTransaction(accountMaster, fromKeyPair, createAccountOp);
+  }
 
-    let input = new StellarBase.TransactionBuilder(keyPairs['alice'])
-      .addOperation(createAccountOp)
-      .addSigner(keyPairs['alice'])
-      .build()
-      .toEnvelope()
-      .toXDR('hex');
+  describe('provisioning', function() {
 
-    return axios.post(baseUrl + '/transactions', {
-        tx: input
-      })
-      .then(function(response) {
-        console.log(response.data);
-        assert(response.data);
-        assert.equal(response.data.result, 'received');
-      })
-      .then(done, done);
-  });
-
-  it("set trust for bonds", function(done) {
-    let option = {
-      currency: new StellarBase.Currency("SBO", accounts['gateway'].address),
-      limit: "1000000"
-    }
-
-    var names = ['issuer', 'alice', 'bob'];
-    Promise.each(names, function(name) {
-        return setTrust(accounts[name], keyPairs[name], option)
-      })
-      .then(function() {})
-      .then(done, done);
-  });
-
-  it("set trust for GBP", function(done) {
-    let option = {
-      currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
-      limit: "1000000"
-    }
-
-    var names = ['issuer', 'alice', 'bob'];
-    Promise.each(names, function(name) {
-        return setTrust(accounts[name], keyPairs[name], option)
-      })
-      .then(function() {})
-      .then(done, done);
-  });
-
-
-  it("gateway issue 1000 GBP to alice and bob", function(done) {
-
-    var names = ['alice', 'bob'];
-    Promise.each(names, function(name) {
-        let option = {
-          destination: keyPairs[name].address(),
-          currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
-          amount: 1000
-        }
-        return sendPayment(accounts['gateway'], keyPairs['gateway'], option)
-      })
-      .then(function() {})
-      .then(done, done);
-  });
-
-  it("alice sends 1 GBP to bob", function(done) {
-    let option = {
-      destination: keyPairs['bob'].address(),
-      currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
-      amount: 1
-    }
-
-    sendPayment(accounts['alice'], keyPairs['alice'], option)
-      .then(function() {})
-      .then(done, done);
-  });
-
-  it("gateway issue 100 bonds to the issuer", function(done) {
-    let option = {
-      destination: keyPairs['issuer'].address(),
-      currency: new StellarBase.Currency("SBO", accounts['gateway'].address),
-      amount: 100
-    }
-    sendPayment(accounts['gateway'], keyPairs['gateway'], option)
-      .then(function() {})
-      .then(done, done)
-  });
-
-
-  describe('trading: ', function() {
-    it("bond issuer cancels all orders", function(done) {
-      cancelOffers('issuer')
-        .then(done, done)
+    it("get master account", function(done) {
+      initAccount(keyPairMaster.address())
+        .then(function(account) {
+          console.log("Master account ", account);
+          accountMaster = account;
+        })
+        .then(done, done);
     });
 
-    it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
-
-      var options = {
-        takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
-        takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
-        amount: 1,
-        price: 1,
-        offerId: 0
-      };
-
-      manageOffer(accounts['issuer'], keyPairs['issuer'], options)
-        .then(function() {
-          return Promise.delay(5e3)
-        })
-        .then(done, done)
-    });
-
-    it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
-
-      var options = {
-        takerGets: new StellarBase.Currency("GBP", accounts['gateway'].address),
-        takerPays: new StellarBase.Currency("SBO", accounts['gateway'].address),
-        amount: 1,
-        price: 1,
-        offerId: 0
-      };
-
-      manageOffer(accounts['alice'], keyPairs['alice'], options)
-        .then(function(result) {
-          return Promise.delay(6e3)
-            .then(function() {
-              return getTransaction(result.hash)
-            })
-        })
-        .then(function() {
-
-        })
-        .then(done, done)
+    it("create friendbot account", function(done) {
+      var destination = keyPairFriendBot.address();
+      createAccount(accountMaster, keyPairMaster, destination)
+        .then(done, done);
     });
   })
 
-  it("alice sends native currency to bob", function(done) {
-    let option = {
-      destination: keyPairs['bob'].address(),
-      currency: StellarBase.Currency.native(),
-      amount: 5 * 10e6
-    }
-    sendPayment(accounts['alice'], keyPairs['alice'], option)
-      .then(function() {})
-      .then(done, done)
-  });
+  describe('transactions', function() {
 
-  it("alice sends an invalid transaction", function(done) {
-    let input = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    before(function(done) {
+      this.timeout(20e3);
+      fetchAccountsSequence().then(done, done)
+    })
 
-    return axios.post(baseUrl + '/transactions', {
-        tx: input
-      })
-      .catch(function(error) {
-        //console.log(response.data);
-        assert(error);
-        //assert.equal(response.data.result, 'received');
-      })
-      .then(done, done)
+    after(function(done) {
+      this.timeout(20e3);
+      fetchAccountsSequence().then(done, done)
+    })
 
-  });
+
+
+    it("show addresses", function(done) {
+      _.each(keyPairs, function(value, key) {
+        console.log("address %s %s", value.address(), key);
+      });
+      done()
+    });
+
+    it("show offers", function(done) {
+      return Promise.each(_.map(keyPairs, function(value, key) {
+          return {
+            name: key,
+            keyPair: value
+          }
+        }), function(item) {
+          var name = item['name'];
+          var keyPair = item['keyPair'];
+          var address = keyPair.address()
+          console.log("show offer %s %s", name, address)
+          return getOffers(address)
+            .then(function(offers) {
+              console.log("address %s %s", name, JSON.stringify(offers, null, 4));
+            })
+        })
+        .then(function() {})
+        .then(done, done);
+    });
+
+    it("show transactions", function(done) {
+      return Promise.each(_.map(keyPairs, function(value, key) {
+          return {
+            name: key,
+            keyPair: value
+          }
+        }), function(item) {
+          var name = item['name'];
+          var keyPair = item['keyPair'];
+          var address = keyPair.address()
+          console.log("show transactions %s %s", name, address)
+          return getAccountTransactions(address)
+            .then(function(transactions) {
+              console.log("address %s %s", name, JSON.stringify(transactions, null, 4));
+            })
+        })
+        .then(function() {})
+        .then(done, done);
+    });
+
+
+    it.skip("create account", function(done) {
+
+    });
+
+    it("set trust for bonds", function(done) {
+      let option = {
+        currency: new StellarBase.Currency("SBO", accounts['gateway'].address),
+        limit: "1000000"
+      }
+
+      var names = ['issuer', 'alice', 'bob'];
+      Promise.each(names, function(name) {
+          return setTrust(accounts[name], keyPairs[name], option)
+        })
+        .then(function() {})
+        .then(done, done);
+    });
+
+    it("set trust for GBP", function(done) {
+      let option = {
+        currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+        limit: "1000000"
+      }
+
+      var names = ['issuer', 'alice', 'bob'];
+      Promise.each(names, function(name) {
+          return setTrust(accounts[name], keyPairs[name], option)
+        })
+        .then(function() {})
+        .then(done, done);
+    });
+
+
+    it("gateway issue 1000 GBP to alice and bob", function(done) {
+
+      var names = ['alice', 'bob'];
+      Promise.each(names, function(name) {
+          let option = {
+            destination: keyPairs[name].address(),
+            currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+            amount: 1000
+          }
+          return sendPayment(accounts['gateway'], keyPairs['gateway'], option)
+        })
+        .then(function() {})
+        .then(done, done);
+    });
+
+    it("alice sends 1 GBP to bob", function(done) {
+      let option = {
+        destination: keyPairs['bob'].address(),
+        currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+        amount: 1
+      }
+
+      sendPayment(accounts['alice'], keyPairs['alice'], option)
+        .then(function() {})
+        .then(done, done);
+    });
+
+    it("gateway issue 100 bonds to the issuer", function(done) {
+      let option = {
+        destination: keyPairs['issuer'].address(),
+        currency: new StellarBase.Currency("SBO", accounts['gateway'].address),
+        amount: 100
+      }
+      sendPayment(accounts['gateway'], keyPairs['gateway'], option)
+        .then(function() {})
+        .then(done, done)
+    });
+
+
+    describe('trading: ', function() {
+      it("bond issuer cancels all orders", function(done) {
+        cancelOffers('issuer')
+          .then(done, done)
+      });
+
+      it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
+
+        var options = {
+          takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
+          takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
+          amount: 1,
+          price: 1,
+          offerId: 0
+        };
+
+        manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+          .then(function() {
+            return Promise.delay(5e3)
+          })
+          .then(done, done)
+      });
+
+      it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
+
+        var options = {
+          takerGets: new StellarBase.Currency("GBP", accounts['gateway'].address),
+          takerPays: new StellarBase.Currency("SBO", accounts['gateway'].address),
+          amount: 1,
+          price: 1,
+          offerId: 0
+        };
+
+        manageOffer(accounts['alice'], keyPairs['alice'], options)
+          .then(function(result) {
+            return Promise.delay(6e3)
+              .then(function() {
+                return getTransaction(result.hash)
+              })
+          })
+          .then(function() {
+
+          })
+          .then(done, done)
+      });
+    })
+
+    it("alice sends native currency to bob", function(done) {
+      let option = {
+        destination: keyPairs['bob'].address(),
+        currency: StellarBase.Currency.native(),
+        amount: 5 * 10e6
+      }
+      sendPayment(accounts['alice'], keyPairs['alice'], option)
+        .then(function() {})
+        .then(done, done)
+    });
+
+    it("alice sends an invalid transaction", function(done) {
+      let input = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+
+      return axios.post(baseUrl + '/transactions', {
+          tx: input
+        })
+        .catch(function(error) {
+          //console.log(response.data);
+          assert(error);
+          //assert.equal(response.data.result, 'received');
+        })
+        .then(done, done)
+
+    });
+  })
 });
