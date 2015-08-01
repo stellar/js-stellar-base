@@ -2,7 +2,7 @@
 // under the Apache License, Version 2.0. See the COPYING file at the root
 // of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
 
-%#include "generated/Stellar-types.h"
+%#include "xdr/Stellar-types.h"
 
 namespace stellar
 {
@@ -12,25 +12,33 @@ typedef opaque Thresholds[4];
 typedef string string32<32>;
 typedef uint64 SequenceNumber;
 
-enum CurrencyType
+enum AssetType
 {
-    CURRENCY_TYPE_NATIVE = 0,
-    CURRENCY_TYPE_ALPHANUM = 1
+    ASSET_TYPE_NATIVE = 0,
+    ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
+    ASSET_TYPE_CREDIT_ALPHANUM12 = 2
 };
 
-union Currency switch (CurrencyType type)
+union Asset switch (AssetType type)
 {
-case CURRENCY_TYPE_NATIVE:
+case ASSET_TYPE_NATIVE: // Not credit
     void;
 
-case CURRENCY_TYPE_ALPHANUM:
+case ASSET_TYPE_CREDIT_ALPHANUM4:
     struct
     {
-        opaque currencyCode[4];
+        opaque assetCode[4];
         AccountID issuer;
-    } alphaNum;
+    } alphaNum4;
 
-    // add other currency types here in the future
+case ASSET_TYPE_CREDIT_ALPHANUM12:
+    struct
+    {
+        opaque assetCode[12];
+        AccountID issuer;
+    } alphaNum12;
+
+    // add other asset types here in the future
 };
 
 // price in fractional representation
@@ -69,7 +77,7 @@ enum AccountFlags
     // if set, TrustLines are created with authorized set to "false"
     // requiring the issuer to set it for each TrustLine
     AUTH_REQUIRED_FLAG = 0x1,
-    // if set, the authorized flag in TrustTines can be cleared
+    // if set, the authorized flag in TrustLines can be cleared
     // otherwise, authorization cannot be revoked
     AUTH_REVOCABLE_FLAG = 0x2
 };
@@ -112,7 +120,7 @@ struct AccountEntry
 
 /* TrustLineEntry
     A trust line represents a specific trust relationship with
-    a currency/issuer (limit, authorization)
+    a credit/issuer (limit, authorization)
     as well as the balance.
 */
 
@@ -125,9 +133,9 @@ enum TrustLineFlags
 struct TrustLineEntry
 {
     AccountID accountID; // account this trustline belongs to
-    Currency currency;   // currency (with issuer)
-    int64 balance;       // how much of this currency the user has.
-                         // Currency defines the unit for this;
+    Asset asset;   // type of asset (with issuer)
+    int64 balance;       // how much of this asset the user has.
+                         // Asset defines the unit for this;
 
     int64 limit;  // balance cannot be above this
     uint32 flags; // see TrustLineFlags
@@ -156,10 +164,10 @@ enum OfferEntryFlags
 */
 struct OfferEntry
 {
-    AccountID accountID;
+    AccountID sellerID;
     uint64 offerID;
-    Currency takerGets; // A
-    Currency takerPays; // B
+    Asset selling; // A
+    Asset buying; // B
     int64 amount;       // amount of A
 
     /* price for this offer:

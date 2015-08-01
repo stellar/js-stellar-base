@@ -32,7 +32,8 @@ When the order is matched, Alice now have 10 bonds and the issuer has 990 bonds 
 describe('Functional test:', function() {
   this.timeout(40e3);
   //let baseUrl = 'https://horizon-testnet.stellar.org';
-  let baseUrl = 'http://52.6.108.145:3000';
+  //let baseUrl = 'http://52.6.108.145:3000';
+  let baseUrl = 'http://localhost:8000' 
   let accounts = {};
   let keyPairs = {};
   //let url = 'http://localhost:8000';

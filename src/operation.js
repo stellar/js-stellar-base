@@ -1,7 +1,8 @@
 import {xdr, Keypair, Hyper, UnsignedHyper, hash} from "./index";
 import {encodeCheck} from "./strkey";
-import {Currency} from "./currency";
+import {Asset} from "./asset";
 import {best_r} from "./util/continued_fraction";
+import {padRight, trimRight} from 'lodash';
 
 /**
 * @class Operation
@@ -41,7 +42,7 @@ export class Operation {
     * Create a payment operation.
     * @param {object} opts
     * @param {string} opts.destination - The destination address.
-    * @param {Currency} opts.currency - The currency to send.
+    * @param {Asset} opts.asset - The asset to send.
     * @param {string} opts.amount - The amount to send.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PaymentOp}
@@ -50,8 +51,8 @@ export class Operation {
         if (!opts.destination) {
             throw new Error("Must provide a destination for a payment operation");
         }
-        if (!opts.currency) {
-            throw new Error("Must provide a currency for a payment operation");
+        if (!opts.asset) {
+            throw new Error("Must provide an asset for a payment operation");
         }
         if (!opts.amount) {
             throw new Error("Must provide an amount for a payment operation");
@@ -59,7 +60,7 @@ export class Operation {
 
         let attributes = {};
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
-        attributes.currency     = opts.currency.toXdrObject();
+        attributes.asset        = opts.asset.toXdrObject();
         attributes.amount       = Hyper.fromString(String(opts.amount));
         let payment = new xdr.PaymentOp(attributes);
 
@@ -76,18 +77,18 @@ export class Operation {
     * destination account, optionally through a path. XLM payments create the destination
     * account if it does not exist.
     * @param {object} opts
-    * @param {Currency} opts.sendCurrency - The currency to pay with.
-    * @param {string} opts.sendMax - The maximum amount of sendCurrency to send.
+    * @param {Asset} opts.sendAsset - The asset to pay with.
+    * @param {string} opts.sendMax - The maximum amount of sendAsset to send.
     * @param {string} opts.destination - The destination account to send to.
-    * @param {Currency} opts.destCurrency - The currency the destination will receive.
+    * @param {Asset} opts.destAsset - The asset the destination will receive.
     * @param {string|number} otps.destAmount - The amount the destination receives.
-    * @param {array} [opts.path] - An array of Currency objects to use as the path.
+    * @param {array} [opts.path] - An array of Asset objects to use as the path.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PathPaymentOp}
     */
     static pathPayment(opts) {
-        if (!opts.sendCurrency) {
-            throw new Error("Must specify a send currency");
+        if (!opts.sendAsset) {
+            throw new Error("Must specify a send asset");
         }
         if (!opts.sendMax) {
             throw new Error("Must specify a send max");
@@ -95,8 +96,8 @@ export class Operation {
         if (!opts.destination) {
             throw new Error("Must provide a destination for a payment operation");
         }
-        if (!opts.destCurrency) {
-            throw new Error("Must provide a destCurrency for a payment operation");
+        if (!opts.destAsset) {
+            throw new Error("Must provide a destAsset for a payment operation");
         }
         if (!opts.destAmount) {
             throw new Error("Must provide an destAmount for a payment operation");
@@ -104,11 +105,11 @@ export class Operation {
 
 
         let attributes = {};
-        attributes.sendCurrency = opts.sendCurrency.toXdrObject();
+        attributes.sendAsset    = opts.sendAsset.toXdrObject();
         attributes.sendMax      = Hyper.fromString(String(opts.sendMax));
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
-        attributes.destCurrency = opts.destCurrency.toXdrObject();
-        attributes.destAmount       = Hyper.fromString(String(opts.destAmount));
+        attributes.destAsset    = opts.destAsset.toXdrObject();
+        attributes.destAmount   = Hyper.fromString(String(opts.destAmount));
         attributes.path         = opts.path ? opts.path : [];
         let payment = new xdr.PathPaymentOp(attributes);
 
@@ -122,18 +123,18 @@ export class Operation {
 
     /**
     * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
-    * trust line for a given currency from the source account to another. The issuer being
-    * trusted and the currency code are in the given Currency object.
+    * trust line for a given asset from the source account to another. The issuer being
+    * trusted and the asset code are in the given Asset object.
     * @param {object} opts
-    * @param {Currency} opts.currency - The currency for the trust line.
-    * @param {string} [opts.limit] - The limit for the currency, defaults to max int64.
+    * @param {Asset} opts.asset - The asset for the trust line.
+    * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
     *                                If the limit is set to 0 it deletes the trustline.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ChangeTrustOp}
     */
     static changeTrust(opts) {
         let attributes      = {};
-        attributes.line     = opts.currency.toXdrObject();
+        attributes.line     = opts.asset.toXdrObject();
         let limit           = opts.limit ? opts.limit : "9223372036854775807";
         attributes.limit    = Hyper.fromString(limit);
         if (opts.source) {
@@ -151,10 +152,10 @@ export class Operation {
 
     /**
     * Returns an XDR AllowTrustOp. An "allow trust" operation authorizes another
-    * account to hold your account's credit for a given currency.
+    * account to hold your account's credit for a given asset.
     * @param {object} opts
     * @param {string} opts.trustor - The trusting account (the one being authorized)
-    * @param {string} opts.currencyCode - The currency code being authorized.
+    * @param {string} opts.assetCode - The asset code being authorized.
     * @param {boolean} opts.authorize - True to authorize the line, false to deauthorize.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.AllowTrustOp}
@@ -162,8 +163,15 @@ export class Operation {
     static allowTrust(opts) {
         let attributes = {};
         attributes.trustor = Keypair.fromAddress(opts.trustor).accountId();
-        let code = opts.currencyCode.length == 3 ? opts.currencyCode + "\0" : opts.currencyCode;
-        attributes.currency = xdr.AllowTrustOpCurrency.currencyTypeAlphanum(code);
+        if (opts.assetCode.length <= 4) {
+            let code = padRight(opts.assetCode, 4, '\0');
+            attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
+        } else if (opts.assetCode.length <= 12) {
+            let code = padRight(opts.assetCode, 12, '\0');
+            attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
+        } else {
+            throw new Error("Asset code must be 12 characters at max.");
+        }
         attributes.authorize = opts.authorize;
         let allowTrustOp = new xdr.AllowTrustOp(attributes);
 
@@ -237,8 +245,8 @@ export class Operation {
     * Returns a XDR ManageOfferOp. A "manage offer" operation creates, updates, or
     * deletes an offer.
     * @param {object} opts
-    * @param {Currency} takerGets - What you're selling.
-    * @param {Currency} takerPays - What you're buying.
+    * @param {Asset} selling - What you're selling.
+    * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number} price - The exchange rate ratio (takerpay / takerget)
     * @param {string} offerId - If 0, will create a new offer. Otherwise, edits an exisiting offer.
@@ -247,8 +255,8 @@ export class Operation {
     */
     static manageOffer(opts) {
         let attributes = {};
-        attributes.takerGets = opts.takerGets.toXdrObject();
-        attributes.takerPays = opts.takerPays.toXdrObject();
+        attributes.selling = opts.selling.toXdrObject();
+        attributes.buying = opts.buying.toXdrObject();
         attributes.amount = Hyper.fromString(String(opts.amount));
         let approx = best_r(opts.price);
         attributes.price = new xdr.Price({
@@ -272,8 +280,8 @@ export class Operation {
     * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
     * to manage this offer after using this operation to create it.
     * @param {object} opts
-    * @param {Currency} takerGets - What you're selling.
-    * @param {Currency} takerPays - What you're buying.
+    * @param {Asset} selling - What you're selling.
+    * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number} price - The exchange rate ratio (takerpay / takerget)
     * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -281,8 +289,8 @@ export class Operation {
     */
     static createPassiveOffer(opts) {
         let attributes = {};
-        attributes.takerGets = opts.takerGets.toXdrObject();
-        attributes.takerPays = opts.takerPays.toXdrObject();
+        attributes.selling = opts.selling.toXdrObject();
+        attributes.buying = opts.buying.toXdrObject();
         attributes.amount = Hyper.fromString(String(opts.amount));
         let approx = best_r(opts.price);
         attributes.price = new xdr.Price({
@@ -360,30 +368,32 @@ export class Operation {
             case "payment":
                 obj.type = "payment";
                 obj.destination = accountIdtoAddress(attrs.destination);
-                obj.currency = Currency.fromOperation(attrs.currency);
+                obj.asset = Asset.fromOperation(attrs.asset);
                 obj.amount = attrs.amount.toString();
                 break;
             case "pathPayment":
                 obj.type = "pathPayment";
-                obj.sendCurrency = Currency.fromOperation(attrs.sendCurrency);
+                obj.sendAsset = Asset.fromOperation(attrs.sendAsset);
                 obj.sendMax = attrs.sendMax.toString();
                 obj.destination = accountIdtoAddress(attrs.destination);
-                obj.destCurrency = Currency.fromOperation(attrs.destCurrency);
+                obj.destAsset = Asset.fromOperation(attrs.destAsset);
                 obj.destAmount = attrs.destAmount.toString();
                 obj.path = attrs.path;
                 break;
             case "changeTrust":
                 obj.type = "changeTrust";
+<<<<<<< HEAD
                 obj.line = Currency.fromOperation(attrs.line);
                 obj.limit = attrs.limit;
+=======
+                obj.line = Asset.fromOperation(attrs.line);
+>>>>>>> upstream/new-xdr
                 break;
             case "allowTrust":
                 obj.type = "allowTrust";
                 obj.trustor = accountIdtoAddress(attrs.trustor);
-                obj.currencyCode = attrs.currency._value.toString();
-                if (obj.currencyCode[3] === "\0") {
-                    obj.currencyCode = obj.currencyCode.slice(0,3);
-                }
+                obj.assetCode = attrs.asset._value.toString();
+                obj.assetCode = trimRight(obj.assetCode, "\0");
                 obj.authorize = attrs.authorize;
                 break;
             case "setOption":
@@ -409,16 +419,16 @@ export class Operation {
                 break;
             case "manageOffer":
                 obj.type = "manageOffer";
-                obj.takerGets = Currency.fromOperation(attrs.takerGets);
-                obj.takerPays = Currency.fromOperation(attrs.takerPays);
+                obj.selling = Asset.fromOperation(attrs.selling);
+                obj.buying = Asset.fromOperation(attrs.buying);
                 obj.amount = attrs.amount.toString();
                 obj.price = attrs.price._attributes.n / attrs.price._attributes.d;
                 obj.offerId = attrs.offerId.toString();
                 break;
             case "createPassiveOffer":
                 obj.type = "createPassiveOffer";
-                obj.takerGets = Currency.fromOperation(attrs.takerGets);
-                obj.takerPays = Currency.fromOperation(attrs.takerPays);
+                obj.selling = Asset.fromOperation(attrs.selling);
+                obj.buying = Asset.fromOperation(attrs.buying);
                 obj.amount = attrs.amount.toString();
                 obj.price = attrs.price._attributes.n / attrs.price._attributes.d;
                 break;

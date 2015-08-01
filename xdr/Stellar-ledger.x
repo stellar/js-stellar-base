@@ -2,7 +2,7 @@
 // under the Apache License, Version 2.0. See the COPYING file at the root
 // of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
 
-%#include "generated/Stellar-transaction.h"
+%#include "xdr/Stellar-transaction.h"
 
 namespace stellar
 {
@@ -102,13 +102,13 @@ case TRUSTLINE:
     struct
     {
         AccountID accountID;
-        Currency currency;
+        Asset asset;
     } trustLine;
 
 case OFFER:
     struct
     {
-        AccountID accountID;
+        AccountID sellerID;
         uint64 offerID;
     } offer;
 };
@@ -212,8 +212,20 @@ case LEDGER_ENTRY_REMOVED:
     LedgerKey removed;
 };
 
-struct TransactionMeta
+typedef LedgerEntryChange LedgerEntryChanges<>;
+
+struct OperationMeta
 {
-    LedgerEntryChange changes<>;
+    LedgerEntryChanges changes;
+};
+
+union TransactionMeta switch (int v)
+{
+case 0:
+    struct
+    {
+        LedgerEntryChanges changes;
+        OperationMeta operations<>;
+    } v0;
 };
 }

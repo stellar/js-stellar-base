@@ -65,5 +65,6 @@
     "sha.js": "^2.3.6",
     "thirty-two": "^0.0.2",
     "tweetnacl": "^0.13.0"
-  }
+  },
+  "engines":{"node": "0.10.x"}
 }

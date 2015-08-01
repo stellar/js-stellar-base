@@ -30,15 +30,15 @@ export class TransactionBuilder {
     *
     * <p>The following code example creates a new transaction with two payment operations
     * and a changeTrust operation. The Transaction's source account first funds destinationA,
-    * then extends a trust line to destination A for a currency, then destinationA sends the
-    * source account an amount of that currency. The built transaction would need to be signed by
+    * then extends a trust line to destination A for an asset, then destinationA sends the
+    * source account an amount of that asset. The built transaction would need to be signed by
     * both the source acccount and the destinationA account for it to be valid.</p>
     *
     * <pre>var transaction = new TransactionBuilder(source)
     *   .addOperation(Operation.payment({
             destination: destinationA,
             amount: "20000000",
-            currency: Currency.native()
+            asset: Asset.native()
         }) // <- funds and creates destinationA
     *   .build();
     * </pre>
