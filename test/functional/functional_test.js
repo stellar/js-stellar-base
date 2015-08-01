@@ -33,8 +33,8 @@ describe('Functional test:', function() {
   this.timeout(40e3);
   //let baseUrl = 'https://horizon-testnet.stellar.org';
   //let baseUrl = 'http://52.6.108.145:3000';
-  let baseUrl = 'http://localhost:8000'
   //let baseUrl = 'http://localhost:3000'
+  let baseUrl = 'http://localhost:8000'
   let accounts = {};
   let keyPairs = {};
   //let url = 'http://localhost:8000';
@@ -94,6 +94,14 @@ describe('Functional test:', function() {
     return axios.get(baseUrl + '/accounts/' + address + '/transactions')
       .then(function(response) {
         console.log("getAccountTransactions", response.data)
+        return response.data;
+      })
+  }
+
+  function getTransactions() {
+    return axios.get(baseUrl + '/transactions')
+      .then(function(response) {
+        console.log("getTransactions", response.data)
         return response.data;
       })
   }
@@ -168,16 +176,16 @@ describe('Functional test:', function() {
 
         throw error;
       })
-      /*
-      .then(function(hash) {
-        return Promise.delay(5e3)
+
+      .then(function(data) {
+        return Promise.delay(10e3)
         .then(function() {
-          return getTransaction(hash)
+          return getTransaction(data.hash)
         })
       })
       .then(function(transaction) {
-        assert(transaction.hash)
-      })*/
+        //assert(transaction.hash)
+      })
 
   }
 
@@ -213,6 +221,24 @@ describe('Functional test:', function() {
     return sendTransaction(accountMaster, fromKeyPair, createAccountOp);
   }
 
+  it("show addresses", function(done) {
+    console.log("address %s %s", keyPairMaster.address(), 'master');
+    console.log("address %s %s", keyPairFriendBot.address(), 'friendbot');
+
+    _.each(keyPairs, function(value, key) {
+      console.log("address %s %s", value.address(), key);
+    });
+    done()
+  });
+
+  it("show recent transaction", function(done) {
+    getTransactions()
+      .then(function(result){
+        assert(result)
+      })
+      .then(done, done)  
+  });
+
   describe('provisioning', function() {
 
     it("get master account", function(done) {
@@ -227,8 +253,28 @@ describe('Functional test:', function() {
     it("create friendbot account", function(done) {
       var destination = keyPairFriendBot.address();
       createAccount(accountMaster, keyPairMaster, destination)
+        .then(function(result){
+        })
         .then(done, done);
     });
+    it("master sends native currency to friendbot", function(done) {
+      var destination = keyPairFriendBot.address();
+
+      let option = {
+        destination: destination,
+        asset: StellarBase.Asset.native(),
+        amount: 5 * 10e6
+      }
+      sendPayment(accountMaster, keyPairMaster, option)
+        .then(function() {
+          return Promise.delay(6e3)
+        })
+        .then(function() {
+          return fetchAccount(destination);
+        })
+        .then(done, done)
+    });
+
   })
 
   describe('transactions', function() {
@@ -245,12 +291,6 @@ describe('Functional test:', function() {
 
 
 
-    it("show addresses", function(done) {
-      _.each(keyPairs, function(value, key) {
-        console.log("address %s %s", value.address(), key);
-      });
-      done()
-    });
 
     it("show offers", function(done) {
       return Promise.each(_.map(keyPairs, function(value, key) {
