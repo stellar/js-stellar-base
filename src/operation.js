@@ -382,12 +382,8 @@ export class Operation {
                 break;
             case "changeTrust":
                 obj.type = "changeTrust";
-<<<<<<< HEAD
-                obj.line = Currency.fromOperation(attrs.line);
-                obj.limit = attrs.limit;
-=======
                 obj.line = Asset.fromOperation(attrs.line);
->>>>>>> upstream/new-xdr
+                obj.limit = attrs.limit;
                 break;
             case "allowTrust":
                 obj.type = "allowTrust";

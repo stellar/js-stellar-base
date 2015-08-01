@@ -77,14 +77,14 @@ describe('Operation', function() {
 
     describe(".changeTrust() with limit", function () {
         it("creates a changeTrustOp", function () {
-            let currency = new StellarBase.Currency("EUR", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            let asset = new StellarBase.Asset("EUR", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             let limit = "1000000";
-            let op = StellarBase.Operation.changeTrust({currency: currency, limit:limit});
+            let op = StellarBase.Operation.changeTrust({asset: asset, limit:limit});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation._attributes);
             expect(obj.type).to.be.equal("changeTrust");
-            expect(obj.line.equals(currency)).to.be.true;
+            expect(obj.line.equals(asset)).to.be.true;
             expect(obj.limit.low.toString()).to.equal(limit);
         });
     });
