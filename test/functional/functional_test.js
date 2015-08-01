@@ -33,7 +33,8 @@ describe('Functional test:', function() {
   this.timeout(40e3);
   //let baseUrl = 'https://horizon-testnet.stellar.org';
   //let baseUrl = 'http://52.6.108.145:3000';
-  let baseUrl = 'http://localhost:8000' 
+  let baseUrl = 'http://localhost:8000'
+  //let baseUrl = 'http://localhost:3000'
   let accounts = {};
   let keyPairs = {};
   //let url = 'http://localhost:8000';
@@ -76,8 +77,8 @@ describe('Functional test:', function() {
         console.log(orderIds);
         return Promise.each(orderIds, function(orderId) {
           var options = {
-            takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
-            takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
+            takerGets: new StellarBase.Asset("SBO", accounts['gateway'].address),
+            takerPays: new StellarBase.Asset("GBP", accounts['gateway'].address),
             amount: 0,
             price: 1,
             offerId: orderId
@@ -146,7 +147,7 @@ describe('Functional test:', function() {
       .addSigner(keyPair)
       .build()
       .toEnvelope()
-      .toXDR('hex');
+      .toXDR('base64');
 
     return axios.post(baseUrl + '/transactions', {
         tx: input
@@ -298,7 +299,7 @@ describe('Functional test:', function() {
 
     it("set trust for bonds", function(done) {
       let option = {
-        currency: new StellarBase.Currency("SBO", accounts['gateway'].address),
+        asset: new StellarBase.Asset("SBO", accounts['gateway'].address),
         limit: "1000000"
       }
 
@@ -312,7 +313,7 @@ describe('Functional test:', function() {
 
     it("set trust for GBP", function(done) {
       let option = {
-        currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+        asset: new StellarBase.Asset("GBP", accounts['gateway'].address),
         limit: "1000000"
       }
 
@@ -331,7 +332,7 @@ describe('Functional test:', function() {
       Promise.each(names, function(name) {
           let option = {
             destination: keyPairs[name].address(),
-            currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+            asset: new StellarBase.Asset("GBP", accounts['gateway'].address),
             amount: 1000
           }
           return sendPayment(accounts['gateway'], keyPairs['gateway'], option)
@@ -343,7 +344,7 @@ describe('Functional test:', function() {
     it("alice sends 1 GBP to bob", function(done) {
       let option = {
         destination: keyPairs['bob'].address(),
-        currency: new StellarBase.Currency("GBP", accounts['gateway'].address),
+        asset: new StellarBase.Asset("GBP", accounts['gateway'].address),
         amount: 1
       }
 
@@ -355,7 +356,7 @@ describe('Functional test:', function() {
     it("gateway issue 100 bonds to the issuer", function(done) {
       let option = {
         destination: keyPairs['issuer'].address(),
-        currency: new StellarBase.Currency("SBO", accounts['gateway'].address),
+        asset: new StellarBase.Asset("SBO", accounts['gateway'].address),
         amount: 100
       }
       sendPayment(accounts['gateway'], keyPairs['gateway'], option)
@@ -373,8 +374,8 @@ describe('Functional test:', function() {
       it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
 
         var options = {
-          takerGets: new StellarBase.Currency("SBO", accounts['gateway'].address),
-          takerPays: new StellarBase.Currency("GBP", accounts['gateway'].address),
+          takerGets: new StellarBase.Asset("SBO", accounts['gateway'].address),
+          takerPays: new StellarBase.Asset("GBP", accounts['gateway'].address),
           amount: 1,
           price: 1,
           offerId: 0
@@ -390,8 +391,8 @@ describe('Functional test:', function() {
       it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
 
         var options = {
-          takerGets: new StellarBase.Currency("GBP", accounts['gateway'].address),
-          takerPays: new StellarBase.Currency("SBO", accounts['gateway'].address),
+          takerGets: new StellarBase.Asset("GBP", accounts['gateway'].address),
+          takerPays: new StellarBase.Asset("SBO", accounts['gateway'].address),
           amount: 1,
           price: 1,
           offerId: 0
@@ -414,7 +415,7 @@ describe('Functional test:', function() {
     it("alice sends native currency to bob", function(done) {
       let option = {
         destination: keyPairs['bob'].address(),
-        currency: StellarBase.Currency.native(),
+        asset: StellarBase.asset.native(),
         amount: 5 * 10e6
       }
       sendPayment(accounts['alice'], keyPairs['alice'], option)
