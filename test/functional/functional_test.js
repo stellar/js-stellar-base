@@ -49,7 +49,8 @@ describe('Functional test:', function() {
   function fetchAccount(address) {
     return axios.get(baseUrl + '/accounts/' + address)
       .then(function(response) {
-        console.log("fetchAccount\n", response.data.balances)
+        console.log("fetchAccount %s has %s\n",
+         address, JSON.stringify(response.data.balances, null, 4))
         return response.data;
       })
   }
@@ -170,13 +171,13 @@ describe('Functional test:', function() {
       .catch(function(error) {
         console.error('sendTransaction\n', error);
         if (error.data.error) {
-          var errorMessage = StellarBase.xdr.TransactionResult.fromXDR(new Buffer(error.data.error, "hex"));
+          var errorMessage = StellarBase.xdr.TransactionResult.fromXDR(new Buffer(error.data.error, "base64"));
           console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
         }
 
         throw error;
       })
-
+/*
       .then(function(data) {
         return Promise.delay(10e3)
         .then(function() {
@@ -186,7 +187,7 @@ describe('Functional test:', function() {
       .then(function(transaction) {
         //assert(transaction.hash)
       })
-
+*/
   }
 
   function sendPayment(accountSource, keyPair, option) {
@@ -231,12 +232,12 @@ describe('Functional test:', function() {
     done()
   });
 
-  it("show recent transaction", function(done) {
+  it("show recent transactions", function(done) {
     getTransactions()
       .then(function(result){
         assert(result)
       })
-      .then(done, done)  
+      .then(done, done)
   });
 
   describe('provisioning', function() {
@@ -271,6 +272,8 @@ describe('Functional test:', function() {
         })
         .then(function() {
           return fetchAccount(destination);
+        })
+        .then(function() {
         })
         .then(done, done)
     });
@@ -414,8 +417,8 @@ describe('Functional test:', function() {
       it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
 
         var options = {
-          takerGets: new StellarBase.Asset("SBO", accounts['gateway'].address),
-          takerPays: new StellarBase.Asset("GBP", accounts['gateway'].address),
+          buying: new StellarBase.Asset("SBO", accounts['gateway'].address),
+          selling: new StellarBase.Asset("GBP", accounts['gateway'].address),
           amount: 1,
           price: 1,
           offerId: 0
@@ -431,8 +434,8 @@ describe('Functional test:', function() {
       it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
 
         var options = {
-          takerGets: new StellarBase.Asset("GBP", accounts['gateway'].address),
-          takerPays: new StellarBase.Asset("SBO", accounts['gateway'].address),
+          buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
+          selling: new StellarBase.Asset("SBO", accounts['gateway'].address),
           amount: 1,
           price: 1,
           offerId: 0
@@ -455,7 +458,7 @@ describe('Functional test:', function() {
     it("alice sends native currency to bob", function(done) {
       let option = {
         destination: keyPairs['bob'].address(),
-        asset: StellarBase.asset.native(),
+        asset: StellarBase.Asset.native(),
         amount: 5 * 10e6
       }
       sendPayment(accounts['alice'], keyPairs['alice'], option)
