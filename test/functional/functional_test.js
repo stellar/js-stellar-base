@@ -214,7 +214,7 @@ describe('Functional test:', function() {
   }
 
   function createAccount(accountMaster, fromKeyPair, destination){
-    var startingBalance = 1000;
+    var startingBalance = 1000 * 10e6;
     let createAccountOp = StellarBase.Operation.createAccount({
       destination: destination,
       startingBalance: startingBalance
@@ -417,8 +417,8 @@ describe('Functional test:', function() {
       it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
 
         var options = {
-          buying: new StellarBase.Asset("SBO", accounts['gateway'].address),
-          selling: new StellarBase.Asset("GBP", accounts['gateway'].address),
+          selling: new StellarBase.Asset("SBO", accounts['gateway'].address),
+          buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
           amount: 1,
           price: 1,
           offerId: 0
@@ -434,8 +434,8 @@ describe('Functional test:', function() {
       it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
 
         var options = {
-          buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
-          selling: new StellarBase.Asset("SBO", accounts['gateway'].address),
+          selling: new StellarBase.Asset("GBP", accounts['gateway'].address),
+          buying: new StellarBase.Asset("SBO", accounts['gateway'].address),
           amount: 1,
           price: 1,
           offerId: 0
