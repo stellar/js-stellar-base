@@ -207,4 +207,18 @@ describe('Operation', function() {
             expect(obj.type).to.be.equal("inflation");
         });
     });
+    describe(".error", function () {
+        it("decode manageOfferUnderfunded xdr error", function () {
+            var errorXdr = 't1qpS2SGmIWfZXnpmlFsZBt6JYb2+YIUC5RcngrmvCoAAAAAAAAD6P////8AAAABAAAAAAAAAAP////5AAAAAA==';
+            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
+            assert(errorMessage)
+        });
+        it("decode another manageOfferUnderfunded xdr error", function () {
+            var errorXdr = 'ja5QtJgv9qARefYowyUQL9Un+YKGpFcZDa5Q3XNQkYkAAAAAAAAD6P////8AAAABAAAAAAAAAAP////5AAAAAA==';
+            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
+            assert(errorMessage)
+        });
+    });
 });
