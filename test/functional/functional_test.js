@@ -32,7 +32,7 @@ When the order is matched, Alice now have 10 bonds and the issuer has 990 bonds 
 describe('Functional test:', function() {
   this.timeout(40e3);
   //let baseUrl = 'https://horizon-testnet.stellar.org';
-  //let baseUrl = 'http://52.6.108.145:3000';
+  //let baseUrl = 'http://52.6.108.145:8000';
   //let baseUrl = 'http://localhost:3000'
   let baseUrl = 'http://localhost:8000'
   let accounts = {};
@@ -43,8 +43,14 @@ describe('Functional test:', function() {
   let keyPairFriendBot =  StellarBase.Keypair.fromSeed('SCAAUH3T2ZOBYO56V2QRIG4GX7YLYLG6T3IEMDZY4REURV6JIMPJK2AW');
   keyPairs['gateway'] = StellarBase.Keypair.fromRawSeed("gateway0000000000000000000000000");
   keyPairs['issuer'] = StellarBase.Keypair.fromRawSeed("issuer00000000000000000000000000");
-  keyPairs['alice'] = StellarBase.Keypair.fromRawSeed("alice000000000000000000000000000");
+  keyPairs['alice'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("alice@alice.com", "Test!99"));
   keyPairs['bob'] = StellarBase.Keypair.fromRawSeed("bob00000000000000000000000000000");
+
+  function createSeedFromUsernamePassword(username, password){
+    var seed64 = StellarBase.hash(username + password).toString('hex');
+    var seed32 = seed64.substr(0, 32);
+    return seed32
+  }
 
   function fetchAccount(address) {
     return axios.get(baseUrl + '/accounts/' + address)
@@ -78,8 +84,8 @@ describe('Functional test:', function() {
         console.log(orderIds);
         return Promise.each(orderIds, function(orderId) {
           var options = {
-            takerGets: new StellarBase.Asset("SBO", accounts['gateway'].address),
-            takerPays: new StellarBase.Asset("GBP", accounts['gateway'].address),
+            selling: new StellarBase.Asset("SBO", accounts['gateway'].address),
+            buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
             amount: 0,
             price: 1,
             offerId: orderId

@@ -62,14 +62,6 @@ describe('Transaction', function() {
                 .toXDR('base64');
 
     console.log("input:\n", input);
-/*
-    var transaction = new StellarBase.Transaction(input);
-    var operation = transaction.operations[0];
-
-    expect(transaction.source).to.be.equal(source.address);
-    expect(operation.startingBalance).to.be.equal(startingBalance.toString());
-    expect(operation.destination).to.be.equal(destination);
-    */
 
     done();
   });
