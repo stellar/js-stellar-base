@@ -30,10 +30,12 @@ Node.js version 0.10 is required. If you don't have version 0.10, use
 
 ### To use as a module in a Node.js project
 1. Install it using npm:
+
   ```shell
   npm install --save stellar-base
   ```
 2. require/import it in your JavaScript:
+
   ```js
   var StellarBase = require('stellar-base');
   ```
@@ -41,6 +43,7 @@ Node.js version 0.10 is required. If you don't have version 0.10, use
 ### To use in the browser
 1. Save the `stellar-base.js` or `stellar-base.min.js` accessible to your html file
 2. Include it in the browser:
+
   ```html
   <script src="./path/to/stellar-base.js"></script>
   <script>console.log(StellarBase);</script>
@@ -48,10 +51,12 @@ Node.js version 0.10 is required. If you don't have version 0.10, use
 
 ### To develop and test js-stellar-base itself
 1. Clone the repo
+
   ```shell
   git clone https://github.com/stellar/js-stellar-base.git
   ```
 2. Install dependencies inside js-stellar-base folder
+
   ```shell
   cd js-stellar-base
   npm install
