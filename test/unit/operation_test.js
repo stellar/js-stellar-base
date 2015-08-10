@@ -1,3 +1,5 @@
+var assert = require('assert');
+
 describe('Operation', function() {
 
     describe(".createAccount()", function () {
@@ -220,5 +222,12 @@ describe('Operation', function() {
             //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage)
         });
+        it("decode changeTrustInvalidLimit xdr error", function () {
+            var errorXdr = 'WQvVAlmvblK3ZFPMj3FhG2xAR1KYLdhGLxwutQ+srAYAAAAAAAAACv////8AAAABAAAAAAAAAAb////9AAAAAA==';
+            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
+            assert(errorMessage)
+        });
+
     });
 });
