@@ -41,10 +41,10 @@ describe('Functional test:', function() {
   let keyPairMaster = StellarBase.Keypair.fromRawSeed("allmylifemyhearthasbeensearching");
   var accountMaster;
   let keyPairFriendBot =  StellarBase.Keypair.fromSeed('SCAAUH3T2ZOBYO56V2QRIG4GX7YLYLG6T3IEMDZY4REURV6JIMPJK2AW');
-  keyPairs['gateway'] = StellarBase.Keypair.fromRawSeed("gateway0000000000000000000000000");
-  keyPairs['issuer'] = StellarBase.Keypair.fromRawSeed("issuer00000000000000000000000000");
-  keyPairs['alice'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("alice@alice.com", "Test!99"));
-  keyPairs['bob'] = StellarBase.Keypair.fromRawSeed("bob00000000000000000000000000000");
+  keyPairs['gateway'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("gateway@fin.com", "Test!99"));
+  keyPairs['issuer'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("issuer@fin.com", "Test!99"));
+  keyPairs['alice'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("alice@fin.com", "Test!99"));
+  keyPairs['bob'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("bob@fin.com", "Test!99"));
 
   function createSeedFromUsernamePassword(username, password){
     var seed64 = StellarBase.hash(username + password).toString('hex');
@@ -425,8 +425,8 @@ describe('Functional test:', function() {
         var options = {
           selling: new StellarBase.Asset("SBO", accounts['gateway'].address),
           buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
-          amount: 1,
-          price: 1,
+          amount: 2,
+          price: 1/2,
           offerId: 0
         };
 
@@ -443,7 +443,7 @@ describe('Functional test:', function() {
           selling: new StellarBase.Asset("GBP", accounts['gateway'].address),
           buying: new StellarBase.Asset("SBO", accounts['gateway'].address),
           amount: 1,
-          price: 1,
+          price: 2,
           offerId: 0
         };
 
