@@ -108,9 +108,7 @@ export class TransactionBuilder {
 
         let tx = new Transaction(xenv);
         tx.sign(...this.signers);
-        if(this.source.sequence == 0){
-          throw new Error("sequence number cannot be 0");
-        }
+        
         this.source.sequence = this.source.sequence + 1;
         return tx;
     }
