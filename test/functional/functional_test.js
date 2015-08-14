@@ -221,13 +221,20 @@ describe('Functional test:', function() {
       })
   }
 
-  function createAccount(accountMaster, fromKeyPair, destination) {
-    var startingBalance = 1000 * 10e6;
+  function createAccount(accountMaster, fromKeyPair, destination, startingBalance) {
+
     let createAccountOp = StellarBase.Operation.createAccount({
       destination: destination,
       startingBalance: startingBalance
     });
-    return sendTransaction(accountMaster, fromKeyPair, createAccountOp);
+    return sendTransaction(accountMaster, fromKeyPair, createAccountOp)
+      .then(function(result) {
+        console.log("createAccount result:", result);
+        return Promise.delay(6e3)
+      })
+      .then(function(result) {
+        return fetchAccount(destination);
+      })
   }
 
   it("show addresses", function(done) {
@@ -259,9 +266,27 @@ describe('Functional test:', function() {
     })
 
     it("create friendbot account", function(done) {
+      let startingBalance = 10e6 * 10e6;
       var destination = keyPairFriendBot.address();
-      createAccount(accountMaster, keyPairMaster, destination)
-        .then(function(result) {})
+      createAccount(accountMaster, keyPairMaster, destination, startingBalance)
+        .then(function(account) {
+          var nativeBalance = _.findWhere(account.balances, {
+            asset_type: 'native'
+          })
+          assert(nativeBalance.balance)
+        })
+        .then(done, done);
+    });
+    it("create random account", function(done) {
+      let startingBalance = 1000 * 10e6;
+      var destination = StellarBase.Keypair.random().address();
+      createAccount(accountMaster, keyPairMaster, destination, startingBalance)
+        .then(function(account) {
+          var nativeBalance = _.findWhere(account.balances, {
+            asset_type: 'native'
+          })
+          assert.equal(nativeBalance.balance, startingBalance);
+        })
         .then(done, done);
     });
     it("master sends native currency to friendbot", function(done) {
@@ -356,7 +381,9 @@ describe('Functional test:', function() {
               return fetchAccount(accounts[name].address)
             })
             .then(function(response) {
-                assert(_.findWhere(response.balances, {asset_code: assetName}));
+              assert(_.findWhere(response.balances, {
+                asset_code: assetName
+              }));
             })
         })
         .then(function(result) {
