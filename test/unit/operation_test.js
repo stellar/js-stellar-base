@@ -231,7 +231,7 @@ describe('Operation', function() {
         it("decode  changeTrustLowReserve xdr error", function () {
             var errorXdr = 'VrdhysJwnJ3mZw5EgYdKoay0hAtdw62F0fBEVlkwj3YAAAAAAAAD6P////8AAAABAAAAAAAAAAb////8AAAAAA==';
             var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
-            console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
+            //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage)
         });
 

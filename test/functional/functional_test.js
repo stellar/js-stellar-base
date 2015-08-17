@@ -77,26 +77,33 @@ describe('Functional test:', function() {
     assert(address);
     return axios.get(baseUrl + '/accounts/' + address + '/offers')
       .then(function(response) {
-        console.log("getOffers\n", response.data)
+        //console.log("getOffers\n", response.data)
         console.log("#Offers\n", response.data._embedded.records.length);
-        var orderIds = _.pluck(response.data._embedded.records, "id");
-        return orderIds;
+        return response.data._embedded.records
       })
-      .then(function(orderIds) {
-        console.log(orderIds);
-        return Promise.each(orderIds, function(orderId) {
+      .then(function(records) {
+        console.log(records);
+        return Promise.each(records, function(record) {
           var options = {
-            selling: new StellarBase.Asset(assetName, accounts['gateway'].address),
-            buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
+            selling: new StellarBase.Asset(record.selling.asset_code, record.selling.asset_issuer),
+            buying: new StellarBase.Asset(record.buying.asset_code, record.buying.asset_issuer),
             amount: 0,
-            price: 1,
-            offerId: orderId
+            price: 3,
+            offerId: record.id
           };
-
-          return manageOffer(accounts['issuer'], keyPairs['issuer'], options)
+          
+          return manageOffer(accounts[name], keyPairs[name], options)
         })
       })
-      .then(function() {})
+      .then(function() {
+        return Promise.delay(6e3)
+      })
+      .then(function() {
+        return axios.get(baseUrl + '/accounts/' + address + '/offers');
+      })
+      .then(function(response) {
+        assert.equal(response.data._embedded.records.length, 0);
+      })
   }
 
   function getAccountTransactions(address) {
@@ -448,8 +455,11 @@ describe('Functional test:', function() {
 
     describe('trading: ', function() {
       it("bond issuer cancels all orders", function(done) {
-        cancelOffers('issuer')
-          .then(done, done)
+        cancelOffers('issuer').
+        then(function(){
+          return cancelOffers('alice')
+        })
+        .then(done, done)
       });
 
       it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
