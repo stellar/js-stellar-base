@@ -467,9 +467,9 @@ describe('Functional test:', function() {
 
 
     describe('trading: ', function() {
-      let quantitySell = 10;
+      let quantitySell = 2;
       let priceSell = 1000;
-      let quantityBuy = 10;
+      let quantityBuy = 4;
       let priceBuy = 1000;
       it("bond issuer cancels all orders", function(done) {
         cancelOffers('issuer').
