@@ -46,6 +46,7 @@ describe('Functional test:', function() {
   keyPairs['alice'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("alice@fin.com", "Test!99"));
   keyPairs['bob'] = StellarBase.Keypair.fromRawSeed(createSeedFromUsernamePassword("bob@fin.com", "Test!99"));
 
+  let currencyCode = 'GBP'; //God save the queen
   let assetName = 'US1234567890';
 
   function createSeedFromUsernamePassword(username, password) {
@@ -91,7 +92,7 @@ describe('Functional test:', function() {
             price: 3,
             offerId: record.id
           };
-          
+
           return manageOffer(accounts[name], keyPairs[name], options)
         })
       })
@@ -401,7 +402,7 @@ describe('Functional test:', function() {
 
     it("set trust for GBP", function(done) {
       let option = {
-        asset: new StellarBase.Asset("GBP", accounts['gateway'].address),
+        asset: new StellarBase.Asset(currencyCode, accounts['gateway'].address),
         limit: "1000000"
       }
 
@@ -414,16 +415,28 @@ describe('Functional test:', function() {
     });
 
 
-    it("gateway issues 1000 GBP to alice and bob", function(done) {
-
+    it("gateway issues 10000 GBP to alice and bob", function(done) {
+      var amountIssued = 10000;
       var names = ['alice', 'bob'];
       Promise.each(names, function(name) {
           let option = {
             destination: keyPairs[name].address(),
-            asset: new StellarBase.Asset("GBP", accounts['gateway'].address),
-            amount: 1000
+            asset: new StellarBase.Asset(currencyCode, accounts['gateway'].address),
+            amount: amountIssued
           }
           return sendPayment(accounts['gateway'], keyPairs['gateway'], option)
+            .then(function() {
+              return Promise.delay(6e3)
+            })
+            .then(function() {
+              return fetchAccount(accounts[name].address)
+            })
+            .then(function(response) {
+              var balance = _.findWhere(response.balances, {
+                asset_code: currencyCode
+              });
+              assert(balance.balance >= amountIssued)
+            })
         })
         .then(function() {})
         .then(done, done);
@@ -432,7 +445,7 @@ describe('Functional test:', function() {
     it("alice sends 1 GBP to bob", function(done) {
       let option = {
         destination: keyPairs['bob'].address(),
-        asset: new StellarBase.Asset("GBP", accounts['gateway'].address),
+        asset: new StellarBase.Asset(currencyCode, accounts['gateway'].address),
         amount: 1
       }
 
@@ -454,21 +467,25 @@ describe('Functional test:', function() {
 
 
     describe('trading: ', function() {
+      let quantitySell = 10;
+      let priceSell = 1000;
+      let quantityBuy = 10;
+      let priceBuy = 1000;
       it("bond issuer cancels all orders", function(done) {
         cancelOffers('issuer').
-        then(function(){
-          return cancelOffers('alice')
-        })
-        .then(done, done)
+        then(function() {
+            return cancelOffers('alice')
+          })
+          .then(done, done)
       });
 
-      it("bond issuer creates a sell order of 10 bond for 1000 GBP", function(done) {
+      it("bond issuer creates a sell order of 10 bonds for 1000 GBP", function(done) {
 
         var options = {
           selling: new StellarBase.Asset(assetName, accounts['gateway'].address),
-          buying: new StellarBase.Asset("GBP", accounts['gateway'].address),
-          amount: 6,
-          price: 1 / 10,
+          buying: new StellarBase.Asset(currencyCode, accounts['gateway'].address),
+          amount: quantitySell,
+          price: priceSell,
           offerId: 0
         };
 
@@ -482,10 +499,10 @@ describe('Functional test:', function() {
       it("alice creates a buy order of 1 bond for 1000 GBP", function(done) {
 
         var options = {
-          selling: new StellarBase.Asset("GBP", accounts['gateway'].address),
+          selling: new StellarBase.Asset(currencyCode, accounts['gateway'].address),
           buying: new StellarBase.Asset(assetName, accounts['gateway'].address),
-          amount: 3,
-          price: 10,
+          amount: quantityBuy * priceBuy,
+          price: 1 / priceBuy,
           offerId: 0
         };
 
