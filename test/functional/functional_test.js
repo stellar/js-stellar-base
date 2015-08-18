@@ -1,3 +1,4 @@
+let StellarBase = require('../../src/index');
 let assert = require('assert');
 let Promise = require('bluebird');
 let axios = require('axios');
