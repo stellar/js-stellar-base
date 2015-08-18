@@ -85,8 +85,8 @@ describe('Functional test:', function() {
         console.log(records);
         return Promise.each(records, function(record) {
           var options = {
-            selling: new StellarBase.Asset(record.selling.asset_code, record.selling.asset_issuer),
-            buying: new StellarBase.Asset(record.buying.asset_code, record.buying.asset_issuer),
+            selling: new StellarBase.Asset(record.selling.asset_code, record.selling.issuer),
+            buying: new StellarBase.Asset(record.buying.asset_code, record.buying.issuer),
             amount: 0,
             price: 3,
             offerId: record.id
