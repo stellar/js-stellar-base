@@ -466,7 +466,37 @@ describe('Functional test:', function() {
         .then(done, done)
     });
 
+    it("manageOfferSellNoTrust", function(done) {
+      let quantityBuy = 100000;
+      let priceBuy = 1000;
+      
+      var options = {
+        selling: new StellarBase.Asset("ABCD", accounts['gateway'].address),
+        buying: new StellarBase.Asset(assetName, accounts['gateway'].address),
+        amount: quantityBuy * priceBuy,
+        price: 1 / priceBuy,
+        offerId: 0
+      };
 
+      manageOffer(accounts['alice'], keyPairs['alice'], options)
+        .then(function(result) {
+          return Promise.delay(6e3)
+            .then(function() {
+              return getTransaction(result.hash)
+            })
+        })
+        .then(function(transaction) {
+          console.log(transaction)
+          
+          var txResult = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(transaction.result_xdr, "base64"));
+          console.log(txResult)
+          console.error('sendTransaction message\n', JSON.stringify(txResult, null, 4));
+          assert(transaction.success == false);
+          assert.equal(txResult._attributes.result._attributes.result._value[0]._value._value._switch.name,'manageOfferSellNoTrust');
+        })
+        .then(done, done)
+    });
+    
     describe('trading: ', function() {
       let quantitySell = 2;
       let priceSell = 1000;
