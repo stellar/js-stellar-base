@@ -241,5 +241,13 @@ describe('Operation', function() {
             //console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage);
         });
+        
+        it("decode tx success", function () {
+            var errorXdr = 'fz2tTZxnhbdIoBoHAlt9Xq5/Nnxt8SwLmZTkoRwHVrIAAAAAAAAD6AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA==';
+            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
+            assert(errorMessage);
+        });
+
     });
 });
