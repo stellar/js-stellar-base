@@ -25,8 +25,8 @@ describe('Asset', function() {
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
 
-            expect(xdr._arm).to.equal('alphaNum4');
-            expect(xdr._value._attributes.assetCode).to.equal('USD\0');
+            expect(xdr.arm()).to.equal('alphaNum4');
+            expect(xdr.value().assetCode()).to.equal('USD\0');
         });
 
         it("parses a 4-alphanum asset object", function () {
@@ -36,8 +36,8 @@ describe('Asset', function() {
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
 
-            expect(xdr._arm).to.equal('alphaNum4');
-            expect(xdr._value._attributes.assetCode).to.equal('BART');
+            expect(xdr.arm()).to.equal('alphaNum4');
+            expect(xdr.value().assetCode()).to.equal('BART');
         });
 
         it("parses a 5-alphanum asset object", function () {
@@ -47,8 +47,8 @@ describe('Asset', function() {
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
 
-            expect(xdr._arm).to.equal('alphaNum12');
-            expect(xdr._value._attributes.assetCode).to.equal('12345\0\0\0\0\0\0\0');
+            expect(xdr.arm()).to.equal('alphaNum12');
+            expect(xdr.value().assetCode()).to.equal('12345\0\0\0\0\0\0\0');
         });
 
         it("parses a 12-alphanum asset object", function () {
@@ -58,8 +58,8 @@ describe('Asset', function() {
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
 
-            expect(xdr._arm).to.equal('alphaNum12');
-            expect(xdr._value._attributes.assetCode).to.equal('123456789012');
+            expect(xdr.arm()).to.equal('alphaNum12');
+            expect(xdr.value().assetCode()).to.equal('123456789012');
         });
     });
 });

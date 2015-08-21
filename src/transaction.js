@@ -32,7 +32,7 @@ export class Transaction {
 
         let operations  = this.tx.operations() || [];
         this.operations = map(operations, op => {
-          return Operation.operationToObject(op._attributes);
+          return Operation.operationToObject(op);
         });
 
         let signatures = envelope.signatures() || [];
