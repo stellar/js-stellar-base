@@ -2738,7 +2738,7 @@ var StellarBase =
 
 	        this.memo = opts.memo || Memo.none();
 
-	        // the signed hex form of the transaction to be sent to Horizon
+	        // the signed base64 form of the transaction to be sent to Horizon
 	        this.blob = null;
 	    }
 
@@ -2841,14 +2841,14 @@ var StellarBase =
 	    * submitting to the network or forwarding on to additional signers.
 	    * @constructor
 	    * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or
-	    *                                                    hex encoded string.
+	    *                                                    base64 encoded string.
 	    */
 
 	    function Transaction(envelope) {
 	        _classCallCheck(this, Transaction);
 
 	        if (typeof envelope === "string") {
-	            var buffer = new Buffer(envelope, "hex");
+	            var buffer = new Buffer(envelope, "base64");
 	            envelope = xdr.TransactionEnvelope.fromXDR(buffer);
 	        }
 	        // since this transaction is immutable, save the tx
@@ -17651,7 +17651,7 @@ var StellarBase =
 	            value: function changeTrust(opts) {
 	                var attributes = {};
 	                attributes.line = opts.asset.toXdrObject();
-	                var limit = opts.limit ? limit : "9223372036854775807";
+	                var limit = opts.limit ? opts.limit : "9223372036854775807";
 	                attributes.limit = Hyper.fromString(limit);
 	                if (opts.source) {
 	                    attributes.source = opts.source ? opts.source.masterKeypair : null;
