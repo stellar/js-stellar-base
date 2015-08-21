@@ -85,6 +85,14 @@ Documentation for this repo lives inside the [docs folder](./docs).
 ## Contributing
 Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute to this project.
 
+## Publishing to npm
+```
+npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]
+npm publish
+```
+npm >=2.13.0 required.
+Read more about [npm version](https://docs.npmjs.com/cli/version).
+
 ## License
 js-stellar-base is licensed under an Apache-2.0 license. See the [LICENSE](./LICENSE) file for details.
 
