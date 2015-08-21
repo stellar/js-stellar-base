@@ -30777,6 +30777,13 @@ var StellarBase =
 	      }
 	    },
 	    fromBase58Seed: {
+
+	      /**
+	       * Base58 address encoding is **DEPRECATED**! Use this method only for transition to base32.
+	       * @param seed Base58 secret seed
+	       * @returns StrKey KeyPair object
+	       */
+
 	      value: function fromBase58Seed(seed) {
 	        var rawSeed = base58.decodeBase58Check("seed", seed);
 	        return this.fromRawSeed(rawSeed);
