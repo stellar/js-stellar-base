@@ -212,25 +212,25 @@ describe('Operation', function() {
     describe(".error", function () {
         it("decode manageOfferUnderfunded xdr error", function () {
             var errorXdr = 't1qpS2SGmIWfZXnpmlFsZBt6JYb2+YIUC5RcngrmvCoAAAAAAAAD6P////8AAAABAAAAAAAAAAP////5AAAAAA==';
-            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            var errorMessage = StellarBase.Transaction.decodeTransactionResultPair(errorXdr);
             //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage)
         });
         it("decode another manageOfferUnderfunded xdr error", function () {
             var errorXdr = 'ja5QtJgv9qARefYowyUQL9Un+YKGpFcZDa5Q3XNQkYkAAAAAAAAD6P////8AAAABAAAAAAAAAAP////5AAAAAA==';
-            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            var errorMessage = StellarBase.Transaction.decodeTransactionResultPair(errorXdr);
             //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage)
         });
         it("decode changeTrustInvalidLimit xdr error", function () {
             var errorXdr = 'WQvVAlmvblK3ZFPMj3FhG2xAR1KYLdhGLxwutQ+srAYAAAAAAAAACv////8AAAABAAAAAAAAAAb////9AAAAAA==';
-            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            var errorMessage = StellarBase.Transaction.decodeTransactionResultPair(errorXdr);
             //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage)
         });
         it("decode  changeTrustLowReserve xdr error", function () {
             var errorXdr = 'VrdhysJwnJ3mZw5EgYdKoay0hAtdw62F0fBEVlkwj3YAAAAAAAAD6P////8AAAABAAAAAAAAAAb////8AAAAAA==';
-            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
+            var errorMessage = StellarBase.Transaction.decodeTransactionResultPair(errorXdr);
             //console.error('xdr error message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage)
         });
@@ -244,8 +244,14 @@ describe('Operation', function() {
         
         it("decode tx success", function () {
             var errorXdr = 'fz2tTZxnhbdIoBoHAlt9Xq5/Nnxt8SwLmZTkoRwHVrIAAAAAAAAD6AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA==';
-            var errorMessage = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(errorXdr, "base64"));
-            console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
+            var errorMessage = StellarBase.Transaction.decodeTransactionResultPair(errorXdr);
+            //console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
+            assert(errorMessage);
+        });
+        it("decode trust error", function () {
+            var errorXdr = '5nUpzap9LJKXUJ28zYB+ZWLmmDiqKjAa6vOSkxY9DW0AAAAAAAAD6P////8AAAABAAAAAAAAAAb////9AAAAAA==';
+            var errorMessage = StellarBase.Transaction.decodeTransactionResultPair(errorXdr);
+            //console.error('sendTransaction message\n', JSON.stringify(errorMessage, null, 4));
             assert(errorMessage);
         });
 

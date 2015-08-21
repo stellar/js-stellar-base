@@ -87,4 +87,11 @@ export class Transaction {
 
         return envelope;
     }
+    
+    /** 
+     * Decode a xdr encoded TransactionResultPair 
+     */
+    static decodeTransactionResultPair(result_xdr) {
+        return xdr.TransactionResultPair.fromXDR(new Buffer(result_xdr, "base64"));
+    }
 }

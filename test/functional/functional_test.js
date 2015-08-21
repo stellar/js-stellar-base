@@ -487,8 +487,7 @@ describe('Functional test:', function() {
         })
         .then(function(transaction) {
           console.log(transaction)
-          
-          var txResult = StellarBase.xdr.TransactionResultPair.fromXDR(new Buffer(transaction.result_xdr, "base64"));
+          var txResult = StellarBase.Transaction.decodeTransactionResultPair(transaction.result_xdr);
           console.log(txResult)
           console.error('sendTransaction message\n', JSON.stringify(txResult, null, 4));
           assert(transaction.success == false);
