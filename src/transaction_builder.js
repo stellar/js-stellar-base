@@ -65,7 +65,7 @@ export class TransactionBuilder {
 
         this.memo       = opts.memo || Memo.none();
 
-        // the signed hex form of the transaction to be sent to Horizon
+        // the signed base64 form of the transaction to be sent to Horizon
         this.blob = null;
     }
 

@@ -10,7 +10,7 @@ describe('Transaction', function() {
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
                 .build()
                 .toEnvelope()
-                .toXDR('hex');
+                .toXDR('base64');
 
 
     var transaction = new StellarBase.Transaction(input);

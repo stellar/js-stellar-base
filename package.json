@@ -5,7 +5,10 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "gulp test",
-    "docs": "./node_modules/.bin/jsdoc ./src/ -d docs/"
+    "docs": "./node_modules/.bin/jsdoc ./src/ -d docs/",
+    "preversion": "gulp test",
+    "version": "gulp build && git add lib/ dist/",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
