@@ -30664,6 +30664,8 @@ var StellarBase =
 	var sign = _signing.sign;
 	var verify = _signing.verify;
 
+	var base58 = _interopRequireWildcard(__webpack_require__(91));
+
 	var strkey = _interopRequireWildcard(__webpack_require__(12));
 
 	var xdr = _interopRequire(__webpack_require__(33));
@@ -30774,6 +30776,12 @@ var StellarBase =
 	        return this.fromRawSeed(rawSeed);
 	      }
 	    },
+	    fromBase58Seed: {
+	      value: function fromBase58Seed(seed) {
+	        var rawSeed = base58.decodeBase58Check("seed", seed);
+	        return this.fromRawSeed(rawSeed);
+	      }
+	    },
 	    fromRawSeed: {
 	      value: function fromRawSeed(rawSeed) {
 	        rawSeed = new Buffer(rawSeed);
@@ -30806,6 +30814,225 @@ var StellarBase =
 	  return Keypair;
 	})();
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8).Buffer))
+
+/***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
+
+	var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+	exports.decodeBase58 = decodeBase58;
+	exports.decodeBase58Check = decodeBase58Check;
+	exports.encodeBase58 = encodeBase58;
+	exports.encodeBase58Check = encodeBase58Check;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var bs58 = _interopRequire(__webpack_require__(92));
+
+	var _lodash = __webpack_require__(26);
+
+	var isUndefined = _lodash.isUndefined;
+	var isNull = _lodash.isNull;
+
+	var hash = __webpack_require__(75).hash;
+
+	var nacl = __webpack_require__(88);
+
+	var versionBytes = {
+	  accountId: 0, // decimal 0
+	  none: 1, // decimal 1
+	  seed: 33 };
+
+	function decodeBase58(encoded) {
+	  return new Buffer(bs58.decode(encoded));
+	}
+
+	function decodeBase58Check(versionByteName, encoded) {
+	  var decoded = bs58.decode(encoded);
+	  var versionByte = decoded[0];
+	  var payload = decoded.slice(0, decoded.length - 4);
+	  var data = payload.slice(1);
+	  var checksum = decoded.slice(decoded.length - 4);
+
+	  var expectedVersion = versionBytes[versionByteName];
+
+	  if (isUndefined(expectedVersion)) {
+	    throw new Error("" + versionByteName + " is not a valid version byte name.  expected one of \"accountId\", \"seed\", or \"none\"");
+	  }
+
+	  if (versionByte !== expectedVersion) {
+	    throw new Error("invalid version byte.  expected " + expectedVersion + ", got " + versionByte);
+	  }
+
+	  var expectedChecksum = calculateChecksum(payload);
+
+	  if (!verifyChecksum(expectedChecksum, checksum)) {
+	    throw new Error("invalid checksum");
+	  }
+
+	  if (versionByteName === "accountId" && decoded.length !== 37) {
+	    throw new Error("Decoded address length is invalid. Expected 37, got " + decoded.length);
+	  }
+
+	  return new Buffer(data);
+	}
+
+	function encodeBase58(data) {
+	  if (isNull(data) || isUndefined(data)) {
+	    throw new Error("cannot encode null data");
+	  }
+
+	  return bs58.encode(data);
+	}
+
+	function encodeBase58Check(versionByteName, data) {
+	  if (isNull(data) || isUndefined(data)) {
+	    throw new Error("cannot encode null data");
+	  }
+
+	  var versionByte = versionBytes[versionByteName];
+
+	  if (isUndefined(versionByte)) {
+	    throw new Error("" + versionByteName + " is not a valid version byte name.  expected one of \"accountId\", \"seed\", or \"none\"");
+	  }
+
+	  data = new Buffer(data);
+	  var versionBuffer = new Buffer([versionByte]);
+	  var payload = Buffer.concat([versionBuffer, data]);
+	  var checksum = calculateChecksum(payload);
+	  var unencoded = Buffer.concat([payload, checksum]);
+
+	  return encodeBase58(unencoded);
+	}
+
+	function calculateChecksum(payload) {
+	  var inner = hash(payload);
+	  var outer = hash(inner);
+	  return outer.slice(0, 4);
+	}
+
+	function verifyChecksum(expected, actual) {
+	  if (expected.length !== actual.length) {
+	    return false;
+	  }
+
+	  if (expected.length === 0) {
+	    return true;
+	  }
+
+	  for (var i = 0; i < expected.length; i++) {
+	    if (expected[i] !== actual[i]) {
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}
+	// decimal 33
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8).Buffer))
+
+/***/ },
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// vendored from http://cryptocoinjs.com/modules/misc/bs58/
+
+	// Base58 encoding/decoding
+	// Originally written by Mike Hearn for BitcoinJ
+	// Copyright (c) 2011 Google Inc
+	// Ported to JavaScript by Stefan Thomas
+	// Merged Buffer refactorings from base58-native by Stephen Pair
+	// Copyright (c) 2013 BitPay Inc
+
+	"use strict";
+
+	var ALPHABET = "gsphnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCr65jkm8oFqi1tuvAxyz";
+	var ALPHABET_MAP = {};
+	for (var i = 0; i < ALPHABET.length; ++i) {
+	  ALPHABET_MAP[ALPHABET.charAt(i)] = i;
+	}
+	var BASE = 58;
+
+	function encode(buffer) {
+	  if (buffer.length === 0) {
+	    return "";
+	  }var i,
+	      j,
+	      digits = [0];
+	  for (i = 0; i < buffer.length; ++i) {
+	    for (j = 0; j < digits.length; ++j) digits[j] <<= 8;
+
+	    digits[0] += buffer[i];
+
+	    var carry = 0;
+	    for (j = 0; j < digits.length; ++j) {
+	      digits[j] += carry;
+
+	      carry = digits[j] / BASE | 0;
+	      digits[j] %= BASE;
+	    }
+
+	    while (carry) {
+	      digits.push(carry % BASE);
+
+	      carry = carry / BASE | 0;
+	    }
+	  }
+
+	  // deal with leading zeros
+	  for (i = 0; buffer[i] === 0 && i < buffer.length - 1; ++i) digits.push(0);
+
+	  // convert digits to a string
+	  var str = "";
+	  for (i = digits.length - 1; i >= 0; --i) {
+	    str += ALPHABET[digits[i]];
+	  }
+
+	  return str;
+	}
+
+	function decode(string) {
+	  if (string.length === 0) {
+	    return [];
+	  }var i,
+	      j,
+	      bytes = [0];
+	  for (i = 0; i < string.length; ++i) {
+	    var c = string[i];
+	    if (!(c in ALPHABET_MAP)) throw new Error("Non-base58 character");
+
+	    for (j = 0; j < bytes.length; ++j) bytes[j] *= BASE;
+	    bytes[0] += ALPHABET_MAP[c];
+
+	    var carry = 0;
+	    for (j = 0; j < bytes.length; ++j) {
+	      bytes[j] += carry;
+
+	      carry = bytes[j] >> 8;
+	      bytes[j] &= 255;
+	    }
+
+	    while (carry) {
+	      bytes.push(carry & 255);
+
+	      carry >>= 8;
+	    }
+	  }
+
+	  // deal with leading zeros
+	  for (i = 0; string[i] === "g" && i < string.length - 1; ++i) bytes.push(0);
+
+	  return bytes.reverse();
+	}
+
+	module.exports = {
+	  encode: encode,
+	  decode: decode
+	};
 
 /***/ }
 /******/ ]);
