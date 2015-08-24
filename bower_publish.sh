@@ -6,4 +6,4 @@ cd bower
 git add .
 git commit -m $TRAVIS_TAG
 git tag -a $TRAVIS_TAG -m $TRAVIS_TAG
-git push master --tags
+git push origin --tags

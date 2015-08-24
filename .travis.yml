@@ -19,6 +19,7 @@ script:
     gulp $TEST_TYPE
   fi
 before_install:
+- npm install -g npm@'>=2.13.5'
 - |
   if [ "$TEST_TYPE" != build_website ]; then
     mkdir -p .npm
