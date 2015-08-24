@@ -45,7 +45,7 @@ deploy:
       tags: true
       repo: stellar/js-stellar-base
   - provider: script
-    script: bower_publish.sh
+    script: ./bower_publish.sh
     skip_cleanup: true
     on:
       tags: true
