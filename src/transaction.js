@@ -17,11 +17,11 @@ export class Transaction {
     * submitting to the network or forwarding on to additional signers.
     * @constructor
     * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or
-    *                                                    hex encoded string.
+    *                                                    base64 encoded string.
     */
     constructor(envelope) {
         if (typeof envelope === "string") {
-            let buffer = new Buffer(envelope, "hex");
+            let buffer = new Buffer(envelope, "base64");
             envelope = xdr.TransactionEnvelope.fromXDR(buffer);
         }
         // since this transaction is immutable, save the tx
@@ -32,7 +32,7 @@ export class Transaction {
 
         let operations  = this.tx.operations() || [];
         this.operations = map(operations, op => {
-          return Operation.operationToObject(op._attributes);
+          return Operation.operationToObject(op);
         });
 
         let signatures = envelope.signatures() || [];

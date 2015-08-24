@@ -4,57 +4,95 @@
 [![Code Climate](https://codeclimate.com/github/stellar/js-stellar-base/badges/gpa.svg)](https://codeclimate.com/github/stellar/js-stellar-base)
 
 The stellar-base library is the lowest-level stellar helper library.  It consists of classes
-to read, write, hash, and sign the xdr structures that are used in stellar-core.
+to read, write, hash, and sign the xdr structures that are used in [stellar-core](https://github.com/stellar/stellar-core).
+This is an implementation in JavaScript that can be used on either Node.js or web browsers.
 
-## Installation
+## Quick start
 
-Using npm:
-
+Using npm to include js-stellar-base in your own project:
 ```shell
 npm install --save stellar-base
 ```
 
+For browsers, use the webpacked version in the [dist folder](dist). It exports a
+variable `StellarBase`. The example below assumes you have `stellar-base.js`
+relative to your html file.
+
+```html
+<script src="stellar-base.js"></script>
+<script>console.log(StellarBase);</script>
+```
+
+## Install
+### Node.js prerequisite
+Node.js version 0.10 is required. If you don't have version 0.10, use
+[nvm](https://github.com/creationix/nvm) to easily switch between versions.
+
+### To use as a module in a Node.js project
+1. Install it using npm:
+
+  ```shell
+  npm install --save stellar-base
+  ```
+2. require/import it in your JavaScript:
+
+  ```js
+  var StellarBase = require('stellar-base');
+  ```
+
+### To use in the browser
+1. Save the `stellar-base.js` or `stellar-base.min.js` accessible to your html file
+2. Include it in the browser:
+
+  ```html
+  <script src="./path/to/stellar-base.js"></script>
+  <script>console.log(StellarBase);</script>
+  ```
+
+### To develop and test js-stellar-base itself
+1. Clone the repo
+
+  ```shell
+  git clone https://github.com/stellar/js-stellar-base.git
+  ```
+2. Install dependencies inside js-stellar-base folder
+
+  ```shell
+  cd js-stellar-base
+  npm install
+  ```
+
 ## Usage
+For information on how to use js-stellar-base, take a look at the docs in the [docs folder](./docs).
 
-[Examples are here](examples)
-
-In addition to the code generated from the XDR definition files (see [js-xdr](https://github.com/stellar/js-xdr) for example usage), this library also provides some stellar specific features.  Let's look at some of them:
-
-
-```javascript
-var StellarBase = require("stellar-base");
-
-// Create a keypair from a stellar secret seed
-var signer = StellarBase.Keypair.fromSeed("SDSIBVHCCWHK7MZSGWJRLYTAESAZ6O4OQU4QS4YJQAQ2EGJXRJW7PYD3");
-
-// Create a keypair from a stellar address
-var verifier = StellarBase.Keypair.fromAddress("GDADKSW7B4WZAKFZ7YHESAEZQ5JC7WYSLTUNRTBTAY3R3JRZWXMNKXPN")
-
-// Produce a stellar compliant "decorated signature" that is compliant with stellar transactions
-var sig = signer.signDecorated("Hello world!") 
-
-console.log(sig.hint()) // displays the 4 byte buffer of the signatures public key "hint"
-console.log(sig.signature()) // displays the 32 byte buffer of the signature
-
+## Testing
+To run all tests:
+```shell
+./node_modules/.bin/gulp test
 ```
 
-This library also provides an implementation of StrCheck encoding:
-
-```javascript
-var StellarBase = require("stellar-base");
-
-StellarBase.encodeCheck("accountId", [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]) // => "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF"
-StellarBase.encodeCheck("seed", [0,0,0]) // => "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSU2"
-
-// To prevent interpretation mistakes, you must pass the expected version byte
-// when decoding a check-encoded value
-
-var encoded = StellarBase.encodeCheck("accountId", [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-StellarBase.decodeCheck("accountId", encoded) // => Buffer([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-StellarBase.decodeCheck("seed", encoded) // => throws Error: invalid version byte.
-
+To run a specific set of tests:
+```shell
+gulp test:node
+gulp test:browser
 ```
+
+Tests are also run on the [Travis CI js-stellar-base project](https://travis-ci.org/stellar/js-stellar-base) automatically.
+
+## Documentation
+Documentation for this repo lives inside the [docs folder](./docs).
 
 ## Contributing
+Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute to this project.
 
-Please [see CONTRIBUTING.md for details](CONTRIBUTING.md).
+## Publishing to npm
+```
+npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]
+npm publish
+```
+npm >=2.13.0 required.
+Read more about [npm version](https://docs.npmjs.com/cli/version).
+
+## License
+js-stellar-base is licensed under an Apache-2.0 license. See the [LICENSE](./LICENSE) file for details.
+

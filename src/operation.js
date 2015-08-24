@@ -356,88 +356,88 @@ export class Operation {
           return encodeCheck("accountId", accountId.ed25519());
         }
 
-
-        let obj = {};
-        let attrs = operation.body._value && operation.body._value._attributes;
-        switch (operation.body.switch().name) {
+        let result = {};
+        let attrs = operation.body().value();
+        switch (operation.body().switch().name) {
             case "createAccount":
-                obj.type = "createAccount";
-                obj.destination = accountIdtoAddress(attrs.destination);
-                obj.startingBalance = attrs.startingBalance.toString();
+                result.type = "createAccount";
+                result.destination = accountIdtoAddress(attrs.destination());
+                result.startingBalance = attrs.startingBalance().toString();
                 break;
             case "payment":
-                obj.type = "payment";
-                obj.destination = accountIdtoAddress(attrs.destination);
-                obj.asset = Asset.fromOperation(attrs.asset);
-                obj.amount = attrs.amount.toString();
+                result.type = "payment";
+                result.destination = accountIdtoAddress(attrs.destination());
+                result.asset = Asset.fromOperation(attrs.asset());
+                result.amount = attrs.amount().toString();
                 break;
             case "pathPayment":
-                obj.type = "pathPayment";
-                obj.sendAsset = Asset.fromOperation(attrs.sendAsset);
-                obj.sendMax = attrs.sendMax.toString();
-                obj.destination = accountIdtoAddress(attrs.destination);
-                obj.destAsset = Asset.fromOperation(attrs.destAsset);
-                obj.destAmount = attrs.destAmount.toString();
-                obj.path = attrs.path;
+                result.type = "pathPayment";
+                result.sendAsset = Asset.fromOperation(attrs.sendAsset());
+                result.sendMax = attrs.sendMax().toString();
+                result.destination = accountIdtoAddress(attrs.destination());
+                result.destAsset = Asset.fromOperation(attrs.destAsset());
+                result.destAmount = attrs.destAmount().toString();
+                result.path = attrs.path();
                 break;
             case "changeTrust":
-                obj.type = "changeTrust";
-                obj.line = Asset.fromOperation(attrs.line);
-                obj.limit = attrs.limit;
+                result.type = "changeTrust";
+                result.line = Asset.fromOperation(attrs.line());
+                result.limit = attrs.limit();
                 break;
             case "allowTrust":
-                obj.type = "allowTrust";
-                obj.trustor = accountIdtoAddress(attrs.trustor);
-                obj.assetCode = attrs.asset._value.toString();
-                obj.assetCode = trimRight(obj.assetCode, "\0");
-                obj.authorize = attrs.authorize;
+                result.type = "allowTrust";
+                result.trustor = accountIdtoAddress(attrs.trustor());
+                result.assetCode = attrs.asset().value().toString();
+                result.assetCode = trimRight(result.assetCode, "\0");
+                result.authorize = attrs.authorize();
                 break;
             case "setOption":
-                obj.type = "setOptions";
-                if (attrs.inflationDest) {
-                    obj.inflationDest = accountIdtoAddress(attrs.inflationDest);
+                result.type = "setOptions";
+                if (attrs.inflationDest()) {
+                    result.inflationDest = accountIdtoAddress(attrs.inflationDest());
                 }
 
-                obj.clearFlags = attrs.clearFlags;
-                obj.setFlags = attrs.setFlags;
-                obj.masterWeight = attrs.masterWeight;
-                obj.lowThreshold = attrs.lowThreshold;
-                obj.medThreshold = attrs.medThreshold;
-                obj.highThreshold = attrs.highThreshold;
-                obj.homeDomain = attrs.homeDomain;
+                result.clearFlags = attrs.clearFlags();
+                result.setFlags = attrs.setFlags();
+                result.masterWeight = attrs.masterWeight();
+                result.lowThreshold = attrs.lowThreshold();
+                result.medThreshold = attrs.medThreshold();
+                result.highThreshold = attrs.highThreshold();
+                result.homeDomain = attrs.homeDomain();
 
-                if (attrs.signer) {
+                if (attrs.signer()) {
                     let signer = {};
-                    signer.address = accountIdtoAddress(attrs.signer._attributes.pubKey);
-                    signer.weight = attrs.signer._attributes.weight;
-                    obj.signer = signer;
+                    signer.address = accountIdtoAddress(attrs.signer().pubKey());
+                    signer.weight = attrs.signer().weight();
+                    result.signer = signer;
                 }
                 break;
             case "manageOffer":
-                obj.type = "manageOffer";
-                obj.selling = Asset.fromOperation(attrs.selling);
-                obj.buying = Asset.fromOperation(attrs.buying);
-                obj.amount = attrs.amount.toString();
-                obj.price = attrs.price._attributes.n / attrs.price._attributes.d;
-                obj.offerId = attrs.offerId.toString();
+                result.type = "manageOffer";
+                result.selling = Asset.fromOperation(attrs.selling());
+                result.buying = Asset.fromOperation(attrs.buying());
+                result.amount = attrs.amount().toString();
+                result.price = attrs.price().n() / attrs.price().d();
+                result.offerId = attrs.offerId().toString();
                 break;
             case "createPassiveOffer":
-                obj.type = "createPassiveOffer";
-                obj.selling = Asset.fromOperation(attrs.selling);
-                obj.buying = Asset.fromOperation(attrs.buying);
-                obj.amount = attrs.amount.toString();
-                obj.price = attrs.price._attributes.n / attrs.price._attributes.d;
+                result.type = "createPassiveOffer";
+                result.selling = Asset.fromOperation(attrs.selling());
+                result.buying = Asset.fromOperation(attrs.buying());
+                result.amount = attrs.amount().toString();
+                result.price = attrs.price().n() / attrs.price().d();
+
                 break;
             case "accountMerge":
-                obj.type = "accountMerge";
-                obj.destination = accountIdtoAddress(operation.body._value);
+                result.type = "accountMerge";
+                result.destination = accountIdtoAddress(attrs);
                 break;
             case "inflation":
-                obj.type = "inflation";
+                result.type = "inflation";
                 break;
             default:
                 throw new Error("Unknown operation");
         }
-        return obj;
+        return result;
     }
 }

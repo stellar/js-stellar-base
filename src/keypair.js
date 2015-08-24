@@ -1,5 +1,6 @@
 
 import {sign, verify} from "./signing";
+import * as base58 from "./base58";
 import * as strkey from "./strkey";
 import {default as xdr} from "./generated/stellar-xdr_generated";
 
@@ -9,6 +10,16 @@ export class Keypair {
 
   static fromSeed(seed) {
     let rawSeed = strkey.decodeCheck("seed", seed);
+    return this.fromRawSeed(rawSeed);
+  }
+
+  /**
+   * Base58 address encoding is **DEPRECATED**! Use this method only for transition to base32.
+   * @param seed Base58 secret seed
+   * @returns StrKey KeyPair object
+   */
+  static fromBase58Seed(seed) {
+    let rawSeed = base58.decodeBase58Check("seed", seed);
     return this.fromRawSeed(rawSeed);
   }
 
