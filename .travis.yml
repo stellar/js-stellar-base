@@ -38,12 +38,13 @@ deploy:
   - provider: npm
     email: npm@stellar.org
     api_key:
-      secure: V9cJx+oDOJG1nhMiZrKUo52kW/bszqxfjbr1+cq2B2luRxh8X+6fdBFGySqvIj9/1TeqHo0rP7XIPhWPHvJ2q97a+/6G2JAnDi4XBiudLPpQmK9guFvUq4dq00sT43TvLSdNcXsnHIIEiRxw8JMc6ibQVvPr1yRZ5zGhVrutZ0M=
-    skip_cleanup: true
+      secure: Vhs69f1et3b+U0tMAdViua2G4+dLapfMcMnAWn6EMSbzafgdBvObOIUP1Fo/NCp5jD236/zB/eV9Bs2y4tbgDLkSg+qUaKZnX2QIQ9CDCCEF8BMtLDLJTiDWBNrw5WJc/84f6tvEfFuMohnWkMBaGZ7dOgUL9ud2Ci/kDx1hoBY=
     on:
       tags: true
+      repo: stellar/js-stellar-base
   - provider: script
     script: bower_publish.sh
     skip_cleanup: true
     on:
       tags: true
+      repo: stellar/js-stellar-base
