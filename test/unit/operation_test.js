@@ -84,7 +84,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.changeTrust({asset: asset, limit:limit});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation._attributes);
+            var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line.equals(asset)).to.be.true;
             expect(obj.limit.low.toString()).to.equal(limit);
