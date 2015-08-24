@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git clone git://github.com/stellar/bower-js-stellar-base.git bower
+git clone "https://stellar-jenkins@github.com/stellar/bower-js-stellar-base.git" bower
 cp dist/* bower
 cd bower
 git add .
