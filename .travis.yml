@@ -33,5 +33,17 @@ env:
   - TEST_TYPE=test
   - TEST_TYPE=build_website
   global:
-    # GITHUB_TOKEN
     secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
+deploy:
+  - provider: npm
+    email: npm@stellar.org
+    api_key:
+      secure: V9cJx+oDOJG1nhMiZrKUo52kW/bszqxfjbr1+cq2B2luRxh8X+6fdBFGySqvIj9/1TeqHo0rP7XIPhWPHvJ2q97a+/6G2JAnDi4XBiudLPpQmK9guFvUq4dq00sT43TvLSdNcXsnHIIEiRxw8JMc6ibQVvPr1yRZ5zGhVrutZ0M=
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: script
+    script: bower_publish.sh
+    skip_cleanup: true
+    on:
+      tags: true

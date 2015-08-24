@@ -14,7 +14,7 @@ Using npm to include js-stellar-base in your own project:
 npm install --save stellar-base
 ```
 
-For browsers, use the webpacked version in the [dist folder](dist). It exports a
+For browsers, [use Bower to install it](#to-use-in-the-browser). It exports a
 variable `StellarBase`. The example below assumes you have `stellar-base.js`
 relative to your html file.
 
@@ -41,13 +41,20 @@ Node.js version 0.10 is required. If you don't have version 0.10, use
   ```
 
 ### To use in the browser
-1. Save the `stellar-base.js` or `stellar-base.min.js` accessible to your html file
+1. Install it using [bower](http://bower.io):
+
+  ```shell
+  bower install stellar-base
+  ```
+
 2. Include it in the browser:
 
   ```html
-  <script src="./path/to/stellar-base.js"></script>
+  <script src="./bower_components/stellar-base/stellar-base.js"></script>
   <script>console.log(StellarBase);</script>
   ```
+
+Note that you can also copy built JS files from [bower-js-stellar-base repo](https://github.com/stellar/bower-js-stellar-base) if you don't want to use Bower.
 
 ### To develop and test js-stellar-base itself
 1. Clone the repo
@@ -88,8 +95,9 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contri
 ## Publishing to npm
 ```
 npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]
-npm publish
 ```
+A new version will be published to npm **and** Bower by Travis CI.
+
 npm >=2.13.0 required.
 Read more about [npm version](https://docs.npmjs.com/cli/version).
 
