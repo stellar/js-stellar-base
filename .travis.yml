@@ -17,6 +17,7 @@ script:
     fi
   else
     gulp test
+    gulp build
   fi
 before_install:
 - npm install -g npm@'>=2.13.5'
