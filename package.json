@@ -54,6 +54,8 @@
     "karma-sinon-chai": "^0.3.0",
     "karma-webpack": "^1.5.0",
     "mocha": "~1.17.1",
+    "qs": "^4.0.0",
+    "qs-set": "0.0.3",
     "run-sequence": "^1.0.2",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
@@ -69,5 +71,7 @@
     "thirty-two": "^0.0.2",
     "tweetnacl": "^0.13.0"
   },
-  "engines":{"node": "0.10.x"}
+  "engines": {
+    "node": "0.10.x"
+  }
 }

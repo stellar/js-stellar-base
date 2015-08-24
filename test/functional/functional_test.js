@@ -3,6 +3,7 @@ let assert = require('assert');
 let Promise = require('bluebird');
 let axios = require('axios');
 let _ = require('lodash');
+let Qs = require('qs');
 
 /**
 
@@ -49,7 +50,10 @@ describe('Functional test:', function() {
 
   let currencyCode = 'GBP'; //God save the queen
   let assetName = 'US1234567890';
-
+  
+  let assetGBP = new StellarBase.Asset(currencyCode, keyPairs['gateway'].address());
+  let assetBond = new StellarBase.Asset(assetName, keyPairs['gateway'].address());
+  
   function createSeedFromUsernamePassword(username, password) {
     var seed64 = StellarBase.hash(username + password).toString('hex');
     var seed32 = seed64.substr(0, 32);
@@ -135,6 +139,20 @@ describe('Functional test:', function() {
       })
   }
 
+  function getOrderBook(option) {
+    let queryString  = Qs.stringify(option);
+    
+    console.log("getOrderBook qs ", queryString)
+    return axios.get(baseUrl + '/order_book?' + queryString)
+      .then(function(response) {
+        console.log("getOrderBook", response.data)
+        return response.data;
+      })
+      .catch(function(error) {
+        console.error("getOrderBook error ", error);
+      })
+  }
+  
   function fetchAccountsSequence() {
 
     return Promise.each(_.map(keyPairs, function(value, key) {
@@ -264,6 +282,26 @@ describe('Functional test:', function() {
       .then(done, done)
   });
 
+  it("show orderbook", function(done) {
+    
+    var option = {
+      selling_type:'credit_alphanum12',
+      selling_code:assetBond.getCode(),
+      selling_issuer:assetBond.getIssuer(),
+      buying_type:'credit_alphanum4',
+      buying_code:assetGBP.getCode(),
+      buying_issuer:assetGBP.getIssuer()
+    }
+    
+    getOrderBook(option)
+      .then(function(result) {
+        assert(result)
+        assert(result.asks);
+        assert(result.bids);
+      })
+      .then(done, done)
+  });
+  
   describe('provisioning', function() {
     before(function(done) {
       initAccount(keyPairMaster.address())
