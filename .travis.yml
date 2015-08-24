@@ -16,7 +16,7 @@ script:
       ./publish.sh
     fi
   else
-    gulp $TEST_TYPE
+    gulp test
   fi
 before_install:
 - npm install -g npm@'>=2.13.5'
@@ -30,9 +30,9 @@ notifications:
   slack:
     secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
 env:
-  matrix:
-  - TEST_TYPE=test
-  - TEST_TYPE=build_website
+#  matrix:
+#  - TEST_TYPE=test
+#  - TEST_TYPE=build_website
   global:
     secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
 deploy:
