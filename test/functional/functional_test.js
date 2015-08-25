@@ -77,6 +77,8 @@ describe('Functional test:', function() {
       })
   }
 
+  
+  
   function cancelOffers(name) {
     console.log("cancelOffers ", name);
     let address = accounts[name].address;
@@ -112,6 +114,15 @@ describe('Functional test:', function() {
       })
   }
 
+  function cancelOffersAll(names) {
+    return Promise.each(names, function(name){
+      return cancelOffers(name);
+    })
+    .then(function(){
+      console.log("cancelOffersAll DONE")
+    })
+  }
+  
   function getAccountTransactions(address) {
     return axios.get(baseUrl + '/accounts/' + address + '/transactions')
       .then(function(response) {
@@ -369,9 +380,6 @@ describe('Functional test:', function() {
       fetchAccountsSequence().then(done, done)
     })
 
-
-
-
     it("show offers", function(done) {
       return Promise.each(_.map(keyPairs, function(value, key) {
           return {
@@ -533,17 +541,62 @@ describe('Functional test:', function() {
         })
         .then(done, done)
     });
+    describe('trading non integer amount: ', function() {
+      before(function(done) {
+        this.timeout(20e3);
+        cancelOffersAll(['issuer', 'alice'])
+          .then(done, done);
+      })
+      it("alice creates a buy order of 1.1 security for 1 GBP", function(done) {
+        let quantityBuy = 1.1;
+        let priceBuy = 1;
+        
+        var options = {
+          selling: new StellarBase.Asset(currencyCode, accounts['gateway'].address),
+          buying: new StellarBase.Asset(assetName, accounts['gateway'].address),
+          amount: quantityBuy * priceBuy,
+          price: 1 / priceBuy,
+          offerId: 0
+        };
+
+        manageOffer(accounts['alice'], keyPairs['alice'], options)
+          .then(function(result) {
+            return Promise.delay(6e3)
+              .then(function() {
+                return getTransaction(result.hash)
+              })
+          })
+          .then(function(tx) {
+            assert(tx.success)
+            var option = {
+              selling_type:'credit_alphanum12',
+              selling_code:assetBond.getCode(),
+              selling_issuer:assetBond.getIssuer(),
+              buying_type:'credit_alphanum4',
+              buying_code:assetGBP.getCode(),
+              buying_issuer:assetGBP.getIssuer()
+            }
+            
+            return getOrderBook(option)
+          })
+          .then(function(orderBook) {
+            console.log(JSON.stringify(orderBook, null, 4));
+            assert(orderBook.bids[0]);
+            assert(orderBook.bids[0].amount, quantityBuy);
+          })
+          .then(done, done)
+      });  
+    })
     
-    describe('trading: ', function() {
+    
+    describe('trading ok: ', function() {
       let quantitySell = 2;
       let priceSell = 1000;
       let quantityBuy = 4;
       let priceBuy = 1000;
+      
       it("bond issuer cancels all orders", function(done) {
-        cancelOffers('issuer').
-        then(function() {
-            return cancelOffers('alice')
-          })
+        cancelOffersAll(['issuer', 'alice'])
           .then(done, done)
       });
 
@@ -586,6 +639,7 @@ describe('Functional test:', function() {
           })
           .then(done, done)
       });
+    
     })
 
     it("alice sends native currency to bob", function(done) {
