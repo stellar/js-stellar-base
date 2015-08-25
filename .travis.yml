@@ -42,6 +42,7 @@ deploy:
     email: npm@stellar.org
     api_key:
       secure: Vhs69f1et3b+U0tMAdViua2G4+dLapfMcMnAWn6EMSbzafgdBvObOIUP1Fo/NCp5jD236/zB/eV9Bs2y4tbgDLkSg+qUaKZnX2QIQ9CDCCEF8BMtLDLJTiDWBNrw5WJc/84f6tvEfFuMohnWkMBaGZ7dOgUL9ud2Ci/kDx1hoBY=
+    skip_cleanup: true
     on:
       tags: true
       repo: stellar/js-stellar-base
