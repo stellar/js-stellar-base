@@ -382,6 +382,7 @@ export class Operation {
             case "changeTrust":
                 result.type = "changeTrust";
                 result.line = Asset.fromOperation(attrs.line());
+                result.limit = attrs.limit();
                 break;
             case "allowTrust":
                 result.type = "allowTrust";

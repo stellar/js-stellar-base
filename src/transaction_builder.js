@@ -108,7 +108,7 @@ export class TransactionBuilder {
 
         let tx = new Transaction(xenv);
         tx.sign(...this.signers);
-
+        
         this.source.sequence = this.source.sequence + 1;
         return tx;
     }

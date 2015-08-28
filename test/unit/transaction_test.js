@@ -45,4 +45,25 @@ describe('Transaction', function() {
     expect(verified).to.equal(true);
   });
 
+  it("build a create_account transaction", function(done) {
+    let masterKeyPair = StellarBase.Keypair.master();
+    let source      = new StellarBase.Account(masterKeyPair.address(), 1);
+    let destination = StellarBase.Keypair.master().address();
+    let startingBalance      = 50 * 10e6;
+    let options = {
+      destination: destination,
+      startingBalance:startingBalance
+    }
+    let input = new StellarBase.TransactionBuilder(source)
+                .addOperation(StellarBase.Operation.createAccount(options))
+                .addSigner(masterKeyPair)
+                .build()
+                .toEnvelope()
+                .toXDR('base64');
+
+    console.log("input:\n", input);
+
+    done();
+  });
+
 });

@@ -55,6 +55,7 @@ export class Asset {
 
         // pad code with null bytes if necessary
         let padLength = code.length <= 4 ? 4 : 12;
+        this._code = code;
         this.code = padRight(code, padLength, '\0');
         this.issuer = issuer;
     }
@@ -96,5 +97,19 @@ export class Asset {
     */
     equals(asset) {
         return this.code == asset.code && this.issuer == asset.issuer;
+    }
+    
+    /**
+    * Return the asset code, e.g USD
+    */
+    getCode(){
+      return this._code;
+    }
+    
+    /**
+    * Return the issuer, e.g 
+    **/
+    getIssuer(){
+      return this.issuer;
     }
 }
