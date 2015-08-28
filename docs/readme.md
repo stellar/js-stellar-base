@@ -140,7 +140,7 @@ Most importantly, you can sign a transaction using `sign()` method:
 
 ```js
 var keypair = Keypair.fromSeed('SECRETSEED');
-transaction.sign([keypair]);
+transaction.sign(keypair);
 ```
 
 > Once a Transaction has been created from an envelope, its attributes and operations should not be changed. You should only add signers to a Transaction object before submitting to the network or forwarding on to additional signers.

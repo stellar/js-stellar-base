@@ -41,7 +41,7 @@ export class Transaction {
 
     /**
     * Signs the transaction with the given Keypair.
-    * @param {Keypair[]} keypairs
+    * @param {...Keypair} keypairs
     */
     sign(...keypairs) {
         let txHash = this.hash();
