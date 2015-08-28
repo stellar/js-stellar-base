@@ -85,6 +85,10 @@ export class Keypair {
     return this._secretSeed;
   }
 
+  rawSecretKey() {
+    return this._secretKey;
+  }
+
   canSign() {
     return !!this._secretKey;
   }
