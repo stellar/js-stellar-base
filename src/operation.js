@@ -2,7 +2,7 @@ import {xdr, Keypair, Hyper, UnsignedHyper, hash} from "./index";
 import {encodeCheck} from "./strkey";
 import {Asset} from "./asset";
 import {best_r} from "./util/continued_fraction";
-import {padRight, trimRight} from 'lodash';
+import {padRight, trimRight, isUndefined, isString} from 'lodash';
 
 /**
 * @class Operation
@@ -103,7 +103,6 @@ export class Operation {
             throw new Error("Must provide an destAmount for a payment operation");
         }
 
-
         let attributes = {};
         attributes.sendAsset    = opts.sendAsset.toXdrObject();
         attributes.sendMax      = Hyper.fromString(String(opts.sendMax));
@@ -128,13 +127,16 @@ export class Operation {
     * @param {object} opts
     * @param {Asset} opts.asset - The asset for the trust line.
     * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
-    *                                If the limit is set to 0 it deletes the trustline.
+    *                                If the limit is set to "0" it deletes the trustline.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ChangeTrustOp}
     */
     static changeTrust(opts) {
         let attributes      = {};
         attributes.line     = opts.asset.toXdrObject();
+        if (!isUndefined(opts.limit) && !isString(opts.limit)) {
+            throw new TypeError('limit argument must be of type String');
+        }
         let limit           = opts.limit ? opts.limit : "9223372036854775807";
         attributes.limit    = Hyper.fromString(limit);
         if (opts.source) {
@@ -382,6 +384,7 @@ export class Operation {
             case "changeTrust":
                 result.type = "changeTrust";
                 result.line = Asset.fromOperation(attrs.line());
+                result.limit = attrs.limit().toString();
                 break;
             case "allowTrust":
                 result.type = "allowTrust";

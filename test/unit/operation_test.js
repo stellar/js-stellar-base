@@ -71,7 +71,25 @@ describe('Operation', function() {
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
-            expect(obj.line.equals(asset)).to.be.true;
+            expect(obj.line).to.be.deep.equal(asset);
+            expect(obj.limit).to.be.equal("9223372036854775807");
+        });
+
+        it("deletes a trustline", function () {
+            let asset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            let op = StellarBase.Operation.changeTrust({asset: asset, limit: "0"});
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+            expect(obj.type).to.be.equal("changeTrust");
+            expect(obj.line).to.be.deep.equal(asset);
+            expect(obj.limit).to.be.equal("0");
+        });
+
+        it("throws TypeError for incorrect limit argument", function () {
+            let asset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            let changeTrust = () => StellarBase.Operation.changeTrust({asset: asset, limit: 0});
+            expect(changeTrust).to.throw(TypeError);
         });
     });
 
