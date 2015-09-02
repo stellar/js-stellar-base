@@ -11,6 +11,30 @@ describe('Asset', function() {
         });
     });
 
+    describe("getCode()", function () {
+        it("returns a code for a native asset object", function () {
+            var asset = new StellarBase.Asset.native();
+            expect(asset.getCode()).to.be.equal('XLM');
+        });
+
+        it("returns a code for a non-native asset", function () {
+            var asset = new StellarBase.Asset("USD", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
+            expect(asset.getCode()).to.be.equal('USD');
+        });
+    });
+
+    describe("getIssuer()", function () {
+        it("returns a code for a native asset object", function () {
+            var asset = new StellarBase.Asset.native();
+            expect(asset.getIssuer()).to.be.undefined;
+        });
+
+        it("returns a code for a non-native asset", function () {
+            var asset = new StellarBase.Asset("USD", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
+            expect(asset.getIssuer()).to.be.equal('GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ');
+        });
+    });
+
     describe("toXdrObject()", function () {
         it("parses a native asset object", function () {
             var asset = new StellarBase.Asset.native();

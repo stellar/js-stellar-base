@@ -1,6 +1,6 @@
 import {xdr, Keypair} from "./index";
 import {encodeCheck} from "./strkey";
-import {padRight} from 'lodash';
+import {clone, padRight, trimRight} from 'lodash';
 
 /**
 * Asset class represents an asset, either the native asset ("XLM")
@@ -21,18 +21,20 @@ export class Asset {
     * @param {xdr.Asset} cx - The asset xdr object.
     */
     static fromOperation(cx) {
-      let anum, issuer;
+      let anum, code, issuer;
       switch(cx.switch()) {
         case xdr.AssetType.assetTypeNative():
           return this.native();
         case xdr.AssetType.assetTypeCreditAlphanum4():
           anum = cx.alphaNum4();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
-          return new this(anum.assetCode(), issuer);
+          code = trimRight(anum.assetCode(), '\0');
+          return new this(code, issuer);
         case xdr.AssetType.assetTypeCreditAlphanum12():
           anum = cx.alphaNum12();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
-          return new this(anum.assetCode(), issuer);
+          code = trimRight(anum.assetCode(), '\0');
+          return new this(code, issuer);
         default:
           throw new Error(`Invalid asset type: ${cx.switch().name}`);
       }
@@ -53,9 +55,7 @@ export class Asset {
             throw new Error("Issuer cannot be null");
         }
 
-        // pad code with null bytes if necessary
-        let padLength = code.length <= 4 ? 4 : 12;
-        this.code = padRight(code, padLength, '\0');
+        this.code = code;
         this.issuer = issuer;
     }
 
@@ -75,13 +75,31 @@ export class Asset {
               xdrTypeString = 'assetTypeCreditAlphanum12';
             }
 
+            // pad code with null bytes if necessary
+            let padLength = this.code.length <= 4 ? 4 : 12;
+            let paddedCode = padRight(this.code, padLength, '\0');
+
             var assetType = new xdrType({
-                assetCode: this.code,
+                assetCode: paddedCode,
                 issuer: Keypair.fromAddress(this.issuer).accountId()
             });
 
             return new xdr.Asset(xdrTypeString, assetType);
         }
+    }
+
+    /**
+     * Return the asset code
+     */
+    getCode() {
+      return clone(this.code);
+    }
+
+    /**
+     * Return the asset issuer
+     **/
+    getIssuer() {
+      return clone(this.issuer);
     }
 
     /**
@@ -95,6 +113,6 @@ export class Asset {
     * Returns true if this asset equals the given asset.
     */
     equals(asset) {
-        return this.code == asset.code && this.issuer == asset.issuer;
+        return this.code == asset.getCode() && this.issuer == asset.getIssuer();
     }
 }
