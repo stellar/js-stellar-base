@@ -2,6 +2,7 @@ import {xdr, hash} from "./index";
 
 import {encodeCheck} from "./strkey";
 import {Operation} from "./operation";
+import {Network} from "./network";
 import {map, each} from "lodash";
 
 let MAX_FEE      = 1000;
@@ -68,13 +69,10 @@ export class Transaction {
     */
     signatureBase() {
         return Buffer.concat([
-            this.signatureBasePrefix(),
+						Network.current().networkId(),
+            xdr.EnvelopeType.envelopeTypeTx().toXDR(),
             this.tx.toXDR(),
         ]);
-    }
-
-    signatureBasePrefix() {
-        return xdr.EnvelopeType.envelopeTypeTx().toXDR();
     }
 
     /**

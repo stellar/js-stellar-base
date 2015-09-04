@@ -12,5 +12,6 @@ export {Asset} from "./asset";
 export {Operation} from "./operation";
 export {Memo} from "./memo";
 export {Account} from "./account";
+export {Network, Networks} from "./network";
 
 export * from "./strkey";
