@@ -30,6 +30,14 @@ export class Network {
 		this.use(new Network(Networks.TESTNET));
 	}
 
+	static usePublicnet() {
+		this.usePublicNet();
+	}
+
+	static useTestnet() {
+		this.useTestNet();
+	}
+
 	static use(network) {
 		current = network;
 	}
