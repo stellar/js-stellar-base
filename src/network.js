@@ -13,21 +13,37 @@ var current;
  * that will be used by this process for the purposes of generating signatures
  *
  * The public network is the default, but you can also override the default by using the `use`,
- * `usePublicNet` and `useTestNet` helper methods
+ * `usePublicNetwork` and `useTestNetwork` helper methods
  *
  */
 export class Network {
 
 	static useDefault() {
-		this.useTestNet();
+		this.useTestNetwork();
 	}
 
-	static usePublicNet() {
+	static usePublicNetwork() {
 		this.use(new Network(Networks.PUBLIC));
 	}
 
-	static useTestNet() {
+	/**
+	 * Alias for `usePublicNetwork`.
+	 * @deprecated Use `usePublicNetwork` method
+	 */
+	static usePublicNet() {
+		this.usePublicNetwork();
+	}
+
+	static useTestNetwork() {
 		this.use(new Network(Networks.TESTNET));
+	}
+
+	/**
+	 * Alias for `useTestNetwork`.
+	 * @deprecated Use `useTestNetwork` method
+	 */
+	static useTestNet() {
+		this.useTestNetwork();
 	}
 
 	static use(network) {
