@@ -19,7 +19,7 @@ var current;
 export class Network {
 
 	static useDefault() {
-		this.usePublicNet();
+		this.useTestNet();
 	}
 
 	static usePublicNet() {
