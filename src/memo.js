@@ -1,4 +1,4 @@
-import {xdr} from "./index";
+import {default as xdr} from "./generated/stellar-xdr_generated";
 
 /**
 * @class Memo

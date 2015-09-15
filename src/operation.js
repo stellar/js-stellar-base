@@ -1,8 +1,12 @@
-import {xdr, Keypair, Hyper, UnsignedHyper, hash} from "./index";
+import {default as xdr} from "./generated/stellar-xdr_generated";
+import {Account} from "./account";
+import {Keypair} from "./keypair";
+import {UnsignedHyper, Hyper} from "js-xdr";
+import {hash} from "./hashing";
 import {encodeCheck} from "./strkey";
 import {Asset} from "./asset";
 import {best_r} from "./util/continued_fraction";
-import {padRight, trimRight, isUndefined, isString} from 'lodash';
+import {padRight, trimRight, isEmpty, isUndefined, isString} from 'lodash';
 
 /**
 * @class Operation
@@ -19,15 +23,18 @@ export class Operation {
     * @returns {xdr.CreateAccountOp}
     */
     static createAccount(opts) {
-        if (!opts.destination) {
-            throw new Error("Must provide a destination for a payment operation");
+        if (!Account.isValidAddress(opts.destination)) {
+            throw new Error("destination is invalid");
         }
-        if (!opts.startingBalance) {
-            throw new Error("Must provide a starting balance");
+        if (!isString(opts.startingBalance)) {
+            throw new TypeError('startingBalance argument must be of type String');
+        }
+        if (isEmpty(opts.startingBalance)) {
+            throw new TypeError('startingBalance argument must not be empty');
         }
         let attributes = {};
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
-        attributes.startingBalance = Hyper.fromString(String(opts.startingBalance));
+        attributes.startingBalance = Hyper.fromString(opts.startingBalance);
         let createAccount = new xdr.CreateAccountOp(attributes);
 
         let opAttributes = {};
@@ -48,20 +55,23 @@ export class Operation {
     * @returns {xdr.PaymentOp}
     */
     static payment(opts) {
-        if (!opts.destination) {
-            throw new Error("Must provide a destination for a payment operation");
+        if (!Account.isValidAddress(opts.destination)) {
+            throw new Error("destination is invalid");
         }
         if (!opts.asset) {
             throw new Error("Must provide an asset for a payment operation");
         }
-        if (!opts.amount) {
-            throw new Error("Must provide an amount for a payment operation");
+        if (!isString(opts.amount)) {
+            throw new TypeError('amount argument must be of type String');
+        }
+        if (isEmpty(opts.amount)) {
+            throw new TypeError('amount argument must not be empty');
         }
 
         let attributes = {};
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.asset        = opts.asset.toXdrObject();
-        attributes.amount       = Hyper.fromString(String(opts.amount));
+        attributes.amount       = Hyper.fromString(opts.amount);
         let payment = new xdr.PaymentOp(attributes);
 
         let opAttributes = {};
@@ -90,25 +100,31 @@ export class Operation {
         if (!opts.sendAsset) {
             throw new Error("Must specify a send asset");
         }
-        if (!opts.sendMax) {
-            throw new Error("Must specify a send max");
+        if (!isString(opts.sendMax)) {
+            throw new TypeError('sendMax argument must be of type String');
         }
-        if (!opts.destination) {
-            throw new Error("Must provide a destination for a payment operation");
+        if (isEmpty(opts.sendMax)) {
+            throw new TypeError('sendMax argument must not be empty');
+        }
+        if (!Account.isValidAddress(opts.destination)) {
+            throw new Error("destination is invalid");
         }
         if (!opts.destAsset) {
             throw new Error("Must provide a destAsset for a payment operation");
         }
-        if (!opts.destAmount) {
-            throw new Error("Must provide an destAmount for a payment operation");
+        if (!isString(opts.destAmount)) {
+            throw new TypeError('destAmount argument must be of type String');
+        }
+        if (isEmpty(opts.destAmount)) {
+            throw new TypeError('destAmount argument must not be empty');
         }
 
         let attributes = {};
         attributes.sendAsset    = opts.sendAsset.toXdrObject();
-        attributes.sendMax      = Hyper.fromString(String(opts.sendMax));
+        attributes.sendMax      = Hyper.fromString(opts.sendMax);
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.destAsset    = opts.destAsset.toXdrObject();
-        attributes.destAmount   = Hyper.fromString(String(opts.destAmount));
+        attributes.destAmount   = Hyper.fromString(opts.destAmount);
         attributes.path         = opts.path ? opts.path : [];
         let payment = new xdr.PathPaymentOp(attributes);
 
@@ -163,6 +179,9 @@ export class Operation {
     * @returns {xdr.AllowTrustOp}
     */
     static allowTrust(opts) {
+        if (!Account.isValidAddress(opts.trustor)) {
+            throw new Error("trustor is invalid");
+        }
         let attributes = {};
         attributes.trustor = Keypair.fromAddress(opts.trustor).accountId();
         if (opts.assetCode.length <= 4) {
@@ -195,13 +214,10 @@ export class Operation {
     * @param {string} [opts.inflationDest] - Set this address as the account's inflation destination.
     * @param {number} [opts.clearFlags] - Bitmap integer for which flags to clear.
     * @param {number} [opts.setFlags] - Bitmap integer for which flags to set.
-    * @param {array} [opts.thresholds] - Sets the weight of the master key and the threshold
-    *                                    for each level low, medium, and high. Array of uint8.
-    *                                    For now, see the stellar-core docs.
-    * @param {number} [opts.thresholds.weight] - The master key weight.
-    * @param {number} [opts.thresholds.low] - The sum weight for the low threshold.
-    * @param {number} [opts.thresholds.medium] - The sum weight for the medium threshold.
-    * @param {number} [opts.thresholds.high] - The sum weight for the high threshold.
+    * @param {number} [opts.masterWeight] - The master key weight.
+    * @param {number} [opts.lowThreshold] - The sum weight for the low threshold.
+    * @param {number} [opts.medThreshold] - The sum weight for the medium threshold.
+    * @param {number} [opts.highThreshold] - The sum weight for the high threshold.
     * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
     *                                 deleted if the weight is 0.
     * @param {string} [opts.signer.address] - The address of the new signer.
@@ -214,23 +230,54 @@ export class Operation {
         let attributes = {};
 
         if (opts.inflationDest) {
+            if (!Account.isValidAddress(opts.inflationDest)) {
+                throw new Error("inflationDest is invalid");
+            }
             attributes.inflationDest = Keypair.fromAddress(opts.inflationDest).accountId();
         }
 
         attributes.clearFlags = opts.clearFlags;
         attributes.setFlags = opts.setFlags;
+
+        if (!isUndefined(opts.masterWeight) && (opts.masterWeight < 0 || opts.masterWeight > 255)) {
+            throw new Error("masterWeight value must be between 0 and 255");
+        }
+
+        if (!isUndefined(opts.lowThreshold) && (opts.lowThreshold < 0 || opts.lowThreshold > 255)) {
+            throw new Error("lowThreshold value must be between 0 and 255");
+        }
+
+        if (!isUndefined(opts.medThreshold) && (opts.medThreshold < 0 || opts.medThreshold > 255)) {
+            throw new Error("medThreshold value must be between 0 and 255");
+        }
+
+        if (!isUndefined(opts.highThreshold) && (opts.highThreshold < 0 || opts.highThreshold > 255)) {
+            throw new Error("highThreshold value must be between 0 and 255");
+        }
+
         attributes.masterWeight = opts.masterWeight;
         attributes.lowThreshold = opts.lowThreshold;
         attributes.medThreshold = opts.medThreshold;
         attributes.highThreshold = opts.highThreshold;
+
+        if (!isUndefined(opts.homeDomain) && !isString(opts.homeDomain)) {
+            throw new TypeError('homeDomain argument must be of type String');
+        }
         attributes.homeDomain = opts.homeDomain;
 
         if (opts.signer) {
-            let signer = new xdr.Signer({
+            if (!Account.isValidAddress(opts.signer.address)) {
+                throw new Error("signer.address is invalid");
+            }
+
+            if (opts.signer.weight < 0 || opts.signer.weight > 255) {
+                throw new Error("signer.weight value must be between 0 and 255");
+            }
+
+            attributes.signer = new xdr.Signer({
                 pubKey: Keypair.fromAddress(opts.signer.address).accountId(),
                 weight: opts.signer.weight
             });
-            attributes.signer = signer;
         }
 
         let setOptionsOp = new xdr.SetOptionsOp(attributes);
@@ -251,7 +298,7 @@ export class Operation {
     * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number} price - The exchange rate ratio (takerpay / takerget)
-    * @param {string} offerId - If 0, will create a new offer. Otherwise, edits an exisiting offer.
+    * @param {string} offerId - If 0, will create a new offer (default). Otherwise, edits an exisiting offer.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ManageOfferOp}
     */
@@ -259,13 +306,27 @@ export class Operation {
         let attributes = {};
         attributes.selling = opts.selling.toXdrObject();
         attributes.buying = opts.buying.toXdrObject();
-        attributes.amount = Hyper.fromString(String(opts.amount));
+        if (!isString(opts.amount)) {
+            throw new TypeError('amount argument must be of type String');
+        }
+        attributes.amount = Hyper.fromString(opts.amount);
+        if (isUndefined(opts.price)) {
+            throw new TypeError('price argument is required');
+        }
         let approx = best_r(opts.price);
         attributes.price = new xdr.Price({
             n: approx[0],
             d: approx[1]
         });
-        attributes.offerId = UnsignedHyper.fromString(String(opts.offerId));
+
+        if (!isUndefined(opts.offerId)) {
+            if (!isString(opts.offerId)) {
+                throw new TypeError('offerId argument must be of type String');
+            }
+        } else {
+            opts.offerId = '0';
+        }
+        attributes.offerId = UnsignedHyper.fromString(opts.offerId);
         let manageOfferOp = new xdr.ManageOfferOp(attributes);
 
         let opAttributes = {};
@@ -293,7 +354,13 @@ export class Operation {
         let attributes = {};
         attributes.selling = opts.selling.toXdrObject();
         attributes.buying = opts.buying.toXdrObject();
+        if (!isString(opts.amount)) {
+            throw new TypeError('amount argument must be of type String');
+        }
         attributes.amount = Hyper.fromString(String(opts.amount));
+        if (isUndefined(opts.price)) {
+            throw new TypeError('price argument is required');
+        }
         let approx = best_r(opts.price);
         attributes.price = new xdr.Price({
             n: approx[0],
@@ -318,6 +385,9 @@ export class Operation {
     */
     static accountMerge(opts) {
         let opAttributes = {};
+        if (!Account.isValidAddress(opts.destination)) {
+            throw new Error("destination is invalid");
+        }
         opAttributes.body = xdr.OperationBody.accountMerge(
             Keypair.fromAddress(opts.destination).accountId()
         );
@@ -343,6 +413,9 @@ export class Operation {
 
     static setSourceAccount(opAttributes, opts) {
       if (opts.source) {
+          if (!Account.isValidAddress(opts.source)) {
+              throw new Error("Source address is invalid");
+          }
           opAttributes.sourceAccount = Keypair.fromAddress(opts.source).accountId();
       }
     }

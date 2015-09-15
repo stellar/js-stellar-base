@@ -23,6 +23,9 @@ export class Account {
     * @param {number} sequence
     */
     constructor(address, sequence) {
+        if (!Account.isValidAddress(address)) {
+            throw new Error('address is invalid');
+        }
         this.address = address;
         this.sequence = sequence;
     }
