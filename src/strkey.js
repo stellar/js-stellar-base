@@ -1,6 +1,6 @@
-import base32 from "thirty-two";
+import base32 from "base32.js";
 import crc from "crc";
-import {isUndefined, isNull} from "lodash";
+import {contains, isUndefined, isNull, isString} from "lodash";
 
 const versionBytes = {
   accountId: 0x30,
@@ -8,11 +8,19 @@ const versionBytes = {
 };
 
 export function decodeCheck(versionByteName, encoded) {
+  if (!isString(encoded)) {
+    throw new TypeError('encoded argument must be of type String');
+  }
+
   let decoded     = base32.decode(encoded);
   let versionByte = decoded[0];
   let payload     = decoded.slice(0, -2);
   let data        = payload.slice(1);
   let checksum    = decoded.slice(-2);
+
+  if (encoded != base32.encode(decoded)) {
+    throw new Error('invalid encoded string');
+  }
 
   let expectedVersion = versionBytes[versionByteName];
 
@@ -24,14 +32,14 @@ export function decodeCheck(versionByteName, encoded) {
     throw new Error(`invalid version byte. expected ${expectedVersion}, got ${versionByte}`);
   }
 
+  if (decoded.length !== 35) {
+    throw new Error(`Decoded length is invalid. Expected 35, got ${decoded.length}`);
+  }
+
   let expectedChecksum = calculateChecksum(payload);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
     throw new Error(`invalid checksum`);
-  }
-
-  if (versionByteName === 'accountId' && decoded.length !== 35) {
-    throw new Error(`Decoded address length is invalid. Expected 35, got ${decoded.length}`);
   }
 
   return new Buffer(data);
@@ -54,7 +62,7 @@ export function encodeCheck(versionByteName, data) {
   let checksum      = calculateChecksum(payload);
   let unencoded     = Buffer.concat([payload, checksum]);
 
-  return base32.encode(unencoded).toString();
+  return base32.encode(unencoded);
 }
 
 function calculateChecksum(payload) {

@@ -62,13 +62,13 @@
   },
   "dependencies": {
     "babel-runtime": "^4.7.16",
+    "base32.js": "~0.1.0",
     "crc": "^3.3.0",
     "ed25519": "0.0.3",
     "js-xdr": "0.0.10",
     "karma": "^0.13.9",
     "lodash": "^3.6.0",
     "sha.js": "^2.3.6",
-    "thirty-two": "^0.0.2",
     "tweetnacl": "^0.13.0"
   }
 }
