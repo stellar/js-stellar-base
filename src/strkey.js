@@ -32,10 +32,6 @@ export function decodeCheck(versionByteName, encoded) {
     throw new Error(`invalid version byte. expected ${expectedVersion}, got ${versionByte}`);
   }
 
-  if (decoded.length !== 35) {
-    throw new Error(`Decoded length is invalid. Expected 35, got ${decoded.length}`);
-  }
-
   let expectedChecksum = calculateChecksum(payload);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
