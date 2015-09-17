@@ -106,7 +106,13 @@ describe('Keypair.fromAddress', function() {
     expect(() => StellarBase.Keypair.fromAddress("hel0")).to.throw()
     expect(() => StellarBase.Keypair.fromAddress("masterpassphrasemasterpassphrase")).to.throw()
     expect(() => StellarBase.Keypair.fromAddress("sfyjodTxbwLtRToZvi6yQ1KnpZriwTJ7n6nrASFR6goRviCU3Ff")).to.throw()
+  });
 
+  it("throws an error if the address isn't 32 bytes", function() {
+    expect(() => StellarBase.Keypair.fromAddress("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromAddress("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromAddress(null)).to.throw()
+    expect(() => StellarBase.Keypair.fromAddress()).to.throw()
   });
 
 });

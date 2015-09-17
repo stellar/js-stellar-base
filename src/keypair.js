@@ -38,6 +38,9 @@ export class Keypair {
 
   static fromAddress(address) {
     let publicKey = strkey.decodeCheck("accountId", address);
+    if (publicKey.length !== 32) {
+      throw new Error('Invalid Stellar address');
+    }
     return new this({publicKey});
   }
 
