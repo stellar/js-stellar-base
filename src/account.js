@@ -10,7 +10,10 @@ export class Account {
     */
     static isValidAddress(address) {
         try {
-            decodeCheck("accountId", address);
+            let decoded = decodeCheck("accountId", address);
+            if (decoded.length !== 32) {
+                return false;
+            }
         } catch(err) {
             return false;
         }
