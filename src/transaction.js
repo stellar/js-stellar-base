@@ -13,7 +13,7 @@ export class Transaction {
 
     /**
     * A new Transaction object is created from a transaction envelope (or via TransactionBuilder).
-    * One a Transaction has been created from an envelope, its attributes and operations
+    * Once a Transaction has been created from an envelope, its attributes and operations
     * should not be changed. You should only add signers to a Transaction object before
     * submitting to the network or forwarding on to additional signers.
     * @constructor
