@@ -1,42 +1,36 @@
 language: node_js
+sudo: required # to install newer g++ :(
 node_js:
-- '0.10'
+- "4.0.0"
+- "0.12"
+- "0.11"
+- "0.10"
 script:
 - |
   echo "machine github.com login stellar-jenkins password $GITHUB_TOKEN" >~/.netrc
   git config --global user.name "Travis CI"
   git config --global user.email "travis@stellar.org"
-
-  if [ "$TEST_TYPE" = build_website ]; then
-    if [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_PULL_REQUEST" = false ]; then
-      set -e
-
-      cd website
-      npm install
-      ./setup.sh
-      ./publish.sh
-    fi
-  else
-    gulp test
-    gulp build
-  fi
+  gulp test && gulp build
 before_install:
 - npm install -g npm@'>=2.13.5'
 - |
-  if [ "$TEST_TYPE" != build_website ]; then
-    mkdir -p .npm
-    export DISPLAY=:99.0
-    sh -e /etc/init.d/xvfb start
-  fi
+  mkdir -p .npm
+  export DISPLAY=:99.0
+  sh -e /etc/init.d/xvfb start
 notifications:
   slack:
     secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
 env:
-#  matrix:
-#  - TEST_TYPE=test
-#  - TEST_TYPE=build_website
   global:
-    secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
+    - secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
+    - CXX=g++-4.8 # node bindings in 4.0.0
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
 deploy:
   - provider: npm
     email: npm@stellar.org

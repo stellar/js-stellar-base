@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
-    "babel": "^4.7.16",
-    "babel-core": "^4.7.16",
-    "babel-loader": "^4.3.0",
+    "babel": "~5.8.23",
+    "babel-core": "~5.8.25",
+    "babel-loader": "~5.3.2",
     "chai": "^2.2.0",
     "express": "^4.9.8",
     "ghooks": "^0.3.0",
@@ -61,7 +61,7 @@
     "webpack": "^1.7.3"
   },
   "dependencies": {
-    "babel-runtime": "^4.7.16",
+    "babel-runtime": "~5.8.24",
     "base32.js": "~0.1.0",
     "crc": "^3.3.0",
     "ed25519": "0.0.4",
