@@ -35,7 +35,7 @@ js-stellar-base exposes following classes:
 
 ## `Account` class
 
-Object of `Account` class represents a single account in Stellar network and it's sequence number. `Account` tracts the sequence number as it is used by `TransactionBuilder`.
+Object of `Account` class represents a single account in Stellar network and its sequence number. `Account` tracts the sequence number as it is used by `TransactionBuilder`.
 
 ```js
 var account = new Account('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB', 46316927320064);

@@ -32,7 +32,7 @@ export class TransactionBuilder {
     * and a changeTrust operation. The Transaction's source account first funds destinationA,
     * then extends a trust line to destination A for an asset, then destinationA sends the
     * source account an amount of that asset. The built transaction would need to be signed by
-    * both the source acccount and the destinationA account for it to be valid.</p>
+    * both the source account and the destinationA account for it to be valid.</p>
     *
     * <pre>var transaction = new TransactionBuilder(source)
     *   .addOperation(Operation.payment({
