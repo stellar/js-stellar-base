@@ -35,7 +35,7 @@ js-stellar-base exposes following classes:
 
 ## `Account` class
 
-Object of `Account` class represents a single account in Stellar network and it's [sequence number]().
+Object of `Account` class represents a single account in Stellar network and it's sequence number. `Account` tracts the sequence number as it is used by `TransactionBuilder`.
 
 ```js
 var account = new Account('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB', 46316927320064);
@@ -147,7 +147,7 @@ transaction.sign(keypair);
 
 ## `TransactionBuilder` class
 
-`TransactionBuilder` helps constructs a new `Transaction` using the given account as the transaction's "source account". The transaction will use the current sequence number of the given `Account` object as its sequence number and increment the given account's sequence number by one.
+`TransactionBuilder` helps constructs a new `Transaction` using the given account as the transaction's "source account". The transaction will use the current sequence number of the given `Account` object as its sequence number and increment the given account's sequence number by one when `build()` is called.
 
 Operations can be added to the transaction using `addOperation(operation)` method which returns the current `TransactionBuilder` object so they can be chained together. After adding the desired operations, call the `build()` method on the TransactionBuilder to return a fully constructed Transaction that can be signed. The returned transaction will contain the sequence number of the source account and include the signature from the source account.
 
