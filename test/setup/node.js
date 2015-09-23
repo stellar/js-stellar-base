@@ -1,4 +1,4 @@
-global.StellarBase = require('../../src/index');
+global.StellarBase = require('../../lib/index'); // Use compiled code because it will be used by node
 global.chai = require('chai');
 global.sinon = require('sinon');
 global.chai.use(require('sinon-chai'));
