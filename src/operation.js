@@ -6,6 +6,7 @@ import {padRight, trimRight, isUndefined, isString} from 'lodash';
 
 /**
 * @class Operation
+* See https://stellar.org/developers/learn/concepts/operations/  for more information about how operations work in Stellar.
 */
 export class Operation {
 
