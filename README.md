@@ -75,7 +75,7 @@ For information on how to use js-stellar-base, take a look at the docs in the [d
 ## Testing
 To run all tests:
 ```shell
-./node_modules/.bin/gulp test
+gulp test
 ```
 
 To run a specific set of tests:
