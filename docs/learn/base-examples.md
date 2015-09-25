@@ -1,4 +1,6 @@
-# Examples
+---
+title: Base Examples
+---
 
 
 ## Creating a transaction

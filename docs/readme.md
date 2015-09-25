@@ -1,7 +1,5 @@
 ---
-id: readme
 title: Getting Started
-category: Getting Started
 ---
 
 # Overview

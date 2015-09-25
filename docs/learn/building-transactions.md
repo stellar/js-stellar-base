@@ -1,4 +1,6 @@
-# Building Transactions
+---
+title: Building Transactions
+---
 
 [Transactions](https://stellar.org/developers/learn/concepts/transactions/) are the commands that modify the state of the ledger.
 They include sending payments, creating offers, making account configuration changes, etc.
