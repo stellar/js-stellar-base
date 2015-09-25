@@ -1,16 +1,27 @@
 language: node_js
 sudo: required # to install newer g++ :(
-node_js:
-- "4.0.0"
-- "0.12"
-- "0.11"
-- "0.10"
+matrix:
+  include:
+    - node_js: "4.0.0"
+      env: SAUCE=false
+    - node_js: "0.12"
+      env: SAUCE=false
+    - node_js: "0.11"
+      env: SAUCE=false
+    - node_js: "0.10"
+      env: SAUCE=false
+    - node_js: "0.12"
+      env: SAUCE=true
 script:
 - |
   echo "machine github.com login stellar-jenkins password $GITHUB_TOKEN" >~/.netrc
   git config --global user.name "Travis CI"
   git config --global user.email "travis@stellar.org"
-  gulp test && gulp build
+  if [ "${SAUCE}" = "true" ]; then
+    gulp test:sauce
+  else
+    gulp test
+  fi
 before_install:
 - npm install -g npm@'>=2.13.5'
 - |
@@ -31,6 +42,7 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+before_deploy: gulp build
 deploy:
   - provider: npm
     email: npm@stellar.org

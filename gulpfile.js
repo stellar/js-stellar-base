@@ -87,6 +87,14 @@ gulp.task('test:browser', ["build:browser"], function (done) {
     });
 });
 
+gulp.task('test:sauce', ["build:browser"], function (done) {
+  var karma = require('karma').server;
+
+  karma.start({ configFile: __dirname + '/karma-sauce.conf.js' },  function() {
+    done();
+  });
+});
+
 gulp.task('clean', function () {
   return gulp.src(['dist', 'lib'], { read: false })
       .pipe(plugins.rimraf());
