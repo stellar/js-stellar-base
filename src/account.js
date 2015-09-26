@@ -4,7 +4,7 @@ import {decodeCheck} from "./strkey";
 * @class Account
 * Represents a single account in Stellar network and its sequence number.
 * Account tracts the sequence number as it is used by TransactionBuilder.
-* See https://stellar.org/developers/learn/concepts/accounts/  for more information about how accounts work in Stellar.
+* See https://stellar.org/developers/learn/concepts/accounts.html  for more information about how accounts work in Stellar.
 */
 
 export class Account {
