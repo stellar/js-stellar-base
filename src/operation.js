@@ -360,6 +360,10 @@ export class Operation {
         }
 
         let result = {};
+        if (operation.sourceAccount()) {
+            result.source = accountIdtoAddress(operation.sourceAccount());
+        }
+
         let attrs = operation.body().value();
         switch (operation.body().switch().name) {
             case "createAccount":
