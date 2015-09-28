@@ -3,11 +3,15 @@ describe('Asset', function() {
     describe("constructor", function () {
 
         it("throws an error when there's no issuer for non XLM type asset", function () {
-            expect(() => new StellarBase.Asset("USD")).to.throw()
+            expect(() => new StellarBase.Asset("USD")).to.throw(/Issuer cannot be null/)
         });
 
         it("throws an error when currency code is too long", function () {
-            expect(() => new StellarBase.Asset("1234567890123", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ")).to.throw()
+            expect(() => new StellarBase.Asset("1234567890123", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ")).to.throw(/Asset code must be 12 characters at max/)
+        });
+
+        it("throws an error when issuer is invalid", function () {
+            expect(() => new StellarBase.Asset("USD", "GCEZWKCA5")).to.throw(/Issuer is invalid/)
         });
     });
 

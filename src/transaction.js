@@ -29,6 +29,7 @@ export class Transaction {
         this.tx       = envelope.tx();
         this.source   = encodeCheck("accountId", envelope.tx().sourceAccount().ed25519());
         this.fee      = this.tx.fee();
+        this.memo     = this.tx.memo();
         this.sequence = this.tx.seqNum().toString();
 
         let operations  = this.tx.operations() || [];

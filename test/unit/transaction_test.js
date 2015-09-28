@@ -8,6 +8,7 @@ describe('Transaction', function() {
 
     let input = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .addMemo(StellarBase.Memo.text('Happy birthday!'))
                 .build()
                 .toEnvelope()
                 .toXDR('base64');
@@ -18,6 +19,7 @@ describe('Transaction', function() {
 
     expect(transaction.source).to.be.equal(source.address);
     expect(transaction.fee).to.be.equal(1000);
+    expect(transaction.memo.text()).to.be.equal('Happy birthday!');
     expect(operation.type).to.be.equal('payment');
     expect(operation.destination).to.be.equal(destination);
     expect(operation.amount).to.be.equal(amount);

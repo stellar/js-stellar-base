@@ -1,4 +1,6 @@
-import {xdr, Keypair} from "./index";
+import {default as xdr} from "./generated/stellar-xdr_generated";
+import {Account} from "./account";
+import {Keypair} from "./keypair";
 import {encodeCheck} from "./strkey";
 import {clone, padRight, trimRight} from 'lodash';
 
@@ -49,10 +51,13 @@ export class Asset {
     */
     constructor(code, issuer) {
         if (code.length > 12) {
-            throw new Error("Asset code must be 12 characters at max.");
+            throw new Error("Asset code must be 12 characters at max");
         }
         if (String(code).toLowerCase() !== "xlm" && !issuer) {
             throw new Error("Issuer cannot be null");
+        }
+        if (issuer && !Account.isValidAddress(issuer)) {
+            throw new Error("Issuer is invalid");
         }
 
         this.code = code;

@@ -1,5 +1,6 @@
-import {xdr, hash, Keypair} from "./index";
-
+import {default as xdr} from "./generated/stellar-xdr_generated";
+import {hash} from "./hashing";
+import {Keypair} from "./keypair";
 import {Account} from "./account";
 import {Operation} from "./operation";
 import {Transaction} from "./transaction";
@@ -75,6 +76,15 @@ export class TransactionBuilder {
     */
     addOperation(operation) {
         this.operations.push(operation);
+        return this;
+    }
+
+    /**
+     * Adds a memo to the transaction
+     * @param {xdr.Memo} The xdr memo object, use {@link Memo} static methods.
+     */
+    addMemo(memo) {
+        this.memo = memo;
         return this;
     }
 

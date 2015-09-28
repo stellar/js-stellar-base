@@ -1,4 +1,9 @@
 
+describe('Account.constructor', function() {
+  it("fails to create Account object from an invalid address", function() {
+    expect(() => new StellarBase.Account('GBBB')).to.throw(/address is invalid/);
+  });
+});
 
 describe('Account.isValidAddress', function() {
 
