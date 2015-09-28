@@ -9,7 +9,8 @@ import {padRight, trimRight, isEmpty, isUndefined, isString} from 'lodash';
 import BigNumber from 'bignumber.js';
 
 const ONE = 10000000;
-const MAX_INT = '9223372036854775807';
+const MAX_INT64 = '9223372036854775807';
+const MAX_DENOMINATOR = '2147483647';
 
 /**
 * @class Operation
@@ -161,7 +162,7 @@ export class Operation {
         if (!isUndefined(opts.limit) && !isString(opts.limit)) {
             throw new TypeError('limit argument must be of type String');
         }
-        let limit           = opts.limit ? new BigNumber(opts.limit).mul(ONE) : new BigNumber(MAX_INT);
+        let limit           = opts.limit ? new BigNumber(opts.limit).mul(ONE) : new BigNumber(MAX_INT64);
         attributes.limit    = Hyper.fromString(limit.toString());
         if (opts.source) {
             attributes.source   = opts.source ? opts.source.masterKeypair : null;
@@ -305,7 +306,7 @@ export class Operation {
     * @param {Asset} selling - What you're selling.
     * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
-    * @param {string} price - The exchange rate ratio (takerpay / takerget)
+    * @param {number|string|BigNumber} price - The exchange rate ratio (takerpay / takerget)
     * @param {string} offerId - If 0, will create a new offer (default). Otherwise, edits an exisiting offer.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ManageOfferOp}
@@ -319,11 +320,11 @@ export class Operation {
         }
         let amount = new BigNumber(opts.amount).mul(ONE);
         attributes.amount = Hyper.fromString(amount.toString());
-        if (!isString(opts.price)) {
-            throw new TypeError('price argument must be of type String');
+        if (isUndefined(opts.price)) {
+            throw new TypeError('price argument is required');
         }
         let price = new BigNumber(opts.price);
-        let approx = price.toFraction();
+        let approx = price.toFraction(MAX_DENOMINATOR);
         attributes.price = new xdr.Price({
             n: parseInt(approx[0]),
             d: parseInt(approx[1])
@@ -356,7 +357,7 @@ export class Operation {
     * @param {Asset} selling - What you're selling.
     * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
-    * @param {string} price - The exchange rate ratio (selling / buying)
+    * @param {number|string|BigNumber} price - The exchange rate ratio (selling / buying)
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.CreatePassiveOfferOp}
     */
@@ -369,11 +370,11 @@ export class Operation {
         }
         let amount = new BigNumber(opts.amount).mul(ONE);
         attributes.amount = Hyper.fromString(amount.toString());
-        if (!isString(opts.price)) {
-            throw new TypeError('price argument must be of type String');
+        if (isUndefined(opts.price)) {
+            throw new TypeError('price argument is required');
         }
         let price = new BigNumber(opts.price);
-        let approx = price.toFraction();
+        let approx = price.toFraction(MAX_DENOMINATOR);
         attributes.price = new xdr.Price({
             n: parseInt(approx[0]),
             d: parseInt(approx[1])
@@ -475,7 +476,7 @@ export class Operation {
                 result.type = "changeTrust";
                 result.line = Asset.fromOperation(attrs.line());
                 let limit = new BigNumber(attrs.limit().toString());
-                if (limit.lessThan(MAX_INT)) {
+                if (limit.lessThan(MAX_INT64)) {
                     limit = limit.div(ONE);
                 }
                 result.limit = limit.toString();
