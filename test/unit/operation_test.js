@@ -4,15 +4,13 @@ describe('Operation', function() {
         it("creates a createAccountOp", function () {
             var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var startingBalance = '1000';
-            let op = StellarBase.Operation.createAccount({
-                destination: destination,
-                startingBalance: startingBalance
-            });
+            let op = StellarBase.Operation.createAccount({destination, startingBalance});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("createAccount");
             expect(obj.destination).to.be.equal(destination);
+            expect(operation.body().value().startingBalance().toString()).to.be.equal('10000000000');
             expect(obj.startingBalance).to.be.equal(startingBalance);
         });
 
@@ -49,16 +47,13 @@ describe('Operation', function() {
             var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var amount = "1000";
             var asset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
-            let op = StellarBase.Operation.payment({
-                destination: destination,
-                asset: asset,
-                amount: amount
-            });
+            let op = StellarBase.Operation.payment({destination, asset, amount});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("payment");
             expect(obj.destination).to.be.equal(destination);
+            expect(operation.body().value().amount().toString()).to.be.equal('10000000000');
             expect(obj.amount).to.be.equal(amount);
             expect(obj.asset.equals(asset)).to.be.true;
         });
@@ -85,25 +80,21 @@ describe('Operation', function() {
     describe(".pathPayment()", function () {
         it("creates a pathPaymentOp", function() {
             var sendAsset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
-            var sendMax = '1000';
+            var sendMax = '3.007';
             var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var destAsset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
-            var destAmount = '1000';
-            let op = StellarBase.Operation.pathPayment({
-                sendAsset: sendAsset,
-                sendMax: sendMax,
-                destination: destination,
-                destAsset: destAsset,
-                destAmount: destAmount
-            });
+            var destAmount = '3.1415';
+            let op = StellarBase.Operation.pathPayment({sendAsset, sendMax, destination, destAsset, destAmount});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("pathPayment");
             expect(obj.sendAsset.equals(sendAsset)).to.be.true;
+            expect(operation.body().value().sendMax().toString()).to.be.equal('30070000');
             expect(obj.sendMax).to.be.equal(sendMax);
             expect(obj.destination).to.be.equal(destination);
             expect(obj.destAsset.equals(destAsset)).to.be.true;
+            expect(operation.body().value().destAmount().toString()).to.be.equal('31415000');
             expect(obj.destAmount).to.be.equal(destAmount);
         });
 
@@ -150,6 +141,7 @@ describe('Operation', function() {
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line).to.be.deep.equal(asset);
+            expect(operation.body().value().limit().toString()).to.be.equal('9223372036854775807'); // MAX_INT
             expect(obj.limit).to.be.equal("9223372036854775807");
         });
 
@@ -161,6 +153,7 @@ describe('Operation', function() {
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line).to.be.deep.equal(asset);
+            expect(operation.body().value().limit().toString()).to.be.equal('500000000');
             expect(obj.limit).to.be.equal("50");
         });
 
@@ -302,8 +295,8 @@ describe('Operation', function() {
             var opts = {};
             opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
-            opts.amount = '1000';
-            opts.price = 3.07;
+            opts.amount = '3.123456';
+            opts.price = '3.07';
             opts.offerId = '1';
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
@@ -312,6 +305,7 @@ describe('Operation', function() {
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
+            expect(operation.body().value().amount().toString()).to.be.equal('31234560');
             expect(obj.amount).to.be.equal(opts.amount);
             expect(obj.price).to.be.equal(opts.price);
             expect(obj.offerId).to.be.equal(opts.offerId);
@@ -322,7 +316,7 @@ describe('Operation', function() {
             opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.amount = '1000';
-            opts.price = 3.07;
+            opts.price = '3.141592';
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
@@ -330,6 +324,7 @@ describe('Operation', function() {
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
+            expect(operation.body().value().amount().toString()).to.be.equal('10000000000');
             expect(obj.amount).to.be.equal(opts.amount);
             expect(obj.price).to.be.equal(opts.price);
             expect(obj.offerId).to.be.equal('0'); // 0=create a new offer, otherwise edit an existing offer
@@ -338,7 +333,7 @@ describe('Operation', function() {
         it("fails to create manageOffer operation with an invalid amount", function () {
             let opts = {
                 amount: 20,
-                price: 10,
+                price: '10',
                 selling: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
                 buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7")
             };
@@ -348,16 +343,17 @@ describe('Operation', function() {
         it("fails to create manageOffer operation with missing price", function () {
             let opts = {
                 amount: '20',
+                price: 10,
                 selling: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
                 buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7")
             };
-            expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/price argument is required/)
+            expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/price argument must be of type String/)
         });
 
         it("fails to create manageOffer operation with an invalid offerId", function () {
             let opts = {
                 amount: '20',
-                price: 10,
+                price: '10',
                 selling: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
                 buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
                 offerId: 0
@@ -371,8 +367,8 @@ describe('Operation', function() {
             var opts = {};
             opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
-            opts.amount = '1000';
-            opts.price = 3.07;
+            opts.amount = '11.27827';
+            opts.price = '3.07';
             let op = StellarBase.Operation.createPassiveOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
@@ -380,6 +376,7 @@ describe('Operation', function() {
             expect(obj.type).to.be.equal("createPassiveOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
+            expect(operation.body().value().amount().toString()).to.be.equal('112782700');
             expect(obj.amount).to.be.equal(opts.amount);
             expect(obj.price).to.be.equal(opts.price);
         });
@@ -387,7 +384,7 @@ describe('Operation', function() {
         it("fails to create createPassiveOffer operation with an invalid amount", function () {
             let opts = {
                 amount: 20,
-                price: 10,
+                price: '10',
                 selling: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
                 buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7")
             };
@@ -397,10 +394,11 @@ describe('Operation', function() {
         it("fails to create createPassiveOffer operation with missing price", function () {
             let opts = {
                 amount: '20',
+                price: 10,
                 selling: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
                 buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7")
             };
-            expect(() => StellarBase.Operation.createPassiveOffer(opts)).to.throw(/price argument is required/)
+            expect(() => StellarBase.Operation.createPassiveOffer(opts)).to.throw(/price argument must be of type String/)
         });
     });
 

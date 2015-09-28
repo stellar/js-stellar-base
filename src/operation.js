@@ -5,8 +5,11 @@ import {UnsignedHyper, Hyper} from "js-xdr";
 import {hash} from "./hashing";
 import {encodeCheck} from "./strkey";
 import {Asset} from "./asset";
-import {best_r} from "./util/continued_fraction";
 import {padRight, trimRight, isEmpty, isUndefined, isString} from 'lodash';
+import BigNumber from 'bignumber.js';
+
+const ONE = 10000000;
+const MAX_INT = '9223372036854775807';
 
 /**
 * @class Operation
@@ -34,9 +37,10 @@ export class Operation {
             throw new TypeError('startingBalance argument must not be empty');
         }
         let attributes = {};
-        attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
-        attributes.startingBalance = Hyper.fromString(opts.startingBalance);
-        let createAccount = new xdr.CreateAccountOp(attributes);
+        attributes.destination     = Keypair.fromAddress(opts.destination).accountId();
+        let startingBalance        = new BigNumber(opts.startingBalance).mul(ONE);
+        attributes.startingBalance = Hyper.fromString(startingBalance.toString());
+        let createAccount          = new xdr.CreateAccountOp(attributes);
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.createAccount(createAccount);
@@ -72,8 +76,9 @@ export class Operation {
         let attributes = {};
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.asset        = opts.asset.toXdrObject();
-        attributes.amount       = Hyper.fromString(opts.amount);
-        let payment = new xdr.PaymentOp(attributes);
+        let amount              = new BigNumber(opts.amount).mul(ONE);
+        attributes.amount       = Hyper.fromString(amount.toString());
+        let payment             = new xdr.PaymentOp(attributes);
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.payment(payment);
@@ -92,7 +97,7 @@ export class Operation {
     * @param {string} opts.sendMax - The maximum amount of sendAsset to send.
     * @param {string} opts.destination - The destination account to send to.
     * @param {Asset} opts.destAsset - The asset the destination will receive.
-    * @param {string|number} otps.destAmount - The amount the destination receives.
+    * @param {string} otps.destAmount - The amount the destination receives.
     * @param {array} [opts.path] - An array of Asset objects to use as the path.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PathPaymentOp}
@@ -122,12 +127,14 @@ export class Operation {
 
         let attributes = {};
         attributes.sendAsset    = opts.sendAsset.toXdrObject();
-        attributes.sendMax      = Hyper.fromString(opts.sendMax);
+        let sendMax             = new BigNumber(opts.sendMax).mul(ONE);
+        attributes.sendMax      = Hyper.fromString(sendMax.toString());
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.destAsset    = opts.destAsset.toXdrObject();
-        attributes.destAmount   = Hyper.fromString(opts.destAmount);
+        let destAmount          = new BigNumber(opts.destAmount).mul(ONE);
+        attributes.destAmount   = Hyper.fromString(destAmount.toString());
         attributes.path         = opts.path ? opts.path : [];
-        let payment = new xdr.PathPaymentOp(attributes);
+        let payment             = new xdr.PathPaymentOp(attributes);
 
         let opAttributes = {};
         opAttributes.body = xdr.OperationBody.pathPayment(payment);
@@ -154,8 +161,8 @@ export class Operation {
         if (!isUndefined(opts.limit) && !isString(opts.limit)) {
             throw new TypeError('limit argument must be of type String');
         }
-        let limit           = opts.limit ? opts.limit : "9223372036854775807";
-        attributes.limit    = Hyper.fromString(limit);
+        let limit           = opts.limit ? new BigNumber(opts.limit).mul(ONE) : new BigNumber(MAX_INT);
+        attributes.limit    = Hyper.fromString(limit.toString());
         if (opts.source) {
             attributes.source   = opts.source ? opts.source.masterKeypair : null;
         }
@@ -298,7 +305,7 @@ export class Operation {
     * @param {Asset} selling - What you're selling.
     * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
-    * @param {number} price - The exchange rate ratio (takerpay / takerget)
+    * @param {string} price - The exchange rate ratio (takerpay / takerget)
     * @param {string} offerId - If 0, will create a new offer (default). Otherwise, edits an exisiting offer.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ManageOfferOp}
@@ -310,14 +317,16 @@ export class Operation {
         if (!isString(opts.amount)) {
             throw new TypeError('amount argument must be of type String');
         }
-        attributes.amount = Hyper.fromString(opts.amount);
-        if (isUndefined(opts.price)) {
-            throw new TypeError('price argument is required');
+        let amount = new BigNumber(opts.amount).mul(ONE);
+        attributes.amount = Hyper.fromString(amount.toString());
+        if (!isString(opts.price)) {
+            throw new TypeError('price argument must be of type String');
         }
-        let approx = best_r(opts.price);
+        let price = new BigNumber(opts.price);
+        let approx = price.toFraction();
         attributes.price = new xdr.Price({
-            n: approx[0],
-            d: approx[1]
+            n: parseInt(approx[0]),
+            d: parseInt(approx[1])
         });
 
         if (!isUndefined(opts.offerId)) {
@@ -347,7 +356,7 @@ export class Operation {
     * @param {Asset} selling - What you're selling.
     * @param {Asset} buying - What you're buying.
     * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
-    * @param {number} price - The exchange rate ratio (selling / buying)
+    * @param {string} price - The exchange rate ratio (selling / buying)
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.CreatePassiveOfferOp}
     */
@@ -358,14 +367,16 @@ export class Operation {
         if (!isString(opts.amount)) {
             throw new TypeError('amount argument must be of type String');
         }
-        attributes.amount = Hyper.fromString(String(opts.amount));
-        if (isUndefined(opts.price)) {
-            throw new TypeError('price argument is required');
+        let amount = new BigNumber(opts.amount).mul(ONE);
+        attributes.amount = Hyper.fromString(amount.toString());
+        if (!isString(opts.price)) {
+            throw new TypeError('price argument must be of type String');
         }
-        let approx = best_r(opts.price);
+        let price = new BigNumber(opts.price);
+        let approx = price.toFraction();
         attributes.price = new xdr.Price({
-            n: approx[0],
-            d: approx[1]
+            n: parseInt(approx[0]),
+            d: parseInt(approx[1])
         });
         let createPassiveOfferOp = new xdr.CreatePassiveOfferOp(attributes);
 
@@ -438,31 +449,36 @@ export class Operation {
         }
 
         let attrs = operation.body().value();
+        let n, price;
         switch (operation.body().switch().name) {
             case "createAccount":
                 result.type = "createAccount";
                 result.destination = accountIdtoAddress(attrs.destination());
-                result.startingBalance = attrs.startingBalance().toString();
+                result.startingBalance = new BigNumber(attrs.startingBalance()).div(ONE).toString();
                 break;
             case "payment":
                 result.type = "payment";
                 result.destination = accountIdtoAddress(attrs.destination());
                 result.asset = Asset.fromOperation(attrs.asset());
-                result.amount = attrs.amount().toString();
+                result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
                 break;
             case "pathPayment":
                 result.type = "pathPayment";
                 result.sendAsset = Asset.fromOperation(attrs.sendAsset());
-                result.sendMax = attrs.sendMax().toString();
+                result.sendMax = new BigNumber(attrs.sendMax()).div(ONE).toString();
                 result.destination = accountIdtoAddress(attrs.destination());
                 result.destAsset = Asset.fromOperation(attrs.destAsset());
-                result.destAmount = attrs.destAmount().toString();
+                result.destAmount = new BigNumber(attrs.destAmount()).div(ONE).toString();
                 result.path = attrs.path();
                 break;
             case "changeTrust":
                 result.type = "changeTrust";
                 result.line = Asset.fromOperation(attrs.line());
-                result.limit = attrs.limit().toString();
+                let limit = new BigNumber(attrs.limit().toString());
+                if (limit.lessThan(MAX_INT)) {
+                    limit = limit.div(ONE);
+                }
+                result.limit = limit.toString();
                 break;
             case "allowTrust":
                 result.type = "allowTrust";
@@ -496,17 +512,20 @@ export class Operation {
                 result.type = "manageOffer";
                 result.selling = Asset.fromOperation(attrs.selling());
                 result.buying = Asset.fromOperation(attrs.buying());
-                result.amount = attrs.amount().toString();
-                result.price = attrs.price().n() / attrs.price().d();
+                result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
+                n = new BigNumber(attrs.price().n());
+                price = n.div(new BigNumber(attrs.price().d()));
+                result.price = price.toString();
                 result.offerId = attrs.offerId().toString();
                 break;
             case "createPassiveOffer":
                 result.type = "createPassiveOffer";
                 result.selling = Asset.fromOperation(attrs.selling());
                 result.buying = Asset.fromOperation(attrs.buying());
-                result.amount = attrs.amount().toString();
-                result.price = attrs.price().n() / attrs.price().d();
-
+                result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
+                n = new BigNumber(attrs.price().n());
+                price = n.div(new BigNumber(attrs.price().d()));
+                result.price = price.toString();
                 break;
             case "accountMerge":
                 result.type = "accountMerge";
