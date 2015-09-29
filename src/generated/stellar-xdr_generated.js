@@ -1,4 +1,4 @@
-// Automatically generated on 2015-09-17T13:42:29-07:00
+// Automatically generated on 2015-09-29T14:43:02-07:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -187,18 +187,22 @@ xdr.struct("Signer", [
 //   enum AccountFlags
 //   { // masks for each flag
 //   
-//       // if set, TrustLines are created with authorized set to "false"
-//       // requiring the issuer to set it for each TrustLine
+//       // Flags set on issuer accounts
+//       // TrustLines are created with authorized set to "false" requiring
+//       // the issuer to set it for each TrustLine
 //       AUTH_REQUIRED_FLAG = 0x1,
-//       // if set, the authorized flag in TrustLines can be cleared
+//       // If set, the authorized flag in TrustLines can be cleared
 //       // otherwise, authorization cannot be revoked
-//       AUTH_REVOCABLE_FLAG = 0x2
+//       AUTH_REVOCABLE_FLAG = 0x2,
+//       // Once set, causes all AUTH_* flags to be read-only
+//       AUTH_IMMUTABLE_FLAG = 0x4
 //   };
 //
 // ===========================================================================
 xdr.enum("AccountFlags", {
   authRequiredFlag: 1,
   authRevocableFlag: 2,
+  authImmutableFlag: 4,
 });
 
 // === xdr source ============================================================
@@ -482,13 +486,15 @@ xdr.struct("LedgerEntry", [
 //   enum EnvelopeType
 //   {
 //       ENVELOPE_TYPE_SCP = 1,
-//       ENVELOPE_TYPE_TX = 2
+//       ENVELOPE_TYPE_TX = 2,
+//       ENVELOPE_TYPE_AUTH = 3
 //   };
 //
 // ===========================================================================
 xdr.enum("EnvelopeType", {
   envelopeTypeScp: 1,
   envelopeTypeTx: 2,
+  envelopeTypeAuth: 3,
 });
 
 // === xdr source ============================================================
@@ -528,7 +534,8 @@ xdr.union("StellarValueExt", {
 //       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
 //       // unknown steps during consensus if needed.
 //       // see notes below on 'LedgerUpgrade' for more detail
-//       UpgradeType upgrades<4>;
+//       // max size is dictated by number of upgrade types (+ room for future)
+//       UpgradeType upgrades<6>;
 //   
 //       // reserved for future use
 //       union switch (int v)
@@ -543,7 +550,7 @@ xdr.union("StellarValueExt", {
 xdr.struct("StellarValue", [
   ["txSetHash", xdr.lookup("Hash")],
   ["closeTime", xdr.lookup("Uint64")],
-  ["upgrades", xdr.varArray(xdr.lookup("UpgradeType"), 4)],
+  ["upgrades", xdr.varArray(xdr.lookup("UpgradeType"), 6)],
   ["ext", xdr.lookup("StellarValueExt")],
 ]);
 
@@ -578,7 +585,8 @@ xdr.union("LedgerHeaderExt", {
 //   
 //       uint32 ledgerSeq; // sequence number of this ledger
 //   
-//       int64 totalCoins; // total number of stroops in existence
+//       int64 totalCoins; // total number of stroops in existence.
+//                         // 10,000,000 stroops in 1 XLM
 //   
 //       int64 feePool;       // fees burned since last inflation run
 //       uint32 inflationSeq; // inflation sequence number
@@ -587,6 +595,8 @@ xdr.union("LedgerHeaderExt", {
 //   
 //       uint32 baseFee;     // base fee per operation in stroops
 //       uint32 baseReserve; // account base reserve in stroops
+//   
+//       uint32 maxTxSetSize; // maximum size a transaction set can be
 //   
 //       Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
 //                         // in time without walking the chain back ledger by ledger
@@ -617,6 +627,7 @@ xdr.struct("LedgerHeader", [
   ["idPool", xdr.lookup("Uint64")],
   ["baseFee", xdr.lookup("Uint32")],
   ["baseReserve", xdr.lookup("Uint32")],
+  ["maxTxSetSize", xdr.lookup("Uint32")],
   ["skipList", xdr.array(xdr.lookup("Hash"), 4)],
   ["ext", xdr.lookup("LedgerHeaderExt")],
 ]);
@@ -626,13 +637,15 @@ xdr.struct("LedgerHeader", [
 //   enum LedgerUpgradeType
 //   {
 //       LEDGER_UPGRADE_VERSION = 1,
-//       LEDGER_UPGRADE_BASE_FEE = 2
+//       LEDGER_UPGRADE_BASE_FEE = 2,
+//       LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3
 //   };
 //
 // ===========================================================================
 xdr.enum("LedgerUpgradeType", {
   ledgerUpgradeVersion: 1,
   ledgerUpgradeBaseFee: 2,
+  ledgerUpgradeMaxTxSetSize: 3,
 });
 
 // === xdr source ============================================================
@@ -643,6 +656,8 @@ xdr.enum("LedgerUpgradeType", {
 //       uint32 newLedgerVersion; // update ledgerVersion
 //   case LEDGER_UPGRADE_BASE_FEE:
 //       uint32 newBaseFee; // update baseFee
+//   case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
+//       uint32 newMaxTxSetSize; // update maxTxSetSize
 //   };
 //
 // ===========================================================================
@@ -652,10 +667,12 @@ xdr.union("LedgerUpgrade", {
   switches: [
     ["ledgerUpgradeVersion", "newLedgerVersion"],
     ["ledgerUpgradeBaseFee", "newBaseFee"],
+    ["ledgerUpgradeMaxTxSetSize", "newMaxTxSetSize"],
   ],
   arms: {
     newLedgerVersion: xdr.lookup("Uint32"),
     newBaseFee: xdr.lookup("Uint32"),
+    newMaxTxSetSize: xdr.lookup("Uint32"),
   },
 });
 
@@ -1037,16 +1054,52 @@ xdr.union("TransactionMeta", {
 
 // === xdr source ============================================================
 //
+//   enum ErrorCode
+//   {
+//       ERR_MISC = 0, // Unspecific error
+//       ERR_DATA = 1, // Malformed data
+//       ERR_CONF = 2, // Misconfiguration error
+//       ERR_AUTH = 3, // Authentication failure
+//       ERR_LOAD = 4  // System overloaded
+//   };
+//
+// ===========================================================================
+xdr.enum("ErrorCode", {
+  errMisc: 0,
+  errDatum: 1,
+  errConf: 2,
+  errAuth: 3,
+  errLoad: 4,
+});
+
+// === xdr source ============================================================
+//
 //   struct Error
 //   {
-//       int code;
+//       ErrorCode code;
 //       string msg<100>;
 //   };
 //
 // ===========================================================================
 xdr.struct("Error", [
-  ["code", xdr.int()],
+  ["code", xdr.lookup("ErrorCode")],
   ["msg", xdr.string(100)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct AuthCert
+//   {
+//       Curve25519Public pubkey;
+//       uint64 expiration;
+//       Signature sig;
+//   };
+//
+// ===========================================================================
+xdr.struct("AuthCert", [
+  ["pubkey", xdr.lookup("Curve25519Public")],
+  ["expiration", xdr.lookup("Uint64")],
+  ["sig", xdr.lookup("Signature")],
 ]);
 
 // === xdr source ============================================================
@@ -1059,6 +1112,7 @@ xdr.struct("Error", [
 //       string versionStr<100>;
 //       int listeningPort;
 //       NodeID peerID;
+//       AuthCert cert;
 //       uint256 nonce;
 //   };
 //
@@ -1070,6 +1124,7 @@ xdr.struct("Hello", [
   ["versionStr", xdr.string(100)],
   ["listeningPort", xdr.int()],
   ["peerId", xdr.lookup("NodeId")],
+  ["cert", xdr.lookup("AuthCert")],
   ["nonce", xdr.lookup("Uint256")],
 ]);
 
@@ -1077,26 +1132,72 @@ xdr.struct("Hello", [
 //
 //   struct Auth
 //   {
-//       Signature signature;
+//       // Empty message, just to confirm
+//       // establishment of MAC keys.
+//       int unused;
 //   };
 //
 // ===========================================================================
 xdr.struct("Auth", [
-  ["signature", xdr.lookup("Signature")],
+  ["unused", xdr.int()],
 ]);
+
+// === xdr source ============================================================
+//
+//   enum IPAddrType
+//   {
+//       IPv4 = 0,
+//       IPv6 = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("IpAddrType", {
+  iPv4: 0,
+  iPv6: 1,
+});
+
+// === xdr source ============================================================
+//
+//   union switch (IPAddrType type)
+//       {
+//       case IPv4:
+//           opaque ipv4[4];
+//       case IPv6:
+//           opaque ipv6[16];
+//       }
+//
+// ===========================================================================
+xdr.union("PeerAddressIp", {
+  switchOn: xdr.lookup("IpAddrType"),
+  switchName: "type",
+  switches: [
+    ["iPv4", "ipv4"],
+    ["iPv6", "ipv6"],
+  ],
+  arms: {
+    ipv4: xdr.opaque(4),
+    ipv6: xdr.opaque(16),
+  },
+});
 
 // === xdr source ============================================================
 //
 //   struct PeerAddress
 //   {
-//       opaque ip[4];
+//       union switch (IPAddrType type)
+//       {
+//       case IPv4:
+//           opaque ipv4[4];
+//       case IPv6:
+//           opaque ipv6[16];
+//       } ip;
 //       uint32 port;
 //       uint32 numFailures;
 //   };
 //
 // ===========================================================================
 xdr.struct("PeerAddress", [
-  ["ip", xdr.opaque(4)],
+  ["ip", xdr.lookup("PeerAddressIp")],
   ["port", xdr.lookup("Uint32")],
   ["numFailures", xdr.lookup("Uint32")],
 ]);
@@ -1220,6 +1321,22 @@ xdr.union("StellarMessage", {
     envelope: xdr.lookup("ScpEnvelope"),
   },
 });
+
+// === xdr source ============================================================
+//
+//   struct AuthenticatedMessage
+//   {
+//      uint64 sequence;
+//      StellarMessage message;
+//      HmacSha256Mac mac;
+//   };
+//
+// ===========================================================================
+xdr.struct("AuthenticatedMessage", [
+  ["sequence", xdr.lookup("Uint64")],
+  ["message", xdr.lookup("StellarMessage")],
+  ["mac", xdr.lookup("HmacSha256Mac")],
+]);
 
 // === xdr source ============================================================
 //
@@ -1470,7 +1587,7 @@ xdr.struct("ScpQuorumSet", [
 //
 //   struct DecoratedSignature
 //   {
-//       SignatureHint hint;  // first 4 bytes of the public key, used as a hint
+//       SignatureHint hint;  // last 4 bytes of the public key, used as a hint
 //       Signature signature; // actual signature
 //   };
 //
@@ -2039,7 +2156,8 @@ xdr.union("CreateAccountResult", {
 //       PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
 //       PAYMENT_NO_TRUST = -6,       // destination missing a trust line for asset
 //       PAYMENT_NOT_AUTHORIZED = -7, // destination not authorized to hold asset
-//       PAYMENT_LINE_FULL = -8       // destination would go above their limit
+//       PAYMENT_LINE_FULL = -8,      // destination would go above their limit
+//       PAYMENT_NO_ISSUER = -9       // missing issuer on asset
 //   };
 //
 // ===========================================================================
@@ -2053,6 +2171,7 @@ xdr.enum("PaymentResultCode", {
   paymentNoTrust: -6,
   paymentNotAuthorized: -7,
   paymentLineFull: -8,
+  paymentNoIssuer: -9,
 });
 
 // === xdr source ============================================================
@@ -2093,9 +2212,10 @@ xdr.union("PaymentResult", {
 //       PATH_PAYMENT_NO_TRUST = -6,           // dest missing a trust line for asset
 //       PATH_PAYMENT_NOT_AUTHORIZED = -7,     // dest not authorized to hold asset
 //       PATH_PAYMENT_LINE_FULL = -8,          // dest would go above their limit
-//       PATH_PAYMENT_TOO_FEW_OFFERS = -9,     // not enough offers to satisfy path
-//       PATH_PAYMENT_OFFER_CROSS_SELF = -10,  // would cross one of its own offers
-//       PATH_PAYMENT_OVER_SENDMAX = -11       // could not satisfy sendmax
+//       PATH_PAYMENT_NO_ISSUER = -9,          // missing issuer on one asset
+//       PATH_PAYMENT_TOO_FEW_OFFERS = -10,    // not enough offers to satisfy path
+//       PATH_PAYMENT_OFFER_CROSS_SELF = -11,  // would cross one of its own offers
+//       PATH_PAYMENT_OVER_SENDMAX = -12       // could not satisfy sendmax
 //   };
 //
 // ===========================================================================
@@ -2109,9 +2229,10 @@ xdr.enum("PathPaymentResultCode", {
   pathPaymentNoTrust: -6,
   pathPaymentNotAuthorized: -7,
   pathPaymentLineFull: -8,
-  pathPaymentTooFewOffer: -9,
-  pathPaymentOfferCrossSelf: -10,
-  pathPaymentOverSendmax: -11,
+  pathPaymentNoIssuer: -9,
+  pathPaymentTooFewOffer: -10,
+  pathPaymentOfferCrossSelf: -11,
+  pathPaymentOverSendmax: -12,
 });
 
 // === xdr source ============================================================
@@ -2154,6 +2275,8 @@ xdr.struct("PathPaymentResultSuccess", [
 //           ClaimOfferAtom offers<>;
 //           SimplePaymentResult last;
 //       } success;
+//   case PATH_PAYMENT_NO_ISSUER:
+//       Asset noIssuer; // the asset that caused the error
 //   default:
 //       void;
 //   };
@@ -2164,9 +2287,11 @@ xdr.union("PathPaymentResult", {
   switchName: "code",
   switches: [
     ["pathPaymentSuccess", "success"],
+    ["pathPaymentNoIssuer", "noIssuer"],
   ],
   arms: {
     success: xdr.lookup("PathPaymentResultSuccess"),
+    noIssuer: xdr.lookup("Asset"),
   },
   defaultArm: xdr.void(),
 });
@@ -2184,14 +2309,16 @@ xdr.union("PathPaymentResult", {
 //       MANAGE_OFFER_BUY_NO_TRUST = -3,  // no trust line for what we're buying
 //       MANAGE_OFFER_SELL_NOT_AUTHORIZED = -4, // not authorized to sell
 //       MANAGE_OFFER_BUY_NOT_AUTHORIZED = -5,  // not authorized to buy
-//       MANAGE_OFFER_LINE_FULL = -6,   // can't receive more of what it's buying
-//       MANAGE_OFFER_UNDERFUNDED = -7, // doesn't hold what it's trying to sell
-//       MANAGE_OFFER_CROSS_SELF = -8,  // would cross an offer from the same user
+//       MANAGE_OFFER_LINE_FULL = -6,      // can't receive more of what it's buying
+//       MANAGE_OFFER_UNDERFUNDED = -7,    // doesn't hold what it's trying to sell
+//       MANAGE_OFFER_CROSS_SELF = -8,     // would cross an offer from the same user
+//       MANAGE_OFFER_SELL_NO_ISSUER = -9, // no issuer for what we're selling
+//       MANAGE_OFFER_BUY_NO_ISSUER = -10, // no issuer for what we're buying
 //   
 //       // update errors
-//       MANAGE_OFFER_NOT_FOUND = -9, // offerID does not match an existing offer
+//       MANAGE_OFFER_NOT_FOUND = -11, // offerID does not match an existing offer
 //   
-//       MANAGE_OFFER_LOW_RESERVE = -10 // not enough funds to create a new Offer
+//       MANAGE_OFFER_LOW_RESERVE = -12 // not enough funds to create a new Offer
 //   };
 //
 // ===========================================================================
@@ -2205,8 +2332,10 @@ xdr.enum("ManageOfferResultCode", {
   manageOfferLineFull: -6,
   manageOfferUnderfunded: -7,
   manageOfferCrossSelf: -8,
-  manageOfferNotFound: -9,
-  manageOfferLowReserve: -10,
+  manageOfferSellNoIssuer: -9,
+  manageOfferBuyNoIssuer: -10,
+  manageOfferNotFound: -11,
+  manageOfferLowReserve: -12,
 });
 
 // === xdr source ============================================================
@@ -2361,6 +2490,7 @@ xdr.union("SetOptionsResult", {
 //       CHANGE_TRUST_MALFORMED = -1,     // bad input
 //       CHANGE_TRUST_NO_ISSUER = -2,     // could not find issuer
 //       CHANGE_TRUST_INVALID_LIMIT = -3, // cannot drop limit below balance
+//                                        // cannot create with a limit of 0
 //       CHANGE_TRUST_LOW_RESERVE = -4 // not enough funds to create a new trust line
 //   };
 //
@@ -2447,10 +2577,10 @@ xdr.union("AllowTrustResult", {
 //       // codes considered as "success" for the operation
 //       ACCOUNT_MERGE_SUCCESS = 0,
 //       // codes considered as "failure" for the operation
-//       ACCOUNT_MERGE_MALFORMED = -1,  // can't merge onto itself
-//       ACCOUNT_MERGE_NO_ACCOUNT = -2, // destination does not exist
-//       ACCOUNT_MERGE_HAS_CREDIT = -3, // account has active trust lines
-//       ACCOUNT_MERGE_CREDIT_HELD = -4 // an issuer cannot be merged if used
+//       ACCOUNT_MERGE_MALFORMED = -1,      // can't merge onto itself
+//       ACCOUNT_MERGE_NO_ACCOUNT = -2,     // destination does not exist
+//       ACCOUNT_MERGE_IMMUTABLE_SET = -3,  // source account has AUTH_IMMUTABLE set
+//       ACCOUNT_MERGE_HAS_SUB_ENTRIES = -4 // account has trust lines/offers
 //   };
 //
 // ===========================================================================
@@ -2458,8 +2588,8 @@ xdr.enum("AccountMergeResultCode", {
   accountMergeSuccess: 0,
   accountMergeMalformed: -1,
   accountMergeNoAccount: -2,
-  accountMergeHasCredit: -3,
-  accountMergeCreditHeld: -4,
+  accountMergeImmutableSet: -3,
+  accountMergeHasSubEntry: -4,
 });
 
 // === xdr source ============================================================
@@ -2864,6 +2994,54 @@ xdr.typedef("SignatureHint", xdr.opaque(4));
 //
 // ===========================================================================
 xdr.typedef("NodeId", xdr.lookup("PublicKey"));
+
+// === xdr source ============================================================
+//
+//   struct Curve25519Secret
+//   {
+//           opaque key[32];
+//   };
+//
+// ===========================================================================
+xdr.struct("Curve25519Secret", [
+  ["key", xdr.opaque(32)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct Curve25519Public
+//   {
+//           opaque key[32];
+//   };
+//
+// ===========================================================================
+xdr.struct("Curve25519Public", [
+  ["key", xdr.opaque(32)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct HmacSha256Key
+//   {
+//           opaque key[32];
+//   };
+//
+// ===========================================================================
+xdr.struct("HmacSha256Key", [
+  ["key", xdr.opaque(32)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct HmacSha256Mac
+//   {
+//           opaque mac[32];
+//   };
+//
+// ===========================================================================
+xdr.struct("HmacSha256Mac", [
+  ["mac", xdr.opaque(32)],
+]);
 
 });
 export default types;
