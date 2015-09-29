@@ -32,7 +32,7 @@ var transaction = new StellarBase.TransactionBuilder(account)
         .addOperation(StellarBase.Operation.payment({
                 destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
                 asset: StellarBase.Asset.native(),
-                amount: "20000000"
+                amount: "100.50"
             }))
         // add a set options operation to the transaction
         .addOperation(StellarBase.Operation.setOptions({
@@ -75,7 +75,7 @@ var transaction = new StellarBase.TransactionBuilder(account, {memo:memo})
         .addOperation(StellarBase.Operation.payment({
                 destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
                 asset: StellarBase.Asset.native(),
-                amount: "20000000"
+                amount: "2000"
             }))
         .build();
 ```
@@ -128,7 +128,7 @@ var transaction = new StellarBase.TransactionBuilder(account)
         .addOperation(StellarBase.Operation.payment({
                 destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
                 asset: StellarBase.Asset.native(),
-                amount: "20000000"
+                amount: "2000"
             }))
         .build();
 

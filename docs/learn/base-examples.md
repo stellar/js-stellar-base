@@ -13,7 +13,7 @@ var source = new Account('GABJLI6IVBKJ7HIC5NN7HHDCIEW3CMWQ2DWYHREQQUFWSWZ2CDAMZZ
 var transaction = new TransactionBuilder(source)
   .addOperation(Operation.payment({
       destination: 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      amount: 20000000,
+      amount: "1000",
       currency: Currency.native()
   })
   .addSigner(keypair)
@@ -85,7 +85,7 @@ var transaction = new TransactionBuilder(account)
     .addOperation(Operation.payment({
         destination: "GBTVUCDT5CNSXIHJTDHYSZG3YJFXBAJ6FM4CKS5GKSAWJOLZW6XX7NVC",
         currency: Asset.native(),
-        amount: "20000000"
+        amount: "2000"
     }))
     .build();
 // now we need to sign the transaction with the source (root) account
