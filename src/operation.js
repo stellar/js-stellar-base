@@ -495,7 +495,7 @@ export class Operation {
                 result.type = "createPassiveOffer";
                 result.selling = Asset.fromOperation(attrs.selling());
                 result.buying = Asset.fromOperation(attrs.buying());
-                result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
+                result.amount = this._fromXDRAmount(attrs.amount());
                 result.price = this._fromXDRPrice(attrs.price());
                 break;
             case "accountMerge":
