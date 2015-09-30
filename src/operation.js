@@ -39,8 +39,7 @@ export class Operation {
         }
         let attributes = {};
         attributes.destination     = Keypair.fromAddress(opts.destination).accountId();
-        let startingBalance        = this._toStellarAmount(opts.startingBalance);
-        attributes.startingBalance = Hyper.fromString(startingBalance.toString());
+        attributes.startingBalance = this._toXDRAmount(opts.startingBalance);
         let createAccount          = new xdr.CreateAccountOp(attributes);
 
         let opAttributes = {};
@@ -76,8 +75,7 @@ export class Operation {
         let attributes = {};
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.asset        = opts.asset.toXdrObject();
-        let amount              = this._toStellarAmount(opts.amount);
-        attributes.amount       = Hyper.fromString(amount.toString());
+        attributes.amount        = this._toXDRAmount(opts.amount);
         let payment             = new xdr.PaymentOp(attributes);
 
         let opAttributes = {};
@@ -126,12 +124,10 @@ export class Operation {
 
         let attributes = {};
         attributes.sendAsset    = opts.sendAsset.toXdrObject();
-        let sendMax             = this._toStellarAmount(opts.sendMax);
-        attributes.sendMax      = Hyper.fromString(sendMax.toString());
+        attributes.sendMax      = this._toXDRAmount(opts.sendMax);
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.destAsset    = opts.destAsset.toXdrObject();
-        let destAmount          = this._toStellarAmount(opts.destAmount);
-        attributes.destAmount   = Hyper.fromString(destAmount.toString());
+        attributes.destAmount   = this._toXDRAmount(opts.destAmount);
         attributes.path         = opts.path ? opts.path : [];
         let payment             = new xdr.PathPaymentOp(attributes);
 
@@ -159,8 +155,13 @@ export class Operation {
         if (!isUndefined(opts.limit) && !isString(opts.limit)) {
             throw new TypeError('limit argument must be of type String');
         }
-        let limit           = opts.limit ? this._toStellarAmount(opts.limit) : new BigNumber(MAX_INT64);
-        attributes.limit    = Hyper.fromString(limit.toString());
+
+        if (opts.limit) {
+            attributes.limit = this._toXDRAmount(opts.limit);
+        } else {
+            attributes.limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
+        }
+
         if (opts.source) {
             attributes.source   = opts.source ? opts.source.masterKeypair : null;
         }
@@ -312,12 +313,11 @@ export class Operation {
         if (!isString(opts.amount)) {
             throw new TypeError('amount argument must be of type String');
         }
-        let amount = this._toStellarAmount(opts.amount);
-        attributes.amount = Hyper.fromString(amount.toString());
+        attributes.amount = this._toXDRAmount(opts.amount);
         if (isUndefined(opts.price)) {
             throw new TypeError('price argument is required');
         }
-        attributes.price = this._getXDRPrice(opts.price);
+        attributes.price = this._toXDRPrice(opts.price);
 
         if (!isUndefined(opts.offerId)) {
             if (!isString(opts.offerId)) {
@@ -356,12 +356,11 @@ export class Operation {
         if (!isString(opts.amount)) {
             throw new TypeError('amount argument must be of type String');
         }
-        let amount = this._toStellarAmount(opts.amount);
-        attributes.amount = Hyper.fromString(amount.toString());
+        attributes.amount = this._toXDRAmount(opts.amount);
         if (isUndefined(opts.price)) {
             throw new TypeError('price argument is required');
         }
-        attributes.price = this._getXDRPrice(opts.price);
+        attributes.price = this._toXDRPrice(opts.price);
         let createPassiveOfferOp = new xdr.CreatePassiveOfferOp(attributes);
 
         let opAttributes = {};
@@ -430,33 +429,31 @@ export class Operation {
         }
 
         let attrs = operation.body().value();
-        let n, price;
         switch (operation.body().switch().name) {
             case "createAccount":
                 result.type = "createAccount";
                 result.destination = accountIdtoAddress(attrs.destination());
-                result.startingBalance = new BigNumber(attrs.startingBalance()).div(ONE).toString();
+                result.startingBalance = this._fromXDRAmount(attrs.startingBalance());
                 break;
             case "payment":
                 result.type = "payment";
                 result.destination = accountIdtoAddress(attrs.destination());
                 result.asset = Asset.fromOperation(attrs.asset());
-                result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
+                result.amount =this._fromXDRAmount(attrs.amount());
                 break;
             case "pathPayment":
                 result.type = "pathPayment";
                 result.sendAsset = Asset.fromOperation(attrs.sendAsset());
-                result.sendMax = new BigNumber(attrs.sendMax()).div(ONE).toString();
+                result.sendMax = this._fromXDRAmount(attrs.sendMax());
                 result.destination = accountIdtoAddress(attrs.destination());
                 result.destAsset = Asset.fromOperation(attrs.destAsset());
-                result.destAmount = new BigNumber(attrs.destAmount()).div(ONE).toString();
+                result.destAmount = this._fromXDRAmount(attrs.destAmount());
                 result.path = attrs.path();
                 break;
             case "changeTrust":
                 result.type = "changeTrust";
                 result.line = Asset.fromOperation(attrs.line());
-                let limit = new BigNumber(attrs.limit().toString()).div(ONE);
-                result.limit = limit.toString();
+                result.limit = this._fromXDRAmount(attrs.limit());
                 break;
             case "allowTrust":
                 result.type = "allowTrust";
@@ -490,10 +487,8 @@ export class Operation {
                 result.type = "manageOffer";
                 result.selling = Asset.fromOperation(attrs.selling());
                 result.buying = Asset.fromOperation(attrs.buying());
-                result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
-                n = new BigNumber(attrs.price().n());
-                price = n.div(new BigNumber(attrs.price().d()));
-                result.price = price.toString();
+                result.amount = this._fromXDRAmount(attrs.amount());
+                result.price = this._fromXDRPrice(attrs.price());
                 result.offerId = attrs.offerId().toString();
                 break;
             case "createPassiveOffer":
@@ -501,9 +496,7 @@ export class Operation {
                 result.selling = Asset.fromOperation(attrs.selling());
                 result.buying = Asset.fromOperation(attrs.buying());
                 result.amount = new BigNumber(attrs.amount()).div(ONE).toString();
-                n = new BigNumber(attrs.price().n());
-                price = n.div(new BigNumber(attrs.price().d()));
-                result.price = price.toString();
+                result.price = this._fromXDRPrice(attrs.price());
                 break;
             case "accountMerge":
                 result.type = "accountMerge";
@@ -518,11 +511,21 @@ export class Operation {
         return result;
     }
 
-    static _toStellarAmount(value) {
-        return new BigNumber(value).mul(ONE);
+    static _toXDRAmount(value) {
+        let amount = new BigNumber(value).mul(ONE);
+        return Hyper.fromString(amount.toString());
     }
 
-    static _getXDRPrice(price) {
+    static _fromXDRAmount(value) {
+        return new BigNumber(value).div(ONE).toString();
+    }
+
+    static _fromXDRPrice(price) {
+        let n = new BigNumber(price.n());
+        return n.div(new BigNumber(price.d())).toString();
+    }
+
+    static _toXDRPrice(price) {
         price = new BigNumber(price);
         if (price.lte(0)) {
             throw new Error('price must be positive');
