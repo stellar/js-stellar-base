@@ -1,4 +1,4 @@
-
+import {Network} from "./network";
 import {sign, verify} from "./signing";
 import * as base58 from "./base58";
 import * as strkey from "./strkey";
@@ -33,7 +33,7 @@ export class Keypair {
   }
 
   static master() {
-    return this.fromRawSeed("allmylifemyhearthasbeensearching");
+    return this.fromRawSeed(Network.current().networkId());
   }
 
   static fromAddress(address) {
