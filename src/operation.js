@@ -22,7 +22,7 @@ export class Operation {
     * Create and fund a non existent account.
     * @param {object} opts
     * @param {string} opts.destination - Destination address to create an account for.
-    * @param {string} opts.startingBalance - Amount the account should be funded. Must be greater
+    * @param {string} opts.startingBalance - Amount in XLM the account should be funded for. Must be greater
     *                                   than the reserve balance amount.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.CreateAccountOp}
@@ -54,7 +54,7 @@ export class Operation {
     * @param {object} opts
     * @param {string} opts.destination - The destination address.
     * @param {Asset} opts.asset - The asset to send.
-    * @param {string} opts.amount - The amount to send.
+    * @param {string} opts.amount - The amount in XLM to send.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PaymentOp}
     */
