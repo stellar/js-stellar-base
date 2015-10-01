@@ -27,6 +27,8 @@ The returned transaction will contain the sequence number of the source account.
 
 
 ```js
+// StellarBase.Network.usePublicNetwork(); if this transaction is for the public network
+
 var transaction = new StellarBase.TransactionBuilder(account)
         // add a payment operation to the transaction
         .addOperation(StellarBase.Operation.payment({
