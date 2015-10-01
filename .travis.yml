@@ -20,14 +20,10 @@ script:
   if [ "${SAUCE}" = "true" ]; then
     gulp test:sauce
   else
-    gulp test
+    gulp test:node
   fi
 before_install:
 - npm install -g npm@'>=2.13.5'
-- |
-  mkdir -p .npm
-  export DISPLAY=:99.0
-  sh -e /etc/init.d/xvfb start
 notifications:
   slack:
     secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
@@ -53,6 +49,7 @@ deploy:
       tags: true
       repo: stellar/js-stellar-base
       node: "0.12" # Deploy only once, no matter which node
+      condition: $SAUCE = false
   - provider: script
     script: ./bower_publish.sh
     skip_cleanup: true
@@ -60,3 +57,4 @@ deploy:
       tags: true
       repo: stellar/js-stellar-base
       node: "0.12" # Deploy only once, no matter which node
+      condition: $SAUCE = false
