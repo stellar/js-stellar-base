@@ -54,10 +54,11 @@ describe('Keypair.fromSeed', function() {
     ];
 
 
-    for (let k of keys) {
-      let keyPair = StellarBase.Keypair.fromBase58Seed(k.oldSeed);
-      expect(keyPair.seed()).to.equal(k.newSeed);
-      expect(keyPair.address()).to.equal(k.newAddress);
+    for (let i in keys) {
+      let key = keys[i];
+      let keyPair = StellarBase.Keypair.fromBase58Seed(key.oldSeed);
+      expect(keyPair.seed()).to.equal(key.newSeed);
+      expect(keyPair.address()).to.equal(key.newAddress);
     }
   });
 
