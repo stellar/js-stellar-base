@@ -86,7 +86,11 @@ describe('Operation', function() {
             var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var destAsset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             var destAmount = '3.1415';
-            let op = StellarBase.Operation.pathPayment({sendAsset, sendMax, destination, destAsset, destAmount});
+            var path = [
+                new StellarBase.Asset('USD', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'),
+                new StellarBase.Asset('EUR', 'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL')
+            ];
+            let op = StellarBase.Operation.pathPayment({sendAsset, sendMax, destination, destAsset, destAmount, path});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
@@ -98,6 +102,10 @@ describe('Operation', function() {
             expect(obj.destAsset.equals(destAsset)).to.be.true;
             expect(operation.body().value().destAmount().toString()).to.be.equal('31415000');
             expect(obj.destAmount).to.be.equal(destAmount);
+            expect(obj.path[0].getCode()).to.be.equal('USD');
+            expect(obj.path[0].getIssuer()).to.be.equal('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB');
+            expect(obj.path[1].getCode()).to.be.equal('EUR');
+            expect(obj.path[1].getIssuer()).to.be.equal('GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL');
         });
 
         it("fails to create path payment operation with an invalid destination address", function () {

@@ -128,7 +128,13 @@ export class Operation {
         attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
         attributes.destAsset    = opts.destAsset.toXdrObject();
         attributes.destAmount   = this._toXDRAmount(opts.destAmount);
-        attributes.path         = opts.path ? opts.path : [];
+
+        let path        = opts.path ? opts.path : [];
+        attributes.path = [];
+        for (let asset of path) {
+            attributes.path.push(asset.toXdrObject());
+        }
+
         let payment             = new xdr.PathPaymentOp(attributes);
 
         let opAttributes = {};
@@ -448,7 +454,11 @@ export class Operation {
                 result.destination = accountIdtoAddress(attrs.destination());
                 result.destAsset = Asset.fromOperation(attrs.destAsset());
                 result.destAmount = this._fromXDRAmount(attrs.destAmount());
-                result.path = attrs.path();
+                let path = attrs.path();
+                result.path = [];
+                for (let asset of path) {
+                    result.path.push(Asset.fromOperation(asset));
+                }
                 break;
             case "changeTrust":
                 result.type = "changeTrust";

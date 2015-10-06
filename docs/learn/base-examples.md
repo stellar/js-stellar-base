@@ -20,6 +20,33 @@ var transaction = new TransactionBuilder(source)
   .build();
 ```
 
+## Creating a path payment
+
+In the example below we're sending 1000 XLM (at max) from `GABJLI6IVBKJ7HIC5NN7HHDCIEW3CMWQ2DWYHREQQUFWSWZ2CDAMZZX4` to
+`GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB`. Destination Asset will be `GBP` issued by
+`GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB`. Assets will be exchanged using the following path:
+
+* `USD` issued by `GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB`,
+* `EUR` issued by `GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL`.
+
+```js
+var source = new Account('GABJLI6IVBKJ7HIC5NN7HHDCIEW3CMWQ2DWYHREQQUFWSWZ2CDAMZZX4', 46316927324160);
+var transaction = new TransactionBuilder(source)
+  .addOperation(Operation.pathPayment({
+      sendAsset: Asset.native(),
+      sendMax: "1000",
+      destination: 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      destAsset: new Asset('GBP', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'),
+      destAmount: "5.50",
+      path: [
+        new Asset('USD', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'),
+        new Asset('EUR', 'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL')
+      ]
+  }))
+  .addSigner(keypair)
+  .build();
+```
+
 ## Creating a multi-signature account
 
 Multi-signature accounts can be used to require that certain operations require multiple keypairs sign it before it's valid.
