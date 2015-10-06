@@ -131,8 +131,8 @@ export class Operation {
 
         let path        = opts.path ? opts.path : [];
         attributes.path = [];
-        for (let asset of path) {
-            attributes.path.push(asset.toXdrObject());
+        for (let i in path) {
+            attributes.path.push(path[i].toXdrObject());
         }
 
         let payment             = new xdr.PathPaymentOp(attributes);
@@ -456,8 +456,8 @@ export class Operation {
                 result.destAmount = this._fromXDRAmount(attrs.destAmount());
                 let path = attrs.path();
                 result.path = [];
-                for (let asset of path) {
-                    result.path.push(Asset.fromOperation(asset));
+                for (let i in path) {
+                    result.path.push(Asset.fromOperation(path[i]));
                 }
                 break;
             case "changeTrust":
