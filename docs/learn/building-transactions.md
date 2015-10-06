@@ -111,14 +111,14 @@ You add signatures to a transaction with the `Transaction.sign()` function. You 
 If `Keypair` object does not contain private key it can't be used to sign transactions. The most convenient method of creating new keypair is by passing the account's secret seed:
 
 ```js
-let keypair = Keypair.fromSeed('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
-let address = keypair.address(); // GDHMW6QZOL73SHKG2JA3YHXFDHM46SS5ZRWEYF5BCYHX2C5TVO6KZBYL
-let canSign = keypair.canSign(); // true
+var keypair = Keypair.fromSeed('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
+var address = keypair.address(); // GDHMW6QZOL73SHKG2JA3YHXFDHM46SS5ZRWEYF5BCYHX2C5TVO6KZBYL
+var canSign = keypair.canSign(); // true
 ```
 
 You can also create a randomly generated keypair:
 ```js
-let keypair = Keypair.random();
+var keypair = Keypair.random();
 ```
 
 
