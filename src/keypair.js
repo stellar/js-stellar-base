@@ -23,6 +23,12 @@ export class Keypair {
     return this.fromRawSeed(rawSeed);
   }
 
+  /**
+   * Create Keypair object from secret seed raw bytes
+   *
+   * @param rawSeed Array of bytes of secret seed
+   * @returns {Keypair}
+   */
   static fromRawSeed(rawSeed) {
     rawSeed = new Buffer(rawSeed);
     let rawSeedU8 = new Uint8Array(rawSeed);

@@ -116,6 +116,14 @@ var address = keypair.address(); // GDHMW6QZOL73SHKG2JA3YHXFDHM46SS5ZRWEYF5BCYHX
 var canSign = keypair.canSign(); // true
 ```
 
+You can create `Keypair` object from secret seed raw bytes:
+
+```js
+var keypair = Keypair.fromRawSeed([0xdc, 0x9c, 0xbf, 0xb5, 0xd7, 0x12, 0x83, 0x6a, 0xbf, 0x7d, 0x5d, 0xd8, 0xc4, 0xc4, 0x3e, 0x9d, 0xc7, 0x81, 0x85, 0xf1, 0x4b, 0x12, 0x0e, 0x9b, 0x59, 0x5d, 0x62, 0x65, 0x52, 0xa8, 0xcb, 0xcc]);
+var address = keypair.address(); // GADMPH2LB7VDK4UHNGKMJIJBXC5WTWTQMXYWSPVWPMNVVR4MGWLI2IXN
+var canSign = keypair.canSign(); // true
+```
+
 You can also create a randomly generated keypair:
 ```js
 var keypair = Keypair.random();
