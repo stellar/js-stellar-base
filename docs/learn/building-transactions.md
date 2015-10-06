@@ -34,7 +34,7 @@ var transaction = new StellarBase.TransactionBuilder(account)
         .addOperation(StellarBase.Operation.payment({
                 destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
                 asset: StellarBase.Asset.native(),
-                amount: "100.50"
+                amount: "100.50"  // 100.50 XLM
             }))
         // add a set options operation to the transaction
         .addOperation(StellarBase.Operation.setOptions({
@@ -130,7 +130,7 @@ var transaction = new StellarBase.TransactionBuilder(account)
         .addOperation(StellarBase.Operation.payment({
                 destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
                 asset: StellarBase.Asset.native(),
-                amount: "2000"
+                amount: "2000"  // 2000 XLM
             }))
         .build();
 

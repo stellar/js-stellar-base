@@ -94,7 +94,7 @@ export class Operation {
     * @param {string} opts.sendMax - The maximum amount of sendAsset to send.
     * @param {string} opts.destination - The destination account to send to.
     * @param {Asset} opts.destAsset - The asset the destination will receive.
-    * @param {string} otps.destAmount - The amount the destination receives.
+    * @param {string} opts.destAmount - The amount the destination receives.
     * @param {array} [opts.path] - An array of Asset objects to use as the path.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PathPaymentOp}

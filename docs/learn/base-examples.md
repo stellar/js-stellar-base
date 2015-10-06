@@ -13,8 +13,8 @@ var source = new Account('GABJLI6IVBKJ7HIC5NN7HHDCIEW3CMWQ2DWYHREQQUFWSWZ2CDAMZZ
 var transaction = new TransactionBuilder(source)
   .addOperation(Operation.payment({
       destination: 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      amount: "1000",
-      currency: Currency.native()
+      amount: "1000", // 1000 XLM
+      asset: Asset.native()
   })
   .addSigner(keypair)
   .build();
@@ -64,12 +64,10 @@ var rootKeypair = Keypair.fromSeed("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQX
 var account = new Account(rootKeypair.address(), 46316927324160);
 var transaction = new TransactionBuilder(account)
   .addOperation(Operation.setOptions({
-    thresholds: {
-      weight: 1, // master key weight
-      low: 1,
-      medium: 2, // a payment is medium threshold
-      high: 2 // make sure to have enough weight to add up to the high threshold!
-    }
+    masterWeight: 1, // master key weight
+    lowThreshold: 1,
+    medThreshold: 2, // a payment is medium threshold
+    highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
   }))
   .addSigner(rootKeypair)
   .build();
@@ -84,8 +82,8 @@ var account = new Account(rootKeypair.address(), 46316927324160);
 var transaction = new TransactionBuilder(account)
     .addOperation(Operation.payment({
         destination: "GBTVUCDT5CNSXIHJTDHYSZG3YJFXBAJ6FM4CKS5GKSAWJOLZW6XX7NVC",
-        currency: Asset.native(),
-        amount: "2000"
+        asset: Asset.native(),
+        amount: "2000" // 2000 XLM
     }))
     .build();
 // now we need to sign the transaction with the source (root) account
