@@ -5,7 +5,7 @@ title: Building Transactions
 [Transactions](https://stellar.org/developers/learn/concepts/transactions.html) are the commands that modify the state of the ledger.
 They include sending payments, creating offers, making account configuration changes, etc.
 
-Every transactions has a source [account](https://stellar.org/developers/learn/concepts/accounts.html). This is the account
+Every transaction has a source [account](https://stellar.org/developers/learn/concepts/accounts.html). This is the account
 that pays the [fee](https://stellar.org/developers/learn/concepts/fees.html) and uses up a sequence number for the transaction.
 
 Transactions are made up of one or more [operations](https://stellar.org/developers/learn/concepts/operations.html). Each operation also has a source account, which defaults to the transaction's source account.
