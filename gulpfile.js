@@ -1,6 +1,7 @@
 'use strict';
 
 var gulp        = require('gulp');
+var isparta     = require('isparta');
 var plugins     = require('gulp-load-plugins')();
 var runSequence = require('run-sequence');
 var webpack     = require("webpack");
@@ -69,11 +70,20 @@ gulp.task('build:browser', ['lint:src'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('test:node', ['build:node'], function() {
+gulp.task('test:init-istanbul', ['clean-coverage'], function () {
+  return gulp.src(['src/**/*.js'])
+    .pipe(plugins.istanbul({
+      instrumenter: isparta.Instrumenter
+    }))
+    .pipe(plugins.istanbul.hookRequire());
+});
+
+gulp.task('test:node', ['build:node', 'test:init-istanbul'], function() {
   return gulp.src(["test/test-helper.js", "test/unit/**/*.js"])
     .pipe(plugins.mocha({
       reporter: ['dot']
-    }));
+    }))
+    .pipe(plugins.istanbul.writeReports());
 });
 
 gulp.task('test:browser', ["build:browser"], function (done) {
@@ -101,7 +111,12 @@ gulp.task('watch', ['build'], function() {
   gulp.watch('lib/**/*', ['build']);
 });
 
-gulp.task('submit-coverage', function(cb) {
+gulp.task('clean-coverage', function() {
+  return gulp.src(['coverage'], { read: false })
+    .pipe(plugins.rimraf());
+});
+
+gulp.task('submit-coverage', function() {
   return gulp
       .src("./coverage/**/lcov.info")
       .pipe(plugins.coveralls());

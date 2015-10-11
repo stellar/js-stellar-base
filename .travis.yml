@@ -12,6 +12,8 @@ matrix:
       env: SAUCE=false
     - node_js: "0.12"
       env: SAUCE=true
+before_install:
+- npm install -g npm@'>=2.13.5'
 script:
 - |
   echo "machine github.com login stellar-jenkins password $GITHUB_TOKEN" >~/.netrc
@@ -20,10 +22,15 @@ script:
   if [ "${SAUCE}" = "true" ]; then
     gulp test:sauce
   else
-    gulp test:node
+    # Ugly but it's the only way to make istanbul generate coverage report
+    babel-node ./node_modules/gulp/bin/gulp.js test:node
   fi
-before_install:
-- npm install -g npm@'>=2.13.5'
+after_success:
+  - |
+  # Send report to coveralls but only once
+  if [ "${SAUCE}" = "false" ] && [ "${TRAVIS_NODE_VERSION}" = "0.12" ] && [ "${TRAVIS_BRANCH}" = "master" ] ; then
+    gulp submit-coverage
+  else
 notifications:
   slack:
     secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
