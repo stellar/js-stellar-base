@@ -26,11 +26,11 @@ script:
     babel-node ./node_modules/gulp/bin/gulp.js test:node
   fi
 after_success:
-  - |
+- |
   # Send report to coveralls but only once
-  if [ "${SAUCE}" = "false" ] && [ "${TRAVIS_NODE_VERSION}" = "0.12" ] && [ "${TRAVIS_BRANCH}" = "master" ] ; then
+  if [ "${SAUCE}" = "false" ] && [ "${TRAVIS_NODE_VERSION}" = "0.12" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
     gulp submit-coverage
-  else
+  fi
 notifications:
   slack:
     secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
