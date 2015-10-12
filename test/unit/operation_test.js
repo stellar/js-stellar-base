@@ -535,4 +535,42 @@ describe('Operation', function() {
             expect(obj.type).to.be.equal("inflation");
         });
     });
+
+    describe(".isValidAmount()", function () {
+        it("returns true for valid amounts", function () {
+            let amounts = [
+              "10",
+              "0.10"
+            ];
+
+            for (var i in amounts) {
+                expect(StellarBase.Operation.isValidAmount(amounts[i])).to.be.true;
+            }
+        });
+
+        it("returns false for invalid amounts", function () {
+            let amounts = [
+                100, // integer
+                100.50, // float
+                "", // empty string
+                "test", // string not representing a number
+                "0",
+                "-10",
+                "-10.5",
+                "Infinity",
+                Infinity,
+                "Nan",
+                NaN
+            ];
+
+            for (var i in amounts) {
+                expect(StellarBase.Operation.isValidAmount(amounts[i])).to.be.false;
+            }
+        });
+
+        it("allows 0 only if allowZero argument is set to true", function () {
+            expect(StellarBase.Operation.isValidAmount("0")).to.be.false;
+            expect(StellarBase.Operation.isValidAmount("0", true)).to.be.true;
+        });
+    });
 });

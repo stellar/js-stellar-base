@@ -31,11 +31,8 @@ export class Operation {
         if (!Account.isValidAddress(opts.destination)) {
             throw new Error("destination is invalid");
         }
-        if (!isString(opts.startingBalance)) {
-            throw new TypeError('startingBalance argument must be of type String');
-        }
-        if (isEmpty(opts.startingBalance)) {
-            throw new TypeError('startingBalance argument must not be empty');
+        if (!this.isValidAmount(opts.startingBalance)) {
+            throw new TypeError('startingBalance argument must be of type String and represent a positive number');
         }
         let attributes = {};
         attributes.destination     = Keypair.fromAddress(opts.destination).accountId();
@@ -65,11 +62,8 @@ export class Operation {
         if (!opts.asset) {
             throw new Error("Must provide an asset for a payment operation");
         }
-        if (!isString(opts.amount)) {
-            throw new TypeError('amount argument must be of type String');
-        }
-        if (isEmpty(opts.amount)) {
-            throw new TypeError('amount argument must not be empty');
+        if (!this.isValidAmount(opts.amount)) {
+            throw new TypeError('amount argument must be of type String and represent a positive number');
         }
 
         let attributes = {};
@@ -103,11 +97,8 @@ export class Operation {
         if (!opts.sendAsset) {
             throw new Error("Must specify a send asset");
         }
-        if (!isString(opts.sendMax)) {
-            throw new TypeError('sendMax argument must be of type String');
-        }
-        if (isEmpty(opts.sendMax)) {
-            throw new TypeError('sendMax argument must not be empty');
+        if (!this.isValidAmount(opts.sendMax)) {
+            throw new TypeError('sendMax argument must be of type String and represent a positive number');
         }
         if (!Account.isValidAddress(opts.destination)) {
             throw new Error("destination is invalid");
@@ -115,11 +106,8 @@ export class Operation {
         if (!opts.destAsset) {
             throw new Error("Must provide a destAsset for a payment operation");
         }
-        if (!isString(opts.destAmount)) {
-            throw new TypeError('destAmount argument must be of type String');
-        }
-        if (isEmpty(opts.destAmount)) {
-            throw new TypeError('destAmount argument must not be empty');
+        if (!this.isValidAmount(opts.destAmount)) {
+            throw new TypeError('destAmount argument must be of type String and represent a positive number');
         }
 
         let attributes = {};
@@ -158,8 +146,8 @@ export class Operation {
     static changeTrust(opts) {
         let attributes      = {};
         attributes.line     = opts.asset.toXdrObject();
-        if (!isUndefined(opts.limit) && !isString(opts.limit)) {
-            throw new TypeError('limit argument must be of type String');
+        if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
+            throw new TypeError('limit argument must be of type String and represent a number');
         }
 
         if (opts.limit) {
@@ -316,8 +304,8 @@ export class Operation {
         let attributes = {};
         attributes.selling = opts.selling.toXdrObject();
         attributes.buying = opts.buying.toXdrObject();
-        if (!isString(opts.amount)) {
-            throw new TypeError('amount argument must be of type String');
+        if (!this.isValidAmount(opts.amount)) {
+            throw new TypeError('amount argument must be of type String and represent a positive number');
         }
         attributes.amount = this._toXDRAmount(opts.amount);
         if (isUndefined(opts.price)) {
@@ -359,8 +347,8 @@ export class Operation {
         let attributes = {};
         attributes.selling = opts.selling.toXdrObject();
         attributes.buying = opts.buying.toXdrObject();
-        if (!isString(opts.amount)) {
-            throw new TypeError('amount argument must be of type String');
+        if (!this.isValidAmount(opts.amount)) {
+            throw new TypeError('amount argument must be of type String and represent a positive number');
         }
         attributes.amount = this._toXDRAmount(opts.amount);
         if (isUndefined(opts.price)) {
@@ -519,6 +507,41 @@ export class Operation {
                 throw new Error("Unknown operation");
         }
         return result;
+    }
+
+    static isValidAmount(value, allowZero = false) {
+        if (!isString(value)) {
+            return false;
+        }
+
+        let amount;
+        try {
+            amount = new BigNumber(value);
+        } catch (e) {
+            return false;
+        }
+
+        // == 0
+        if (!allowZero && amount.isZero()) {
+            return false;
+        }
+
+        // < 0
+        if (amount.isNegative()) {
+            return false;
+        }
+
+        // Infinity
+        if (!amount.isFinite()) {
+            return false;
+        }
+
+        // NaN
+        if (amount.isNaN()) {
+            return false;
+        }
+
+        return true;
     }
 
     static _toXDRAmount(value) {
