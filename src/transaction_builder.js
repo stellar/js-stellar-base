@@ -7,7 +7,7 @@ import {Transaction} from "./transaction";
 import {Memo} from "./memo";
 import {map} from "lodash";
 
-let FEE      = 1000;
+let BASE_FEE     = 100;
 let MIN_LEDGER   = 0;
 let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
 
@@ -46,7 +46,7 @@ export class TransactionBuilder {
     * @constructor
     * @param {Account} sourceAccount - The source account for this transaction.
     * @param {object} [opts]
-    * @param {number} [opts.fee] - The max fee willing to pay for this transaction.
+    * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction.
     * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
     * @param {string} [opts.timebounds.minTime] - 64 bit unix timestamp
     * @param {string} [opts.timebounds.maxTime] - 64 bit unix timestamp
@@ -61,7 +61,7 @@ export class TransactionBuilder {
         this.operations    = [];
         this.signers       = [];
 
-        this.fee        = opts.fee || FEE;
+        this.baseFee    = opts.fee || BASE_FEE;
         this.timebounds = opts.timebounds;
 
         this.memo       = opts.memo || Memo.none();
@@ -104,7 +104,7 @@ export class TransactionBuilder {
     build() {
         var attrs = {
           sourceAccount: Keypair.fromAddress(this.source.address).accountId(),
-          fee:           this.fee,
+          fee:           this.baseFee * this.operations.length,
           seqNum:        xdr.SequenceNumber.fromString(String(Number(this.source.sequence) + 1)),
           memo:          this.memo,
           ext:           new xdr.TransactionExt(0),

@@ -18,7 +18,7 @@ describe('Transaction', function() {
     var operation = transaction.operations[0];
 
     expect(transaction.source).to.be.equal(source.address);
-    expect(transaction.fee).to.be.equal(1000);
+    expect(transaction.fee).to.be.equal(100);
     expect(transaction.memo.text()).to.be.equal('Happy birthday!');
     expect(operation.type).to.be.equal('payment');
     expect(operation.destination).to.be.equal(destination);
