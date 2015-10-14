@@ -1,4 +1,6 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
+import {isString, isUndefined} from 'lodash';
+import BigNumber from 'bignumber.js';
 
 /**
 * @class Memo
@@ -18,11 +20,11 @@ export class Memo {
     * @returns {xdr.Memo}
     */
     static text(text) {
-        if (typeof text !== "string") {
+        if (!isString(text)) {
             throw new Error("Expects string type got a " + typeof(text));
         }
-        if (Buffer.byteLength(text, "ascii") > 32) {
-            throw new Error("Text should be < 32 bytes (ascii encoded). Got " + Buffer.byteLength(text, "ascii"));
+        if (Buffer.byteLength(text, "ascii") > 28) {
+            throw new Error("Text should be < 28 bytes (ascii encoded). Got " + Buffer.byteLength(text, "ascii"));
         }
         return xdr.Memo.memoText(text);
     }
@@ -33,9 +35,29 @@ export class Memo {
     * @returns {xdr.Memo}
     */
     static id(id) {
-        if (Number(id) === "NaN") {
-            throw new Error("Expects a int64 as a string. Got " + id);
+        let error = new Error("Expects a int64 as a string. Got " + id);
+
+        if (!isString(id)) {
+            throw error;
         }
+
+        let number;
+        try {
+            number = new BigNumber(id);
+        } catch (e) {
+            throw error;
+        }
+
+        // Infinity
+        if (!number.isFinite()) {
+            throw error;
+        }
+
+        // NaN
+        if (number.isNaN()) {
+            throw error;
+        }
+
         return xdr.Memo.memoId(id);
     }
 
@@ -44,9 +66,20 @@ export class Memo {
     * @param {array|string} hash - 32 byte hash
     */
     static hash(hash) {
-        if (typeof hash === "string" && Buffer.byteLength(hash) != 32) {
-            throw new Error("Expects a 32 byte hash value. Got " + Buffer.byteLength(hash) + " bytes instead");
+        let error = new Error("Expects a 32 byte hash value. Got " + hash);
+
+        if (isUndefined(hash)) {
+            throw error;
         }
+
+        if (isString(hash) && Buffer.byteLength(hash) != 32) {
+            throw error;
+        }
+
+        if (!hash.length || hash.length != 32) {
+            throw error;
+        }
+
         return xdr.Memo.memoHash(hash);
     }
 
@@ -55,9 +88,20 @@ export class Memo {
     * @param {array|string} hash - 32 byte hash
     */
     static returnHash(hash) {
-        if (typeof hash === "string" && Buffer.byteLength(hash) != 32) {
-            throw new Error("Expects a 32 byte hash value. Got " + Buffer.byteLength(hash) + " bytes instead");
+        let error = new Error("Expects a 32 byte hash value. Got " + hash);
+
+        if (isUndefined(hash)) {
+            throw error;
         }
+
+        if (isString(hash) && Buffer.byteLength(hash) != 32) {
+            throw error;
+        }
+
+        if (!hash.length || hash.length != 32) {
+            throw error;
+        }
+
         return xdr.Memo.memoReturn(hash);
     }
 }
