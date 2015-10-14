@@ -109,4 +109,43 @@ describe('TransactionBuilder', function() {
             done();
         });
     });
+
+    describe("constructs a native payment transaction with custom base fee", function() {
+        var source;
+        var destination1;
+        var amount1;
+        var destination2;
+        var amount2;
+        var asset;
+        var transaction;
+        beforeEach(function () {
+            asset = StellarBase.Asset.native();
+            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
+
+            destination1 = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+            amount1 = "1000";
+            destination2 = "GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2";
+            amount2 = "2000";
+
+
+            transaction = new StellarBase.TransactionBuilder(source, {fee: 1000})
+              .addOperation(StellarBase.Operation.payment({
+                  destination: destination1,
+                  asset: asset,
+                  amount: amount1
+              }))
+              .addOperation(StellarBase.Operation.payment({
+                  destination: destination2,
+                  asset: asset,
+                  amount: amount2
+              }))
+              .build();
+        });
+
+
+        it("should have 2000 XLM fee", function (done) {
+            expect(transaction.fee).to.be.equal(2000);
+            done();
+        });
+    });
 });
