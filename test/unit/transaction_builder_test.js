@@ -43,7 +43,7 @@ describe('TransactionBuilder', function() {
             done();
         });
 
-        it("should have 100 XLM fee", function (done) {
+        it("should have 100 stroops fee", function (done) {
             expect(transaction.fee).to.be.equal(100);
             done();
         });
@@ -104,7 +104,7 @@ describe('TransactionBuilder', function() {
             done();
         });
 
-        it("should have 200 XLM fee", function (done) {
+        it("should have 200 stroops fee", function (done) {
             expect(transaction.fee).to.be.equal(200);
             done();
         });
@@ -143,7 +143,7 @@ describe('TransactionBuilder', function() {
         });
 
 
-        it("should have 2000 XLM fee", function (done) {
+        it("should have 2000 stroops fee", function (done) {
             expect(transaction.fee).to.be.equal(2000);
             done();
         });

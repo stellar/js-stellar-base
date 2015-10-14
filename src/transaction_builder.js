@@ -7,7 +7,7 @@ import {Transaction} from "./transaction";
 import {Memo} from "./memo";
 import {map} from "lodash";
 
-let BASE_FEE     = 100;
+let BASE_FEE     = 100; // Stroops
 let MIN_LEDGER   = 0;
 let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
 
@@ -46,7 +46,7 @@ export class TransactionBuilder {
     * @constructor
     * @param {Account} sourceAccount - The source account for this transaction.
     * @param {object} [opts]
-    * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction.
+    * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (in stroops).
     * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
     * @param {string} [opts.timebounds.minTime] - 64 bit unix timestamp
     * @param {string} [opts.timebounds.maxTime] - 64 bit unix timestamp
