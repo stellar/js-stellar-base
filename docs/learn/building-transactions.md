@@ -66,7 +66,7 @@ Transactions can contain a "memo" field you can use to attach additional informa
 by passing a [memo](https://github.com/stellar/js-stellar-base/blob/master/src/memo.js) object when you construct the TransactionBuilder.
 There are 5 types of memos:
 * `Memo.none` - empty memo,
-* `Memo.text` - 32 bytes ascii encoded string memo,
+* `Memo.text` - 28 byte ascii encoded string memo,
 * `Memo.id` - 64-bit number memo,
 * `Memo.hash` - 32-bit hash - ex. hash of an item in a content server,
 * `Memo.returnHash` - 32-bit hash used for returning payments - contains hash of the transaction being rejected.
