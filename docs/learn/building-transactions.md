@@ -86,7 +86,7 @@ var transaction = new StellarBase.TransactionBuilder(account, {memo:memo})
 ## [Transaction](https://github.com/stellar/js-stellar-base/blob/master/src/transaction.js)
 
 You probably won't instantiate `Transaction` objects directly. Objects of this class are returned after `TransactionBuilder`
-builds a transaction. However, you can create a new `Transaction` object from a hex representation of a transaction envelope.
+builds a transaction. However, you can create a new `Transaction` object from a base64 representation of a transaction envelope.
 
 ```js
 var transaction = new Transaction(envelope);
