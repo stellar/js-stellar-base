@@ -39,6 +39,18 @@ describe('Asset', function() {
         });
     });
 
+    describe("getAssetType()", function () {
+        it("returns credit_alphanum4 if the asset code length is between 1 and 4", function () {
+            var asset = new StellarBase.Asset("ABCD", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
+            expect(asset.getAssetType()).to.eq("credit_alphanum4");
+        });
+
+        it("returns credit_alphanum12 if the asset code length is between 5 and 12", function () {
+            var asset = new StellarBase.Asset("ABCDEF", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
+            expect(asset.getAssetType()).to.eq("credit_alphanum12");
+        });
+    });
+
     describe("toXdrObject()", function () {
         it("parses a native asset object", function () {
             var asset = new StellarBase.Asset.native();
