@@ -40,6 +40,11 @@ describe('Asset', function() {
     });
 
     describe("getAssetType()", function () {
+        it("returns native for native assets", function () {
+            var asset = StellarBase.Asset.native();
+            expect(asset.getAssetType()).to.eq("native");
+        });
+
         it("returns credit_alphanum4 if the asset code length is between 1 and 4", function () {
             var asset = new StellarBase.Asset("ABCD", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
             expect(asset.getAssetType()).to.eq("credit_alphanum4");

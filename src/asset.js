@@ -111,10 +111,14 @@ export class Asset {
      * Return the asset type
      */
     getAssetType() {
-      if (this.code.length >= 1 && this.code.length <= 4) {
-        return "credit_alphanum4";
-      } else if (this.code.length >= 5 && this.code.length <= 12) {
-        return "credit_alphanum12";
+      if (this.isNative()) {
+        return 'native';
+      } else {
+        if (this.code.length >= 1 && this.code.length <= 4) {
+          return "credit_alphanum4";
+        } else if (this.code.length >= 5 && this.code.length <= 12) {
+          return "credit_alphanum12";
+        }
       }
     }
 
