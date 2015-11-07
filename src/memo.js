@@ -1,5 +1,6 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
 import {isString, isUndefined} from 'lodash';
+import {UnsignedHyper} from "js-xdr";
 import BigNumber from 'bignumber.js';
 
 /**
@@ -58,7 +59,7 @@ export class Memo {
             throw error;
         }
 
-        return xdr.Memo.memoId(id);
+        return xdr.Memo.memoId(UnsignedHyper.fromString(id));
     }
 
     /**

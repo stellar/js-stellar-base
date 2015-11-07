@@ -6,11 +6,13 @@ describe('TransactionBuilder', function() {
         var amount;
         var asset;
         var transaction;
+        var memo;
         beforeEach(function () {
             source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
             destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
             amount = "1000";
             asset = StellarBase.Asset.native();
+            memo = StellarBase.Memo.id("100");
 
             transaction = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({
@@ -18,6 +20,7 @@ describe('TransactionBuilder', function() {
                     asset: asset,
                     amount: amount
                 }))
+                .addMemo(memo)
                 .build();
         });
 
