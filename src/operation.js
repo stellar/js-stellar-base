@@ -531,6 +531,11 @@ export class Operation {
             return false;
         }
 
+        // Decimal places (max 7)
+        if (amount.decimalPlaces() > 7) {
+            return false;
+        }
+
         // Infinity
         if (!amount.isFinite()) {
             return false;

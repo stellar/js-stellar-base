@@ -540,7 +540,8 @@ describe('Operation', function() {
         it("returns true for valid amounts", function () {
             let amounts = [
               "10",
-              "0.10"
+              "0.10",
+              "0.1234567"
             ];
 
             for (var i in amounts) {
@@ -557,6 +558,7 @@ describe('Operation', function() {
                 "0",
                 "-10",
                 "-10.5",
+                "0.12345678",
                 "Infinity",
                 Infinity,
                 "Nan",
