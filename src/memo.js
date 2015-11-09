@@ -64,16 +64,19 @@ export class Memo {
 
     /**
     * Creates and returns a "hash" memo.
-    * @param {array|string} hash - 32 byte hash
+    * @param {array|string} hash - 32 byte hash or hex encoded string
     */
     static hash(hash) {
-        let error = new Error("Expects a 32 byte hash value. Got " + hash);
+        let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + hash);
 
         if (isUndefined(hash)) {
             throw error;
         }
 
         if (isString(hash)) {
+            if (!/^[0-9A-Fa-f]{64}$/g.test(hash)) {
+                throw error;
+            }
             hash = new Buffer(hash, 'hex');
         }
 
@@ -86,17 +89,20 @@ export class Memo {
 
     /**
     * Creates and returns a "return hash" memo.
-    * @param {array|string} hash - 32 byte hash
+    * @param {array|string} hash - 32 byte hash or hex encoded string
     */
     static returnHash(hash) {
-        let error = new Error("Expects a 32 byte hash value. Got " + hash);
+        let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + hash);
 
         if (isUndefined(hash)) {
             throw error;
         }
 
-        if (isString(hash) && Buffer.byteLength(hash) != 32) {
-            throw error;
+        if (isString(hash)) {
+            if (!/^[0-9A-Fa-f]{64}$/g.test(hash)) {
+                throw error;
+            }
+            hash = new Buffer(hash, 'hex');
         }
 
         if (!hash.length || hash.length != 32) {
