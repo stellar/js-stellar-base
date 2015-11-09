@@ -38,6 +38,7 @@ describe("Memo.id()", function() {
 describe("Memo.hash()", function() {
   it("returns a value for a correct argument", function() {
     expect(() => StellarBase.Memo.hash(new Buffer(32))).to.not.throw();
+    expect(() => StellarBase.Memo.hash('0000000000000000000000000000000000000000000000000000000000000000')).to.not.throw();
   });
 
   it("throws an error when invalid argument was passed", function() {
@@ -48,5 +49,7 @@ describe("Memo.hash()", function() {
     expect(() => StellarBase.Memo.hash("test")).to.throw(/Expects a 32 byte hash value/);
     expect(() => StellarBase.Memo.hash([0, 10, 20])).to.throw(/Expects a 32 byte hash value/);
     expect(() => StellarBase.Memo.hash(new Buffer(33))).to.throw(/Expects a 32 byte hash value/);
+    expect(() => StellarBase.Memo.hash('00000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
+    expect(() => StellarBase.Memo.hash('000000000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
   });
 });

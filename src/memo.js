@@ -73,8 +73,8 @@ export class Memo {
             throw error;
         }
 
-        if (isString(hash) && Buffer.byteLength(hash) != 32) {
-            throw error;
+        if (isString(hash)) {
+            hash = new Buffer(hash, 'hex');
         }
 
         if (!hash.length || hash.length != 32) {
