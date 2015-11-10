@@ -327,7 +327,7 @@ describe('Operation', function() {
             opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             opts.amount = '3.123456';
             opts.price = 3.07;
-            opts.offerId = '1';
+            opts.offerId = 1;
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
@@ -370,6 +370,26 @@ describe('Operation', function() {
             expect(obj.offerId).to.be.equal('0'); // 0=create a new offer, otherwise edit an existing offer
         });
 
+        it("cancels offer", function () {
+            var opts = {};
+            opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.amount = '0';
+            opts.price = '3.141592';
+            opts.offerId = '1';
+            let op = StellarBase.Operation.manageOffer(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+            expect(obj.type).to.be.equal("manageOffer");
+            expect(obj.selling.equals(opts.selling)).to.be.true;
+            expect(obj.buying.equals(opts.buying)).to.be.true;
+            expect(operation.body().value().amount().toString()).to.be.equal('0');
+            expect(obj.amount).to.be.equal(opts.amount);
+            expect(obj.price).to.be.equal(opts.price);
+            expect(obj.offerId).to.be.equal('1'); // 0=create a new offer, otherwise edit an existing offer
+        });
+
         it("fails to create manageOffer operation with an invalid amount", function () {
             let opts = {
                 amount: 20,
@@ -407,17 +427,6 @@ describe('Operation', function() {
                 buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7")
             };
             expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/not a number/)
-        });
-
-        it("fails to create manageOffer operation with an invalid offerId", function () {
-            let opts = {
-                amount: '20',
-                price: '10',
-                selling: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
-                buying: new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"),
-                offerId: 0
-            };
-            expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/offerId argument must be of type String/)
         });
     });
 
