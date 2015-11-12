@@ -15,3 +15,5 @@ export {Account} from "./account";
 export {Network, Networks} from "./network";
 
 export * from "./strkey";
+
+export default module.exports;
