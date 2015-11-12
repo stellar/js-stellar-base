@@ -25,7 +25,7 @@ export class Memo {
             throw new Error("Expects string type got a " + typeof(text));
         }
         if (Buffer.byteLength(text, "ascii") > 28) {
-            throw new Error("Text should be < 28 bytes (ascii encoded). Got " + Buffer.byteLength(text, "ascii"));
+            throw new Error("Text should be <= 28 bytes (ascii encoded). Got " + Buffer.byteLength(text, "ascii"));
         }
         return xdr.Memo.memoText(text);
     }
