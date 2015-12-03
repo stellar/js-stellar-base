@@ -11,6 +11,7 @@ export class Account {
 
     /**
     * Returns true if the given address is a valid Stellar address.
+    * @return {boolean}
     */
     static isValidAddress(address) {
         try {

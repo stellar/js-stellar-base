@@ -35,14 +35,15 @@ export class TransactionBuilder {
     * source account an amount of that asset. The built transaction would need to be signed by
     * both the source account and the destinationA account for it to be valid.</p>
     *
-    * <pre>var transaction = new TransactionBuilder(source)
+    * ```
+    * var transaction = new TransactionBuilder(source)
     *   .addOperation(Operation.payment({
             destination: destinationA,
             amount: "20000000",
             asset: Asset.native()
         }) // <- funds and creates destinationA
     *   .build();
-    * </pre>
+    * ```
     * @constructor
     * @param {Account} sourceAccount - The source account for this transaction.
     * @param {object} [opts]

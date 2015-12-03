@@ -3,4 +3,5 @@
 /dist/
 /lib/
 /coverage/
+/jsdoc/
 .DS_Store

@@ -13,9 +13,8 @@ const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
 
 /**
-* @class Operation
-* See https://stellar.org/developers/learn/concepts/operations.html  for more information about how operations work in Stellar.
-*/
+ * @class Operation
+ */
 export class Operation {
 
     /**
@@ -547,20 +546,32 @@ export class Operation {
         return true;
     }
 
+    /**
+     * @private
+     */
     static _toXDRAmount(value) {
         let amount = new BigNumber(value).mul(ONE);
         return Hyper.fromString(amount.toString());
     }
 
+    /**
+     * @private
+     */
     static _fromXDRAmount(value) {
         return new BigNumber(value).div(ONE).toString();
     }
 
+    /**
+     * @private
+     */
     static _fromXDRPrice(price) {
         let n = new BigNumber(price.n());
         return n.div(new BigNumber(price.d())).toString();
     }
 
+    /**
+     * @private
+     */
     static _toXDRPrice(price) {
         price = new BigNumber(price);
         if (price.lte(0)) {

@@ -13,6 +13,7 @@ export class Asset {
 
     /**
     * Returns an asset object for the native asset.
+    * @Return {Asset}
     */
     static native() {
         return new Asset("XLM");
@@ -131,8 +132,10 @@ export class Asset {
     }
 
     /**
-    * Returns true if this asset equals the given asset.
-    */
+     * Returns true if this asset equals the given asset.
+     * @param {Asset} asset
+     * @returns {boolean}
+     */
     equals(asset) {
         return this.code == asset.getCode() && this.issuer == asset.getIssuer();
     }

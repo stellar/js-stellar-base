@@ -4,6 +4,7 @@ const MAX_INT = (1 << 31 >>> 0) - 1;
 
 /**
  * Calculates and returns the best rational approximation of the given real number.
+ * @private
  * @param {string|number|BigNumber} number
  * @returns {array} first element is n (numerator), second element is d (denominator)
  */

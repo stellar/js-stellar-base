@@ -4,8 +4,8 @@ import {UnsignedHyper} from "js-xdr";
 import BigNumber from 'bignumber.js';
 
 /**
-* @class Memo
-*/
+ * @class Memo
+ */
 export class Memo {
 
     /**

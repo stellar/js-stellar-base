@@ -14,9 +14,10 @@ export class Keypair {
   }
 
   /**
-   * Base58 address encoding is **DEPRECATED**! Use this method only for transition to base32.
+   * Base58 address encoding is **DEPRECATED**! Use this method only for transition to strkey encoding.
    * @param seed Base58 secret seed
-   * @returns StrKey KeyPair object
+   * @deprecated
+   * @returns {Keypair}
    */
   static fromBase58Seed(seed) {
     let rawSeed = base58.decodeBase58Check("seed", seed);
@@ -55,6 +56,10 @@ export class Keypair {
     return this.fromRawSeed(seed);
   }
 
+  /**
+   * @constructor
+   * @param keysAndSeed
+   */
   constructor(keysAndSeed) {
     this._publicKey = new Buffer(keysAndSeed.publicKey);
 
@@ -82,10 +87,17 @@ export class Keypair {
     return a.slice(a.length - 4);
   }
 
+  /**
+   * Returns address associated with this Keypair object
+   */
   address() {
     return strkey.encodeCheck("accountId", this._publicKey);
   }
 
+  /**
+   * Returns seed associated with this Keypair object
+   * @returns {*}
+   */
   seed() {
     return strkey.encodeCheck("seed", this._secretSeed);
   }
