@@ -41,26 +41,26 @@ export class Asset {
 
     /**
      * Returns an asset object from its XDR object representation.
-     * @param {xdr.Asset} xdr - The asset xdr object.
+     * @param {xdr.Asset} assetXdr - The asset xdr object.
      * @returns {Asset}
      */
-    static fromOperation(xdr) {
+    static fromOperation(assetXdr) {
       let anum, code, issuer;
-      switch(xdr.switch()) {
+      switch(assetXdr.switch()) {
         case xdr.AssetType.assetTypeNative():
           return this.native();
         case xdr.AssetType.assetTypeCreditAlphanum4():
-          anum = xdr.alphaNum4();
+          anum = assetXdr.alphaNum4();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
           code = trimRight(anum.assetCode(), '\0');
           return new this(code, issuer);
         case xdr.AssetType.assetTypeCreditAlphanum12():
-          anum = xdr.alphaNum12();
+          anum = assetXdr.alphaNum12();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
           code = trimRight(anum.assetCode(), '\0');
           return new this(code, issuer);
         default:
-          throw new Error(`Invalid asset type: ${xdr.switch().name}`);
+          throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
       }
     }
 
