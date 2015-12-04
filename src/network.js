@@ -13,15 +13,22 @@ export const Networks = {
 
 var current;
 
-/**
- * The Network class provides helper methods to get the passphrase or id for different
- * stellar networks.  It also provides the current() class method that returns the network
- * that will be used by this process for the purposes of generating signatures
- *
- * The public network is the default, but you can also override the default by using the `use`,
- * `usePublicNetwork` and `useTestNetwork` helper methods.
- */
 export class Network {
+	/**
+   * The Network class provides helper methods to get the passphrase or id for different
+   * stellar networks.  It also provides the {@link Network.current} class method that returns the network
+   * that will be used by this process for the purposes of generating signatures.
+   *
+   * The test network is the default, but you can also override the default by using the `use`,
+   * `usePublicNetwork` and `useTestNetwork` helper methods.
+   *
+	 * Creates a new `Network` object.
+	 * @constructor
+	 * @param {string} networkPassphrase Network passphrase
+	 */
+	constructor(networkPassphrase) {
+		this._networkPassphrase = networkPassphrase;
+	}
 
 	/**
 	 * Use default network (right now default network is `testnet`).
@@ -38,8 +45,8 @@ export class Network {
 	}
 
 	/**
-	 * Alias for `usePublicNetwork`.
-	 * @deprecated Use `usePublicNetwork` method
+	 * Alias for {@link Network.usePublicNetwork}.
+	 * @deprecated Use {@link Network.usePublicNetwork} method
 	 */
 	static usePublicNet() {
 		this.usePublicNetwork();
@@ -53,16 +60,16 @@ export class Network {
 	}
 
 	/**
-	 * Alias for `useTestNetwork`.
-	 * @deprecated Use `useTestNetwork` method
+	 * Alias for {@link Network.useTestNetwork}.
+	 * @deprecated Use {@link Network.useTestNetwork} method
 	 */
 	static useTestNet() {
 		this.useTestNetwork();
 	}
 
 	/**
-	 * Use network defined in Network object.
-	 * @param {Network} network
+	 * Use network defined by Network object.
+	 * @param {Network} network Network to use
 	 */
 	static use(network) {
 		current = network;
@@ -74,15 +81,6 @@ export class Network {
 	 */
 	static current() {
 		return current;
-	}
-
-	/**
-	 * Creates a new Network object.
-	 * @constructor
-	 * @param {string} networkPassphrase Network passphrase
-	 */
-	constructor(networkPassphrase) {
-		this._networkPassphrase = networkPassphrase;
 	}
 
 	/**

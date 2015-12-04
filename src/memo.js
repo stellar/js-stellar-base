@@ -4,22 +4,26 @@ import {UnsignedHyper} from "js-xdr";
 import BigNumber from 'bignumber.js';
 
 /**
+ * `Memo` represents memos attached to transactions. Use static methods to create memos.
+ *
+ * @see [Transactions concept](https://www.stellar.org/developers/learn/concepts/transactions.html)
  * @class Memo
  */
 export class Memo {
 
     /**
-    * Returns an empty memo.
-    */
+     * Returns an empty memo (`MEMO_NONE`).
+     * @returns {xdr.Memo}
+     */
     static none() {
         return xdr.Memo.memoNone();
     }
 
     /**
-    * Creates and returns a "text" memo.
-    * @param {string} text - memo text
-    * @returns {xdr.Memo}
-    */
+     * Creates and returns a `MEMO_TEXT` memo.
+     * @param {string} text - memo text
+     * @returns {xdr.Memo}
+     */
     static text(text) {
         if (!isString(text)) {
             throw new Error("Expects string type got a " + typeof(text));
@@ -31,10 +35,10 @@ export class Memo {
     }
 
     /**
-    * Creates and returns an "id" memo.
-    * @param {string} id - 64 bit id
-    * @returns {xdr.Memo}
-    */
+     * Creates and returns a `MEMO_ID` memo.
+     * @param {string} id - 64-bit number represented as a string
+     * @returns {xdr.Memo}
+     */
     static id(id) {
         let error = new Error("Expects a int64 as a string. Got " + id);
 
@@ -63,9 +67,10 @@ export class Memo {
     }
 
     /**
-    * Creates and returns a "hash" memo.
-    * @param {array|string} hash - 32 byte hash or hex encoded string
-    */
+     * Creates and returns a `MEMO_HASH` memo.
+     * @param {array|string} hash - 32 byte hash or hex encoded string
+     * @returns {xdr.Memo}
+     */
     static hash(hash) {
         let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + hash);
 
@@ -88,9 +93,10 @@ export class Memo {
     }
 
     /**
-    * Creates and returns a "return hash" memo.
-    * @param {array|string} hash - 32 byte hash or hex encoded string
-    */
+     * Creates and returns a `MEMO_RETURN` memo.
+     * @param {array|string} hash - 32 byte hash or hex encoded string
+     * @returns {xdr.Memo}
+     */
     static returnHash(hash) {
         let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + hash);
 

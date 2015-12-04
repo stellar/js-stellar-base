@@ -13,6 +13,19 @@ const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
 
 /**
+ * `Operation` class represents [operations](https://www.stellar.org/developers/learn/concepts/operations.html) in Stellar network.
+ * Use one of static methods to create operations:
+ * * `{@link Operation.createAccount}`
+ * * `{@link Operation.payment}`
+ * * `{@link Operation.pathPayment}`
+ * * `{@link Operation.manageOffer}`
+ * * `{@link Operation.createPassiveOffer}`
+ * * `{@link Operation.setOptions}`
+ * * `{@link Operation.changeTrust}`
+ * * `{@link Operation.allowTrust}`
+ * * `{@link Operation.accountMerge}`
+ * * `{@link Operation.inflation}`
+ *
  * @class Operation
  */
 export class Operation {
@@ -22,7 +35,7 @@ export class Operation {
     * @param {object} opts
     * @param {string} opts.destination - Destination address to create an account for.
     * @param {string} opts.startingBalance - Amount in XLM the account should be funded for. Must be greater
-    *                                   than the reserve balance amount.
+    *                                   than the [reserve balance amount](https://www.stellar.org/developers/learn/concepts/fees.html).
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.CreateAccountOp}
     */
@@ -50,7 +63,7 @@ export class Operation {
     * @param {object} opts
     * @param {string} opts.destination - The destination address.
     * @param {Asset} opts.asset - The asset to send.
-    * @param {string} opts.amount - The amount in XLM to send.
+    * @param {string} opts.amount - The amount to send.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PaymentOp}
     */
@@ -88,7 +101,7 @@ export class Operation {
     * @param {string} opts.destination - The destination account to send to.
     * @param {Asset} opts.destAsset - The asset the destination will receive.
     * @param {string} opts.destAmount - The amount the destination receives.
-    * @param {array} [opts.path] - An array of Asset objects to use as the path.
+    * @param {Asset[]} opts.path - An array of Asset objects to use as the path.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PathPaymentOp}
     */
@@ -291,11 +304,11 @@ export class Operation {
     * Returns a XDR ManageOfferOp. A "manage offer" operation creates, updates, or
     * deletes an offer.
     * @param {object} opts
-    * @param {Asset} selling - What you're selling.
-    * @param {Asset} buying - What you're buying.
-    * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
-    * @param {number|string|BigNumber} price - The exchange rate ratio (takerpay / takerget)
-    * @param {number|string} offerId - If 0, will create a new offer (default). Otherwise, edits an exisiting offer.
+    * @param {Asset} opts.selling - What you're selling.
+    * @param {Asset} opts.buying - What you're buying.
+    * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
+    * @param {number|string|BigNumber} opts.price - The exchange rate ratio (selling / buying).
+    * @param {number|string} [opts.offerId ]- If `0`, will create a new offer (default). Otherwise, edits an exisiting offer.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.ManageOfferOp}
     */
@@ -333,10 +346,10 @@ export class Operation {
     * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
     * to manage this offer after using this operation to create it.
     * @param {object} opts
-    * @param {Asset} selling - What you're selling.
-    * @param {Asset} buying - What you're buying.
-    * @param {string} amount - The total amount you're selling. If 0, deletes the offer.
-    * @param {number|string|BigNumber} price - The exchange rate ratio (selling / buying)
+    * @param {Asset} opts.selling - What you're selling.
+    * @param {Asset} opts.buying - What you're buying.
+    * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
+    * @param {number|string|BigNumber} opts.price - The exchange rate ratio (selling / buying)
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.CreatePassiveOfferOp}
     */
@@ -407,7 +420,7 @@ export class Operation {
     * Converts the XDR Operation object to the opts object used to create the XDR
     * operation.
     * @param {xdr.Operation} operation - An XDR Operation.
-    * @return {object}
+    * @return {Operation}
     */
     static operationToObject(operation) {
         function accountIdtoAddress(accountId) {

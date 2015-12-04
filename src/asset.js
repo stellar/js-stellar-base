@@ -4,12 +4,32 @@ import {Keypair} from "./keypair";
 import {encodeCheck} from "./strkey";
 import {clone, padRight, trimRight} from 'lodash';
 
-/**
-* Asset class represents an asset, either the native asset ("XLM")
-* or a asset code / issuer address pair.
-* @class Asset
-*/
 export class Asset {
+    /**
+     * Asset class represents an asset, either the native asset (`XLM`)
+     * or a asset code / issuer address pair.
+     *
+     * An asset code describes an asset code and issuer pair. In the case of the native
+     * asset XLM, the issuer will be null.
+     *
+     * @constructor
+     * @param {string} code - The asset code.
+     * @param {string} issuer - The account ID of the issuer.
+     */
+    constructor(code, issuer) {
+      if (code.length > 12) {
+        throw new Error("Asset code must be 12 characters at max");
+      }
+      if (String(code).toLowerCase() !== "xlm" && !issuer) {
+        throw new Error("Issuer cannot be null");
+      }
+      if (issuer && !Account.isValidAddress(issuer)) {
+        throw new Error("Issuer is invalid");
+      }
+
+      this.code = code;
+      this.issuer = issuer;
+    }
 
     /**
     * Returns an asset object for the native asset.
@@ -20,54 +40,34 @@ export class Asset {
     }
 
     /**
-    * Returns an asset object from its XDR object representation.
-    * @param {xdr.Asset} cx - The asset xdr object.
-    */
-    static fromOperation(cx) {
+     * Returns an asset object from its XDR object representation.
+     * @param {xdr.Asset} xdr - The asset xdr object.
+     * @returns {Asset}
+     */
+    static fromOperation(xdr) {
       let anum, code, issuer;
-      switch(cx.switch()) {
+      switch(xdr.switch()) {
         case xdr.AssetType.assetTypeNative():
           return this.native();
         case xdr.AssetType.assetTypeCreditAlphanum4():
-          anum = cx.alphaNum4();
+          anum = xdr.alphaNum4();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
           code = trimRight(anum.assetCode(), '\0');
           return new this(code, issuer);
         case xdr.AssetType.assetTypeCreditAlphanum12():
-          anum = cx.alphaNum12();
+          anum = xdr.alphaNum12();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
           code = trimRight(anum.assetCode(), '\0');
           return new this(code, issuer);
         default:
-          throw new Error(`Invalid asset type: ${cx.switch().name}`);
+          throw new Error(`Invalid asset type: ${xdr.switch().name}`);
       }
     }
 
     /**
-    * An asset code describes an asset code and issuer pair. In the case of the native
-    * asset XLM, the issuer will be null.
-    * @constructor
-    * @param {string} code - The asset code.
-    * @param {string} issuer - The address of the issuer.
-    */
-    constructor(code, issuer) {
-        if (code.length > 12) {
-            throw new Error("Asset code must be 12 characters at max");
-        }
-        if (String(code).toLowerCase() !== "xlm" && !issuer) {
-            throw new Error("Issuer cannot be null");
-        }
-        if (issuer && !Account.isValidAddress(issuer)) {
-            throw new Error("Issuer is invalid");
-        }
-
-        this.code = code;
-        this.issuer = issuer;
-    }
-
-    /**
-    * Returns the xdr object for this asset.
-    */
+     * Returns the xdr object for this asset.
+     * @returns {xdr.Asset}
+     */
     toXdrObject() {
         if (this.isNative()) {
             return xdr.Asset.assetTypeNative();
@@ -96,6 +96,7 @@ export class Asset {
 
     /**
      * Return the asset code
+     * @returns {string}
      */
     getCode() {
       return clone(this.code);
@@ -103,13 +104,21 @@ export class Asset {
 
     /**
      * Return the asset issuer
-     **/
+     * @returns {string}
+     */
     getIssuer() {
       return clone(this.issuer);
     }
 
     /**
-     * Return the asset type
+     * Return the asset type. Can be one of following types:
+     *
+     * * `native`
+     * * `credit_alphanum4`
+     * * `credit_alphanum4`
+     *
+     * @see [Assets concept](https://www.stellar.org/developers/learn/concepts/assets.html)
+     * @returns {string}
      */
     getAssetType() {
       if (this.isNative()) {
@@ -125,15 +134,16 @@ export class Asset {
 
 
     /**
-    * Returns true if this asset object is the native asset.
-    */
+     * Returns true if this asset object is the native asset.
+     * @returns {boolean}
+     */
     isNative() {
         return !this.issuer;
     }
 
     /**
      * Returns true if this asset equals the given asset.
-     * @param {Asset} asset
+     * @param {Asset} asset Asset to compare
      * @returns {boolean}
      */
     equals(asset) {

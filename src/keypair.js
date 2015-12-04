@@ -7,7 +7,33 @@ import {default as xdr} from "./generated/stellar-xdr_generated";
 let nacl = require("tweetnacl");
 
 export class Keypair {
+  /**
+   * `Keypair` represents public (and secret) keys of the account.
+   *
+   * Use more convenient methods to create `Keypair` object:
+   * * `{@link Keypair.fromAddress}`
+   * * `{@link Keypair.fromSeed}`
+   * * `{@link Keypair.random}`
+   *
+   * @constructor
+   * @param {object} keys
+   * @param {string} keys.publicKey Raw public key
+   * @param {string} [keys.secretSeed] Raw secret key seed.
+   */
+  constructor(keys) {
+    this._publicKey = new Buffer(keys.publicKey);
 
+    if(keys.secretSeed) {
+      this._secretSeed = new Buffer(keys.secretSeed);
+      this._secretKey = new Buffer(keys.secretKey);
+    }
+  }
+
+  /**
+   * Creates a new `Keypair` instance from secret key seed.
+   * @param {string} seed Secret key seed
+   * @returns {Keypair}
+   */
   static fromSeed(seed) {
     let rawSeed = strkey.decodeCheck("seed", seed);
     return this.fromRawSeed(rawSeed);
@@ -15,8 +41,8 @@ export class Keypair {
 
   /**
    * Base58 address encoding is **DEPRECATED**! Use this method only for transition to strkey encoding.
-   * @param seed Base58 secret seed
-   * @deprecated
+   * @param {string} seed Base58 secret seed
+   * @deprecated Use {@link Keypair.fromSeed}
    * @returns {Keypair}
    */
   static fromBase58Seed(seed) {
@@ -25,9 +51,9 @@ export class Keypair {
   }
 
   /**
-   * Create Keypair object from secret seed raw bytes
+   * Creates a new `Keypair` object from secret seed raw bytes.
    *
-   * @param rawSeed Array of bytes of secret seed
+   * @param {Buffer} rawSeed Buffer containing secret seed
    * @returns {Keypair}
    */
   static fromRawSeed(rawSeed) {
@@ -39,10 +65,19 @@ export class Keypair {
     return new this(keys);
   }
 
+  /**
+   * Returns `Keypair` object representing network master key.
+   * @returns {Keypair}
+   */
   static master() {
     return this.fromRawSeed(Network.current().networkId());
   }
 
+  /**
+   * Creates a new `Keypair` object from account ID.
+   * @param {string} address account ID
+   * @returns {Keypair}
+   */
   static fromAddress(address) {
     let publicKey = strkey.decodeCheck("accountId", address);
     if (publicKey.length !== 32) {
@@ -51,22 +86,13 @@ export class Keypair {
     return new this({publicKey});
   }
 
+  /**
+   * Create a random `Keypair` object.
+   * @returns {Keypair}
+   */
   static random() {
     let seed = nacl.randomBytes(32);
     return this.fromRawSeed(seed);
-  }
-
-  /**
-   * @constructor
-   * @param keysAndSeed
-   */
-  constructor(keysAndSeed) {
-    this._publicKey = new Buffer(keysAndSeed.publicKey);
-
-    if(keysAndSeed.secretSeed) {
-      this._secretSeed = new Buffer(keysAndSeed.secretSeed);
-      this._secretKey = new Buffer(keysAndSeed.secretKey);
-    }
   }
 
   accountId() {
@@ -77,6 +103,10 @@ export class Keypair {
     return new xdr.PublicKey.keyTypeEd25519(this._publicKey);
   }
 
+  /**
+   * Returns raw public key
+   * @returns {Buffer}
+   */
   rawPublicKey() {
     return this._publicKey;
   }
@@ -88,32 +118,50 @@ export class Keypair {
   }
 
   /**
-   * Returns address associated with this Keypair object
+   * Returns account ID associated with this `Keypair` object.
+   * @returns {string}
    */
   address() {
     return strkey.encodeCheck("accountId", this._publicKey);
   }
 
   /**
-   * Returns seed associated with this Keypair object
-   * @returns {*}
+   * Returns seed associated with this `Keypair` object
+   * @returns {string}
    */
   seed() {
     return strkey.encodeCheck("seed", this._secretSeed);
   }
 
+  /**
+   * Returns raw secret key seed.
+   * @returns {Buffer}
+   */
   rawSeed() {
     return this._secretSeed;
   }
 
+  /**
+   * Returns raw secret key.
+   * @returns {Buffer}
+   */
   rawSecretKey() {
     return this._secretKey;
   }
 
+  /**
+   * Returns `true` if this `Keypair` object contains secret key and can sign.
+   * @returns {boolean}
+   */
   canSign() {
     return !!this._secretKey;
   }
 
+  /**
+   * Signs data.
+   * @param {Buffer} data Data to sign
+   * @returns {Buffer}
+   */
   sign(data) {
     if (!this.canSign()) {
       throw new Error("cannot sign: no secret key available");
@@ -122,10 +170,15 @@ export class Keypair {
     return sign(data, this._secretKey);
   }
 
+  /**
+   * Verifies if `signature` for `data` is valid.
+   * @param {Buffer} data Signed data
+   * @param {Buffer} signature Signature
+   * @returns {boolean}
+   */
   verify(data, signature) {
     return verify(data, signature, this._publicKey);
   }
-
 
   signDecorated(data) {
     let signature = this.sign(data);
