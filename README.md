@@ -9,6 +9,8 @@ The stellar-base library is the lowest-level stellar helper library.  It consist
 to read, write, hash, and sign the xdr structures that are used in [stellar-core](https://github.com/stellar/stellar-core).
 This is an implementation in JavaScript that can be used on either Node.js or web browsers.
 
+* **[API Reference](https://stellar.github.io/js-stellar-base/)**
+
 ## Quick start
 
 Using npm to include js-stellar-base in your own project:
