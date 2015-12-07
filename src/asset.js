@@ -115,7 +115,7 @@ export class Asset {
      *
      * * `native`
      * * `credit_alphanum4`
-     * * `credit_alphanum4`
+     * * `credit_alphanum12`
      *
      * @see [Assets concept](https://www.stellar.org/developers/learn/concepts/assets.html)
      * @returns {string}
