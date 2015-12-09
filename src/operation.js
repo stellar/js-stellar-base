@@ -310,6 +310,7 @@ export class Operation {
     * @param {number|string|BigNumber} opts.price - The exchange rate ratio (selling / buying).
     * @param {number|string} [opts.offerId ]- If `0`, will create a new offer (default). Otherwise, edits an exisiting offer.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
+    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
     * @returns {xdr.ManageOfferOp}
     */
     static manageOffer(opts) {
@@ -351,6 +352,7 @@ export class Operation {
     * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
     * @param {number|string|BigNumber} opts.price - The exchange rate ratio (selling / buying)
     * @param {string} [opts.source] - The source account (defaults to transaction source).
+    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
     * @returns {xdr.CreatePassiveOfferOp}
     */
     static createPassiveOffer(opts) {

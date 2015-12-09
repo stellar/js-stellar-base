@@ -8,7 +8,6 @@ describe('best_r', function() {
       ['1,100', '0.01'],
       ['1,1000', '0.001'],
       ['54301793,100000', '543.017930'],
-      ['0,1', '0.0'],
       ['31969983,100000', '319.69983'],
       ['93,100', '0.93'],
       ['1,2', '0.5'],
@@ -30,5 +29,10 @@ describe('best_r', function() {
     for (var i in tests) {
       expect(best_r(tests[i][1]).toString()).to.be.equal(tests[i][0]);
     }
+  });
+
+  it("throws an error when best rational approximation cannot be found", function() {
+    expect(() => best_r("0.0000000003")).to.throw(/Couldn't find approximation/);
+    expect(() => best_r("2147483648")).to.throw(/Couldn't find approximation/);
   });
 });

@@ -6,6 +6,7 @@ const MAX_INT = (1 << 31 >>> 0) - 1;
  * Calculates and returns the best rational approximation of the given real number.
  * @private
  * @param {string|number|BigNumber} number
+ * @throws Error Throws `Error` when the best rational approximation cannot be found.
  * @returns {array} first element is n (numerator), second element is d (denominator)
  */
 export function best_r(number) {
@@ -33,8 +34,13 @@ export function best_r(number) {
       break;
     }
     number = new BigNumber(1).div(f);
-    i = i + 1;
+    i++;
   }
   let [n, d] = fractions[fractions.length - 1];
+
+  if (n.isZero() || d.isZero()) {
+    throw new Error("Couldn't find approximation");
+  }
+
   return [n.toNumber(), d.toNumber()];
 }
