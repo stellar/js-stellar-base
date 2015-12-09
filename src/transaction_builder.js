@@ -109,7 +109,7 @@ export class TransactionBuilder {
      */
     build() {
         var attrs = {
-          sourceAccount: Keypair.fromAddress(this.source.address).accountId(),
+          sourceAccount: Keypair.fromAccountId(this.source.accountId()).xdrAccountId(),
           fee:           this.baseFee * this.operations.length,
           seqNum:        xdr.SequenceNumber.fromString(String(Number(this.source.sequence) + 1)),
           memo:          this.memo,

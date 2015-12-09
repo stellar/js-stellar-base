@@ -11,7 +11,7 @@ export class Keypair {
    * `Keypair` represents public (and secret) keys of the account.
    *
    * Use more convenient methods to create `Keypair` object:
-   * * `{@link Keypair.fromAddress}`
+   * * `{@link Keypair.fromAccountId}`
    * * `{@link Keypair.fromSeed}`
    * * `{@link Keypair.random}`
    *
@@ -77,11 +77,22 @@ export class Keypair {
    * Creates a new `Keypair` object from account ID.
    * @param {string} address account ID
    * @returns {Keypair}
+   * @deprecated Use {@link Keypair.fromAccountId}
    */
   static fromAddress(address) {
-    let publicKey = strkey.decodeCheck("accountId", address);
+    console.warn("Keypair#fromAddress is deprecated, please use Keypair#fromAccountId instead");
+    return Keypair.fromAccountId(address);
+  }
+
+  /**
+   * Creates a new `Keypair` object from account ID.
+   * @param {string} accountId account ID (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
+   * @returns {Keypair}
+   */
+  static fromAccountId(accountId) {
+    let publicKey = strkey.decodeCheck("accountId", accountId);
     if (publicKey.length !== 32) {
-      throw new Error('Invalid Stellar address');
+      throw new Error('Invalid Stellar accountId');
     }
     return new this({publicKey});
   }
@@ -95,11 +106,11 @@ export class Keypair {
     return this.fromRawSeed(seed);
   }
 
-  accountId() {
+  xdrAccountId() {
     return new xdr.AccountId.keyTypeEd25519(this._publicKey);
   }
 
-  publicKey() {
+  xdrPublicKey() {
     return new xdr.PublicKey.keyTypeEd25519(this._publicKey);
   }
 
@@ -112,7 +123,7 @@ export class Keypair {
   }
 
   signatureHint() {
-    let a = this.accountId().toXDR();
+    let a = this.xdrAccountId().toXDR();
 
     return a.slice(a.length - 4);
   }
@@ -122,6 +133,15 @@ export class Keypair {
    * @returns {string}
    */
   address() {
+    console.warn("Keypair#address is deprecated, please use Keypair#accountId instead");
+    return this.accountId();
+  }
+
+  /**
+   * Returns account ID associated with this `Keypair` object.
+   * @returns {string}
+   */
+  accountId() {
     return strkey.encodeCheck("accountId", this._publicKey);
   }
 

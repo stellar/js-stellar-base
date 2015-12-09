@@ -5,7 +5,7 @@ describe('Account.constructor', function() {
   });
 });
 
-describe('Account.isValidAddress', function() {
+describe('Account.isValidAccountId', function() {
 
   it("returns true for valid address", function() {
     var addresses = [
@@ -22,7 +22,7 @@ describe('Account.isValidAddress', function() {
     ];
 
     for (var i in addresses) {
-      expect(StellarBase.Account.isValidAddress(addresses[i])).to.be.true;
+      expect(StellarBase.Account.isValidAccountId(addresses[i])).to.be.true;
     }
   });
 
@@ -40,7 +40,7 @@ describe('Account.isValidAddress', function() {
     ];
 
     for (var i in addresses) {
-      expect(StellarBase.Account.isValidAddress(addresses[i])).to.be.false;
+      expect(StellarBase.Account.isValidAccountId(addresses[i])).to.be.false;
     }
   });
 
