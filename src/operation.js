@@ -33,21 +33,21 @@ export class Operation {
     /**
     * Create and fund a non existent account.
     * @param {object} opts
-    * @param {string} opts.destination - Destination address to create an account for.
+    * @param {string} opts.destination - Destination account ID to create an account for.
     * @param {string} opts.startingBalance - Amount in XLM the account should be funded for. Must be greater
     *                                   than the [reserve balance amount](https://www.stellar.org/developers/learn/concepts/fees.html).
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.CreateAccountOp}
     */
     static createAccount(opts) {
-        if (!Account.isValidAddress(opts.destination)) {
+        if (!Account.isValidAccountId(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!this.isValidAmount(opts.startingBalance)) {
             throw new TypeError('startingBalance argument must be of type String and represent a positive number');
         }
         let attributes = {};
-        attributes.destination     = Keypair.fromAddress(opts.destination).accountId();
+        attributes.destination     = Keypair.fromAccountId(opts.destination).xdrAccountId();
         attributes.startingBalance = this._toXDRAmount(opts.startingBalance);
         let createAccount          = new xdr.CreateAccountOp(attributes);
 
@@ -61,14 +61,14 @@ export class Operation {
     /**
     * Create a payment operation.
     * @param {object} opts
-    * @param {string} opts.destination - The destination address.
+    * @param {string} opts.destination - The destination account ID.
     * @param {Asset} opts.asset - The asset to send.
     * @param {string} opts.amount - The amount to send.
     * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
     * @returns {xdr.PaymentOp}
     */
     static payment(opts) {
-        if (!Account.isValidAddress(opts.destination)) {
+        if (!Account.isValidAccountId(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.asset) {
@@ -79,7 +79,7 @@ export class Operation {
         }
 
         let attributes = {};
-        attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
+        attributes.destination  = Keypair.fromAccountId(opts.destination).xdrAccountId();
         attributes.asset        = opts.asset.toXdrObject();
         attributes.amount        = this._toXDRAmount(opts.amount);
         let payment             = new xdr.PaymentOp(attributes);
@@ -112,7 +112,7 @@ export class Operation {
         if (!this.isValidAmount(opts.sendMax)) {
             throw new TypeError('sendMax argument must be of type String and represent a positive number');
         }
-        if (!Account.isValidAddress(opts.destination)) {
+        if (!Account.isValidAccountId(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.destAsset) {
@@ -125,7 +125,7 @@ export class Operation {
         let attributes = {};
         attributes.sendAsset    = opts.sendAsset.toXdrObject();
         attributes.sendMax      = this._toXDRAmount(opts.sendMax);
-        attributes.destination  = Keypair.fromAddress(opts.destination).accountId();
+        attributes.destination  = Keypair.fromAccountId(opts.destination).xdrAccountId();
         attributes.destAsset    = opts.destAsset.toXdrObject();
         attributes.destAmount   = this._toXDRAmount(opts.destAmount);
 
@@ -191,11 +191,11 @@ export class Operation {
     * @returns {xdr.AllowTrustOp}
     */
     static allowTrust(opts) {
-        if (!Account.isValidAddress(opts.trustor)) {
+        if (!Account.isValidAccountId(opts.trustor)) {
             throw new Error("trustor is invalid");
         }
         let attributes = {};
-        attributes.trustor = Keypair.fromAddress(opts.trustor).accountId();
+        attributes.trustor = Keypair.fromAccountId(opts.trustor).xdrAccountId();
         if (opts.assetCode.length <= 4) {
             let code = padRight(opts.assetCode, 4, '\0');
             attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
@@ -222,7 +222,7 @@ export class Operation {
     *   - AUTH_REQUIRED_FLAG = 0x1
     *   - AUTH_REVOCABLE_FLAG = 0x2
     * @param {object} opts
-    * @param {string} [opts.inflationDest] - Set this address as the account's inflation destination.
+    * @param {string} [opts.inflationDest] - Set this account ID as the account's inflation destination.
     * @param {number} [opts.clearFlags] - Bitmap integer for which flags to clear.
     * @param {number} [opts.setFlags] - Bitmap integer for which flags to set.
     * @param {number} [opts.masterWeight] - The master key weight.
@@ -241,10 +241,10 @@ export class Operation {
         let attributes = {};
 
         if (opts.inflationDest) {
-            if (!Account.isValidAddress(opts.inflationDest)) {
+            if (!Account.isValidAccountId(opts.inflationDest)) {
                 throw new Error("inflationDest is invalid");
             }
-            attributes.inflationDest = Keypair.fromAddress(opts.inflationDest).accountId();
+            attributes.inflationDest = Keypair.fromAccountId(opts.inflationDest).xdrAccountId();
         }
 
         attributes.clearFlags = opts.clearFlags;
@@ -277,7 +277,7 @@ export class Operation {
         attributes.homeDomain = opts.homeDomain;
 
         if (opts.signer) {
-            if (!Account.isValidAddress(opts.signer.address)) {
+            if (!Account.isValidAccountId(opts.signer.address)) {
                 throw new Error("signer.address is invalid");
             }
 
@@ -286,7 +286,7 @@ export class Operation {
             }
 
             attributes.signer = new xdr.Signer({
-                pubKey: Keypair.fromAddress(opts.signer.address).accountId(),
+                pubKey: Keypair.fromAccountId(opts.signer.address).xdrAccountId(),
                 weight: opts.signer.weight
             });
         }
@@ -385,11 +385,11 @@ export class Operation {
     */
     static accountMerge(opts) {
         let opAttributes = {};
-        if (!Account.isValidAddress(opts.destination)) {
+        if (!Account.isValidAccountId(opts.destination)) {
             throw new Error("destination is invalid");
         }
         opAttributes.body = xdr.OperationBody.accountMerge(
-            Keypair.fromAddress(opts.destination).accountId()
+            Keypair.fromAccountId(opts.destination).xdrAccountId()
         );
         this.setSourceAccount(opAttributes, opts);
 
@@ -411,10 +411,10 @@ export class Operation {
 
     static setSourceAccount(opAttributes, opts) {
       if (opts.source) {
-          if (!Account.isValidAddress(opts.source)) {
+          if (!Account.isValidAccountId(opts.source)) {
               throw new Error("Source address is invalid");
           }
-          opAttributes.sourceAccount = Keypair.fromAddress(opts.source).accountId();
+          opAttributes.sourceAccount = Keypair.fromAccountId(opts.source).xdrAccountId();
       }
     }
 

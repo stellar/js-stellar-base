@@ -7,7 +7,7 @@ import {clone, padRight, trimRight} from 'lodash';
 export class Asset {
     /**
      * Asset class represents an asset, either the native asset (`XLM`)
-     * or a asset code / issuer address pair.
+     * or a asset code / issuer account ID pair.
      *
      * An asset code describes an asset code and issuer pair. In the case of the native
      * asset XLM, the issuer will be null.
@@ -23,7 +23,7 @@ export class Asset {
       if (String(code).toLowerCase() !== "xlm" && !issuer) {
         throw new Error("Issuer cannot be null");
       }
-      if (issuer && !Account.isValidAddress(issuer)) {
+      if (issuer && !Account.isValidAccountId(issuer)) {
         throw new Error("Issuer is invalid");
       }
 
@@ -87,7 +87,7 @@ export class Asset {
 
             var assetType = new xdrType({
                 assetCode: paddedCode,
-                issuer: Keypair.fromAddress(this.issuer).accountId()
+                issuer: Keypair.fromAccountId(this.issuer).xdrAccountId()
             });
 
             return new xdr.Asset(xdrTypeString, assetType);

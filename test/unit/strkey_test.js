@@ -1,7 +1,7 @@
 var keypair          = StellarBase.Keypair.master();
 let unencodedBuffer  = keypair.rawPublicKey();
 let unencoded        = unencodedBuffer.toString();
-let accountIdEncoded = keypair.address();
+let accountIdEncoded = keypair.accountId();
 let seedEncoded      = StellarBase.encodeCheck("seed", unencodedBuffer);
 
 describe('StellarBase#decodeCheck', function() {
