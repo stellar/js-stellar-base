@@ -200,13 +200,40 @@ struct LedgerHeaderHistoryEntry
     ext;
 };
 
+// historical SCP messages
+
+struct LedgerSCPMessages
+{
+    uint32 ledgerSeq;
+    SCPEnvelope messages<>;
+};
+
+// note: ledgerMessages may refer to any quorumSets encountered
+// in the file so far, not just the one from this entry
+struct SCPHistoryEntryV0
+{
+    SCPQuorumSet quorumSets<>; // additional quorum sets used by ledgerMessages
+    LedgerSCPMessages ledgerMessages;
+};
+
+// SCP history file is an array of these
+union SCPHistoryEntry switch (int v)
+{
+case 0:
+    SCPHistoryEntryV0 v0;
+};
+
 // represents the meta in the transaction table history
+
+// STATE is emitted every time a ledger entry is modified/deleted
+// and the entry was not already modified in the current ledger
 
 enum LedgerEntryChangeType
 {
     LEDGER_ENTRY_CREATED = 0, // entry was added to the ledger
     LEDGER_ENTRY_UPDATED = 1, // entry was modified in the ledger
-    LEDGER_ENTRY_REMOVED = 2  // entry was removed from the ledger
+    LEDGER_ENTRY_REMOVED = 2, // entry was removed from the ledger
+    LEDGER_ENTRY_STATE = 3    // value of the entry
 };
 
 union LedgerEntryChange switch (LedgerEntryChangeType type)
@@ -217,6 +244,8 @@ case LEDGER_ENTRY_UPDATED:
     LedgerEntry updated;
 case LEDGER_ENTRY_REMOVED:
     LedgerKey removed;
+case LEDGER_ENTRY_STATE:
+    LedgerEntry state;
 };
 
 typedef LedgerEntryChange LedgerEntryChanges<>;
