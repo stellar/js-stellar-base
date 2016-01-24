@@ -543,6 +543,11 @@ export class Operation {
             return false;
         }
 
+        // > Max value
+        if (amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString())) {
+            return false;
+        }
+
         // Decimal places (max 7)
         if (amount.decimalPlaces() > 7) {
             return false;

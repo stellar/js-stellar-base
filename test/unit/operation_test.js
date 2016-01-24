@@ -550,7 +550,8 @@ describe('Operation', function() {
             let amounts = [
               "10",
               "0.10",
-              "0.1234567"
+              "0.1234567",
+              "922337203685.4775807" // MAX
             ];
 
             for (var i in amounts) {
@@ -568,6 +569,7 @@ describe('Operation', function() {
                 "-10",
                 "-10.5",
                 "0.12345678",
+                "922337203685.4775808", // Overflow
                 "Infinity",
                 Infinity,
                 "Nan",
