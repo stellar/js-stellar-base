@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+import {isString} from 'lodash';
 import {decodeCheck} from "./strkey";
 
 export class Account {
@@ -10,14 +12,17 @@ export class Account {
      * accounts work in Stellar.
      * @constructor
      * @param {string} accountId ID of the account (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
-     * @param {number} sequence current sequence number of the account
+     * @param {string} sequence current sequence number of the account
      */
     constructor(accountId, sequence) {
         if (!Account.isValidAccountId(accountId)) {
             throw new Error('address is invalid');
         }
+        if (!isString(sequence)) {
+            throw new Error('sequence must be of type string');
+        }
         this._accountId = accountId;
-        this.sequence = sequence;
+        this.sequence = new BigNumber(sequence);
         // @deprecated
         this.address = accountId;
     }
@@ -59,10 +64,17 @@ export class Account {
     }
 
     /**
-     * @returns {number}
+     * @returns {string}
      */
     sequenceNumber() {
-        return this.sequence;
+        return this.sequence.toString();
+    }
+
+    /**
+     * Increments sequence number in this object by one.
+     */
+    incrementSequenceNumber() {
+        this.sequence = this.sequence.add(1);
     }
 
     /**
