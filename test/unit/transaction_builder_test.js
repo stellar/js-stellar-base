@@ -8,7 +8,7 @@ describe('TransactionBuilder', function() {
         var transaction;
         var memo;
         beforeEach(function () {
-            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
+            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
             destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
             amount = "1000";
             asset = StellarBase.Asset.native();
@@ -36,7 +36,7 @@ describe('TransactionBuilder', function() {
         });
 
         it("should increment the account's sequence number", function (done) {
-            expect(source.sequence).to.be.equal(1);
+            expect(source.sequenceNumber()).to.be.equal("1");
             done();
         });
 
@@ -62,7 +62,7 @@ describe('TransactionBuilder', function() {
         var transaction;
         beforeEach(function () {
             asset = StellarBase.Asset.native();
-            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
+            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
 
             destination1 = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
             amount1 = "1000";
@@ -96,7 +96,7 @@ describe('TransactionBuilder', function() {
         });
 
         it("should increment the account's sequence number", function (done) {
-            expect(source.sequence).to.be.equal(1);
+            expect(source.sequenceNumber()).to.be.equal("1");
             done();
         });
 
@@ -123,7 +123,7 @@ describe('TransactionBuilder', function() {
         var transaction;
         beforeEach(function () {
             asset = StellarBase.Asset.native();
-            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 0);
+            source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
 
             destination1 = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
             amount1 = "1000";

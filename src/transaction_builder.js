@@ -5,6 +5,7 @@ import {Account} from "./account";
 import {Operation} from "./operation";
 import {Transaction} from "./transaction";
 import {Memo} from "./memo";
+import BigNumber from 'bignumber.js';
 import {map} from "lodash";
 
 let BASE_FEE     = 100; // Stroops
@@ -108,12 +109,14 @@ export class TransactionBuilder {
      * @returns {Transaction} This method will return the built {@link Transaction}.
      */
     build() {
+        let sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
+
         var attrs = {
           sourceAccount: Keypair.fromAccountId(this.source.accountId()).xdrAccountId(),
           fee:           this.baseFee * this.operations.length,
-          seqNum:        xdr.SequenceNumber.fromString(String(Number(this.source.sequence) + 1)),
+          seqNum:        xdr.SequenceNumber.fromString(sequenceNumber.toString()),
           memo:          this.memo,
-          ext:           new xdr.TransactionExt(0),
+          ext:           new xdr.TransactionExt(0)
         };
         if (this.timebounds) {
             attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
@@ -125,7 +128,7 @@ export class TransactionBuilder {
         let tx = new Transaction(xenv);
         tx.sign(...this.signers);
 
-        this.source.sequence = this.source.sequence + 1;
+        this.source.incrementSequenceNumber();
         return tx;
     }
 }
