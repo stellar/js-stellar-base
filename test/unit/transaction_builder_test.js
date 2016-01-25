@@ -26,7 +26,7 @@ describe('TransactionBuilder', function() {
 
         it("should have the same source account", function (done) {
             expect(transaction.source)
-                .to.be.equal(source.address);
+                .to.be.equal(source.accountId());
             done()
         });
 
@@ -86,7 +86,7 @@ describe('TransactionBuilder', function() {
 
         it("should have the same source account", function (done) {
             expect(transaction.source)
-              .to.be.equal(source.address);
+              .to.be.equal(source.accountId());
             done()
         });
 

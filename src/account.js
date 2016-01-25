@@ -23,19 +23,6 @@ export class Account {
         }
         this._accountId = accountId;
         this.sequence = new BigNumber(sequence);
-        // @deprecated
-        this.address = accountId;
-    }
-
-    /**
-     * Returns true if the given accountId is a valid Stellar account ID.
-     * @param {string} address account ID to check
-     * @returns {boolean}
-     * @deprecated Use {@link Account#isValidAccountId}
-     */
-    static isValidAddress(address) {
-        console.warn("Account#isValidAddress is deprecated, please use Account#isValidAccountId instead");
-        return Account.isValidAccountId(address);
     }
 
     /**
@@ -75,23 +62,5 @@ export class Account {
      */
     incrementSequenceNumber() {
         this.sequence = this.sequence.add(1);
-    }
-
-    /**
-     * @returns {string}
-     * @deprecated Use {@link Account#accountId}
-     */
-    getAddress() {
-        console.warn("Account#getAddress is deprecated, please use Account#accountId instead");
-        return this.address;
-    }
-
-    /**
-     * @returns {number}
-     * @deprecated Use {@link Account#sequenceNumber}
-     */
-    getSequenceNumber() {
-        console.warn("Account#getSequenceNumber is deprecated, please use Account#sequenceNumber instead");
-        return this.sequence;
     }
 }

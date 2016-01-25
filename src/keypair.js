@@ -75,17 +75,6 @@ export class Keypair {
 
   /**
    * Creates a new `Keypair` object from account ID.
-   * @param {string} address account ID
-   * @returns {Keypair}
-   * @deprecated Use {@link Keypair.fromAccountId}
-   */
-  static fromAddress(address) {
-    console.warn("Keypair#fromAddress is deprecated, please use Keypair#fromAccountId instead");
-    return Keypair.fromAccountId(address);
-  }
-
-  /**
-   * Creates a new `Keypair` object from account ID.
    * @param {string} accountId account ID (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
    * @returns {Keypair}
    */
@@ -126,15 +115,6 @@ export class Keypair {
     let a = this.xdrAccountId().toXDR();
 
     return a.slice(a.length - 4);
-  }
-
-  /**
-   * Returns account ID associated with this `Keypair` object.
-   * @returns {string}
-   */
-  address() {
-    console.warn("Keypair#address is deprecated, please use Keypair#accountId instead");
-    return this.accountId();
   }
 
   /**

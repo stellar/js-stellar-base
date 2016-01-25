@@ -94,16 +94,6 @@ export class TransactionBuilder {
     }
 
     /**
-     * Adds the given signer's signature to the transaction.
-     * @deprecated Use {@link Transaction#sign}
-     * @returns {TransactionBuilder}
-     */
-    addSigner(keypair) {
-        this.signers.push(keypair);
-        return this;
-    }
-
-    /**
      * This will build the transaction and sign it with the {@link Keypair} passed to {@link TransactionBuilder#addSigner}.
      * It will also increment the source account's sequence number by 1.
      * @returns {Transaction} This method will return the built {@link Transaction}.

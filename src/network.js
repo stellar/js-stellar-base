@@ -45,26 +45,10 @@ export class Network {
 	}
 
 	/**
-	 * Alias for {@link Network.usePublicNetwork}.
-	 * @deprecated Use {@link Network.usePublicNetwork} method
-	 */
-	static usePublicNet() {
-		this.usePublicNetwork();
-	}
-
-	/**
 	 * Use test network.
 	 */
 	static useTestNetwork() {
 		this.use(new Network(Networks.TESTNET));
-	}
-
-	/**
-	 * Alias for {@link Network.useTestNetwork}.
-	 * @deprecated Use {@link Network.useTestNetwork} method
-	 */
-	static useTestNet() {
-		this.useTestNetwork();
 	}
 
 	/**
