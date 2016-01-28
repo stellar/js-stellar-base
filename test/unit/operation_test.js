@@ -320,7 +320,35 @@ describe('Operation', function() {
             expect(obj.price).to.be.equal(opts.price);
             expect(obj.offerId).to.be.equal(opts.offerId);
         });
+        it("creates a manageOfferOp (price fraction)", function () {
+            var opts = {};
+            opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.amount = '3.123456';
+            opts.price = {
+                n: 11,
+                d: 10
+            }
+            opts.offerId = '1';
+            let op = StellarBase.Operation.manageOffer(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+            expect(obj.price).to.be.equal(new BigNumber(opts.price.n).div(opts.price.d).toString());
+        });
 
+        it("creates an invalid manageOfferOp (price fraction)", function () {
+            var opts = {};
+            opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.buying = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            opts.amount = '3.123456';
+            opts.price = {
+                n: 11,
+                d: -1
+            }
+            opts.offerId = '1';
+            expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/price numerator and denominator must be positive/)
+        });
         it("creates a manageOfferOp (number price)", function () {
             var opts = {};
             opts.selling = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
