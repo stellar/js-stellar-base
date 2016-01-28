@@ -347,7 +347,7 @@ describe('Operation', function() {
                 d: -1
             }
             opts.offerId = '1';
-            expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/price numerator and denominator must be positive/)
+            expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(/price must be positive/)
         });
         it("creates a manageOfferOp (number price)", function () {
             var opts = {};

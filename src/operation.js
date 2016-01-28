@@ -597,20 +597,22 @@ export class Operation {
      * @private
      */
     static _toXDRPrice(price) {
-        if(price.n && price.d){
-          if ((price.n < 0) || (price.d < 0)) {
-            throw new Error('price numerator and denominator must be positive');
-          }
-          return new xdr.Price(price);
+        let xdrObject;
+        if (price.n && price.d) {
+            xdrObject = new xdr.Price(price);
+        } else {
+            price = new BigNumber(price);
+            let approx = best_r(price);
+            xdrObject = new xdr.Price({
+                n: parseInt(approx[0]),
+                d: parseInt(approx[1])
+            });
         }
-        price = new BigNumber(price);
-        if (price.lte(0)) {
+
+        if (xdrObject.n() < 0 || xdrObject.d() < 0) {
             throw new Error('price must be positive');
         }
-        let approx = best_r(price);
-        return new xdr.Price({
-            n: parseInt(approx[0]),
-            d: parseInt(approx[1])
-        });
+
+        return xdrObject;
     }
 }
