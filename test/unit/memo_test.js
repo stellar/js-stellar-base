@@ -35,21 +35,29 @@ describe("Memo.id()", function() {
   });
 });
 
-describe("Memo.hash()", function() {
+describe("Memo.hash() & Memo.returnHash()", function() {
+  var methods = [StellarBase.Memo.hash, StellarBase.Memo.returnHash];
+
   it("returns a value for a correct argument", function() {
-    expect(() => StellarBase.Memo.hash(new Buffer(32))).to.not.throw();
-    expect(() => StellarBase.Memo.hash('0000000000000000000000000000000000000000000000000000000000000000')).to.not.throw();
+    for (let i in methods) {
+      let method = methods[i];
+      expect(() => method(new Buffer(32))).to.not.throw();
+      expect(() => method('0000000000000000000000000000000000000000000000000000000000000000')).to.not.throw();
+    }
   });
 
   it("throws an error when invalid argument was passed", function() {
-    expect(() => StellarBase.Memo.hash()).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash({})).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash(Infinity)).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash(NaN)).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash("test")).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash([0, 10, 20])).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash(new Buffer(33))).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash('00000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
-    expect(() => StellarBase.Memo.hash('000000000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
+    for (let i in methods) {
+      let method = methods[i];
+      expect(() => method()).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method({})).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method(Infinity)).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method(NaN)).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method("test")).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method([0, 10, 20])).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method(new Buffer(33))).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method('00000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method('000000000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
+    }
   });
 });

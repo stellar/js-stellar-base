@@ -66,13 +66,12 @@
     "webpack": "^1.7.3"
   },
   "dependencies": {
-    "babel-runtime": "~5.8.24",
     "base32.js": "~0.1.0",
     "bignumber.js": "^2.0.7",
     "crc": "^3.3.0",
     "ed25519": "0.0.4",
     "js-xdr": "~0.0.12",
-    "lodash": "^3.6.0",
+    "lodash": "^4.0.1",
     "sha.js": "^2.3.6",
     "tweetnacl": "^0.13.0"
   }

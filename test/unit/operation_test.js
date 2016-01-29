@@ -48,7 +48,7 @@ describe('Operation', function() {
         it("creates a paymentOp", function () {
             var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
             var amount = "1000";
-            var asset = new StellarBase.Asset("USD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
+            var asset = new StellarBase.Asset("USDUSD", "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7");
             let op = StellarBase.Operation.payment({destination, asset, amount});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
