@@ -2,7 +2,7 @@ import {default as xdr} from "./generated/stellar-xdr_generated";
 import {Account} from "./account";
 import {Keypair} from "./keypair";
 import {encodeCheck} from "./strkey";
-import {clone, padRight, trimRight} from 'lodash';
+import {clone, padEnd, trimEnd} from 'lodash';
 
 export class Asset {
     /**
@@ -52,12 +52,12 @@ export class Asset {
         case xdr.AssetType.assetTypeCreditAlphanum4():
           anum = assetXdr.alphaNum4();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
-          code = trimRight(anum.assetCode(), '\0');
+          code = trimEnd(anum.assetCode(), '\0');
           return new this(code, issuer);
         case xdr.AssetType.assetTypeCreditAlphanum12():
           anum = assetXdr.alphaNum12();
           issuer = encodeCheck("accountId", anum.issuer().ed25519());
-          code = trimRight(anum.assetCode(), '\0');
+          code = trimEnd(anum.assetCode(), '\0');
           return new this(code, issuer);
         default:
           throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
@@ -83,7 +83,7 @@ export class Asset {
 
             // pad code with null bytes if necessary
             let padLength = this.code.length <= 4 ? 4 : 12;
-            let paddedCode = padRight(this.code, padLength, '\0');
+            let paddedCode = padEnd(this.code, padLength, '\0');
 
             var assetType = new xdrType({
                 assetCode: paddedCode,

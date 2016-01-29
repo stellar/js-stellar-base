@@ -5,7 +5,7 @@ import {UnsignedHyper, Hyper} from "js-xdr";
 import {hash} from "./hashing";
 import {encodeCheck} from "./strkey";
 import {Asset} from "./asset";
-import {padRight, trimRight, isEmpty, isUndefined, isString} from 'lodash';
+import {padEnd, trimEnd, isEmpty, isUndefined, isString} from 'lodash';
 import BigNumber from 'bignumber.js';
 import {best_r} from "./util/continued_fraction";
 
@@ -197,10 +197,10 @@ export class Operation {
         let attributes = {};
         attributes.trustor = Keypair.fromAccountId(opts.trustor).xdrAccountId();
         if (opts.assetCode.length <= 4) {
-            let code = padRight(opts.assetCode, 4, '\0');
+            let code = padEnd(opts.assetCode, 4, '\0');
             attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
         } else if (opts.assetCode.length <= 12) {
-            let code = padRight(opts.assetCode, 12, '\0');
+            let code = padEnd(opts.assetCode, 12, '\0');
             attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
         } else {
             throw new Error("Asset code must be 12 characters at max.");
@@ -473,7 +473,7 @@ export class Operation {
                 result.type = "allowTrust";
                 result.trustor = accountIdtoAddress(attrs.trustor());
                 result.assetCode = attrs.asset().value().toString();
-                result.assetCode = trimRight(result.assetCode, "\0");
+                result.assetCode = trimEnd(result.assetCode, "\0");
                 result.authorize = attrs.authorize();
                 break;
             case "setOption":
