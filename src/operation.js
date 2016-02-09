@@ -221,6 +221,7 @@ export class Operation {
     * The account flags are the xdr.AccountFlags enum, which are:
     *   - AUTH_REQUIRED_FLAG = 0x1
     *   - AUTH_REVOCABLE_FLAG = 0x2
+    *   - AUTH_IMMUTABLE_FLAG = 0x4
     * @param {object} opts
     * @param {string} [opts.inflationDest] - Set this account ID as the account's inflation destination.
     * @param {number} [opts.clearFlags] - Bitmap integer for which flags to clear.
