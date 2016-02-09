@@ -68,7 +68,7 @@ The [path payment](https://www.stellar.org/developers/learn/concepts/list-of-ope
 ```js
 var keypair=StellarSdk.Keypair.fromSeed(seedString);
 
-var source = new Account(keypair.address(), 46316927324160);
+var source = new Account(keypair.accountId(), 46316927324160);
 var transaction = new TransactionBuilder(source)
   .addOperation(Operation.pathPayment({
       sendAsset: Asset.native(),
@@ -110,7 +110,7 @@ In each example, we'll use the root account.
 
 ```js
 var rootKeypair = Keypair.fromSeed("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
-var account = new Account(rootKeypair.address(), 46316927324160);
+var account = new Account(rootKeypair.accountId(), 46316927324160);
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
 
