@@ -247,6 +247,46 @@ describe('Operation', function() {
             expect(obj.homeDomain).to.be.equal(opts.homeDomain);
         });
 
+        it("string setFlags", function() {
+            let opts = {
+                setFlags: '4'
+            };
+            let op = StellarBase.Operation.setOptions(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+
+            expect(obj.type).to.be.equal("setOptions");
+            expect(obj.setFlags).to.be.equal(4);
+        });
+
+        it("fails to create setOptions operation with an invalid setFlags", function () {
+            let opts = {
+                setFlags: {}
+            };
+            expect(() => StellarBase.Operation.setOptions(opts)).to.throw();
+        });
+
+        it("string clearFlags", function() {
+            let opts = {
+                clearFlags: '4'
+            };
+            let op = StellarBase.Operation.setOptions(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+
+            expect(obj.type).to.be.equal("setOptions");
+            expect(obj.clearFlags).to.be.equal(4);
+        });
+
+        it("fails to create setOptions operation with an invalid clearFlags", function () {
+            let opts = {
+                clearFlags: {}
+            };
+            expect(() => StellarBase.Operation.setOptions(opts)).to.throw();
+        });
+
         it("fails to create setOptions operation with an invalid inflationDest address", function () {
             let opts = {
                 inflationDest: 'GCEZW'
@@ -570,6 +610,64 @@ describe('Operation', function() {
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
             expect(obj.type).to.be.equal("inflation");
+        });
+    });
+
+    describe("._checkUnsignedIntValue()", function () {
+        it("returns true for valid values", function () {
+            let values = [
+                {value: 0, expected: 0},
+                {value: 10, expected: 10},
+                {value: "0", expected: 0},
+                {value: "10", expected: 10},
+                {value: undefined, expected: undefined}
+            ];
+
+            for (var i in values) {
+                let {value, expected} = values[i];
+                expect(StellarBase.Operation._checkUnsignedIntValue(value, value)).to.be.equal(expected);
+            }
+        });
+
+        it("throws error for invalid values", function () {
+            let values = [
+                {},
+                [],
+                "", // empty string
+                "test", // string not representing a number
+                "0.5",
+                "-10",
+                "-10.5",
+                "Infinity",
+                Infinity,
+                "Nan",
+                NaN
+            ];
+
+            for (var i in values) {
+                let value = values[i];
+                expect(() => StellarBase.Operation._checkUnsignedIntValue(value, value)).to.throw();
+            }
+        });
+
+        it("return correct values when isValidFunction is set", function () {
+            expect(
+                StellarBase.Operation._checkUnsignedIntValue("test", undefined, value => value < 10)
+            ).to.equal(undefined);
+
+            expect(
+                StellarBase.Operation._checkUnsignedIntValue("test", 8, value => value < 10)
+            ).to.equal(8);
+            expect(
+                StellarBase.Operation._checkUnsignedIntValue("test", "8", value => value < 10)
+            ).to.equal(8);
+
+            expect(() => {
+                StellarBase.Operation._checkUnsignedIntValue("test", 12, value => value < 10);
+            }).to.throw();
+            expect(() => {
+                StellarBase.Operation._checkUnsignedIntValue("test", "12", value => value < 10);
+            }).to.throw();
         });
     });
 

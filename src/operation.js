@@ -5,7 +5,7 @@ import {UnsignedHyper, Hyper} from "js-xdr";
 import {hash} from "./hashing";
 import {encodeCheck} from "./strkey";
 import {Asset} from "./asset";
-import {padEnd, trimEnd, isEmpty, isUndefined, isString} from 'lodash';
+import {padEnd, trimEnd, isEmpty, isUndefined, isString, isNumber, isFinite} from 'lodash';
 import BigNumber from 'bignumber.js';
 import {best_r} from "./util/continued_fraction";
 
@@ -224,16 +224,16 @@ export class Operation {
     *   - AUTH_IMMUTABLE_FLAG = 0x4
     * @param {object} opts
     * @param {string} [opts.inflationDest] - Set this account ID as the account's inflation destination.
-    * @param {number} [opts.clearFlags] - Bitmap integer for which flags to clear.
-    * @param {number} [opts.setFlags] - Bitmap integer for which flags to set.
-    * @param {number} [opts.masterWeight] - The master key weight.
-    * @param {number} [opts.lowThreshold] - The sum weight for the low threshold.
-    * @param {number} [opts.medThreshold] - The sum weight for the medium threshold.
-    * @param {number} [opts.highThreshold] - The sum weight for the high threshold.
+    * @param {(number|string)} [opts.clearFlags] - Bitmap integer for which flags to clear.
+    * @param {(number|string)} [opts.setFlags] - Bitmap integer for which flags to set.
+    * @param {number|string} [opts.masterWeight] - The master key weight.
+    * @param {number|string} [opts.lowThreshold] - The sum weight for the low threshold.
+    * @param {number|string} [opts.medThreshold] - The sum weight for the medium threshold.
+    * @param {number|string} [opts.highThreshold] - The sum weight for the high threshold.
     * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
     *                                 deleted if the weight is 0.
     * @param {string} [opts.signer.address] - The address of the new signer.
-    * @param {number} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
+    * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.SetOptionsOp}
@@ -248,29 +248,20 @@ export class Operation {
             attributes.inflationDest = Keypair.fromAccountId(opts.inflationDest).xdrAccountId();
         }
 
-        attributes.clearFlags = opts.clearFlags;
-        attributes.setFlags = opts.setFlags;
+        let weightCheckFunction = (value, name) => {
+            if (value >= 0 && value <= 255) {
+                return true;
+            } else {
+                throw new Error(`${name} value must be between 0 and 255`);
+            }
+        };
 
-        if (!isUndefined(opts.masterWeight) && (opts.masterWeight < 0 || opts.masterWeight > 255)) {
-            throw new Error("masterWeight value must be between 0 and 255");
-        }
-
-        if (!isUndefined(opts.lowThreshold) && (opts.lowThreshold < 0 || opts.lowThreshold > 255)) {
-            throw new Error("lowThreshold value must be between 0 and 255");
-        }
-
-        if (!isUndefined(opts.medThreshold) && (opts.medThreshold < 0 || opts.medThreshold > 255)) {
-            throw new Error("medThreshold value must be between 0 and 255");
-        }
-
-        if (!isUndefined(opts.highThreshold) && (opts.highThreshold < 0 || opts.highThreshold > 255)) {
-            throw new Error("highThreshold value must be between 0 and 255");
-        }
-
-        attributes.masterWeight = opts.masterWeight;
-        attributes.lowThreshold = opts.lowThreshold;
-        attributes.medThreshold = opts.medThreshold;
-        attributes.highThreshold = opts.highThreshold;
+        attributes.clearFlags = this._checkUnsignedIntValue("clearFlags", opts.clearFlags);
+        attributes.setFlags = this._checkUnsignedIntValue("setFlags", opts.setFlags);
+        attributes.masterWeight = this._checkUnsignedIntValue("masterWeight", opts.masterWeight, weightCheckFunction);
+        attributes.lowThreshold = this._checkUnsignedIntValue("lowThreshold", opts.lowThreshold, weightCheckFunction);
+        attributes.medThreshold = this._checkUnsignedIntValue("medThreshold", opts.medThreshold, weightCheckFunction);
+        attributes.highThreshold = this._checkUnsignedIntValue("highThreshold", opts.highThreshold, weightCheckFunction);
 
         if (!isUndefined(opts.homeDomain) && !isString(opts.homeDomain)) {
             throw new TypeError('homeDomain argument must be of type String');
@@ -282,9 +273,7 @@ export class Operation {
                 throw new Error("signer.address is invalid");
             }
 
-            if (opts.signer.weight < 0 || opts.signer.weight > 255) {
-                throw new Error("signer.weight value must be between 0 and 255");
-            }
+            opts.signer.weight = this._checkUnsignedIntValue("signer.weight", opts.signer.weight, weightCheckFunction);
 
             attributes.signer = new xdr.Signer({
                 pubKey: Keypair.fromAccountId(opts.signer.address).xdrAccountId(),
@@ -569,6 +558,42 @@ export class Operation {
         }
 
         return true;
+    }
+
+    /**
+     * Returns value converted to uint32 value or undefined.
+     * If `value` is not `Number`, `String` or `Undefined` then throws an error.
+     * Used in {@link Operation.setOptions}.
+     * @private
+     * @param {string} name Name of the property (used in error message only)
+     * @param {*} value Value to check
+     * @param {function(value, name)} isValidFunction Function to check other constraints (the argument will be a `Number`)
+     * @returns {undefined|Number}
+     * @private
+     */
+    static _checkUnsignedIntValue(name, value, isValidFunction = null) {
+        if (isUndefined(value)) {
+            return undefined;
+        }
+
+        if (isString(value)) {
+            value = parseFloat(value);
+        }
+
+        if (!isNumber(value) || !isFinite(value) || value % 1 !== 0) {
+            throw new Error(`${name} value is invalid`);
+        }
+
+        if (value < 0) {
+            throw new Error(`${name} value must be unsigned`);
+        }
+
+        if (!isValidFunction ||
+            (isValidFunction && isValidFunction(value, name))) {
+            return value;
+        }
+
+        throw new Error(`${name} value is invalid`);
     }
 
     /**
