@@ -1,5 +1,4 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
-import {Account} from "./account";
 import {Keypair} from "./keypair";
 import {encodeCheck} from "./strkey";
 import {clone, padEnd, trimEnd} from 'lodash';
@@ -23,7 +22,7 @@ export class Asset {
       if (String(code).toLowerCase() !== "xlm" && !issuer) {
         throw new Error("Issuer cannot be null");
       }
-      if (issuer && !Account.isValidAccountId(issuer)) {
+      if (issuer && !Keypair.isValidPublicKey(issuer)) {
         throw new Error("Issuer is invalid");
       }
 

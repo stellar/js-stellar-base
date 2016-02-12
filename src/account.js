@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import {isString} from 'lodash';
+import {Keypair} from './keypair';
 import {decodeCheck} from "./strkey";
 
 export class Account {
@@ -15,8 +16,8 @@ export class Account {
      * @param {string} sequence current sequence number of the account
      */
     constructor(accountId, sequence) {
-        if (!Account.isValidAccountId(accountId)) {
-            throw new Error('address is invalid');
+        if (!Keypair.isValidPublicKey(accountId)) {
+            throw new Error('accountId is invalid');
         }
         if (!isString(sequence)) {
             throw new Error('sequence must be of type string');
@@ -29,8 +30,10 @@ export class Account {
      * Returns true if the given accountId is a valid Stellar account ID.
      * @param {string} accountId account ID to check
      * @returns {boolean}
+     * @deprecated Use {@link Keypair.isValidPublicKey}
      */
     static isValidAccountId(accountId) {
+        console.warn('Account.isValidAccountId is deprecated. Use Keypair.isValidPublicKey.')
         try {
             let decoded = decodeCheck("accountId", accountId);
             if (decoded.length !== 32) {

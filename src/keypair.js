@@ -95,6 +95,23 @@ export class Keypair {
     return this.fromRawSeed(seed);
   }
 
+  /**
+   * Returns true if the given Stellar public key is valid.
+   * @param {string} publicKey public key to check
+   * @returns {boolean}
+   */
+  static isValidPublicKey(publicKey) {
+    try {
+      let decoded = strkey.decodeCheck("accountId", publicKey);
+      if (decoded.length !== 32) {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+    return true;
+  }
+
   xdrAccountId() {
     return new xdr.AccountId.keyTypeEd25519(this._publicKey);
   }

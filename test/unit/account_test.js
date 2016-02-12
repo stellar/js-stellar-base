@@ -1,7 +1,7 @@
 
 describe('Account.constructor', function() {
   it("fails to create Account object from an invalid address", function() {
-    expect(() => new StellarBase.Account('GBBB')).to.throw(/address is invalid/);
+    expect(() => new StellarBase.Account('GBBB')).to.throw(/accountId is invalid/);
   });
 
   it("fails to create Account object from an invalid sequence number", function() {
@@ -56,7 +56,7 @@ describe('Account.isValidAccountId', function() {
 
 });
 
-describe('Account.isValidAccountId', function() {
+describe('Account.incrementSequenceNumber', function() {
   it("correctly increments the sequence number", function() {
     let account = new StellarBase.Account('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB', '100');
     account.incrementSequenceNumber();

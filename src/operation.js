@@ -1,5 +1,4 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
-import {Account} from "./account";
 import {Keypair} from "./keypair";
 import {UnsignedHyper, Hyper} from "js-xdr";
 import {hash} from "./hashing";
@@ -40,7 +39,7 @@ export class Operation {
     * @returns {xdr.CreateAccountOp}
     */
     static createAccount(opts) {
-        if (!Account.isValidAccountId(opts.destination)) {
+        if (!Keypair.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!this.isValidAmount(opts.startingBalance)) {
@@ -68,7 +67,7 @@ export class Operation {
     * @returns {xdr.PaymentOp}
     */
     static payment(opts) {
-        if (!Account.isValidAccountId(opts.destination)) {
+        if (!Keypair.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.asset) {
@@ -112,7 +111,7 @@ export class Operation {
         if (!this.isValidAmount(opts.sendMax)) {
             throw new TypeError('sendMax argument must be of type String and represent a positive number');
         }
-        if (!Account.isValidAccountId(opts.destination)) {
+        if (!Keypair.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.destAsset) {
@@ -191,7 +190,7 @@ export class Operation {
     * @returns {xdr.AllowTrustOp}
     */
     static allowTrust(opts) {
-        if (!Account.isValidAccountId(opts.trustor)) {
+        if (!Keypair.isValidPublicKey(opts.trustor)) {
             throw new Error("trustor is invalid");
         }
         let attributes = {};
@@ -242,7 +241,7 @@ export class Operation {
         let attributes = {};
 
         if (opts.inflationDest) {
-            if (!Account.isValidAccountId(opts.inflationDest)) {
+            if (!Keypair.isValidPublicKey(opts.inflationDest)) {
                 throw new Error("inflationDest is invalid");
             }
             attributes.inflationDest = Keypair.fromAccountId(opts.inflationDest).xdrAccountId();
@@ -274,7 +273,7 @@ export class Operation {
                 opts.signer.pubKey = opts.signer.address;
             }
 
-            if (!Account.isValidAccountId(opts.signer.pubKey)) {
+            if (!Keypair.isValidPublicKey(opts.signer.pubKey)) {
                 throw new Error("signer.pubKey is invalid");
             }
 
@@ -384,7 +383,7 @@ export class Operation {
     */
     static accountMerge(opts) {
         let opAttributes = {};
-        if (!Account.isValidAccountId(opts.destination)) {
+        if (!Keypair.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         opAttributes.body = xdr.OperationBody.accountMerge(
@@ -410,7 +409,7 @@ export class Operation {
 
     static setSourceAccount(opAttributes, opts) {
       if (opts.source) {
-          if (!Account.isValidAccountId(opts.source)) {
+          if (!Keypair.isValidPublicKey(opts.source)) {
               throw new Error("Source address is invalid");
           }
           opAttributes.sourceAccount = Keypair.fromAccountId(opts.source).xdrAccountId();
