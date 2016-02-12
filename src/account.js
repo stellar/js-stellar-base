@@ -33,7 +33,7 @@ export class Account {
      * @deprecated Use {@link Keypair.isValidPublicKey}
      */
     static isValidAccountId(accountId) {
-        console.warn('Account.isValidAccountId is deprecated. Use Keypair.isValidPublicKey.')
+        console.warn('Account.isValidAccountId is deprecated. Use Keypair.isValidPublicKey.');
         try {
             let decoded = decodeCheck("accountId", accountId);
             if (decoded.length !== 32) {
