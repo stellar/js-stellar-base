@@ -232,7 +232,7 @@ export class Operation {
     * @param {number|string} [opts.highThreshold] - The sum weight for the high threshold.
     * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
     *                                 deleted if the weight is 0.
-    * @param {string} [opts.signer.address] - The address of the new signer.
+    * @param {string} [opts.signer.pubKey] - The public key of the new signer (old `address` field name is deprecated).
     * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -269,14 +269,19 @@ export class Operation {
         attributes.homeDomain = opts.homeDomain;
 
         if (opts.signer) {
-            if (!Account.isValidAccountId(opts.signer.address)) {
-                throw new Error("signer.address is invalid");
+            if (opts.signer.address) {
+                console.warn("signer.address is deprecated. Use signer.pubKey instead.");
+                opts.signer.pubKey = opts.signer.address;
+            }
+
+            if (!Account.isValidAccountId(opts.signer.pubKey)) {
+                throw new Error("signer.pubKey is invalid");
             }
 
             opts.signer.weight = this._checkUnsignedIntValue("signer.weight", opts.signer.weight, weightCheckFunction);
 
             attributes.signer = new xdr.Signer({
-                pubKey: Keypair.fromAccountId(opts.signer.address).xdrAccountId(),
+                pubKey: Keypair.fromAccountId(opts.signer.pubKey).xdrAccountId(),
                 weight: opts.signer.weight
             });
         }

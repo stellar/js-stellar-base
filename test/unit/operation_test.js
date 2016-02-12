@@ -301,7 +301,7 @@ describe('Operation', function() {
                     weight: 1
                 }
             };
-            expect(() => StellarBase.Operation.setOptions(opts)).to.throw(/signer.address is invalid/)
+            expect(() => StellarBase.Operation.setOptions(opts)).to.throw(/signer.pubKey is invalid/)
         });
 
         it("fails to create setOptions operation with an invalid masterWeight", function() {
