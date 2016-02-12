@@ -1,4 +1,5 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
+import {UnsignedHyper} from "js-xdr";
 import {hash} from "./hashing";
 import {Keypair} from "./keypair";
 import {Account} from "./account";
@@ -6,7 +7,7 @@ import {Operation} from "./operation";
 import {Transaction} from "./transaction";
 import {Memo} from "./memo";
 import BigNumber from 'bignumber.js';
-import {map} from "lodash";
+import {clone, map} from "lodash";
 
 let BASE_FEE     = 100; // Stroops
 let MIN_LEDGER   = 0;
@@ -65,7 +66,7 @@ export class TransactionBuilder {
         this.signers       = [];
 
         this.baseFee    = opts.fee || BASE_FEE;
-        this.timebounds = opts.timebounds;
+        this.timebounds = clone(opts.timebounds);
 
         this.memo       = opts.memo || Memo.none();
 
@@ -109,6 +110,8 @@ export class TransactionBuilder {
           ext:           new xdr.TransactionExt(0)
         };
         if (this.timebounds) {
+            this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime);
+            this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime);
             attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
         }
         let xtx = new xdr.Transaction(attrs);

@@ -29,6 +29,14 @@ export class Transaction {
         this.memo     = this.tx.memo();
         this.sequence = this.tx.seqNum().toString();
 
+        let timeBounds = this.tx.timeBounds();
+        if (timeBounds) {
+            this.timeBounds = {
+                minTime: timeBounds.minTime().toString(),
+                maxTime: timeBounds.maxTime().toString()
+            };
+        }
+
         let operations  = this.tx.operations() || [];
         this.operations = map(operations, op => {
           return Operation.operationToObject(op);
@@ -72,7 +80,7 @@ export class Transaction {
         return Buffer.concat([
             Network.current().networkId(),
             xdr.EnvelopeType.envelopeTypeTx().toXDR(),
-            this.tx.toXDR(),
+            this.tx.toXDR()
         ]);
     }
 

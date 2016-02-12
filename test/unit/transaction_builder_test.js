@@ -151,4 +151,25 @@ describe('TransactionBuilder', function() {
             done();
         });
     });
+
+    describe("constructs a native payment transaction with timebounds", function() {
+        it("should have have timebounds", function (done) {
+            let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
+            let timebounds = {
+                minTime: "1455287522",
+                maxTime: "1455297545"
+            };
+            let transaction = new StellarBase.TransactionBuilder(source, {timebounds})
+              .addOperation(StellarBase.Operation.payment({
+                  destination: "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+                  asset: StellarBase.Asset.native(),
+                  amount: "1000"
+              }))
+              .build();
+
+            expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime);
+            expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
+            done();
+        });
+    });
 });
