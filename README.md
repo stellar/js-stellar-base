@@ -41,7 +41,7 @@ relative to your html file.
   var StellarBase = require('stellar-base');
   ```
 
-### To use in the browser
+### To self host for use in the browser
 1. Install it using [bower](http://bower.io):
 
   ```shell
@@ -55,7 +55,19 @@ relative to your html file.
   <script>console.log(StellarBase);</script>
   ```
 
-Note that you can also copy built JS files from [bower-js-stellar-base repo](https://github.com/stellar/bower-js-stellar-base) if you don't want to use Bower.
+If you don't want to use install Bower, you can copy built JS files from the [bower-js-stellar-base repo](https://github.com/stellar/bower-js-stellar-base).
+
+### To use the [cdnjs](https://cdnjs.com/libraries/stellar-base) hosted script in the browser
+1. Instruct the browser to fetch the library from [cdnjs](https://cdnjs.com/libraries/stellar-base), a 3rd party service that hosts js libraries:
+
+  ```html
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-base/0.5.2/stellar-base.js"></script>
+  <script>console.log(StellarBase);</script>
+  ```
+
+Note that this method relies using a third party to host the JS library. This may not be entirely secure.
+
+Make sure that you are using the latest version number. They can be found on the [releases page in Github](https://github.com/stellar/js-stellar-base/releases).
 
 ### To develop and test js-stellar-base itself
 1. Clone the repo
@@ -104,4 +116,3 @@ Read more about [npm version](https://docs.npmjs.com/cli/version).
 
 ## License
 js-stellar-base is licensed under an Apache-2.0 license. See the [LICENSE](./LICENSE) file for details.
-
