@@ -1,4 +1,4 @@
-// Automatically generated on 2016-01-21T17:26:27+01:00
+// Automatically generated on 2016-02-22T13:07:20+01:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -275,10 +275,24 @@ xdr.typedef("String32", xdr.string(32));
 
 // === xdr source ============================================================
 //
+//   typedef string string64<64>;
+//
+// ===========================================================================
+xdr.typedef("String64", xdr.string(64));
+
+// === xdr source ============================================================
+//
 //   typedef uint64 SequenceNumber;
 //
 // ===========================================================================
 xdr.typedef("SequenceNumber", xdr.lookup("Uint64"));
+
+// === xdr source ============================================================
+//
+//   typedef opaque DataValue<64>;
+//
+// ===========================================================================
+xdr.typedef("DataValue", xdr.varOpaque(64));
 
 // === xdr source ============================================================
 //
@@ -401,7 +415,8 @@ xdr.enum("ThresholdIndices", {
 //   {
 //       ACCOUNT = 0,
 //       TRUSTLINE = 1,
-//       OFFER = 2
+//       OFFER = 2,
+//       DATA = 3
 //   };
 //
 // ===========================================================================
@@ -409,6 +424,7 @@ xdr.enum("LedgerEntryType", {
   account: 0,
   trustline: 1,
   offer: 2,
+  datum: 3,
 });
 
 // === xdr source ============================================================
@@ -646,6 +662,50 @@ xdr.struct("OfferEntry", [
 
 // === xdr source ============================================================
 //
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("DataEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct DataEntry
+//   {
+//       AccountID accountID; // account this data belongs to
+//       string64 dataName;
+//       DataValue dataValue;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("DataEntry", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["dataName", xdr.lookup("String64")],
+  ["dataValue", xdr.lookup("DataValue")],
+  ["ext", xdr.lookup("DataEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (LedgerEntryType type)
 //       {
 //       case ACCOUNT:
@@ -654,6 +714,8 @@ xdr.struct("OfferEntry", [
 //           TrustLineEntry trustLine;
 //       case OFFER:
 //           OfferEntry offer;
+//       case DATA:
+//           DataEntry data;
 //       }
 //
 // ===========================================================================
@@ -664,11 +726,13 @@ xdr.union("LedgerEntryData", {
     ["account", "account"],
     ["trustline", "trustLine"],
     ["offer", "offer"],
+    ["datum", "data"],
   ],
   arms: {
     account: xdr.lookup("AccountEntry"),
     trustLine: xdr.lookup("TrustLineEntry"),
     offer: xdr.lookup("OfferEntry"),
+    data: xdr.lookup("DataEntry"),
   },
 });
 
@@ -705,6 +769,8 @@ xdr.union("LedgerEntryExt", {
 //           TrustLineEntry trustLine;
 //       case OFFER:
 //           OfferEntry offer;
+//       case DATA:
+//           DataEntry data;
 //       }
 //       data;
 //   
@@ -961,6 +1027,20 @@ xdr.struct("LedgerKeyOffer", [
 
 // === xdr source ============================================================
 //
+//   struct
+//       {
+//           AccountID accountID;
+//           string64 dataName;
+//       }
+//
+// ===========================================================================
+xdr.struct("LedgerKeyData", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["dataName", xdr.lookup("String64")],
+]);
+
+// === xdr source ============================================================
+//
 //   union LedgerKey switch (LedgerEntryType type)
 //   {
 //   case ACCOUNT:
@@ -982,6 +1062,13 @@ xdr.struct("LedgerKeyOffer", [
 //           AccountID sellerID;
 //           uint64 offerID;
 //       } offer;
+//   
+//   case DATA:
+//       struct
+//       {
+//           AccountID accountID;
+//           string64 dataName;
+//       } data;
 //   };
 //
 // ===========================================================================
@@ -992,11 +1079,13 @@ xdr.union("LedgerKey", {
     ["account", "account"],
     ["trustline", "trustLine"],
     ["offer", "offer"],
+    ["datum", "data"],
   ],
   arms: {
     account: xdr.lookup("LedgerKeyAccount"),
     trustLine: xdr.lookup("LedgerKeyTrustLine"),
     offer: xdr.lookup("LedgerKeyOffer"),
+    data: xdr.lookup("LedgerKeyData"),
   },
 });
 
@@ -1698,7 +1787,8 @@ xdr.struct("DecoratedSignature", [
 //       CHANGE_TRUST = 6,
 //       ALLOW_TRUST = 7,
 //       ACCOUNT_MERGE = 8,
-//       INFLATION = 9
+//       INFLATION = 9,
+//       MANAGE_DATA = 10
 //   };
 //
 // ===========================================================================
@@ -1713,6 +1803,7 @@ xdr.enum("OperationType", {
   allowTrust: 7,
   accountMerge: 8,
   inflation: 9,
+  manageDatum: 10,
 });
 
 // === xdr source ============================================================
@@ -1920,6 +2011,20 @@ xdr.struct("AllowTrustOp", [
 
 // === xdr source ============================================================
 //
+//   struct ManageDataOp
+//   {
+//       string64 dataName; 
+//       DataValue* dataValue;   // set to null to clear
+//   };
+//
+// ===========================================================================
+xdr.struct("ManageDataOp", [
+  ["dataName", xdr.lookup("String64")],
+  ["dataValue", xdr.option(xdr.lookup("DataValue"))],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (OperationType type)
 //       {
 //       case CREATE_ACCOUNT:
@@ -1942,6 +2047,8 @@ xdr.struct("AllowTrustOp", [
 //           AccountID destination;
 //       case INFLATION:
 //           void;
+//       case MANAGE_DATA:
+//           ManageDataOp manageDataOp;
 //       }
 //
 // ===========================================================================
@@ -1959,6 +2066,7 @@ xdr.union("OperationBody", {
     ["allowTrust", "allowTrustOp"],
     ["accountMerge", "destination"],
     ["inflation", xdr.void()],
+    ["manageDatum", "manageDataOp"],
   ],
   arms: {
     createAccountOp: xdr.lookup("CreateAccountOp"),
@@ -1970,6 +2078,7 @@ xdr.union("OperationBody", {
     changeTrustOp: xdr.lookup("ChangeTrustOp"),
     allowTrustOp: xdr.lookup("AllowTrustOp"),
     destination: xdr.lookup("AccountId"),
+    manageDataOp: xdr.lookup("ManageDataOp"),
   },
 });
 
@@ -2004,6 +2113,8 @@ xdr.union("OperationBody", {
 //           AccountID destination;
 //       case INFLATION:
 //           void;
+//       case MANAGE_DATA:
+//           ManageDataOp manageDataOp;
 //       }
 //       body;
 //   };
@@ -2758,6 +2869,50 @@ xdr.union("InflationResult", {
 
 // === xdr source ============================================================
 //
+//   enum ManageDataResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       MANAGE_DATA_SUCCESS = 0,
+//       // codes considered as "failure" for the operation
+//       MANAGE_DATA_NOT_SUPPORTED_YET = -1, // The network hasn't moved to this protocol change yet
+//       MANAGE_DATA_NAME_NOT_FOUND = -2,    // Trying to remove a Data Entry that isn't there
+//       MANAGE_DATA_LOW_RESERVE = -3,       // not enough funds to create a new Data Entry
+//       MANAGE_DATA_INVALID_NAME = -4       // Name not a valid string
+//   };
+//
+// ===========================================================================
+xdr.enum("ManageDataResultCode", {
+  manageDataSuccess: 0,
+  manageDataNotSupportedYet: -1,
+  manageDataNameNotFound: -2,
+  manageDataLowReserve: -3,
+  manageDataInvalidName: -4,
+});
+
+// === xdr source ============================================================
+//
+//   union ManageDataResult switch (ManageDataResultCode code)
+//   {
+//   case MANAGE_DATA_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("ManageDataResult", {
+  switchOn: xdr.lookup("ManageDataResultCode"),
+  switchName: "code",
+  switches: [
+    ["manageDataSuccess", xdr.void()],
+  ],
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
 //   enum OperationResultCode
 //   {
 //       opINNER = 0, // inner object result is valid
@@ -2797,6 +2952,8 @@ xdr.enum("OperationResultCode", {
 //           AccountMergeResult accountMergeResult;
 //       case INFLATION:
 //           InflationResult inflationResult;
+//       case MANAGE_DATA:
+//           ManageDataResult manageDataResult;
 //       }
 //
 // ===========================================================================
@@ -2814,6 +2971,7 @@ xdr.union("OperationResultTr", {
     ["allowTrust", "allowTrustResult"],
     ["accountMerge", "accountMergeResult"],
     ["inflation", "inflationResult"],
+    ["manageDatum", "manageDataResult"],
   ],
   arms: {
     createAccountResult: xdr.lookup("CreateAccountResult"),
@@ -2826,6 +2984,7 @@ xdr.union("OperationResultTr", {
     allowTrustResult: xdr.lookup("AllowTrustResult"),
     accountMergeResult: xdr.lookup("AccountMergeResult"),
     inflationResult: xdr.lookup("InflationResult"),
+    manageDataResult: xdr.lookup("ManageDataResult"),
   },
 });
 
@@ -2856,6 +3015,8 @@ xdr.union("OperationResultTr", {
 //           AccountMergeResult accountMergeResult;
 //       case INFLATION:
 //           InflationResult inflationResult;
+//       case MANAGE_DATA:
+//           ManageDataResult manageDataResult;
 //       }
 //       tr;
 //   default:

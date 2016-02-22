@@ -24,6 +24,7 @@ const MAX_INT64 = '9223372036854775807';
  * * `{@link Operation.allowTrust}`
  * * `{@link Operation.accountMerge}`
  * * `{@link Operation.inflation}`
+ * * `{@link Operation.manageData}`
  *
  * @class Operation
  */
@@ -407,6 +408,45 @@ export class Operation {
         return new xdr.Operation(opAttributes);
     }
 
+    /**
+     * Returns an XDR ManageDataOp. //
+     * @param {object} opts
+     * @param {string} opts.name - The name of the data entry.
+     * @param {string|Buffer} opts.value - The value of the data entry.
+     * @param {string} [opts.source] - The optional source account.
+     * @returns {xdr.ManageDataOp}
+     */
+    static manageData(opts) {
+        let attributes = {};
+
+        if (!(isString(opts.name) && opts.name.length <= 64)) {
+            throw new Error("name must be a string, up to 64 characters");
+        }
+        attributes.dataName = opts.name;
+
+        if (!isString(opts.value) && !Buffer.isBuffer(opts.value) && opts.value !== null) {
+            throw new Error("value must be a string, Buffer or null");
+        }
+
+        if (isString(opts.value)) {
+            attributes.dataValue = new Buffer(opts.value);
+        } else {
+            attributes.dataValue = opts.value;
+        }
+
+        if (attributes.dataValue !== null && attributes.dataValue.length > 64) {
+            throw new Error("value cannot be longer that 64 bytes");
+        }
+
+        let manageDataOp = new xdr.ManageDataOp(attributes);
+
+        let opAttributes = {};
+        opAttributes.body = xdr.OperationBody.manageDatum(manageDataOp);
+        this.setSourceAccount(opAttributes, opts);
+
+        return new xdr.Operation(opAttributes);
+    }
+
     static setSourceAccount(opAttributes, opts) {
       if (opts.source) {
           if (!Keypair.isValidPublicKey(opts.source)) {
@@ -509,6 +549,11 @@ export class Operation {
             case "accountMerge":
                 result.type = "accountMerge";
                 result.destination = accountIdtoAddress(attrs);
+                break;
+            case "manageDatum":
+                result.type = "manageData";
+                result.name = attrs.dataName();
+                result.value = attrs.dataValue();
                 break;
             case "inflation":
                 result.type = "inflation";
