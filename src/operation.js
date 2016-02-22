@@ -409,7 +409,7 @@ export class Operation {
     }
 
     /**
-     * Returns an XDR ManageDataOp. //
+     * This operation adds data entry to the ledger.
      * @param {object} opts
      * @param {string} opts.name - The name of the data entry.
      * @param {string|Buffer} opts.value - The value of the data entry.
