@@ -613,6 +613,64 @@ describe('Operation', function() {
         });
     });
 
+    describe(".manageData", function () {
+        it("creates a manageDataOp with string value", function () {
+            var opts = {
+                name: "name",
+                value: "value"
+            };
+            let op = StellarBase.Operation.manageData(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+            expect(obj.type).to.be.equal("manageData");
+            expect(obj.name).to.be.equal(opts.name);
+            expect(obj.value.toString('hex')).to.be.equal(new Buffer(opts.value).toString('hex'));
+        });
+
+        it("creates a manageDataOp with Buffer value", function () {
+            var opts = {
+                name: "name",
+                value: new Buffer("value")
+            };
+            let op = StellarBase.Operation.manageData(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+            expect(obj.type).to.be.equal("manageData");
+            expect(obj.name).to.be.equal(opts.name);
+            expect(obj.value.toString('hex')).to.be.equal(opts.value.toString('hex'));
+        });
+
+        it("creates a manageDataOp with null dataValue", function () {
+            var opts = {
+                name: "name",
+                value: null
+            };
+            let op = StellarBase.Operation.manageData(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+            expect(obj.type).to.be.equal("manageData");
+            expect(obj.name).to.be.equal(opts.name);
+            expect(obj.value).to.be.undefined;
+        });
+
+        describe("fails to create manageData operation", function () {
+            it("name is not a string", function () {
+                expect(() => StellarBase.Operation.manageData({name: 123})).to.throw()
+            });
+
+            it("name is too long", function () {
+                expect(() => StellarBase.Operation.manageData({name: "a".repeat(65)})).to.throw()
+            });
+
+            it("value is too long", function () {
+                expect(() => StellarBase.Operation.manageData({name: "a", value: new Buffer(65)})).to.throw()
+            });
+        });
+    });
+
     describe("._checkUnsignedIntValue()", function () {
         it("returns true for valid values", function () {
             let values = [
