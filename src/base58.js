@@ -1,5 +1,6 @@
 import {default as bs58} from "./vendor/bs58";
-import {isUndefined, isNull} from "lodash";
+import isUndefined from "lodash/isUndefined";
+import isNull from "lodash/isNull";
 import {hash} from "./hashing";
 
 let nacl = require("tweetnacl");

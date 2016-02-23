@@ -7,7 +7,8 @@ import {Operation} from "./operation";
 import {Transaction} from "./transaction";
 import {Memo} from "./memo";
 import BigNumber from 'bignumber.js';
-import {clone, map} from "lodash";
+import clone from "lodash/clone";
+import map from "lodash/map";
 
 let BASE_FEE     = 100; // Stroops
 let MIN_LEDGER   = 0;

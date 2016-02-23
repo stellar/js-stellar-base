@@ -4,9 +4,15 @@ import {UnsignedHyper, Hyper} from "js-xdr";
 import {hash} from "./hashing";
 import {encodeCheck} from "./strkey";
 import {Asset} from "./asset";
-import {padEnd, trimEnd, isEmpty, isUndefined, isString, isNumber, isFinite} from 'lodash';
 import BigNumber from 'bignumber.js';
 import {best_r} from "./util/continued_fraction";
+import padEnd from 'lodash/padEnd';
+import trimEnd  from 'lodash/trimEnd';
+import isEmpty from 'lodash/isEmpty';
+import isUndefined from 'lodash/isUndefined';
+import isString from 'lodash/isString';
+import isNumber from 'lodash/isNumber';
+import isFinite from 'lodash/isFinite';
 
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';

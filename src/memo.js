@@ -1,5 +1,7 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
-import {isString, isUndefined} from 'lodash';
+import isUndefined from "lodash/isUndefined";
+import isNull from "lodash/isNull";
+import isString from "lodash/isString";
 import {UnsignedHyper} from "js-xdr";
 import BigNumber from 'bignumber.js';
 

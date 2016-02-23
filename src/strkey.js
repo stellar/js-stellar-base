@@ -1,6 +1,9 @@
 import base32 from "base32.js";
 import crc from "crc";
-import {contains, isUndefined, isNull, isString} from "lodash";
+import contains from "lodash/includes";
+import isUndefined from "lodash/isUndefined";
+import isNull from "lodash/isNull";
+import isString from "lodash/isString";
 
 const versionBytes = {
   accountId: 0x30,

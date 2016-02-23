@@ -1,7 +1,9 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
 import {Keypair} from "./keypair";
 import {encodeCheck} from "./strkey";
-import {clone, padEnd, trimEnd} from 'lodash';
+import clone from 'lodash/clone';
+import padEnd from 'lodash/padEnd';
+import trimEnd from 'lodash/trimEnd';
 
 export class Asset {
     /**

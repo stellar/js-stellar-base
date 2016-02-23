@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import {isString} from 'lodash';
+import isString from 'lodash/isString';
 import {Keypair} from './keypair';
 import {decodeCheck} from "./strkey";
 
