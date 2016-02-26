@@ -2,6 +2,14 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.5.4
+
+* Fixed Lodash registering itself to global scope. 
+
+## 0.5.3
+
+* Add support for ManageData operation.
+
 ## 0.5.2
 
 * Moved `Account.isValidAccountId` to `Keypair.isValidPublicKey`. It's still possible to use `Account.isValidAccountId` but it will be removed in the next minor release (breaking change). (af10f2a)
