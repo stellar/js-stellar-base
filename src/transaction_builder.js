@@ -9,6 +9,7 @@ import {Memo} from "./memo";
 import BigNumber from 'bignumber.js';
 import clone from "lodash/clone";
 import map from "lodash/map";
+import isUndefined from "lodash/isUndefined";
 
 let BASE_FEE     = 100; // Stroops
 let MIN_LEDGER   = 0;
@@ -66,7 +67,7 @@ export class TransactionBuilder {
         this.operations    = [];
         this.signers       = [];
 
-        this.baseFee    = (isNaN(opts.fee) ? BASE_FEE : opts.fee);
+        this.baseFee    = (isUndefined(opts.fee) ? BASE_FEE : opts.fee);
 
         this.timebounds = clone(opts.timebounds);
 
