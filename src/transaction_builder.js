@@ -66,7 +66,8 @@ export class TransactionBuilder {
         this.operations    = [];
         this.signers       = [];
 
-        this.baseFee    = opts.fee || BASE_FEE;
+        this.baseFee    = (isNaN(opts.fee) ? BASE_FEE : opts.fee);
+
         this.timebounds = clone(opts.timebounds);
 
         this.memo       = opts.memo || Memo.none();
