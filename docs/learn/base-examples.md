@@ -28,7 +28,7 @@ var transaction = new StellarSdk.TransactionBuilder(an_account)
 
 transaction.sign(StellarSdk.Keypair.fromSeed(seedString)); // sign the transaction
 
-// transaction is now read to be sent to the network or saved somewhere
+// transaction is now ready to be sent to the network or saved somewhere
 
 ```
 
