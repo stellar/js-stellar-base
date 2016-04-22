@@ -532,7 +532,7 @@ export class Operation {
 
                 if (attrs.signer()) {
                     let signer = {};
-                    signer.address = accountIdtoAddress(attrs.signer().pubKey());
+                    signer.pubKey = accountIdtoAddress(attrs.signer().pubKey());
                     signer.weight = attrs.signer().weight();
                     result.signer = signer;
                 }

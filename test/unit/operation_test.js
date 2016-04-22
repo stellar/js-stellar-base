@@ -224,7 +224,7 @@ describe('Operation', function() {
             opts.highThreshold = 3;
 
             opts.signer = {
-                address: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                pubKey: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
                 weight: 1
             };
             opts.homeDomain = "www.example.com";
@@ -242,7 +242,7 @@ describe('Operation', function() {
             expect(obj.medThreshold).to.be.equal(opts.medThreshold);
             expect(obj.highThreshold).to.be.equal(opts.highThreshold);
 
-            expect(obj.signer.address).to.be.equal(opts.signer.address);
+            expect(obj.signer.pubKey).to.be.equal(opts.signer.pubKey);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
             expect(obj.homeDomain).to.be.equal(opts.homeDomain);
         });
@@ -297,7 +297,7 @@ describe('Operation', function() {
         it("fails to create setOptions operation with an invalid signer address", function () {
             let opts = {
                 signer: {
-                    address: "GDGU5OAPHNPU5UCL",
+                    pubKey: "GDGU5OAPHNPU5UCL",
                     weight: 1
                 }
             };
