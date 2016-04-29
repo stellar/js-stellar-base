@@ -2,6 +2,15 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.5.6
+
+* UTF-8 support in `Memo.text()`.
+
+## 0.5.5
+
+* Make 0 a valid number for transaction fee,
+* Fix signer in Operation.operationToObject() - close #82
+
 ## 0.5.4
 
 * Fixed Lodash registering itself to global scope. 
