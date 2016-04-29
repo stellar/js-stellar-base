@@ -4,6 +4,8 @@ describe("Memo.text()", function() {
 
   it("returns a value for a correct argument", function() {
     expect(() => StellarBase.Memo.text("test")).to.not.throw();
+    let memoUtf8 = StellarBase.Memo.text("三代之時")
+    expect(new Buffer(memoUtf8._value, "utf8").equals(new Buffer("三代之時", "utf8"))).to.be.true
   });
 
   it("throws an error when invalid argument was passed", function() {
@@ -14,8 +16,9 @@ describe("Memo.text()", function() {
     expect(() => StellarBase.Memo.text(NaN)).to.throw(/Expects string/);
   });
 
-  it("throws an error when string is longer than 28 chars", function() {
+  it("throws an error when string is longer than 28 bytes", function() {
     expect(() => StellarBase.Memo.text("12345678901234567890123456789")).to.throw(/Text should be/);
+    expect(() => StellarBase.Memo.text("三代之時三代之時三代之時")).to.throw(/Text should be/);
   });
 
 });

@@ -30,8 +30,8 @@ export class Memo {
         if (!isString(text)) {
             throw new Error("Expects string type got a " + typeof(text));
         }
-        if (Buffer.byteLength(text, "ascii") > 28) {
-            throw new Error("Text should be <= 28 bytes (ascii encoded). Got " + Buffer.byteLength(text, "ascii"));
+        if (Buffer.byteLength(text, "utf8") > 28) {
+            throw new Error("Text should be <= 28 bytes. Got " + Buffer.byteLength(text, "utf8"));
         }
         return xdr.Memo.memoText(text);
     }

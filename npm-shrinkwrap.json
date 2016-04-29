@@ -4,40 +4,40 @@
   "dependencies": {
     "base32.js": {
       "version": "0.1.0",
-      "from": "base32.js@>=0.1.0 <0.2.0",
+      "from": "https://registry.npmjs.org/base32.js/-/base32.js-0.1.0.tgz",
       "resolved": "https://registry.npmjs.org/base32.js/-/base32.js-0.1.0.tgz"
     },
     "bignumber.js": {
       "version": "2.1.4",
-      "from": "bignumber.js@>=2.0.7 <3.0.0",
+      "from": "https://registry.npmjs.org/bignumber.js/-/bignumber.js-2.1.4.tgz",
       "resolved": "https://registry.npmjs.org/bignumber.js/-/bignumber.js-2.1.4.tgz"
     },
     "crc": {
       "version": "3.4.0",
-      "from": "crc@>=3.3.0 <4.0.0",
+      "from": "https://registry.npmjs.org/crc/-/crc-3.4.0.tgz",
       "resolved": "https://registry.npmjs.org/crc/-/crc-3.4.0.tgz"
     },
     "ed25519": {
       "version": "0.0.4",
-      "from": "ed25519@0.0.4",
+      "from": "https://registry.npmjs.org/ed25519/-/ed25519-0.0.4.tgz",
       "resolved": "https://registry.npmjs.org/ed25519/-/ed25519-0.0.4.tgz",
       "dependencies": {
         "bindings": {
           "version": "1.2.1",
-          "from": "bindings@>=1.2.1 <2.0.0",
+          "from": "https://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz",
           "resolved": "https://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz"
         },
         "nan": {
           "version": "2.2.0",
-          "from": "nan@>=2.0.9 <3.0.0",
+          "from": "https://registry.npmjs.org/nan/-/nan-2.2.0.tgz",
           "resolved": "https://registry.npmjs.org/nan/-/nan-2.2.0.tgz"
         }
       }
     },
     "js-xdr": {
-      "version": "0.0.12",
-      "from": "js-xdr@>=0.0.12 <0.1.0",
-      "resolved": "https://registry.npmjs.org/js-xdr/-/js-xdr-0.0.12.tgz",
+      "version": "1.0.0",
+      "from": "js-xdr@1.0.0",
+      "resolved": "https://registry.npmjs.org/js-xdr/-/js-xdr-1.0.0.tgz",
       "dependencies": {
         "babel-runtime": {
           "version": "4.7.16",
@@ -75,24 +75,24 @@
     },
     "lodash": {
       "version": "4.0.1",
-      "from": "lodash@>=4.0.1 <5.0.0",
+      "from": "https://registry.npmjs.org/lodash/-/lodash-4.0.1.tgz",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.0.1.tgz"
     },
     "sha.js": {
       "version": "2.4.4",
-      "from": "sha.js@>=2.3.6 <3.0.0",
+      "from": "https://registry.npmjs.org/sha.js/-/sha.js-2.4.4.tgz",
       "resolved": "https://registry.npmjs.org/sha.js/-/sha.js-2.4.4.tgz",
       "dependencies": {
         "inherits": {
           "version": "2.0.1",
-          "from": "inherits@>=2.0.1 <3.0.0",
+          "from": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz",
           "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
         }
       }
     },
     "tweetnacl": {
       "version": "0.13.3",
-      "from": "tweetnacl@>=0.13.0 <0.14.0",
+      "from": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.13.3.tgz",
       "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.13.3.tgz"
     }
   }
