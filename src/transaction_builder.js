@@ -98,7 +98,7 @@ export class TransactionBuilder {
     }
 
     /**
-     * This will build the transaction and sign it with the {@link Keypair} passed to {@link TransactionBuilder#addSigner}.
+     * This will build the transaction.
      * It will also increment the source account's sequence number by 1.
      * @returns {Transaction} This method will return the built {@link Transaction}.
      */
