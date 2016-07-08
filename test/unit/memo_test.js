@@ -5,7 +5,23 @@ describe("Memo.text()", function() {
   it("returns a value for a correct argument", function() {
     expect(() => StellarBase.Memo.text("test")).to.not.throw();
     let memoUtf8 = StellarBase.Memo.text("三代之時")
-    expect(new Buffer(memoUtf8._value, "utf8").equals(new Buffer("三代之時", "utf8"))).to.be.true
+
+    // Node 0.10, sigh...
+    let equal = true;
+    let a = new Buffer(memoUtf8._value, "utf8");
+    let b = new Buffer("三代之時", "utf8");
+    if (a.length !== b.length) {
+        equal = false;
+    } else {
+        for (var i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) {
+                equal = false;
+                break;
+            }
+        }
+    }
+
+    expect(equal).to.be.true
   });
 
   it("throws an error when invalid argument was passed", function() {
