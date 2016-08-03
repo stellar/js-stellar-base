@@ -7,6 +7,8 @@
 
 var actualMethods = {};
 
+export var fastSigning;
+
 export function sign(data, secretKey) {
   return actualMethods.sign(data, secretKey);
 }
@@ -15,30 +17,45 @@ export function verify(data, signature, publicKey) {
   return actualMethods.verify(data, signature, publicKey);
 }
 
-
+var useNacl;
 // if in node
 if (typeof window === 'undefined') {
   // NOTE: we use commonjs style require here because es6 imports
   // can only occur at the top level.  thanks, obama.
-  let ed25519 = require("ed25519");
-  
-  actualMethods.sign = function(data, secretKey) {
-    data = new Buffer(data);
-    return ed25519.Sign(data, secretKey);
-  };
+  let ed25519;
+  try {
+    ed25519 = require("ed25519");
+    useNacl = false;
+  } catch (err) {
+    useNacl = true;
+  }
 
-  actualMethods.verify = function(data, signature, publicKey) {
-    data = new Buffer(data);
-    try {
-      return ed25519.Verify(data, signature, publicKey);  
-    } catch(e) {
-      return false;
-    }
-  };
+  if (!useNacl) {
+    actualMethods.sign = function(data, secretKey) {
+      data = new Buffer(data);
+      return ed25519.Sign(data, secretKey);
+    };
 
+    actualMethods.verify = function(data, signature, publicKey) {
+      data = new Buffer(data);
+      try {
+        return ed25519.Verify(data, signature, publicKey);
+      } catch(e) {
+        return false;
+      }
+    };
+    fastSigning = true;
+  }
 } else {
-  // fallback to tweetnacl.js if we're in the browser
+  useNacl = true;
+}
+
+if (useNacl) {
+  // fallback to tweetnacl.js if we're in the browser or
+  // if there was a failure installing ed25519
   let nacl = require("tweetnacl");
+
+  fastSigning = false;
 
   actualMethods.sign = function(data, secretKey) {
     data      = new Buffer(data);
