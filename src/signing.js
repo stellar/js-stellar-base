@@ -17,7 +17,6 @@ export function verify(data, signature, publicKey) {
   return actualMethods.verify(data, signature, publicKey);
 }
 
-var useNacl;
 // if in node
 if (typeof window === 'undefined') {
   // NOTE: we use commonjs style require here because es6 imports
@@ -25,12 +24,12 @@ if (typeof window === 'undefined') {
   let ed25519;
   try {
     ed25519 = require("ed25519");
-    useNacl = false;
+    fastSigning = true;
   } catch (err) {
-    useNacl = true;
+    fastSigning = false;
   }
 
-  if (!useNacl) {
+  if (fastSigning) {
     actualMethods.sign = function(data, secretKey) {
       data = new Buffer(data);
       return ed25519.Sign(data, secretKey);
@@ -44,18 +43,15 @@ if (typeof window === 'undefined') {
         return false;
       }
     };
-    fastSigning = true;
   }
 } else {
-  useNacl = true;
+  fastSigning = false;
 }
 
-if (useNacl) {
+if (!fastSigning) {
   // fallback to tweetnacl.js if we're in the browser or
   // if there was a failure installing ed25519
   let nacl = require("tweetnacl");
-
-  fastSigning = false;
 
   actualMethods.sign = function(data, secretKey) {
     data      = new Buffer(data);
