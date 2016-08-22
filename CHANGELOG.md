@@ -2,6 +2,10 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.5.7
+
+* Fixes XDR decoding issue when using firefox
+
 ## 0.5.6
 
 * UTF-8 support in `Memo.text()`.
