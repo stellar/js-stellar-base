@@ -18,6 +18,28 @@ const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
 
 /**
+ * When set using `{@link Operation.setOptions}` option, requires the issuing account to
+ * give other accounts permission before they can hold the issuing account’s credit.
+ * @constant
+ * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ */
+export const AuthRequiredFlag = 1 << 0;
+/**
+ * When set using `{@link Operation.setOptions}` option, allows the issuing account to
+ * revoke its credit held by other accounts.
+ * @constant
+ * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ */
+export const AuthRevocableFlag = 1 << 1;
+/**
+ * When set using `{@link Operation.setOptions}` option, then none of the authorization flags
+ * can be set and the account can never be deleted.
+ * @constant
+ * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ */
+export const AuthImmutableFlag = 1 << 2;
+
+/**
  * `Operation` class represents [operations](https://www.stellar.org/developers/learn/concepts/operations.html) in Stellar network.
  * Use one of static methods to create operations:
  * * `{@link Operation.createAccount}`
@@ -224,14 +246,16 @@ export class Operation {
     /**
     * Returns an XDR SetOptionsOp. A "set options" operations set or clear account flags,
     * set the account's inflation destination, and/or add new signers to the account.
-    * The account flags are the xdr.AccountFlags enum, which are:
-    *   - AUTH_REQUIRED_FLAG = 0x1
-    *   - AUTH_REVOCABLE_FLAG = 0x2
-    *   - AUTH_IMMUTABLE_FLAG = 0x4
+    * The flags used in `opts.clearFlags` and `opts.setFlags` can be the following:
+    *   - `{@link AuthRequiredFlag}`
+    *   - `{@link AuthRevocableFlag}`
+    *   - `{@link AuthImmutableFlag}`
+    *
+    * It's possible to set/clear multiple flags at once using logical or.
     * @param {object} opts
     * @param {string} [opts.inflationDest] - Set this account ID as the account's inflation destination.
-    * @param {(number|string)} [opts.clearFlags] - Bitmap integer for which flags to clear.
-    * @param {(number|string)} [opts.setFlags] - Bitmap integer for which flags to set.
+    * @param {(number|string)} [opts.clearFlags] - Bitmap integer for which account flags to clear.
+    * @param {(number|string)} [opts.setFlags] - Bitmap integer for which account flags to set.
     * @param {number|string} [opts.masterWeight] - The master key weight.
     * @param {number|string} [opts.lowThreshold] - The sum weight for the low threshold.
     * @param {number|string} [opts.medThreshold] - The sum weight for the medium threshold.
@@ -243,6 +267,7 @@ export class Operation {
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
     * @returns {xdr.SetOptionsOp}
+    * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
     */
     static setOptions(opts) {
         let attributes = {};

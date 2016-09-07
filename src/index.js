@@ -9,7 +9,7 @@ export {UnsignedHyper,Hyper} from "js-xdr";
 export {Transaction} from "./transaction";
 export {TransactionBuilder} from "./transaction_builder";
 export {Asset} from "./asset";
-export {Operation} from "./operation";
+export {Operation, AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag} from "./operation";
 export {Memo} from "./memo";
 export {Account} from "./account";
 export {Network, Networks} from "./network";
