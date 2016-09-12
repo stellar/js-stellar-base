@@ -7,7 +7,12 @@
 
 var actualMethods = {};
 
-export const fastSigning = checkFastSigning();
+/**
+ * Use this flag to check if fast signing (provided by `ed25519` package) is available.
+ * If your app is signing a large number of transaction or verifying a large number
+ * of signatures make sure `ed25519` package is installed.
+ */
+export const FastSigning = checkFastSigning();
 
 export function sign(data, secretKey) {
   return actualMethods.sign(data, secretKey);
