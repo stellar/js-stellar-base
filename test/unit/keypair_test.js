@@ -1,28 +1,28 @@
 
 
-describe('Keypair.fromSeed', function() {
+describe('Keypair.fromSecret', function() {
 
   it("creates a keypair correctly", function() {
-    let seed = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
-    let kp = StellarBase.Keypair.fromSeed(seed);
+    let secret = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
+    let kp = StellarBase.Keypair.fromSecret(secret);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
     expect(kp.accountId()).to.eql("GDFQVQCYYB7GKCGSCUSIQYXTPLV5YJ3XWDMWGQMDNM4EAXAL7LITIBQ7");
-    expect(kp.seed()).to.eql(seed);
+    expect(kp.secret()).to.eql(secret);
   });
 
   it("throw an error if the arg isn't strkey encoded as a seed", function() {
 
-    expect(() => StellarBase.Keypair.fromSeed("hel0")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed("SBWUBZ3SIPLLF5CCXLWUB2Z6UBTYAW34KVXOLRQ5HDAZG4ZY7MHNBWJ1")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed("masterpassphrasemasterpassphrase")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed("gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu")).to.throw()
+    expect(() => StellarBase.Keypair.fromSecret("hel0")).to.throw()
+    expect(() => StellarBase.Keypair.fromSecret("SBWUBZ3SIPLLF5CCXLWUB2Z6UBTYAW34KVXOLRQ5HDAZG4ZY7MHNBWJ1")).to.throw()
+    expect(() => StellarBase.Keypair.fromSecret("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromSecret("gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu")).to.throw()
 
   });
 
 });
 
-describe('Keypair.fromSeed', function() {
+describe('Keypair.fromBase58Seed', function() {
 
   it("creates a keypair correctly", function() {
     let keys = [
@@ -57,16 +57,16 @@ describe('Keypair.fromSeed', function() {
     for (let i in keys) {
       let key = keys[i];
       let keyPair = StellarBase.Keypair.fromBase58Seed(key.oldSeed);
-      expect(keyPair.seed()).to.equal(key.newSeed);
+      expect(keyPair.secret()).to.equal(key.newSeed);
       expect(keyPair.accountId()).to.equal(key.newAddress);
     }
   });
 
-  it("throw an error if the arg isn't strkey encoded as a seed", function() {
+  it("throw an error if the arg isn't base58 encoded as a seed", function() {
 
-    expect(() => StellarBase.Keypair.fromSeed("hel0")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed("masterpassphrasemasterpassphrase")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed("gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu")).to.throw()
+    expect(() => StellarBase.Keypair.fromBase58Seed("hel0")).to.throw()
+    expect(() => StellarBase.Keypair.fromBase58Seed("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromBase58Seed("gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu")).to.throw()
 
   });
 
@@ -80,15 +80,15 @@ describe('Keypair.fromRawSeed', function() {
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
     expect(kp.accountId()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
-    expect(kp.seed()).to.eql("SBWWC43UMVZHAYLTONYGQ4TBONSW2YLTORSXE4DBONZXA2DSMFZWLP2R");
+    expect(kp.secret()).to.eql("SBWWC43UMVZHAYLTONYGQ4TBONSW2YLTORSXE4DBONZXA2DSMFZWLP2R");
     expect(kp.rawPublicKey().toString("hex")).to.eql("2e3c35010749c1de3d9a5bdd6a31c12458768da5ce87cca6aad63ebbaaef7432");
   });
 
   it("throws an error if the arg isn't 32 bytes", function() {
-    expect(() => StellarBase.Keypair.fromSeed("masterpassphrasemasterpassphras")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed("masterpassphrasemasterpassphrase1")).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed(null)).to.throw()
-    expect(() => StellarBase.Keypair.fromSeed()).to.throw()
+    expect(() => StellarBase.Keypair.fromRawSeed("masterpassphrasemasterpassphras")).to.throw()
+    expect(() => StellarBase.Keypair.fromRawSeed("masterpassphrasemasterpassphrase1")).to.throw()
+    expect(() => StellarBase.Keypair.fromRawSeed(null)).to.throw()
+    expect(() => StellarBase.Keypair.fromRawSeed()).to.throw()
   });
 
 });

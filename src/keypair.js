@@ -12,7 +12,7 @@ export class Keypair {
    *
    * Use more convenient methods to create `Keypair` object:
    * * `{@link Keypair.fromAccountId}`
-   * * `{@link Keypair.fromSeed}`
+   * * `{@link Keypair.fromSecret}`
    * * `{@link Keypair.random}`
    *
    * @constructor
@@ -23,26 +23,36 @@ export class Keypair {
   constructor(keys) {
     this._publicKey = new Buffer(keys.publicKey);
 
-    if(keys.secretSeed) {
+    if (keys.secretSeed) {
       this._secretSeed = new Buffer(keys.secretSeed);
       this._secretKey = new Buffer(keys.secretKey);
     }
   }
 
   /**
-   * Creates a new `Keypair` instance from secret key seed.
    * @param {string} seed Secret key seed
+   * @deprecated Use {@link Keypair.fromSecret}
    * @returns {Keypair}
    */
   static fromSeed(seed) {
-    let rawSeed = strkey.decodeCheck("seed", seed);
+    console.log('Keypair.fromSeed() is deprecated. Use Keypair.fromSecret().');
+    return Keypair.fromSecret(seed);
+  }
+
+  /**
+   * Creates a new `Keypair` instance from secret key.
+   * @param {string} secretKey Secret key
+   * @returns {Keypair}
+   */
+  static fromSecret(secretKey) {
+    let rawSeed = strkey.decodeCheck("seed", secretKey);
     return this.fromRawSeed(rawSeed);
   }
 
   /**
    * Base58 address encoding is **DEPRECATED**! Use this method only for transition to strkey encoding.
    * @param {string} seed Base58 secret seed
-   * @deprecated Use {@link Keypair.fromSeed}
+   * @deprecated Use {@link Keypair.fromSecret}
    * @returns {Keypair}
    */
   static fromBase58Seed(seed) {
@@ -143,18 +153,29 @@ export class Keypair {
   }
 
   /**
-   * Returns seed associated with this `Keypair` object
+   * @deprecated Use {@link Keypair.secret}
    * @returns {string}
    */
   seed() {
+    console.log('Keypair.seed() is deprecated. Use Keypair.secret().');
+    return this.secret();
+  }
+
+  /**
+   * Returns secret key associated with this `Keypair` object
+   * @returns {string}
+   */
+  secret() {
     return strkey.encodeCheck("seed", this._secretSeed);
   }
 
   /**
    * Returns raw secret key seed.
+   * @deprecated
    * @returns {Buffer}
    */
   rawSeed() {
+    console.log('Keypair.rawSeed() is deprecated.');
     return this._secretSeed;
   }
 
