@@ -111,8 +111,33 @@ export class Keypair {
    * @returns {boolean}
    */
   static isValidPublicKey(publicKey) {
+    if (publicKey && publicKey.length != 56) {
+      return false;
+    }
+
     try {
       let decoded = strkey.decodeCheck("accountId", publicKey);
+      if (decoded.length !== 32) {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Returns true if the given Stellar secret key is valid.
+   * @param {string} secretKey secret key to check
+   * @returns {boolean}
+   */
+  static isValidSecretKey(secretKey) {
+    if (secretKey && secretKey.length != 56) {
+      return false;
+    }
+
+    try {
+      let decoded = strkey.decodeCheck("seed", secretKey);
       if (decoded.length !== 32) {
         return false;
       }

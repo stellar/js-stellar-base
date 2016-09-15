@@ -157,13 +157,49 @@ describe('Keypair.isValidPublicKey', function() {
       'GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2',
       'GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2T',
       'GDXIIZTKTLVYCBHURXL2UPMTYXOVNI7BRAEFQCP6EZCY4JLKY4VKFNLT',
+      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
       'gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wt',
       'test',
+      null,
       'g4VPBPrHZkfE8CsjuG2S4yBQNd455UWmk' // Old network key
     ];
 
     for (var i in keys) {
       expect(StellarBase.Keypair.isValidPublicKey(keys[i])).to.be.false;
+    }
+  });
+
+});
+
+describe('Keypair.isValidSecretKey', function() {
+
+  it("returns true for valid secret key", function() {
+    var keys = [
+      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
+      'SCZTUEKSEH2VYZQC6VLOTOM4ZDLMAGV4LUMH4AASZ4ORF27V2X64F2S2',
+      'SCGNLQKTZ4XCDUGVIADRVOD4DEVNYZ5A7PGLIIZQGH7QEHK6DYODTFEH',
+      'SDH6R7PMU4WIUEXSM66LFE4JCUHGYRTLTOXVUV5GUEPITQEO3INRLHER',
+      'SC2RDTRNSHXJNCWEUVO7VGUSPNRAWFCQDPP6BGN4JFMWDSEZBRAPANYW',
+      'SCEMFYOSFZ5MUXDKTLZ2GC5RTOJO6FGTAJCF3CCPZXSLXA2GX6QUYOA7'
+    ];
+
+    for (var i in keys) {
+      expect(StellarBase.Keypair.isValidSecretKey(keys[i])).to.be.true;
+    }
+  });
+
+  it("returns false for invalid secret key", function() {
+    var keys = [
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDYT', // Too long
+      'SAFGAMN5Z6IHVI3IVEPIILS7ITZDYSCEPLN4FN5Z3IY63DRH4CIYEV', // To short
+      'SAFGAMN5Z6IHVI3IVEPIILS7ITZDYSCEPLN4FN5Z3IY63DRH4CIYEVIT', // Checksum
+      'test',
+      null
+    ];
+
+    for (var i in keys) {
+      expect(StellarBase.Keypair.isValidSecretKey(keys[i])).to.be.false;
     }
   });
 
