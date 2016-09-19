@@ -18,8 +18,8 @@ export class Asset {
      * @param {string} issuer - The account ID of the issuer.
      */
     constructor(code, issuer) {
-      if (code.length > 12) {
-        throw new Error("Asset code must be 12 characters at max");
+      if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
+        throw new Error("Asset code is invalid (maximum alphanumeric, 12 characters at max)");
       }
       if (String(code).toLowerCase() !== "xlm" && !issuer) {
         throw new Error("Issuer cannot be null");

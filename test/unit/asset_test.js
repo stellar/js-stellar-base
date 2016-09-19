@@ -6,8 +6,10 @@ describe('Asset', function() {
             expect(() => new StellarBase.Asset("USD")).to.throw(/Issuer cannot be null/)
         });
 
-        it("throws an error when currency code is too long", function () {
-            expect(() => new StellarBase.Asset("1234567890123", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ")).to.throw(/Asset code must be 12 characters at max/)
+        it("throws an error when code is invalid", function () {
+            expect(() => new StellarBase.Asset("", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ")).to.throw(/Asset code is invalid/)
+            expect(() => new StellarBase.Asset("1234567890123", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ")).to.throw(/Asset code is invalid/)
+            expect(() => new StellarBase.Asset("ab_", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ")).to.throw(/Asset code is invalid/)
         });
 
         it("throws an error when issuer is invalid", function () {
