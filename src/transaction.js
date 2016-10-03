@@ -78,6 +78,10 @@ export class Transaction {
      * @returns {Buffer}
      */
     signatureBase() {
+        if (Network.current() === null) {
+            throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
+        }
+
         return Buffer.concat([
             Network.current().networkId(),
             xdr.EnvelopeType.envelopeTypeTx().toXDR(),

@@ -27,6 +27,27 @@ describe('Transaction', function() {
     done();
   });
 
+  beforeEach(function() {
+    StellarBase.Network.useTestNetwork();
+  })
+
+  afterEach(function() {
+    StellarBase.Network.use(null);
+  })
+
+  it("does not sign when no Network selected", function() {
+    StellarBase.Network.use(null);
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+    let asset       = StellarBase.Asset.native();
+    let amount      = "2000";
+    let signer      = StellarBase.Keypair.random();
+
+    let tx = new StellarBase.TransactionBuilder(source)
+                .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .build();
+    expect(() => tx.sign(signer)).to.throw(/No network selected/);
+  });
 
   it("signs correctly", function() {
     let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
