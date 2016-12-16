@@ -9,8 +9,8 @@ sign [transactions](https://stellar.org/developers/learn/concepts/transactions.h
 [js-stellar-sdk](https://github.com/stellar/js-stellar-sdk) but you can use it by itself if you don't need to communicate with Horizon.
 
 * [Building and Installing](../README.md) js-stellar-base
-* [Building Transactions](./learn/building-transactions.md)
-* [Examples](./learn/base-examples.md)
+* [Building Transactions](./reference/building-transactions.md)
+* [Examples](./reference/base-examples.md)
 
 js-stellar-base exposes the following classes:
 * [Account](https://github.com/stellar/js-stellar-base/blob/master/src/account.js)
