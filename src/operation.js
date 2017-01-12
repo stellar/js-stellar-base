@@ -72,7 +72,7 @@ export class Operation {
             throw new Error("destination is invalid");
         }
         if (!this.isValidAmount(opts.startingBalance)) {
-            throw new TypeError('startingBalance argument must be of type String and represent a positive number');
+            throw new TypeError(Operation.constructAmountRequirementsError('startingBalance'));
         }
         let attributes = {};
         attributes.destination     = Keypair.fromAccountId(opts.destination).xdrAccountId();
@@ -103,7 +103,7 @@ export class Operation {
             throw new Error("Must provide an asset for a payment operation");
         }
         if (!this.isValidAmount(opts.amount)) {
-            throw new TypeError('amount argument must be of type String and represent a positive number');
+            throw new TypeError(Operation.constructAmountRequirementsError('amount'));
         }
 
         let attributes = {};
@@ -138,7 +138,7 @@ export class Operation {
             throw new Error("Must specify a send asset");
         }
         if (!this.isValidAmount(opts.sendMax)) {
-            throw new TypeError('sendMax argument must be of type String and represent a positive number');
+            throw new TypeError(Operation.constructAmountRequirementsError('sendMax'));
         }
         if (!Keypair.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
@@ -147,7 +147,7 @@ export class Operation {
             throw new Error("Must provide a destAsset for a payment operation");
         }
         if (!this.isValidAmount(opts.destAmount)) {
-            throw new TypeError('destAmount argument must be of type String and represent a positive number');
+            throw new TypeError(Operation.constructAmountRequirementsError('destAmount'));
         }
 
         let attributes = {};
@@ -187,7 +187,7 @@ export class Operation {
         let attributes      = {};
         attributes.line     = opts.asset.toXdrObject();
         if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
-            throw new TypeError('limit argument must be of type String and represent a number');
+            throw new TypeError(Operation.constructAmountRequirementsError('limit'));
         }
 
         if (opts.limit) {
@@ -346,7 +346,7 @@ export class Operation {
         attributes.selling = opts.selling.toXdrObject();
         attributes.buying = opts.buying.toXdrObject();
         if (!this.isValidAmount(opts.amount, true)) {
-            throw new TypeError('amount argument must be of type String and represent a positive number or zero');
+            throw new TypeError(Operation.constructAmountRequirementsError('amount'));
         }
         attributes.amount = this._toXDRAmount(opts.amount);
         if (isUndefined(opts.price)) {
@@ -390,7 +390,7 @@ export class Operation {
         attributes.selling = opts.selling.toXdrObject();
         attributes.buying = opts.buying.toXdrObject();
         if (!this.isValidAmount(opts.amount)) {
-            throw new TypeError('amount argument must be of type String and represent a positive number');
+            throw new TypeError(Operation.constructAmountRequirementsError('amount'));
         }
         attributes.amount = this._toXDRAmount(opts.amount);
         if (isUndefined(opts.price)) {
@@ -638,6 +638,10 @@ export class Operation {
         }
 
         return true;
+    }
+
+    static constructAmountRequirementsError(arg) {
+      return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
     }
 
     /**

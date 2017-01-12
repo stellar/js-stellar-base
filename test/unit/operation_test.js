@@ -31,7 +31,7 @@ describe('Operation', function() {
                 startingBalance: 20,
                 source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
             };
-            expect(() => StellarBase.Operation.createAccount(opts)).to.throw(/startingBalance argument must be of type String/)
+            expect(() => StellarBase.Operation.createAccount(opts)).to.throw(/startingBalance argument must be of type String, represent a positive number and have at most 7 digits after the decimal/)
         });
 
         it("fails to create createAccount operation with an invalid source address", function () {
