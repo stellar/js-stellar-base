@@ -333,7 +333,7 @@ export class Operation {
             }
 
             if (setValues != 1) {
-                throw new Error("Signer object must contain exactly one of signer.pubKey, signer.hash, signer.tx must be set.");
+                throw new Error("Signer object must contain exactly one of signer.pubKey, signer.hash, signer.hashTx must be set.");
             }
 
             attributes.signer = new xdr.Signer({key, weight});
