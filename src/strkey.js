@@ -6,9 +6,122 @@ import isNull from "lodash/isNull";
 import isString from "lodash/isString";
 
 const versionBytes = {
-  accountId: 0x30,
-  seed:      0x90
+  publicKey:  6 << 3, // G
+  seed:      18 << 3, // S
+  hashTx:    19 << 3, // T
+  hashX:     23 << 3  // X
 };
+
+/**
+ * StrKey is a helper class that allows encoding and decoding strkey.
+ */
+export class StrKey {
+  /**
+   * Encodes data to strkey public key.
+   * @param {Buffer} data data to encode
+   * @returns {string}
+   */
+  static encodePublicKey(data) {
+    return encodeCheck("publicKey", data);
+  }
+
+  /**
+   * Decodes strkey public key to raw data.
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodePublicKey(data) {
+    return decodeCheck("publicKey", data);
+  }
+
+  /**
+   * Returns true if the given Stellar public key is valid.
+   * @param {string} publicKey public key to check
+   * @returns {boolean}
+   */
+  static isValidPublicKey(publicKey) {
+    return isValid("publicKey", publicKey);
+  }
+
+  /**
+   * Encodes data to strkey seed.
+   * @param {Buffer} data data to encode
+   * @returns {string}
+   */
+  static encodeSeed(data) {
+    return encodeCheck("seed", data);
+  }
+
+  /**
+   * Decodes strkey seed to raw data.
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodeSeed(data) {
+    return decodeCheck("seed", data);
+  }
+
+  /**
+   * Returns true if the given Stellar secret key is valid.
+   * @param {string} secretKey secretKey to check
+   * @returns {boolean}
+   */
+  static isValidSecretKey(secretKey) {
+    return isValid("seed", secretKey);
+  }
+
+  /**
+   * Encodes data to strkey hashtx.
+   * @param {Buffer} data data to encode
+   * @returns {string}
+   */
+  static encodeHashTx(data) {
+    return encodeCheck("hashTx", data);
+  }
+
+  /**
+   * Decodes strkey hashtx to raw data.
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodeHashTx(data) {
+    return decodeCheck("hashTx", data);
+  }
+
+  /**
+   * Encodes data to strkey hashx.
+   * @param {Buffer} data data to encode
+   * @returns {string}
+   */
+  static encodeHashX(data) {
+    return encodeCheck("hashX", data);
+  }
+
+  /**
+   * Decodes strkey hashx to raw data.
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodeHashX(data) {
+    return decodeCheck("hashX", data);
+  }
+}
+
+function isValid(versionByteName, encoded) {
+  if (encoded && encoded.length != 56) {
+    return false;
+  }
+
+  try {
+    let decoded = decodeCheck(versionByteName, encoded);
+    if (decoded.length !== 32) {
+      return false;
+    }
+  } catch (err) {
+    return false;
+  }
+  return true;
+}
 
 export function decodeCheck(versionByteName, encoded) {
   if (!isString(encoded)) {

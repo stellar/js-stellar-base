@@ -1,7 +1,7 @@
 import {Network} from "./network";
 import {sign, verify} from "./signing";
 import * as base58 from "./base58";
-import * as strkey from "./strkey";
+import {StrKey} from "./strkey";
 import {default as xdr} from "./generated/stellar-xdr_generated";
 
 let nacl = require("tweetnacl");
@@ -30,22 +30,12 @@ export class Keypair {
   }
 
   /**
-   * @param {string} seed Secret key seed
-   * @deprecated Use {@link Keypair.fromSecret}
-   * @returns {Keypair}
-   */
-  static fromSeed(seed) {
-    console.log('Keypair.fromSeed() is deprecated. Use Keypair.fromSecret().');
-    return Keypair.fromSecret(seed);
-  }
-
-  /**
    * Creates a new `Keypair` instance from secret key.
    * @param {string} secretKey Secret key
    * @returns {Keypair}
    */
   static fromSecret(secretKey) {
-    let rawSeed = strkey.decodeCheck("seed", secretKey);
+    let rawSeed = StrKey.decodeSeed(secretKey);
     return this.fromRawSeed(rawSeed);
   }
 
@@ -92,7 +82,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromAccountId(accountId) {
-    let publicKey = strkey.decodeCheck("accountId", accountId);
+    let publicKey = StrKey.decodePublicKey(accountId);
     if (publicKey.length !== 32) {
       throw new Error('Invalid Stellar accountId');
     }
@@ -109,27 +99,6 @@ export class Keypair {
   }
 
   /**
-   * Returns true if the given Stellar public key is valid.
-   * @param {string} publicKey public key to check
-   * @returns {boolean}
-   */
-  static isValidPublicKey(publicKey) {
-    if (publicKey && publicKey.length != 56) {
-      return false;
-    }
-
-    try {
-      let decoded = strkey.decodeCheck("accountId", publicKey);
-      if (decoded.length !== 32) {
-        return false;
-      }
-    } catch (err) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * Returns true if the given Stellar secret key is valid.
    * @param {string} secretKey secret key to check
    * @returns {boolean}
@@ -140,7 +109,7 @@ export class Keypair {
     }
 
     try {
-      let decoded = strkey.decodeCheck("seed", secretKey);
+      let decoded = StrKey.decodeSeed(secretKey);
       if (decoded.length !== 32) {
         return false;
       }
@@ -151,11 +120,11 @@ export class Keypair {
   }
 
   xdrAccountId() {
-    return new xdr.AccountId.keyTypeEd25519(this._publicKey);
+    return new xdr.AccountId.publicKeyTypeEd25519(this._publicKey);
   }
 
   xdrPublicKey() {
-    return new xdr.PublicKey.keyTypeEd25519(this._publicKey);
+    return new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
   }
 
   /**
@@ -177,16 +146,7 @@ export class Keypair {
    * @returns {string}
    */
   accountId() {
-    return strkey.encodeCheck("accountId", this._publicKey);
-  }
-
-  /**
-   * @deprecated Use {@link Keypair.secret}
-   * @returns {string}
-   */
-  seed() {
-    console.log('Keypair.seed() is deprecated. Use Keypair.secret().');
-    return this.secret();
+    return StrKey.encodePublicKey(this._publicKey);
   }
 
   /**
@@ -194,17 +154,7 @@ export class Keypair {
    * @returns {string}
    */
   secret() {
-    return strkey.encodeCheck("seed", this._secretSeed);
-  }
-
-  /**
-   * Returns raw secret key seed.
-   * @deprecated
-   * @returns {Buffer}
-   */
-  rawSeed() {
-    console.log('Keypair.rawSeed() is deprecated.');
-    return this._secretSeed;
+    return StrKey.encodeSeed(this._secretSeed);
   }
 
   /**

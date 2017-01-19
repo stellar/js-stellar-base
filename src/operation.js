@@ -2,7 +2,7 @@ import {default as xdr} from "./generated/stellar-xdr_generated";
 import {Keypair} from "./keypair";
 import {UnsignedHyper, Hyper} from "js-xdr";
 import {hash} from "./hashing";
-import {encodeCheck} from "./strkey";
+import {StrKey} from "./strkey";
 import {Asset} from "./asset";
 import BigNumber from 'bignumber.js';
 import {best_r} from "./util/continued_fraction";
@@ -68,7 +68,7 @@ export class Operation {
     * @returns {xdr.CreateAccountOp}
     */
     static createAccount(opts) {
-        if (!Keypair.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!this.isValidAmount(opts.startingBalance)) {
@@ -96,7 +96,7 @@ export class Operation {
     * @returns {xdr.PaymentOp}
     */
     static payment(opts) {
-        if (!Keypair.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.asset) {
@@ -140,7 +140,7 @@ export class Operation {
         if (!this.isValidAmount(opts.sendMax)) {
             throw new TypeError(Operation.constructAmountRequirementsError('sendMax'));
         }
-        if (!Keypair.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.destAsset) {
@@ -219,7 +219,7 @@ export class Operation {
     * @returns {xdr.AllowTrustOp}
     */
     static allowTrust(opts) {
-        if (!Keypair.isValidPublicKey(opts.trustor)) {
+        if (!StrKey.isValidPublicKey(opts.trustor)) {
             throw new Error("trustor is invalid");
         }
         let attributes = {};
@@ -261,8 +261,10 @@ export class Operation {
     * @param {number|string} [opts.medThreshold] - The sum weight for the medium threshold.
     * @param {number|string} [opts.highThreshold] - The sum weight for the high threshold.
     * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
-    *                                 deleted if the weight is 0.
-    * @param {string} [opts.signer.pubKey] - The public key of the new signer (old `address` field name is deprecated).
+    *                                 deleted if the weight is 0. Only one of `pubKey`, `hash`, `hashTx` should be defined.
+    * @param {string} [opts.signer.pubKey] - The public key of the signer.
+    * @param {Buffer} [opts.signer.hash] - Hash that will unlock funds. Preimage should be used as signature of future transaction.
+    * @param {Buffer} [opts.signer.hashTx] - Hash of transaction that will unlock funds.
     * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -273,7 +275,7 @@ export class Operation {
         let attributes = {};
 
         if (opts.inflationDest) {
-            if (!Keypair.isValidPublicKey(opts.inflationDest)) {
+            if (!StrKey.isValidPublicKey(opts.inflationDest)) {
                 throw new Error("inflationDest is invalid");
             }
             attributes.inflationDest = Keypair.fromAccountId(opts.inflationDest).xdrAccountId();
@@ -300,21 +302,41 @@ export class Operation {
         attributes.homeDomain = opts.homeDomain;
 
         if (opts.signer) {
-            if (opts.signer.address) {
-                console.warn("signer.address is deprecated. Use signer.pubKey instead.");
-                opts.signer.pubKey = opts.signer.address;
+            let weight = this._checkUnsignedIntValue("signer.weight", opts.signer.weight, weightCheckFunction);
+            let key;
+
+            let setValues = 0;
+
+            if (opts.signer.pubKey) {
+                if (!StrKey.isValidPublicKey(opts.signer.pubKey)) {
+                  throw new Error("signer.pubKey is invalid.");
+                }
+                let rawKey = StrKey.decodePublicKey(opts.signer.pubKey);
+                key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
+                setValues++;
             }
 
-            if (!Keypair.isValidPublicKey(opts.signer.pubKey)) {
-                throw new Error("signer.pubKey is invalid");
+            if (opts.signer.hashTx) {
+                if (!(Buffer.isBuffer(opts.signer.hashTx) && opts.signer.hashTx.length == 32)) {
+                    throw new Error("signer.hashTx must be 32 bytes Buffer.");
+                }
+                key = new xdr.SignerKey.signerKeyTypeHashTx(opts.signer.hashTx);
+                setValues++;
             }
 
-            opts.signer.weight = this._checkUnsignedIntValue("signer.weight", opts.signer.weight, weightCheckFunction);
+            if (opts.signer.hash) {
+                if (!(Buffer.isBuffer(opts.signer.hash) && opts.signer.hash.length == 32)) {
+                    throw new Error("signer.hash must be 32 bytes Buffer.");
+                }
+                key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.hash);
+                setValues++;
+            }
 
-            attributes.signer = new xdr.Signer({
-                pubKey: Keypair.fromAccountId(opts.signer.pubKey).xdrAccountId(),
-                weight: opts.signer.weight
-            });
+            if (setValues != 1) {
+                throw new Error("Signer object must contain exactly one of signer.pubKey, signer.hash, signer.tx must be set.");
+            }
+
+            attributes.signer = new xdr.Signer({key, weight});
         }
 
         let setOptionsOp = new xdr.SetOptionsOp(attributes);
@@ -415,7 +437,7 @@ export class Operation {
     */
     static accountMerge(opts) {
         let opAttributes = {};
-        if (!Keypair.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidPublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         opAttributes.body = xdr.OperationBody.accountMerge(
@@ -480,7 +502,7 @@ export class Operation {
 
     static setSourceAccount(opAttributes, opts) {
       if (opts.source) {
-          if (!Keypair.isValidPublicKey(opts.source)) {
+          if (!StrKey.isValidPublicKey(opts.source)) {
               throw new Error("Source address is invalid");
           }
           opAttributes.sourceAccount = Keypair.fromAccountId(opts.source).xdrAccountId();
@@ -495,7 +517,7 @@ export class Operation {
     */
     static operationToObject(operation) {
         function accountIdtoAddress(accountId) {
-          return encodeCheck("accountId", accountId.ed25519());
+          return StrKey.encodePublicKey(accountId.ed25519());
         }
 
         let result = {};
@@ -514,7 +536,7 @@ export class Operation {
                 result.type = "payment";
                 result.destination = accountIdtoAddress(attrs.destination());
                 result.asset = Asset.fromOperation(attrs.asset());
-                result.amount =this._fromXDRAmount(attrs.amount());
+                result.amount = this._fromXDRAmount(attrs.amount());
                 break;
             case "pathPayment":
                 result.type = "pathPayment";
@@ -557,7 +579,14 @@ export class Operation {
 
                 if (attrs.signer()) {
                     let signer = {};
-                    signer.pubKey = accountIdtoAddress(attrs.signer().pubKey());
+                    if (attrs.signer().key()._arm == "ed25519") {
+                        signer.pubKey = accountIdtoAddress(attrs.signer().key());
+                    } else if (attrs.signer().key()._arm == "hashTx") {
+                        signer.hashTx = attrs.signer().key().hashTx();
+                    } else if (attrs.signer().key()._arm == "hashX") {
+                        signer.hash = attrs.signer().key().hashX();
+                    }
+
                     signer.weight = attrs.signer().weight();
                     result.signer = signer;
                 }

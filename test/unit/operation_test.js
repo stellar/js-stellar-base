@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import crypto from 'crypto';
 
 describe('Operation', function() {
 
@@ -248,9 +249,47 @@ describe('Operation', function() {
             expect(obj.medThreshold).to.be.equal(opts.medThreshold);
             expect(obj.highThreshold).to.be.equal(opts.highThreshold);
 
-            expect(obj.signer.pubKey).to.be.equal(opts.signer.pubKey);
+            expect(obj.signer.key).to.be.equal(opts.signer.key);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
             expect(obj.homeDomain).to.be.equal(opts.homeDomain);
+        });
+
+        it("creates a setOptionsOp with hashTx signer", function () {
+            var opts = {};
+
+            var hash = crypto.createHash('sha256').update("Tx hash").digest();
+
+            opts.signer = {
+                hashTx: hash,
+                weight: 10
+            };
+            
+            let op = StellarBase.Operation.setOptions(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+
+            expect(obj.signer.hashTx).to.be.eql(opts.signer.hashTx);
+            expect(obj.signer.weight).to.be.equal(opts.signer.weight);
+        });
+
+        it("creates a setOptionsOp with hashX signer", function () {
+            var opts = {};
+
+            var hash = crypto.createHash('sha256').update("Hash Preimage").digest();
+
+            opts.signer = {
+                hash: hash,
+                weight: 10
+            };
+            
+            let op = StellarBase.Operation.setOptions(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+
+            expect(obj.signer.hash).to.be.eql(opts.signer.hash);
+            expect(obj.signer.weight).to.be.equal(opts.signer.weight);
         });
 
         it("string setFlags", function() {
@@ -308,6 +347,17 @@ describe('Operation', function() {
                 }
             };
             expect(() => StellarBase.Operation.setOptions(opts)).to.throw(/signer.pubKey is invalid/)
+        });
+
+        it("fails to create setOptions operation with multiple signer values", function () {
+            let opts = {
+                signer: {
+                    pubKey: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                    hash: new Buffer(32),
+                    weight: 1
+                }
+            };
+            expect(() => StellarBase.Operation.setOptions(opts)).to.throw(/Signer object must contain exactly one/)
         });
 
         it("fails to create setOptions operation with an invalid masterWeight", function() {

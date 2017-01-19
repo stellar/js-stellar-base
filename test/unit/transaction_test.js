@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 describe('Transaction', function() {
 
   it("constructs Transaction object from a TransactionEnvelope", function(done) {
@@ -66,6 +68,25 @@ describe('Transaction', function() {
     let rawSig = env.signatures()[0].signature();
     let verified = signer.verify(tx.hash(), rawSig);
     expect(verified).to.equal(true);
+  });
+
+  it("signs using hash preimage", function() {
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+    let asset       = StellarBase.Asset.native();
+    let amount      = "2000";
+
+    let preimage = crypto.randomBytes(64);
+    let hash = crypto.createHash('sha256').update(preimage).digest();
+
+    let tx = new StellarBase.TransactionBuilder(source)
+                .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .build();
+    tx.signHashX(preimage);
+
+    let env = tx.toEnvelope();
+    expect(env.signatures()[0].signature()).to.eql(preimage);
+    expect(env.signatures()[0].hint()).to.eql(hash.slice(hash.length - 4));
   });
 
 
