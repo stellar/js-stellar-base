@@ -269,11 +269,11 @@ describe('Operation', function() {
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
 
-            expect(obj.signer.hashTx).to.be.eql(opts.signer.hashTx);
+            expectBuffersToBeEqual(obj.signer.hashTx, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
         });
 
-        it("creates a setOptionsOp with hashX signer", function () {
+        it("creates a setOptionsOp with hash signer", function () {
             var opts = {};
 
             var hash = crypto.createHash('sha256').update("Hash Preimage").digest();
@@ -288,7 +288,7 @@ describe('Operation', function() {
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
 
-            expect(obj.signer.hash).to.be.eql(opts.signer.hash);
+            expectBuffersToBeEqual(obj.signer.hash, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
         });
 
@@ -827,3 +827,9 @@ describe('Operation', function() {
         });
     });
 });
+
+function expectBuffersToBeEqual(left, right) {
+    let leftHex = left.toString('hex');
+    let rightHex = right.toString('hex');
+    expect(leftHex).to.eql(rightHex);
+}

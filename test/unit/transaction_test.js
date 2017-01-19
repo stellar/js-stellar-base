@@ -85,8 +85,8 @@ describe('Transaction', function() {
     tx.signHashX(preimage);
 
     let env = tx.toEnvelope();
-    expect(env.signatures()[0].signature()).to.eql(preimage);
-    expect(env.signatures()[0].hint()).to.eql(hash.slice(hash.length - 4));
+    expectBuffersToBeEqual(env.signatures()[0].signature(), preimage);
+    expectBuffersToBeEqual(env.signatures()[0].hint(), hash.slice(hash.length - 4));
   });
 
 
@@ -114,3 +114,9 @@ describe('Transaction', function() {
   });
 
 });
+
+function expectBuffersToBeEqual(left, right) {
+  let leftHex = left.toString('hex');
+  let rightHex = right.toString('hex');
+  expect(leftHex).to.eql(rightHex);
+}
