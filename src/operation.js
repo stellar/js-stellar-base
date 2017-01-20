@@ -579,11 +579,12 @@ export class Operation {
 
                 if (attrs.signer()) {
                     let signer = {};
-                    if (attrs.signer().key()._arm == "ed25519") {
+                    let arm = attrs.signer().key().arm();
+                    if (arm == "ed25519") {
                         signer.pubKey = accountIdtoAddress(attrs.signer().key());
-                    } else if (attrs.signer().key()._arm == "hashTx") {
+                    } else if (arm == "hashTx") {
                         signer.hashTx = attrs.signer().key().hashTx();
-                    } else if (attrs.signer().key()._arm == "hashX") {
+                    } else if (arm == "hashX") {
                         signer.hash = attrs.signer().key().hashX();
                     }
 
