@@ -80,6 +80,9 @@ export class Keypair {
    * @returns {Keypair}
    */
   static master() {
+    if (Network.current() === null) {
+      throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
+    }
     return this.fromRawSeed(Network.current().networkId());
   }
 
