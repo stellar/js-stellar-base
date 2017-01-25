@@ -1,4 +1,4 @@
-// Automatically generated on 2017-01-18T22:40:33+01:00
+// Automatically generated on 2017-01-25T18:59:57+01:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -3302,10 +3302,10 @@ xdr.union("PublicKey", {
 //       uint256 ed25519;
 //   case SIGNER_KEY_TYPE_HASH_TX:
 //       /* Hash of Transaction structure */
-//       Hash hashTx;
+//       uint256 hashTx;
 //   case SIGNER_KEY_TYPE_HASH_X:
 //       /* Hash of random 256 bit preimage X */
-//       Hash hashX;
+//       uint256 hashX;
 //   };
 //
 // ===========================================================================
@@ -3319,8 +3319,8 @@ xdr.union("SignerKey", {
   ],
   arms: {
     ed25519: xdr.lookup("Uint256"),
-    hashTx: xdr.lookup("Hash"),
-    hashX: xdr.lookup("Hash"),
+    hashTx: xdr.lookup("Uint256"),
+    hashX: xdr.lookup("Uint256"),
   },
 });
 
