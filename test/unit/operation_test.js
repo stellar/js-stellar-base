@@ -254,13 +254,13 @@ describe('Operation', function() {
             expect(obj.homeDomain).to.be.equal(opts.homeDomain);
         });
 
-        it("creates a setOptionsOp with hashTx signer", function () {
+        it("creates a setOptionsOp with preAuthTx signer", function () {
             var opts = {};
 
             var hash = crypto.createHash('sha256').update("Tx hash").digest();
 
             opts.signer = {
-                hashTx: hash,
+                preAuthTx: hash,
                 weight: 10
             };
             
@@ -269,7 +269,7 @@ describe('Operation', function() {
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
             var obj = StellarBase.Operation.operationToObject(operation);
 
-            expectBuffersToBeEqual(obj.signer.hashTx, hash);
+            expectBuffersToBeEqual(obj.signer.preAuthTx, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
         });
 

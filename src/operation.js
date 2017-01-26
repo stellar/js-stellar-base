@@ -264,7 +264,7 @@ export class Operation {
     *                                 deleted if the weight is 0. Only one of `pubKey`, `hash`, `hashTx` should be defined.
     * @param {string} [opts.signer.pubKey] - The public key of the signer.
     * @param {Buffer} [opts.signer.hash] - Hash that will unlock funds. Preimage should be used as signature of future transaction.
-    * @param {Buffer} [opts.signer.hashTx] - Hash of transaction that will unlock funds.
+    * @param {Buffer} [opts.signer.preAuthTx] - Hash of transaction that will unlock funds.
     * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
     * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -316,11 +316,11 @@ export class Operation {
                 setValues++;
             }
 
-            if (opts.signer.hashTx) {
-                if (!(Buffer.isBuffer(opts.signer.hashTx) && opts.signer.hashTx.length == 32)) {
-                    throw new Error("signer.hashTx must be 32 bytes Buffer.");
+            if (opts.signer.preAuthTx) {
+                if (!(Buffer.isBuffer(opts.signer.preAuthTx) && opts.signer.preAuthTx.length == 32)) {
+                    throw new Error("signer.preAuthTx must be 32 bytes Buffer.");
                 }
-                key = new xdr.SignerKey.signerKeyTypeHashTx(opts.signer.hashTx);
+                key = new xdr.SignerKey.signerKeyTypeHashTx(opts.signer.preAuthTx);
                 setValues++;
             }
 
@@ -333,7 +333,7 @@ export class Operation {
             }
 
             if (setValues != 1) {
-                throw new Error("Signer object must contain exactly one of signer.pubKey, signer.hash, signer.hashTx.");
+                throw new Error("Signer object must contain exactly one of signer.pubKey, signer.hash, signer.preAuthTx.");
             }
 
             attributes.signer = new xdr.Signer({key, weight});
@@ -583,7 +583,7 @@ export class Operation {
                     if (arm == "ed25519") {
                         signer.pubKey = accountIdtoAddress(attrs.signer().key());
                     } else if (arm == "hashTx") {
-                        signer.hashTx = attrs.signer().key().hashTx();
+                        signer.preAuthTx = attrs.signer().key().hashTx();
                     } else if (arm == "hashX") {
                         signer.hash = attrs.signer().key().hashX();
                     }
