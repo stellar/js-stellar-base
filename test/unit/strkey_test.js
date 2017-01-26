@@ -51,7 +51,7 @@ describe('StrKey', function() {
       expect(StellarBase.StrKey.encodeSeed(this.unencodedBuffer)).to.eql(this.seedEncoded);
       expect(StellarBase.StrKey.encodeSeed(this.unencodedBuffer)).to.match(/^S/);
 
-      expect(StellarBase.StrKey.encodeHashTx(this.unencodedBuffer)).to.match(/^T/);
+      expect(StellarBase.StrKey.encodePreAuthTx(this.unencodedBuffer)).to.match(/^T/);
       expect(StellarBase.StrKey.encodeHashX(this.unencodedBuffer)).to.match(/^X/);
     });
 

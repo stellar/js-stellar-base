@@ -8,7 +8,7 @@ import isString from "lodash/isString";
 const versionBytes = {
   publicKey:  6 << 3, // G
   seed:      18 << 3, // S
-  hashTx:    19 << 3, // T
+  preAuthTx: 19 << 3, // T
   hashX:     23 << 3  // X
 };
 
@@ -71,21 +71,21 @@ export class StrKey {
   }
 
   /**
-   * Encodes data to strkey hashtx.
+   * Encodes data to strkey preAuthTx.
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodeHashTx(data) {
-    return encodeCheck("hashTx", data);
+  static encodePreAuthTx(data) {
+    return encodeCheck("preAuthTx", data);
   }
 
   /**
-   * Decodes strkey hashtx to raw data.
+   * Decodes strkey PreAuthTx to raw data.
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodeHashTx(data) {
-    return decodeCheck("hashTx", data);
+  static decodePreAuthTx(data) {
+    return decodeCheck("preAuthTx", data);
   }
 
   /**
