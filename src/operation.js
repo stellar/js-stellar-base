@@ -261,9 +261,9 @@ export class Operation {
     * @param {number|string} [opts.medThreshold] - The sum weight for the medium threshold.
     * @param {number|string} [opts.highThreshold] - The sum weight for the high threshold.
     * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
-    *                                 deleted if the weight is 0. Only one of `pubKey`, `hash`, `hashTx` should be defined.
-    * @param {string} [opts.signer.pubKey] - The public key of the signer.
-    * @param {Buffer} [opts.signer.hash] - Hash that will unlock funds. Preimage should be used as signature of future transaction.
+    *                                 deleted if the weight is 0. Only one of `ed25519PublicKey`, `sha256Hash`, `preAuthTx` should be defined.
+    * @param {string} [opts.signer.ed25519PublicKey] - The ed25519 public key of the signer.
+    * @param {Buffer} [opts.signer.sha256Hash] - sha256 hash of preimage that will unlock funds. Preimage should be used as signature of future transaction.
     * @param {Buffer} [opts.signer.preAuthTx] - Hash of transaction that will unlock funds.
     * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
     * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
@@ -307,11 +307,11 @@ export class Operation {
 
             let setValues = 0;
 
-            if (opts.signer.pubKey) {
-                if (!StrKey.isValidPublicKey(opts.signer.pubKey)) {
-                  throw new Error("signer.pubKey is invalid.");
+            if (opts.signer.ed25519PublicKey) {
+                if (!StrKey.isValidPublicKey(opts.signer.ed25519PublicKey)) {
+                  throw new Error("signer.ed25519PublicKey is invalid.");
                 }
-                let rawKey = StrKey.decodePublicKey(opts.signer.pubKey);
+                let rawKey = StrKey.decodePublicKey(opts.signer.ed25519PublicKey);
                 key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
                 setValues++;
             }
@@ -324,16 +324,16 @@ export class Operation {
                 setValues++;
             }
 
-            if (opts.signer.hash) {
-                if (!(Buffer.isBuffer(opts.signer.hash) && opts.signer.hash.length == 32)) {
-                    throw new Error("signer.hash must be 32 bytes Buffer.");
+            if (opts.signer.sha256Hash) {
+                if (!(Buffer.isBuffer(opts.signer.sha256Hash) && opts.signer.sha256Hash.length == 32)) {
+                    throw new Error("signer.sha256Hash must be 32 bytes Buffer.");
                 }
-                key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.hash);
+                key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
                 setValues++;
             }
 
             if (setValues != 1) {
-                throw new Error("Signer object must contain exactly one of signer.pubKey, signer.hash, signer.preAuthTx.");
+                throw new Error("Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.");
             }
 
             attributes.signer = new xdr.Signer({key, weight});
@@ -581,11 +581,11 @@ export class Operation {
                     let signer = {};
                     let arm = attrs.signer().key().arm();
                     if (arm == "ed25519") {
-                        signer.pubKey = accountIdtoAddress(attrs.signer().key());
+                        signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
                     } else if (arm == "hashTx") {
                         signer.preAuthTx = attrs.signer().key().hashTx();
                     } else if (arm == "hashX") {
-                        signer.hash = attrs.signer().key().hashX();
+                        signer.sha256Hash = attrs.signer().key().hashX();
                     }
 
                     signer.weight = attrs.signer().weight();
