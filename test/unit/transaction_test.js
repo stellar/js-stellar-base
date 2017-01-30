@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 describe('Transaction', function() {
 
   it("constructs Transaction object from a TransactionEnvelope", function(done) {
@@ -68,6 +70,25 @@ describe('Transaction', function() {
     expect(verified).to.equal(true);
   });
 
+  it("signs using hash preimage", function() {
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+    let asset       = StellarBase.Asset.native();
+    let amount      = "2000";
+
+    let preimage = crypto.randomBytes(64);
+    let hash = crypto.createHash('sha256').update(preimage).digest();
+
+    let tx = new StellarBase.TransactionBuilder(source)
+                .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .build();
+    tx.signHashX(preimage);
+
+    let env = tx.toEnvelope();
+    expectBuffersToBeEqual(env.signatures()[0].signature(), preimage);
+    expectBuffersToBeEqual(env.signatures()[0].hint(), hash.slice(hash.length - 4));
+  });
+
 
   it("accepts 0 as a valid transaction fee", function(done) {
     let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
@@ -93,3 +114,9 @@ describe('Transaction', function() {
   });
 
 });
+
+function expectBuffersToBeEqual(left, right) {
+  let leftHex = left.toString('hex');
+  let rightHex = right.toString('hex');
+  expect(leftHex).to.eql(rightHex);
+}

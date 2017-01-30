@@ -13,7 +13,6 @@ export {Operation, AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag} from 
 export {Memo} from "./memo";
 export {Account} from "./account";
 export {Network, Networks} from "./network";
-
-export * from "./strkey";
+export {StrKey} from "./strkey";
 
 export default module.exports;
