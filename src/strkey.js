@@ -6,10 +6,10 @@ import isNull from "lodash/isNull";
 import isString from "lodash/isString";
 
 const versionBytes = {
-  publicKey:  6 << 3, // G
-  seed:      18 << 3, // S
-  preAuthTx: 19 << 3, // T
-  hashX:     23 << 3  // X
+  ed25519PublicKey:  6 << 3, // G
+  ed25519SecretSeed: 18 << 3, // S
+  preAuthTx:         19 << 3, // T
+  sha256Hash:        23 << 3  // X
 };
 
 /**
@@ -17,57 +17,57 @@ const versionBytes = {
  */
 export class StrKey {
   /**
-   * Encodes data to strkey public key.
+   * Encodes data to strkey ed25519 public key.
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodePublicKey(data) {
-    return encodeCheck("publicKey", data);
+  static encodeEd25519PublicKey(data) {
+    return encodeCheck("ed25519PublicKey", data);
   }
 
   /**
-   * Decodes strkey public key to raw data.
+   * Decodes strkey ed25519 public key to raw data.
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodePublicKey(data) {
-    return decodeCheck("publicKey", data);
+  static decodeEd25519PublicKey(data) {
+    return decodeCheck("ed25519PublicKey", data);
   }
 
   /**
-   * Returns true if the given Stellar public key is valid.
+   * Returns true if the given Stellar public key is a valid ed25519 public key.
    * @param {string} publicKey public key to check
    * @returns {boolean}
    */
-  static isValidPublicKey(publicKey) {
-    return isValid("publicKey", publicKey);
+  static isValidEd25519PublicKey(publicKey) {
+    return isValid("ed25519PublicKey", publicKey);
   }
 
   /**
-   * Encodes data to strkey seed.
+   * Encodes data to strkey ed25519 seed.
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodeSeed(data) {
-    return encodeCheck("seed", data);
+  static encodeEd25519SecretSeed(data) {
+    return encodeCheck("ed25519SecretSeed", data);
   }
 
   /**
-   * Decodes strkey seed to raw data.
+   * Decodes strkey ed25519 seed to raw data.
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodeSeed(data) {
-    return decodeCheck("seed", data);
+  static decodeEd25519SecretSeed(data) {
+    return decodeCheck("ed25519SecretSeed", data);
   }
 
   /**
-   * Returns true if the given Stellar secret key is valid.
-   * @param {string} secretKey secretKey to check
+   * Returns true if the given Stellar secret key is a valid ed25519 secret seed.
+   * @param {string} seed seed to check
    * @returns {boolean}
    */
-  static isValidSecretKey(secretKey) {
-    return isValid("seed", secretKey);
+  static isValidEd25519SecretSeed(seed) {
+    return isValid("ed25519SecretSeed", seed);
   }
 
   /**
@@ -89,21 +89,21 @@ export class StrKey {
   }
 
   /**
-   * Encodes data to strkey hashx.
+   * Encodes data to strkey sha256 hash.
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodeHashX(data) {
-    return encodeCheck("hashX", data);
+  static encodeSha256Hash(data) {
+    return encodeCheck("sha256Hash", data);
   }
 
   /**
-   * Decodes strkey hashx to raw data.
+   * Decodes strkey sha256 hash to raw data.
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodeHashX(data) {
-    return decodeCheck("hashX", data);
+  static decodeSha256Hash(data) {
+    return decodeCheck("sha256Hash", data);
   }
 }
 
@@ -165,7 +165,7 @@ export function encodeCheck(versionByteName, data) {
   let versionByte = versionBytes[versionByteName];
 
   if (isUndefined(versionByte)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`);
+    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`);
   }
 
   data              = new Buffer(data);

@@ -105,7 +105,7 @@ export class TransactionBuilder {
         let sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
 
         var attrs = {
-          sourceAccount: Keypair.fromAccountId(this.source.accountId()).xdrAccountId(),
+          sourceAccount: Keypair.fromPublicKey(this.source.accountId()).xdrAccountId(),
           fee:           this.baseFee * this.operations.length,
           seqNum:        xdr.SequenceNumber.fromString(sequenceNumber.toString()),
           memo:          this.memo,

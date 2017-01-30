@@ -11,7 +11,7 @@ export class Keypair {
    * `Keypair` represents public (and secret) keys of the account.
    *
    * Use more convenient methods to create `Keypair` object:
-   * * `{@link Keypair.fromAccountId}`
+   * * `{@link Keypair.fromPublicKey}`
    * * `{@link Keypair.fromSecret}`
    * * `{@link Keypair.random}`
    *
@@ -35,7 +35,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromSecret(secretKey) {
-    let rawSeed = StrKey.decodeSeed(secretKey);
+    let rawSeed = StrKey.decodeEd25519SecretSeed(secretKey);
     return this.fromRawSeed(rawSeed);
   }
 
@@ -77,14 +77,14 @@ export class Keypair {
   }
 
   /**
-   * Creates a new `Keypair` object from account ID.
-   * @param {string} accountId account ID (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
+   * Creates a new `Keypair` object from public key.
+   * @param {string} publicKey public key (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
    * @returns {Keypair}
    */
-  static fromAccountId(accountId) {
-    let publicKey = StrKey.decodePublicKey(accountId);
+  static fromPublicKey(publicKey) {
+    publicKey = StrKey.decodeEd25519PublicKey(publicKey);
     if (publicKey.length !== 32) {
-      throw new Error('Invalid Stellar accountId');
+      throw new Error('Invalid Stellar public key');
     }
     return new this({publicKey});
   }
@@ -142,11 +142,11 @@ export class Keypair {
   }
 
   /**
-   * Returns account ID associated with this `Keypair` object.
+   * Returns public key associated with this `Keypair` object.
    * @returns {string}
    */
-  accountId() {
-    return StrKey.encodePublicKey(this._publicKey);
+  publicKey() {
+    return StrKey.encodeEd25519PublicKey(this._publicKey);
   }
 
   /**
@@ -154,7 +154,7 @@ export class Keypair {
    * @returns {string}
    */
   secret() {
-    return StrKey.encodeSeed(this._secretSeed);
+    return StrKey.encodeEd25519SecretSeed(this._secretSeed);
   }
 
   /**

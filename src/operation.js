@@ -68,14 +68,14 @@ export class Operation {
     * @returns {xdr.CreateAccountOp}
     */
     static createAccount(opts) {
-        if (!StrKey.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!this.isValidAmount(opts.startingBalance)) {
             throw new TypeError(Operation.constructAmountRequirementsError('startingBalance'));
         }
         let attributes = {};
-        attributes.destination     = Keypair.fromAccountId(opts.destination).xdrAccountId();
+        attributes.destination     = Keypair.fromPublicKey(opts.destination).xdrAccountId();
         attributes.startingBalance = this._toXDRAmount(opts.startingBalance);
         let createAccount          = new xdr.CreateAccountOp(attributes);
 
@@ -96,7 +96,7 @@ export class Operation {
     * @returns {xdr.PaymentOp}
     */
     static payment(opts) {
-        if (!StrKey.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.asset) {
@@ -107,7 +107,7 @@ export class Operation {
         }
 
         let attributes = {};
-        attributes.destination  = Keypair.fromAccountId(opts.destination).xdrAccountId();
+        attributes.destination  = Keypair.fromPublicKey(opts.destination).xdrAccountId();
         attributes.asset        = opts.asset.toXdrObject();
         attributes.amount        = this._toXDRAmount(opts.amount);
         let payment             = new xdr.PaymentOp(attributes);
@@ -140,7 +140,7 @@ export class Operation {
         if (!this.isValidAmount(opts.sendMax)) {
             throw new TypeError(Operation.constructAmountRequirementsError('sendMax'));
         }
-        if (!StrKey.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         if (!opts.destAsset) {
@@ -153,7 +153,7 @@ export class Operation {
         let attributes = {};
         attributes.sendAsset    = opts.sendAsset.toXdrObject();
         attributes.sendMax      = this._toXDRAmount(opts.sendMax);
-        attributes.destination  = Keypair.fromAccountId(opts.destination).xdrAccountId();
+        attributes.destination  = Keypair.fromPublicKey(opts.destination).xdrAccountId();
         attributes.destAsset    = opts.destAsset.toXdrObject();
         attributes.destAmount   = this._toXDRAmount(opts.destAmount);
 
@@ -219,11 +219,11 @@ export class Operation {
     * @returns {xdr.AllowTrustOp}
     */
     static allowTrust(opts) {
-        if (!StrKey.isValidPublicKey(opts.trustor)) {
+        if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
             throw new Error("trustor is invalid");
         }
         let attributes = {};
-        attributes.trustor = Keypair.fromAccountId(opts.trustor).xdrAccountId();
+        attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
         if (opts.assetCode.length <= 4) {
             let code = padEnd(opts.assetCode, 4, '\0');
             attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
@@ -275,10 +275,10 @@ export class Operation {
         let attributes = {};
 
         if (opts.inflationDest) {
-            if (!StrKey.isValidPublicKey(opts.inflationDest)) {
+            if (!StrKey.isValidEd25519PublicKey(opts.inflationDest)) {
                 throw new Error("inflationDest is invalid");
             }
-            attributes.inflationDest = Keypair.fromAccountId(opts.inflationDest).xdrAccountId();
+            attributes.inflationDest = Keypair.fromPublicKey(opts.inflationDest).xdrAccountId();
         }
 
         let weightCheckFunction = (value, name) => {
@@ -308,10 +308,10 @@ export class Operation {
             let setValues = 0;
 
             if (opts.signer.ed25519PublicKey) {
-                if (!StrKey.isValidPublicKey(opts.signer.ed25519PublicKey)) {
+                if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
                   throw new Error("signer.ed25519PublicKey is invalid.");
                 }
-                let rawKey = StrKey.decodePublicKey(opts.signer.ed25519PublicKey);
+                let rawKey = StrKey.decodeEd25519PublicKey(opts.signer.ed25519PublicKey);
                 key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
                 setValues++;
             }
@@ -437,11 +437,11 @@ export class Operation {
     */
     static accountMerge(opts) {
         let opAttributes = {};
-        if (!StrKey.isValidPublicKey(opts.destination)) {
+        if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
             throw new Error("destination is invalid");
         }
         opAttributes.body = xdr.OperationBody.accountMerge(
-            Keypair.fromAccountId(opts.destination).xdrAccountId()
+            Keypair.fromPublicKey(opts.destination).xdrAccountId()
         );
         this.setSourceAccount(opAttributes, opts);
 
@@ -502,10 +502,10 @@ export class Operation {
 
     static setSourceAccount(opAttributes, opts) {
       if (opts.source) {
-          if (!StrKey.isValidPublicKey(opts.source)) {
+          if (!StrKey.isValidEd25519PublicKey(opts.source)) {
               throw new Error("Source address is invalid");
           }
-          opAttributes.sourceAccount = Keypair.fromAccountId(opts.source).xdrAccountId();
+          opAttributes.sourceAccount = Keypair.fromPublicKey(opts.source).xdrAccountId();
       }
     }
 
@@ -517,7 +517,7 @@ export class Operation {
     */
     static operationToObject(operation) {
         function accountIdtoAddress(accountId) {
-          return StrKey.encodePublicKey(accountId.ed25519());
+          return StrKey.encodeEd25519PublicKey(accountId.ed25519());
         }
 
         let result = {};

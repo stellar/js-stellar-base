@@ -26,7 +26,7 @@ export class Transaction {
         }
         // since this transaction is immutable, save the tx
         this.tx       = envelope.tx();
-        this.source   = StrKey.encodePublicKey(envelope.tx().sourceAccount().ed25519());
+        this.source   = StrKey.encodeEd25519PublicKey(envelope.tx().sourceAccount().ed25519());
         this.fee      = this.tx.fee();
         this.memo     = this.tx.memo();
         this.sequence = this.tx.seqNum().toString();

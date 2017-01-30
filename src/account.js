@@ -16,7 +16,7 @@ export class Account {
      * @param {string} sequence current sequence number of the account
      */
     constructor(accountId, sequence) {
-        if (!StrKey.isValidPublicKey(accountId)) {
+        if (!StrKey.isValidEd25519PublicKey(accountId)) {
             throw new Error('accountId is invalid');
         }
         if (!isString(sequence)) {

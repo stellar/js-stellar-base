@@ -24,7 +24,7 @@ export class Asset {
       if (String(code).toLowerCase() !== "xlm" && !issuer) {
         throw new Error("Issuer cannot be null");
       }
-      if (issuer && !StrKey.isValidPublicKey(issuer)) {
+      if (issuer && !StrKey.isValidEd25519PublicKey(issuer)) {
         throw new Error("Issuer is invalid");
       }
 
@@ -52,12 +52,12 @@ export class Asset {
           return this.native();
         case xdr.AssetType.assetTypeCreditAlphanum4():
           anum = assetXdr.alphaNum4();
-          issuer = StrKey.encodePublicKey(anum.issuer().ed25519());
+          issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
           code = trimEnd(anum.assetCode(), '\0');
           return new this(code, issuer);
         case xdr.AssetType.assetTypeCreditAlphanum12():
           anum = assetXdr.alphaNum12();
-          issuer = StrKey.encodePublicKey(anum.issuer().ed25519());
+          issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
           code = trimEnd(anum.assetCode(), '\0');
           return new this(code, issuer);
         default:
@@ -88,7 +88,7 @@ export class Asset {
 
             var assetType = new xdrType({
                 assetCode: paddedCode,
-                issuer: Keypair.fromAccountId(this.issuer).xdrAccountId()
+                issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
             });
 
             return new xdr.Asset(xdrTypeString, assetType);
