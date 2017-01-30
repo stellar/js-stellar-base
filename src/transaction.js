@@ -1,10 +1,11 @@
 import {xdr, hash} from "./index";
 
-import {encodeCheck} from "./strkey";
+import {StrKey} from "./strkey";
 import {Operation} from "./operation";
 import {Network} from "./network";
 import map from "lodash/map";
 import each from "lodash/each";
+import crypto from "crypto";
 
 let MIN_LEDGER   = 0;
 let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
@@ -25,7 +26,7 @@ export class Transaction {
         }
         // since this transaction is immutable, save the tx
         this.tx       = envelope.tx();
-        this.source   = encodeCheck("accountId", envelope.tx().sourceAccount().ed25519());
+        this.source   = StrKey.encodeEd25519PublicKey(envelope.tx().sourceAccount().ed25519());
         this.fee      = this.tx.fee();
         this.memo     = this.tx.memo();
         this.sequence = this.tx.seqNum().toString();
@@ -61,6 +62,18 @@ export class Transaction {
     }
 
     /**
+     * Add `hashX` signer preimage as signature.
+     * @param {Buffer|String} preimage Preimage of hash used as signer
+     * @returns {void}
+     */
+    signHashX(preimage) {
+        let signature = preimage;
+        let hash = crypto.createHash('sha256').update(preimage).digest();
+        let hint = hash.slice(hash.length - 4);
+        this.signatures.push(new xdr.DecoratedSignature({hint, signature}));
+    }
+
+    /**
      * Returns a hash for this transaction, suitable for signing.
      * @returns {Buffer}
      */
@@ -78,6 +91,10 @@ export class Transaction {
      * @returns {Buffer}
      */
     signatureBase() {
+        if (Network.current() === null) {
+            throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
+        }
+
         return Buffer.concat([
             Network.current().networkId(),
             xdr.EnvelopeType.envelopeTypeTx().toXDR(),

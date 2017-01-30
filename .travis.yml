@@ -2,11 +2,9 @@ language: node_js
 sudo: required # to install newer g++ :(
 matrix:
   include:
-    - node_js: "4.2"
-    - node_js: "0.12"
-    - node_js: "0.11"
-    - node_js: "0.10"
-    - node_js: "0.12"
+    - node_js: "4"
+    - node_js: "6.9.4"
+    - node_js: "6.9.4"
       env: SAUCE=true
 before_install:
 - npm install -g npm@'>=2.13.5'
@@ -28,7 +26,7 @@ script:
 after_success:
 - |
   # Send report to coveralls but only once
-  if [ -z "${SAUCE}" ] && [ "${TRAVIS_NODE_VERSION}" = "0.12" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
+  if [ -z "${SAUCE}" ] && [ "${TRAVIS_NODE_VERSION}" = "6.9.4" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
     gulp submit-coverage
   fi
 notifications:
@@ -56,11 +54,11 @@ deploy:
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: "4.2" # Deploy only once, no matter which node
+      node: "6.9.4" # Deploy only once, no matter which node
   - provider: script
     script: ./bower_publish.sh
     skip_cleanup: true
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: "4.2" # Deploy only once, no matter which node
+      node: "6.9.4" # Deploy only once, no matter which node

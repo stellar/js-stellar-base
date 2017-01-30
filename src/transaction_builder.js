@@ -65,7 +65,6 @@ export class TransactionBuilder {
         }
         this.source        = sourceAccount;
         this.operations    = [];
-        this.signers       = [];
 
         this.baseFee    = (isUndefined(opts.fee) ? BASE_FEE : opts.fee);
 
@@ -106,7 +105,7 @@ export class TransactionBuilder {
         let sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
 
         var attrs = {
-          sourceAccount: Keypair.fromAccountId(this.source.accountId()).xdrAccountId(),
+          sourceAccount: Keypair.fromPublicKey(this.source.accountId()).xdrAccountId(),
           fee:           this.baseFee * this.operations.length,
           seqNum:        xdr.SequenceNumber.fromString(sequenceNumber.toString()),
           memo:          this.memo,
@@ -122,7 +121,6 @@ export class TransactionBuilder {
         let xenv = new xdr.TransactionEnvelope({tx:xtx});
 
         let tx = new Transaction(xenv);
-        tx.sign(...this.signers);
 
         this.source.incrementSequenceNumber();
         return tx;

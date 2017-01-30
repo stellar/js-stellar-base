@@ -7,7 +7,7 @@ describe('Keypair.fromSecret', function() {
     let kp = StellarBase.Keypair.fromSecret(secret);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.accountId()).to.eql("GDFQVQCYYB7GKCGSCUSIQYXTPLV5YJ3XWDMWGQMDNM4EAXAL7LITIBQ7");
+    expect(kp.publicKey()).to.eql("GDFQVQCYYB7GKCGSCUSIQYXTPLV5YJ3XWDMWGQMDNM4EAXAL7LITIBQ7");
     expect(kp.secret()).to.eql(secret);
   });
 
@@ -58,7 +58,7 @@ describe('Keypair.fromBase58Seed', function() {
       let key = keys[i];
       let keyPair = StellarBase.Keypair.fromBase58Seed(key.oldSeed);
       expect(keyPair.secret()).to.equal(key.newSeed);
-      expect(keyPair.accountId()).to.equal(key.newAddress);
+      expect(keyPair.publicKey()).to.equal(key.newAddress);
     }
   });
 
@@ -79,7 +79,7 @@ describe('Keypair.fromRawSeed', function() {
     let kp = StellarBase.Keypair.fromRawSeed(seed);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.accountId()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
+    expect(kp.publicKey()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
     expect(kp.secret()).to.eql("SBWWC43UMVZHAYLTONYGQ4TBONSW2YLTORSXE4DBONZXA2DSMFZWLP2R");
     expect(kp.rawPublicKey().toString("hex")).to.eql("2e3c35010749c1de3d9a5bdd6a31c12458768da5ce87cca6aad63ebbaaef7432");
   });
@@ -94,26 +94,26 @@ describe('Keypair.fromRawSeed', function() {
 });
 
 
-describe('Keypair.fromAccountId', function() {
+describe('Keypair.fromPublicKey', function() {
 
   it("creates a keypair correctly", function() {
-    let kp = StellarBase.Keypair.fromAccountId("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
+    let kp = StellarBase.Keypair.fromPublicKey("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-    expect(kp.accountId()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
+    expect(kp.publicKey()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
     expect(kp.rawPublicKey().toString("hex")).to.eql("2e3c35010749c1de3d9a5bdd6a31c12458768da5ce87cca6aad63ebbaaef7432");
   });
 
   it("throw an error if the arg isn't strkey encoded as a accountid", function() {
-    expect(() => StellarBase.Keypair.fromAccountId("hel0")).to.throw()
-    expect(() => StellarBase.Keypair.fromAccountId("masterpassphrasemasterpassphrase")).to.throw()
-    expect(() => StellarBase.Keypair.fromAccountId("sfyjodTxbwLtRToZvi6yQ1KnpZriwTJ7n6nrASFR6goRviCU3Ff")).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey("hel0")).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey("sfyjodTxbwLtRToZvi6yQ1KnpZriwTJ7n6nrASFR6goRviCU3Ff")).to.throw()
   });
 
   it("throws an error if the address isn't 32 bytes", function() {
-    expect(() => StellarBase.Keypair.fromAccountId("masterpassphrasemasterpassphrase")).to.throw()
-    expect(() => StellarBase.Keypair.fromAccountId("masterpassphrasemasterpassphrase")).to.throw()
-    expect(() => StellarBase.Keypair.fromAccountId(null)).to.throw()
-    expect(() => StellarBase.Keypair.fromAccountId()).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey("masterpassphrasemasterpassphrase")).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey(null)).to.throw()
+    expect(() => StellarBase.Keypair.fromPublicKey()).to.throw()
   });
 
 });
@@ -124,83 +124,6 @@ describe('Keypair.random', function() {
   it("creates a keypair correctly", function() {
     let kp = StellarBase.Keypair.random();
     expect(kp).to.be.instanceof(StellarBase.Keypair);
-  });
-
-});
-
-describe('Keypair.isValidPublicKey', function() {
-
-  it("returns true for valid public key", function() {
-    var keys = [
-      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      'GB7KKHHVYLDIZEKYJPAJUOTBE5E3NJAXPSDZK7O6O44WR3EBRO5HRPVT',
-      'GD6WVYRVID442Y4JVWFWKWCZKB45UGHJAABBJRS22TUSTWGJYXIUR7N2',
-      'GBCG42WTVWPO4Q6OZCYI3D6ZSTFSJIXIS6INCIUF23L6VN3ADE4337AP',
-      'GDFX463YPLCO2EY7NGFMI7SXWWDQAMASGYZXCG2LATOF3PP5NQIUKBPT',
-      'GBXEODUMM3SJ3QSX2VYUWFU3NRP7BQRC2ERWS7E2LZXDJXL2N66ZQ5PT',
-      'GAJHORKJKDDEPYCD6URDFODV7CVLJ5AAOJKR6PG2VQOLWFQOF3X7XLOG',
-      'GACXQEAXYBEZLBMQ2XETOBRO4P66FZAJENDHOQRYPUIXZIIXLKMZEXBJ',
-      'GDD3XRXU3G4DXHVRUDH7LJM4CD4PDZTVP4QHOO4Q6DELKXUATR657OZV',
-      'GDTYVCTAUQVPKEDZIBWEJGKBQHB4UGGXI2SXXUEW7LXMD4B7MK37CWLJ'
-    ];
-
-    for (var i in keys) {
-      expect(StellarBase.Keypair.isValidPublicKey(keys[i])).to.be.true;
-    }
-  });
-
-  it("returns false for invalid public key", function() {
-    var keys = [
-      'GBPXX0A5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL',
-      'GCFZB6L25D26RQFDWSSBDEYQ32JHLRMTT44ZYE3DZQUTYOL7WY43PLBG++',
-      'GADE5QJ2TY7S5ZB65Q43DFGWYWCPHIYDJ2326KZGAGBN7AE5UY6JVDRRA',
-      'GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2',
-      'GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2T',
-      'GDXIIZTKTLVYCBHURXL2UPMTYXOVNI7BRAEFQCP6EZCY4JLKY4VKFNLT',
-      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
-      'gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wt',
-      'test',
-      null,
-      'g4VPBPrHZkfE8CsjuG2S4yBQNd455UWmk' // Old network key
-    ];
-
-    for (var i in keys) {
-      expect(StellarBase.Keypair.isValidPublicKey(keys[i])).to.be.false;
-    }
-  });
-
-});
-
-describe('Keypair.isValidSecretKey', function() {
-
-  it("returns true for valid secret key", function() {
-    var keys = [
-      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
-      'SCZTUEKSEH2VYZQC6VLOTOM4ZDLMAGV4LUMH4AASZ4ORF27V2X64F2S2',
-      'SCGNLQKTZ4XCDUGVIADRVOD4DEVNYZ5A7PGLIIZQGH7QEHK6DYODTFEH',
-      'SDH6R7PMU4WIUEXSM66LFE4JCUHGYRTLTOXVUV5GUEPITQEO3INRLHER',
-      'SC2RDTRNSHXJNCWEUVO7VGUSPNRAWFCQDPP6BGN4JFMWDSEZBRAPANYW',
-      'SCEMFYOSFZ5MUXDKTLZ2GC5RTOJO6FGTAJCF3CCPZXSLXA2GX6QUYOA7'
-    ];
-
-    for (var i in keys) {
-      expect(StellarBase.Keypair.isValidSecretKey(keys[i])).to.be.true;
-    }
-  });
-
-  it("returns false for invalid secret key", function() {
-    var keys = [
-      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDYT', // Too long
-      'SAFGAMN5Z6IHVI3IVEPIILS7ITZDYSCEPLN4FN5Z3IY63DRH4CIYEV', // To short
-      'SAFGAMN5Z6IHVI3IVEPIILS7ITZDYSCEPLN4FN5Z3IY63DRH4CIYEVIT', // Checksum
-      'test',
-      null
-    ];
-
-    for (var i in keys) {
-      expect(StellarBase.Keypair.isValidSecretKey(keys[i])).to.be.false;
-    }
   });
 
 });

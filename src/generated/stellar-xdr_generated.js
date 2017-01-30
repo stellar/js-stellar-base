@@ -1,4 +1,4 @@
-// Automatically generated on 2016-02-22T13:07:20+01:00
+// Automatically generated on 2017-01-25T18:59:57+01:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -431,13 +431,13 @@ xdr.enum("LedgerEntryType", {
 //
 //   struct Signer
 //   {
-//       AccountID pubKey;
+//       SignerKey key;
 //       uint32 weight; // really only need 1byte
 //   };
 //
 // ===========================================================================
 xdr.struct("Signer", [
-  ["pubKey", xdr.lookup("AccountId")],
+  ["key", xdr.lookup("SignerKey")],
   ["weight", xdr.lookup("Uint32")],
 ]);
 
@@ -1130,23 +1130,16 @@ xdr.union("BucketEntry", {
 
 // === xdr source ============================================================
 //
-//   const MAX_TX_PER_LEDGER = 5000;
-//
-// ===========================================================================
-xdr.const("MAX_TX_PER_LEDGER", 5000);
-
-// === xdr source ============================================================
-//
 //   struct TransactionSet
 //   {
 //       Hash previousLedgerHash;
-//       TransactionEnvelope txs<MAX_TX_PER_LEDGER>;
+//       TransactionEnvelope txs<>;
 //   };
 //
 // ===========================================================================
 xdr.struct("TransactionSet", [
   ["previousLedgerHash", xdr.lookup("Hash")],
-  ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), xdr.lookup("MAX_TX_PER_LEDGER"))],
+  ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)],
 ]);
 
 // === xdr source ============================================================
@@ -1167,12 +1160,12 @@ xdr.struct("TransactionResultPair", [
 //
 //   struct TransactionResultSet
 //   {
-//       TransactionResultPair results<MAX_TX_PER_LEDGER>;
+//       TransactionResultPair results<>;
 //   };
 //
 // ===========================================================================
 xdr.struct("TransactionResultSet", [
-  ["results", xdr.varArray(xdr.lookup("TransactionResultPair"), xdr.lookup("MAX_TX_PER_LEDGER"))],
+  ["results", xdr.varArray(xdr.lookup("TransactionResultPair"), 2147483647)],
 ]);
 
 // === xdr source ============================================================
@@ -2185,7 +2178,7 @@ xdr.union("Memo", {
 //   struct TimeBounds
 //   {
 //       uint64 minTime;
-//       uint64 maxTime;
+//       uint64 maxTime; // 0 here means no maxTime
 //   };
 //
 // ===========================================================================
@@ -2255,10 +2248,52 @@ xdr.struct("Transaction", [
 
 // === xdr source ============================================================
 //
+//   union switch (EnvelopeType type)
+//       {
+//       case ENVELOPE_TYPE_TX:
+//             Transaction tx;
+//       /* All other values of type are invalid */
+//       }
+//
+// ===========================================================================
+xdr.union("TransactionSignaturePayloadTaggedTransaction", {
+  switchOn: xdr.lookup("EnvelopeType"),
+  switchName: "type",
+  switches: [
+    ["envelopeTypeTx", "tx"],
+  ],
+  arms: {
+    tx: xdr.lookup("Transaction"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionSignaturePayload {
+//       Hash networkId;
+//       union switch (EnvelopeType type)
+//       {
+//       case ENVELOPE_TYPE_TX:
+//             Transaction tx;
+//       /* All other values of type are invalid */
+//       } taggedTransaction;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionSignaturePayload", [
+  ["networkId", xdr.lookup("Hash")],
+  ["taggedTransaction", xdr.lookup("TransactionSignaturePayloadTaggedTransaction")],
+]);
+
+// === xdr source ============================================================
+//
 //   struct TransactionEnvelope
 //   {
 //       Transaction tx;
-//       DecoratedSignature signatures<20>;
+//       /* Each decorated signature is a signature over the SHA256 hash of
+//        * a TransactionSignaturePayload */
+//       DecoratedSignature
+//       signatures<20>;
 //   };
 //
 // ===========================================================================
@@ -2690,7 +2725,8 @@ xdr.union("SetOptionsResult", {
 //       CHANGE_TRUST_NO_ISSUER = -2,     // could not find issuer
 //       CHANGE_TRUST_INVALID_LIMIT = -3, // cannot drop limit below balance
 //                                        // cannot create with a limit of 0
-//       CHANGE_TRUST_LOW_RESERVE = -4 // not enough funds to create a new trust line
+//       CHANGE_TRUST_LOW_RESERVE = -4, // not enough funds to create a new trust line,
+//       CHANGE_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 //   };
 //
 // ===========================================================================
@@ -2700,6 +2736,7 @@ xdr.enum("ChangeTrustResultCode", {
   changeTrustNoIssuer: -2,
   changeTrustInvalidLimit: -3,
   changeTrustLowReserve: -4,
+  changeTrustSelfNotAllowed: -5,
 });
 
 // === xdr source ============================================================
@@ -2735,7 +2772,8 @@ xdr.union("ChangeTrustResult", {
 //       ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
 //                                       // source account does not require trust
 //       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-//       ALLOW_TRUST_CANT_REVOKE = -4 // source account can't revoke trust
+//       ALLOW_TRUST_CANT_REVOKE = -4, // source account can't revoke trust,
+//       ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 //   };
 //
 // ===========================================================================
@@ -2745,6 +2783,7 @@ xdr.enum("AllowTrustResultCode", {
   allowTrustNoTrustLine: -2,
   allowTrustTrustNotRequired: -3,
   allowTrustCantRevoke: -4,
+  allowTrustSelfNotAllowed: -5,
 });
 
 // === xdr source ============================================================
@@ -3195,31 +3234,93 @@ xdr.typedef("Int64", xdr.hyper());
 //
 //   enum CryptoKeyType
 //   {
-//       KEY_TYPE_ED25519 = 0
+//       KEY_TYPE_ED25519 = 0,
+//       KEY_TYPE_HASH_TX = 1,
+//       KEY_TYPE_HASH_X = 2
 //   };
 //
 // ===========================================================================
 xdr.enum("CryptoKeyType", {
   keyTypeEd25519: 0,
+  keyTypeHashTx: 1,
+  keyTypeHashX: 2,
 });
 
 // === xdr source ============================================================
 //
-//   union PublicKey switch (CryptoKeyType type)
+//   enum PublicKeyType
 //   {
-//   case KEY_TYPE_ED25519:
+//       PUBLIC_KEY_TYPE_ED25519 = KEY_TYPE_ED25519
+//   };
+//
+// ===========================================================================
+xdr.enum("PublicKeyType", {
+  publicKeyTypeEd25519: 0,
+});
+
+// === xdr source ============================================================
+//
+//   enum SignerKeyType
+//   {
+//       SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
+//       SIGNER_KEY_TYPE_HASH_TX = KEY_TYPE_HASH_TX,
+//       SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
+//   };
+//
+// ===========================================================================
+xdr.enum("SignerKeyType", {
+  signerKeyTypeEd25519: 0,
+  signerKeyTypeHashTx: 1,
+  signerKeyTypeHashX: 2,
+});
+
+// === xdr source ============================================================
+//
+//   union PublicKey switch (PublicKeyType type)
+//   {
+//   case PUBLIC_KEY_TYPE_ED25519:
 //       uint256 ed25519;
 //   };
 //
 // ===========================================================================
 xdr.union("PublicKey", {
-  switchOn: xdr.lookup("CryptoKeyType"),
+  switchOn: xdr.lookup("PublicKeyType"),
   switchName: "type",
   switches: [
-    ["keyTypeEd25519", "ed25519"],
+    ["publicKeyTypeEd25519", "ed25519"],
   ],
   arms: {
     ed25519: xdr.lookup("Uint256"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   union SignerKey switch (SignerKeyType type)
+//   {
+//   case SIGNER_KEY_TYPE_ED25519:
+//       uint256 ed25519;
+//   case SIGNER_KEY_TYPE_HASH_TX:
+//       /* Hash of Transaction structure */
+//       uint256 hashTx;
+//   case SIGNER_KEY_TYPE_HASH_X:
+//       /* Hash of random 256 bit preimage X */
+//       uint256 hashX;
+//   };
+//
+// ===========================================================================
+xdr.union("SignerKey", {
+  switchOn: xdr.lookup("SignerKeyType"),
+  switchName: "type",
+  switches: [
+    ["signerKeyTypeEd25519", "ed25519"],
+    ["signerKeyTypeHashTx", "hashTx"],
+    ["signerKeyTypeHashX", "hashX"],
+  ],
+  arms: {
+    ed25519: xdr.lookup("Uint256"),
+    hashTx: xdr.lookup("Uint256"),
+    hashX: xdr.lookup("Uint256"),
   },
 });
 
