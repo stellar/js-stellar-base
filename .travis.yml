@@ -1,11 +1,11 @@
 language: node_js
-sudo: required # to install newer g++ :(
+sudo: required
 matrix:
   include:
-    - node_js: "4"
-    - node_js: "6.9.4"
-    - node_js: "6.9.4"
-      env: SAUCE=true
+  - node_js: 4.7.2
+  - node_js: 6.9.4
+  - node_js: 6.9.4
+    env: SAUCE=true
 before_install:
 - npm install -g npm@'>=2.13.5'
 script:
@@ -26,7 +26,7 @@ script:
 after_success:
 - |
   # Send report to coveralls but only once
-  if [ -z "${SAUCE}" ] && [ "${TRAVIS_NODE_VERSION}" = "6.9.4" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
+  if [ -z "${SAUCE}" ] && [ "${TRAVIS_NODE_VERSION}" = "4.7.2" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
     gulp submit-coverage
   fi
 notifications:
@@ -34,8 +34,8 @@ notifications:
     secure: CgXxNEQrQ82EatyF/wSdF0P5rXcWPL+fFZ1lb1aBb8RbVt5gwddJ6xWVD/nYSr6tIJvIYHYhoYsIDPENwezIPsesG7kWXerQhydsEcA34JKxzsStd/TmU6Moxuwy6KTN7yzmL6586nSvoAw9TNPgvRkJFkH07asjGIc9Rlaq7/Y=
 env:
   global:
-    - secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
-    - CXX=g++-4.8 # node bindings in 4.0.0
+  - secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
+  - CXX=g++-4.8
 addons:
   apt:
     sources:
@@ -44,21 +44,22 @@ addons:
     - gcc-4.8
     - g++-4.8
 before_deploy: gulp build
-after_deploy: ./after_deploy.sh
+after_deploy: "./after_deploy.sh"
 deploy:
+  matrix:
   - provider: npm
     email: npm@stellar.org
     api_key:
-      secure: Vhs69f1et3b+U0tMAdViua2G4+dLapfMcMnAWn6EMSbzafgdBvObOIUP1Fo/NCp5jD236/zB/eV9Bs2y4tbgDLkSg+qUaKZnX2QIQ9CDCCEF8BMtLDLJTiDWBNrw5WJc/84f6tvEfFuMohnWkMBaGZ7dOgUL9ud2Ci/kDx1hoBY=
+      secure: SZIsdOgh5eg+i1JSqLYTDv2EgYQTX54LIICX3BpSYjhqCBGeWxGXYhAGtVnBVVxslV1zZNe/H73hdKLMjd58DAda7hQXfrNKaRbijVH4B0ZHsFxyF20919G+GcqiWAeNGfe640SsqStipxXnJegHjVF5r6tmYZS3fmjkZ9Ndqn0=
     skip_cleanup: true
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: "6.9.4" # Deploy only once, no matter which node
+      node: 4.7.2
   - provider: script
-    script: ./bower_publish.sh
+    script: "./bower_publish.sh"
     skip_cleanup: true
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: "6.9.4" # Deploy only once, no matter which node
+      node: 4.7.2
