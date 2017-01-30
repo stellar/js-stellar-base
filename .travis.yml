@@ -46,7 +46,6 @@ addons:
 before_deploy: gulp build
 after_deploy: "./after_deploy.sh"
 deploy:
-  matrix:
   - provider: npm
     email: npm@stellar.org
     api_key:
