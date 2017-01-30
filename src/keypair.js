@@ -98,27 +98,6 @@ export class Keypair {
     return this.fromRawSeed(seed);
   }
 
-  /**
-   * Returns true if the given Stellar secret key is valid.
-   * @param {string} secretKey secret key to check
-   * @returns {boolean}
-   */
-  static isValidSecretKey(secretKey) {
-    if (secretKey && secretKey.length != 56) {
-      return false;
-    }
-
-    try {
-      let decoded = StrKey.decodeSeed(secretKey);
-      if (decoded.length !== 32) {
-        return false;
-      }
-    } catch (err) {
-      return false;
-    }
-    return true;
-  }
-
   xdrAccountId() {
     return new xdr.AccountId.publicKeyTypeEd25519(this._publicKey);
   }
