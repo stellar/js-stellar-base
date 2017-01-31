@@ -89,6 +89,21 @@ describe('Transaction', function() {
     expectBuffersToBeEqual(env.signatures()[0].hint(), hash.slice(hash.length - 4));
   });
 
+  it("returns error when signing using hash preimage that is too long", function() {
+    let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
+    let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+    let asset       = StellarBase.Asset.native();
+    let amount      = "2000";
+
+    let preimage = crypto.randomBytes(2*64);
+    let hash = crypto.createHash('sha256').update(preimage).digest();
+
+    let tx = new StellarBase.TransactionBuilder(source)
+                .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .build();
+
+    expect(() => tx.signHashX(preimage)).to.throw(/preimage cannnot be longer than 64 bytes/);
+  });
 
   it("accepts 0 as a valid transaction fee", function(done) {
     let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");

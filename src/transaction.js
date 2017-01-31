@@ -5,6 +5,7 @@ import {Operation} from "./operation";
 import {Network} from "./network";
 import map from "lodash/map";
 import each from "lodash/each";
+import isString from 'lodash/isString';
 import crypto from "crypto";
 
 let MIN_LEDGER   = 0;
@@ -67,6 +68,14 @@ export class Transaction {
      * @returns {void}
      */
     signHashX(preimage) {
+        if (isString(preimage)) {
+          preimage = Buffer.from(preimage, "hex");
+        }
+
+        if (preimage.length > 64) {
+          throw new Error('preimage cannnot be longer than 64 bytes');
+        }
+
         let signature = preimage;
         let hash = crypto.createHash('sha256').update(preimage).digest();
         let hint = hash.slice(hash.length - 4);
