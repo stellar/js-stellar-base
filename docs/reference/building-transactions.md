@@ -27,6 +27,7 @@ The returned transaction will contain the sequence number of the source account.
 
 
 ```js
+StellarSdk.Network.useTestNetwork();
 // StellarBase.Network.usePublicNetwork(); if this transaction is for the public network
 // Create an Account object from an address and sequence number.
 var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD",2319149195853854);
@@ -41,7 +42,7 @@ var transaction = new StellarBase.TransactionBuilder(account)
         // add a set options operation to the transaction
         .addOperation(StellarBase.Operation.setOptions({
                 signer: {
-                    address: secondAccountAddress,
+                    ed25519PublicKey: secondAccountAddress,
                     weight: 1
                 }
             }))
@@ -113,8 +114,8 @@ You add signatures to a transaction with the `Transaction.sign()` function. You 
 If `Keypair` object does not contain private key it can't be used to sign transactions. The most convenient method of creating new keypair is by passing the account's secret seed:
 
 ```js
-var keypair = Keypair.fromSeed('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
-var address = keypair.accountId(); // GDHMW6QZOL73SHKG2JA3YHXFDHM46SS5ZRWEYF5BCYHX2C5TVO6KZBYL
+var keypair = Keypair.fromSecret('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
+var address = keypair.publicKey(); // GDHMW6QZOL73SHKG2JA3YHXFDHM46SS5ZRWEYF5BCYHX2C5TVO6KZBYL
 var canSign = keypair.canSign(); // true
 ```
 
@@ -122,7 +123,7 @@ You can create `Keypair` object from secret seed raw bytes:
 
 ```js
 var keypair = Keypair.fromRawSeed([0xdc, 0x9c, 0xbf, 0xb5, 0xd7, 0x12, 0x83, 0x6a, 0xbf, 0x7d, 0x5d, 0xd8, 0xc4, 0xc4, 0x3e, 0x9d, 0xc7, 0x81, 0x85, 0xf1, 0x4b, 0x12, 0x0e, 0x9b, 0x59, 0x5d, 0x62, 0x65, 0x52, 0xa8, 0xcb, 0xcc]);
-var address = keypair.accountId(); // GADMPH2LB7VDK4UHNGKMJIJBXC5WTWTQMXYWSPVWPMNVVR4MGWLI2IXN
+var address = keypair.publicKey(); // GADMPH2LB7VDK4UHNGKMJIJBXC5WTWTQMXYWSPVWPMNVVR4MGWLI2IXN
 var canSign = keypair.canSign(); // true
 ```
 
@@ -133,8 +134,9 @@ var keypair = Keypair.random();
 
 
 ```js
-var key1 = Keypair.fromSeed('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
-var key2 = Keypair.fromSeed('SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7');
+StellarBase.Network.useTestNetwork();
+var key1 = Keypair.fromSecret('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
+var key2 = Keypair.fromSecret('SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7');
 
 // Create an Account object from an address and sequence number.
 var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD",2319149195853854);

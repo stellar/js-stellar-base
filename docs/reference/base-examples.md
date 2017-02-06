@@ -14,7 +14,8 @@ The source account is giving the new account 25 XLM as its initial balance. Curr
 
 
 ```javascript
-var seedString='seed that corresponds to GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+StellarSdk.Network.useTestNetwork();
+var secretString='secret key that corresponds to GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
 
 // create an Account object using locally tracked sequence number
 var an_account = new StellarSdk.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 46316927324160);
@@ -26,7 +27,7 @@ var transaction = new StellarSdk.TransactionBuilder(an_account)
     }))
     .build();
 
-transaction.sign(StellarSdk.Keypair.fromSeed(seedString)); // sign the transaction
+transaction.sign(StellarSdk.Keypair.fromSecret(seedString)); // sign the transaction
 
 // transaction is now ready to be sent to the network or saved somewhere
 
@@ -66,7 +67,8 @@ In the example below we're sending 1000 XLM (at max) from `GABJLI6IVBKJ7HIC5NN7H
 The [path payment](https://www.stellar.org/developers/learn/concepts/list-of-operations.html#path-payment) will cause the destination address to get 5.5 GBP. It will cost the sender no more than 1000 XLM. In this example there will be 3 exchanges, XLM -> USD, USD-> EUR, EUR->GBP.
 
 ```js
-var keypair=StellarSdk.Keypair.fromSeed(seedString);
+StellarSdk.Network.useTestNetwork();
+var keypair=StellarSdk.Keypair.fromSecret(secretString);
 
 var source = new Account(keypair.accountId(), 46316927324160);
 var transaction = new TransactionBuilder(source)
@@ -109,7 +111,8 @@ In each example, we'll use the root account.
 
 
 ```js
-var rootKeypair = Keypair.fromSeed("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
+StellarSdk.Network.useTestNetwork();
+var rootKeypair = Keypair.fromSecret("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
 var account = new Account(rootKeypair.accountId(), 46316927324160);
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
@@ -117,7 +120,7 @@ var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK
 var transaction = new TransactionBuilder(account)
   .addOperation(Operation.setOptions({
     signer: {
-      address: secondaryAddress,
+      ed25519PublicKey: secondaryAddress,
       weight: 1
     }
   }))
@@ -141,7 +144,7 @@ var transaction = new TransactionBuilder(account)
     }))
     .build();
 
-var secondKeypair = Keypair.fromSeed("SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7");
+var secondKeypair = Keypair.fromSecret("SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7");
 
 // now we need to sign the transaction with both the root and the secondaryAddress
 transaction.sign(rootKeypair);
