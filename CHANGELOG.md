@@ -2,6 +2,14 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.7.2
+
+* Updated XDR files
+
+## 0.7.1
+
+* Checking hash preimage length
+
 ## 0.7.0
 
 * Support for new signer types: `sha256Hash`, `preAuthTx`.
