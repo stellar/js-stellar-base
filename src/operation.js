@@ -320,7 +320,7 @@ export class Operation {
                 if (!(Buffer.isBuffer(opts.signer.preAuthTx) && opts.signer.preAuthTx.length == 32)) {
                     throw new Error("signer.preAuthTx must be 32 bytes Buffer.");
                 }
-                key = new xdr.SignerKey.signerKeyTypeHashTx(opts.signer.preAuthTx);
+                key = new xdr.SignerKey.signerKeyTypePreAuthTx(opts.signer.preAuthTx);
                 setValues++;
             }
 
@@ -582,8 +582,8 @@ export class Operation {
                     let arm = attrs.signer().key().arm();
                     if (arm == "ed25519") {
                         signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
-                    } else if (arm == "hashTx") {
-                        signer.preAuthTx = attrs.signer().key().hashTx();
+                    } else if (arm == "preAuthTx") {
+                        signer.preAuthTx = attrs.signer().key().preAuthTx();
                     } else if (arm == "hashX") {
                         signer.sha256Hash = attrs.signer().key().hashX();
                     }
