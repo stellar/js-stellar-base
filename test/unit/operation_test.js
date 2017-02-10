@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import crypto from 'crypto';
+import isString from 'lodash/isString';
 
 describe('Operation', function() {
 
@@ -273,6 +274,26 @@ describe('Operation', function() {
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
         });
 
+        it("creates a setOptionsOp with preAuthTx signer from a hex string", function () {
+            var opts = {};
+
+            var hash = crypto.createHash('sha256').update("Tx hash").digest('hex');
+            expect(isString(hash)).to.be.true
+
+            opts.signer = {
+                preAuthTx: hash,
+                weight: 10
+            };
+
+            let op = StellarBase.Operation.setOptions(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+
+            expectBuffersToBeEqual(obj.signer.preAuthTx, hash);
+            expect(obj.signer.weight).to.be.equal(opts.signer.weight);
+        });
+
         it("creates a setOptionsOp with hash signer", function () {
             var opts = {};
 
@@ -283,6 +304,26 @@ describe('Operation', function() {
                 weight: 10
             };
             
+            let op = StellarBase.Operation.setOptions(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.operationToObject(operation);
+
+            expectBuffersToBeEqual(obj.signer.sha256Hash, hash);
+            expect(obj.signer.weight).to.be.equal(opts.signer.weight);
+        });
+
+        it("creates a setOptionsOp with hash signer from a hex string", function () {
+            var opts = {};
+
+            var hash = crypto.createHash('sha256').update("Hash Preimage").digest('hex');
+            expect(isString(hash)).to.be.true
+
+            opts.signer = {
+                sha256Hash: hash,
+                weight: 10
+            };
+
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
