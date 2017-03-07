@@ -14,42 +14,6 @@ for(var i = 0; i < ALPHABET.length; ++i) {
 }
 var BASE = 58;
 
-function encode(buffer) {
-  if (buffer.length === 0) return '';
-
-  var i, j, digits = [0];
-  for (i = 0; i < buffer.length; ++i) {
-    for (j = 0; j < digits.length; ++j) digits[j] <<= 8;
-
-    digits[0] += buffer[i];
-
-    var carry = 0;
-    for (j = 0; j < digits.length; ++j) {
-      digits[j] += carry;
-
-      carry = (digits[j] / BASE) | 0;
-      digits[j] %= BASE;
-    }
-
-    while (carry) {
-      digits.push(carry % BASE);
-
-      carry = (carry / BASE) | 0;
-    }
-  }
-
-  // deal with leading zeros
-  for (i = 0; buffer[i] === 0 && i < buffer.length - 1; ++i) digits.push(0);
-
-  // convert digits to a string
-  var str = "";
-  for (i = digits.length - 1; i >= 0; --i) {
-    str += ALPHABET[digits[i]];
-  }
-
-  return str;
-}
-
 function decode(string) {
   if (string.length === 0) return [];
 
@@ -82,7 +46,4 @@ function decode(string) {
   return bytes.reverse();
 }
 
-module.exports = {
-  encode: encode,
-  decode: decode
-};
+module.exports = {decode};

@@ -9,11 +9,6 @@ const versionBytes = {
   "seed":      0x21, // decimal 33
 };
 
-export function decodeBase58(encoded) {
-  return new Buffer(bs58.decode(encoded));
-}
-
-
 export function decodeBase58Check(versionByteName, encoded) {
   let decoded     = bs58.decode(encoded);
   let versionByte = decoded[0];
@@ -42,34 +37,6 @@ export function decodeBase58Check(versionByteName, encoded) {
   }
 
   return new Buffer(data);
-}
-
-export function encodeBase58(data) {
-  if (isNull(data) || isUndefined(data)) {
-    throw new Error("cannot encode null data");
-  }
-
-  return bs58.encode(data);
-}
-
-export function encodeBase58Check(versionByteName, data) {
-  if (isNull(data) || isUndefined(data)) {
-    throw new Error("cannot encode null data");
-  }
-
-  let versionByte = versionBytes[versionByteName];
-
-  if (isUndefined(versionByte)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "accountId", "seed", or "none"`);
-  }
-
-  data              = new Buffer(data);
-  let versionBuffer = new Buffer([versionByte]);
-  let payload       = Buffer.concat([versionBuffer, data]);
-  let checksum      = calculateChecksum(payload);
-  let unencoded     = Buffer.concat([payload, checksum]);
-
-  return encodeBase58(unencoded);
 }
 
 function calculateChecksum(payload) {
