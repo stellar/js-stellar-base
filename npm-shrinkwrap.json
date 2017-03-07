@@ -8,9 +8,9 @@
       "resolved": "https://registry.npmjs.org/base32.js/-/base32.js-0.1.0.tgz"
     },
     "bignumber.js": {
-      "version": "2.1.4",
-      "from": "https://registry.npmjs.org/bignumber.js/-/bignumber.js-2.1.4.tgz",
-      "resolved": "https://registry.npmjs.org/bignumber.js/-/bignumber.js-2.1.4.tgz"
+      "version": "4.0.0",
+      "from": "bignumber.js@4.0.0",
+      "resolved": "https://registry.npmjs.org/bignumber.js/-/bignumber.js-4.0.0.tgz"
     },
     "crc": {
       "version": "3.4.0",
