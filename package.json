@@ -73,7 +73,7 @@
     "js-xdr": "^1.0.0",
     "lodash": "^4.0.1",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^0.13.0"
+    "tweetnacl": "^0.14.5"
   },
   "optionalDependencies": {
     "ed25519": "0.0.4"

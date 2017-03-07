@@ -3,8 +3,7 @@ import {sign, verify} from "./signing";
 import * as base58 from "./base58";
 import {StrKey} from "./strkey";
 import {default as xdr} from "./generated/stellar-xdr_generated";
-
-let nacl = require("tweetnacl");
+import nacl from "tweetnacl";
 
 export class Keypair {
   /**

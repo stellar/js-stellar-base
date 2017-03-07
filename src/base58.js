@@ -3,8 +3,6 @@ import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import {hash} from "./hashing";
 
-let nacl = require("tweetnacl");
-
 const versionBytes = {
   "accountId": 0x00, // decimal 0
   "none":      0x01, // decimal 1
