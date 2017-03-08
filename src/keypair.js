@@ -28,13 +28,16 @@ export class Keypair {
       throw new Error("Invalid keys type");
     }
 
+    this.type = keys.type;
+
     if (keys.secretKey) {
       keys.secretKey = new Buffer(keys.secretKey);
 
       let secretKeyUint8 = new Uint8Array(keys.secretKey);
       let naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
 
-      this._secretKey = keys.secretKey;
+      this._secretSeed = keys.secretKey;
+      this._secretKey = new Buffer(naclKeys.secretKey);
       this._publicKey = new Buffer(naclKeys.publicKey);
 
       if (keys.publicKey && !this._publicKey.equals(new Buffer(keys.publicKey))) {
@@ -145,10 +148,15 @@ export class Keypair {
    * @returns {string}
    */
   secret() {
-    if (!this._secretKey) {
+    if (!this._secretSeed) {
       throw new Error("no secret key available");
     }
-    return StrKey.encodeEd25519SecretSeed(this._secretKey);
+
+    if (this.type == 'ed25519') {
+      return StrKey.encodeEd25519SecretSeed(this._secretSeed);
+    }
+
+    throw new Error("Invalid Keypair type");
   }
 
   /**
@@ -156,7 +164,7 @@ export class Keypair {
    * @returns {Buffer}
    */
   rawSecretKey() {
-    return this._secretKey;
+    return this._secretSeed;
   }
 
   /**
