@@ -30,7 +30,7 @@ The returned transaction will contain the sequence number of the source account.
 StellarSdk.Network.useTestNetwork();
 // StellarBase.Network.usePublicNetwork(); if this transaction is for the public network
 // Create an Account object from an address and sequence number.
-var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD",2319149195853854);
+var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD","2319149195853854");
 
 var transaction = new StellarBase.TransactionBuilder(account)
         // add a payment operation to the transaction
@@ -139,7 +139,7 @@ var key1 = Keypair.fromSecret('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74A
 var key2 = Keypair.fromSecret('SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7');
 
 // Create an Account object from an address and sequence number.
-var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD",2319149195853854);
+var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD","2319149195853854");
 
 var transaction = new StellarBase.TransactionBuilder(account)
         .addOperation(StellarBase.Operation.payment({
