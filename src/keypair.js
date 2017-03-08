@@ -9,33 +9,51 @@ export class Keypair {
   /**
    * `Keypair` represents public (and secret) keys of the account.
    *
+   * Currently `Keypair` only supports ed25519 but in a future this class can be abstraction layer for other
+   * public-key signature systems.
+   *
    * Use more convenient methods to create `Keypair` object:
    * * `{@link Keypair.fromPublicKey}`
    * * `{@link Keypair.fromSecret}`
    * * `{@link Keypair.random}`
    *
    * @constructor
-   * @param {object} keys
-   * @param {string} keys.publicKey Raw public key
-   * @param {string} [keys.secretSeed] Raw secret key seed.
+   * @param {object} keys At least one of keys must be provided.
+   * @param {string} keys.type Public-key signature system name. (currently only `ed25519` keys are supported)
+   * @param {Buffer} [keys.publicKey] Raw public key
+   * @param {Buffer} [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
    */
   constructor(keys) {
-    this._publicKey = new Buffer(keys.publicKey);
+    if (keys.type != "ed25519") {
+      throw new Error("Invalid keys type");
+    }
 
-    if (keys.secretSeed) {
-      this._secretSeed = new Buffer(keys.secretSeed);
-      this._secretKey = new Buffer(keys.secretKey);
+    if (keys.secretKey) {
+      keys.secretKey = new Buffer(keys.secretKey);
+
+      let secretKeyUint8 = new Uint8Array(keys.secretKey);
+      let naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
+
+      this._secretKey = keys.secretKey;
+      this._publicKey = new Buffer(naclKeys.publicKey);
+
+      if (keys.publicKey && !this._publicKey.equals(new Buffer(keys.publicKey))) {
+        throw new Error("secretKey does not match publicKey");
+      }
+    } else {
+      this._publicKey = new Buffer(keys.publicKey);
     }
   }
 
   /**
-   * Creates a new `Keypair` instance from secret key.
-   * @param {string} secretKey Secret key
+   * Creates a new `Keypair` instance from secret. This can either be secret key or secret seed depending
+   * on underlying public-key signature system. Currently `Keypair` only supports ed25519.
+   * @param {string} secret secret key (ex. `SDAKFNYEIAORZKKCYRILFQKLLOCNPL5SWJ3YY5NM3ZH6GJSZGXHZEPQS`)
    * @returns {Keypair}
    */
-  static fromSecret(secretKey) {
-    let rawSeed = StrKey.decodeEd25519SecretSeed(secretKey);
-    return this.fromRawSeed(rawSeed);
+  static fromSecret(secret) {
+    let rawSecret = StrKey.decodeEd25519SecretSeed(secret);
+    return this.fromRawEd25519Seed(rawSecret);
   }
 
   /**
@@ -46,22 +64,17 @@ export class Keypair {
    */
   static fromBase58Seed(seed) {
     let rawSeed = base58.decodeBase58Check("seed", seed);
-    return this.fromRawSeed(rawSeed);
+    return this.fromRawEd25519Seed(rawSeed);
   }
 
   /**
-   * Creates a new `Keypair` object from secret seed raw bytes.
+   * Creates a new `Keypair` object from ed25519 secret key seed raw bytes.
    *
-   * @param {Buffer} rawSeed Buffer containing secret seed
+   * @param {Buffer} rawSeed Raw 32-byte ed25519 secret key seed
    * @returns {Keypair}
    */
-  static fromRawSeed(rawSeed) {
-    rawSeed = new Buffer(rawSeed);
-    let rawSeedU8 = new Uint8Array(rawSeed);
-    let keys = nacl.sign.keyPair.fromSeed(rawSeedU8);
-    keys.secretSeed = rawSeed;
-
-    return new this(keys);
+  static fromRawEd25519Seed(rawSeed) {
+    return new this({type: 'ed25519', secretKey: rawSeed});
   }
 
   /**
@@ -72,7 +85,7 @@ export class Keypair {
     if (Network.current() === null) {
       throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
     }
-    return this.fromRawSeed(Network.current().networkId());
+    return this.fromRawEd25519Seed(Network.current().networkId());
   }
 
   /**
@@ -85,7 +98,7 @@ export class Keypair {
     if (publicKey.length !== 32) {
       throw new Error('Invalid Stellar public key');
     }
-    return new this({publicKey});
+    return new this({type: 'ed25519', publicKey});
   }
 
   /**
@@ -93,8 +106,8 @@ export class Keypair {
    * @returns {Keypair}
    */
   static random() {
-    let seed = nacl.randomBytes(32);
-    return this.fromRawSeed(seed);
+    let secret = nacl.randomBytes(32);
+    return this.fromRawEd25519Seed(secret);
   }
 
   xdrAccountId() {
@@ -132,7 +145,10 @@ export class Keypair {
    * @returns {string}
    */
   secret() {
-    return StrKey.encodeEd25519SecretSeed(this._secretSeed);
+    if (!this._secretKey) {
+      throw new Error("no secret key available");
+    }
+    return StrKey.encodeEd25519SecretSeed(this._secretKey);
   }
 
   /**

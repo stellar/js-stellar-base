@@ -1,4 +1,16 @@
 
+describe('Keypair.fromSecret', function() {
+  it("fails when passes secret key does not match public key", function() {
+    let secret = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
+    let kp = StellarBase.Keypair.fromSecret(secret);
+
+    let secretKey = kp.rawSecretKey();
+    let publicKey = StellarBase.StrKey.decodeEd25519PublicKey(kp.publicKey());
+    publicKey[0] = 0; // Make public key invalid
+
+    expect(() => new StellarBase.Keypair({type: 'ed25519', secretKey, publicKey})).to.throw()
+  });
+});
 
 describe('Keypair.fromSecret', function() {
 
@@ -72,11 +84,11 @@ describe('Keypair.fromBase58Seed', function() {
 
 });
 
-describe('Keypair.fromRawSeed', function() {
+describe('Keypair.fromRawEd25519Seed', function() {
 
   it("creates a keypair correctly", function() {
     let seed = "masterpassphrasemasterpassphrase";
-    let kp = StellarBase.Keypair.fromRawSeed(seed);
+    let kp = StellarBase.Keypair.fromRawEd25519Seed(seed);
 
     expect(kp).to.be.instanceof(StellarBase.Keypair);
     expect(kp.publicKey()).to.eql("GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH");
@@ -85,10 +97,10 @@ describe('Keypair.fromRawSeed', function() {
   });
 
   it("throws an error if the arg isn't 32 bytes", function() {
-    expect(() => StellarBase.Keypair.fromRawSeed("masterpassphrasemasterpassphras")).to.throw()
-    expect(() => StellarBase.Keypair.fromRawSeed("masterpassphrasemasterpassphrase1")).to.throw()
-    expect(() => StellarBase.Keypair.fromRawSeed(null)).to.throw()
-    expect(() => StellarBase.Keypair.fromRawSeed()).to.throw()
+    expect(() => StellarBase.Keypair.fromRawEd25519Seed("masterpassphrasemasterpassphras")).to.throw()
+    expect(() => StellarBase.Keypair.fromRawEd25519Seed("masterpassphrasemasterpassphrase1")).to.throw()
+    expect(() => StellarBase.Keypair.fromRawEd25519Seed(null)).to.throw()
+    expect(() => StellarBase.Keypair.fromRawEd25519Seed()).to.throw()
   });
 
 });
