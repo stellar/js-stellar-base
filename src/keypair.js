@@ -33,6 +33,10 @@ export class Keypair {
     if (keys.secretKey) {
       keys.secretKey = new Buffer(keys.secretKey);
 
+      if (keys.secretKey.length != 32) {
+        throw new Error("secretKey length is invalid");
+      }
+
       let secretKeyUint8 = new Uint8Array(keys.secretKey);
       let naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
 
@@ -45,6 +49,10 @@ export class Keypair {
       }
     } else {
       this._publicKey = new Buffer(keys.publicKey);
+
+      if (this._publicKey.length != 32) {
+        throw new Error("publicKey length is invalid");
+      }
     }
   }
 

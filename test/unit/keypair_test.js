@@ -1,5 +1,5 @@
 
-describe('Keypair.fromSecret', function() {
+describe('Keypair.contructor', function() {
   it("fails when passes secret key does not match public key", function() {
     let secret = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
     let kp = StellarBase.Keypair.fromSecret(secret);
@@ -8,7 +8,17 @@ describe('Keypair.fromSecret', function() {
     let publicKey = StellarBase.StrKey.decodeEd25519PublicKey(kp.publicKey());
     publicKey[0] = 0; // Make public key invalid
 
-    expect(() => new StellarBase.Keypair({type: 'ed25519', secretKey, publicKey})).to.throw()
+    expect(() => new StellarBase.Keypair({type: 'ed25519', secretKey, publicKey})).to.throw(/secretKey does not match publicKey/)
+  });
+
+  it("fails when secretKey length is invalid", function() {
+    let secretKey = new Buffer(33);
+    expect(() => new StellarBase.Keypair({type: 'ed25519', secretKey})).to.throw(/secretKey length is invalid/)
+  });
+
+  it("fails when publicKey length is invalid", function() {
+    let publicKey = new Buffer(33);
+    expect(() => new StellarBase.Keypair({type: 'ed25519', publicKey})).to.throw(/publicKey length is invalid/)
   });
 });
 
