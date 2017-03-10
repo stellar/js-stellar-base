@@ -84,11 +84,13 @@ describe("Memo.hash() & Memo.return()", function() {
 
     let memo = StellarBase.Memo.hash(buffer).toXDRObject();
     expect(memo.arm()).to.equal('hash');
+    expect(memo.hash().length).to.equal(32);
     expect(memo.hash()).to.deep.equal(buffer);
 
     let baseMemo = StellarBase.Memo.fromXDRObject(memo);
     expect(baseMemo.type).to.be.equal(StellarBase.MemoHash);
-    expect(baseMemo.value).to.be.deep.equal(buffer);
+    expect(baseMemo.value.length).to.equal(32);
+    expect(baseMemo.value.toString('hex')).to.be.equal(buffer.toString('hex'));
   });
 
   it("return converts to/from xdr object", function() {
@@ -97,11 +99,13 @@ describe("Memo.hash() & Memo.return()", function() {
     // Testing string hash
     let memo = StellarBase.Memo.return(buffer.toString("hex")).toXDRObject();
     expect(memo.arm()).to.equal('retHash');
+    expect(memo.retHash().length).to.equal(32);
     expect(memo.retHash().toString('hex')).to.equal(buffer.toString('hex'));
 
     let baseMemo = StellarBase.Memo.fromXDRObject(memo);
     expect(baseMemo.type).to.be.equal(StellarBase.MemoReturn);
     expect(Buffer.isBuffer(baseMemo.value)).to.be.true;
+    expect(baseMemo.value.length).to.equal(32);
     expect(baseMemo.value.toString('hex')).to.be.equal(buffer.toString('hex'));
   });
 

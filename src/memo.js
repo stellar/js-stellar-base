@@ -80,7 +80,18 @@ export class Memo {
    * * `Buffer` for `MemoHash`, `MemoReturn`
    */
   get value() {
-    return clone(this._value);
+    switch (this._type) {
+      case MemoNone:
+        return null;
+      case MemoID:
+      case MemoText:
+        return clone(this._value);
+      case MemoHash:
+      case MemoReturn:
+        return new Buffer(this._value);
+      default:
+        throw new Error("Invalid memo type");
+    }
   }
 
   set value(value) {
@@ -122,23 +133,25 @@ export class Memo {
   }
 
   static _validateHashValue(value) {
-    // We don't want side effects in this function
-    value = clone(value);
-
     let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + value);
 
     if (value === null || isUndefined(value)) {
       throw error;
     }
 
+    let valueBuffer;
     if (isString(value)) {
       if (!/^[0-9A-Fa-f]{64}$/g.test(value)) {
         throw error;
       }
-      value = new Buffer(value, 'hex');
+      valueBuffer = new Buffer(value, 'hex');
+    } else if (Buffer.isBuffer(value)) {
+      valueBuffer = new Buffer(value);
+    } else {
+      throw error;
     }
 
-    if (!value.length || value.length != 32) {
+    if (!valueBuffer.length || valueBuffer.length != 32) {
       throw error;
     }
   }
