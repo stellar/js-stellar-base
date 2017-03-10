@@ -11,7 +11,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.createAccount({destination, startingBalance});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("createAccount");
             expect(obj.destination).to.be.equal(destination);
             expect(operation.body().value().startingBalance().toString()).to.be.equal('10000000000');
@@ -54,7 +54,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.payment({destination, asset, amount});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("payment");
             expect(obj.destination).to.be.equal(destination);
             expect(operation.body().value().amount().toString()).to.be.equal('10000000000');
@@ -95,7 +95,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.pathPayment({sendAsset, sendMax, destination, destAsset, destAmount, path});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("pathPayment");
             expect(obj.sendAsset.equals(sendAsset)).to.be.true;
             expect(operation.body().value().sendMax().toString()).to.be.equal('30070000');
@@ -150,7 +150,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.changeTrust({asset: asset});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line).to.be.deep.equal(asset);
             expect(operation.body().value().limit().toString()).to.be.equal('9223372036854775807'); // MAX_INT64
@@ -162,7 +162,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.changeTrust({asset: asset, limit: "50"});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line).to.be.deep.equal(asset);
             expect(operation.body().value().limit().toString()).to.be.equal('500000000');
@@ -174,7 +174,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.changeTrust({asset: asset, limit: "0"});
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("changeTrust");
             expect(obj.line).to.be.deep.equal(asset);
             expect(obj.limit).to.be.equal("0");
@@ -199,7 +199,7 @@ describe('Operation', function() {
             });
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("allowTrust");
             expect(obj.trustor).to.be.equal(trustor);
             expect(obj.assetCode).to.be.equal(assetCode);
@@ -239,7 +239,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expect(obj.type).to.be.equal("setOptions");
             expect(obj.inflationDest).to.be.equal(opts.inflationDest);
@@ -268,7 +268,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expectBuffersToBeEqual(obj.signer.preAuthTx, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
@@ -288,7 +288,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expectBuffersToBeEqual(obj.signer.preAuthTx, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
@@ -307,7 +307,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expectBuffersToBeEqual(obj.signer.sha256Hash, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
@@ -327,7 +327,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expectBuffersToBeEqual(obj.signer.sha256Hash, hash);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
@@ -340,7 +340,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expect(obj.type).to.be.equal("setOptions");
             expect(obj.setFlags).to.be.equal(4);
@@ -360,7 +360,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
 
             expect(obj.type).to.be.equal("setOptions");
             expect(obj.clearFlags).to.be.equal(4);
@@ -448,7 +448,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
@@ -470,7 +470,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.price).to.be.equal(new BigNumber(opts.price.n).div(opts.price.d).toString());
         });
 
@@ -496,7 +496,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.price).to.be.equal(opts.price.toString());
         });
@@ -511,7 +511,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.price).to.be.equal("1.25");
         });
@@ -525,7 +525,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
@@ -545,7 +545,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
@@ -605,7 +605,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.createPassiveOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("createPassiveOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
@@ -623,7 +623,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.createPassiveOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("createPassiveOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
@@ -641,7 +641,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.createPassiveOffer(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("createPassiveOffer");
             expect(obj.selling.equals(opts.selling)).to.be.true;
             expect(obj.buying.equals(opts.buying)).to.be.true;
@@ -687,7 +687,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.accountMerge(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("accountMerge");
             expect(obj.destination).to.be.equal(opts.destination);
         });
@@ -705,7 +705,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.inflation();
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("inflation");
         });
     });
@@ -719,7 +719,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageData(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageData");
             expect(obj.name).to.be.equal(opts.name);
             expect(obj.value.toString('hex')).to.be.equal(new Buffer(opts.value).toString('hex'));
@@ -733,7 +733,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageData(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageData");
             expect(obj.name).to.be.equal(opts.name);
             expect(obj.value.toString('hex')).to.be.equal(opts.value.toString('hex'));
@@ -747,7 +747,7 @@ describe('Operation', function() {
             let op = StellarBase.Operation.manageData(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            var obj = StellarBase.Operation.operationToObject(operation);
+            var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageData");
             expect(obj.name).to.be.equal(opts.name);
             expect(obj.value).to.be.undefined;

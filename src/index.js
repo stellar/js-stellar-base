@@ -10,7 +10,7 @@ export {Transaction} from "./transaction";
 export {TransactionBuilder} from "./transaction_builder";
 export {Asset} from "./asset";
 export {Operation, AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag} from "./operation";
-export {Memo} from "./memo";
+export * from "./memo";
 export {Account} from "./account";
 export {Network, Networks} from "./network";
 export {StrKey} from "./strkey";

@@ -3,6 +3,7 @@ import {xdr, hash} from "./index";
 import {StrKey} from "./strkey";
 import {Operation} from "./operation";
 import {Network} from "./network";
+import {Memo} from "./memo";
 import map from "lodash/map";
 import each from "lodash/each";
 import isString from 'lodash/isString';
@@ -29,7 +30,7 @@ export class Transaction {
     this.tx       = envelope.tx();
     this.source   = StrKey.encodeEd25519PublicKey(envelope.tx().sourceAccount().ed25519());
     this.fee      = this.tx.fee();
-    this.memo     = this.tx.memo();
+    this._memo    = this.tx.memo();
     this.sequence = this.tx.seqNum().toString();
 
     let timeBounds = this.tx.timeBounds();
@@ -42,11 +43,19 @@ export class Transaction {
 
     let operations  = this.tx.operations() || [];
     this.operations = map(operations, op => {
-      return Operation.operationToObject(op);
+      return Operation.fromXDRObject(op);
     });
 
     let signatures = envelope.signatures() || [];
     this.signatures = map(signatures, s => s);
+  }
+
+  get memo() {
+    return Memo.fromXDRObject(this._memo);
+  }
+
+  set memo(value) {
+    throw new Error("Transaction is immutable");
   }
 
   /**

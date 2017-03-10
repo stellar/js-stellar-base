@@ -21,7 +21,8 @@ describe('Transaction', function() {
 
     expect(transaction.source).to.be.equal(source.accountId());
     expect(transaction.fee).to.be.equal(100);
-    expect(transaction.memo.text()).to.be.equal('Happy birthday!');
+    expect(transaction.memo.type).to.be.equal(StellarBase.MemoText);
+    expect(transaction.memo.value).to.be.equal('Happy birthday!');
     expect(operation.type).to.be.equal('payment');
     expect(operation.destination).to.be.equal(destination);
     expect(operation.amount).to.be.equal(amount);
