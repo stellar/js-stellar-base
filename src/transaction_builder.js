@@ -84,7 +84,7 @@ export class TransactionBuilder {
 
   /**
    * Adds a memo to the transaction.
-   * @param {xdr.Memo} memo The xdr memo object, use {@link Memo} static methods.
+   * @param {Memo} memo {@link Memo} object
    * @returns {TransactionBuilder}
    */
   addMemo(memo) {
@@ -104,7 +104,7 @@ export class TransactionBuilder {
       sourceAccount: Keypair.fromPublicKey(this.source.accountId()).xdrAccountId(),
       fee:           this.baseFee * this.operations.length,
       seqNum:        xdr.SequenceNumber.fromString(sequenceNumber.toString()),
-      memo:          this.memo,
+      memo:          this.memo ? this.memo.toXDRObject() : null,
       ext:           new xdr.TransactionExt(0)
     };
 

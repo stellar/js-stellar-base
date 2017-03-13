@@ -69,7 +69,7 @@ export class Asset {
    * Returns the xdr object for this asset.
    * @returns {xdr.Asset}
    */
-  toXdrObject() {
+  toXDRObject() {
     if (this.isNative()) {
       return xdr.Asset.assetTypeNative();
     } else {

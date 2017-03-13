@@ -107,8 +107,8 @@ export class Operation {
 
     let attributes = {};
     attributes.destination  = Keypair.fromPublicKey(opts.destination).xdrAccountId();
-    attributes.asset        = opts.asset.toXdrObject();
-    attributes.amount        = this._toXDRAmount(opts.amount);
+    attributes.asset        = opts.asset.toXDRObject();
+    attributes.amount       = this._toXDRAmount(opts.amount);
     let payment             = new xdr.PaymentOp(attributes);
 
     let opAttributes = {};
@@ -150,16 +150,16 @@ export class Operation {
     }
 
     let attributes = {};
-    attributes.sendAsset    = opts.sendAsset.toXdrObject();
+    attributes.sendAsset    = opts.sendAsset.toXDRObject();
     attributes.sendMax      = this._toXDRAmount(opts.sendMax);
     attributes.destination  = Keypair.fromPublicKey(opts.destination).xdrAccountId();
-    attributes.destAsset    = opts.destAsset.toXdrObject();
+    attributes.destAsset    = opts.destAsset.toXDRObject();
     attributes.destAmount   = this._toXDRAmount(opts.destAmount);
 
     let path        = opts.path ? opts.path : [];
     attributes.path = [];
     for (let i in path) {
-      attributes.path.push(path[i].toXdrObject());
+      attributes.path.push(path[i].toXDRObject());
     }
 
     let payment = new xdr.PathPaymentOp(attributes);
@@ -184,7 +184,7 @@ export class Operation {
    */
   static changeTrust(opts) {
     let attributes      = {};
-    attributes.line     = opts.asset.toXdrObject();
+    attributes.line     = opts.asset.toXDRObject();
     if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
       throw new TypeError(Operation.constructAmountRequirementsError('limit'));
     }
@@ -372,8 +372,8 @@ export class Operation {
    */
   static manageOffer(opts) {
     let attributes = {};
-    attributes.selling = opts.selling.toXdrObject();
-    attributes.buying = opts.buying.toXdrObject();
+    attributes.selling = opts.selling.toXDRObject();
+    attributes.buying = opts.buying.toXDRObject();
     if (!this.isValidAmount(opts.amount, true)) {
       throw new TypeError(Operation.constructAmountRequirementsError('amount'));
     }
@@ -416,8 +416,8 @@ export class Operation {
    */
   static createPassiveOffer(opts) {
     let attributes = {};
-    attributes.selling = opts.selling.toXdrObject();
-    attributes.buying = opts.buying.toXdrObject();
+    attributes.selling = opts.selling.toXDRObject();
+    attributes.buying = opts.buying.toXDRObject();
     if (!this.isValidAmount(opts.amount)) {
       throw new TypeError(Operation.constructAmountRequirementsError('amount'));
     }
@@ -522,7 +522,7 @@ export class Operation {
    * @param {xdr.Operation} operation - An XDR Operation.
    * @return {Operation}
    */
-  static operationToObject(operation) {
+  static fromXDRObject(operation) {
     function accountIdtoAddress(accountId) {
       return StrKey.encodeEd25519PublicKey(accountId.ed25519());
     }

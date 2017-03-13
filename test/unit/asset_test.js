@@ -58,16 +58,16 @@ describe('Asset', function() {
         });
     });
 
-    describe("toXdrObject()", function () {
+    describe("toXDRObject()", function () {
         it("parses a native asset object", function () {
             var asset = new StellarBase.Asset.native();
-            var xdr = asset.toXdrObject();
+            var xdr = asset.toXDRObject();
             expect(xdr.toXDR().toString()).to.be.equal(new Buffer([0,0,0,0]).toString());
         });
 
         it("parses a 3-alphanum asset object", function () {
             var asset = new StellarBase.Asset("USD", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
-            var xdr = asset.toXdrObject();
+            var xdr = asset.toXDRObject();
 
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -78,7 +78,7 @@ describe('Asset', function() {
 
         it("parses a 4-alphanum asset object", function () {
             var asset = new StellarBase.Asset("BART", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
-            var xdr = asset.toXdrObject();
+            var xdr = asset.toXDRObject();
 
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -89,7 +89,7 @@ describe('Asset', function() {
 
         it("parses a 5-alphanum asset object", function () {
             var asset = new StellarBase.Asset("12345", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
-            var xdr = asset.toXdrObject();
+            var xdr = asset.toXDRObject();
 
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -100,7 +100,7 @@ describe('Asset', function() {
 
         it("parses a 12-alphanum asset object", function () {
             var asset = new StellarBase.Asset("123456789012", "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ");
-            var xdr = asset.toXdrObject();
+            var xdr = asset.toXDRObject();
 
             expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
             expect(() => xdr.toXDR('hex')).to.not.throw();
