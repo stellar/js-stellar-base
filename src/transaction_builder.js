@@ -54,8 +54,8 @@ export class TransactionBuilder {
    * @param {object} [opts]
    * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
    * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
-   * @param {string} [opts.timebounds.minTime] - 64 bit unix timestamp
-   * @param {string} [opts.timebounds.maxTime] - 64 bit unix timestamp
+   * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
+   * @param {number|string} [opts.timebounds.maxTime] - 64 bit unix timestamp
    * @param {Memo} [opts.memo] - The memo for the transaction
    */
   constructor(sourceAccount, opts={}) {
@@ -109,8 +109,8 @@ export class TransactionBuilder {
     };
 
     if (this.timebounds) {
-      this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime);
-      this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime);
+      this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime.toString());
+      this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime.toString());
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
     }
 
