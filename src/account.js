@@ -8,7 +8,7 @@ export class Account {
    * Create a new Account object.
    *
    * `Account` represents a single account in Stellar network and it's sequence number.
-   * Account tracts the sequence number as it is used by {@link TransactionBuilder}.
+   * Account tracks the sequence number as it is used by {@link TransactionBuilder}.
    * See [Accounts](https://stellar.org/developers/learn/concepts/accounts.html) for more information about how
    * accounts work in Stellar.
    * @constructor
