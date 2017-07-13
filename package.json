@@ -10,6 +10,9 @@
     "version": "gulp build",
     "postversion": "git push && git push --tags"
   },
+  "browser": {
+    "ed25519": false
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stellar/js-stellar-base.git"
