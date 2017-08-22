@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>strkey.js - Documentation</title>
+    <title>TransactionBuilder - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,223 +29,500 @@
 
 <div id="main">
     
-    <h1 class="page-title">strkey.js</h1>
+    <h1 class="page-title">TransactionBuilder</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import base32 from "base32.js";
-import crc from "crc";
-import contains from "lodash/includes";
-import isUndefined from "lodash/isUndefined";
-import isNull from "lodash/isNull";
-import isString from "lodash/isString";
+        <h2>
+        TransactionBuilder
+        </h2>
+        
+    
+</header>
 
-const versionBytes = {
-  ed25519PublicKey:  6 &lt;&lt; 3, // G
-  ed25519SecretSeed: 18 &lt;&lt; 3, // S
-  preAuthTx:         19 &lt;&lt; 3, // T
-  sha256Hash:        23 &lt;&lt; 3  // X
-};
+<article>
+    <div class="container-overview">
+    
+        
+<div class="section-method">
 
-/**
- * StrKey is a helper class that allows encoding and decoding strkey.
- */
-export class StrKey {
-  /**
-   * Encodes data to strkey ed25519 public key.
-   * @param {Buffer} data data to encode
-   * @returns {string}
-   */
-  static encodeEd25519PublicKey(data) {
-    return encodeCheck("ed25519PublicKey", data);
-  }
+    
 
-  /**
-   * Decodes strkey ed25519 public key to raw data.
-   * @param {string} data data to decode
-   * @returns {Buffer}
-   */
-  static decodeEd25519PublicKey(data) {
-    return decodeCheck("ed25519PublicKey", data);
-  }
+    <h4 class="name" id="TransactionBuilder"><span class="type-signature"></span>new TransactionBuilder<span class="signature">(sourceAccount, opts<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
-  /**
-   * Returns true if the given Stellar public key is a valid ed25519 public key.
-   * @param {string} publicKey public key to check
-   * @returns {boolean}
-   */
-  static isValidEd25519PublicKey(publicKey) {
-    return isValid("ed25519PublicKey", publicKey);
-  }
+    
 
-  /**
-   * Encodes data to strkey ed25519 seed.
-   * @param {Buffer} data data to encode
-   * @returns {string}
-   */
-  static encodeEd25519SecretSeed(data) {
-    return encodeCheck("ed25519SecretSeed", data);
-  }
 
-  /**
-   * Decodes strkey ed25519 seed to raw data.
-   * @param {string} data data to decode
-   * @returns {Buffer}
-   */
-  static decodeEd25519SecretSeed(data) {
-    return decodeCheck("ed25519SecretSeed", data);
-  }
 
-  /**
-   * Returns true if the given Stellar secret key is a valid ed25519 secret seed.
-   * @param {string} seed seed to check
-   * @returns {boolean}
-   */
-  static isValidEd25519SecretSeed(seed) {
-    return isValid("ed25519SecretSeed", seed);
-  }
+<div class="description">
+    <p>Transaction builder helps constructs a new <code><a href="Transaction.html">Transaction</a></code> using the given <a href="Account.html">Account</a>
+as the transaction's &quot;source account&quot;. The transaction will use the current sequence
+number of the given account as its sequence number and increment the given account's
+sequence number by one. The given source account must include a private key for signing
+the transaction or an error will be thrown.</p>
 
-  /**
-   * Encodes data to strkey preAuthTx.
-   * @param {Buffer} data data to encode
-   * @returns {string}
-   */
-  static encodePreAuthTx(data) {
-    return encodeCheck("preAuthTx", data);
-  }
+<p>Operations can be added to the transaction via their corresponding builder methods, and
+each returns the TransactionBuilder object so they can be chained together. After adding
+the desired operations, call the <code>build()</code> method on the <code>TransactionBuilder</code> to return a fully
+constructed <code><a href="Transaction.html">Transaction</a></code> that can be signed. The returned transaction will contain the
+sequence number of the source account and include the signature from the source account.</p>
 
-  /**
-   * Decodes strkey PreAuthTx to raw data.
-   * @param {string} data data to decode
-   * @returns {Buffer}
-   */
-  static decodePreAuthTx(data) {
-    return decodeCheck("preAuthTx", data);
-  }
+<p>The following code example creates a new transaction with <a href="Operation.html#.createAccount">Operation.createAccount</a> and
+<a href="Operation.html#.payment">Operation.payment</a> operations.
+The Transaction's source account first funds <code>destinationA</code>, then sends
+a payment to <code>destinationB</code>. The built transaction is then signed by <code>sourceKeypair</code>.</p>
 
-  /**
-   * Encodes data to strkey sha256 hash.
-   * @param {Buffer} data data to encode
-   * @returns {string}
-   */
-  static encodeSha256Hash(data) {
-    return encodeCheck("sha256Hash", data);
-  }
+<pre class="prettyprint source"><code>var transaction = new TransactionBuilder(source)
+ .addOperation(Operation.createAccount({
+          destination: destinationA,
+          startingBalance: &quot;20&quot;
+      }) // &lt;- funds and creates destinationA
+      .addOperation(Operation.payment({
+          destination: destinationB,
+          amount: &quot;100&quot;
+          asset: Asset.native()
+      }) // &lt;- sends 100 XLM to destinationB
+  .build();
 
-  /**
-   * Decodes strkey sha256 hash to raw data.
-   * @param {string} data data to decode
-   * @returns {Buffer}
-   */
-  static decodeSha256Hash(data) {
-    return decodeCheck("sha256Hash", data);
-  }
-}
+transaction.sign(sourceKeypair);</code></pre>
+</div>
 
-function isValid(versionByteName, encoded) {
-  if (encoded &amp;&amp; encoded.length != 56) {
-    return false;
-  }
 
-  try {
-    let decoded = decodeCheck(versionByteName, encoded);
-    if (decoded.length !== 32) {
-      return false;
-    }
-  } catch (err) {
-    return false;
-  }
-  return true;
-}
 
-export function decodeCheck(versionByteName, encoded) {
-  if (!isString(encoded)) {
-    throw new TypeError('encoded argument must be of type String');
-  }
 
-  let decoded     = base32.decode(encoded);
-  let versionByte = decoded[0];
-  let payload     = decoded.slice(0, -2);
-  let data        = payload.slice(1);
-  let checksum    = decoded.slice(-2);
 
-  if (encoded != base32.encode(decoded)) {
-    throw new Error('invalid encoded string');
-  }
+<dl class="details">
 
-  let expectedVersion = versionBytes[versionByteName];
+    
 
-  if (isUndefined(expectedVersion)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`);
-  }
+    
 
-  if (versionByte !== expectedVersion) {
-    throw new Error(`invalid version byte. expected ${expectedVersion}, got ${versionByte}`);
-  }
+    
 
-  let expectedChecksum = calculateChecksum(payload);
+    
 
-  if (!verifyChecksum(expectedChecksum, checksum)) {
-    throw new Error(`invalid checksum`);
-  }
+    
 
-  return new Buffer(data);
-}
+    
 
-export function encodeCheck(versionByteName, data) {
-  if (isNull(data) || isUndefined(data)) {
-    throw new Error("cannot encode null data");
-  }
+    
 
-  let versionByte = versionBytes[versionByteName];
+    
 
-  if (isUndefined(versionByte)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`);
-  }
+    
 
-  data              = new Buffer(data);
-  let versionBuffer = new Buffer([versionByte]);
-  let payload       = Buffer.concat([versionBuffer, data]);
-  let checksum      = calculateChecksum(payload);
-  let unencoded     = Buffer.concat([payload, checksum]);
+    
 
-  return base32.encode(unencoded);
-}
+    
 
-function calculateChecksum(payload) {
-  // This code calculates CRC16-XModem checksum of payload
-  // and returns it as Buffer in little-endian order.
-  let checksum = new Buffer(2);
-  checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
-  return checksum;
-}
+    
 
-function verifyChecksum(expected, actual) {
-  if (expected.length !== actual.length) {
-    return false;
-  }
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line61">line 61</a>
+    </li></ul></dd>
+    
 
-  if (expected.length === 0) {
-    return true;
-  }
+    
 
-  for(let i = 0; i &lt; expected.length; i++) {
-    if (expected[i] !== actual[i]) {
-      return false;
-    }
-  }
+    
 
-  return true;
-}
-</code></pre>
-        </article>
-    </section>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sourceAccount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code><a href="Account.html">Account</a></code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The source account for this transaction.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>object</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                
+                
+                    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fee</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>number</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The max fee willing to pay per operation in this transaction (<strong>in stroops</strong>).</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>timebounds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>object</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The timebounds for the validity of this transaction.</p>
+                
+                    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>minTime</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>number</code></span>
+|
+
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>64 bit unix timestamp</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxTime</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>number</code></span>
+|
+
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>64 bit unix timestamp</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>memo</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The memo for the transaction</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
