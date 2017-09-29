@@ -65,7 +65,8 @@ enum LedgerEntryType
     ACCOUNT = 0,
     TRUSTLINE = 1,
     OFFER = 2,
-    DATA = 3
+    DATA = 3,
+	SIGNERS_ACCESS = 4
 };
 
 struct Signer
@@ -211,6 +212,26 @@ struct DataEntry
     ext;
 };
 
+/* SignersAccessEntry
+
+   Entry to store friend access
+   to the signers of the source account
+
+*/
+
+struct SignersAccessEntry
+{
+    AccountID accessGiverID; // source account id that gives access
+    AccountID accessTakerID; // friend account id that takes access
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
+};
 
 struct LedgerEntry
 {

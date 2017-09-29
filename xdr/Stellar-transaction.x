@@ -25,7 +25,9 @@ enum OperationType
     ALLOW_TRUST = 7,
     ACCOUNT_MERGE = 8,
     INFLATION = 9,
-    MANAGE_DATA = 10
+    MANAGE_DATA = 10,
+    GIVE_ACCESS = 11,
+    SET_SIGNERS = 12
 };
 
 /* CreateAccount
@@ -146,6 +148,35 @@ struct SetOptionsOp
     Signer* signer;
 };
 
+/* Gives access to signers to friend account
+
+    Threshold: high
+
+    Result: GiveSignersAccessResult
+
+*/
+
+struct GiveSignersAccessOp
+{
+    AccountID friendID; //friend account id
+};
+
+/* Deletes all signers from source account
+   and adds the new one
+
+   Threshold: high
+
+   Result: SetSignersOpResult
+
+*/
+
+struct SetSignersOp
+{
+    AccountID* accessGiverID; //id of the one who gives signers access
+    Signer* signer;           //signer to deal with signers
+};
+
+
 /* Creates, updates or deletes a trust line
 
     Threshold: med
@@ -253,6 +284,10 @@ struct Operation
         void;
     case MANAGE_DATA:
         ManageDataOp manageDataOp;
+    case GIVE_ACCESS:
+            GiveSignersAccessOp giveSignersAccessOp;
+    case SET_SIGNERS:
+        SetSignersOp setSignersOp;
     }
     body;
 };
@@ -534,6 +569,46 @@ default:
     void;
 };
 
+/******* GiveSignersAccess Result ********/
+
+enum GiveSignersAccessResultCode
+{
+    GIVE_SIGNERS_ACCESS_SUCCESS = 0,
+    GIVE_SIGNERS_ACCESS_LOW_RESERVE = -1,
+	GIVE_SIGNERS_ACCESS_FRIEND_IS_SOURCE = -2,
+    GIVE_SIGNERS_ACCESS_FRIEND_DOESNT_EXIST = -3,
+    GIVE_SIGNERS_ACCESS_ACCESS_SRC_NOT_AUTHORISED = -4
+};
+
+union GiveSignersAccessResult switch (GiveSignersAccessResultCode code)
+{
+case GIVE_SIGNERS_ACCESS_SUCCESS:
+    void;
+default:
+    void;
+};
+
+/******* SetSigners Result ********/
+
+enum SetSignersResultCode
+{
+    SET_SIGNERS_SUCCESS = 0,
+    SET_SIGNERS_LOW_RESERVE = -1,
+    SET_SIGNERS_INVALID_ACCESS = -2,
+    SET_SIGNERS_FRIEND_IS_SOURCE = -3,
+    SET_SIGNERS_ACCESS_GIVER_DOESNT_EXIST = -4,
+    SET_SIGNERS_ACCESS_ENTRY_DOESNT_EXIST = -5,
+    SET_SIGNERS_BAD_SIGNER = -6
+};
+
+union SetSignersResult switch (SetSignersResultCode code)
+{
+case SET_SIGNERS_SUCCESS:
+    void;
+default:
+    void;
+};
+
 /******* ChangeTrust Result ********/
 
 enum ChangeTrustResultCode
@@ -683,6 +758,10 @@ case opINNER:
         InflationResult inflationResult;
     case MANAGE_DATA:
         ManageDataResult manageDataResult;
+    case GIVE_ACCESS:
+        GiveSignersAccessResult giveSignersAccessResult;
+    case SET_SIGNERS:
+        SetSignersResult setSignersResult;
     }
     tr;
 default:
