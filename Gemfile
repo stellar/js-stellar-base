@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gem 'xdrgen', git: 'git@github.com:stellar/xdrgen.git'
+gem 'xdrgen', github:'stellar/xdrgen'
 # gem "xdrgen", path: "../xdrgen"
 gem 'pry'
 gem 'octokit'

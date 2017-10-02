@@ -768,6 +768,86 @@ describe('Operation', function() {
         });
     });
 
+    describe(".giveSignersAccess()", function () {
+        it("creates a signers access", function () {
+            var firstAccountId = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+            var secondAccountId = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+            var startingBalance = '10000000';
+            let firstAccountCreatingOp = StellarBase.Operation.createAccount({firstAccountId, startingBalance});
+            let secondAccountCreatingOp = StellarBase.Operation.createAccount({secondAccountId, startingBalance});
+            let accessGivingOp = StellarBase.Operation.giveAccess({secondAccountId, firstAccountId});
+
+
+            var xdr = accessGivingOp.toXDR("hex");
+            var accessGivingOperation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.fromXDRObject(accessGivingOperation);
+
+            expect(obj.type).to.be.equal("giveAccess");
+            expect(obj.friendId).to.be.equal(opts.friendId);
+        });
+
+        it("fails to create signers access operation with an invalid friend address", function () {
+            let opts = {
+                friendId: 'GCEZW',
+                source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+            };
+            expect(() => StellarBase.Operation.giveAccess(opts)).to.throw(/accessGiver is invalid/)
+        });
+
+        it("fails to create createAccount operation with an invalid source address", function () {
+            let opts = {
+                destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+                startingBalance: '20',
+                source: 'GCEZ'
+            };
+            expect(() => StellarBase.Operation.giveAccess(opts)).to.throw(/Source address is invalid/)
+        });
+    });
+
+    describe(".setSigners()", function () {
+        it("set signers for another friend account", function () {
+            var firstAccountId = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+            var secondAccountId = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
+            var startingBalance = '10000000';
+            let signer = {
+                ed25519PublicKey: "GDGU7OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                preAuthTx: "",
+                weight: 1
+            };
+
+            let firstAccountCreatingOp = StellarBase.Operation.createAccount({firstAccountId, startingBalance});
+            let secondAccountCreatingOp = StellarBase.Operation.createAccount({secondAccountId, startingBalance});
+            let accessGivingOp = StellarBase.Operation.giveAccess({secondAccountId, firstAccountId});
+            let settingSignersOp = StellarBase.Operation.setSigners({firstAccountId, signer, secondAccountId});
+
+
+            var xdr = settingSignersOp.toXDR("hex");
+            var settingSignersOperation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.fromXDRObject(settingSignersOperation);
+
+            expect(obj.type).to.be.equal("setSigners");
+            expect(obj.friendId).to.be.equal(opts.friendId);
+        });
+
+        it("fails to create signers access operation with an invalid friend address", function () {
+            let opts = {
+                friendId: 'GCEZW',
+                source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+            };
+            expect(() => StellarBase.Operation.giveAccess(opts)).to.throw(/accessGiver is invalid/)
+        });
+
+        it("fails to create createAccount operation with an invalid source address", function () {
+            let opts = {
+                destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+                startingBalance: '20',
+                source: 'GCEZ'
+            };
+            expect(() => StellarBase.Operation.giveAccess(opts)).to.throw(/Source address is invalid/)
+        });
+    });
+
+
     describe("._checkUnsignedIntValue()", function () {
         it("returns true for valid values", function () {
             let values = [
