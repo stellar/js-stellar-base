@@ -530,11 +530,11 @@ export class Operation {
       }
 
       let attributes = {};
-      attributes.destination = Keypair.fromPublicKey(opts.friendId).xdrAccountId();
+      attributes.friendId = Keypair.fromPublicKey(opts.friendId).xdrAccountId();
       let giveSignersAccess = new xdr.GiveSignersAccessOp(attributes);
 
       let opAttributes = {};
-      opAttributes.body = xdr.OperationBody.giveSignersAccess(giveSignersAccess);
+      opAttributes.body = xdr.OperationBody.giveAccess(giveSignersAccess);
       this.setSourceAccount(opAttributes, opts);
 
       return new xdr.Operation(opAttributes);
@@ -560,11 +560,11 @@ export class Operation {
 
   static setSigners(opts) {
 
-      if (!StrKey.isValidEd25519PublicKey(opts)) {
+      if (!StrKey.isValidEd25519PublicKey(opts.accessGiverId)) {
           throw new Error("destination is invalid");
       }
-      if (!this.isValidAmount(opts.startingBalance)) {
-          throw new TypeError(Operation.constructAmountRequirementsError('startingBalance'));
+      if (!StrKey.isValidEd25519PublicKey(opts.source)) {
+          throw new Error("source is invalid");
       }
       let attributes = {};
       attributes.accessGiverId = Keypair.fromPublicKey(opts.accessGiverId).xdrAccountId();
@@ -572,7 +572,7 @@ export class Operation {
       let setSigners = new xdr.SetSignersOp(attributes);
 
       let opAttributes = {};
-      opAttributes.body = xdr.OperationBody.setSigners(setSigners);
+      opAttributes.body = xdr.OperationBody.setSigner(setSigners);
       this.setSourceAccount(opAttributes, opts);
 
       return new xdr.Operation(opAttributes);

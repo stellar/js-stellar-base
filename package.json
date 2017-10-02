@@ -37,7 +37,7 @@
     "coveralls": "^2.11.4",
     "express": "^4.9.8",
     "ghooks": "^0.3.0",
-    "gulp": "^3.8.11",
+    "gulp": "^3.9.1",
     "gulp-babel": "^4.0.1",
     "gulp-coveralls": "^0.1.3",
     "gulp-git": "~0.5.3",
