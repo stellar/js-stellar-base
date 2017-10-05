@@ -1,4 +1,4 @@
-// Automatically generated on 2017-09-29T15:09:55+03:00
+// Automatically generated on 2017-10-05T14:05:28+03:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -206,14 +206,14 @@ xdr.struct("GiveSignersAccessOp", [
 //
 //   struct SetSignersOp
 //   {
-//       AccountID* accessGiverID; //id of the one who gives signers access
-//       Signer* signer;           //signer to deal with signers
+//       AccountID accessGiverID; //id of the one who gives signers access
+//       Signer signer;           //signer to deal with signers
 //   };
 //
 // ===========================================================================
 xdr.struct("SetSignersOp", [
-  ["accessGiverId", xdr.option(xdr.lookup("AccountId"))],
-  ["signer", xdr.option(xdr.lookup("Signer"))],
+  ["accessGiverId", xdr.lookup("AccountId")],
+  ["signer", xdr.lookup("Signer")],
 ]);
 
 // === xdr source ============================================================
@@ -329,7 +329,7 @@ xdr.struct("ManageDataOp", [
 //       case MANAGE_DATA:
 //           ManageDataOp manageDataOp;
 //       case GIVE_ACCESS:
-//               GiveSignersAccessOp giveSignersAccessOp;
+//           GiveSignersAccessOp giveSignersAccessOp;
 //       case SET_SIGNERS:
 //           SetSignersOp setSignersOp;
 //       }
@@ -403,7 +403,7 @@ xdr.union("OperationBody", {
 //       case MANAGE_DATA:
 //           ManageDataOp manageDataOp;
 //       case GIVE_ACCESS:
-//               GiveSignersAccessOp giveSignersAccessOp;
+//           GiveSignersAccessOp giveSignersAccessOp;
 //       case SET_SIGNERS:
 //           SetSignersOp setSignersOp;
 //       }
@@ -1955,14 +1955,14 @@ xdr.typedef("Int64", xdr.hyper());
 //   enum CryptoKeyType
 //   {
 //       KEY_TYPE_ED25519 = 0,
-//       KEY_TYPE_HASH_TX = 1,
+//       KEY_TYPE_PRE_AUTH_TX = 1,
 //       KEY_TYPE_HASH_X = 2
 //   };
 //
 // ===========================================================================
 xdr.enum("CryptoKeyType", {
   keyTypeEd25519: 0,
-  keyTypeHashTx: 1,
+  keyTypePreAuthTx: 1,
   keyTypeHashX: 2,
 });
 
@@ -1983,14 +1983,14 @@ xdr.enum("PublicKeyType", {
 //   enum SignerKeyType
 //   {
 //       SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
-//       SIGNER_KEY_TYPE_HASH_TX = KEY_TYPE_HASH_TX,
+//       SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
 //       SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
 //   };
 //
 // ===========================================================================
 xdr.enum("SignerKeyType", {
   signerKeyTypeEd25519: 0,
-  signerKeyTypeHashTx: 1,
+  signerKeyTypePreAuthTx: 1,
   signerKeyTypeHashX: 2,
 });
 
@@ -2020,9 +2020,9 @@ xdr.union("PublicKey", {
 //   {
 //   case SIGNER_KEY_TYPE_ED25519:
 //       uint256 ed25519;
-//   case SIGNER_KEY_TYPE_HASH_TX:
+//   case SIGNER_KEY_TYPE_PRE_AUTH_TX:
 //       /* Hash of Transaction structure */
-//       uint256 hashTx;
+//       uint256 preAuthTx;
 //   case SIGNER_KEY_TYPE_HASH_X:
 //       /* Hash of random 256 bit preimage X */
 //       uint256 hashX;
@@ -2034,12 +2034,12 @@ xdr.union("SignerKey", {
   switchName: "type",
   switches: [
     ["signerKeyTypeEd25519", "ed25519"],
-    ["signerKeyTypeHashTx", "hashTx"],
+    ["signerKeyTypePreAuthTx", "preAuthTx"],
     ["signerKeyTypeHashX", "hashX"],
   ],
   arms: {
     ed25519: xdr.lookup("Uint256"),
-    hashTx: xdr.lookup("Uint256"),
+    preAuthTx: xdr.lookup("Uint256"),
     hashX: xdr.lookup("Uint256"),
   },
 });
@@ -2621,6 +2621,8 @@ xdr.struct("SignersAccessEntry", [
 //           OfferEntry offer;
 //       case DATA:
 //           DataEntry data;
+//       case SIGNERS_ACCESS:
+//           SignersAccessEntry signersAccess;
 //       }
 //
 // ===========================================================================
@@ -2632,12 +2634,14 @@ xdr.union("LedgerEntryData", {
     ["trustline", "trustLine"],
     ["offer", "offer"],
     ["datum", "data"],
+    ["signersAccess", "signersAccess"],
   ],
   arms: {
     account: xdr.lookup("AccountEntry"),
     trustLine: xdr.lookup("TrustLineEntry"),
     offer: xdr.lookup("OfferEntry"),
     data: xdr.lookup("DataEntry"),
+    signersAccess: xdr.lookup("SignersAccessEntry"),
   },
 });
 
@@ -2676,6 +2680,8 @@ xdr.union("LedgerEntryExt", {
 //           OfferEntry offer;
 //       case DATA:
 //           DataEntry data;
+//       case SIGNERS_ACCESS:
+//           SignersAccessEntry signersAccess;
 //       }
 //       data;
 //   

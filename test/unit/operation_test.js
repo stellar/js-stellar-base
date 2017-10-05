@@ -838,12 +838,12 @@ describe('Operation', function() {
 
             setSignersOpts.accessGiverId = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
 
-            setSignersOpts.source = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
-
             setSignersOpts.signer = {
                 ed25519PublicKey: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
                 weight: 1
             };
+
+            setSignersOpts.source = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
 
             let firstAccountCreatingOp = StellarBase.Operation.createAccount(first_opts);
             let secondAccountCreatingOp = StellarBase.Operation.createAccount(second_opts);
@@ -853,8 +853,8 @@ describe('Operation', function() {
             let settingSignersOp = StellarBase.Operation.setSigners(setSignersOpts);
 
             var xdr = settingSignersOp.toXDR("hex");
-            //var accessGivingOperation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
-            //var obj = StellarBase.Operation.fromXDRObject(accessGivingOperation);
+            var accessGivingOperation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.fromXDRObject(accessGivingOperation);
         });
     });
 

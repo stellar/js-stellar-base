@@ -53,8 +53,8 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.accountMerge}`
  * * `{@link Operation.inflation}`
  * * `{@link Operation.manageData}`
- * * `{@link Operation.giveSignersAccess}`
- * * `{@link Operation.setSigners}`
+ * * `{@link Operation.giveAccess}`
+ * * `{@link Operation.setSigner}`
  *
  * @class Operation
  */
@@ -568,12 +568,59 @@ export class Operation {
       }
       let attributes = {};
       attributes.accessGiverId = Keypair.fromPublicKey(opts.accessGiverId).xdrAccountId();
-      attributes.signer = opts.signer;
+
+      if (opts.signer) {
+          let weight = opts.signer.weight;
+          let key;
+
+          let setValues = 0;
+
+          if (opts.signer.ed25519PublicKey) {
+              if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
+                  throw new Error("signer.ed25519PublicKey is invalid.");
+              }
+              let rawKey = StrKey.decodeEd25519PublicKey(opts.signer.ed25519PublicKey);
+              key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
+              setValues++;
+          }
+
+          if (opts.signer.preAuthTx) {
+              if (isString(opts.signer.preAuthTx)) {
+                  opts.signer.preAuthTx = Buffer.from(opts.signer.preAuthTx, "hex");
+              }
+
+              if (!(Buffer.isBuffer(opts.signer.preAuthTx) && opts.signer.preAuthTx.length == 32)) {
+                  throw new Error("signer.preAuthTx must be 32 bytes Buffer.");
+              }
+              key = new xdr.SignerKey.signerKeyTypePreAuthTx(opts.signer.preAuthTx);
+              setValues++;
+          }
+
+          if (opts.signer.sha256Hash) {
+              if (isString(opts.signer.sha256Hash)) {
+                  opts.signer.sha256Hash = Buffer.from(opts.signer.sha256Hash, "hex");
+              }
+
+              if (!(Buffer.isBuffer(opts.signer.sha256Hash) && opts.signer.sha256Hash.length == 32)) {
+                  throw new Error("signer.sha256Hash must be 32 bytes Buffer.");
+              }
+              key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
+              setValues++;
+          }
+
+          if (setValues != 1) {
+              throw new Error("Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.");
+          }
+
+          attributes.signer = new xdr.Signer({key, weight});
+      }
+
+      attributes.source = opts.source;
       let setSigners = new xdr.SetSignersOp(attributes);
 
       let opAttributes = {};
       opAttributes.body = xdr.OperationBody.setSigner(setSigners);
-      this.setSourceAccount(opAttributes, opts);
+      this.setSourceAccount(opAttributes, opts.source);
 
       return new xdr.Operation(opAttributes);
 
@@ -702,9 +749,9 @@ export class Operation {
       result.type = "giveAccess";
       result.friendId = accountIdtoAddress(attrs.friendId());
       break;
-      case "setSigners":
+      case "setSigner":
       let signer = {};
-      result.type = "setSigners";
+      result.type = "setSigner";
       result.accessGiverId = accountIdtoAddress(attrs.accessGiverId());
 
       let arm = attrs.signer().key().arm();

@@ -247,6 +247,8 @@ struct LedgerEntry
         OfferEntry offer;
     case DATA:
         DataEntry data;
+    case SIGNERS_ACCESS:
+        SignersAccessEntry signersAccess;
     }
     data;
 
