@@ -53,6 +53,8 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.accountMerge}`
  * * `{@link Operation.inflation}`
  * * `{@link Operation.manageData}`
+ * * `{@link Operation.giveAccess}`
+ * * `{@link Operation.setSigner}`
  *
  * @class Operation
  */
@@ -507,6 +509,123 @@ export class Operation {
     return new xdr.Operation(opAttributes);
   }
 
+
+    /**
+     * Returns a XDR giveSignersAccessOp. A "give signers access" operation creates signers access
+     * @param {object} opts
+     * @param {string} opts.friendId - id of account you want to give access to
+     * @param {string} [opts.source] - The source account (defaults to transaction source).
+     * @throws {Error} Throws `Error` when the friend account doesnt exist
+     * @returns {xdr.giveSignersAccessOp}
+     */
+
+  static giveAccess(opts) {
+
+      if (!StrKey.isValidEd25519PublicKey(opts.source)) {
+          throw new Error("Source address is invalid");
+      }
+
+      if (!StrKey.isValidEd25519PublicKey(opts.friendId)) {
+          throw new Error("accessGiver is invalid");
+      }
+
+      let attributes = {};
+      attributes.friendId = Keypair.fromPublicKey(opts.friendId).xdrAccountId();
+      let giveSignersAccess = new xdr.GiveSignersAccessOp(attributes);
+
+      let opAttributes = {};
+      opAttributes.body = xdr.OperationBody.giveAccess(giveSignersAccess);
+      this.setSourceAccount(opAttributes, opts);
+
+      return new xdr.Operation(opAttributes);
+
+  }
+
+    /**
+     * Returns a XDR setSignersOp. A "set signers" operation deletes all the signers
+     * of account giver and add a new signer
+     * @param {object} opts
+     * @param {string} opts.accessGiverId - id of account you want to give access to
+     *
+     * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
+     *                                 deleted if the weight is 0. Only one of `ed25519PublicKey`, `sha256Hash`, `preAuthTx` should be defined.
+     * @param {string} [opts.signer.ed25519PublicKey] - The ed25519 public key of the signer.
+     * @param {Buffer|string} [opts.signer.sha256Hash] - sha256 hash (Buffer or hex string) of preimage that will unlock funds. Preimage should be used as signature of future transaction.
+     * @param {Buffer|string} [opts.signer.preAuthTx] - Hash (Buffer or hex string) of transaction that will unlock funds.
+     * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
+     * @param {string} [opts.source] - The source account (defaults to transaction source).
+     * @throws {Error} Throws `Error` when the friend account doesnt exist
+     * @returns {xdr.giveSignersAccessOp}
+     */
+
+  static setSigners(opts) {
+
+      if (!StrKey.isValidEd25519PublicKey(opts.accessGiverId)) {
+          throw new Error("destination is invalid");
+      }
+      if (!StrKey.isValidEd25519PublicKey(opts.source)) {
+          throw new Error("source is invalid");
+      }
+      let attributes = {};
+      attributes.accessGiverId = Keypair.fromPublicKey(opts.accessGiverId).xdrAccountId();
+
+      if (opts.signer) {
+          let weight = opts.signer.weight;
+          let key;
+
+          let setValues = 0;
+
+          if (opts.signer.ed25519PublicKey) {
+              if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
+                  throw new Error("signer.ed25519PublicKey is invalid.");
+              }
+              let rawKey = StrKey.decodeEd25519PublicKey(opts.signer.ed25519PublicKey);
+              key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
+              setValues++;
+          }
+
+          if (opts.signer.preAuthTx) {
+              if (isString(opts.signer.preAuthTx)) {
+                  opts.signer.preAuthTx = Buffer.from(opts.signer.preAuthTx, "hex");
+              }
+
+              if (!(Buffer.isBuffer(opts.signer.preAuthTx) && opts.signer.preAuthTx.length == 32)) {
+                  throw new Error("signer.preAuthTx must be 32 bytes Buffer.");
+              }
+              key = new xdr.SignerKey.signerKeyTypePreAuthTx(opts.signer.preAuthTx);
+              setValues++;
+          }
+
+          if (opts.signer.sha256Hash) {
+              if (isString(opts.signer.sha256Hash)) {
+                  opts.signer.sha256Hash = Buffer.from(opts.signer.sha256Hash, "hex");
+              }
+
+              if (!(Buffer.isBuffer(opts.signer.sha256Hash) && opts.signer.sha256Hash.length == 32)) {
+                  throw new Error("signer.sha256Hash must be 32 bytes Buffer.");
+              }
+              key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
+              setValues++;
+          }
+
+          if (setValues != 1) {
+              throw new Error("Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.");
+          }
+
+          attributes.signer = new xdr.Signer({key, weight});
+      }
+
+      attributes.source = opts.source;
+      let setSigners = new xdr.SetSignersOp(attributes);
+
+      let opAttributes = {};
+      opAttributes.body = xdr.OperationBody.setSigner(setSigners);
+      this.setSourceAccount(opAttributes, opts.source);
+
+      return new xdr.Operation(opAttributes);
+
+  }
+
   static setSourceAccount(opAttributes, opts) {
     if (opts.source) {
       if (!StrKey.isValidEd25519PublicKey(opts.source)) {
@@ -625,6 +744,27 @@ export class Operation {
       break;
       case "inflation":
       result.type = "inflation";
+      break;
+      case "giveAccess":
+      result.type = "giveAccess";
+      result.friendId = accountIdtoAddress(attrs.friendId());
+      break;
+      case "setSigner":
+      let signer = {};
+      result.type = "setSigner";
+      result.accessGiverId = accountIdtoAddress(attrs.accessGiverId());
+
+      let arm = attrs.signer().key().arm();
+      if (arm == "ed25519") {
+          signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
+      } else if (arm == "preAuthTx") {
+          signer.preAuthTx = attrs.signer().key().preAuthTx();
+      } else if (arm == "hashX") {
+          signer.sha256Hash = attrs.signer().key().hashX();
+      }
+
+      signer.weight = attrs.signer().weight();
+      result.signer = signer;
       break;
       default:
       throw new Error("Unknown operation");

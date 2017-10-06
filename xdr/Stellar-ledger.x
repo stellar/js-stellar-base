@@ -125,6 +125,13 @@ case DATA:
         AccountID accountID;
         string64 dataName;
     } data;
+
+case SIGNERS_ACCESS:
+    struct
+    {
+        AccountID accessGiverID;
+        AccountID accessTakerID;
+    } signersAccess;
 };
 
 enum BucketEntryType

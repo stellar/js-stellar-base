@@ -235,6 +235,7 @@ describe('Operation', function() {
                 ed25519PublicKey: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
                 weight: 1
             };
+
             opts.homeDomain = "www.example.com";
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
@@ -264,7 +265,7 @@ describe('Operation', function() {
                 preAuthTx: hash,
                 weight: 10
             };
-            
+
             let op = StellarBase.Operation.setOptions(opts);
             var xdr = op.toXDR("hex");
             var operation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
@@ -765,6 +766,95 @@ describe('Operation', function() {
             it("value is too long", function () {
                 expect(() => StellarBase.Operation.manageData({name: "a", value: new Buffer(65)})).to.throw()
             });
+        });
+    });
+
+    describe(".giveSignersAccess()", function () {
+        it("creates a signers access", function () {
+
+            var first_opts = {
+                destination: "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
+                startingBalance: "10000000"
+            };
+
+            var second_opts = {
+                destination: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                startingBalance: "10000000"
+            };
+
+            var access_opts = {
+                friendId: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                source: "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ"
+            }
+            let firstAccountCreatingOp = StellarBase.Operation.createAccount(first_opts);
+            let secondAccountCreatingOp = StellarBase.Operation.createAccount(second_opts);
+            let accessGivingOp = StellarBase.Operation.giveAccess(access_opts);
+
+
+            var xdr = accessGivingOp.toXDR("hex");
+            var accessGivingOperation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.fromXDRObject(accessGivingOperation);
+
+            expect(obj.type).to.be.equal("giveAccess");
+            expect(obj.friendId).to.be.equal(second_opts.destination);
+        });
+
+        it("fails to create signers access operation with an invalid friend address", function () {
+            let opts = {
+                friendId: 'GCEZW',
+                source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+            };
+            expect(() => StellarBase.Operation.giveAccess(opts)).to.throw(/accessGiver is invalid/)
+        });
+
+        it("fails to create createAccount operation with an invalid source address", function () {
+            let opts = {
+                destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+                startingBalance: '20',
+                source: 'GCEZ'
+            };
+            expect(() => StellarBase.Operation.giveAccess(opts)).to.throw(/Source address is invalid/)
+        });
+    });
+
+    describe(".setSigners()", function () {
+        it("set signers for another friend account", function () {
+            var first_opts = {
+                destination: "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
+                startingBalance: "10000000"
+            };
+
+            var second_opts = {
+                destination: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                startingBalance: "10000000"
+            };
+
+            var access_opts = {
+                friendId: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                source: "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ"
+            };
+
+            var setSignersOpts = {};
+
+            setSignersOpts.accessGiverId = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+
+            setSignersOpts.signer = {
+                ed25519PublicKey: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+                weight: 1
+            };
+
+            setSignersOpts.source = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
+
+            let firstAccountCreatingOp = StellarBase.Operation.createAccount(first_opts);
+            let secondAccountCreatingOp = StellarBase.Operation.createAccount(second_opts);
+
+            let accessGivingOp = StellarBase.Operation.giveAccess(access_opts);
+
+            let settingSignersOp = StellarBase.Operation.setSigners(setSignersOpts);
+
+            var xdr = settingSignersOp.toXDR("hex");
+            var accessGivingOperation = StellarBase.xdr.Operation.fromXDR(new Buffer(xdr, "hex"));
+            var obj = StellarBase.Operation.fromXDRObject(accessGivingOperation);
         });
     });
 
