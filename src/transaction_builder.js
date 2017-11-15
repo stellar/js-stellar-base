@@ -15,49 +15,49 @@ let BASE_FEE     = 100; // Stroops
 let MIN_LEDGER   = 0;
 let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
 
+/**
+ * <p>Transaction builder helps constructs a new `{@link Transaction}` using the given {@link Account}
+ * as the transaction's "source account". The transaction will use the current sequence
+ * number of the given account as its sequence number and increment the given account's
+ * sequence number by one. The given source account must include a private key for signing
+ * the transaction or an error will be thrown.</p>
+ *
+ * <p>Operations can be added to the transaction via their corresponding builder methods, and
+ * each returns the TransactionBuilder object so they can be chained together. After adding
+ * the desired operations, call the `build()` method on the `TransactionBuilder` to return a fully
+ * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
+ * sequence number of the source account and include the signature from the source account.</p>
+ *
+ * <p>The following code example creates a new transaction with {@link Operation.createAccount} and
+ * {@link Operation.payment} operations.
+ * The Transaction's source account first funds `destinationA`, then sends
+ * a payment to `destinationB`. The built transaction is then signed by `sourceKeypair`.</p>
+ *
+ * ```
+ * var transaction = new TransactionBuilder(source)
+ *  .addOperation(Operation.createAccount({
+        destination: destinationA,
+        startingBalance: "20"
+    }) // <- funds and creates destinationA
+    .addOperation(Operation.payment({
+        destination: destinationB,
+        amount: "100"
+        asset: Asset.native()
+    }) // <- sends 100 XLM to destinationB
+ *   .build();
+ *
+ * transaction.sign(sourceKeypair);
+ * ```
+ * @constructor
+ * @param {Account} sourceAccount - The source account for this transaction.
+ * @param {object} [opts]
+ * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
+ * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
+ * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
+ * @param {number|string} [opts.timebounds.maxTime] - 64 bit unix timestamp
+ * @param {Memo} [opts.memo] - The memo for the transaction
+ */
 export class TransactionBuilder {
-  /**
-   * <p>Transaction builder helps constructs a new `{@link Transaction}` using the given {@link Account}
-   * as the transaction's "source account". The transaction will use the current sequence
-   * number of the given account as its sequence number and increment the given account's
-   * sequence number by one. The given source account must include a private key for signing
-   * the transaction or an error will be thrown.</p>
-   *
-   * <p>Operations can be added to the transaction via their corresponding builder methods, and
-   * each returns the TransactionBuilder object so they can be chained together. After adding
-   * the desired operations, call the `build()` method on the `TransactionBuilder` to return a fully
-   * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
-   * sequence number of the source account and include the signature from the source account.</p>
-   *
-   * <p>The following code example creates a new transaction with {@link Operation.createAccount} and
-   * {@link Operation.payment} operations.
-   * The Transaction's source account first funds `destinationA`, then sends
-   * a payment to `destinationB`. The built transaction is then signed by `sourceKeypair`.</p>
-   *
-   * ```
-   * var transaction = new TransactionBuilder(source)
-   *  .addOperation(Operation.createAccount({
-          destination: destinationA,
-          startingBalance: "20"
-      }) // <- funds and creates destinationA
-      .addOperation(Operation.payment({
-          destination: destinationB,
-          amount: "100"
-          asset: Asset.native()
-      }) // <- sends 100 XLM to destinationB
-   *   .build();
-   *
-   * transaction.sign(sourceKeypair);
-   * ```
-   * @constructor
-   * @param {Account} sourceAccount - The source account for this transaction.
-   * @param {object} [opts]
-   * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
-   * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
-   * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
-   * @param {number|string} [opts.timebounds.maxTime] - 64 bit unix timestamp
-   * @param {Memo} [opts.memo] - The memo for the transaction
-   */
   constructor(sourceAccount, opts={}) {
     if (!sourceAccount) {
       throw new Error("must specify source account for the transaction");
