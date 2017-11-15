@@ -12,15 +12,15 @@ import crypto from "crypto";
 let MIN_LEDGER   = 0;
 let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
 
+/**
+ * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
+ * Once a Transaction has been created from an envelope, its attributes and operations
+ * should not be changed. You should only add signers (using {@link Transaction#sign}) to a Transaction object before
+ * submitting to the network or forwarding on to additional signers.
+ * @constructor
+ * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
+ */
 export class Transaction {
-  /**
-   * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
-   * Once a Transaction has been created from an envelope, its attributes and operations
-   * should not be changed. You should only add signers (using {@link Transaction#sign}) to a Transaction object before
-   * submitting to the network or forwarding on to additional signers.
-   * @constructor
-   * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
-   */
   constructor(envelope) {
     if (typeof envelope === "string") {
       let buffer = new Buffer(envelope, "base64");

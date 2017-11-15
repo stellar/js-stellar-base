@@ -13,19 +13,19 @@ export const Networks = {
 
 var current = null;
 
+/**
+ * The Network class provides helper methods to get the passphrase or id for different
+ * stellar networks.  It also provides the {@link Network.current} class method that returns the network
+ * that will be used by this process for the purposes of generating signatures.
+ *
+ * You should select network your app will use before adding the first signature. You can use the `use`,
+ * `usePublicNetwork` and `useTestNetwork` helper methods.
+ *
+ * Creates a new `Network` object.
+ * @constructor
+ * @param {string} networkPassphrase Network passphrase
+ */
 export class Network {
-	/**
-   * The Network class provides helper methods to get the passphrase or id for different
-   * stellar networks.  It also provides the {@link Network.current} class method that returns the network
-   * that will be used by this process for the purposes of generating signatures.
-   *
-   * You should select network your app will use before adding the first signature. You can use the `use`,
-   * `usePublicNetwork` and `useTestNetwork` helper methods.
-   *
-	 * Creates a new `Network` object.
-	 * @constructor
-	 * @param {string} networkPassphrase Network passphrase
-	 */
 	constructor(networkPassphrase) {
 		this._networkPassphrase = networkPassphrase;
 	}

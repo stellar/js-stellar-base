@@ -5,24 +5,24 @@ import {StrKey} from "./strkey";
 import {default as xdr} from "./generated/stellar-xdr_generated";
 import nacl from "tweetnacl";
 
+/**
+ * `Keypair` represents public (and secret) keys of the account.
+ *
+ * Currently `Keypair` only supports ed25519 but in a future this class can be abstraction layer for other
+ * public-key signature systems.
+ *
+ * Use more convenient methods to create `Keypair` object:
+ * * `{@link Keypair.fromPublicKey}`
+ * * `{@link Keypair.fromSecret}`
+ * * `{@link Keypair.random}`
+ *
+ * @constructor
+ * @param {object} keys At least one of keys must be provided.
+ * @param {string} keys.type Public-key signature system name. (currently only `ed25519` keys are supported)
+ * @param {Buffer} [keys.publicKey] Raw public key
+ * @param {Buffer} [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
+ */
 export class Keypair {
-  /**
-   * `Keypair` represents public (and secret) keys of the account.
-   *
-   * Currently `Keypair` only supports ed25519 but in a future this class can be abstraction layer for other
-   * public-key signature systems.
-   *
-   * Use more convenient methods to create `Keypair` object:
-   * * `{@link Keypair.fromPublicKey}`
-   * * `{@link Keypair.fromSecret}`
-   * * `{@link Keypair.random}`
-   *
-   * @constructor
-   * @param {object} keys At least one of keys must be provided.
-   * @param {string} keys.type Public-key signature system name. (currently only `ed25519` keys are supported)
-   * @param {Buffer} [keys.publicKey] Raw public key
-   * @param {Buffer} [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
-   */
   constructor(keys) {
     if (keys.type != "ed25519") {
       throw new Error("Invalid keys type");

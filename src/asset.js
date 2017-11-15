@@ -5,18 +5,18 @@ import clone from 'lodash/clone';
 import padEnd from 'lodash/padEnd';
 import trimEnd from 'lodash/trimEnd';
 
+/**
+ * Asset class represents an asset, either the native asset (`XLM`)
+ * or a asset code / issuer account ID pair.
+ *
+ * An asset code describes an asset code and issuer pair. In the case of the native
+ * asset XLM, the issuer will be null.
+ *
+ * @constructor
+ * @param {string} code - The asset code.
+ * @param {string} issuer - The account ID of the issuer.
+ */
 export class Asset {
-  /**
-   * Asset class represents an asset, either the native asset (`XLM`)
-   * or a asset code / issuer account ID pair.
-   *
-   * An asset code describes an asset code and issuer pair. In the case of the native
-   * asset XLM, the issuer will be null.
-   *
-   * @constructor
-   * @param {string} code - The asset code.
-   * @param {string} issuer - The account ID of the issuer.
-   */
   constructor(code, issuer) {
     if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error("Asset code is invalid (maximum alphanumeric, 12 characters at max)");
