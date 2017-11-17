@@ -362,7 +362,7 @@ export class Operation {
    * @param {Asset} opts.selling - What you're selling.
    * @param {Asset} opts.buying - What you're buying.
    * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
-   * @param {number|string|BigNumber|Object} opts.price - The exchange rate ratio (selling / buying)
+   * @param {number|string|BigNumber|Object} opts.price - Price of 1 unit of `selling` in terms of `buying`.
    * @param {number} opts.price.n - If `opts.price` is an object: the price numerator
    * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
    * @param {number|string} [opts.offerId ]- If `0`, will create a new offer (default). Otherwise, edits an exisiting offer.
@@ -407,7 +407,7 @@ export class Operation {
    * @param {Asset} opts.selling - What you're selling.
    * @param {Asset} opts.buying - What you're buying.
    * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
-   * @param {number|string|BigNumber|Object} opts.price - The exchange rate ratio (selling / buying)
+   * @param {number|string|BigNumber|Object} opts.price - Price of 1 unit of `selling` in terms of `buying`.
    * @param {number} opts.price.n - If `opts.price` is an object: the price numerator
    * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
    * @param {string} [opts.source] - The source account (defaults to transaction source).
