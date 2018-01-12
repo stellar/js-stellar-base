@@ -1,8 +1,8 @@
 describe('Common', () => {
-  it('Should send a transaction using sendTransaction()', async () => {
+  it('Should send a transaction using sendTransaction()', () => {
     const destination = StellarBase.Keypair.random();
     const signer = StellarBase.Keypair.fromSecret('SCZ5VCOS5UUDVCNFZO2IXJJR6WZQOSN56TC76UCVOSWH67UTLLOSWWIN');
-    const transaction = await StellarBase.Common.sendTransaction({
+    const transaction = StellarBase.Common.sendTransaction({
       secret: signer.secret(),
       destination: destination.publicKey(),
       amount: '20',

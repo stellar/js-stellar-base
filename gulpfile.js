@@ -1,7 +1,6 @@
 'use strict';
 
 var gulp        = require('gulp');
-var babel       = require('gulp-babel');
 var isparta     = require('isparta');
 var plugins     = require('gulp-load-plugins')();
 var runSequence = require('run-sequence');
@@ -42,7 +41,7 @@ gulp.task('hooks:precommit', ['build'], function() {
 
 gulp.task('build:node', ['lint:src'], function() {
     return gulp.src('src/**/*.js')
-        .pipe(babel())
+        .pipe(plugins.babel())
         .pipe(gulp.dest('lib'));
 });
 

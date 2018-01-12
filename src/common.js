@@ -7,7 +7,7 @@ import { Operation } from './operation';
 import { TransactionBuilder } from './transaction_builder';
 /* jshint ignore:start */
 export class Common {
-  static async sendTransaction({
+  static sendTransaction({
     secret,
     destination,
     asset = Asset.native(),
