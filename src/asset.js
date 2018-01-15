@@ -7,7 +7,7 @@ import trimEnd from 'lodash/trimEnd';
 
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
- * or a asset code / issuer account ID pair.
+ * or an asset code / issuer account ID pair.
  *
  * An asset code describes an asset code and issuer pair. In the case of the native
  * asset XLM, the issuer will be null.
