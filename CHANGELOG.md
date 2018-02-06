@@ -2,6 +2,23 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.7.7
+
+* Updated docs.
+
+## 0.7.6
+
+* Updated docs.
+
+## 0.7.5
+
+* `Keypair.constructor` now requires `type` field to define public-key signature system used in this instance (so `Keypair` can support other systems in a future). It also checks if public key and secret key match if both are passed (to prevent nasty bugs).
+* `Keypair.fromRawSeed` has been renamed to `Keypair.fromRawEd25519Seed` to make it clear that the seed must be Ed25519 seed.
+* It's now possible to instantiate `Memo` class so it's easier to check it's type and value (without dealing with low level `xdr.Memo` objects).
+* Changed `Asset.toXdrObject` to `Asset.toXDRObject` and `Operation.operationToObject` to `Operation.toXDRObject` for consistency.
+* Time bounds support for numeric input values.
+* Added `browser` prop to package.json.
+
 ## 0.7.4
 
 * Update dependencies.
