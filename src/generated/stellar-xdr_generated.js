@@ -1,4 +1,4 @@
-// Automatically generated on 2017-02-08T14:45:22+01:00
+// Automatically generated on 2018-02-19T21:33:00+01:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -3391,6 +3391,51 @@ xdr.struct("HmacSha256Key", [
 // ===========================================================================
 xdr.struct("HmacSha256Mac", [
   ["mac", xdr.opaque(32)],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("FederationResponseExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct FederationResponse
+//   {
+//   
+//       string64 stellarAddress; // Stellar uses string32 for domain name, using double for the federation name
+//       AccountID accountID;
+//       Memo memo;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("FederationResponse", [
+  ["stellarAddress", xdr.lookup("String64")],
+  ["accountId", xdr.lookup("AccountId")],
+  ["memo", xdr.lookup("Memo")],
+  ["ext", xdr.lookup("FederationResponseExt")],
 ]);
 
 });
