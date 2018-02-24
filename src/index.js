@@ -14,5 +14,6 @@ export * from "./memo";
 export {Account} from "./account";
 export {Network, Networks} from "./network";
 export {StrKey} from "./strkey";
+export {FederationResponse} from "./federation_response";
 
 export default module.exports;
