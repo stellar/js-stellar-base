@@ -9,27 +9,34 @@ title: Transaction Examples
 
 ## Creating an account
 
-In the example below account `GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ` is creating account `GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW`.
-The source account is giving the new account 25 XLM as its initial balance. Current sequence number of the source account in the ledger is `46316927324160`.
+In the example below a new account is created by the source account with secret `SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L`. The source account is giving the new account 25 XLM as its initial balance.
 
 
 ```javascript
-StellarSdk.Network.useTestNetwork();
-var secretString='secret key that corresponds to GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+const server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
+const source = StellarSdk.Keypair.fromSecret('SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L')
+const destination = StellarSdk.Keypair.random()
 
-// create an Account object using locally tracked sequence number
-var an_account = new StellarSdk.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 46316927324160);
+StellarSdk.Network.useTestNetwork()
 
-var transaction = new StellarSdk.TransactionBuilder(an_account)
-    .addOperation(StellarSdk.Operation.createAccount({
-      destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
-      startingBalance: "25"  // in XLM
-    }))
-    .build();
-
-transaction.sign(StellarSdk.Keypair.fromSecret(seedString)); // sign the transaction
-
-// transaction is now ready to be sent to the network or saved somewhere
+server.accounts()
+  .accountId(source.publicKey())
+  .call()
+  .then(({ sequence }) => {
+    const account = new StellarSdk.Account(source.publicKey(), sequence)
+    const transaction = new StellarSdk.TransactionBuilder(account)
+      .addOperation(StellarSdk.Operation.createAccount({
+        destination: destination.publicKey(),
+        startingBalance: '25'
+      }))
+      .build()
+    transaction.sign(StellarSdk.Keypair.fromSecret(source.secret()))
+    return server.submitTransaction(transaction)
+  })
+  .then(results => {
+    console.log('Transaction', results._links.transaction.href)
+    console.log('New Keypair', destination.publicKey(), destination.secret())
+  })
 
 ```
 
