@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:stellar/xdrgen.git
-  revision: 6c8d27a3b2314be1fc352f53fcb22e418ba296b5
+  revision: c683684abb3cb2c8b8c3dc12dc7c6cc9bf1e3b60
   specs:
     xdrgen (0.0.1)
-      activesupport (~> 4)
+      activesupport (~> 5)
       memoist (~> 0.11.0)
       slop (~> 3.4)
       treetop (~> 1.5.3)
@@ -11,38 +11,40 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.2.4)
-      i18n (~> 0.7)
-      json (~> 1.7, >= 1.7.7)
+    activesupport (5.2.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
       minitest (~> 5.1)
-      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.3.8)
-    coderay (1.1.0)
-    faraday (0.9.1)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
+    coderay (1.1.2)
+    concurrent-ruby (1.0.5)
+    faraday (0.15.0)
       multipart-post (>= 1.2, < 3)
-    i18n (0.7.0)
-    json (1.8.3)
+    i18n (1.0.1)
+      concurrent-ruby (~> 1.0)
     memoist (0.11.0)
-    method_source (0.8.2)
-    minitest (5.8.0)
+    method_source (0.9.0)
+    minitest (5.11.3)
     multipart-post (2.0.0)
-    netrc (0.10.3)
-    octokit (4.1.0)
-      sawyer (~> 0.6.0, >= 0.5.3)
+    netrc (0.11.0)
+    octokit (4.8.0)
+      sawyer (~> 0.8.0, >= 0.5.3)
     polyglot (0.3.5)
-    pry (0.10.1)
+    pry (0.11.3)
       coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-      slop (~> 3.4)
-    sawyer (0.6.0)
-      addressable (~> 2.3.5)
-      faraday (~> 0.8, < 0.10)
+      method_source (~> 0.9.0)
+    public_suffix (3.0.2)
+    rake (12.3.0)
+    sawyer (0.8.1)
+      addressable (>= 2.3.5, < 2.6)
+      faraday (~> 0.8, < 1.0)
     slop (3.6.0)
-    thread_safe (0.3.5)
+    thread_safe (0.3.6)
     treetop (1.5.3)
       polyglot (~> 0.3)
-    tzinfo (1.2.2)
+    tzinfo (1.2.5)
       thread_safe (~> 0.1)
 
 PLATFORMS
@@ -52,4 +54,8 @@ DEPENDENCIES
   netrc
   octokit
   pry
+  rake
   xdrgen!
+
+BUNDLED WITH
+   1.13.7
