@@ -58,7 +58,7 @@
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.4",
     "karma-mocha": "^0.1.10",
-    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-phantomjs-launcher": "^1.0.4",
     "karma-sauce-launcher": "^1.1.0",
     "karma-sinon-chai": "^0.3.0",
     "karma-webpack": "^1.8.0",
@@ -74,9 +74,9 @@
     "bignumber.js": "^4.0.0",
     "crc": "^3.3.0",
     "js-xdr": "^1.0.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.10",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^0.14.5"
+    "tweetnacl": "^1.0.0"
   },
   "optionalDependencies": {
     "ed25519": "0.0.4"
