@@ -18,7 +18,7 @@ StellarSdk.Network.useTestNetwork();
 var secretString='secret key that corresponds to GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
 
 // create an Account object using locally tracked sequence number
-var an_account = new StellarSdk.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", 46316927324160);
+var an_account = new StellarSdk.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "46316927324160");
 
 var transaction = new StellarSdk.TransactionBuilder(an_account)
     .addOperation(StellarSdk.Operation.createAccount({
@@ -41,17 +41,17 @@ Object of the `Asset` class represents an asset in the Stellar network. Right no
 
 To create a new native asset representation use static `native()` method:
 ```js
-var nativeAsset = Asset.native();
+var nativeAsset = StellarSdk.Asset.native();
 var isNative = nativeAsset.isNative(); // true
 ```
 
 To represent an issued asset you need to create a new object of type `Asset` with an asset code and issuer:
 ```js
 // Creates TEST asset issued by GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB
-var testAsset = new Asset('TEST', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB');
+var testAsset = new StellarSdk.Asset('TEST', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB');
 var isNative = testAsset.isNative(); // false
 // Creates Google stock asset issued by GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB
-var googleStockAsset = new Asset('US38259P7069', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB');
+var googleStockAsset = new StellarSdk.Asset('US38259P7069', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB');
 ```
 
 
@@ -70,17 +70,17 @@ The [path payment](https://www.stellar.org/developers/learn/concepts/list-of-ope
 StellarSdk.Network.useTestNetwork();
 var keypair=StellarSdk.Keypair.fromSecret(secretString);
 
-var source = new Account(keypair.accountId(), 46316927324160);
-var transaction = new TransactionBuilder(source)
-  .addOperation(Operation.pathPayment({
-      sendAsset: Asset.native(),
+var source = new StellarSdk.Account(keypair.publicKey(), "46316927324160");
+var transaction = new StellarSdk.TransactionBuilder(source)
+  .addOperation(StellarSdk.Operation.pathPayment({
+      sendAsset: StellarSdk.Asset.native(),
       sendMax: "1000",
       destination: 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      destAsset: new Asset('GBP', 'GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW'),
+      destAsset: new StellarSdk.Asset('GBP', 'GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW'),
       destAmount: "5.50",
       path: [
-        new Asset('USD', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'),
-        new Asset('EUR', 'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL')
+        new StellarSdk.Asset('USD', 'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'),
+        new StellarSdk.Asset('EUR', 'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL')
       ]
   }))
   .build();
@@ -113,18 +113,18 @@ In each example, we'll use the root account.
 ```js
 StellarSdk.Network.useTestNetwork();
 var rootKeypair = Keypair.fromSecret("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
-var account = new Account(rootKeypair.accountId(), 46316927324160);
+var account = new StellarSdk.Account(rootkeypair.publicKey(), "46316927324160");
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
 
-var transaction = new TransactionBuilder(account)
-  .addOperation(Operation.setOptions({
+var transaction = new StellarSdk.TransactionBuilder(account)
+  .addOperation(StellarSdk.Operation.setOptions({
     signer: {
       ed25519PublicKey: secondaryAddress,
       weight: 1
     }
   }))
-  .addOperation(Operation.setOptions({
+  .addOperation(StellarSdk.Operation.setOptions({
     masterWeight: 1, // set master key weight
     lowThreshold: 1,
     medThreshold: 2, // a payment is medium threshold
@@ -136,10 +136,10 @@ transaction.sign(rootKeypair); // only need to sign with the root signer as the 
 
 // now create a payment with the account that has two signers
 
-var transaction = new TransactionBuilder(account)
-    .addOperation(Operation.payment({
+var transaction = new StellarSdk.TransactionBuilder(account)
+    .addOperation(StellarSdk.Operation.payment({
         destination: "GBTVUCDT5CNSXIHJTDHYSZG3YJFXBAJ6FM4CKS5GKSAWJOLZW6XX7NVC",
-        asset: Asset.native(),
+        asset: StellarSdk.Asset.native(),
         amount: "2000" // 2000 XLM
     }))
     .build();
