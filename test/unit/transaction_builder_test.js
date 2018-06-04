@@ -174,7 +174,7 @@ describe('TransactionBuilder', function() {
     });
 
     describe("constructs a native payment transaction with date timebounds", function() {
-        it("should have have timebounds", function (done) {
+        it("should have expected timebounds", function (done) {
             let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
             let timebounds = {
                 minTime: new Date(1455287522),
