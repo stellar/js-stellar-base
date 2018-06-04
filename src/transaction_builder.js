@@ -109,6 +109,14 @@ export class TransactionBuilder {
     };
 
     if (this.timebounds) {
+      if (isValidDate(this.timebounds.minTime)) {
+        print.out(this.timebounds.minTime);
+        this.timebounds.minTime = this.timebounds.minTime.getTime();
+      }
+      if (isValidDate(this.timebounds.maxTime)) {
+        this.timebounds.maxTime = this.timebounds.maxTime.getTime();
+      }
+
       this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime.toString());
       this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime.toString());
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
@@ -124,4 +132,8 @@ export class TransactionBuilder {
     
     return tx;
   }
+}
+
+function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
 }
