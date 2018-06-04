@@ -110,7 +110,6 @@ export class TransactionBuilder {
 
     if (this.timebounds) {
       if (isValidDate(this.timebounds.minTime)) {
-        print.out(this.timebounds.minTime);
         this.timebounds.minTime = this.timebounds.minTime.getTime();
       }
       if (isValidDate(this.timebounds.maxTime)) {

@@ -177,8 +177,8 @@ describe('TransactionBuilder', function() {
         it("should have have timebounds", function (done) {
             let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
             let timebounds = {
-                minTime: new Date("1455287522"),
-                maxTime: new Date("1455297545")
+                minTime: new Date(1455287522),
+                maxTime: new Date(1455297545)
             };
             let transaction = new StellarBase.TransactionBuilder(source, {timebounds})
               .addOperation(StellarBase.Operation.payment({
@@ -188,8 +188,8 @@ describe('TransactionBuilder', function() {
               }))
               .build();
 
-            expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime);
-            expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
+            expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime.getTime().toString());
+            expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime.getTime().toString());
             done();
         });
     });
