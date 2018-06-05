@@ -171,7 +171,6 @@ describe('TransactionBuilder', function() {
 
             expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime);
             expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
-            expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
             done();
         });
     });
@@ -183,7 +182,7 @@ describe('TransactionBuilder', function() {
             done();
         });
         it("should accept configured Date objects", function (done) {
-            let d = new Date(1455287522);
+            let d = new Date(1455287522000);
             expect(isValidDate(d)).to.be.true;
             done();
         });
@@ -193,7 +192,7 @@ describe('TransactionBuilder', function() {
             done();
         });
         it("should reject objects that are not Dates", function (done) {
-            let d = [1455287522];
+            let d = [1455287522000];
             expect(isValidDate(d)).to.be.false;
             done();
         });
