@@ -213,8 +213,11 @@ describe('TransactionBuilder', function() {
               }))
               .build();
 
-            expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime.getTime().toString());
-            expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime.getTime().toString());
+            // getTime returns milliseconds, but we store seconds internally
+            let expectedMinTime = timebounds.minTime.getTime()/1000
+            let expectedMaxTime = timebounds.maxTime.getTime()/1000
+            expect(transaction.timeBounds.minTime).to.be.equal(expectedMinTime.toString());
+            expect(transaction.timeBounds.maxTime).to.be.equal(expectedMaxTime.toString());
             done();
         });
     });
