@@ -1,3 +1,5 @@
+import {isValidDate} from '../../src/transaction_builder.js';
+
 describe('TransactionBuilder', function() {
 
     describe("constructs a native payment transaction with one operation", function() {
@@ -169,6 +171,30 @@ describe('TransactionBuilder', function() {
 
             expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime);
             expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
+            expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
+            done();
+        });
+    });
+
+    describe("distinguishes whether a provided Date is valid or invalid", function() {
+        it("should accept empty Date objects", function (done) {
+            let d = new Date();
+            expect(isValidDate(d)).to.be.true;
+            done();
+        });
+        it("should accept configured Date objects", function (done) {
+            let d = new Date(1455287522);
+            expect(isValidDate(d)).to.be.true;
+            done();
+        });
+        it("should reject mis-configured Date objects", function (done) {
+            let d = new Date('bad string here');
+            expect(isValidDate(d)).to.be.false;
+            done();
+        });
+        it("should reject objects that are not Dates", function (done) {
+            let d = [1455287522];
+            expect(isValidDate(d)).to.be.false;
             done();
         });
     });
@@ -177,8 +203,8 @@ describe('TransactionBuilder', function() {
         it("should have expected timebounds", function (done) {
             let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
             let timebounds = {
-                minTime: new Date(1455287522),
-                maxTime: new Date(1455297545)
+                minTime: new Date(1528145519000),
+                maxTime: new Date(1528231982000)
             };
             let transaction = new StellarBase.TransactionBuilder(source, {timebounds})
               .addOperation(StellarBase.Operation.payment({
