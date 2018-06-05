@@ -53,8 +53,8 @@ let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
  * @param {object} [opts]
  * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
  * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
- * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
- * @param {number|string} [opts.timebounds.maxTime] - 64 bit unix timestamp
+ * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
+ * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
  * @param {Memo} [opts.memo] - The memo for the transaction
  */
 export class TransactionBuilder {
@@ -128,11 +128,15 @@ export class TransactionBuilder {
     let tx = new Transaction(xenv);
 
     this.source.incrementSequenceNumber();
-    
+
     return tx;
   }
 }
 
+/**
+* Checks whether a provided object is a valid Date.
+* @returns {boolean}
+*/
 export function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }
