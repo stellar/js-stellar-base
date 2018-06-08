@@ -15,7 +15,7 @@ The source account is giving the new account 25 XLM as its initial balance. Curr
 
 ```javascript
 StellarSdk.Network.useTestNetwork();
-var secretString='secret key that corresponds to GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+var secretString = 'secret key that corresponds to GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
 
 // create an Account object using locally tracked sequence number
 var an_account = new StellarSdk.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "46316927324160");
@@ -68,7 +68,7 @@ The [path payment](https://www.stellar.org/developers/learn/concepts/list-of-ope
 
 ```js
 StellarSdk.Network.useTestNetwork();
-var keypair=StellarSdk.Keypair.fromSecret(secretString);
+var keypair = StellarSdk.Keypair.fromSecret(secretString);
 
 var source = new StellarSdk.Account(keypair.publicKey(), "46316927324160");
 var transaction = new StellarSdk.TransactionBuilder(source)
@@ -112,7 +112,7 @@ In each example, we'll use the root account.
 
 ```js
 StellarSdk.Network.useTestNetwork();
-var rootKeypair = Keypair.fromSecret("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
+var rootKeypair = StellarSdk.Keypair.fromSecret("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
 var account = new StellarSdk.Account(rootkeypair.publicKey(), "46316927324160");
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
@@ -144,7 +144,7 @@ var transaction = new StellarSdk.TransactionBuilder(account)
     }))
     .build();
 
-var secondKeypair = Keypair.fromSecret("SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7");
+var secondKeypair = StellarSdk.Keypair.fromSecret("SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7");
 
 // now we need to sign the transaction with both the root and the secondaryAddress
 transaction.sign(rootKeypair);
