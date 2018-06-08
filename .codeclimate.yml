@@ -1,4 +1,6 @@
 languages:
    JavaScript: true
-exclude_paths:
+exclude_patterns:
 - gulpfile.js
+- src/generated/*
+- test/*

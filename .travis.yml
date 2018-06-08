@@ -3,9 +3,9 @@ sudo: required
 dist: trusty
 matrix:
   include:
-  - node_js: 4.7.2
-  - node_js: 6.9.4
-  - node_js: 6.9.4
+  - node_js: 6
+  - node_js: 8
+  - node_js: 6
     env: SAUCE=true
 before_install:
 - npm install -g npm@'>=2.13.5'
@@ -27,7 +27,7 @@ script:
 after_success:
 - |
   # Send report to coveralls but only once
-  if [ -z "${SAUCE}" ] && [ "${TRAVIS_NODE_VERSION}" = "4.7.2" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
+  if [ -z "${SAUCE}" ] && [ "${TRAVIS_NODE_VERSION}" = "8" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
     gulp submit-coverage
   fi
 notifications:
@@ -55,11 +55,11 @@ deploy:
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: 4.7.2
+      node: 8
   - provider: script
     script: "./bower_publish.sh"
     skip_cleanup: true
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: 4.7.2
+      node: 8
