@@ -133,20 +133,17 @@ export class Operation {
    * @returns {xdr.PathPaymentOp}
    */
   static pathPayment(opts) {
-    if (!opts.sendAsset) {
-      throw new Error("Must specify a send asset");
-    }
-    if (!this.isValidAmount(opts.sendMax)) {
-      throw new TypeError(Operation.constructAmountRequirementsError('sendMax'));
-    }
-    if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
-      throw new Error("destination is invalid");
-    }
-    if (!opts.destAsset) {
-      throw new Error("Must provide a destAsset for a payment operation");
-    }
-    if (!this.isValidAmount(opts.destAmount)) {
-      throw new TypeError(Operation.constructAmountRequirementsError('destAmount'));
+    switch (true) {
+      case !opts.sendAsset:
+        throw new Error("Must specify a send asset");
+      case !this.isValidAmount(opts.sendMax):
+        throw new TypeError(Operation.constructAmountRequirementsError('sendMax'));
+      case !StrKey.isValidEd25519PublicKey(opts.destination):
+        throw new Error("destination is invalid");
+      case !opts.destAsset:
+        throw new Error("Must provide a destAsset for a payment operation");
+      case !this.isValidAmount(opts.destAmount):
+        throw new TypeError(Operation.constructAmountRequirementsError('destAmount'));
     }
 
     let attributes = {};
@@ -157,10 +154,7 @@ export class Operation {
     attributes.destAmount   = this._toXDRAmount(opts.destAmount);
 
     let path        = opts.path ? opts.path : [];
-    attributes.path = [];
-    for (let i in path) {
-      attributes.path.push(path[i].toXDRObject());
-    }
+    attributes.path = path.map(x => x.toXDRObject());
 
     let payment = new xdr.PathPaymentOp(attributes);
 
@@ -196,10 +190,10 @@ export class Operation {
     }
 
     if (opts.source) {
-      attributes.source = opts.source ? opts.source.masterKeypair : null;
+      attributes.source = opts.source.masterKeypair;
     }
     let changeTrustOP = new xdr.ChangeTrustOp(attributes);
-
+    
     let opAttributes = {};
     opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
     this.setSourceAccount(opAttributes, opts);
@@ -644,37 +638,21 @@ export class Operation {
       return false;
     }
 
-    // == 0
-    if (!allowZero && amount.isZero()) {
-      return false;
+    switch (true) {
+      // == 0
+      case !allowZero && amount.isZero():
+      // < 0
+      case amount.isNegative():
+      // > Max value
+      case amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString()):
+       // Decimal places (max 7)
+      case amount.decimalPlaces() > 7:
+      // NaN or Infinity
+      case (amount.isNaN() || !amount.isFinite()):
+        return false;
+      default:
+       return true;
     }
-
-    // < 0
-    if (amount.isNegative()) {
-      return false;
-    }
-
-    // > Max value
-    if (amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString())) {
-      return false;
-    }
-
-    // Decimal places (max 7)
-    if (amount.decimalPlaces() > 7) {
-      return false;
-    }
-
-    // Infinity
-    if (!amount.isFinite()) {
-      return false;
-    }
-
-    // NaN
-    if (amount.isNaN()) {
-      return false;
-    }
-
-    return true;
   }
 
   static constructAmountRequirementsError(arg) {
@@ -701,20 +679,16 @@ export class Operation {
       value = parseFloat(value);
     }
 
-    if (!isNumber(value) || !isFinite(value) || value % 1 !== 0) {
-      throw new Error(`${name} value is invalid`);
+    switch (true) {
+      case !isNumber(value) || !isFinite(value) || value % 1 !== 0:
+        throw new Error(`${name} value is invalid`);
+      case value < 0:
+        throw new Error(`${name} value must be unsigned`);
+      case !isValidFunction || (isValidFunction && isValidFunction(value, name)):
+        return value;
+      default:
+        throw new Error(`${name} value is invalid`);
     }
-
-    if (value < 0) {
-      throw new Error(`${name} value must be unsigned`);
-    }
-
-    if (!isValidFunction ||
-      (isValidFunction && isValidFunction(value, name))) {
-      return value;
-    }
-
-    throw new Error(`${name} value is invalid`);
   }
 
   /**

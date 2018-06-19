@@ -23,39 +23,34 @@ export function verify(data, signature, publicKey) {
 }
 
 function checkFastSigning() {
-  var ed25519Used;
-  // if in node
-  if (typeof window === 'undefined') {
-    // NOTE: we use commonjs style require here because es6 imports
-    // can only occur at the top level.  thanks, obama.
-    let ed25519;
-    try {
-      ed25519 = require("ed25519");
-      ed25519Used = true;
-    } catch (err) {
-      ed25519Used = false;
-    }
+ return typeof window === 'undefined' ? checkFastSigningNode() : checkFastSigningBrowser();
+}
 
-    if (ed25519Used) {
-      actualMethods.sign = function(data, secretKey) {
-        data = new Buffer(data);
-        return ed25519.Sign(data, secretKey);
-      };
-
-      actualMethods.verify = function(data, signature, publicKey) {
-        data = new Buffer(data);
-        try {
-          return ed25519.Verify(data, signature, publicKey);
-        } catch(e) {
-          return false;
-        }
-      };
-    }
-  } else {
-    ed25519Used = false;
+function checkFastSigningNode() {
+  // NOTE: we use commonjs style require here because es6 imports
+  // can only occur at the top level.  thanks, obama.
+  let ed25519;
+  try {
+    ed25519 = require("ed25519");
+  } catch (err) {
+    return checkFastSigningBrowser();
   }
 
-  if (!ed25519Used) {
+  actualMethods.sign = (data, secretKey) => ed25519.Sign(new Buffer(data), secretKey);
+
+  actualMethods.verify = function(data, signature, publicKey) {
+    data = new Buffer(data);
+    try {
+      return ed25519.Verify(data, signature, publicKey);
+    } catch(e) {
+      return false;
+    }
+  };
+
+  return true;
+}
+
+function checkFastSigningBrowser() {
     // fallback to tweetnacl.js if we're in the browser or
     // if there was a failure installing ed25519
     let nacl = require("tweetnacl");
@@ -78,7 +73,6 @@ function checkFastSigning() {
 
       return nacl.sign.detached.verify(data, signature, publicKey);
     };
-  }
 
-  return ed25519Used;
-}
+    return false;
+} 
