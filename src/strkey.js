@@ -1,9 +1,9 @@
 import base32 from "base32.js";
 import crc from "crc";
-import contains from "lodash/includes";
 import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import isString from "lodash/isString";
+import {verifyChecksum} from "./util/checksum";
 
 const versionBytes = {
   ed25519PublicKey:  6 << 3, // G
@@ -185,20 +185,4 @@ function calculateChecksum(payload) {
   return checksum;
 }
 
-function verifyChecksum(expected, actual) {
-  if (expected.length !== actual.length) {
-    return false;
-  }
 
-  if (expected.length === 0) {
-    return true;
-  }
-
-  for(let i = 0; i < expected.length; i++) {
-    if (expected[i] !== actual[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}

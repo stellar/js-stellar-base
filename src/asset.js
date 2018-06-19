@@ -48,20 +48,18 @@ export class Asset {
   static fromOperation(assetXdr) {
     let anum, code, issuer;
     switch(assetXdr.switch()) {
-      case xdr.AssetType.assetTypeNative():
-      return this.native();
+        case xdr.AssetType.assetTypeNative():
+        return this.native();
       case xdr.AssetType.assetTypeCreditAlphanum4():
-      anum = assetXdr.alphaNum4();
-      issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
-      code = trimEnd(anum.assetCode(), '\0');
-      return new this(code, issuer);
+        anum = assetXdr.alphaNum4();
+        /* falls through */
       case xdr.AssetType.assetTypeCreditAlphanum12():
-      anum = assetXdr.alphaNum12();
-      issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
-      code = trimEnd(anum.assetCode(), '\0');
-      return new this(code, issuer);
+        anum = anum || assetXdr.alphaNum12();
+        issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
+        code = trimEnd(anum.assetCode(), '\0');
+        return new this(code, issuer);
       default:
-      throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
+        throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
     }
   }
 
@@ -72,28 +70,28 @@ export class Asset {
   toXDRObject() {
     if (this.isNative()) {
       return xdr.Asset.assetTypeNative();
+    }
+      
+    let xdrType, xdrTypeString;
+    if (this.code.length <= 4) {
+      xdrType = xdr.AssetAlphaNum4;
+      xdrTypeString = 'assetTypeCreditAlphanum4';
     } else {
-      let xdrType, xdrTypeString;
-      if (this.code.length <= 4) {
-        xdrType = xdr.AssetAlphaNum4;
-        xdrTypeString = 'assetTypeCreditAlphanum4';
-      } else {
-        xdrType = xdr.AssetAlphaNum12;
-        xdrTypeString = 'assetTypeCreditAlphanum12';
-      }
+      xdrType = xdr.AssetAlphaNum12;
+      xdrTypeString = 'assetTypeCreditAlphanum12';
+    }
 
-          // pad code with null bytes if necessary
-          let padLength = this.code.length <= 4 ? 4 : 12;
-          let paddedCode = padEnd(this.code, padLength, '\0');
+    // pad code with null bytes if necessary
+    let padLength = this.code.length <= 4 ? 4 : 12;
+    let paddedCode = padEnd(this.code, padLength, '\0');
 
-          var assetType = new xdrType({
-            assetCode: paddedCode,
-            issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
-          });
+    var assetType = new xdrType({
+      assetCode: paddedCode,
+      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
+    });
 
-          return new xdr.Asset(xdrTypeString, assetType);
-        }
-      }
+    return new xdr.Asset(xdrTypeString, assetType);
+  }
 
   /**
    * Return the asset code
@@ -124,12 +122,12 @@ export class Asset {
   getAssetType() {
     if (this.isNative()) {
       return 'native';
-    } else {
-      if (this.code.length >= 1 && this.code.length <= 4) {
-        return "credit_alphanum4";
-      } else if (this.code.length >= 5 && this.code.length <= 12) {
-        return "credit_alphanum12";
-      }
+    } 
+    if (this.code.length >= 1 && this.code.length <= 4) {
+      return "credit_alphanum4";
+    }
+    if (this.code.length >= 5 && this.code.length <= 12) {
+      return "credit_alphanum12";
     }
   }
 

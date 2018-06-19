@@ -1,7 +1,7 @@
 import {default as bs58} from "./vendor/bs58";
 import isUndefined from "lodash/isUndefined";
-import isNull from "lodash/isNull";
 import {hash} from "./hashing";
+import {verifyChecksum} from "./util/checksum";
 
 const versionBytes = {
   "accountId": 0x00, // decimal 0
@@ -43,22 +43,4 @@ function calculateChecksum(payload) {
   let inner = hash(payload);
   let outer = hash(inner);
   return outer.slice(0,4);
-}
-
-function verifyChecksum(expected, actual) {
-  if (expected.length !== actual.length) {
-    return false;
-  }
-
-  if (expected.length === 0) {
-    return true;
-  }
-
-  for(let i = 0; i < expected.length; i++) {
-    if (expected[i] !== actual[i]) {
-      return false;
-    }
-  }
-
-  return true;
 }
