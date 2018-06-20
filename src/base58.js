@@ -36,7 +36,7 @@ export function decodeBase58Check(versionByteName, encoded) {
     throw new Error(`Decoded address length is invalid. Expected 37, got ${decoded.length}`);
   }
 
-  return new Buffer(data);
+  return Buffer.from(data);
 }
 
 function calculateChecksum(payload) {

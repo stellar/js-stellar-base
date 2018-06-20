@@ -154,7 +154,7 @@ export function decodeCheck(versionByteName, encoded) {
     throw new Error(`invalid checksum`);
   }
 
-  return new Buffer(data);
+  return Buffer.from(data);
 }
 
 export function encodeCheck(versionByteName, data) {
@@ -168,8 +168,8 @@ export function encodeCheck(versionByteName, data) {
     throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`);
   }
 
-  data              = new Buffer(data);
-  let versionBuffer = new Buffer([versionByte]);
+  data              = Buffer.from(data);
+  let versionBuffer = Buffer.from([versionByte]);
   let payload       = Buffer.concat([versionBuffer, data]);
   let checksum      = calculateChecksum(payload);
   let unencoded     = Buffer.concat([payload, checksum]);
@@ -180,7 +180,7 @@ export function encodeCheck(versionByteName, data) {
 function calculateChecksum(payload) {
   // This code calculates CRC16-XModem checksum of payload
   // and returns it as Buffer in little-endian order.
-  let checksum = new Buffer(2);
+  let checksum = Buffer.alloc(2);
   checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
   return checksum;
 }

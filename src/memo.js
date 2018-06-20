@@ -54,7 +54,7 @@ export class Memo {
         Memo._validateHashValue(value);
         // We want MemoHash and MemoReturn to have Buffer as a value
         if (isString(value)) {
-          this._value = new Buffer(value, 'hex');
+          this._value = Buffer.from(value, 'hex');
         }
         break;
       default:
@@ -88,7 +88,7 @@ export class Memo {
         return clone(this._value);
       case MemoHash:
       case MemoReturn:
-        return new Buffer(this._value);
+        return Buffer.from(this._value);
       default:
         throw new Error("Invalid memo type");
     }
@@ -144,9 +144,9 @@ export class Memo {
       if (!/^[0-9A-Fa-f]{64}$/g.test(value)) {
         throw error;
       }
-      valueBuffer = new Buffer(value, 'hex');
+      valueBuffer = Buffer.from(value, 'hex');
     } else if (Buffer.isBuffer(value)) {
-      valueBuffer = new Buffer(value);
+      valueBuffer = Buffer.from(value);
     } else {
       throw error;
     }
