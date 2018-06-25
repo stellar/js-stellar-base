@@ -12,12 +12,12 @@ describe('Keypair.contructor', function() {
   });
 
   it("fails when secretKey length is invalid", function() {
-    let secretKey = new Buffer(33);
+    let secretKey = Buffer.alloc(33);
     expect(() => new StellarBase.Keypair({type: 'ed25519', secretKey})).to.throw(/secretKey length is invalid/)
   });
 
   it("fails when publicKey length is invalid", function() {
-    let publicKey = new Buffer(33);
+    let publicKey = Buffer.alloc(33);
     expect(() => new StellarBase.Keypair({type: 'ed25519', publicKey})).to.throw(/publicKey length is invalid/)
   });
 });

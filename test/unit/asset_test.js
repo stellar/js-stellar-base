@@ -62,7 +62,7 @@ describe('Asset', function() {
         it("parses a native asset object", function () {
             var asset = new StellarBase.Asset.native();
             var xdr = asset.toXDRObject();
-            expect(xdr.toXDR().toString()).to.be.equal(new Buffer([0,0,0,0]).toString());
+            expect(xdr.toXDR().toString()).to.be.equal(Buffer.from([0,0,0,0]).toString());
         });
 
         it("parses a 3-alphanum asset object", function () {

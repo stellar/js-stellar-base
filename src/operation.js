@@ -483,7 +483,7 @@ export class Operation {
     }
 
     if (isString(opts.value)) {
-      attributes.dataValue = new Buffer(opts.value);
+      attributes.dataValue = Buffer.from(opts.value);
     } else {
       attributes.dataValue = opts.value;
     }

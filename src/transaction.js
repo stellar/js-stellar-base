@@ -23,7 +23,7 @@ let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
 export class Transaction {
   constructor(envelope) {
     if (typeof envelope === "string") {
-      let buffer = new Buffer(envelope, "base64");
+      let buffer = Buffer.from(envelope, "base64");
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
     // since this transaction is immutable, save the tx

@@ -56,17 +56,17 @@ function checkFastSigningBrowser() {
     let nacl = require("tweetnacl");
 
     actualMethods.sign = function(data, secretKey) {
-      data      = new Buffer(data);
+      data      = Buffer.from(data);
       data      = new Uint8Array(data.toJSON().data);
       secretKey = new Uint8Array(secretKey.toJSON().data);
 
       let signature = nacl.sign.detached(data, secretKey);
 
-      return new Buffer(signature);
+      return Buffer.from(signature);
     };
 
     actualMethods.verify = function(data, signature, publicKey) {
-      data      = new Buffer(data);
+      data      = Buffer.from(data);
       data      = new Uint8Array(data.toJSON().data);
       signature = new Uint8Array(signature.toJSON().data);
       publicKey = new Uint8Array(publicKey.toJSON().data);

@@ -22,8 +22,8 @@ describe("Memo.text()", function() {
     expect(() => StellarBase.Memo.text("test")).to.not.throw();
     let memoUtf8 = StellarBase.Memo.text("三代之時")
 
-    let a = new Buffer(memoUtf8.toXDRObject().value(), "utf8");
-    let b = new Buffer("三代之時", "utf8");
+    let a = Buffer.from(memoUtf8.toXDRObject().value(), "utf8");
+    let b = Buffer.from("三代之時", "utf8");
     expect(a).to.be.deep.equal(b);
   });
 
@@ -80,7 +80,7 @@ describe("Memo.id()", function() {
 
 describe("Memo.hash() & Memo.return()", function() {
   it("hash converts to/from xdr object", function() {
-    let buffer = new Buffer(32).fill(10);
+    let buffer = Buffer.alloc(32, 10);
 
     let memo = StellarBase.Memo.hash(buffer).toXDRObject();
     expect(memo.arm()).to.equal('hash');
@@ -94,7 +94,7 @@ describe("Memo.hash() & Memo.return()", function() {
   });
 
   it("return converts to/from xdr object", function() {
-    let buffer = new Buffer(32).fill(10);
+    let buffer = Buffer.alloc(32, 10);
 
     // Testing string hash
     let memo = StellarBase.Memo.return(buffer.toString("hex")).toXDRObject();
@@ -114,7 +114,7 @@ describe("Memo.hash() & Memo.return()", function() {
   it("returns a value for a correct argument", function() {
     for (let i in methods) {
       let method = methods[i];
-      expect(() => method(new Buffer(32))).to.not.throw();
+      expect(() => method(Buffer.alloc(32))).to.not.throw();
       expect(() => method('0000000000000000000000000000000000000000000000000000000000000000')).to.not.throw();
     }
   });
@@ -128,7 +128,7 @@ describe("Memo.hash() & Memo.return()", function() {
       expect(() => method(NaN)).to.throw(/Expects a 32 byte hash value/);
       expect(() => method("test")).to.throw(/Expects a 32 byte hash value/);
       expect(() => method([0, 10, 20])).to.throw(/Expects a 32 byte hash value/);
-      expect(() => method(new Buffer(33))).to.throw(/Expects a 32 byte hash value/);
+      expect(() => method(Buffer.alloc(33))).to.throw(/Expects a 32 byte hash value/);
       expect(() => method('00000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
       expect(() => method('000000000000000000000000000000000000000000000000000000000000000000')).to.throw(/Expects a 32 byte hash value/);
     }
