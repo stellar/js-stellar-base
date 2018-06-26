@@ -36,10 +36,10 @@ function checkFastSigningNode() {
     return checkFastSigningBrowser();
   }
 
-  actualMethods.sign = (data, secretKey) => ed25519.Sign(new Buffer(data), secretKey);
+  actualMethods.sign = (data, secretKey) => ed25519.Sign(Buffer.from(data), secretKey);
 
   actualMethods.verify = function(data, signature, publicKey) {
-    data = new Buffer(data);
+    data = Buffer.from(data);
     try {
       return ed25519.Verify(data, signature, publicKey);
     } catch(e) {
