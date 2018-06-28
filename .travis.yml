@@ -1,6 +1,4 @@
 language: node_js
-sudo: required
-dist: trusty
 matrix:
   include:
   - node_js: 6
@@ -8,8 +6,6 @@ matrix:
   - node_js: 10
   - node_js: 6
     env: SAUCE=true
-before_install:
-- npm install -g npm@'>=2.13.5'
 script:
 - |
   echo "machine github.com login stellar-jenkins password $GITHUB_TOKEN" >~/.netrc
@@ -37,14 +33,6 @@ notifications:
 env:
   global:
   - secure: UfHc1SSKsUx8j2Z/S9WoJA+Qd9T9tWQZEGZVzmAmkGQ+V4iQsYwp2AwWJLH+e0JSKcVz9tiGicPfv8RlVS4YAQ2EeW2kC2W0ULrX4FYwNuuD/tjfHl47Vsoze4QlBuaZd897upt8r30GpUhqLonAkKr3700lZjr9Id3woWrSNfA=
-  - CXX=g++-4.8
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-4.8
-    - g++-4.8
 before_deploy: gulp build
 after_deploy: "./after_deploy.sh"
 deploy:
