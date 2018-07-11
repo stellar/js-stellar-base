@@ -768,6 +768,24 @@ describe('Operation', function() {
         });
     });
 
+    describe(".bumpSequence", function () {
+        it("creates a bumpSequence", function () {
+            var opts = {
+                bumpTo: "77833036561510299"
+            };
+            let op = StellarBase.Operation.bumpSequence(opts);
+            var xdr = op.toXDR("hex");
+            var operation = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, "hex"));
+            var obj = StellarBase.Operation.fromXDRObject(operation);
+            expect(obj.type).to.be.equal("bumpSequence");
+            expect(obj.bumpTo).to.be.equal(opts.bumpTo);
+        });
+
+        it("fails when `bumpTo` is not string", function () {
+            expect(() => StellarBase.Operation.bumpSequence({bumpTo: 1000})).to.throw()
+        });
+    });
+
     describe("._checkUnsignedIntValue()", function () {
         it("returns true for valid values", function () {
             let values = [
