@@ -53,6 +53,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.accountMerge}`
  * * `{@link Operation.inflation}`
  * * `{@link Operation.manageData}`
+ * * `{@link Operation.bumpSequence}`
  *
  * @class Operation
  */
@@ -501,6 +502,37 @@ export class Operation {
     return new xdr.Operation(opAttributes);
   }
 
+  /**
+   * This operation bumps sequence number.
+   * @param {object} opts
+   * @param {string} opts.bumpTo - Sequence number to bump to.
+   * @param {string} [opts.source] - The optional source account.
+   * @returns {xdr.BumpSequenceOp}
+   */
+  static bumpSequence(opts) {
+    let attributes = {};
+
+    if (!isString(opts.bumpTo)) {
+      throw new Error("bumpTo must be a string");
+    }
+
+    try {
+      new BigNumber(opts.bumpTo);
+    } catch (e) {
+      throw new Error("bumpTo must be a stringified number");
+    }
+
+    attributes.bumpTo = Hyper.fromString(opts.bumpTo);
+
+    let bumpSequenceOp = new xdr.BumpSequenceOp(attributes);
+
+    let opAttributes = {};
+    opAttributes.body = xdr.OperationBody.bumpSequence(bumpSequenceOp);
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
+
   static setSourceAccount(opAttributes, opts) {
     if (opts.source) {
       if (!StrKey.isValidEd25519PublicKey(opts.source)) {
@@ -619,6 +651,10 @@ export class Operation {
       break;
       case "inflation":
       result.type = "inflation";
+      break;
+      case "bumpSequence":
+      result.type = "bumpSequence";
+      result.bumpTo = attrs.bumpTo().toString();
       break;
       default:
       throw new Error("Unknown operation");
