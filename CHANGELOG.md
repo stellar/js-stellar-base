@@ -2,6 +2,16 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.8.0
+
+* Added support for `bump_sequence` operation.
+* Fixed many code style issues.
+* Updated docs.
+
+## 0.7.8
+
+* Updated dependencies.
+
 ## 0.7.7
 
 * Updated docs.
