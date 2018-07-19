@@ -3,6 +3,8 @@ import isString from 'lodash/isString';
 
 /**
  * This operation adds data entry to the ledger.
+ * @function
+ * @alias Operation.manageData
  * @param {object} opts
  * @param {string} opts.name - The name of the data entry.
  * @param {string|Buffer} opts.value - The value of the data entry.

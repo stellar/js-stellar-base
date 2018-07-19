@@ -4,6 +4,8 @@ import {StrKey} from "../strkey";
 
 /**
  * Transfers native balance to destination account.
+ * @function
+ * @alias Operation.accountMerge
  * @param {object} opts
  * @param {string} opts.destination - Destination to merge the source account into.
  * @param {string} [opts.source] - The source account (defaults to transaction source).

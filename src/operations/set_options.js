@@ -13,6 +13,8 @@ import isString from 'lodash/isString';
  *   - `{@link AuthImmutableFlag}`
  *
  * It's possible to set/clear multiple flags at once using logical or.
+ * @function
+ * @alias Operation.setOptions
  * @param {object} opts
  * @param {string} [opts.inflationDest] - Set this account ID as the account's inflation destination.
  * @param {(number|string)} [opts.clearFlags] - Bitmap integer for which account flags to clear.

@@ -4,6 +4,8 @@ import {StrKey} from "../strkey";
 
 /**
  * Create a payment operation.
+ * @function
+ * @alias Operation.payment
  * @param {object} opts
  * @param {string} opts.destination - The destination account ID.
  * @param {Asset} opts.asset - The asset to send.

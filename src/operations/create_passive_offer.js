@@ -6,6 +6,8 @@ import isUndefined from 'lodash/isUndefined';
  * offer that won't consume a counter offer that exactly matches this offer. This is
  * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
  * to manage this offer after using this operation to create it.
+ * @function
+ * @alias Operation.createPassiveOffer
  * @param {object} opts
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.

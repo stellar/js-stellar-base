@@ -6,6 +6,8 @@ import {StrKey} from "../strkey";
  * Returns a XDR PaymentOp. A "payment" operation send the specified amount to the
  * destination account, optionally through a path. XLM payments create the destination
  * account if it does not exist.
+ * @function
+ * @alias Operation.pathPayment
  * @param {object} opts
  * @param {Asset} opts.sendAsset - The asset to pay with.
  * @param {string} opts.sendMax - The maximum amount of sendAsset to send.

@@ -4,6 +4,8 @@ import {StrKey} from "../strkey";
 
 /**
  * Create and fund a non existent account.
+ * @function
+ * @alias Operation.createAccount
  * @param {object} opts
  * @param {string} opts.destination - Destination account ID to create an account for.
  * @param {string} opts.startingBalance - Amount in XLM the account should be funded for. Must be greater

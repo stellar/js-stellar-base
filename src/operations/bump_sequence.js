@@ -5,6 +5,8 @@ import isString from 'lodash/isString';
 
 /**
  * This operation bumps sequence number.
+ * @function
+ * @alias Operation.bumpSequence
  * @param {object} opts
  * @param {string} opts.bumpTo - Sequence number to bump to.
  * @param {string} [opts.source] - The optional source account.

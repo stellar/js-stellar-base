@@ -5,6 +5,8 @@ import {UnsignedHyper} from "js-xdr";
 /**
  * Returns a XDR ManageOfferOp. A "manage offer" operation creates, updates, or
  * deletes an offer.
+ * @function
+ * @alias Operation.manageOffer
  * @param {object} opts
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.
