@@ -4,6 +4,7 @@ export {bumpSequence} from './bump_sequence';
 export {changeTrust} from './change_trust';
 export {createAccount} from './create_account';
 export {createPassiveOffer} from './create_passive_offer';
+export {inflation} from './inflation';
 export {manageData} from './manage_data';
 export {manageOffer} from './manage_offer';
 export {pathPayment} from './path_payment';

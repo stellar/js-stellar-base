@@ -57,18 +57,6 @@ export const AuthImmutableFlag = 1 << 2;
  * @class Operation
  */
 export class Operation {
-  /**
-   * This operation generates the inflation.
-   * @param {object} [opts]
-   * @param {string} [opts.source] - The optional source account.
-   * @returns {xdr.InflationOp}
-   */
-  static inflation(opts={}) {
-    let opAttributes = {};
-    opAttributes.body = xdr.OperationBody.inflation();
-    this.setSourceAccount(opAttributes, opts);
-    return new xdr.Operation(opAttributes);
-  }
 
   static setSourceAccount(opAttributes, opts) {
     if (opts.source) {
@@ -318,6 +306,7 @@ Operation.bumpSequence = ops.bumpSequence;
 Operation.changeTrust = ops.changeTrust;
 Operation.createAccount = ops.createAccount;
 Operation.createPassiveOffer = ops.createPassiveOffer;
+Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
 Operation.manageOffer = ops.manageOffer;
 Operation.pathPayment = ops.pathPayment;
