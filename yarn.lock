@@ -497,12 +497,6 @@ babel-plugin-undefined-to-void@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/babel-plugin-undefined-to-void/-/babel-plugin-undefined-to-void-1.1.6.tgz#7f578ef8b78dfae6003385d8417a61eda06e2f81"
 
-babel-runtime@^4.7.16:
-  version "4.7.16"
-  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-4.7.16.tgz#7a3995ad8c9eb5b4d0dd35febf170d0d1420262b"
-  dependencies:
-    core-js "^0.6.1"
-
 babel@~5.8.23:
   version "5.8.38"
   resolved "http://registry.npmjs.org/babel/-/babel-5.8.38.tgz#dfb087c22894917c576fb67ce9cf328d458629fb"
@@ -2804,11 +2798,10 @@ js-tokens@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-1.0.1.tgz#cc435a5c8b94ad15acb7983140fc80182c89aeae"
 
-js-xdr@^1.0.0:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/js-xdr/-/js-xdr-1.0.3.tgz#7ae0aba03969771a28dfe423ffc9e9d02d9301d7"
+js-xdr@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/js-xdr/-/js-xdr-1.0.4.tgz#a76e292ec3053f190dcd1dae9215274aae6a138d"
   dependencies:
-    babel-runtime "^4.7.16"
     cursor "^0.1.5"
     lodash "^4.17.5"
     long "^2.2.3"
