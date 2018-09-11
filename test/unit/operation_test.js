@@ -885,6 +885,15 @@ describe('Operation', function() {
             expect(StellarBase.Operation.isValidAmount("0", true)).to.be.true;
         });
     });
+
+    describe("._fromXDRAmount()", function () {
+        it("correctly parses the amount", function () {
+            expect(StellarBase.Operation._fromXDRAmount(1)).to.be.equal("0.0000001");
+            expect(StellarBase.Operation._fromXDRAmount(10000000)).to.be.equal("1.0000000");
+            expect(StellarBase.Operation._fromXDRAmount(10000000000)).to.be.equal("1000.0000000");
+            expect(StellarBase.Operation._fromXDRAmount(1000000000000000000)).to.be.equal("100000000000.0000000");
+        });
+    });
 });
 
 function expectBuffersToBeEqual(left, right) {
