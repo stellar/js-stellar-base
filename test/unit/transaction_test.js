@@ -6,7 +6,7 @@ describe('Transaction', function() {
     let source      = new StellarBase.Account("GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB", "0");
     let destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
     let asset       = StellarBase.Asset.native();
-    let amount      = "2000";
+    let amount      = "2000.0000000";
 
     let input = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
