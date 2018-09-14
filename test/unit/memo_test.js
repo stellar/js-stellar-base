@@ -27,6 +27,22 @@ describe("Memo.text()", function() {
     expect(a).to.be.deep.equal(b);
   });
 
+  it("returns a value for a correct argument (utf8)", function() {
+    let memoText = StellarBase.Memo.text([0xd1]).toXDRObject().toXDR();
+    let expected = Buffer.from([
+      // memo_text
+      0x00, 0x00, 0x00, 0x01,
+      // length
+      0x00, 0x00, 0x00, 0x01,
+      // value
+      0xd1, 0x00, 0x00, 0x00
+    ]);
+    expect(memoText.equals(expected)).to.be.true;
+
+    memoText = StellarBase.Memo.text(Buffer.from([0xd1])).toXDRObject().toXDR();
+    expect(memoText.equals(expected)).to.be.true;
+  });
+
   it("converts to/from xdr object", function() {
     let memo = StellarBase.Memo.text("test").toXDRObject();
     expect(memo.arm()).to.equal('text');
@@ -38,17 +54,42 @@ describe("Memo.text()", function() {
     expect(baseMemo.value).to.be.equal('test');
   });
 
+  it("converts to/from xdr object (array)", function() {
+    let memo = StellarBase.Memo.text([0xd1]).toXDRObject();
+    expect(memo.arm()).to.equal('text');
+
+    expect(memo.text()).to.be.deep.equal([0xd1]);
+    expect(memo.value()).to.be.deep.equal([0xd1]);
+
+    let baseMemo = StellarBase.Memo.fromXDRObject(memo);
+    expect(baseMemo.type).to.be.equal(StellarBase.MemoText);
+    expect(baseMemo.value).to.be.deep.equal([0xd1]);
+  });
+
+  it("converts to/from xdr object (buffer)", function() {
+    let buf = Buffer.from([0xd1]);
+    let memo = StellarBase.Memo.text(buf).toXDRObject();
+    expect(memo.arm()).to.equal('text');
+
+    expect(memo.text().equals(buf)).to.be.true;
+    expect(memo.value().equals(buf)).to.be.true;
+
+    let baseMemo = StellarBase.Memo.fromXDRObject(memo);
+    expect(baseMemo.type).to.be.equal(StellarBase.MemoText);
+    expect(baseMemo.value.equals(buf)).to.be.true;
+  });
+
   it("throws an error when invalid argument was passed", function() {
-    expect(() => StellarBase.Memo.text()).to.throw(/Expects string/);
-    expect(() => StellarBase.Memo.text({})).to.throw(/Expects string/);
-    expect(() => StellarBase.Memo.text(10)).to.throw(/Expects string/);
-    expect(() => StellarBase.Memo.text(Infinity)).to.throw(/Expects string/);
-    expect(() => StellarBase.Memo.text(NaN)).to.throw(/Expects string/);
+    expect(() => StellarBase.Memo.text()).to.throw(/Expects string, array or buffer, max 28 bytes/);
+    expect(() => StellarBase.Memo.text({})).to.throw(/Expects string, array or buffer, max 28 bytes/);
+    expect(() => StellarBase.Memo.text(10)).to.throw(/Expects string, array or buffer, max 28 bytes/);
+    expect(() => StellarBase.Memo.text(Infinity)).to.throw(/Expects string, array or buffer, max 28 bytes/);
+    expect(() => StellarBase.Memo.text(NaN)).to.throw(/Expects string, array or buffer, max 28 bytes/);
   });
 
   it("throws an error when string is longer than 28 bytes", function() {
-    expect(() => StellarBase.Memo.text("12345678901234567890123456789")).to.throw(/Text should be/);
-    expect(() => StellarBase.Memo.text("三代之時三代之時三代之時")).to.throw(/Text should be/);
+    expect(() => StellarBase.Memo.text("12345678901234567890123456789")).to.throw(/Expects string, array or buffer, max 28 bytes/);
+    expect(() => StellarBase.Memo.text("三代之時三代之時三代之時")).to.throw(/Expects string, array or buffer, max 28 bytes/);
   });
 
 });
