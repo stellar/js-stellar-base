@@ -252,7 +252,7 @@ describe('Operation', function() {
 
             expect(obj.signer.ed25519PublicKey).to.be.equal(opts.signer.ed25519PublicKey);
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
-            expect(obj.homeDomain).to.be.equal(opts.homeDomain);
+            expect(obj.homeDomain.toString()).to.be.equal(opts.homeDomain);
         });
 
         it("creates a setOptionsOp with preAuthTx signer", function () {
@@ -722,7 +722,7 @@ describe('Operation', function() {
             var obj = StellarBase.Operation.fromXDRObject(operation);
             expect(obj.type).to.be.equal("manageData");
             expect(obj.name).to.be.equal(opts.name);
-            expect(obj.value.toString('hex')).to.be.equal(Buffer.from(opts.value).toString('hex'));
+            expect(obj.value.toString('ascii')).to.be.equal(opts.value);
         });
 
         it("creates a manageDataOp with Buffer value", function () {

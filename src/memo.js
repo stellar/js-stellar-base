@@ -76,8 +76,9 @@ export class Memo {
   /**
    * Contains memo value:
    * * `null` for `MemoNone`,
-   * * `string` for `MemoID`, `MemoText`,
-   * * `Buffer` for `MemoHash`, `MemoReturn`
+   * * `string` for `MemoID`,
+   * * `Buffer` for `MemoText` after decoding using `fromXDRObject`, original value otherwise,
+   * * `Buffer` for `MemoHash`, `MemoReturn`.
    */
   get value() {
     switch (this._type) {
@@ -124,11 +125,8 @@ export class Memo {
   }
 
   static _validateTextValue(value) {
-    if (!isString(value)) {
-      throw new Error("Expects string type got " + typeof(value));
-    }
-    if (Buffer.byteLength(value, "utf8") > 28) {
-      throw new Error("Text should be <= 28 bytes. Got " + Buffer.byteLength(value, "utf8"));
+    if (!xdr.Memo.armTypeForArm('text').isValid(value)) {
+      throw new Error("Expects string, array or buffer, max 28 bytes");
     }
   }
 
