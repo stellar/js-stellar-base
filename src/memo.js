@@ -126,7 +126,7 @@ export class Memo {
 
   static _validateTextValue(value) {
     if (!xdr.Memo.armTypeForArm('text').isValid(value)) {
-      throw new Error("Expects string, array or buffer, max 28 bytes")
+      throw new Error("Expects string, array or buffer, max 28 bytes");
     }
   }
 
