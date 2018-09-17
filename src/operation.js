@@ -133,7 +133,8 @@ export class Operation {
       result.lowThreshold = attrs.lowThreshold();
       result.medThreshold = attrs.medThreshold();
       result.highThreshold = attrs.highThreshold();
-      result.homeDomain = attrs.homeDomain();
+      // home_domain is checked by iscntrl in stellar-core
+      result.homeDomain = attrs.homeDomain() ? attrs.homeDomain().toString('ascii') : null;
 
       if (attrs.signer()) {
         let signer = {};
@@ -171,7 +172,8 @@ export class Operation {
       break;
       case "manageDatum":
       result.type = "manageData";
-      result.name = attrs.dataName();
+      // manage_data.name is checked by iscntrl in stellar-core
+      result.name = attrs.dataName().toString('ascii');
       result.value = attrs.dataValue();
       break;
       case "inflation":

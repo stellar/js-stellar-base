@@ -76,9 +76,9 @@ export class Memo {
   /**
    * Contains memo value:
    * * `null` for `MemoNone`,
-   * * `string` for `MemoID`
-   * * `string`/`array`/`buffer` for `MemoID`
-   * * `Buffer` for `MemoHash`, `MemoReturn`
+   * * `string` for `MemoID`,
+   * * `Buffer` for `MemoText` after decoding using `fromXDRObject`, original value otherwise,
+   * * `Buffer` for `MemoHash`, `MemoReturn`.
    */
   get value() {
     switch (this._type) {
