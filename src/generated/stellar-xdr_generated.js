@@ -1861,7 +1861,7 @@ xdr.struct("DontHave", [
 //   case SCP_QUORUMSET:
 //       SCPQuorumSet qSet;
 //   case SCP_MESSAGE:
-//       StellarMessage envelope;
+//       SCPMessage envelope;
 //   case GET_SCP_STATE:
 //       uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 //   };
@@ -1896,7 +1896,7 @@ xdr.union("StellarMessage", {
     transaction: xdr.lookup("TransactionEnvelope"),
     qSetHash: xdr.lookup("Uint256"),
     qSet: xdr.lookup("ScpQuorumSet"),
-    envelope: xdr.lookup("StellarMessage"),
+    envelope: xdr.lookup("ScpEnvelope"),
     getScpLedgerSeq: xdr.lookup("Uint32"),
   },
 });
