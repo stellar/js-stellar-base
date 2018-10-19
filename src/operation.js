@@ -134,7 +134,7 @@ export class Operation {
       result.medThreshold = attrs.medThreshold();
       result.highThreshold = attrs.highThreshold();
       // home_domain is checked by iscntrl in stellar-core
-      result.homeDomain = attrs.homeDomain() !== undefined ? attrs.homeDomain().toString('ascii') : null;
+      result.homeDomain = attrs.homeDomain() !== undefined ? attrs.homeDomain().toString('ascii') : undefined;
 
       if (attrs.signer()) {
         let signer = {};

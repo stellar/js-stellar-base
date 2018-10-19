@@ -347,7 +347,7 @@ describe('Operation', function() {
               .addOperation(StellarBase.Operation.setOptions({ homeDomain: ''}))
               .build()
 
-            expect(tx1.operations[0].homeDomain).to.be.null;
+            expect(tx1.operations[0].homeDomain).to.be.undefined;
             expect(tx2.operations[0].homeDomain).to.be.equal('');
 
         });
