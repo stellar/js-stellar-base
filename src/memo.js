@@ -1,4 +1,6 @@
 import {default as xdr} from "./generated/stellar-xdr_generated";
+import isArray from "lodash/isArray";
+import isBuffer from "lodash/isBuffer";
 import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import isString from "lodash/isString";
@@ -85,7 +87,15 @@ export class Memo {
       case MemoNone:
         return null;
       case MemoID:
+        return clone(this._value);
       case MemoText:
+        if (isArray(this._value)) {
+          return (new Buffer(this._value)).toString("utf8");
+        }
+
+        if (isBuffer(this._value)) {
+          return this._value.toString("utf8");
+        }
         return clone(this._value);
       case MemoHash:
       case MemoReturn:

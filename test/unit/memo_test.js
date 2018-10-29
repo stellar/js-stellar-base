@@ -55,19 +55,20 @@ describe("Memo.text()", function() {
   });
 
   it("converts to/from xdr object (array)", function() {
-    let memo = StellarBase.Memo.text([0xd1]).toXDRObject();
+    let array = [84, 101, 120, 116, 77, 101, 109, 111]
+    let memo = StellarBase.Memo.text(array).toXDRObject();
     expect(memo.arm()).to.equal('text');
 
-    expect(memo.text()).to.be.deep.equal([0xd1]);
-    expect(memo.value()).to.be.deep.equal([0xd1]);
+    expect(memo.text()).to.be.deep.equal(array);
+    expect(memo.value()).to.be.deep.equal(array);
 
     let baseMemo = StellarBase.Memo.fromXDRObject(memo);
     expect(baseMemo.type).to.be.equal(StellarBase.MemoText);
-    expect(baseMemo.value).to.be.deep.equal([0xd1]);
+    expect(baseMemo.value).to.be.equal("TextMemo");
   });
 
   it("converts to/from xdr object (buffer)", function() {
-    let buf = Buffer.from([0xd1]);
+    let buf = Buffer.from([84, 101, 120, 116, 77, 101, 109, 111]);
     let memo = StellarBase.Memo.text(buf).toXDRObject();
     expect(memo.arm()).to.equal('text');
 
@@ -76,7 +77,7 @@ describe("Memo.text()", function() {
 
     let baseMemo = StellarBase.Memo.fromXDRObject(memo);
     expect(baseMemo.type).to.be.equal(StellarBase.MemoText);
-    expect(baseMemo.value.equals(buf)).to.be.true;
+    expect(baseMemo.value).to.equal("TextMemo");
   });
 
   it("throws an error when invalid argument was passed", function() {
