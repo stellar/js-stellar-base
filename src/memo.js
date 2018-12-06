@@ -131,7 +131,7 @@ export class Memo {
   }
 
   static _validateHashValue(value) {
-    let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + value);
+    let error = new Error("Expects a 64 byte hash value or hex encoded string. Got " + value);
 
     if (value === null || isUndefined(value)) {
       throw error;
