@@ -333,6 +333,25 @@ describe('Operation', function() {
             expect(obj.signer.weight).to.be.equal(opts.signer.weight);
         });
 
+        it("empty homeDomain is decoded correctly", function () {
+            const keypair = StellarBase.Keypair.random()
+            const account = new StellarBase.Account(keypair.publicKey(), '0')
+
+            // First operation do nothing.
+            const tx1 = new StellarBase.TransactionBuilder(account)
+              .addOperation(StellarBase.Operation.setOptions({}))
+              .build()
+
+            // Second operation unset homeDomain
+            const tx2 = new StellarBase.TransactionBuilder(account)
+              .addOperation(StellarBase.Operation.setOptions({ homeDomain: ''}))
+              .build()
+
+            expect(tx1.operations[0].homeDomain).to.be.undefined;
+            expect(tx2.operations[0].homeDomain).to.be.equal('');
+
+        });
+
         it("string setFlags", function() {
             let opts = {
                 setFlags: '4'
