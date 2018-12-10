@@ -21,6 +21,7 @@ describe('TransactionBuilder', function() {
                     amount: amount
                 }))
                 .addMemo(memo)
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build();
         });
 
@@ -81,6 +82,7 @@ describe('TransactionBuilder', function() {
                   asset: asset,
                   amount: amount2
               }))
+              .setTimeout(StellarBase.TimeoutInfinite)
               .build();
         });
 
@@ -142,6 +144,7 @@ describe('TransactionBuilder', function() {
                   asset: asset,
                   amount: amount2
               }))
+              .setTimeout(StellarBase.TimeoutInfinite)
               .build();
         });
 
@@ -170,6 +173,84 @@ describe('TransactionBuilder', function() {
             expect(transaction.timeBounds.minTime).to.be.equal(timebounds.minTime);
             expect(transaction.timeBounds.maxTime).to.be.equal(timebounds.maxTime);
             done();
+        });
+    });
+
+    describe("setTimeout", function() {
+        it("not called", function () {
+            let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
+            let transactionBuilder = new StellarBase.TransactionBuilder(source)
+              .addOperation(StellarBase.Operation.payment({
+                  destination: "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+                  asset: StellarBase.Asset.native(),
+                  amount: "1000"
+              }));
+
+            expect(() => transactionBuilder.build()).to.to.throw(/TimeBounds has to be set/);
+            expect(source.sequenceNumber()).to.be.equal("0");
+        });
+
+        it("timeout negative", function () {
+            let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
+            let transactionBuilder = new StellarBase.TransactionBuilder(source)
+              .addOperation(StellarBase.Operation.payment({
+                  destination: "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+                  asset: StellarBase.Asset.native(),
+                  amount: "1000"
+              }));
+
+            expect(() => transactionBuilder.setTimeout(-1)).to.to.throw(/timeout cannot be negative/);
+            expect(source.sequenceNumber()).to.be.equal("0");
+        });
+
+        it("sets timebounds", function () {
+            let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
+            let transaction = new StellarBase.TransactionBuilder(source)
+              .addOperation(StellarBase.Operation.payment({
+                  destination: "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+                  asset: StellarBase.Asset.native(),
+                  amount: "1000"
+              }))
+              .setTimeout(10)
+              .build();
+
+            let timeoutTimestamp = Math.floor(Date.now() / 1000) + 10;
+            expect(transaction.timeBounds.maxTime).to.be.equal(timeoutTimestamp.toString());
+        });
+
+        it("fails when maxTime already set", function () {
+            let timebounds = {
+              minTime: "1455287522",
+              maxTime: "1455297545"
+            };
+            let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
+            let transactionBuilder = new StellarBase.TransactionBuilder(source, {timebounds})
+              .addOperation(StellarBase.Operation.payment({
+                  destination: "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+                  asset: StellarBase.Asset.native(),
+                  amount: "1000"
+              }));
+
+            expect(() => transactionBuilder.setTimeout(10)).to.to.throw(/TimeBounds.max_time has been already set/);
+        });
+
+        it("sets timebounds.maxTime when minTime already set", function () {
+            let timebounds = {
+              minTime: "1455287522",
+              maxTime: "0"
+            };
+            let source = new StellarBase.Account("GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ", "0");
+            let transaction = new StellarBase.TransactionBuilder(source, {timebounds})
+              .addOperation(StellarBase.Operation.payment({
+                  destination: "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+                  asset: StellarBase.Asset.native(),
+                  amount: "1000"
+              }))
+              .setTimeout(10)
+              .build();
+
+            let timeoutTimestamp = Math.floor(Date.now() / 1000) + 10;
+            expect(transaction.timeBounds.maxTime).to.be.equal(timeoutTimestamp.toString());
         });
     });
 });

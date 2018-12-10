@@ -11,6 +11,7 @@ describe('Transaction', function() {
     let input = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
                 .addMemo(StellarBase.Memo.text('Happy birthday!'))
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build()
                 .toEnvelope()
                 .toXDR('base64');
@@ -48,6 +49,7 @@ describe('Transaction', function() {
 
     let tx = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build();
     expect(() => tx.sign(signer)).to.throw(/No network selected/);
   });
@@ -61,6 +63,7 @@ describe('Transaction', function() {
 
     let tx = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build();
     tx.sign(signer);
 
@@ -82,6 +85,7 @@ describe('Transaction', function() {
 
     let tx = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build();
     tx.signHashX(preimage);
 
@@ -101,6 +105,7 @@ describe('Transaction', function() {
 
     let tx = new StellarBase.TransactionBuilder(source)
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build();
 
     expect(() => tx.signHashX(preimage)).to.throw(/preimage cannnot be longer than 64 bytes/);
@@ -116,6 +121,7 @@ describe('Transaction', function() {
     let input = new StellarBase.TransactionBuilder(source, {fee: 0})
                 .addOperation(StellarBase.Operation.payment({destination, asset, amount}))
                 .addMemo(StellarBase.Memo.text('Happy birthday!'))
+                .setTimeout(StellarBase.TimeoutInfinite)
                 .build()
                 .toEnvelope()
                 .toXDR('base64');

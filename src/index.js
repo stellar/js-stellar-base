@@ -7,7 +7,7 @@ export {sign, verify, FastSigning} from "./signing";
 export {Keypair} from "./keypair";
 export {UnsignedHyper,Hyper} from "js-xdr";
 export {Transaction} from "./transaction";
-export {TransactionBuilder} from "./transaction_builder";
+export {TransactionBuilder, TimeoutInfinite} from "./transaction_builder";
 export {Asset} from "./asset";
 export {Operation, AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag} from "./operation";
 export * from "./memo";
