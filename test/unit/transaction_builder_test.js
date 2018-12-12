@@ -186,7 +186,7 @@ describe('TransactionBuilder', function() {
                   amount: "1000"
               }));
 
-            expect(() => transactionBuilder.build()).to.to.throw(/TimeBounds has to be set/);
+            expect(() => transactionBuilder.build()).to.throw(/TimeBounds has to be set/);
             expect(source.sequenceNumber()).to.be.equal("0");
         });
 
@@ -199,7 +199,7 @@ describe('TransactionBuilder', function() {
                   amount: "1000"
               }));
 
-            expect(() => transactionBuilder.setTimeout(-1)).to.to.throw(/timeout cannot be negative/);
+            expect(() => transactionBuilder.setTimeout(-1)).to.throw(/timeout cannot be negative/);
             expect(source.sequenceNumber()).to.be.equal("0");
         });
 
@@ -231,7 +231,7 @@ describe('TransactionBuilder', function() {
                   amount: "1000"
               }));
 
-            expect(() => transactionBuilder.setTimeout(10)).to.to.throw(/TimeBounds.max_time has been already set/);
+            expect(() => transactionBuilder.setTimeout(10)).to.throw(/TimeBounds.max_time has been already set/);
         });
 
         it("sets timebounds.maxTime when minTime already set", function () {
