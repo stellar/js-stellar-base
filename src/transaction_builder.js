@@ -49,6 +49,7 @@ export const TimeoutInfinite = 0;
         amount: "100"
         asset: Asset.native()
     }) // <- sends 100 XLM to destinationB
+ *   .setTimeout(30)
  *   .build();
  *
  * transaction.sign(sourceKeypair);
