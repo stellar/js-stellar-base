@@ -340,11 +340,13 @@ describe('Operation', function() {
             // First operation do nothing.
             const tx1 = new StellarBase.TransactionBuilder(account)
               .addOperation(StellarBase.Operation.setOptions({}))
+              .setTimeout(StellarBase.TimeoutInfinite)
               .build()
 
             // Second operation unset homeDomain
             const tx2 = new StellarBase.TransactionBuilder(account)
               .addOperation(StellarBase.Operation.setOptions({ homeDomain: ''}))
+              .setTimeout(StellarBase.TimeoutInfinite)
               .build()
 
             expect(tx1.operations[0].homeDomain).to.be.undefined;

@@ -9,9 +9,6 @@ import each from "lodash/each";
 import isString from 'lodash/isString';
 import crypto from "crypto";
 
-let MIN_LEDGER   = 0;
-let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
-
 /**
  * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
  * Once a Transaction has been created from an envelope, its attributes and operations

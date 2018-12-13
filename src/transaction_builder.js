@@ -11,9 +11,14 @@ import clone from "lodash/clone";
 import map from "lodash/map";
 import isUndefined from "lodash/isUndefined";
 
-let BASE_FEE     = 100; // Stroops
-let MIN_LEDGER   = 0;
-let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
+const BASE_FEE = 100; // Stroops
+
+/**
+ * @constant
+ * @see {@link TransactionBuilder#setTimeout}
+ * @see [Timeout](https://www.stellar.org/developers/horizon/reference/endpoints/transactions-create.html#timeout)
+ */
+export const TimeoutInfinite = 0;
 
 /**
  * <p>Transaction builder helps constructs a new `{@link Transaction}` using the given {@link Account}
@@ -44,6 +49,7 @@ let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
         amount: "100"
         asset: Asset.native()
     }) // <- sends 100 XLM to destinationB
+ *   .setTimeout(30)
  *   .build();
  *
  * transaction.sign(sourceKeypair);
@@ -67,9 +73,7 @@ export class TransactionBuilder {
     this.baseFee    = (isUndefined(opts.fee) ? BASE_FEE : opts.fee);
     this.timebounds = clone(opts.timebounds);
     this.memo       = opts.memo || Memo.none();
-
-    // the signed base64 form of the transaction to be sent to Horizon
-    this.blob = null;
+    this.timeoutSet = false;
   }
 
   /**
@@ -93,11 +97,55 @@ export class TransactionBuilder {
   }
 
   /**
+   * Because of the distributed nature of the Stellar network it is possible that the status of your transaction
+   * will be determined after a long time if the network is highly congested.
+   * If you want to be sure to receive the status of the transaction within a given period you should set the
+   * {@link TimeBounds} with <code>maxTime</code> on the transaction (this is what <code>setTimeout</code> does
+   * internally; if there's <code>minTime</code> set but no <code>maxTime</code> it will be added).
+   * Call to <code>TransactionBuilder.setTimeout</code> is required if Transaction does not have <code>max_time</code> set.
+   * If you don't want to set timeout, use <code>{@link TimeoutInfinite}</code>. In general you should set
+   * <code>{@link TimeoutInfinite}</code> only in smart contracts.
+   *
+   * Please note that Horizon may still return <code>504 Gateway Timeout</code> error, even for short timeouts.
+   * In such case you need to resubmit the same transaction again without making any changes to receive a status.
+   * This method is using the machine system time (UTC), make sure it is set correctly.
+   * @param {timeout} Timeout in seconds.
+   * @return {TransactionBuilder}
+   * @see TimeoutInfinite
+   */
+  setTimeout(timeout) {
+    if (this.timebounds != null && this.timebounds.maxTime > 0) {
+      throw new Error("TimeBounds.max_time has been already set - setting timeout would overwrite it.");
+    }
+
+    if (timeout < 0) {
+      throw new Error("timeout cannot be negative");
+    }
+
+    this.timeoutSet = true;
+    if (timeout > 0) {
+      let timeoutTimestamp = Math.floor(Date.now() / 1000) + timeout;
+      if (this.timebounds == null) {
+        this.timebounds = {minTime: 0, maxTime: timeoutTimestamp};
+      } else {
+        this.timebounds = {minTime: this.timebounds.minTime, maxTime: timeoutTimestamp};
+      }
+    }
+
+    return this;
+  }
+
+  /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
   build() {
+    // Ensure setTimeout called or maxTime is set
+    if ((this.timebounds == null || (this.timebounds != null && this.timebounds.maxTime == 0)) && !this.timeoutSet) {
+      throw new Error("TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).");
+    }
+
     let sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
 
     var attrs = {
