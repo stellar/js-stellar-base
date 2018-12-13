@@ -2,6 +2,11 @@
 
 As this project is pre 1.0, breaking changes may happen for minor version bumps. A breaking change will get clearly notified in this log.
 
+## 0.10.0
+
+* **Breaking change** Added [`TransactionBuilder.setTimeout`](https://stellar.github.io/js-stellar-base/TransactionBuilder.html#setTimeout) method that sets `timebounds.max_time` on a transaction. Because of the distributed nature of the Stellar network it is possible that the status of your transaction will be determined after a long time if the network is highly congested. If you want to be sure to receive the status of the transaction within a given period you should set the TimeBounds with `maxTime` on the transaction (this is what `setTimeout` does internally; if there's `minTime` set but no `maxTime` it will be added). Call to `TransactionBuilder.setTimeout` is required if Transaction does not have `max_time` set. If you don't want to set timeout, use `TimeoutInfinite`. In general you should set `TimeoutInfinite` only in smart contracts. Please check [`TransactionBuilder.setTimeout`](https://stellar.github.io/js-stellar-base/TransactionBuilder.html#setTimeout) docs for more information.
+* Fixed decoding empty `homeDomain`.
+
 ## 0.9.0
 
 * Update `js-xdr` to support unmarshaling non-utf8 strings.
