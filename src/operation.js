@@ -13,7 +13,7 @@ import isNumber from 'lodash/isNumber';
 import isFinite from 'lodash/isFinite';
 import * as ops from './operations/index';
 
-const ONE = 10000000;
+const ONE = 100000;
 const MAX_INT64 = '9223372036854775807';
 
 /**
