@@ -266,7 +266,7 @@ export class Operation {
    * @private
    */
   static _fromXDRAmount(value) {
-    return new BigNumber(value).div(ONE).toString();
+    return new BigNumber(value).div(ONE).toFixed(7);
   }
 
   /**
