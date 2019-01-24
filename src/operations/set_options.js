@@ -44,7 +44,7 @@ function weightCheckFunction(value, name) {
  * @returns {xdr.SetOptionsOp}  XDR operation
  * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
  */
-export const setOptions = (opts) => {
+export function setOptions(opts) {
   const attributes = {};
 
   if (opts.inflationDest) {
@@ -164,4 +164,4 @@ export const setOptions = (opts) => {
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
-};
+}
