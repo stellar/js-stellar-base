@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import isString from 'lodash/isString';
-import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
 /**
@@ -43,6 +42,7 @@ export class Account {
 
   /**
    * Increments sequence number in this object by one.
+   * @returns {void}
    */
   incrementSequenceNumber() {
     this.sequence = this.sequence.add(1);

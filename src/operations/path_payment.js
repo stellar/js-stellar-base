@@ -1,6 +1,6 @@
-import {default as xdr} from "../generated/stellar-xdr_generated";
-import {Keypair} from "../keypair";
-import {StrKey} from "../strkey";
+import xdr from '../generated/stellar-xdr_generated';
+import { Keypair } from '../keypair';
+import { StrKey } from '../strkey';
 
 /**
  * Returns a XDR PaymentOp. A "payment" operation send the specified amount to the
@@ -8,7 +8,7 @@ import {StrKey} from "../strkey";
  * account if it does not exist.
  * @function
  * @alias Operation.pathPayment
- * @param {object} opts
+ * @param {object} opts Options object
  * @param {Asset} opts.sendAsset - The asset to pay with.
  * @param {string} opts.sendMax - The maximum amount of sendAsset to send.
  * @param {string} opts.destination - The destination account to send to.
@@ -16,37 +16,41 @@ import {StrKey} from "../strkey";
  * @param {string} opts.destAmount - The amount the destination receives.
  * @param {Asset[]} opts.path - An array of Asset objects to use as the path.
  * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
- * @returns {xdr.PathPaymentOp}
+ * @returns {xdr.PathPaymentOp} Path Payment operation
  */
-export const pathPayment = function(opts) {
+export function pathPayment(opts) {
   switch (true) {
     case !opts.sendAsset:
-      throw new Error("Must specify a send asset");
+      throw new Error('Must specify a send asset');
     case !this.isValidAmount(opts.sendMax):
       throw new TypeError(this.constructAmountRequirementsError('sendMax'));
     case !StrKey.isValidEd25519PublicKey(opts.destination):
-      throw new Error("destination is invalid");
+      throw new Error('destination is invalid');
     case !opts.destAsset:
-      throw new Error("Must provide a destAsset for a payment operation");
+      throw new Error('Must provide a destAsset for a payment operation');
     case !this.isValidAmount(opts.destAmount):
       throw new TypeError(this.constructAmountRequirementsError('destAmount'));
+    default:
+      break;
   }
 
-  let attributes = {};
-  attributes.sendAsset    = opts.sendAsset.toXDRObject();
-  attributes.sendMax      = this._toXDRAmount(opts.sendMax);
-  attributes.destination  = Keypair.fromPublicKey(opts.destination).xdrAccountId();
-  attributes.destAsset    = opts.destAsset.toXDRObject();
-  attributes.destAmount   = this._toXDRAmount(opts.destAmount);
+  const attributes = {};
+  attributes.sendAsset = opts.sendAsset.toXDRObject();
+  attributes.sendMax = this._toXDRAmount(opts.sendMax);
+  attributes.destination = Keypair.fromPublicKey(
+    opts.destination,
+  ).xdrAccountId();
+  attributes.destAsset = opts.destAsset.toXDRObject();
+  attributes.destAmount = this._toXDRAmount(opts.destAmount);
 
-  let path        = opts.path ? opts.path : [];
-  attributes.path = path.map(x => x.toXDRObject());
+  const path = opts.path ? opts.path : [];
+  attributes.path = path.map((x) => x.toXDRObject());
 
-  let payment = new xdr.PathPaymentOp(attributes);
+  const payment = new xdr.PathPaymentOp(attributes);
 
-  let opAttributes = {};
+  const opAttributes = {};
   opAttributes.body = xdr.OperationBody.pathPayment(payment);
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
-};
+}

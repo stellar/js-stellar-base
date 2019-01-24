@@ -1,5 +1,5 @@
-import { default as bs58 } from './vendor/bs58';
 import isUndefined from 'lodash/isUndefined';
+import bs58 from './vendor/bs58';
 import { hash } from './hashing';
 import { verifyChecksum } from './util/checksum';
 
@@ -10,13 +10,13 @@ const versionBytes = {
 };
 
 export function decodeBase58Check(versionByteName, encoded) {
-  let decoded = bs58.decode(encoded);
-  let versionByte = decoded[0];
-  let payload = decoded.slice(0, decoded.length - 4);
-  let data = payload.slice(1);
-  let checksum = decoded.slice(decoded.length - 4);
+  const decoded = bs58.decode(encoded);
+  const versionByte = decoded[0];
+  const payload = decoded.slice(0, decoded.length - 4);
+  const data = payload.slice(1);
+  const checksum = decoded.slice(decoded.length - 4);
 
-  let expectedVersion = versionBytes[versionByteName];
+  const expectedVersion = versionBytes[versionByteName];
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
@@ -30,7 +30,7 @@ export function decodeBase58Check(versionByteName, encoded) {
     );
   }
 
-  let expectedChecksum = calculateChecksum(payload);
+  const expectedChecksum = calculateChecksum(payload);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
     throw new Error(`invalid checksum`);
@@ -46,7 +46,7 @@ export function decodeBase58Check(versionByteName, encoded) {
 }
 
 function calculateChecksum(payload) {
-  let inner = hash(payload);
-  let outer = hash(inner);
+  const inner = hash(payload);
+  const outer = hash(inner);
   return outer.slice(0, 4);
 }

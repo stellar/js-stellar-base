@@ -1,10 +1,9 @@
-import { default as xdr } from './generated/stellar-xdr_generated';
 import isUndefined from 'lodash/isUndefined';
-import isNull from 'lodash/isNull';
 import isString from 'lodash/isString';
 import clone from 'lodash/clone';
 import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
+import xdr from './generated/stellar-xdr_generated';
 
 /**
  * Type of {@link Memo}.
@@ -100,7 +99,7 @@ export class Memo {
   }
 
   static _validateIdValue(value) {
-    let error = new Error('Expects a int64 as a string. Got ' + value);
+    const error = new Error(`Expects a int64 as a string. Got ${value}`);
 
     if (!isString(value)) {
       throw error;
@@ -131,8 +130,8 @@ export class Memo {
   }
 
   static _validateHashValue(value) {
-    let error = new Error(
-      'Expects a 32 byte hash value or hex encoded string. Got ' + value,
+    const error = new Error(
+      `Expects a 32 byte hash value or hex encoded string. Got ${value}`,
     );
 
     if (value === null || isUndefined(value)) {
@@ -151,7 +150,7 @@ export class Memo {
       throw error;
     }
 
-    if (!valueBuffer.length || valueBuffer.length != 32) {
+    if (!valueBuffer.length || valueBuffer.length !== 32) {
       throw error;
     }
   }
@@ -216,12 +215,14 @@ export class Memo {
         return xdr.Memo.memoHash(this._value);
       case MemoReturn:
         return xdr.Memo.memoReturn(this._value);
+      default:
+        return null;
     }
   }
 
   /**
    * Returns {@link Memo} from XDR memo object.
-   * @param {xdr.Memo}
+   * @param {xdr.Memo} object XDR memo object
    * @returns {Memo}
    */
   static fromXDRObject(object) {
@@ -234,6 +235,8 @@ export class Memo {
         return Memo.hash(object.value());
       case 'retHash':
         return Memo.return(object.value());
+      default:
+        break;
     }
 
     if (typeof object.value() === 'undefined') {

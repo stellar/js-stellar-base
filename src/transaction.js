@@ -1,13 +1,13 @@
+import map from 'lodash/map';
+import each from 'lodash/each';
+import isString from 'lodash/isString';
+import crypto from 'crypto';
 import { xdr, hash } from './index';
 
 import { StrKey } from './strkey';
 import { Operation } from './operation';
 import { Network } from './network';
 import { Memo } from './memo';
-import map from 'lodash/map';
-import each from 'lodash/each';
-import isString from 'lodash/isString';
-import crypto from 'crypto';
 
 /**
  * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
@@ -20,7 +20,7 @@ import crypto from 'crypto';
 export class Transaction {
   constructor(envelope) {
     if (typeof envelope === 'string') {
-      let buffer = Buffer.from(envelope, 'base64');
+      const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
     // since this transaction is immutable, save the tx
@@ -35,7 +35,7 @@ export class Transaction {
     this._memo = this.tx.memo();
     this.sequence = this.tx.seqNum().toString();
 
-    let timeBounds = this.tx.timeBounds();
+    const timeBounds = this.tx.timeBounds();
     if (timeBounds) {
       this.timeBounds = {
         minTime: timeBounds.minTime().toString(),
@@ -43,12 +43,10 @@ export class Transaction {
       };
     }
 
-    let operations = this.tx.operations() || [];
-    this.operations = map(operations, (op) => {
-      return Operation.fromXDRObject(op);
-    });
+    const operations = this.tx.operations() || [];
+    this.operations = map(operations, (op) => Operation.fromXDRObject(op));
 
-    let signatures = envelope.signatures() || [];
+    const signatures = envelope.signatures() || [];
     this.signatures = map(signatures, (s) => s);
   }
 
@@ -66,9 +64,9 @@ export class Transaction {
    * @returns {void}
    */
   sign(...keypairs) {
-    let txHash = this.hash();
-    let newSigs = each(keypairs, (kp) => {
-      let sig = kp.signDecorated(txHash);
+    const txHash = this.hash();
+    each(keypairs, (kp) => {
+      const sig = kp.signDecorated(txHash);
       this.signatures.push(sig);
     });
   }
@@ -87,12 +85,12 @@ export class Transaction {
       throw new Error('preimage cannnot be longer than 64 bytes');
     }
 
-    let signature = preimage;
-    let hash = crypto
+    const signature = preimage;
+    const hashX = crypto
       .createHash('sha256')
       .update(preimage)
       .digest();
-    let hint = hash.slice(hash.length - 4);
+    const hint = hashX.slice(hashX.length - 4);
     this.signatures.push(new xdr.DecoratedSignature({ hint, signature }));
   }
 
@@ -132,9 +130,9 @@ export class Transaction {
    * @returns {xdr.TransactionEnvelope}
    */
   toEnvelope() {
-    let tx = this.tx;
-    let signatures = this.signatures;
-    let envelope = new xdr.TransactionEnvelope({ tx, signatures });
+    const tx = this.tx;
+    const signatures = this.signatures;
+    const envelope = new xdr.TransactionEnvelope({ tx, signatures });
 
     return envelope;
   }

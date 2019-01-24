@@ -1,16 +1,17 @@
-import { default as xdr } from './generated/stellar-xdr_generated';
-import { Keypair } from './keypair';
-import { hash } from './hashing';
-import { StrKey } from './strkey';
+/* eslint-disable no-bitwise */
+
 import { Hyper } from 'js-xdr';
-import { Asset } from './asset';
 import BigNumber from 'bignumber.js';
-import { best_r } from './util/continued_fraction';
 import trimEnd from 'lodash/trimEnd';
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
 import isFinite from 'lodash/isFinite';
+import { best_r } from './util/continued_fraction';
+import { Asset } from './asset';
+import { StrKey } from './strkey';
+import { Keypair } from './keypair';
+import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 
 const ONE = 10000000;
@@ -79,12 +80,14 @@ export class Operation {
       return StrKey.encodeEd25519PublicKey(accountId.ed25519());
     }
 
-    let result = {};
+    const result = {};
     if (operation.sourceAccount()) {
       result.source = accountIdtoAddress(operation.sourceAccount());
     }
 
-    let attrs = operation.body().value();
+    const attrs = operation.body().value();
+    const path = attrs.path();
+
     switch (operation.body().switch().name) {
       case 'createAccount':
         result.type = 'createAccount';
@@ -104,11 +107,11 @@ export class Operation {
         result.destination = accountIdtoAddress(attrs.destination());
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
-        let path = attrs.path();
         result.path = [];
-        for (let i in path) {
-          result.path.push(Asset.fromOperation(path[i]));
-        }
+
+        Object.values(path).forEach((pathItem) => {
+          result.path.push(Asset.fromOperation(pathItem));
+        });
         break;
       case 'changeTrust':
         result.type = 'changeTrust';
@@ -144,19 +147,19 @@ export class Operation {
             : undefined;
 
         if (attrs.signer()) {
-          let signer = {};
-          let arm = attrs
+          const signer = {};
+          const arm = attrs
             .signer()
             .key()
             .arm();
-          if (arm == 'ed25519') {
+          if (arm === 'ed25519') {
             signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
-          } else if (arm == 'preAuthTx') {
+          } else if (arm === 'preAuthTx') {
             signer.preAuthTx = attrs
               .signer()
               .key()
               .preAuthTx();
-          } else if (arm == 'hashX') {
+          } else if (arm === 'hashX') {
             signer.sha256Hash = attrs
               .signer()
               .key()
@@ -217,21 +220,23 @@ export class Operation {
       return false;
     }
 
-    switch (true) {
+    if (
       // == 0
-      case !allowZero && amount.isZero():
+      (!allowZero && amount.isZero()) ||
       // < 0
-      case amount.isNegative():
+      amount.isNegative() ||
       // > Max value
-      case amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString()):
+      amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString()) ||
       // Decimal places (max 7)
-      case amount.decimalPlaces() > 7:
+      amount.decimalPlaces() > 7 ||
       // NaN or Infinity
-      case amount.isNaN() || !amount.isFinite():
-        return false;
-      default:
-        return true;
+      amount.isNaN() ||
+      !amount.isFinite()
+    ) {
+      return false;
     }
+
+    return true;
   }
 
   static constructAmountRequirementsError(arg) {
@@ -271,42 +276,30 @@ export class Operation {
     }
   }
 
-  /**
-   * @private
-   */
   static _toXDRAmount(value) {
-    let amount = new BigNumber(value).mul(ONE);
+    const amount = new BigNumber(value).mul(ONE);
     return Hyper.fromString(amount.toString());
   }
 
-  /**
-   * @private
-   */
   static _fromXDRAmount(value) {
     return new BigNumber(value).div(ONE).toFixed(7);
   }
 
-  /**
-   * @private
-   */
   static _fromXDRPrice(price) {
-    let n = new BigNumber(price.n());
+    const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }
 
-  /**
-   * @private
-   */
   static _toXDRPrice(price) {
     let xdrObject;
     if (price.n && price.d) {
       xdrObject = new xdr.Price(price);
     } else {
       price = new BigNumber(price);
-      let approx = best_r(price);
+      const approx = best_r(price);
       xdrObject = new xdr.Price({
-        n: parseInt(approx[0]),
-        d: parseInt(approx[1]),
+        n: parseInt(approx[0], 10),
+        d: parseInt(approx[1], 10),
       });
     }
 

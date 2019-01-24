@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import base32 from 'base32.js';
 import crc from 'crc';
 import isUndefined from 'lodash/isUndefined';
@@ -108,12 +110,12 @@ export class StrKey {
 }
 
 function isValid(versionByteName, encoded) {
-  if (encoded && encoded.length != 56) {
+  if (encoded && encoded.length !== 56) {
     return false;
   }
 
   try {
-    let decoded = decodeCheck(versionByteName, encoded);
+    const decoded = decodeCheck(versionByteName, encoded);
     if (decoded.length !== 32) {
       return false;
     }
@@ -128,17 +130,17 @@ export function decodeCheck(versionByteName, encoded) {
     throw new TypeError('encoded argument must be of type String');
   }
 
-  let decoded = base32.decode(encoded);
-  let versionByte = decoded[0];
-  let payload = decoded.slice(0, -2);
-  let data = payload.slice(1);
-  let checksum = decoded.slice(-2);
+  const decoded = base32.decode(encoded);
+  const versionByte = decoded[0];
+  const payload = decoded.slice(0, -2);
+  const data = payload.slice(1);
+  const checksum = decoded.slice(-2);
 
-  if (encoded != base32.encode(decoded)) {
+  if (encoded !== base32.encode(decoded)) {
     throw new Error('invalid encoded string');
   }
 
-  let expectedVersion = versionBytes[versionByteName];
+  const expectedVersion = versionBytes[versionByteName];
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
@@ -152,7 +154,7 @@ export function decodeCheck(versionByteName, encoded) {
     );
   }
 
-  let expectedChecksum = calculateChecksum(payload);
+  const expectedChecksum = calculateChecksum(payload);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
     throw new Error(`invalid checksum`);
@@ -166,7 +168,7 @@ export function encodeCheck(versionByteName, data) {
     throw new Error('cannot encode null data');
   }
 
-  let versionByte = versionBytes[versionByteName];
+  const versionByte = versionBytes[versionByteName];
 
   if (isUndefined(versionByte)) {
     throw new Error(
@@ -175,10 +177,10 @@ export function encodeCheck(versionByteName, data) {
   }
 
   data = Buffer.from(data);
-  let versionBuffer = Buffer.from([versionByte]);
-  let payload = Buffer.concat([versionBuffer, data]);
-  let checksum = calculateChecksum(payload);
-  let unencoded = Buffer.concat([payload, checksum]);
+  const versionBuffer = Buffer.from([versionByte]);
+  const payload = Buffer.concat([versionBuffer, data]);
+  const checksum = calculateChecksum(payload);
+  const unencoded = Buffer.concat([payload, checksum]);
 
   return base32.encode(unencoded);
 }
@@ -186,7 +188,7 @@ export function encodeCheck(versionByteName, data) {
 function calculateChecksum(payload) {
   // This code calculates CRC16-XModem checksum of payload
   // and returns it as Buffer in little-endian order.
-  let checksum = Buffer.alloc(2);
+  const checksum = Buffer.alloc(2);
   checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
   return checksum;
 }

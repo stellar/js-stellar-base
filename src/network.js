@@ -11,7 +11,7 @@ export const Networks = {
   TESTNET: 'Test SDF Network ; September 2015',
 };
 
-var current = null;
+let current = null;
 
 /**
  * The Network class provides helper methods to get the passphrase or id for different
@@ -32,6 +32,7 @@ export class Network {
 
   /**
    * Use Stellar Public Network
+   * @returns {void}
    */
   static usePublicNetwork() {
     this.use(new Network(Networks.PUBLIC));
@@ -39,6 +40,7 @@ export class Network {
 
   /**
    * Use test network.
+   * @returns {void}
    */
   static useTestNetwork() {
     this.use(new Network(Networks.TESTNET));
@@ -47,30 +49,28 @@ export class Network {
   /**
    * Use network defined by Network object.
    * @param {Network} network Network to use
+   * @returns {void}
    */
   static use(network) {
     current = network;
   }
 
   /**
-   * Returns currently selected network.
-   * @returns {Network}
+   * @returns {Network} Currently selected network
    */
   static current() {
     return current;
   }
 
   /**
-   * Returns network passphrase.
-   * @returns {string}
+   * @returns {string} Network passphrase
    */
   networkPassphrase() {
     return this._networkPassphrase;
   }
 
   /**
-   * Returns Network ID. Network ID is SHA-256 hash of network passphrase.
-   * @returns {string}
+   * @returns {string} Network ID (SHA-256 hash of network passphrase)
    */
   networkId() {
     return hash(this.networkPassphrase());

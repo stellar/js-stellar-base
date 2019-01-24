@@ -1,9 +1,9 @@
+import nacl from 'tweetnacl';
 import { Network } from './network';
 import { sign, verify } from './signing';
 import * as base58 from './base58';
 import { StrKey } from './strkey';
-import { default as xdr } from './generated/stellar-xdr_generated';
-import nacl from 'tweetnacl';
+import xdr from './generated/stellar-xdr_generated';
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
@@ -24,7 +24,7 @@ import nacl from 'tweetnacl';
  */
 export class Keypair {
   constructor(keys) {
-    if (keys.type != 'ed25519') {
+    if (keys.type !== 'ed25519') {
       throw new Error('Invalid keys type');
     }
 
@@ -33,12 +33,12 @@ export class Keypair {
     if (keys.secretKey) {
       keys.secretKey = Buffer.from(keys.secretKey);
 
-      if (keys.secretKey.length != 32) {
+      if (keys.secretKey.length !== 32) {
         throw new Error('secretKey length is invalid');
       }
 
-      let secretKeyUint8 = new Uint8Array(keys.secretKey);
-      let naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
+      const secretKeyUint8 = new Uint8Array(keys.secretKey);
+      const naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
 
       this._secretSeed = keys.secretKey;
       this._secretKey = Buffer.from(naclKeys.secretKey);
@@ -53,7 +53,7 @@ export class Keypair {
     } else {
       this._publicKey = Buffer.from(keys.publicKey);
 
-      if (this._publicKey.length != 32) {
+      if (this._publicKey.length !== 32) {
         throw new Error('publicKey length is invalid');
       }
     }
@@ -66,7 +66,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromSecret(secret) {
-    let rawSecret = StrKey.decodeEd25519SecretSeed(secret);
+    const rawSecret = StrKey.decodeEd25519SecretSeed(secret);
     return this.fromRawEd25519Seed(rawSecret);
   }
 
@@ -77,7 +77,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromBase58Seed(seed) {
-    let rawSeed = base58.decodeBase58Check('seed', seed);
+    const rawSeed = base58.decodeBase58Check('seed', seed);
     return this.fromRawEd25519Seed(rawSeed);
   }
 
@@ -122,7 +122,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static random() {
-    let secret = nacl.randomBytes(32);
+    const secret = nacl.randomBytes(32);
     return this.fromRawEd25519Seed(secret);
   }
 
@@ -143,7 +143,7 @@ export class Keypair {
   }
 
   signatureHint() {
-    let a = this.xdrAccountId().toXDR();
+    const a = this.xdrAccountId().toXDR();
 
     return a.slice(a.length - 4);
   }
@@ -165,7 +165,7 @@ export class Keypair {
       throw new Error('no secret key available');
     }
 
-    if (this.type == 'ed25519') {
+    if (this.type === 'ed25519') {
       return StrKey.encodeEd25519SecretSeed(this._secretSeed);
     }
 
@@ -212,8 +212,8 @@ export class Keypair {
   }
 
   signDecorated(data) {
-    let signature = this.sign(data);
-    let hint = this.signatureHint();
+    const signature = this.sign(data);
+    const hint = this.signatureHint();
 
     return new xdr.DecoratedSignature({ hint, signature });
   }

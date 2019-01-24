@@ -4,7 +4,7 @@
 //  native ed25519 package for node.js environments, and if that fails we
 //  fallback to tweetnacl.js
 
-var actualMethods = {};
+const actualMethods = {};
 
 /**
  * Use this flag to check if fast signing (provided by `ed25519` package) is available.
@@ -32,6 +32,7 @@ function checkFastSigningNode() {
   // can only occur at the top level.  thanks, obama.
   let ed25519;
   try {
+    // eslint-disable-next-line global-require, import/no-extraneous-dependencies
     ed25519 = require('ed25519');
   } catch (err) {
     return checkFastSigningBrowser();
@@ -40,7 +41,7 @@ function checkFastSigningNode() {
   actualMethods.sign = (data, secretKey) =>
     ed25519.Sign(Buffer.from(data), secretKey);
 
-  actualMethods.verify = function(data, signature, publicKey) {
+  actualMethods.verify = (data, signature, publicKey) => {
     data = Buffer.from(data);
     try {
       return ed25519.Verify(data, signature, publicKey);
@@ -55,19 +56,20 @@ function checkFastSigningNode() {
 function checkFastSigningBrowser() {
   // fallback to tweetnacl.js if we're in the browser or
   // if there was a failure installing ed25519
-  let nacl = require('tweetnacl');
+  // eslint-disable-next-line global-require
+  const nacl = require('tweetnacl');
 
-  actualMethods.sign = function(data, secretKey) {
+  actualMethods.sign = (data, secretKey) => {
     data = Buffer.from(data);
     data = new Uint8Array(data.toJSON().data);
     secretKey = new Uint8Array(secretKey.toJSON().data);
 
-    let signature = nacl.sign.detached(data, secretKey);
+    const signature = nacl.sign.detached(data, secretKey);
 
     return Buffer.from(signature);
   };
 
-  actualMethods.verify = function(data, signature, publicKey) {
+  actualMethods.verify = (data, signature, publicKey) => {
     data = Buffer.from(data);
     data = new Uint8Array(data.toJSON().data);
     signature = new Uint8Array(signature.toJSON().data);

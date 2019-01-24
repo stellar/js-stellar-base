@@ -1,15 +1,11 @@
-import { default as xdr } from './generated/stellar-xdr_generated';
 import { UnsignedHyper } from 'js-xdr';
-import { hash } from './hashing';
-import { Keypair } from './keypair';
-import { Account } from './account';
-import { Operation } from './operation';
-import { Transaction } from './transaction';
-import { Memo } from './memo';
 import BigNumber from 'bignumber.js';
 import clone from 'lodash/clone';
-import map from 'lodash/map';
 import isUndefined from 'lodash/isUndefined';
+import xdr from './generated/stellar-xdr_generated';
+import { Keypair } from './keypair';
+import { Transaction } from './transaction';
+import { Memo } from './memo';
 
 const BASE_FEE = 100; // Stroops
 
@@ -56,7 +52,7 @@ export const TimeoutInfinite = 0;
  * ```
  * @constructor
  * @param {Account} sourceAccount - The source account for this transaction.
- * @param {object} [opts]
+ * @param {object} [opts] Options object
  * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
  * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
  * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
@@ -71,7 +67,7 @@ export class TransactionBuilder {
     this.source = sourceAccount;
     this.operations = [];
     this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
-    this.timebounds = clone(opts.timebounds);
+    this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.timeoutSet = false;
   }
@@ -109,7 +105,7 @@ export class TransactionBuilder {
    * Please note that Horizon may still return <code>504 Gateway Timeout</code> error, even for short timeouts.
    * In such case you need to resubmit the same transaction again without making any changes to receive a status.
    * This method is using the machine system time (UTC), make sure it is set correctly.
-   * @param {timeout} Timeout in seconds.
+   * @param {timeout} timeout in seconds.
    * @return {TransactionBuilder}
    * @see TimeoutInfinite
    */
@@ -126,8 +122,8 @@ export class TransactionBuilder {
 
     this.timeoutSet = true;
     if (timeout > 0) {
-      let timeoutTimestamp = Math.floor(Date.now() / 1000) + timeout;
-      if (this.timebounds == null) {
+      const timeoutTimestamp = Math.floor(Date.now() / 1000) + timeout;
+      if (this.timebounds === null) {
         this.timebounds = { minTime: 0, maxTime: timeoutTimestamp };
       } else {
         this.timebounds = {
@@ -148,8 +144,8 @@ export class TransactionBuilder {
   build() {
     // Ensure setTimeout called or maxTime is set
     if (
-      (this.timebounds == null ||
-        (this.timebounds != null && this.timebounds.maxTime == 0)) &&
+      (this.timebounds === null ||
+        (this.timebounds !== null && this.timebounds.maxTime === 0)) &&
       !this.timeoutSet
     ) {
       throw new Error(
@@ -157,9 +153,9 @@ export class TransactionBuilder {
       );
     }
 
-    let sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
+    const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
 
-    var attrs = {
+    const attrs = {
       sourceAccount: Keypair.fromPublicKey(
         this.source.accountId(),
       ).xdrAccountId(),
@@ -179,11 +175,11 @@ export class TransactionBuilder {
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
     }
 
-    let xtx = new xdr.Transaction(attrs);
+    const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
 
-    let xenv = new xdr.TransactionEnvelope({ tx: xtx });
-    let tx = new Transaction(xenv);
+    const xenv = new xdr.TransactionEnvelope({ tx: xtx });
+    const tx = new Transaction(xenv);
 
     this.source.incrementSequenceNumber();
 
