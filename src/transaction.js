@@ -1,13 +1,13 @@
-import {xdr, hash} from "./index";
+import { xdr, hash } from './index';
 
-import {StrKey} from "./strkey";
-import {Operation} from "./operation";
-import {Network} from "./network";
-import {Memo} from "./memo";
-import map from "lodash/map";
-import each from "lodash/each";
+import { StrKey } from './strkey';
+import { Operation } from './operation';
+import { Network } from './network';
+import { Memo } from './memo';
+import map from 'lodash/map';
+import each from 'lodash/each';
 import isString from 'lodash/isString';
-import crypto from "crypto";
+import crypto from 'crypto';
 
 /**
  * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
@@ -19,32 +19,37 @@ import crypto from "crypto";
  */
 export class Transaction {
   constructor(envelope) {
-    if (typeof envelope === "string") {
-      let buffer = Buffer.from(envelope, "base64");
+    if (typeof envelope === 'string') {
+      let buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
     // since this transaction is immutable, save the tx
-    this.tx       = envelope.tx();
-    this.source   = StrKey.encodeEd25519PublicKey(envelope.tx().sourceAccount().ed25519());
-    this.fee      = this.tx.fee();
-    this._memo    = this.tx.memo();
+    this.tx = envelope.tx();
+    this.source = StrKey.encodeEd25519PublicKey(
+      envelope
+        .tx()
+        .sourceAccount()
+        .ed25519(),
+    );
+    this.fee = this.tx.fee();
+    this._memo = this.tx.memo();
     this.sequence = this.tx.seqNum().toString();
 
     let timeBounds = this.tx.timeBounds();
     if (timeBounds) {
       this.timeBounds = {
         minTime: timeBounds.minTime().toString(),
-        maxTime: timeBounds.maxTime().toString()
+        maxTime: timeBounds.maxTime().toString(),
       };
     }
 
-    let operations  = this.tx.operations() || [];
-    this.operations = map(operations, op => {
+    let operations = this.tx.operations() || [];
+    this.operations = map(operations, (op) => {
       return Operation.fromXDRObject(op);
     });
 
     let signatures = envelope.signatures() || [];
-    this.signatures = map(signatures, s => s);
+    this.signatures = map(signatures, (s) => s);
   }
 
   get memo() {
@@ -52,7 +57,7 @@ export class Transaction {
   }
 
   set memo(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -62,7 +67,7 @@ export class Transaction {
    */
   sign(...keypairs) {
     let txHash = this.hash();
-    let newSigs = each(keypairs, kp => {
+    let newSigs = each(keypairs, (kp) => {
       let sig = kp.signDecorated(txHash);
       this.signatures.push(sig);
     });
@@ -75,7 +80,7 @@ export class Transaction {
    */
   signHashX(preimage) {
     if (isString(preimage)) {
-      preimage = Buffer.from(preimage, "hex");
+      preimage = Buffer.from(preimage, 'hex');
     }
 
     if (preimage.length > 64) {
@@ -83,9 +88,12 @@ export class Transaction {
     }
 
     let signature = preimage;
-    let hash = crypto.createHash('sha256').update(preimage).digest();
+    let hash = crypto
+      .createHash('sha256')
+      .update(preimage)
+      .digest();
     let hint = hash.slice(hash.length - 4);
-    this.signatures.push(new xdr.DecoratedSignature({hint, signature}));
+    this.signatures.push(new xdr.DecoratedSignature({ hint, signature }));
   }
 
   /**
@@ -107,13 +115,15 @@ export class Transaction {
    */
   signatureBase() {
     if (Network.current() === null) {
-      throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
+      throw new Error(
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.',
+      );
     }
 
     return Buffer.concat([
       Network.current().networkId(),
       xdr.EnvelopeType.envelopeTypeTx().toXDR(),
-      this.tx.toXDR()
+      this.tx.toXDR(),
     ]);
   }
 
@@ -124,7 +134,7 @@ export class Transaction {
   toEnvelope() {
     let tx = this.tx;
     let signatures = this.signatures;
-    let envelope = new xdr.TransactionEnvelope({tx, signatures});
+    let envelope = new xdr.TransactionEnvelope({ tx, signatures });
 
     return envelope;
   }

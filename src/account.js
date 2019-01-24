@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import isString from 'lodash/isString';
-import {Keypair} from './keypair';
-import {StrKey} from "./strkey";
+import { Keypair } from './keypair';
+import { StrKey } from './strkey';
 
 /**
  * Create a new Account object.

@@ -1,4 +1,4 @@
-import {sha256} from "sha.js";
+import { sha256 } from 'sha.js';
 
 export function hash(data) {
   let hasher = new sha256();

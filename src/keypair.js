@@ -1,9 +1,9 @@
-import {Network} from "./network";
-import {sign, verify} from "./signing";
-import * as base58 from "./base58";
-import {StrKey} from "./strkey";
-import {default as xdr} from "./generated/stellar-xdr_generated";
-import nacl from "tweetnacl";
+import { Network } from './network';
+import { sign, verify } from './signing';
+import * as base58 from './base58';
+import { StrKey } from './strkey';
+import { default as xdr } from './generated/stellar-xdr_generated';
+import nacl from 'tweetnacl';
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
@@ -24,8 +24,8 @@ import nacl from "tweetnacl";
  */
 export class Keypair {
   constructor(keys) {
-    if (keys.type != "ed25519") {
-      throw new Error("Invalid keys type");
+    if (keys.type != 'ed25519') {
+      throw new Error('Invalid keys type');
     }
 
     this.type = keys.type;
@@ -34,7 +34,7 @@ export class Keypair {
       keys.secretKey = Buffer.from(keys.secretKey);
 
       if (keys.secretKey.length != 32) {
-        throw new Error("secretKey length is invalid");
+        throw new Error('secretKey length is invalid');
       }
 
       let secretKeyUint8 = new Uint8Array(keys.secretKey);
@@ -44,14 +44,17 @@ export class Keypair {
       this._secretKey = Buffer.from(naclKeys.secretKey);
       this._publicKey = Buffer.from(naclKeys.publicKey);
 
-      if (keys.publicKey && !this._publicKey.equals(Buffer.from(keys.publicKey))) {
-        throw new Error("secretKey does not match publicKey");
+      if (
+        keys.publicKey &&
+        !this._publicKey.equals(Buffer.from(keys.publicKey))
+      ) {
+        throw new Error('secretKey does not match publicKey');
       }
     } else {
       this._publicKey = Buffer.from(keys.publicKey);
 
       if (this._publicKey.length != 32) {
-        throw new Error("publicKey length is invalid");
+        throw new Error('publicKey length is invalid');
       }
     }
   }
@@ -74,7 +77,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromBase58Seed(seed) {
-    let rawSeed = base58.decodeBase58Check("seed", seed);
+    let rawSeed = base58.decodeBase58Check('seed', seed);
     return this.fromRawEd25519Seed(rawSeed);
   }
 
@@ -85,7 +88,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromRawEd25519Seed(rawSeed) {
-    return new this({type: 'ed25519', secretKey: rawSeed});
+    return new this({ type: 'ed25519', secretKey: rawSeed });
   }
 
   /**
@@ -94,7 +97,9 @@ export class Keypair {
    */
   static master() {
     if (Network.current() === null) {
-      throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
+      throw new Error(
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.',
+      );
     }
     return this.fromRawEd25519Seed(Network.current().networkId());
   }
@@ -109,7 +114,7 @@ export class Keypair {
     if (publicKey.length !== 32) {
       throw new Error('Invalid Stellar public key');
     }
-    return new this({type: 'ed25519', publicKey});
+    return new this({ type: 'ed25519', publicKey });
   }
 
   /**
@@ -157,14 +162,14 @@ export class Keypair {
    */
   secret() {
     if (!this._secretSeed) {
-      throw new Error("no secret key available");
+      throw new Error('no secret key available');
     }
 
     if (this.type == 'ed25519') {
       return StrKey.encodeEd25519SecretSeed(this._secretSeed);
     }
 
-    throw new Error("Invalid Keypair type");
+    throw new Error('Invalid Keypair type');
   }
 
   /**
@@ -190,7 +195,7 @@ export class Keypair {
    */
   sign(data) {
     if (!this.canSign()) {
-      throw new Error("cannot sign: no secret key available");
+      throw new Error('cannot sign: no secret key available');
     }
 
     return sign(data, this._secretKey);
@@ -208,8 +213,8 @@ export class Keypair {
 
   signDecorated(data) {
     let signature = this.sign(data);
-    let hint      = this.signatureHint();
+    let hint = this.signatureHint();
 
-    return new xdr.DecoratedSignature({hint, signature});
+    return new xdr.DecoratedSignature({ hint, signature });
   }
 }

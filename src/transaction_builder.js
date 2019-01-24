@@ -1,15 +1,15 @@
-import {default as xdr} from "./generated/stellar-xdr_generated";
-import {UnsignedHyper} from "js-xdr";
-import {hash} from "./hashing";
-import {Keypair} from "./keypair";
-import {Account} from "./account";
-import {Operation} from "./operation";
-import {Transaction} from "./transaction";
-import {Memo} from "./memo";
+import { default as xdr } from './generated/stellar-xdr_generated';
+import { UnsignedHyper } from 'js-xdr';
+import { hash } from './hashing';
+import { Keypair } from './keypair';
+import { Account } from './account';
+import { Operation } from './operation';
+import { Transaction } from './transaction';
+import { Memo } from './memo';
 import BigNumber from 'bignumber.js';
-import clone from "lodash/clone";
-import map from "lodash/map";
-import isUndefined from "lodash/isUndefined";
+import clone from 'lodash/clone';
+import map from 'lodash/map';
+import isUndefined from 'lodash/isUndefined';
 
 const BASE_FEE = 100; // Stroops
 
@@ -64,15 +64,15 @@ export const TimeoutInfinite = 0;
  * @param {Memo} [opts.memo] - The memo for the transaction
  */
 export class TransactionBuilder {
-  constructor(sourceAccount, opts={}) {
+  constructor(sourceAccount, opts = {}) {
     if (!sourceAccount) {
-      throw new Error("must specify source account for the transaction");
+      throw new Error('must specify source account for the transaction');
     }
-    this.source     = sourceAccount;
+    this.source = sourceAccount;
     this.operations = [];
-    this.baseFee    = (isUndefined(opts.fee) ? BASE_FEE : opts.fee);
+    this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
     this.timebounds = clone(opts.timebounds);
-    this.memo       = opts.memo || Memo.none();
+    this.memo = opts.memo || Memo.none();
     this.timeoutSet = false;
   }
 
@@ -115,20 +115,25 @@ export class TransactionBuilder {
    */
   setTimeout(timeout) {
     if (this.timebounds != null && this.timebounds.maxTime > 0) {
-      throw new Error("TimeBounds.max_time has been already set - setting timeout would overwrite it.");
+      throw new Error(
+        'TimeBounds.max_time has been already set - setting timeout would overwrite it.',
+      );
     }
 
     if (timeout < 0) {
-      throw new Error("timeout cannot be negative");
+      throw new Error('timeout cannot be negative');
     }
 
     this.timeoutSet = true;
     if (timeout > 0) {
       let timeoutTimestamp = Math.floor(Date.now() / 1000) + timeout;
       if (this.timebounds == null) {
-        this.timebounds = {minTime: 0, maxTime: timeoutTimestamp};
+        this.timebounds = { minTime: 0, maxTime: timeoutTimestamp };
       } else {
-        this.timebounds = {minTime: this.timebounds.minTime, maxTime: timeoutTimestamp};
+        this.timebounds = {
+          minTime: this.timebounds.minTime,
+          maxTime: timeoutTimestamp,
+        };
       }
     }
 
@@ -142,34 +147,46 @@ export class TransactionBuilder {
    */
   build() {
     // Ensure setTimeout called or maxTime is set
-    if ((this.timebounds == null || (this.timebounds != null && this.timebounds.maxTime == 0)) && !this.timeoutSet) {
-      throw new Error("TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).");
+    if (
+      (this.timebounds == null ||
+        (this.timebounds != null && this.timebounds.maxTime == 0)) &&
+      !this.timeoutSet
+    ) {
+      throw new Error(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).',
+      );
     }
 
     let sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
 
     var attrs = {
-      sourceAccount: Keypair.fromPublicKey(this.source.accountId()).xdrAccountId(),
-      fee:           this.baseFee * this.operations.length,
-      seqNum:        xdr.SequenceNumber.fromString(sequenceNumber.toString()),
-      memo:          this.memo ? this.memo.toXDRObject() : null,
-      ext:           new xdr.TransactionExt(0)
+      sourceAccount: Keypair.fromPublicKey(
+        this.source.accountId(),
+      ).xdrAccountId(),
+      fee: this.baseFee * this.operations.length,
+      seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
+      memo: this.memo ? this.memo.toXDRObject() : null,
+      ext: new xdr.TransactionExt(0),
     };
 
     if (this.timebounds) {
-      this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime.toString());
-      this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime.toString());
+      this.timebounds.minTime = UnsignedHyper.fromString(
+        this.timebounds.minTime.toString(),
+      );
+      this.timebounds.maxTime = UnsignedHyper.fromString(
+        this.timebounds.maxTime.toString(),
+      );
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
     }
 
     let xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
 
-    let xenv = new xdr.TransactionEnvelope({tx:xtx});
+    let xenv = new xdr.TransactionEnvelope({ tx: xtx });
     let tx = new Transaction(xenv);
 
     this.source.incrementSequenceNumber();
-    
+
     return tx;
   }
 }

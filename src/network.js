@@ -1,4 +1,4 @@
-import {hash} from "./hashing";
+import { hash } from './hashing';
 
 /**
  * Contains passphrases for common networks:
@@ -7,8 +7,8 @@ import {hash} from "./hashing";
  * @type {{PUBLIC: string, TESTNET: string}}
  */
 export const Networks = {
-	PUBLIC: "Public Global Stellar Network ; September 2015",
-	TESTNET: "Test SDF Network ; September 2015"
+  PUBLIC: 'Public Global Stellar Network ; September 2015',
+  TESTNET: 'Test SDF Network ; September 2015',
 };
 
 var current = null;
@@ -26,53 +26,53 @@ var current = null;
  * @param {string} networkPassphrase Network passphrase
  */
 export class Network {
-	constructor(networkPassphrase) {
-		this._networkPassphrase = networkPassphrase;
-	}
+  constructor(networkPassphrase) {
+    this._networkPassphrase = networkPassphrase;
+  }
 
-	/**
-	 * Use Stellar Public Network
-	 */
-	static usePublicNetwork() {
-		this.use(new Network(Networks.PUBLIC));
-	}
+  /**
+   * Use Stellar Public Network
+   */
+  static usePublicNetwork() {
+    this.use(new Network(Networks.PUBLIC));
+  }
 
-	/**
-	 * Use test network.
-	 */
-	static useTestNetwork() {
-		this.use(new Network(Networks.TESTNET));
-	}
+  /**
+   * Use test network.
+   */
+  static useTestNetwork() {
+    this.use(new Network(Networks.TESTNET));
+  }
 
-	/**
-	 * Use network defined by Network object.
-	 * @param {Network} network Network to use
-	 */
-	static use(network) {
-		current = network;
-	}
+  /**
+   * Use network defined by Network object.
+   * @param {Network} network Network to use
+   */
+  static use(network) {
+    current = network;
+  }
 
-	/**
-	 * Returns currently selected network.
-	 * @returns {Network}
-	 */
-	static current() {
-		return current;
-	}
+  /**
+   * Returns currently selected network.
+   * @returns {Network}
+   */
+  static current() {
+    return current;
+  }
 
-	/**
-	 * Returns network passphrase.
-	 * @returns {string}
-	 */
-	networkPassphrase() {
-		return this._networkPassphrase;
-	}
+  /**
+   * Returns network passphrase.
+   * @returns {string}
+   */
+  networkPassphrase() {
+    return this._networkPassphrase;
+  }
 
-	/**
-	 * Returns Network ID. Network ID is SHA-256 hash of network passphrase.
-	 * @returns {string}
-	 */
-	networkId() {
-		return hash(this.networkPassphrase());
-	}
+  /**
+   * Returns Network ID. Network ID is SHA-256 hash of network passphrase.
+   * @returns {string}
+   */
+  networkId() {
+    return hash(this.networkPassphrase());
+  }
 }
