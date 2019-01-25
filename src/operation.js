@@ -64,7 +64,7 @@ export class Operation {
         throw new Error('Source address is invalid');
       }
       opAttributes.sourceAccount = Keypair.fromPublicKey(
-        opts.source,
+        opts.source
       ).xdrAccountId();
     }
   }
@@ -299,7 +299,7 @@ export class Operation {
       const approx = best_r(price);
       xdrObject = new xdr.Price({
         n: parseInt(approx[0], 10),
-        d: parseInt(approx[1], 10),
+        d: parseInt(approx[1], 10)
       });
     }
 

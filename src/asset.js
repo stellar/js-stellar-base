@@ -20,7 +20,7 @@ export class Asset {
   constructor(code, issuer) {
     if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(
-        'Asset code is invalid (maximum alphanumeric, 12 characters at max)',
+        'Asset code is invalid (maximum alphanumeric, 12 characters at max)'
       );
     }
     if (String(code).toLowerCase() !== 'xlm' && !issuer) {
@@ -93,7 +93,7 @@ export class Asset {
     // eslint-disable-next-line new-cap
     const assetType = new xdrType({
       assetCode: paddedCode,
-      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId(),
+      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
     return new xdr.Asset(xdrTypeString, assetType);

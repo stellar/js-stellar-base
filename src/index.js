@@ -12,7 +12,7 @@ export {
   Operation,
   AuthRequiredFlag,
   AuthRevocableFlag,
-  AuthImmutableFlag,
+  AuthImmutableFlag
 } from './operation';
 export * from './memo';
 export { Account } from './account';

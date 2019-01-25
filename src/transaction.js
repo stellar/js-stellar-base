@@ -29,7 +29,7 @@ export class Transaction {
       envelope
         .tx()
         .sourceAccount()
-        .ed25519(),
+        .ed25519()
     );
     this.fee = this.tx.fee();
     this._memo = this.tx.memo();
@@ -39,7 +39,7 @@ export class Transaction {
     if (timeBounds) {
       this.timeBounds = {
         minTime: timeBounds.minTime().toString(),
-        maxTime: timeBounds.maxTime().toString(),
+        maxTime: timeBounds.maxTime().toString()
       };
     }
 
@@ -114,14 +114,14 @@ export class Transaction {
   signatureBase() {
     if (Network.current() === null) {
       throw new Error(
-        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.',
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
       );
     }
 
     return Buffer.concat([
       Network.current().networkId(),
       xdr.EnvelopeType.envelopeTypeTx().toXDR(),
-      this.tx.toXDR(),
+      this.tx.toXDR()
     ]);
   }
 

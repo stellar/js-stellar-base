@@ -6,7 +6,7 @@ import { verifyChecksum } from './util/checksum';
 const versionBytes = {
   accountId: 0x00, // decimal 0
   none: 0x01, // decimal 1
-  seed: 0x21, // decimal 33
+  seed: 0x21 // decimal 33
 };
 
 export function decodeBase58Check(versionByteName, encoded) {
@@ -20,13 +20,13 @@ export function decodeBase58Check(versionByteName, encoded) {
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "accountId", "seed", or "none"`,
+      `${versionByteName} is not a valid version byte name.  expected one of "accountId", "seed", or "none"`
     );
   }
 
   if (versionByte !== expectedVersion) {
     throw new Error(
-      `invalid version byte.  expected ${expectedVersion}, got ${versionByte}`,
+      `invalid version byte.  expected ${expectedVersion}, got ${versionByte}`
     );
   }
 
@@ -38,7 +38,7 @@ export function decodeBase58Check(versionByteName, encoded) {
 
   if (versionByteName === 'accountId' && decoded.length !== 37) {
     throw new Error(
-      `Decoded address length is invalid. Expected 37, got ${decoded.length}`,
+      `Decoded address length is invalid. Expected 37, got ${decoded.length}`
     );
   }
 

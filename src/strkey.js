@@ -11,7 +11,7 @@ const versionBytes = {
   ed25519PublicKey: 6 << 3, // G
   ed25519SecretSeed: 18 << 3, // S
   preAuthTx: 19 << 3, // T
-  sha256Hash: 23 << 3, // X
+  sha256Hash: 23 << 3 // X
 };
 
 /**
@@ -144,13 +144,13 @@ export function decodeCheck(versionByteName, encoded) {
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`,
+      `${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`
     );
   }
 
   if (versionByte !== expectedVersion) {
     throw new Error(
-      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`,
+      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`
     );
   }
 
@@ -172,7 +172,7 @@ export function encodeCheck(versionByteName, data) {
 
   if (isUndefined(versionByte)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`,
+      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`
     );
   }
 

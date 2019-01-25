@@ -98,7 +98,7 @@ export class Keypair {
   static master() {
     if (Network.current() === null) {
       throw new Error(
-        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.',
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
       );
     }
     return this.fromRawEd25519Seed(Network.current().networkId());

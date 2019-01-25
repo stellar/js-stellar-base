@@ -112,7 +112,7 @@ export class TransactionBuilder {
   setTimeout(timeout) {
     if (this.timebounds != null && this.timebounds.maxTime > 0) {
       throw new Error(
-        'TimeBounds.max_time has been already set - setting timeout would overwrite it.',
+        'TimeBounds.max_time has been already set - setting timeout would overwrite it.'
       );
     }
 
@@ -128,7 +128,7 @@ export class TransactionBuilder {
       } else {
         this.timebounds = {
           minTime: this.timebounds.minTime,
-          maxTime: timeoutTimestamp,
+          maxTime: timeoutTimestamp
         };
       }
     }
@@ -149,7 +149,7 @@ export class TransactionBuilder {
       !this.timeoutSet
     ) {
       throw new Error(
-        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).',
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
       );
     }
 
@@ -157,20 +157,20 @@ export class TransactionBuilder {
 
     const attrs = {
       sourceAccount: Keypair.fromPublicKey(
-        this.source.accountId(),
+        this.source.accountId()
       ).xdrAccountId(),
       fee: this.baseFee * this.operations.length,
       seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
       memo: this.memo ? this.memo.toXDRObject() : null,
-      ext: new xdr.TransactionExt(0),
+      ext: new xdr.TransactionExt(0)
     };
 
     if (this.timebounds) {
       this.timebounds.minTime = UnsignedHyper.fromString(
-        this.timebounds.minTime.toString(),
+        this.timebounds.minTime.toString()
       );
       this.timebounds.maxTime = UnsignedHyper.fromString(
-        this.timebounds.maxTime.toString(),
+        this.timebounds.maxTime.toString()
       );
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
     }

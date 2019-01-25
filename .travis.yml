@@ -23,7 +23,7 @@ script:
       fi
     else
       # Ugly but it's the only way to make istanbul generate coverage report
-      babel-node ./node_modules/gulp/bin/gulp.js test:node
+      gulp test:node
     fi
 after_success:
   - |
