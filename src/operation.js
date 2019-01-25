@@ -86,21 +86,22 @@ export class Operation {
     }
 
     const attrs = operation.body().value();
-    const path = attrs.path();
 
     switch (operation.body().switch().name) {
-      case 'createAccount':
+      case 'createAccount': {
         result.type = 'createAccount';
         result.destination = accountIdtoAddress(attrs.destination());
         result.startingBalance = this._fromXDRAmount(attrs.startingBalance());
         break;
-      case 'payment':
+      }
+      case 'payment': {
         result.type = 'payment';
         result.destination = accountIdtoAddress(attrs.destination());
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
-      case 'pathPayment':
+      }
+      case 'pathPayment': {
         result.type = 'pathPayment';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
@@ -109,17 +110,21 @@ export class Operation {
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
         result.path = [];
 
+        const path = attrs.path();
+
         // note that Object.values isn't supported by node 6!
         Object.keys(path).forEach((pathKey) => {
           result.path.push(Asset.fromOperation(path[pathKey]));
         });
         break;
-      case 'changeTrust':
+      }
+      case 'changeTrust': {
         result.type = 'changeTrust';
         result.line = Asset.fromOperation(attrs.line());
         result.limit = this._fromXDRAmount(attrs.limit());
         break;
-      case 'allowTrust':
+      }
+      case 'allowTrust': {
         result.type = 'allowTrust';
         result.trustor = accountIdtoAddress(attrs.trustor());
         result.assetCode = attrs
@@ -129,7 +134,8 @@ export class Operation {
         result.assetCode = trimEnd(result.assetCode, '\0');
         result.authorize = attrs.authorize();
         break;
-      case 'setOption':
+      }
+      case 'setOption': {
         result.type = 'setOptions';
         if (attrs.inflationDest()) {
           result.inflationDest = accountIdtoAddress(attrs.inflationDest());
@@ -171,7 +177,8 @@ export class Operation {
           result.signer = signer;
         }
         break;
-      case 'manageOffer':
+      }
+      case 'manageOffer': {
         result.type = 'manageOffer';
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
@@ -179,32 +186,39 @@ export class Operation {
         result.price = this._fromXDRPrice(attrs.price());
         result.offerId = attrs.offerId().toString();
         break;
-      case 'createPassiveOffer':
+      }
+      case 'createPassiveOffer': {
         result.type = 'createPassiveOffer';
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.amount = this._fromXDRAmount(attrs.amount());
         result.price = this._fromXDRPrice(attrs.price());
         break;
-      case 'accountMerge':
+      }
+      case 'accountMerge': {
         result.type = 'accountMerge';
         result.destination = accountIdtoAddress(attrs);
         break;
-      case 'manageDatum':
+      }
+      case 'manageDatum': {
         result.type = 'manageData';
         // manage_data.name is checked by iscntrl in stellar-core
         result.name = attrs.dataName().toString('ascii');
         result.value = attrs.dataValue();
         break;
-      case 'inflation':
+      }
+      case 'inflation': {
         result.type = 'inflation';
         break;
-      case 'bumpSequence':
+      }
+      case 'bumpSequence': {
         result.type = 'bumpSequence';
         result.bumpTo = attrs.bumpTo().toString();
         break;
-      default:
+      }
+      default: {
         throw new Error('Unknown operation');
+      }
     }
     return result;
   }
