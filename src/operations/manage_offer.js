@@ -31,17 +31,18 @@ export function manageOffer(opts) {
   }
   attributes.price = this._toXDRPrice(opts.price);
 
+  if (!isUndefined(opts.offerId)) {
+    opts.offerId = opts.offerId.toString();
+  } else {
+    opts.offerId = '0';
+  }
+
   attributes.offerId = UnsignedHyper.fromString(opts.offerId);
   const manageOfferOp = new xdr.ManageOfferOp(attributes);
 
   const opAttributes = {};
   opAttributes.body = xdr.OperationBody.manageOffer(manageOfferOp);
-  this.setSourceAccount(
-    opAttributes,
-    Object.assign(opts, {
-      offerId: !isUndefined(opts.offerId) ? opts.offerId.toString() : '0'
-    })
-  );
+  this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
