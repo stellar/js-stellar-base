@@ -1,7 +1,6 @@
 import isUndefined from 'lodash/isUndefined';
 import { UnsignedHyper } from 'js-xdr';
 import xdr from '../generated/stellar-xdr_generated';
-
 /**
  * Returns a XDR ManageOfferOp. A "manage offer" operation creates, updates, or
  * deletes an offer.
@@ -37,10 +36,12 @@ export function manageOffer(opts) {
 
   const opAttributes = {};
   opAttributes.body = xdr.OperationBody.manageOffer(manageOfferOp);
-  this.setSourceAccount(opAttributes, {
-    ...opts,
-    offerId: !isUndefined(opts.offerId) ? opts.offerId.toString() : '0',
-  });
+  this.setSourceAccount(
+    opAttributes,
+    Object.assign(opts, {
+      offerId: !isUndefined(opts.offerId) ? opts.offerId.toString() : '0'
+    })
+  );
 
   return new xdr.Operation(opAttributes);
 }

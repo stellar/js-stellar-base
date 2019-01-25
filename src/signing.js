@@ -32,7 +32,7 @@ function checkFastSigningNode() {
   // can only occur at the top level.  thanks, obama.
   let ed25519;
   try {
-    // eslint-disable-next-line global-require, import/no-extraneous-dependencies
+    // eslint-disable-next-line
     ed25519 = require('ed25519');
   } catch (err) {
     return checkFastSigningBrowser();
@@ -56,9 +56,8 @@ function checkFastSigningNode() {
 function checkFastSigningBrowser() {
   // fallback to tweetnacl.js if we're in the browser or
   // if there was a failure installing ed25519
-  // eslint-disable-next-line global-require
+  // eslint-disable-next-line
   const nacl = require('tweetnacl');
-
   actualMethods.sign = (data, secretKey) => {
     data = Buffer.from(data);
     data = new Uint8Array(data.toJSON().data);

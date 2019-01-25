@@ -109,8 +109,9 @@ export class Operation {
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
         result.path = [];
 
-        Object.values(path).forEach((pathItem) => {
-          result.path.push(Asset.fromOperation(pathItem));
+        // note that Object.values isn't supported by node 6!
+        Object.keys(path).forEach((pathKey) => {
+          result.path.push(Asset.fromOperation(path[pathKey]));
         });
         break;
       case 'changeTrust':
