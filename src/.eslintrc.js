@@ -19,6 +19,7 @@ module.exports = {
     'lines-between-class-members': 0,
 
     // WARN
+    'prefer-import/prefer-import-over-require': [1],
     'no-console': ['warn', { allow: ['assert'] }],
     'no-debugger': 1,
     'no-unused-vars': 1,
