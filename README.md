@@ -140,7 +140,7 @@ While you're making changes, make sure to run the linter-watcher to catch any
    linting errors (in addition to making sure your text editor supports ESLint)
 
 ```shell
-npx gulp lint:watch
+npx gulp watch
 ````
 
 If you're working on a file not in `src`, limit your code to Node 6.16 ES! See
