@@ -1,4 +1,3 @@
 {
-  "presets": ["es2015"],
-  "only": ["./src", "./node_modules/js-xdr/src"]
+  "presets": ["es2015"]
 }
