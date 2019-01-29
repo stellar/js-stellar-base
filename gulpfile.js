@@ -13,7 +13,6 @@ gulp.task('default', ['build']);
 gulp.task('lint:src', function() {
   return gulp
     .src(['src/**/*.js'])
-    .pipe(plumber())
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format())
     .pipe(plugins.eslint.failAfterError());
@@ -23,7 +22,6 @@ gulp.task('lint:src', function() {
 gulp.task('lint:test', function() {
   return gulp
     .src(['test/unit/**/*.js'])
-    .pipe(plumber())
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format())
     .pipe(plugins.eslint.failAfterError());
@@ -44,7 +42,6 @@ gulp.task('hooks:precommit', ['build'], function() {
 gulp.task('build:node', ['lint:src'], function() {
   return gulp
     .src('src/**/*.js')
-    .pipe(plumber())
     .pipe(plugins.babel())
     .pipe(gulp.dest('lib'));
 });
@@ -52,7 +49,6 @@ gulp.task('build:node', ['lint:src'], function() {
 gulp.task('build:browser', ['lint:src'], function() {
   return gulp
     .src('src/browser.js')
-    .pipe(plumber())
     .pipe(
       plugins.webpack({
         output: { library: 'StellarBase' },
