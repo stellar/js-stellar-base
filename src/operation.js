@@ -267,7 +267,6 @@ export class Operation {
    * @param {*} value Value to check
    * @param {function(value, name)} isValidFunction Function to check other constraints (the argument will be a `Number`)
    * @returns {undefined|Number}
-   * @private
    */
   static _checkUnsignedIntValue(name, value, isValidFunction = null) {
     if (isUndefined(value)) {
@@ -290,21 +289,44 @@ export class Operation {
         throw new Error(`${name} value is invalid`);
     }
   }
-
+  /**
+   * @private
+   * @param {string|BigNumber} value Value
+   * @returns {Hyper} XDR amount
+   */
   static _toXDRAmount(value) {
     const amount = new BigNumber(value).mul(ONE);
     return Hyper.fromString(amount.toString());
   }
 
+  /**
+   * @private
+   * @param {string|BigNumber} value XDR amount
+   * @returns {BigNumber} Number
+   */
   static _fromXDRAmount(value) {
     return new BigNumber(value).div(ONE).toFixed(7);
   }
 
+  /**
+   * @private
+   * @param {object} price Price object
+   * @param {function} price.n numerator function that returns a value
+   * @param {function} price.d denominator function that returns a value
+   * @returns {BigNumber} Big string
+   */
   static _fromXDRPrice(price) {
     const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }
 
+  /**
+   * @private
+   * @param {object} price Price object
+   * @param {function} price.n numerator function that returns a value
+   * @param {function} price.d denominator function that returns a value
+   * @returns {object} XDR price object
+   */
   static _toXDRPrice(price) {
     let xdrObject;
     if (price.n && price.d) {
