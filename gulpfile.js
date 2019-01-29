@@ -54,7 +54,10 @@ gulp.task('build:browser', ['lint:src'], function() {
         output: { library: 'StellarBase' },
         module: {
           loaders: [
-            { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+            {
+              test: /\.js$/,
+              loader: 'babel-loader'
+            }
           ]
         },
         plugins: [
