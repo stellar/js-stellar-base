@@ -1,6 +1,6 @@
-const BigNumber = require('bignumber.js');
-const crypto = require('crypto');
-const isString = require('lodash/isString');
+import BigNumber from 'bignumber.js';
+import crypto from 'crypto';
+import isString from 'lodash/isString';
 
 describe('Operation', function() {
   describe('.createAccount()', function() {

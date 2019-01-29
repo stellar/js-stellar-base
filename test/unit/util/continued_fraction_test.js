@@ -1,5 +1,5 @@
-const best_r = require('../../../src/util/continued_fraction.js').best_r;
-const BigNumber = require('bignumber.js');
+import { best_r } from '../../../src/util/continued_fraction.js';
+import BigNumber from 'bignumber.js';
 
 describe('best_r', function() {
   it('correctly calculates the best rational approximation', function() {

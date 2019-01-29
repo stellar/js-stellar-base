@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 describe('Transaction', function() {
   it('constructs Transaction object from a TransactionEnvelope', function(done) {
