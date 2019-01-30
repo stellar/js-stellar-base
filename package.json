@@ -99,7 +99,7 @@
     "base32.js": "~0.1.0",
     "bignumber.js": "^4.0.0",
     "crc": "3.5.0",
-    "js-xdr": "morleyzhi/js-xdr#73cb4ddc73b828bfeabf83f2ac954a787750b9a1",
+    "js-xdr": "^1.0.5",
     "lodash": "^4.17.10",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.0"
