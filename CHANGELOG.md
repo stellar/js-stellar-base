@@ -8,6 +8,8 @@ A breaking change will get clearly notified in this log.
 - Added ESLint and Prettier to enforce code style
 - Upgraded dependencies, including Babel to 6
 - Bump local node version to 6.14.0
+- Change Operations.\_fromXDRAmount to not use scientific notation (1e-7) for
+  small amounts like 0.0000001.
 
 ## 0.10.0
 
