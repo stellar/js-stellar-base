@@ -1,6 +1,6 @@
-import {default as xdr} from "../generated/stellar-xdr_generated";
 import isUndefined from 'lodash/isUndefined';
-  
+import xdr from '../generated/stellar-xdr_generated';
+
 /**
  * Returns a XDR CreatePasiveOfferOp. A "create passive offer" operation creates an
  * offer that won't consume a counter offer that exactly matches this offer. This is
@@ -8,7 +8,7 @@ import isUndefined from 'lodash/isUndefined';
  * to manage this offer after using this operation to create it.
  * @function
  * @alias Operation.createPassiveOffer
- * @param {object} opts
+ * @param {object} opts Options object
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.
  * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
@@ -17,10 +17,10 @@ import isUndefined from 'lodash/isUndefined';
  * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
- * @returns {xdr.CreatePassiveOfferOp}
+ * @returns {xdr.CreatePassiveOfferOp} Create Passive Offer operation
  */
-export const createPassiveOffer = function(opts) {
-  let attributes = {};
+export function createPassiveOffer(opts) {
+  const attributes = {};
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
   if (!this.isValidAmount(opts.amount)) {
@@ -31,11 +31,13 @@ export const createPassiveOffer = function(opts) {
     throw new TypeError('price argument is required');
   }
   attributes.price = this._toXDRPrice(opts.price);
-  let createPassiveOfferOp = new xdr.CreatePassiveOfferOp(attributes);
+  const createPassiveOfferOp = new xdr.CreatePassiveOfferOp(attributes);
 
-  let opAttributes = {};
-  opAttributes.body = xdr.OperationBody.createPassiveOffer(createPassiveOfferOp);
+  const opAttributes = {};
+  opAttributes.body = xdr.OperationBody.createPassiveOffer(
+    createPassiveOfferOp,
+  );
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
-};
+}

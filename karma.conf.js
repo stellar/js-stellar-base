@@ -1,12 +1,9 @@
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
-    browsers : ["Firefox"],
+    browsers: ['Firefox'],
 
-    files: [
-      'dist/stellar-base.js',
-      'test/unit/**/*.js'
-    ],
+    files: ['dist/stellar-base.js', 'test/unit/**/*.js'],
 
     preprocessors: {
       'test/unit/**/*.js': ['webpack']
@@ -15,7 +12,7 @@ module.exports = function(config) {
     webpack: {
       module: {
         loaders: [
-          { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
+          { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
         ]
       }
     },
@@ -26,6 +23,6 @@ module.exports = function(config) {
 
     singleRun: true,
 
-    reporters: ['dots'],
+    reporters: ['dots']
   });
 };

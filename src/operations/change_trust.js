@@ -1,8 +1,7 @@
-import {default as xdr} from "../generated/stellar-xdr_generated";
-import {Keypair} from "../keypair";
 import isUndefined from 'lodash/isUndefined';
-import {Hyper} from "js-xdr";
+import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
+import xdr from '../generated/stellar-xdr_generated';
 
 const MAX_INT64 = '9223372036854775807';
 
@@ -12,16 +11,16 @@ const MAX_INT64 = '9223372036854775807';
  * trusted and the asset code are in the given Asset object.
  * @function
  * @alias Operation.changeTrust
- * @param {object} opts
+ * @param {object} opts Options object
  * @param {Asset} opts.asset - The asset for the trust line.
  * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
  *                                If the limit is set to "0" it deletes the trustline.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
- * @returns {xdr.ChangeTrustOp}
+ * @returns {xdr.ChangeTrustOp} Change Trust operation
  */
-export const changeTrust = function(opts) {
-  let attributes      = {};
-  attributes.line     = opts.asset.toXDRObject();
+export function changeTrust(opts) {
+  const attributes = {};
+  attributes.line = opts.asset.toXDRObject();
   if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
     throw new TypeError(this.constructAmountRequirementsError('limit'));
   }
@@ -35,11 +34,11 @@ export const changeTrust = function(opts) {
   if (opts.source) {
     attributes.source = opts.source.masterKeypair;
   }
-  let changeTrustOP = new xdr.ChangeTrustOp(attributes);
-  
-  let opAttributes = {};
+  const changeTrustOP = new xdr.ChangeTrustOp(attributes);
+
+  const opAttributes = {};
   opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
-};
+}
