@@ -128,4 +128,14 @@ export class Transaction {
 
     return envelope;
   }
+
+  /**
+   * To XDR returns a base64-encoded XDR string
+   * @returns {xdr.TransactionEnvelope}
+   */
+  toXDR() {
+    return this.toEnvelope()
+      .toXDR()
+      .toString('base64');
+  }
 }
