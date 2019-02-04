@@ -52,60 +52,108 @@
 <a href="https://codeclimate.com/github/stellar/js-stellar-base"><img src="https://codeclimate.com/github/stellar/js-stellar-base/badges/gpa.svg" alt="Code Climate"></a>
 <a href="https://coveralls.io/github/stellar/js-stellar-base?branch=master"><img src="https://coveralls.io/repos/stellar/js-stellar-base/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a>
 <a href="https://david-dm.org/stellar/js-stellar-base"><img src="https://david-dm.org/stellar/js-stellar-base.svg" alt="Dependency Status"></a></p>
-<p>The stellar-base library is the lowest-level stellar helper library.  It consists of classes
-to read, write, hash, and sign the xdr structures that are used in <a href="https://github.com/stellar/stellar-core">stellar-core</a>.
-This is an implementation in JavaScript that can be used on either Node.js or web browsers.</p>
+<p>The stellar-base library is the lowest-level stellar helper library. It consists
+of classes to read, write, hash, and sign the xdr structures that are used in
+<a href="https://github.com/stellar/stellar-core">stellar-core</a>. This is an
+implementation in JavaScript that can be used on either Node.js or web browsers.</p>
 <ul>
 <li><strong><a href="https://stellar.github.io/js-stellar-base/">API Reference</a></strong></li>
 </ul>
 <blockquote>
-<p><strong>Warning!</strong> Node version of this package is using <a href="https://www.npmjs.com/package/ed25519"><code>ed25519</code></a> package, a native implementation of <a href="https://ed25519.cr.yp.to/">Ed25519</a> in Node.js, as an <a href="https://docs.npmjs.com/files/package.json#optionaldependencies">optional dependency</a>. This means that if for any reason installation of this package fails, <code>stellar-base</code> will fallback to the much slower implementation contained in <a href="https://www.npmjs.com/package/tweetnacl"><code>tweetnacl</code></a>.</p>
-<p>If you are using <code>stellar-base</code> in a browser you can ignore this. However, for production backend deployments you should definitely be using <code>ed25519</code>. If <code>ed25519</code> is successfully installed and working <code>StellarBase.FastSigning</code> variable will be equal <code>true</code>. Otherwise it will be <code>false</code>.</p>
+<p><strong>Warning!</strong> Node version of this package is using
+<a href="https://www.npmjs.com/package/ed25519"><code>ed25519</code></a> package, a native
+implementation of <a href="https://ed25519.cr.yp.to/">Ed25519</a> in Node.js, as an
+<a href="https://docs.npmjs.com/files/package.json#optionaldependencies">optional dependency</a>.
+This means that if for any reason installation of this package fails,
+<code>stellar-base</code> will fallback to the much slower implementation contained in
+<a href="https://www.npmjs.com/package/tweetnacl"><code>tweetnacl</code></a>.</p>
+<p>If you are using <code>stellar-base</code> in a browser you can ignore this. However, for
+production backend deployments you should definitely be using <code>ed25519</code>. If
+<code>ed25519</code> is successfully installed and working <code>StellarBase.FastSigning</code>
+variable will be equal <code>true</code>. Otherwise it will be <code>false</code>.</p>
 </blockquote>
 <h2>Quick start</h2><p>Using npm to include js-stellar-base in your own project:</p>
 <pre class="prettyprint source lang-shell"><code>npm install --save stellar-base</code></pre><p>For browsers, <a href="#to-use-in-the-browser">use Bower to install it</a>. It exports a
 variable <code>StellarBase</code>. The example below assumes you have <code>stellar-base.js</code>
 relative to your html file.</p>
 <pre class="prettyprint source lang-html"><code>&lt;script src=&quot;stellar-base.js&quot;>&lt;/script>
-&lt;script>console.log(StellarBase);&lt;/script></code></pre><h2>Install</h2><h3>To use as a module in a Node.js project</h3><ol>
-<li><p>Install it using npm:</p>
-<pre class="prettyprint source lang-shell"><code>npm install --save stellar-base</code></pre></li>
-<li><p>require/import it in your JavaScript:</p>
-<pre class="prettyprint source lang-js"><code>var StellarBase = require('stellar-base');</code></pre></li>
+&lt;script>
+  console.log(StellarBase);
+&lt;/script></code></pre><h2>Install</h2><h3>To use as a module in a Node.js project</h3><ol>
+<li>Install it using npm:</li>
 </ol>
-<h3>To self host for use in the browser</h3><ol>
-<li><p>Install it using <a href="http://bower.io">bower</a>:</p>
-<pre class="prettyprint source lang-shell"><code>bower install stellar-base</code></pre></li>
-<li><p>Include it in the browser:</p>
+<pre class="prettyprint source lang-shell"><code>npm install --save stellar-base</code></pre><ol start="2">
+<li>require/import it in your JavaScript:</li>
+</ol>
+<pre class="prettyprint source lang-js"><code>var StellarBase = require('stellar-base');</code></pre><h3>To self host for use in the browser</h3><ol>
+<li>Install it using <a href="http://bower.io">bower</a>:</li>
+</ol>
+<pre class="prettyprint source lang-shell"><code>bower install stellar-base</code></pre><ol start="2">
+<li>Include it in the browser:</li>
+</ol>
 <pre class="prettyprint source lang-html"><code>&lt;script src=&quot;./bower_components/stellar-base/stellar-base.js&quot;>&lt;/script>
-&lt;script>console.log(StellarBase);&lt;/script></code></pre></li>
-</ol>
-<p>If you don't want to use install Bower, you can copy built JS files from the <a href="https://github.com/stellar/bower-js-stellar-base">bower-js-stellar-base repo</a>.</p>
+&lt;script>
+  console.log(StellarBase);
+&lt;/script></code></pre><p>If you don't want to use install Bower, you can copy built JS files from the
+<a href="https://github.com/stellar/bower-js-stellar-base">bower-js-stellar-base repo</a>.</p>
 <h3>To use the <a href="https://cdnjs.com/libraries/stellar-base">cdnjs</a> hosted script in the browser</h3><ol>
-<li><p>Instruct the browser to fetch the library from <a href="https://cdnjs.com/libraries/stellar-base">cdnjs</a>, a 3rd party service that hosts js libraries:</p>
+<li>Instruct the browser to fetch the library from
+<a href="https://cdnjs.com/libraries/stellar-base">cdnjs</a>, a 3rd party service that
+hosts js libraries:</li>
+</ol>
 <pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/stellar-base/{version}/stellar-base.js&quot;>&lt;/script>
-&lt;script>console.log(StellarBase);&lt;/script></code></pre></li>
-</ol>
-<p>Note that this method relies using a third party to host the JS library. This may not be entirely secure.</p>
-<p>Make sure that you are using the latest version number. They can be found on the <a href="https://github.com/stellar/js-stellar-base/releases">releases page in Github</a>.</p>
+&lt;script>
+  console.log(StellarBase);
+&lt;/script></code></pre><p>Note that this method relies using a third party to host the JS library. This
+may not be entirely secure.</p>
+<p>Make sure that you are using the latest version number. They can be found on the
+<a href="https://github.com/stellar/js-stellar-base/releases">releases page in Github</a>.</p>
 <h3>To develop and test js-stellar-base itself</h3><ol>
-<li><p>Clone the repo</p>
-<pre class="prettyprint source lang-shell"><code>git clone https://github.com/stellar/js-stellar-base.git</code></pre></li>
-<li><p>Install dependencies inside js-stellar-base folder</p>
-<pre class="prettyprint source lang-shell"><code>cd js-stellar-base
-npm install</code></pre></li>
+<li>Clone the repo</li>
 </ol>
-<h2>Usage</h2><p>For information on how to use js-stellar-base, take a look at the docs in the <a href="./docs">docs folder</a>.</p>
+<pre class="prettyprint source lang-shell"><code>git clone https://github.com/stellar/js-stellar-base.git</code></pre><ol start="2">
+<li>Install dependencies inside js-stellar-base folder</li>
+</ol>
+<pre class="prettyprint source lang-shell"><code>cd js-stellar-base
+npm install</code></pre><ol start="3">
+<li>Install Node 6.14.0</li>
+</ol>
+<p>Because we support earlier versions of Node, please install and develop on Node
+6.14.0 so you don't get surprised when your code works locally but breaks in CI.</p>
+<p>Here's out to install <code>nvm</code> if you haven't: https://github.com/creationix/nvm</p>
+<pre class="prettyprint source lang-shell"><code>nvm install
+
+# if you've never installed 6.14.0 before you'll want to re-install yarn
+npm install -g yarn</code></pre><p>If you work on several projects that use different Node versions, you might it
+helpful to install this automatic version manager:
+https://github.com/wbyoung/avn</p>
+<pre class="prettyprint source"><code>
+4. Observe the project's code style
+
+While you're making changes, make sure to run the linter-watcher to catch any
+   linting errors (in addition to making sure your text editor supports ESLint)
+
+```shell
+node_modules/.bin/gulp watch</code></pre><p>If you're working on a file not in <code>src</code>, limit your code to Node 6.16 ES! See
+what's supported here: https://node.green/ (The reason is that our npm library
+must support earlier versions of Node, so the tests need to run on those
+versions.)</p>
+<h2>Usage</h2><p>For information on how to use js-stellar-base, take a look at the docs in the
+<a href="./docs">docs folder</a>.</p>
 <h2>Testing</h2><p>To run all tests:</p>
 <pre class="prettyprint source lang-shell"><code>gulp test</code></pre><p>To run a specific set of tests:</p>
 <pre class="prettyprint source lang-shell"><code>gulp test:node
-gulp test:browser</code></pre><p>Tests are also run on the <a href="https://travis-ci.org/stellar/js-stellar-base">Travis CI js-stellar-base project</a> automatically.</p>
+gulp test:browser</code></pre><p>Tests are also run on the
+<a href="https://travis-ci.org/stellar/js-stellar-base">Travis CI js-stellar-base project</a>
+automatically.</p>
 <h2>Documentation</h2><p>Documentation for this repo lives inside the <a href="./docs">docs folder</a>.</p>
-<h2>Contributing</h2><p>Please see the <a href="./CONTRIBUTING.md">CONTRIBUTING.md</a> for details on how to contribute to this project.</p>
+<h2>Contributing</h2><p>Please see the <a href="./CONTRIBUTING.md">CONTRIBUTING.md</a> for details on how to
+contribute to this project.</p>
 <h2>Publishing to npm</h2><pre class="prettyprint source"><code>npm version [&lt;newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]</code></pre><p>A new version will be published to npm <strong>and</strong> Bower by Travis CI.</p>
-<p>npm &gt;=2.13.0 required.
-Read more about <a href="https://docs.npmjs.com/cli/version">npm version</a>.</p>
-<h2>License</h2><p>js-stellar-base is licensed under an Apache-2.0 license. See the <a href="./LICENSE">LICENSE</a> file for details.</p></article>
+<p>npm &gt;=2.13.0 required. Read more about
+<a href="https://docs.npmjs.com/cli/version">npm version</a>.</p>
+<h2>License</h2><p>js-stellar-base is licensed under an Apache-2.0 license. See the
+<a href="./LICENSE">LICENSE</a> file for details.</p></article>
     </section>
 
 
@@ -118,7 +166,7 @@ Read more about <a href="https://docs.npmjs.com/cli/version">npm version</a>.</p
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 14 2018 10:52:12 GMT+0000 (UTC) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 04 2019 16:20:47 GMT+0000 (UTC) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
