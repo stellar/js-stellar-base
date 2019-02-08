@@ -9,7 +9,7 @@
 
 var ALPHABET = 'gsphnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCr65jkm8oFqi1tuvAxyz';
 var ALPHABET_MAP = {};
-for(var i = 0; i < ALPHABET.length; ++i) {
+for (var i = 0; i < ALPHABET.length; ++i) {
   ALPHABET_MAP[ALPHABET.charAt(i)] = i;
 }
 var BASE = 58;
@@ -17,7 +17,9 @@ var BASE = 58;
 function decode(string) {
   if (string.length === 0) return [];
 
-  var i, j, bytes = [0];
+  var i,
+    j,
+    bytes = [0];
   for (i = 0; i < string.length; ++i) {
     var c = string[i];
     if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character');
@@ -46,4 +48,4 @@ function decode(string) {
   return bytes.reverse();
 }
 
-module.exports = {decode};
+module.exports = { decode };
