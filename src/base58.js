@@ -1,46 +1,52 @@
-import {default as bs58} from "./vendor/bs58";
-import isUndefined from "lodash/isUndefined";
-import {hash} from "./hashing";
-import {verifyChecksum} from "./util/checksum";
+import isUndefined from 'lodash/isUndefined';
+import bs58 from './vendor/bs58';
+import { hash } from './hashing';
+import { verifyChecksum } from './util/checksum';
 
 const versionBytes = {
-  "accountId": 0x00, // decimal 0
-  "none":      0x01, // decimal 1
-  "seed":      0x21, // decimal 33
+  accountId: 0x00, // decimal 0
+  none: 0x01, // decimal 1
+  seed: 0x21 // decimal 33
 };
 
 export function decodeBase58Check(versionByteName, encoded) {
-  let decoded     = bs58.decode(encoded);
-  let versionByte = decoded[0];
-  let payload     = decoded.slice(0, decoded.length - 4);
-  let data        = payload.slice(1);
-  let checksum    = decoded.slice(decoded.length - 4);
+  const decoded = bs58.decode(encoded);
+  const versionByte = decoded[0];
+  const payload = decoded.slice(0, decoded.length - 4);
+  const data = payload.slice(1);
+  const checksum = decoded.slice(decoded.length - 4);
 
-  let expectedVersion = versionBytes[versionByteName];
+  const expectedVersion = versionBytes[versionByteName];
 
   if (isUndefined(expectedVersion)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "accountId", "seed", or "none"`);
+    throw new Error(
+      `${versionByteName} is not a valid version byte name.  expected one of "accountId", "seed", or "none"`
+    );
   }
 
   if (versionByte !== expectedVersion) {
-    throw new Error(`invalid version byte.  expected ${expectedVersion}, got ${versionByte}`);
+    throw new Error(
+      `invalid version byte.  expected ${expectedVersion}, got ${versionByte}`
+    );
   }
 
-  let expectedChecksum = calculateChecksum(payload);
+  const expectedChecksum = calculateChecksum(payload);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
     throw new Error(`invalid checksum`);
   }
 
   if (versionByteName === 'accountId' && decoded.length !== 37) {
-    throw new Error(`Decoded address length is invalid. Expected 37, got ${decoded.length}`);
+    throw new Error(
+      `Decoded address length is invalid. Expected 37, got ${decoded.length}`
+    );
   }
 
   return Buffer.from(data);
 }
 
 function calculateChecksum(payload) {
-  let inner = hash(payload);
-  let outer = hash(inner);
-  return outer.slice(0,4);
+  const inner = hash(payload);
+  const outer = hash(inner);
+  return outer.slice(0, 4);
 }

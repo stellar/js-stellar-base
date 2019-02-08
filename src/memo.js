@@ -1,31 +1,30 @@
-import {default as xdr} from "./generated/stellar-xdr_generated";
-import isUndefined from "lodash/isUndefined";
-import isNull from "lodash/isNull";
-import isString from "lodash/isString";
-import clone from "lodash/clone";
-import {UnsignedHyper} from "js-xdr";
+import isUndefined from 'lodash/isUndefined';
+import isString from 'lodash/isString';
+import clone from 'lodash/clone';
+import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
+import xdr from './generated/stellar-xdr_generated';
 
 /**
  * Type of {@link Memo}.
  */
-export const MemoNone = "none";
+export const MemoNone = 'none';
 /**
  * Type of {@link Memo}.
  */
-export const MemoID = "id";
+export const MemoID = 'id';
 /**
  * Type of {@link Memo}.
  */
-export const MemoText = "text";
+export const MemoText = 'text';
 /**
  * Type of {@link Memo}.
  */
-export const MemoHash = "hash";
+export const MemoHash = 'hash';
 /**
  * Type of {@link Memo}.
  */
-export const MemoReturn = "return";
+export const MemoReturn = 'return';
 
 /**
  * `Memo` represents memos attached to transactions.
@@ -58,7 +57,7 @@ export class Memo {
         }
         break;
       default:
-        throw new Error("Invalid memo type");
+        throw new Error('Invalid memo type');
     }
   }
 
@@ -70,7 +69,7 @@ export class Memo {
   }
 
   set type(type) {
-    throw new Error("Memo is immutable");
+    throw new Error('Memo is immutable');
   }
 
   /**
@@ -91,16 +90,16 @@ export class Memo {
       case MemoReturn:
         return Buffer.from(this._value);
       default:
-        throw new Error("Invalid memo type");
+        throw new Error('Invalid memo type');
     }
   }
 
   set value(value) {
-    throw new Error("Memo is immutable");
+    throw new Error('Memo is immutable');
   }
 
   static _validateIdValue(value) {
-    let error = new Error("Expects a int64 as a string. Got " + value);
+    const error = new Error(`Expects a int64 as a string. Got ${value}`);
 
     if (!isString(value)) {
       throw error;
@@ -126,12 +125,14 @@ export class Memo {
 
   static _validateTextValue(value) {
     if (!xdr.Memo.armTypeForArm('text').isValid(value)) {
-      throw new Error("Expects string, array or buffer, max 28 bytes");
+      throw new Error('Expects string, array or buffer, max 28 bytes');
     }
   }
 
   static _validateHashValue(value) {
-    let error = new Error("Expects a 32 byte hash value or hex encoded string. Got " + value);
+    const error = new Error(
+      `Expects a 32 byte hash value or hex encoded string. Got ${value}`
+    );
 
     if (value === null || isUndefined(value)) {
       throw error;
@@ -149,7 +150,7 @@ export class Memo {
       throw error;
     }
 
-    if (!valueBuffer.length || valueBuffer.length != 32) {
+    if (!valueBuffer.length || valueBuffer.length !== 32) {
       throw error;
     }
   }
@@ -214,30 +215,34 @@ export class Memo {
         return xdr.Memo.memoHash(this._value);
       case MemoReturn:
         return xdr.Memo.memoReturn(this._value);
+      default:
+        return null;
     }
   }
 
   /**
    * Returns {@link Memo} from XDR memo object.
-   * @param {xdr.Memo}
+   * @param {xdr.Memo} object XDR memo object
    * @returns {Memo}
    */
   static fromXDRObject(object) {
     switch (object.arm()) {
-      case "id":
+      case 'id':
         return Memo.id(object.value().toString());
-      case "text":
+      case 'text':
         return Memo.text(object.value());
-      case "hash":
+      case 'hash':
         return Memo.hash(object.value());
-      case "retHash":
+      case 'retHash':
         return Memo.return(object.value());
+      default:
+        break;
     }
 
-    if (typeof object.value() === "undefined") {
+    if (typeof object.value() === 'undefined') {
       return Memo.none();
     }
 
-    throw new Error("Unknown type");
+    throw new Error('Unknown type');
   }
 }

@@ -1,15 +1,17 @@
-import base32 from "base32.js";
-import crc from "crc";
-import isUndefined from "lodash/isUndefined";
-import isNull from "lodash/isNull";
-import isString from "lodash/isString";
-import {verifyChecksum} from "./util/checksum";
+/* eslint-disable no-bitwise */
+
+import base32 from 'base32.js';
+import crc from 'crc';
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
+import isString from 'lodash/isString';
+import { verifyChecksum } from './util/checksum';
 
 const versionBytes = {
-  ed25519PublicKey:  6 << 3, // G
+  ed25519PublicKey: 6 << 3, // G
   ed25519SecretSeed: 18 << 3, // S
-  preAuthTx:         19 << 3, // T
-  sha256Hash:        23 << 3  // X
+  preAuthTx: 19 << 3, // T
+  sha256Hash: 23 << 3 // X
 };
 
 /**
@@ -22,7 +24,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeEd25519PublicKey(data) {
-    return encodeCheck("ed25519PublicKey", data);
+    return encodeCheck('ed25519PublicKey', data);
   }
 
   /**
@@ -31,7 +33,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeEd25519PublicKey(data) {
-    return decodeCheck("ed25519PublicKey", data);
+    return decodeCheck('ed25519PublicKey', data);
   }
 
   /**
@@ -40,7 +42,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidEd25519PublicKey(publicKey) {
-    return isValid("ed25519PublicKey", publicKey);
+    return isValid('ed25519PublicKey', publicKey);
   }
 
   /**
@@ -49,7 +51,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeEd25519SecretSeed(data) {
-    return encodeCheck("ed25519SecretSeed", data);
+    return encodeCheck('ed25519SecretSeed', data);
   }
 
   /**
@@ -58,7 +60,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeEd25519SecretSeed(data) {
-    return decodeCheck("ed25519SecretSeed", data);
+    return decodeCheck('ed25519SecretSeed', data);
   }
 
   /**
@@ -67,7 +69,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidEd25519SecretSeed(seed) {
-    return isValid("ed25519SecretSeed", seed);
+    return isValid('ed25519SecretSeed', seed);
   }
 
   /**
@@ -76,7 +78,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodePreAuthTx(data) {
-    return encodeCheck("preAuthTx", data);
+    return encodeCheck('preAuthTx', data);
   }
 
   /**
@@ -85,7 +87,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodePreAuthTx(data) {
-    return decodeCheck("preAuthTx", data);
+    return decodeCheck('preAuthTx', data);
   }
 
   /**
@@ -94,7 +96,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeSha256Hash(data) {
-    return encodeCheck("sha256Hash", data);
+    return encodeCheck('sha256Hash', data);
   }
 
   /**
@@ -103,17 +105,17 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeSha256Hash(data) {
-    return decodeCheck("sha256Hash", data);
+    return decodeCheck('sha256Hash', data);
   }
 }
 
 function isValid(versionByteName, encoded) {
-  if (encoded && encoded.length != 56) {
+  if (encoded && encoded.length !== 56) {
     return false;
   }
 
   try {
-    let decoded = decodeCheck(versionByteName, encoded);
+    const decoded = decodeCheck(versionByteName, encoded);
     if (decoded.length !== 32) {
       return false;
     }
@@ -128,27 +130,31 @@ export function decodeCheck(versionByteName, encoded) {
     throw new TypeError('encoded argument must be of type String');
   }
 
-  let decoded     = base32.decode(encoded);
-  let versionByte = decoded[0];
-  let payload     = decoded.slice(0, -2);
-  let data        = payload.slice(1);
-  let checksum    = decoded.slice(-2);
+  const decoded = base32.decode(encoded);
+  const versionByte = decoded[0];
+  const payload = decoded.slice(0, -2);
+  const data = payload.slice(1);
+  const checksum = decoded.slice(-2);
 
-  if (encoded != base32.encode(decoded)) {
+  if (encoded !== base32.encode(decoded)) {
     throw new Error('invalid encoded string');
   }
 
-  let expectedVersion = versionBytes[versionByteName];
+  const expectedVersion = versionBytes[versionByteName];
 
   if (isUndefined(expectedVersion)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`);
+    throw new Error(
+      `${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`
+    );
   }
 
   if (versionByte !== expectedVersion) {
-    throw new Error(`invalid version byte. expected ${expectedVersion}, got ${versionByte}`);
+    throw new Error(
+      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`
+    );
   }
 
-  let expectedChecksum = calculateChecksum(payload);
+  const expectedChecksum = calculateChecksum(payload);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
     throw new Error(`invalid checksum`);
@@ -159,20 +165,22 @@ export function decodeCheck(versionByteName, encoded) {
 
 export function encodeCheck(versionByteName, data) {
   if (isNull(data) || isUndefined(data)) {
-    throw new Error("cannot encode null data");
+    throw new Error('cannot encode null data');
   }
 
-  let versionByte = versionBytes[versionByteName];
+  const versionByte = versionBytes[versionByteName];
 
   if (isUndefined(versionByte)) {
-    throw new Error(`${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`);
+    throw new Error(
+      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`
+    );
   }
 
-  data              = Buffer.from(data);
-  let versionBuffer = Buffer.from([versionByte]);
-  let payload       = Buffer.concat([versionBuffer, data]);
-  let checksum      = calculateChecksum(payload);
-  let unencoded     = Buffer.concat([payload, checksum]);
+  data = Buffer.from(data);
+  const versionBuffer = Buffer.from([versionByte]);
+  const payload = Buffer.concat([versionBuffer, data]);
+  const checksum = calculateChecksum(payload);
+  const unencoded = Buffer.concat([payload, checksum]);
 
   return base32.encode(unencoded);
 }
@@ -180,9 +188,7 @@ export function encodeCheck(versionByteName, data) {
 function calculateChecksum(payload) {
   // This code calculates CRC16-XModem checksum of payload
   // and returns it as Buffer in little-endian order.
-  let checksum = Buffer.alloc(2);
+  const checksum = Buffer.alloc(2);
   checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
   return checksum;
 }
-
-
