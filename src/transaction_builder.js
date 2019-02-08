@@ -176,7 +176,7 @@ export class TransactionBuilder {
    * Please note that Horizon may still return <code>504 Gateway Timeout</code> error, even for short timeouts.
    * In such case you need to resubmit the same transaction again without making any changes to receive a status.
    * This method is using the machine system time (UTC), make sure it is set correctly.
-   * @param {timeout} timeout in seconds.
+   * @param {number} timeout Number of seconds the transaction is good. (Can't be negative!)
    * @return {TransactionBuilder}
    * @see TimeoutInfinite
    */
