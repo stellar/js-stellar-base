@@ -109,4 +109,46 @@ describe('Asset', function() {
             expect(xdr.value().assetCode()).to.equal('123456789012');
         });
     });
+
+    describe("fromOperation()", function () {
+      it("parses a native asset XDR", function () {
+        var xdr = new StellarBase.xdr.Asset.assetTypeNative();
+        var asset = StellarBase.Asset.fromOperation(xdr);
+
+        expect(asset).to.be.instanceof(StellarBase.Asset);
+        expect(asset.isNative()).to.equal(true);
+      });
+
+      it("parses a 4-alphanum asset XDR", function () {
+        var issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        var assetCode = 'KHL';
+        var assetType = new StellarBase.xdr.AssetAlphaNum4({
+          assetCode: assetCode + '\0',
+          issuer: StellarBase.Keypair.fromPublicKey(issuer).xdrAccountId()
+        });
+        var xdr = new StellarBase.xdr.Asset('assetTypeCreditAlphanum4', assetType);
+
+        var asset = StellarBase.Asset.fromOperation(xdr);
+
+        expect(asset).to.be.instanceof(StellarBase.Asset);
+        expect(asset.getCode()).to.equal(assetCode);
+        expect(asset.getIssuer()).to.equal(issuer);
+      });
+
+      it("parses a 12-alphanum asset XDR", function () {
+        var issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        var assetCode = 'KHLTOKEN';
+        var assetType = new StellarBase.xdr.AssetAlphaNum4({
+          assetCode: assetCode + '\0\0\0\0',
+          issuer: StellarBase.Keypair.fromPublicKey(issuer).xdrAccountId()
+        });
+        var xdr = new StellarBase.xdr.Asset('assetTypeCreditAlphanum12', assetType);
+
+        var asset = StellarBase.Asset.fromOperation(xdr);
+
+        expect(asset).to.be.instanceof(StellarBase.Asset);
+        expect(asset.getCode()).to.equal(assetCode);
+        expect(asset.getIssuer()).to.equal(issuer);
+      });
+    });
 });
