@@ -6,6 +6,7 @@ import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';
+import { Operation } from './operation';
 
 const BASE_FEE = 100; // Stroops
 
@@ -15,6 +16,73 @@ const BASE_FEE = 100; // Stroops
  * @see [Timeout](https://www.stellar.org/developers/horizon/reference/endpoints/transactions-create.html#timeout)
  */
 export const TimeoutInfinite = 0;
+
+/**
+ * A helper function to generate a TransactionBuilder instance from a JSON
+ * object with this shape:
+ *
+ * {
+ *  sourceAccount: string,
+ *  fee: number,
+ *  seqNum: [number],
+ *  timeBounds: [{
+ *    minTime: number,
+ *    maxTime: number
+ *  }],
+ *  memo: string,
+ *  operations: array<{
+ *    type: string,
+ *    sourceAccount: string,
+ *    body: {
+ *      // operation details
+ *    }
+ *  }>
+ * }
+ * @function
+ * @param {object} config - An object with transaction details
+ * @param {string} config.sourceAccount - source account public key
+ * @param {number} [config.fee=100] - the fee, in stroops
+ * @param {number} [config.timeout] - Timeout, in seconds, relative to the current
+ * time. Either this or `config.timeBounds` must be provided.
+ * @param {object} [config.timeBounds] - limit the transaction from running in time.
+ * If not provided, the transaction will have no timebounds (it'll last forever)
+ * @param {number} [config.timeBounds.minTime] - the earliest the trans can run
+ * @param {number} [config.timeBounds.maxTime] - the latest the trans can run
+ * @param {string} [config.memo] - A memo to attach to the transaction
+ * @param {array} config.operations - a list of operations that make
+ * up the transaction
+ * @param {string} config.operations[].type - a string of the operation type.
+ * See the list here: https://stellar.github.io/js-stellar-base/Operation.html
+ * @param {object} config.operations[].body - an object of operation's details. See
+ * those documented here: https://stellar.github.io/js-stellar-base/Operation.html
+ * @returns {TransactionBuilder} The built transaction object
+ */
+export function makeTransaction({
+  sourceAccount,
+  fee,
+  timeout,
+  timeBounds,
+  memo,
+  operations
+}) {
+  const transaction = new TransactionBuilder(sourceAccount, {
+    fee,
+    timebounds: timeBounds,
+    memo
+  });
+
+  if (!isUndefined(timeout) && isUndefined(timeBounds)) {
+    transaction.setTimeout(timeout);
+  }
+
+  operations.forEach(({ type, body }) => {
+    if (Operation[type]) {
+      transaction.addOperation(Operation[type](body));
+    }
+  });
+
+  return transaction.build();
+}
 
 /**
  * <p>Transaction builder helps constructs a new `{@link Transaction}` using the given {@link Account}
@@ -52,9 +120,12 @@ export const TimeoutInfinite = 0;
  * ```
  * @constructor
  * @param {Account} sourceAccount - The source account for this transaction.
- * @param {object} [opts] Options object
- * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
- * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
+ * @param {object} opts Options object
+ * @param {number} [opts.fee] - The max fee willing to pay per operation in this 
+ * transaction (**in stroops**).
+ * @param {object} [opts.timebounds] - The timebounds for the validity of this 
+ * transaction. If not provided, you _must_ call `setTimeout` before you call 
+ * `build`.
  * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
  * @param {number|string} [opts.timebounds.maxTime] - 64 bit unix timestamp
  * @param {Memo} [opts.memo] - The memo for the transaction
