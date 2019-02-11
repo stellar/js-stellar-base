@@ -180,6 +180,15 @@ describe('Transaction', function() {
 
     done();
   });
+
+  it('outputs xdr as a string', () => {
+    const xdrString =
+      'AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=';
+    const transaction = new StellarBase.Transaction(xdrString);
+    expect(typeof transaction).to.be.equal('object');
+    expect(typeof transaction.toXDR).to.be.equal('function');
+    expect(transaction.toXDR()).to.be.equal(xdrString);
+  });
 });
 
 function expectBuffersToBeEqual(left, right) {

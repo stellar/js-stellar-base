@@ -38,7 +38,7 @@ export function pathPayment(opts) {
   attributes.sendAsset = opts.sendAsset.toXDRObject();
   attributes.sendMax = this._toXDRAmount(opts.sendMax);
   attributes.destination = Keypair.fromPublicKey(
-    opts.destination,
+    opts.destination
   ).xdrAccountId();
   attributes.destAsset = opts.destAsset.toXDRObject();
   attributes.destAmount = this._toXDRAmount(opts.destAmount);

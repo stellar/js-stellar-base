@@ -3,6 +3,12 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
+## In `master`
+
+- Add a `toXDR` function for transactions that lets you get the transaction as a
+  base64-encoded string (so you may enter it into the Stellar Laboratory XDR
+  viewer, for one)
+
 ## 0.11.0
 
 - Added ESLint and Prettier to enforce code style

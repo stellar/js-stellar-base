@@ -16,7 +16,7 @@ export function best_r(rawNumber) {
   let f;
   const fractions = [
     [new BigNumber(0), new BigNumber(1)],
-    [new BigNumber(1), new BigNumber(0)],
+    [new BigNumber(1), new BigNumber(0)]
   ];
   let i = 2;
 

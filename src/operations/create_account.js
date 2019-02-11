@@ -19,12 +19,12 @@ export function createAccount(opts) {
   }
   if (!this.isValidAmount(opts.startingBalance)) {
     throw new TypeError(
-      this.constructAmountRequirementsError('startingBalance'),
+      this.constructAmountRequirementsError('startingBalance')
     );
   }
   const attributes = {};
   attributes.destination = Keypair.fromPublicKey(
-    opts.destination,
+    opts.destination
   ).xdrAccountId();
   attributes.startingBalance = this._toXDRAmount(opts.startingBalance);
   const createAccountOp = new xdr.CreateAccountOp(attributes);

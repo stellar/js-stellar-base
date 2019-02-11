@@ -136,4 +136,14 @@ export class Transaction {
 
     return envelope;
   }
+
+  /**
+   * Get the transaction envelope as a base64-encoded string
+   * @returns {string} XDR string
+   */
+  toXDR() {
+    return this.toEnvelope()
+      .toXDR()
+      .toString('base64');
+  }
 }

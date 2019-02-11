@@ -52,34 +52,34 @@ export function setOptions(opts) {
       throw new Error('inflationDest is invalid');
     }
     attributes.inflationDest = Keypair.fromPublicKey(
-      opts.inflationDest,
+      opts.inflationDest
     ).xdrAccountId();
   }
 
   attributes.clearFlags = this._checkUnsignedIntValue(
     'clearFlags',
-    opts.clearFlags,
+    opts.clearFlags
   );
   attributes.setFlags = this._checkUnsignedIntValue('setFlags', opts.setFlags);
   attributes.masterWeight = this._checkUnsignedIntValue(
     'masterWeight',
     opts.masterWeight,
-    weightCheckFunction,
+    weightCheckFunction
   );
   attributes.lowThreshold = this._checkUnsignedIntValue(
     'lowThreshold',
     opts.lowThreshold,
-    weightCheckFunction,
+    weightCheckFunction
   );
   attributes.medThreshold = this._checkUnsignedIntValue(
     'medThreshold',
     opts.medThreshold,
-    weightCheckFunction,
+    weightCheckFunction
   );
   attributes.highThreshold = this._checkUnsignedIntValue(
     'highThreshold',
     opts.highThreshold,
-    weightCheckFunction,
+    weightCheckFunction
   );
 
   if (!isUndefined(opts.homeDomain) && !isString(opts.homeDomain)) {
@@ -91,7 +91,7 @@ export function setOptions(opts) {
     const weight = this._checkUnsignedIntValue(
       'signer.weight',
       opts.signer.weight,
-      weightCheckFunction,
+      weightCheckFunction
     );
     let key;
 
@@ -102,7 +102,7 @@ export function setOptions(opts) {
         throw new Error('signer.ed25519PublicKey is invalid.');
       }
       const rawKey = StrKey.decodeEd25519PublicKey(
-        opts.signer.ed25519PublicKey,
+        opts.signer.ed25519PublicKey
       );
 
       // eslint-disable-next-line new-cap
@@ -150,7 +150,7 @@ export function setOptions(opts) {
 
     if (setValues !== 1) {
       throw new Error(
-        'Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.',
+        'Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.'
       );
     }
 

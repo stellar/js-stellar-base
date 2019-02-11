@@ -17,7 +17,7 @@ export function accountMerge(opts) {
     throw new Error('destination is invalid');
   }
   opAttributes.body = xdr.OperationBody.accountMerge(
-    Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+    Keypair.fromPublicKey(opts.destination).xdrAccountId()
   );
   this.setSourceAccount(opAttributes, opts);
 

@@ -35,7 +35,7 @@ export function createPassiveOffer(opts) {
 
   const opAttributes = {};
   opAttributes.body = xdr.OperationBody.createPassiveOffer(
-    createPassiveOfferOp,
+    createPassiveOfferOp
   );
   this.setSourceAccount(opAttributes, opts);
 
