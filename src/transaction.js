@@ -72,6 +72,33 @@ export class Transaction {
   }
 
   /**
+   * Add a signature to the transaction. Useful when a party wants to pre-sign
+   * a transaction but doesn't want to give access to their secret keys.
+   * @param {string} hint The base64 value of the signature hint XDR
+   * @param {string} signature The base64 value of the signature XDR
+   * @returns {TransactionBuilder}
+   */
+  addSignature(hint = '', signature = '') {
+    if (!hint) {
+      throw new Error('Invalid signature hint');
+    }
+    if (!signature) {
+      throw new Error('Invalid signature');
+    }
+
+    const hintBuffer = Buffer.from(hint, 'base64');
+    const signatureBuffer = Buffer.from(signature, 'base64');
+
+    this.signatures.push(
+      new xdr.DecoratedSignature({
+        hint: xdr.SignatureHint.fromXDR(hintBuffer),
+        signature: xdr.Signature.fromXDR(signatureBuffer)
+      })
+    );
+    return this;
+  }
+
+  /**
    * Add `hashX` signer preimage as signature.
    * @param {Buffer|String} preimage Preimage of hash used as signer
    * @returns {void}
