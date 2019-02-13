@@ -194,7 +194,7 @@ describe('Transaction', function() {
       )
       .build();
 
-    const signature = signer.sign(presignHash);
+    const signature = signer.sign(presignHash).toString('base64');
 
     addedSignatureTx.addSignature(signer.publicKey(), signature);
 

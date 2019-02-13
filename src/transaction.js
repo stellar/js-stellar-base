@@ -80,8 +80,12 @@ export class Transaction {
    * @returns {TransactionBuilder}
    */
   addSignature(publicKey = '', signature = '') {
-    if (!signature) {
+    if (!signature || typeof signature !== 'string') {
       throw new Error('Invalid signature');
+    }
+
+    if (!publicKey || typeof publicKey !== 'string') {
+      throw new Error('Invalid publicKey');
     }
 
     let hint;
@@ -95,7 +99,7 @@ export class Transaction {
     this.signatures.push(
       new xdr.DecoratedSignature({
         hint,
-        signature
+        signature: Buffer.from(signature, 'base64')
       })
     );
   }
