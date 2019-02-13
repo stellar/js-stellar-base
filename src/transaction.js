@@ -88,7 +88,6 @@ export class Transaction {
 
     try {
       hint = Keypair.fromPublicKey(publicKey).signatureHint();
-      console.log('calculated hint: ', hint);
     } catch (e) {
       throw new Error('Invalid publicKey');
     }
