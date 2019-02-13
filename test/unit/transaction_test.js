@@ -152,6 +152,70 @@ describe('Transaction', function() {
     );
   });
 
+  it('adds signature correctly', function() {
+    let source = new StellarBase.Account(
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
+    );
+    let destination =
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+    let asset = StellarBase.Asset.native();
+    let amount = '2000';
+    let signer = StellarBase.Keypair.master();
+
+    let signedTx = new StellarBase.TransactionBuilder(source, {
+      timebounds: {
+        minTime: 0,
+        maxTime: 1739392569
+      }
+    })
+      .addOperation(
+        StellarBase.Operation.payment({ destination, asset, amount })
+      )
+      .setTimeout(StellarBase.TimeoutInfinite)
+      .build();
+
+    const presignHash = signedTx.hash();
+    signedTx.sign(signer);
+    let envelopeSigned = signedTx.toEnvelope();
+
+    let addedSignatureTx = new StellarBase.TransactionBuilder(source, {
+      timebounds: {
+        minTime: 0,
+        maxTime: 1739392569
+      }
+    }).addOperation(
+      StellarBase.Operation.payment({ destination, asset, amount })
+    );
+    // make sure this tx has the same time bounds / seq number as the prev
+    addedSignatureTx.sequence = signedTx.sequence;
+    addedSignatureTx.build();
+
+    const hint = signer.signatureHint();
+    const signature = signer.sign(presignHash);
+
+    addedSignatureTx.addSignature(hint, signature);
+    let envelopeAddedSignature = addedSignatureTx.toEnvelope();
+
+    expectBuffersToBeEqual(
+      envelopeSigned.signatures()[0].signature(),
+      envelopeAddedSignature.signatures()[0].signature()
+    );
+    expectBuffersToBeEqual(
+      envelopeSigned.signatures()[0].hint(),
+      envelopeAddedSignature.signatures()[0].hint()
+    );
+
+    expect(addedSignatureTx.hash()).to.equal(signedTx.hash());
+
+    expect(
+      signer.verify(
+        addedSignatureTx.hash(),
+        envelopeAddedSignature.signatures()[0].signature()
+      )
+    ).to.equal(true);
+  });
+
   it('accepts 0 as a valid transaction fee', function(done) {
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',

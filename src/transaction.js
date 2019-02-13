@@ -86,13 +86,10 @@ export class Transaction {
       throw new Error('Invalid signature');
     }
 
-    const hintBuffer = Buffer.from(hint, 'base64');
-    const signatureBuffer = Buffer.from(signature, 'base64');
-
     this.signatures.push(
       new xdr.DecoratedSignature({
-        hint: xdr.SignatureHint.fromXDR(hintBuffer),
-        signature: xdr.Signature.fromXDR(signatureBuffer)
+        hint,
+        signature
       })
     );
     return this;

@@ -39,10 +39,10 @@ export const TimeoutInfinite = 0;
  *  .addOperation(Operation.createAccount({
         destination: destinationA,
         startingBalance: "20"
-    }) // <- funds and creates destinationA
+    })) // <- funds and creates destinationA
     .addOperation(Operation.payment({
         destination: destinationB,
-        amount: "100"
+        amount: "100",
         asset: Asset.native()
     }) // <- sends 100 XLM to destinationB
  *   .setTimeout(30)
@@ -70,8 +70,18 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.timeoutSet = false;
+
+    if (opts.timebounds) {
+      console.log(
+        'made a trans with these timebounds: ',
+        opts.timebounds,
+        'and is that shit set: ',
+        this.timeoutSet
+      );
+    }
   }
 
+  ƒ;
   /**
    * Adds an operation to the transaction.
    * @param {xdr.Operation} operation The xdr operation object, use {@link Operation} static methods.
