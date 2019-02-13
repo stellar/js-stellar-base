@@ -8,6 +8,7 @@ import { StrKey } from './strkey';
 import { Operation } from './operation';
 import { Network } from './network';
 import { Memo } from './memo';
+import { Keypair } from './keypair';
 
 /**
  * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
@@ -74,16 +75,22 @@ export class Transaction {
   /**
    * Add a signature to the transaction. Useful when a party wants to pre-sign
    * a transaction but doesn't want to give access to their secret keys.
-   * @param {string} hint The base64 value of the signature hint XDR
+   * @param {string} publicKey The public key of the signer
    * @param {string} signature The base64 value of the signature XDR
    * @returns {TransactionBuilder}
    */
-  addSignature(hint = '', signature = '') {
-    if (!hint) {
-      throw new Error('Invalid signature hint');
-    }
+  addSignature(publicKey = '', signature = '') {
     if (!signature) {
       throw new Error('Invalid signature');
+    }
+
+    let hint;
+
+    try {
+      hint = Keypair.fromPublicKey(publicKey).signatureHint();
+      console.log('calculated hint: ', hint);
+    } catch (e) {
+      throw new Error('Invalid publicKey');
     }
 
     this.signatures.push(

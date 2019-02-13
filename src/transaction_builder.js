@@ -70,15 +70,6 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.timeoutSet = false;
-
-    if (opts.timebounds) {
-      console.log(
-        'made a trans with these timebounds: ',
-        opts.timebounds,
-        'and is that shit set: ',
-        this.timeoutSet
-      );
-    }
   }
 
   /**

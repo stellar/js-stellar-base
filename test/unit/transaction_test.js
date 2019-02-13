@@ -153,22 +153,18 @@ describe('Transaction', function() {
   });
 
   it('adds signature correctly', function() {
+    const sourceKey =
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
     // make two sources so they have the same seq number
-    let signedSource = new StellarBase.Account(
-      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      '20'
-    );
-    let addedSignatureSource = new StellarBase.Account(
-      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      '20'
-    );
-    let destination =
+    const signedSource = new StellarBase.Account(sourceKey, '20');
+    const addedSignatureSource = new StellarBase.Account(sourceKey, '20');
+    const destination =
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
-    let asset = StellarBase.Asset.native();
-    let amount = '2000';
-    let signer = StellarBase.Keypair.master();
+    const asset = StellarBase.Asset.native();
+    const amount = '2000';
+    const signer = StellarBase.Keypair.master();
 
-    let signedTx = new StellarBase.TransactionBuilder(signedSource, {
+    const signedTx = new StellarBase.TransactionBuilder(signedSource, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
@@ -182,9 +178,9 @@ describe('Transaction', function() {
     const presignHash = signedTx.hash();
     signedTx.sign(signer);
 
-    let envelopeSigned = signedTx.toEnvelope();
+    const envelopeSigned = signedTx.toEnvelope();
 
-    let addedSignatureTx = new StellarBase.TransactionBuilder(
+    const addedSignatureTx = new StellarBase.TransactionBuilder(
       addedSignatureSource,
       {
         timebounds: {
@@ -198,12 +194,11 @@ describe('Transaction', function() {
       )
       .build();
 
-    const hint = signer.signatureHint();
     const signature = signer.sign(presignHash);
 
-    addedSignatureTx.addSignature(hint, signature);
+    addedSignatureTx.addSignature(signer.publicKey(), signature);
 
-    let envelopeAddedSignature = addedSignatureTx.toEnvelope();
+    const envelopeAddedSignature = addedSignatureTx.toEnvelope();
 
     expect(
       signer.verify(
