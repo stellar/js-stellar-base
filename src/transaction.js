@@ -92,7 +92,6 @@ export class Transaction {
         signature
       })
     );
-    return this;
   }
 
   /**
