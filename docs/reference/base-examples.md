@@ -25,6 +25,7 @@ var transaction = new StellarSdk.TransactionBuilder(an_account)
       destination: "GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW",
       startingBalance: "25"  // in XLM
     }))
+    .setTimeout(30)
     .build();
 
 transaction.sign(StellarSdk.Keypair.fromSecret(secretString)); // sign the transaction
@@ -83,6 +84,7 @@ var transaction = new StellarSdk.TransactionBuilder(source)
         new StellarSdk.Asset('EUR', 'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL')
       ]
   }))
+  .setTimeout(30)
   .build();
 
 transaction.sign(keypair);
@@ -130,6 +132,7 @@ var transaction = new StellarSdk.TransactionBuilder(account)
     medThreshold: 2, // a payment is medium threshold
     highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
   }))
+  .setTimeout(30)
   .build();
 
 transaction.sign(rootKeypair); // only need to sign with the root signer as the 2nd signer won't be added to the account till after this transaction completes
@@ -142,6 +145,7 @@ var transaction = new StellarSdk.TransactionBuilder(account)
         asset: StellarSdk.Asset.native(),
         amount: "2000" // 2000 XLM
     }))
+    .setTimeout(30)
     .build();
 
 var secondKeypair = StellarSdk.Keypair.fromSecret("SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7");

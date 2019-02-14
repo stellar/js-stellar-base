@@ -10,9 +10,10 @@ import { Network } from './network';
 import { Memo } from './memo';
 
 /**
- * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
- * Once a Transaction has been created from an envelope, its attributes and operations
- * should not be changed. You should only add signers (using {@link Transaction#sign}) to a Transaction object before
+ * Use {@link TransactionBuilder} to build a transaction object, unless you have
+ * an object or base64-encoded string of the transaction envelope XDR.
+ * Once a Transaction has been created, its attributes and operations
+ * should not be changed. You should only add signatures (using {@link Transaction#sign}) to a Transaction object before
  * submitting to the network or forwarding on to additional signers.
  * @constructor
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.

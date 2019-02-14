@@ -28,6 +28,13 @@ export const TimeoutInfinite = 0;
  * the desired operations, call the `build()` method on the `TransactionBuilder` to return a fully
  * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
  * sequence number of the source account and include the signature from the source account.</p>
+ * 
+ * <p><strong>Be careful about unsubmitted transactions!</strong> When you build a transaction, stellar-sdk
+ * automatically increments the source account's sequence number. If you end up 
+ * not submitting this transaction and submitting another one instead, it'll fail due to
+ * the sequence number being wrong. So if you decide not to use a built transaction,
+ * make sure to update the source account's sequence number 
+ * with [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount) before creating another transaction.</p>
  *
  * <p>The following code example creates a new transaction with {@link Operation.createAccount} and
  * {@link Operation.payment} operations.
@@ -105,7 +112,8 @@ export class TransactionBuilder {
    * Please note that Horizon may still return <code>504 Gateway Timeout</code> error, even for short timeouts.
    * In such case you need to resubmit the same transaction again without making any changes to receive a status.
    * This method is using the machine system time (UTC), make sure it is set correctly.
-   * @param {timeout} timeout in seconds.
+   * @param {number} timeout Number of seconds the transaction is good. Can't be negative.
+   * If the value is `0`, the transaction is good indefinitely.
    * @return {TransactionBuilder}
    * @see TimeoutInfinite
    */
