@@ -96,9 +96,9 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
-    "base32.js": "~0.1.0",
+    "base32.js": "^0.1.0",
     "bignumber.js": "^4.0.0",
-    "crc": "3.5.0",
+    "crc": "^3.5.0",
     "js-xdr": "^1.1.0",
     "lodash": "^4.17.11",
     "sha.js": "^2.3.6",
