@@ -29,7 +29,7 @@ export const TimeoutInfinite = 0;
  * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
  * sequence number of the source account and include the signature from the source account.</p>
  * 
- * <p><strong>Beware!</strong> When you build a transaction, stellar-sdk
+ * <p><strong>Be careful about unsubmitted transactions!</strong> When you build a transaction, stellar-sdk
  * automatically increments the source account's sequence number. If you end up 
  * not submitting this transaction and submitting another one instead, it'll fail due to
  * the sequence number being wrong. So if you decide not to use a built transaction,
