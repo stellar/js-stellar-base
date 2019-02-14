@@ -28,6 +28,13 @@ export const TimeoutInfinite = 0;
  * the desired operations, call the `build()` method on the `TransactionBuilder` to return a fully
  * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
  * sequence number of the source account and include the signature from the source account.</p>
+ * 
+ * <p><strong>Beware!</strong> When you build a transaction, stellar-sdk
+ * automatically increments the source account's sequence number. If you end up 
+ * not submitting this transaction and submitting another one instead, it'll fail due to
+ * the sequence number being wrong. So if you decide not to use a built transaction,
+ * make sure to update the source account's sequence number 
+ * with [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount) before creating another transaction.</p>
  *
  * <p>The following code example creates a new transaction with {@link Operation.createAccount} and
  * {@link Operation.payment} operations.
