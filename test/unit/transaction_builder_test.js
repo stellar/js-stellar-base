@@ -232,6 +232,30 @@ describe('TransactionBuilder', function() {
         minTime: new Date(1528145519000),
         maxTime: new Date(1528231982000)
       };
+
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        timebounds
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination:
+              'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
+            asset: StellarBase.Asset.native(),
+            amount: '1000'
+          })
+        )
+        .build();
+
+      // getTime returns milliseconds, but we store seconds internally
+      let expectedMinTime = timebounds.minTime.getTime() / 1000;
+      let expectedMaxTime = timebounds.maxTime.getTime() / 1000;
+      expect(transaction.timeBounds.minTime).to.be.equal(
+        expectedMinTime.toString()
+      );
+      expect(transaction.timeBounds.maxTime).to.be.equal(
+        expectedMaxTime.toString()
+      );
+      done();
     });
   });
 
