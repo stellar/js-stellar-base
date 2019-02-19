@@ -8,6 +8,8 @@ A breaking change will get clearly notified in this log.
 - Add a `toXDR` function for transactions that lets you get the transaction as a
   base64-encoded string (so you may enter it into the Stellar Laboratory XDR
   viewer, for one)
+- Fix TransactionBuilder example syntax errors
+- Use more thorough "create account" documentation
 - Add a function to TransactionBuilder, `addSignature`, that lets you add a
   pre-generated signature to a built transaction
 

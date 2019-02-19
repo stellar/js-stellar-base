@@ -44,14 +44,14 @@ export const TimeoutInfinite = 0;
  * ```
  * var transaction = new TransactionBuilder(source)
  *  .addOperation(Operation.createAccount({
- *      destination: destinationA,
- *      startingBalance: "20"
- *  })) // <- funds and creates destinationA
- *  .addOperation(Operation.payment({
- *      destination: destinationB,
- *      amount: "100",
- *      asset: Asset.native()
- *  }) // <- sends 100 XLM to destinationB
+        destination: destinationA,
+        startingBalance: "20"
+    })) // <- funds and creates destinationA
+    .addOperation(Operation.payment({
+        destination: destinationB,
+        amount: "100",
+        asset: Asset.native()
+    })) // <- sends 100 XLM to destinationB
  *   .setTimeout(30)
  *   .build();
  *
