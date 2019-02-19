@@ -142,7 +142,9 @@ gulp.task('clear-screen', function clearScreen(cb) {
 });
 
 gulp.task('clean', function clean() {
-  return gulp.src(['dist', 'lib'], { read: false }).pipe(plugins.rimraf());
+  return gulp
+    .src(['dist', 'lib'], { read: false, allowEmpty: true })
+    .pipe(plugins.rimraf());
 });
 
 gulp.task('build', gulp.series('clean', 'build:node', 'build:browser'));
@@ -154,7 +156,9 @@ gulp.task('default', gulp.series('build'));
 gulp.task(
   'hooks:precommit',
   gulp.series('build', function hooksPrecommit() {
-    return gulp.src(['dist/*', 'lib/*']).pipe(plugins.git.add());
+    return gulp
+      .src(['dist/*', 'lib/*'], { allowEmpty: true })
+      .pipe(plugins.git.add());
   })
 );
 

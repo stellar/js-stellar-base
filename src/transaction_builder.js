@@ -205,8 +205,9 @@ export class TransactionBuilder {
 
 /**
  * Checks whether a provided object is a valid Date.
+ * @argument {Date} d date object
  * @returns {boolean}
  */
 export function isValidDate(d) {
-  return d instanceof Date && !isNaN(d);
+  return d instanceof Date && !Number.isNaN(d);
 }
