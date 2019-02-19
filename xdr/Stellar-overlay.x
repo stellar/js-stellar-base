@@ -112,7 +112,7 @@ case DONT_HAVE:
 case GET_PEERS:
     void;
 case PEERS:
-    PeerAddress peers<>;
+    PeerAddress peers<100>;
 
 case GET_TX_SET:
     uint256 txSetHash;
@@ -128,7 +128,7 @@ case GET_SCP_QUORUMSET:
 case SCP_QUORUMSET:
     SCPQuorumSet qSet;
 case SCP_MESSAGE:
-    SCPEnvelope envelope;
+    StellarMessage envelope;
 case GET_SCP_STATE:
     uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 };

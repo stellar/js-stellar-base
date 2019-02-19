@@ -46,6 +46,8 @@ var transaction = new StellarBase.TransactionBuilder(account)
                     weight: 1
                 }
             }))
+        // mark this transaction as valid only for the next 30 seconds
+        .setTimeout(30)
         .build();
 ```
 
@@ -82,6 +84,7 @@ var transaction = new StellarBase.TransactionBuilder(account, {memo:memo})
                 asset: StellarBase.Asset.native(),
                 amount: "2000"
             }))
+        .setTimeout(30)
         .build();
 ```
 
@@ -147,6 +150,7 @@ var transaction = new StellarBase.TransactionBuilder(account)
                 asset: StellarBase.Asset.native(),
                 amount: "2000"  // 2000 XLM
             }))
+        .setTimeout(30)
         .build();
 
 transaction.sign(key1);

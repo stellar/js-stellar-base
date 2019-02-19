@@ -1,4 +1,4 @@
-// Automatically generated on 2017-02-08T14:45:22+01:00
+// Automatically generated on 2018-08-16T21:01:29+02:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -282,10 +282,10 @@ xdr.typedef("String64", xdr.string(64));
 
 // === xdr source ============================================================
 //
-//   typedef uint64 SequenceNumber;
+//   typedef int64 SequenceNumber;
 //
 // ===========================================================================
-xdr.typedef("SequenceNumber", xdr.lookup("Uint64"));
+xdr.typedef("SequenceNumber", xdr.lookup("Int64"));
 
 // === xdr source ============================================================
 //
@@ -393,6 +393,20 @@ xdr.struct("Price", [
 
 // === xdr source ============================================================
 //
+//   struct Liabilities
+//   {
+//       int64 buying;
+//       int64 selling;
+//   };
+//
+// ===========================================================================
+xdr.struct("Liabilities", [
+  ["buying", xdr.lookup("Int64")],
+  ["selling", xdr.lookup("Int64")],
+]);
+
+// === xdr source ============================================================
+//
 //   enum ThresholdIndexes
 //   {
 //       THRESHOLD_MASTER_WEIGHT = 0,
@@ -466,10 +480,68 @@ xdr.enum("AccountFlags", {
 
 // === xdr source ============================================================
 //
+//   const MASK_ACCOUNT_FLAGS = 0x7;
+//
+// ===========================================================================
+xdr.const("MASK_ACCOUNT_FLAGS", 0x7);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//
+// ===========================================================================
+xdr.union("AccountEntryV1Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           }
+//
+// ===========================================================================
+xdr.struct("AccountEntryV1", [
+  ["liabilities", xdr.lookup("Liabilities")],
+  ["ext", xdr.lookup("AccountEntryV1Ext")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (int v)
 //       {
 //       case 0:
 //           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
 //       }
 //
 // ===========================================================================
@@ -478,8 +550,10 @@ xdr.union("AccountEntryExt", {
   switchName: "v",
   switches: [
     [0, xdr.void()],
+    [1, "v1"],
   ],
   arms: {
+    v1: xdr.lookup("AccountEntryV1"),
   },
 });
 
@@ -508,6 +582,18 @@ xdr.union("AccountEntryExt", {
 //       {
 //       case 0:
 //           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
 //       }
 //       ext;
 //   };
@@ -541,10 +627,68 @@ xdr.enum("TrustLineFlags", {
 
 // === xdr source ============================================================
 //
+//   const MASK_TRUSTLINE_FLAGS = 1;
+//
+// ===========================================================================
+xdr.const("MASK_TRUSTLINE_FLAGS", 1);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//
+// ===========================================================================
+xdr.union("TrustLineEntryV1Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           }
+//
+// ===========================================================================
+xdr.struct("TrustLineEntryV1", [
+  ["liabilities", xdr.lookup("Liabilities")],
+  ["ext", xdr.lookup("TrustLineEntryV1Ext")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (int v)
 //       {
 //       case 0:
 //           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
 //       }
 //
 // ===========================================================================
@@ -553,8 +697,10 @@ xdr.union("TrustLineEntryExt", {
   switchName: "v",
   switches: [
     [0, xdr.void()],
+    [1, "v1"],
   ],
   arms: {
+    v1: xdr.lookup("TrustLineEntryV1"),
   },
 });
 
@@ -575,6 +721,18 @@ xdr.union("TrustLineEntryExt", {
 //       {
 //       case 0:
 //           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
 //       }
 //       ext;
 //   };
@@ -601,6 +759,13 @@ xdr.struct("TrustLineEntry", [
 xdr.enum("OfferEntryFlags", {
   passiveFlag: 1,
 });
+
+// === xdr source ============================================================
+//
+//   const MASK_OFFERENTRY_FLAGS = 1;
+//
+// ===========================================================================
+xdr.const("MASK_OFFERENTRY_FLAGS", 1);
 
 // === xdr source ============================================================
 //
@@ -947,7 +1112,8 @@ xdr.struct("LedgerHeader", [
 //   {
 //       LEDGER_UPGRADE_VERSION = 1,
 //       LEDGER_UPGRADE_BASE_FEE = 2,
-//       LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3
+//       LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
+//       LEDGER_UPGRADE_BASE_RESERVE = 4
 //   };
 //
 // ===========================================================================
@@ -955,6 +1121,7 @@ xdr.enum("LedgerUpgradeType", {
   ledgerUpgradeVersion: 1,
   ledgerUpgradeBaseFee: 2,
   ledgerUpgradeMaxTxSetSize: 3,
+  ledgerUpgradeBaseReserve: 4,
 });
 
 // === xdr source ============================================================
@@ -967,6 +1134,8 @@ xdr.enum("LedgerUpgradeType", {
 //       uint32 newBaseFee; // update baseFee
 //   case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
 //       uint32 newMaxTxSetSize; // update maxTxSetSize
+//   case LEDGER_UPGRADE_BASE_RESERVE:
+//       uint32 newBaseReserve; // update baseReserve
 //   };
 //
 // ===========================================================================
@@ -977,11 +1146,13 @@ xdr.union("LedgerUpgrade", {
     ["ledgerUpgradeVersion", "newLedgerVersion"],
     ["ledgerUpgradeBaseFee", "newBaseFee"],
     ["ledgerUpgradeMaxTxSetSize", "newMaxTxSetSize"],
+    ["ledgerUpgradeBaseReserve", "newBaseReserve"],
   ],
   arms: {
     newLedgerVersion: xdr.lookup("Uint32"),
     newBaseFee: xdr.lookup("Uint32"),
     newMaxTxSetSize: xdr.lookup("Uint32"),
+    newBaseReserve: xdr.lookup("Uint32"),
   },
 });
 
@@ -1413,10 +1584,26 @@ xdr.struct("OperationMeta", [
 
 // === xdr source ============================================================
 //
+//   struct TransactionMetaV1
+//   {
+//       LedgerEntryChanges txChanges; // tx level changes if any
+//       OperationMeta operations<>; // meta for each operation
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionMetaV1", [
+  ["txChanges", xdr.lookup("LedgerEntryChanges")],
+  ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
 //   union TransactionMeta switch (int v)
 //   {
 //   case 0:
 //       OperationMeta operations<>;
+//   case 1:
+//       TransactionMetaV1 v1;
 //   };
 //
 // ===========================================================================
@@ -1425,9 +1612,11 @@ xdr.union("TransactionMeta", {
   switchName: "v",
   switches: [
     [0, "operations"],
+    [1, "v1"],
   ],
   arms: {
     operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
+    v1: xdr.lookup("TransactionMetaV1"),
   },
 });
 
@@ -1656,7 +1845,7 @@ xdr.struct("DontHave", [
 //   case GET_PEERS:
 //       void;
 //   case PEERS:
-//       PeerAddress peers<>;
+//       PeerAddress peers<100>;
 //   
 //   case GET_TX_SET:
 //       uint256 txSetHash;
@@ -1672,7 +1861,7 @@ xdr.struct("DontHave", [
 //   case SCP_QUORUMSET:
 //       SCPQuorumSet qSet;
 //   case SCP_MESSAGE:
-//       SCPEnvelope envelope;
+//       StellarMessage envelope;
 //   case GET_SCP_STATE:
 //       uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 //   };
@@ -1701,13 +1890,13 @@ xdr.union("StellarMessage", {
     hello: xdr.lookup("Hello"),
     auth: xdr.lookup("Auth"),
     dontHave: xdr.lookup("DontHave"),
-    peers: xdr.varArray(xdr.lookup("PeerAddress"), 2147483647),
+    peers: xdr.varArray(xdr.lookup("PeerAddress"), 100),
     txSetHash: xdr.lookup("Uint256"),
     txSet: xdr.lookup("TransactionSet"),
     transaction: xdr.lookup("TransactionEnvelope"),
     qSetHash: xdr.lookup("Uint256"),
     qSet: xdr.lookup("ScpQuorumSet"),
-    envelope: xdr.lookup("ScpEnvelope"),
+    envelope: xdr.lookup("StellarMessage"),
     getScpLedgerSeq: xdr.lookup("Uint32"),
   },
 });
@@ -1781,7 +1970,8 @@ xdr.struct("DecoratedSignature", [
 //       ALLOW_TRUST = 7,
 //       ACCOUNT_MERGE = 8,
 //       INFLATION = 9,
-//       MANAGE_DATA = 10
+//       MANAGE_DATA = 10,
+//       BUMP_SEQUENCE = 11
 //   };
 //
 // ===========================================================================
@@ -1797,6 +1987,7 @@ xdr.enum("OperationType", {
   accountMerge: 8,
   inflation: 9,
   manageDatum: 10,
+  bumpSequence: 11,
 });
 
 // === xdr source ============================================================
@@ -2006,14 +2197,26 @@ xdr.struct("AllowTrustOp", [
 //
 //   struct ManageDataOp
 //   {
-//       string64 dataName; 
-//       DataValue* dataValue;   // set to null to clear
+//       string64 dataName;
+//       DataValue* dataValue; // set to null to clear
 //   };
 //
 // ===========================================================================
 xdr.struct("ManageDataOp", [
   ["dataName", xdr.lookup("String64")],
   ["dataValue", xdr.option(xdr.lookup("DataValue"))],
+]);
+
+// === xdr source ============================================================
+//
+//   struct BumpSequenceOp
+//   {
+//       SequenceNumber bumpTo;
+//   };
+//
+// ===========================================================================
+xdr.struct("BumpSequenceOp", [
+  ["bumpTo", xdr.lookup("SequenceNumber")],
 ]);
 
 // === xdr source ============================================================
@@ -2042,6 +2245,8 @@ xdr.struct("ManageDataOp", [
 //           void;
 //       case MANAGE_DATA:
 //           ManageDataOp manageDataOp;
+//       case BUMP_SEQUENCE:
+//           BumpSequenceOp bumpSequenceOp;
 //       }
 //
 // ===========================================================================
@@ -2060,6 +2265,7 @@ xdr.union("OperationBody", {
     ["accountMerge", "destination"],
     ["inflation", xdr.void()],
     ["manageDatum", "manageDataOp"],
+    ["bumpSequence", "bumpSequenceOp"],
   ],
   arms: {
     createAccountOp: xdr.lookup("CreateAccountOp"),
@@ -2072,6 +2278,7 @@ xdr.union("OperationBody", {
     allowTrustOp: xdr.lookup("AllowTrustOp"),
     destination: xdr.lookup("AccountId"),
     manageDataOp: xdr.lookup("ManageDataOp"),
+    bumpSequenceOp: xdr.lookup("BumpSequenceOp"),
   },
 });
 
@@ -2108,6 +2315,8 @@ xdr.union("OperationBody", {
 //           void;
 //       case MANAGE_DATA:
 //           ManageDataOp manageDataOp;
+//       case BUMP_SEQUENCE:
+//           BumpSequenceOp bumpSequenceOp;
 //       }
 //       body;
 //   };
@@ -2251,8 +2460,8 @@ xdr.struct("Transaction", [
 //   union switch (EnvelopeType type)
 //       {
 //       case ENVELOPE_TYPE_TX:
-//             Transaction tx;
-//       /* All other values of type are invalid */
+//           Transaction tx;
+//           /* All other values of type are invalid */
 //       }
 //
 // ===========================================================================
@@ -2269,14 +2478,16 @@ xdr.union("TransactionSignaturePayloadTaggedTransaction", {
 
 // === xdr source ============================================================
 //
-//   struct TransactionSignaturePayload {
+//   struct TransactionSignaturePayload
+//   {
 //       Hash networkId;
 //       union switch (EnvelopeType type)
 //       {
 //       case ENVELOPE_TYPE_TX:
-//             Transaction tx;
-//       /* All other values of type are invalid */
-//       } taggedTransaction;
+//           Transaction tx;
+//           /* All other values of type are invalid */
+//       }
+//       taggedTransaction;
 //   };
 //
 // ===========================================================================
@@ -2292,8 +2503,7 @@ xdr.struct("TransactionSignaturePayload", [
 //       Transaction tx;
 //       /* Each decorated signature is a signature over the SHA256 hash of
 //        * a TransactionSignaturePayload */
-//       DecoratedSignature
-//       signatures<20>;
+//       DecoratedSignature signatures<20>;
 //   };
 //
 // ===========================================================================
@@ -2725,7 +2935,8 @@ xdr.union("SetOptionsResult", {
 //       CHANGE_TRUST_NO_ISSUER = -2,     // could not find issuer
 //       CHANGE_TRUST_INVALID_LIMIT = -3, // cannot drop limit below balance
 //                                        // cannot create with a limit of 0
-//       CHANGE_TRUST_LOW_RESERVE = -4, // not enough funds to create a new trust line,
+//       CHANGE_TRUST_LOW_RESERVE =
+//           -4, // not enough funds to create a new trust line,
 //       CHANGE_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 //   };
 //
@@ -2772,7 +2983,7 @@ xdr.union("ChangeTrustResult", {
 //       ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
 //                                       // source account does not require trust
 //       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-//       ALLOW_TRUST_CANT_REVOKE = -4, // source account can't revoke trust,
+//       ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
 //       ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 //   };
 //
@@ -2815,10 +3026,13 @@ xdr.union("AllowTrustResult", {
 //       // codes considered as "success" for the operation
 //       ACCOUNT_MERGE_SUCCESS = 0,
 //       // codes considered as "failure" for the operation
-//       ACCOUNT_MERGE_MALFORMED = -1,      // can't merge onto itself
-//       ACCOUNT_MERGE_NO_ACCOUNT = -2,     // destination does not exist
-//       ACCOUNT_MERGE_IMMUTABLE_SET = -3,  // source account has AUTH_IMMUTABLE set
-//       ACCOUNT_MERGE_HAS_SUB_ENTRIES = -4 // account has trust lines/offers
+//       ACCOUNT_MERGE_MALFORMED = -1,       // can't merge onto itself
+//       ACCOUNT_MERGE_NO_ACCOUNT = -2,      // destination does not exist
+//       ACCOUNT_MERGE_IMMUTABLE_SET = -3,   // source account has AUTH_IMMUTABLE set
+//       ACCOUNT_MERGE_HAS_SUB_ENTRIES = -4, // account has trust lines/offers
+//       ACCOUNT_MERGE_SEQNUM_TOO_FAR = -5,  // sequence number is over max allowed
+//       ACCOUNT_MERGE_DEST_FULL = -6        // can't add source balance to
+//                                           // destination balance
 //   };
 //
 // ===========================================================================
@@ -2828,6 +3042,8 @@ xdr.enum("AccountMergeResultCode", {
   accountMergeNoAccount: -2,
   accountMergeImmutableSet: -3,
   accountMergeHasSubEntry: -4,
+  accountMergeSeqnumTooFar: -5,
+  accountMergeDestFull: -6,
 });
 
 // === xdr source ============================================================
@@ -2913,10 +3129,12 @@ xdr.union("InflationResult", {
 //       // codes considered as "success" for the operation
 //       MANAGE_DATA_SUCCESS = 0,
 //       // codes considered as "failure" for the operation
-//       MANAGE_DATA_NOT_SUPPORTED_YET = -1, // The network hasn't moved to this protocol change yet
-//       MANAGE_DATA_NAME_NOT_FOUND = -2,    // Trying to remove a Data Entry that isn't there
-//       MANAGE_DATA_LOW_RESERVE = -3,       // not enough funds to create a new Data Entry
-//       MANAGE_DATA_INVALID_NAME = -4       // Name not a valid string
+//       MANAGE_DATA_NOT_SUPPORTED_YET =
+//           -1, // The network hasn't moved to this protocol change yet
+//       MANAGE_DATA_NAME_NOT_FOUND =
+//           -2, // Trying to remove a Data Entry that isn't there
+//       MANAGE_DATA_LOW_RESERVE = -3, // not enough funds to create a new Data Entry
+//       MANAGE_DATA_INVALID_NAME = -4 // Name not a valid string
 //   };
 //
 // ===========================================================================
@@ -2952,12 +3170,51 @@ xdr.union("ManageDataResult", {
 
 // === xdr source ============================================================
 //
+//   enum BumpSequenceResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       BUMP_SEQUENCE_SUCCESS = 0,
+//       // codes considered as "failure" for the operation
+//       BUMP_SEQUENCE_BAD_SEQ = -1 // `bumpTo` is not within bounds
+//   };
+//
+// ===========================================================================
+xdr.enum("BumpSequenceResultCode", {
+  bumpSequenceSuccess: 0,
+  bumpSequenceBadSeq: -1,
+});
+
+// === xdr source ============================================================
+//
+//   union BumpSequenceResult switch (BumpSequenceResultCode code)
+//   {
+//   case BUMP_SEQUENCE_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("BumpSequenceResult", {
+  switchOn: xdr.lookup("BumpSequenceResultCode"),
+  switchName: "code",
+  switches: [
+    ["bumpSequenceSuccess", xdr.void()],
+  ],
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
 //   enum OperationResultCode
 //   {
 //       opINNER = 0, // inner object result is valid
 //   
-//       opBAD_AUTH = -1,  // too few valid signatures / wrong network
-//       opNO_ACCOUNT = -2 // source account was not found
+//       opBAD_AUTH = -1,     // too few valid signatures / wrong network
+//       opNO_ACCOUNT = -2,   // source account was not found
+//       opNOT_SUPPORTED = -3 // operation not supported at this time
 //   };
 //
 // ===========================================================================
@@ -2965,6 +3222,7 @@ xdr.enum("OperationResultCode", {
   opInner: 0,
   opBadAuth: -1,
   opNoAccount: -2,
+  opNotSupported: -3,
 });
 
 // === xdr source ============================================================
@@ -2993,6 +3251,8 @@ xdr.enum("OperationResultCode", {
 //           InflationResult inflationResult;
 //       case MANAGE_DATA:
 //           ManageDataResult manageDataResult;
+//       case BUMP_SEQUENCE:
+//           BumpSequenceResult bumpSeqResult;
 //       }
 //
 // ===========================================================================
@@ -3011,6 +3271,7 @@ xdr.union("OperationResultTr", {
     ["accountMerge", "accountMergeResult"],
     ["inflation", "inflationResult"],
     ["manageDatum", "manageDataResult"],
+    ["bumpSequence", "bumpSeqResult"],
   ],
   arms: {
     createAccountResult: xdr.lookup("CreateAccountResult"),
@@ -3024,6 +3285,7 @@ xdr.union("OperationResultTr", {
     accountMergeResult: xdr.lookup("AccountMergeResult"),
     inflationResult: xdr.lookup("InflationResult"),
     manageDataResult: xdr.lookup("ManageDataResult"),
+    bumpSeqResult: xdr.lookup("BumpSequenceResult"),
   },
 });
 
@@ -3056,6 +3318,8 @@ xdr.union("OperationResultTr", {
 //           InflationResult inflationResult;
 //       case MANAGE_DATA:
 //           ManageDataResult manageDataResult;
+//       case BUMP_SEQUENCE:
+//           BumpSequenceResult bumpSeqResult;
 //       }
 //       tr;
 //   default:
@@ -3301,7 +3565,7 @@ xdr.union("PublicKey", {
 //   case SIGNER_KEY_TYPE_ED25519:
 //       uint256 ed25519;
 //   case SIGNER_KEY_TYPE_PRE_AUTH_TX:
-//       /* Hash of Transaction structure */
+//       /* SHA-256 Hash of TransactionSignaturePayload structure */
 //       uint256 preAuthTx;
 //   case SIGNER_KEY_TYPE_HASH_X:
 //       /* Hash of random 256 bit preimage X */

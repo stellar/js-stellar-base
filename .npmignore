@@ -1,1 +1,2 @@
+# Do not insert `src` dir here. It's required to generate jsdoc for stellar-sdk package.
 tmp

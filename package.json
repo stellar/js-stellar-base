@@ -1,14 +1,26 @@
 {
   "name": "stellar-base",
-  "version": "0.7.8",
+  "version": "0.11.0",
   "description": "Low level stellar support library",
   "main": "lib/index.js",
   "scripts": {
     "test": "babel-node ./node_modules/gulp/bin/gulp.js test:node",
-    "docs": "./node_modules/.bin/jsdoc ./src/ -d docs/",
+    "docs": "jsdoc -c .jsdoc.json --verbose",
     "preversion": "gulp test",
     "version": "gulp build",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prettier-all": "prettier --write **/*.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,json}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "browser": {
     "ed25519": false
@@ -21,7 +33,7 @@
     "stellar"
   ],
   "engines": {
-    "node": ">=4"
+    "node": ">=6.14.0"
   },
   "author": "Scott Fleckenstein <scott@stellar.org>",
   "license": "Apache-2.0",
@@ -30,51 +42,65 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
-    "babel": "~5.8.23",
-    "babel-core": "~5.8.25",
-    "babel-loader": "~5.3.2",
+    "babel-cli": "^6.26.0",
+    "babel-core": "~6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-istanbul": "^0.12.2",
+    "babel-loader": "~6.3.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
     "chai": "^2.2.0",
-    "coveralls": "^2.11.4",
+    "clear": "^0.1.0",
+    "coveralls": "^3.0.2",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-prefer-import": "^0.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
     "express": "^4.9.8",
     "ghooks": "^0.3.0",
-    "gulp": "^3.8.11",
-    "gulp-babel": "^4.0.1",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^6.1.3",
     "gulp-coveralls": "^0.1.3",
+    "gulp-eslint": "^5.0.0",
     "gulp-git": "~0.5.3",
     "gulp-istanbul": "^1.1.1",
-    "gulp-jshint": "^1.10.0",
-    "gulp-load-plugins": "^0.9.0",
-    "gulp-mocha": "^2.0.1",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-mocha": "^6.0.0",
     "gulp-plumber": "^1.0.0",
     "gulp-rename": "~1.2.0",
     "gulp-rimraf": "~0.1.0",
-    "gulp-uglify": "~0.3.1",
+    "gulp-uglify": "^3.0.1",
     "gulp-webpack": "^1.3.1",
-    "isparta": "^3.1.0",
+    "husky": "^1.3.1",
+    "isparta": "^4.1.1",
     "istanbul": "^0.4.5",
-    "jsdoc": "3.5.3",
-    "jshint-stylish": "^1.0.1",
-    "karma": "^0.13.9",
+    "jsdoc": "3.5.5",
+    "karma": "3.1.4",
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.4",
     "karma-mocha": "^0.1.10",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sauce-launcher": "^1.1.0",
-    "karma-sinon-chai": "^0.3.0",
-    "karma-webpack": "^1.8.0",
+    "karma-sinon-chai": "^2.0.2",
+    "karma-webpack": "^3.0.5",
+    "lint-staged": "7.3.0",
     "minami": "^1.1.1",
-    "mocha": "~1.17.1",
+    "mocha": "^5.2.0",
+    "prettier": "^1.16.1",
     "run-sequence": "^1.0.2",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
     "webpack": "^1.13.2"
   },
   "dependencies": {
-    "base32.js": "~0.1.0",
+    "base32.js": "^0.1.0",
     "bignumber.js": "^4.0.0",
-    "crc": "^3.3.0",
-    "js-xdr": "^1.0.0",
-    "lodash": "^4.17.10",
+    "crc": "^3.5.0",
+    "js-xdr": "^1.1.0",
+    "lodash": "^4.17.11",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.0"
   },

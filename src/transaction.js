@@ -1,39 +1,42 @@
-import {xdr, hash} from "./index";
-
-import {StrKey} from "./strkey";
-import {Operation} from "./operation";
-import {Network} from "./network";
-import {Memo} from "./memo";
-import map from "lodash/map";
-import each from "lodash/each";
+import map from 'lodash/map';
+import each from 'lodash/each';
 import isString from 'lodash/isString';
-import crypto from "crypto";
+import crypto from 'crypto';
+import { xdr, hash } from './index';
 
-let MIN_LEDGER   = 0;
-let MAX_LEDGER   = 0xFFFFFFFF; // max uint32
+import { StrKey } from './strkey';
+import { Operation } from './operation';
+import { Network } from './network';
+import { Memo } from './memo';
 
 /**
- * A new Transaction object is created from a transaction envelope or via {@link TransactionBuilder}.
- * Once a Transaction has been created from an envelope, its attributes and operations
- * should not be changed. You should only add signers (using {@link Transaction#sign}) to a Transaction object before
+ * Use {@link TransactionBuilder} to build a transaction object, unless you have
+ * an object or base64-encoded string of the transaction envelope XDR.
+ * Once a Transaction has been created, its attributes and operations
+ * should not be changed. You should only add signatures (using {@link Transaction#sign}) to a Transaction object before
  * submitting to the network or forwarding on to additional signers.
  * @constructor
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
  */
 export class Transaction {
   constructor(envelope) {
-    if (typeof envelope === "string") {
-      let buffer = new Buffer(envelope, "base64");
+    if (typeof envelope === 'string') {
+      const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
     // since this transaction is immutable, save the tx
-    this.tx       = envelope.tx();
-    this.source   = StrKey.encodeEd25519PublicKey(envelope.tx().sourceAccount().ed25519());
-    this.fee      = this.tx.fee();
-    this._memo    = this.tx.memo();
+    this.tx = envelope.tx();
+    this.source = StrKey.encodeEd25519PublicKey(
+      envelope
+        .tx()
+        .sourceAccount()
+        .ed25519()
+    );
+    this.fee = this.tx.fee();
+    this._memo = this.tx.memo();
     this.sequence = this.tx.seqNum().toString();
 
-    let timeBounds = this.tx.timeBounds();
+    const timeBounds = this.tx.timeBounds();
     if (timeBounds) {
       this.timeBounds = {
         minTime: timeBounds.minTime().toString(),
@@ -41,13 +44,11 @@ export class Transaction {
       };
     }
 
-    let operations  = this.tx.operations() || [];
-    this.operations = map(operations, op => {
-      return Operation.fromXDRObject(op);
-    });
+    const operations = this.tx.operations() || [];
+    this.operations = map(operations, (op) => Operation.fromXDRObject(op));
 
-    let signatures = envelope.signatures() || [];
-    this.signatures = map(signatures, s => s);
+    const signatures = envelope.signatures() || [];
+    this.signatures = map(signatures, (s) => s);
   }
 
   get memo() {
@@ -55,7 +56,7 @@ export class Transaction {
   }
 
   set memo(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -64,9 +65,9 @@ export class Transaction {
    * @returns {void}
    */
   sign(...keypairs) {
-    let txHash = this.hash();
-    let newSigs = each(keypairs, kp => {
-      let sig = kp.signDecorated(txHash);
+    const txHash = this.hash();
+    each(keypairs, (kp) => {
+      const sig = kp.signDecorated(txHash);
       this.signatures.push(sig);
     });
   }
@@ -78,17 +79,20 @@ export class Transaction {
    */
   signHashX(preimage) {
     if (isString(preimage)) {
-      preimage = Buffer.from(preimage, "hex");
+      preimage = Buffer.from(preimage, 'hex');
     }
 
     if (preimage.length > 64) {
       throw new Error('preimage cannnot be longer than 64 bytes');
     }
 
-    let signature = preimage;
-    let hash = crypto.createHash('sha256').update(preimage).digest();
-    let hint = hash.slice(hash.length - 4);
-    this.signatures.push(new xdr.DecoratedSignature({hint, signature}));
+    const signature = preimage;
+    const hashX = crypto
+      .createHash('sha256')
+      .update(preimage)
+      .digest();
+    const hint = hashX.slice(hashX.length - 4);
+    this.signatures.push(new xdr.DecoratedSignature({ hint, signature }));
   }
 
   /**
@@ -110,7 +114,9 @@ export class Transaction {
    */
   signatureBase() {
     if (Network.current() === null) {
-      throw new Error("No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.");
+      throw new Error(
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+      );
     }
 
     return Buffer.concat([
@@ -125,10 +131,20 @@ export class Transaction {
    * @returns {xdr.TransactionEnvelope}
    */
   toEnvelope() {
-    let tx = this.tx;
-    let signatures = this.signatures;
-    let envelope = new xdr.TransactionEnvelope({tx, signatures});
+    const tx = this.tx;
+    const signatures = this.signatures;
+    const envelope = new xdr.TransactionEnvelope({ tx, signatures });
 
     return envelope;
+  }
+
+  /**
+   * Get the transaction envelope as a base64-encoded string
+   * @returns {string} XDR string
+   */
+  toXDR() {
+    return this.toEnvelope()
+      .toXDR()
+      .toString('base64');
   }
 }

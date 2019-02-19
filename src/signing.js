@@ -1,11 +1,10 @@
 //  This module provides the signing functionality used by the stellar network
 //  The code below may look a little strange... this is because we try to provide
-//  the most efficient signing method possible.  First, we try to load the 
+//  the most efficient signing method possible.  First, we try to load the
 //  native ed25519 package for node.js environments, and if that fails we
 //  fallback to tweetnacl.js
 
-
-var actualMethods = {};
+const actualMethods = {};
 
 /**
  * Use this flag to check if fast signing (provided by `ed25519` package) is available.
@@ -23,62 +22,60 @@ export function verify(data, signature, publicKey) {
 }
 
 function checkFastSigning() {
-  var ed25519Used;
-  // if in node
-  if (typeof window === 'undefined') {
-    // NOTE: we use commonjs style require here because es6 imports
-    // can only occur at the top level.  thanks, obama.
-    let ed25519;
+  return typeof window === 'undefined'
+    ? checkFastSigningNode()
+    : checkFastSigningBrowser();
+}
+
+function checkFastSigningNode() {
+  // NOTE: we use commonjs style require here because es6 imports
+  // can only occur at the top level.  thanks, obama.
+  let ed25519;
+  try {
+    // eslint-disable-next-line
+    ed25519 = require('ed25519');
+  } catch (err) {
+    return checkFastSigningBrowser();
+  }
+
+  actualMethods.sign = (data, secretKey) =>
+    ed25519.Sign(Buffer.from(data), secretKey);
+
+  actualMethods.verify = (data, signature, publicKey) => {
+    data = Buffer.from(data);
     try {
-      ed25519 = require("ed25519");
-      ed25519Used = true;
-    } catch (err) {
-      ed25519Used = false;
+      return ed25519.Verify(data, signature, publicKey);
+    } catch (e) {
+      return false;
     }
+  };
 
-    if (ed25519Used) {
-      actualMethods.sign = function(data, secretKey) {
-        data = new Buffer(data);
-        return ed25519.Sign(data, secretKey);
-      };
+  return true;
+}
 
-      actualMethods.verify = function(data, signature, publicKey) {
-        data = new Buffer(data);
-        try {
-          return ed25519.Verify(data, signature, publicKey);
-        } catch(e) {
-          return false;
-        }
-      };
-    }
-  } else {
-    ed25519Used = false;
-  }
+function checkFastSigningBrowser() {
+  // fallback to tweetnacl.js if we're in the browser or
+  // if there was a failure installing ed25519
+  // eslint-disable-next-line
+  const nacl = require('tweetnacl');
+  actualMethods.sign = (data, secretKey) => {
+    data = Buffer.from(data);
+    data = new Uint8Array(data.toJSON().data);
+    secretKey = new Uint8Array(secretKey.toJSON().data);
 
-  if (!ed25519Used) {
-    // fallback to tweetnacl.js if we're in the browser or
-    // if there was a failure installing ed25519
-    let nacl = require("tweetnacl");
+    const signature = nacl.sign.detached(data, secretKey);
 
-    actualMethods.sign = function(data, secretKey) {
-      data      = new Buffer(data);
-      data      = new Uint8Array(data.toJSON().data);
-      secretKey = new Uint8Array(secretKey.toJSON().data);
+    return Buffer.from(signature);
+  };
 
-      let signature = nacl.sign.detached(data, secretKey);
+  actualMethods.verify = (data, signature, publicKey) => {
+    data = Buffer.from(data);
+    data = new Uint8Array(data.toJSON().data);
+    signature = new Uint8Array(signature.toJSON().data);
+    publicKey = new Uint8Array(publicKey.toJSON().data);
 
-      return new Buffer(signature);
-    };
+    return nacl.sign.detached.verify(data, signature, publicKey);
+  };
 
-    actualMethods.verify = function(data, signature, publicKey) {
-      data      = new Buffer(data);
-      data      = new Uint8Array(data.toJSON().data);
-      signature = new Uint8Array(signature.toJSON().data);
-      publicKey = new Uint8Array(publicKey.toJSON().data);
-
-      return nacl.sign.detached.verify(data, signature, publicKey);
-    };
-  }
-
-  return ed25519Used;
+  return false;
 }

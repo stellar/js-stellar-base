@@ -11,8 +11,8 @@ typedef PublicKey AccountID;
 typedef opaque Thresholds[4];
 typedef string string32<32>;
 typedef string string64<64>;
-typedef uint64 SequenceNumber;
-typedef opaque DataValue<64>; 
+typedef int64 SequenceNumber;
+typedef opaque DataValue<64>;
 
 enum AssetType
 {
@@ -48,6 +48,12 @@ struct Price
 {
     int32 n; // numerator
     int32 d; // denominator
+};
+
+struct Liabilities
+{
+    int64 buying;
+    int64 selling;
 };
 
 // the 'Thresholds' type is packed uint8_t values
@@ -88,6 +94,9 @@ enum AccountFlags
     AUTH_IMMUTABLE_FLAG = 0x4
 };
 
+// mask for all valid flags
+const MASK_ACCOUNT_FLAGS = 0x7;
+
 /* AccountEntry
 
     Main entry representing a user in Stellar. All transactions are
@@ -120,6 +129,18 @@ struct AccountEntry
     {
     case 0:
         void;
+    case 1:
+        struct
+        {
+            Liabilities liabilities;
+
+            union switch (int v)
+            {
+            case 0:
+                void;
+            }
+            ext;
+        } v1;
     }
     ext;
 };
@@ -136,6 +157,9 @@ enum TrustLineFlags
     AUTHORIZED_FLAG = 1
 };
 
+// mask for all trustline flags
+const MASK_TRUSTLINE_FLAGS = 1;
+
 struct TrustLineEntry
 {
     AccountID accountID; // account this trustline belongs to
@@ -151,6 +175,18 @@ struct TrustLineEntry
     {
     case 0:
         void;
+    case 1:
+        struct
+        {
+            Liabilities liabilities;
+
+            union switch (int v)
+            {
+            case 0:
+                void;
+            }
+            ext;
+        } v1;
     }
     ext;
 };
@@ -160,6 +196,9 @@ enum OfferEntryFlags
     // issuer has authorized account to perform transactions with its credit
     PASSIVE_FLAG = 1
 };
+
+// Mask for OfferEntry flags
+const MASK_OFFERENTRY_FLAGS = 1;
 
 /* OfferEntry
     An offer is the building block of the offer book, they are automatically
@@ -210,7 +249,6 @@ struct DataEntry
     }
     ext;
 };
-
 
 struct LedgerEntry
 {

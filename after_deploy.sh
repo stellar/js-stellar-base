@@ -1,4 +1,3 @@
-npm install jsdoc
 git clone -b gh-pages "https://stellar-jenkins@github.com/stellar/js-stellar-base.git" jsdoc
 
 if [ ! -d "jsdoc" ]; then
