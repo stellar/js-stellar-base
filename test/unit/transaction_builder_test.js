@@ -18,7 +18,7 @@ describe('TransactionBuilder', function() {
       asset = StellarBase.Asset.native();
       memo = StellarBase.Memo.id('100');
 
-      transaction = new StellarBase.TransactionBuilder(source)
+      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination,
@@ -78,7 +78,7 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source)
+      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -181,7 +181,8 @@ describe('TransactionBuilder', function() {
         maxTime: '1455297545'
       };
       let transaction = new StellarBase.TransactionBuilder(source, {
-        timebounds
+        timebounds,
+        fee: 100
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -234,7 +235,8 @@ describe('TransactionBuilder', function() {
       };
 
       let transaction = new StellarBase.TransactionBuilder(source, {
-        timebounds
+        timebounds,
+        fee: 100
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -265,9 +267,9 @@ describe('TransactionBuilder', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      let transactionBuilder = new StellarBase.TransactionBuilder(
-        source
-      ).addOperation(
+      let transactionBuilder = new StellarBase.TransactionBuilder(source, {
+        fee: 100
+      }).addOperation(
         StellarBase.Operation.payment({
           destination:
             'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
@@ -287,9 +289,9 @@ describe('TransactionBuilder', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      let transactionBuilder = new StellarBase.TransactionBuilder(
-        source
-      ).addOperation(
+      let transactionBuilder = new StellarBase.TransactionBuilder(source, {
+        fee: 100
+      }).addOperation(
         StellarBase.Operation.payment({
           destination:
             'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
@@ -309,7 +311,7 @@ describe('TransactionBuilder', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      let transaction = new StellarBase.TransactionBuilder(source)
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
@@ -337,7 +339,8 @@ describe('TransactionBuilder', function() {
         '0'
       );
       let transactionBuilder = new StellarBase.TransactionBuilder(source, {
-        timebounds
+        timebounds,
+        fee: 100
       }).addOperation(
         StellarBase.Operation.payment({
           destination:
@@ -362,7 +365,8 @@ describe('TransactionBuilder', function() {
         '0'
       );
       let transaction = new StellarBase.TransactionBuilder(source, {
-        timebounds
+        timebounds,
+        fee: 100
       })
         .addOperation(
           StellarBase.Operation.payment({
