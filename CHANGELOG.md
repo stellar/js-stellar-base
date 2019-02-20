@@ -5,14 +5,14 @@ A breaking change will get clearly notified in this log.
 
 ## In `master`
 
+- _Warning_ Calling TransactionBuilder without a `fee` param is now deprecated
+  and will issue a warning. In a later release, it throw an error.
 - Add a `toXDR` function for transactions that lets you get the transaction as a
   base64-encoded string (so you may enter it into the Stellar Laboratory XDR
   viewer, for one)
 - Fix TransactionBuilder example syntax errors
 - Use more thorough "create account" documentation
 - Add `Date` support for `TransactionBuilder` `timebounds`
-- _Warning_ Calling TransactionBuilder without a `fee` param is now deprecated
-  and will issue a warning. In a later release, it will instead throw an error.
 
 ## 0.11.0
 
