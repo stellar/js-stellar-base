@@ -7,7 +7,7 @@ import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';
 
-const BASE_FEE = 100; // Stroops
+export const BASE_FEE = 100; // Stroops
 
 /**
  * @constant
