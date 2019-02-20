@@ -10,6 +10,7 @@ A breaking change will get clearly notified in this log.
   viewer, for one)
 - Fix TransactionBuilder example syntax errors
 - Use more thorough "create account" documentation
+- Add `Date` support for `TransactionBuilder` `timebounds`
 
 ## 0.11.0
 

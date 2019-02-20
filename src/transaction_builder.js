@@ -62,8 +62,8 @@ export const TimeoutInfinite = 0;
  * @param {object} [opts] Options object
  * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
  * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
- * @param {number|string} [opts.timebounds.minTime] - 64 bit unix timestamp
- * @param {number|string} [opts.timebounds.maxTime] - 64 bit unix timestamp
+ * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
+ * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
  * @param {Memo} [opts.memo] - The memo for the transaction
  */
 export class TransactionBuilder {
@@ -174,12 +174,20 @@ export class TransactionBuilder {
     };
 
     if (this.timebounds) {
+      if (isValidDate(this.timebounds.minTime)) {
+        this.timebounds.minTime = this.timebounds.minTime.getTime() / 1000;
+      }
+      if (isValidDate(this.timebounds.maxTime)) {
+        this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
+      }
+
       this.timebounds.minTime = UnsignedHyper.fromString(
         this.timebounds.minTime.toString()
       );
       this.timebounds.maxTime = UnsignedHyper.fromString(
         this.timebounds.maxTime.toString()
       );
+
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
     }
 
@@ -193,4 +201,15 @@ export class TransactionBuilder {
 
     return tx;
   }
+}
+
+/**
+ * Checks whether a provided object is a valid Date.
+ * @argument {Date} d date object
+ * @returns {boolean}
+ */
+export function isValidDate(d) {
+  // isnan is okay here because it correctly checks for invalid date objects
+  // eslint-disable-next-line no-restricted-globals
+  return d instanceof Date && !isNaN(d);
 }
