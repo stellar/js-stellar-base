@@ -11,6 +11,8 @@ A breaking change will get clearly notified in this log.
 - Fix TransactionBuilder example syntax errors
 - Use more thorough "create account" documentation
 - Add `Date` support for `TransactionBuilder` `timebounds`
+- _Warning_ Calling TransactionBuilder without a `fee` param is now deprecated
+  and will issue a warning. In a later release, it will instead throw an error.
 
 ## 0.11.0
 
