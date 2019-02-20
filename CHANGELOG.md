@@ -5,6 +5,8 @@ A breaking change will get clearly notified in this log.
 
 ## In `master`
 
+- _Warning_ Calling TransactionBuilder without a `fee` param is now deprecated
+  and will issue a warning. In a later release, it will throw an error.
 - Add a `toXDR` function for transactions that lets you get the transaction as a
   base64-encoded string (so you may enter it into the Stellar Laboratory XDR
   viewer, for one)

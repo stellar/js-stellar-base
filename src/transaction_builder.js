@@ -7,7 +7,7 @@ import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';
 
-const BASE_FEE = 100; // Stroops
+export const BASE_FEE = 100; // Stroops
 
 /**
  * @constant
@@ -59,8 +59,8 @@ export const TimeoutInfinite = 0;
  * ```
  * @constructor
  * @param {Account} sourceAccount - The source account for this transaction.
- * @param {object} [opts] Options object
- * @param {number} [opts.fee] - The max fee willing to pay per operation in this transaction (**in stroops**).
+ * @param {object} opts Options object
+ * @param {number} opts.fee - The max fee willing to pay per operation in this transaction (**in stroops**). Required.
  * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
  * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
  * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
@@ -73,6 +73,13 @@ export class TransactionBuilder {
     }
     this.source = sourceAccount;
     this.operations = [];
+
+    if (isUndefined(opts.fee)) {
+      console.log(
+        '[TransactionBuilder] The `fee` parameter of `TransactionBuilder` is required. Future versions of this library will error if not provided.'
+      );
+    }
+
     this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
