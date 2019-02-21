@@ -5,13 +5,18 @@ A breaking change will get clearly notified in this log.
 
 ## In `master`
 
+- _Warning_ Calling TransactionBuilder without a `fee` param is now deprecated
+  and will issue a warning. In a later release, it will throw an error.
 - Add a `toXDR` function for transactions that lets you get the transaction as a
   base64-encoded string (so you may enter it into the Stellar Laboratory XDR
   viewer, for one)
 - Fix TransactionBuilder example syntax errors
 - Use more thorough "create account" documentation
-- Add a function to TransactionBuilder, `addSignature`, that lets you add a
-  pre-generated signature to a built transaction
+- Add `Date` support for `TransactionBuilder` `timebounds`
+- Add a function to Transaction, `getKeypairSignature`, to help users sign
+  pre-generated transactions
+- Add a function to TransactionBuilder, `addSignature`, that lets you add
+  pre-generated signatures to a built transaction
 
 ## 0.11.0
 

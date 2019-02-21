@@ -26,7 +26,9 @@ server.accounts()
   .call()
   .then(({ sequence }) => {
     const account = new StellarSdk.Account(source.publicKey(), sequence)
-    const transaction = new StellarSdk.TransactionBuilder(account)
+    const transaction = new StellarSdk.TransactionBuilder(account, {
+      fee: StellarSdk.BASE_FEE
+    })
       .addOperation(StellarSdk.Operation.createAccount({
         destination: destination.publicKey(),
         startingBalance: '25'
@@ -80,7 +82,9 @@ StellarSdk.Network.useTestNetwork();
 var keypair = StellarSdk.Keypair.fromSecret(secretString);
 
 var source = new StellarSdk.Account(keypair.publicKey(), "46316927324160");
-var transaction = new StellarSdk.TransactionBuilder(source)
+var transaction = new StellarSdk.TransactionBuilder(source, {
+    fee: StellarSdk.BASE_FEE
+  })
   .addOperation(StellarSdk.Operation.pathPayment({
       sendAsset: StellarSdk.Asset.native(),
       sendMax: "1000",
@@ -127,7 +131,9 @@ var account = new StellarSdk.Account(rootkeypair.publicKey(), "46316927324160");
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
 
-var transaction = new StellarSdk.TransactionBuilder(account)
+var transaction = new StellarSdk.TransactionBuilder(account, {
+    fee: StellarSdk.BASE_FEE
+  })
   .addOperation(StellarSdk.Operation.setOptions({
     signer: {
       ed25519PublicKey: secondaryAddress,
@@ -147,7 +153,9 @@ transaction.sign(rootKeypair); // only need to sign with the root signer as the 
 
 // now create a payment with the account that has two signers
 
-var transaction = new StellarSdk.TransactionBuilder(account)
+var transaction = new StellarSdk.TransactionBuilder(account, {
+      fee: StellarSdk.BASE_FEE
+    })
     .addOperation(StellarSdk.Operation.payment({
         destination: "GBTVUCDT5CNSXIHJTDHYSZG3YJFXBAJ6FM4CKS5GKSAWJOLZW6XX7NVC",
         asset: StellarSdk.Asset.native(),

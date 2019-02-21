@@ -11,7 +11,7 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000.0000000';
 
-    let input = new StellarBase.TransactionBuilder(source)
+    let input = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -57,7 +57,7 @@ describe('Transaction', function() {
     let amount = '2000';
     let signer = StellarBase.Keypair.random();
 
-    let tx = new StellarBase.TransactionBuilder(source)
+    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -77,7 +77,7 @@ describe('Transaction', function() {
     let amount = '2000';
     let signer = StellarBase.Keypair.master();
 
-    let tx = new StellarBase.TransactionBuilder(source)
+    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -108,7 +108,7 @@ describe('Transaction', function() {
       .update(preimage)
       .digest();
 
-    let tx = new StellarBase.TransactionBuilder(source)
+    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -140,7 +140,7 @@ describe('Transaction', function() {
       .update(preimage)
       .digest();
 
-    let tx = new StellarBase.TransactionBuilder(source)
+    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -229,7 +229,6 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
     let amount = '2000';
-    let fee = 0;
 
     let input = new StellarBase.TransactionBuilder(source, { fee: 0 })
       .addOperation(
