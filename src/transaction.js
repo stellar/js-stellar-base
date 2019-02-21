@@ -8,6 +8,7 @@ import { StrKey } from './strkey';
 import { Operation } from './operation';
 import { Network } from './network';
 import { Memo } from './memo';
+import { Keypair } from './keypair';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object, unless you have
@@ -70,6 +71,80 @@ export class Transaction {
       const sig = kp.signDecorated(txHash);
       this.signatures.push(sig);
     });
+  }
+
+  /**
+   * Signs a transaction with the given {@link Keypair}. Useful if someone sends
+   * you a transaction XDR for you to sign and return (see
+   * {@link Transaction#addSignature} for how that works).
+   *
+   * When you get a transaction XDR to sign....
+   * - Instantiate a `Transaction` object with the XDR
+   * - Use {@link Keypair} to generate a keypair object for your Stellar seed.
+   * - Run `getKeypairSignature` with that keypair
+   * - Send back the signature along with your publicKey (not your secret seed!)
+   *
+   * Example:
+   * ```javascript
+   * // `transactionXDR` is a string from the person generating the transaction
+   * const transaction = new Transaction(transactionXDR);
+   * const keypair = Keypair.fromSecret(myStellarSeed);
+   * return transaction.getKeypairSignature(keypair);
+   * ```
+   *
+   * @param {Keypair} keypair Keypair of signer
+   * @returns {string} Signature string
+   */
+  getKeypairSignature(keypair) {
+    return keypair.sign(this.hash()).toString('base64');
+  }
+
+  /**
+   * Add a signature to the transaction. Useful when a party wants to pre-sign
+   * a transaction but doesn't want to give access to their secret keys.
+   *
+   * Here's how you would use this feature to solicit multiple signatures.
+   * - Use `TransactionBuilder` to build a new transaction.
+   * - Make sure to set a long enough timeout on that transaction to give your
+   * signers enough time to sign!
+   * - Once you build the transaction, use `transaction.toXDR()` to get the
+   * base64-encoded XDR string.
+   * - _Warning!_ Once you've built this transaction, don't submit any other
+   * transactions onto your account! Doing so will invalidate this pre-compiled
+   * transaction!
+   * - Send this XDR string to your other parties. They can use the instructions
+   * for {@link Transaction#getKeypairSignature} to sign the transaction.
+   * - They should send you back their `publicKey` and the `signature` string
+   * from {@link Transaction#getKeypairSignature}, both of which you pass to
+   * this function.
+   *
+   * @param {string} publicKey The public key of the signer
+   * @param {string} signature The base64 value of the signature XDR
+   * @returns {TransactionBuilder}
+   */
+  addSignature(publicKey = '', signature = '') {
+    if (!signature || typeof signature !== 'string') {
+      throw new Error('Invalid signature');
+    }
+
+    if (!publicKey || typeof publicKey !== 'string') {
+      throw new Error('Invalid publicKey');
+    }
+
+    let hint;
+
+    try {
+      hint = Keypair.fromPublicKey(publicKey).signatureHint();
+    } catch (e) {
+      throw new Error('Invalid publicKey');
+    }
+
+    this.signatures.push(
+      new xdr.DecoratedSignature({
+        hint,
+        signature: Buffer.from(signature, 'base64')
+      })
+    );
   }
 
   /**
