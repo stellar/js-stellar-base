@@ -13,10 +13,9 @@ A breaking change will get clearly notified in this log.
 - Fix TransactionBuilder example syntax errors
 - Use more thorough "create account" documentation
 - Add `Date` support for `TransactionBuilder` `timebounds`
-- Add a function to Transaction, `getKeypairSignature`, to help users sign
-  pre-generated transactions
-- Add a function to TransactionBuilder, `addSignature`, that lets you add
-  pre-generated signatures to a built transaction
+- Add two functions to `Transaction` that support pre-generated transactions:
+  - `getKeypairSignature` helps users sign pre-generated transaction XDRs
+  - `addSignature` lets you add pre-generated signatures to a built transaction
 
 ## 0.11.0
 
