@@ -96,7 +96,7 @@ export class Transaction {
    * @returns {string} Signature string
    */
   getKeypairSignature(keypair) {
-    return keypair.sign(this.hash());
+    return keypair.sign(this.hash()).toString('base64');
   }
 
   /**

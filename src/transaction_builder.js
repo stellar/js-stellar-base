@@ -75,6 +75,7 @@ export class TransactionBuilder {
     this.operations = [];
 
     if (isUndefined(opts.fee)) {
+      // eslint-disable-next-line no-console
       console.log(
         '[TransactionBuilder] The `fee` parameter of `TransactionBuilder` is required. Future versions of this library will error if not provided.'
       );
