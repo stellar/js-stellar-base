@@ -1078,9 +1078,10 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
-base32.js@~0.1.0:
+base32.js@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/base32.js/-/base32.js-0.1.0.tgz#b582dec693c2f11e893cf064ee6ac5b6131a2202"
+  integrity sha1-tYLexpPC8R6JPPBk7mrFthMaIgI=
 
 base64-arraybuffer@0.1.5:
   version "0.1.5"
@@ -1815,13 +1816,16 @@ crc32-stream@^2.0.0:
     crc "^3.4.4"
     readable-stream "^2.0.0"
 
-crc@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/crc/-/crc-3.5.0.tgz#98b8ba7d489665ba3979f59b21381374101a1964"
-
 crc@^3.4.4:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/crc/-/crc-3.7.0.tgz#58b7083e32ba4b276e1f4cbce1a78b39a6ab63f9"
+  dependencies:
+    buffer "^5.1.0"
+
+crc@^3.5.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/crc/-/crc-3.8.0.tgz#ad60269c2c856f8c299e2c4cc0de4556914056c6"
+  integrity sha512-iX3mfgcTMIq3ZKLIsVFAbv7+Mc10kxabAGQb8HvjA1o3T1PIYprbakQ65d3I+2HGHt6nSKkM9PYjgoJO2KcFBQ==
   dependencies:
     buffer "^5.1.0"
 
@@ -4215,10 +4219,10 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-xdr@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/js-xdr/-/js-xdr-1.1.0.tgz#2b0d9373f58020a7061838a0eac75a408897a3d5"
-  integrity sha512-g2Q0ccis46I9IgyYhQDAC6P9vW9ceB0HW1UyzbVUPjr1Mpd63bbk3EjopTvjGbglCHO7Lx2ftcRzaXjKso95HA==
+js-xdr@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/js-xdr/-/js-xdr-1.1.1.tgz#38b1dbba77e4b381b9603e564fe1d374649ce2e1"
+  integrity sha512-csYOkKC78umSY2r3oDUONGH1ZcyTex7VlzpfmjKdzlNoeqFQtOA1rhBE9/e3mFNiO0Do65EVvyWx2jHHtRYPPg==
   dependencies:
     core-js "^2.6.3"
     cursor "^0.1.5"
