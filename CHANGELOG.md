@@ -3,10 +3,11 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
-## In `master`
+## [v0.12.0](https://github.com/stellar/js-stellar-base/compare/v0.11.0...v0.12.0)
 
 - _Warning_ Calling TransactionBuilder without a `fee` param is now deprecated
-  and will issue a warning. In a later release, it will throw an error.
+  and will issue a warning. In a later release, it will throw an error. Please
+  update your transaction builders as soon as you can!
 - Add a `toXDR` function for transactions that lets you get the transaction as a
   base64-encoded string (so you may enter it into the Stellar Laboratory XDR
   viewer, for one)
