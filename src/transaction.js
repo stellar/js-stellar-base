@@ -1,7 +1,6 @@
 import map from 'lodash/map';
 import each from 'lodash/each';
 import isString from 'lodash/isString';
-import crypto from 'crypto';
 import { xdr, hash } from './index';
 
 import { StrKey } from './strkey';
@@ -162,10 +161,7 @@ export class Transaction {
     }
 
     const signature = preimage;
-    const hashX = crypto
-      .createHash('sha256')
-      .update(preimage)
-      .digest();
+    const hashX = hash(preimage);
     const hint = hashX.slice(hashX.length - 4);
     this.signatures.push(new xdr.DecoratedSignature({ hint, signature }));
   }

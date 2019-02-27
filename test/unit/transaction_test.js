@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import randomBytes from 'randombytes';
 
 describe('Transaction', function() {
   it('constructs Transaction object from a TransactionEnvelope', function(done) {
@@ -102,11 +102,8 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000';
 
-    let preimage = crypto.randomBytes(64);
-    let hash = crypto
-      .createHash('sha256')
-      .update(preimage)
-      .digest();
+    let preimage = randomBytes(64);
+    let hash = StellarBase.hash(preimage);
 
     let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
@@ -134,11 +131,7 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000';
 
-    let preimage = crypto.randomBytes(2 * 64);
-    let hash = crypto
-      .createHash('sha256')
-      .update(preimage)
-      .digest();
+    let preimage = randomBytes(2 * 64);
 
     let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
