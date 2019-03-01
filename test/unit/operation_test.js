@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import crypto from 'crypto';
 import isString from 'lodash/isString';
 
 describe('Operation', function() {
@@ -392,10 +391,7 @@ describe('Operation', function() {
     it('creates a setOptionsOp with preAuthTx signer', function() {
       var opts = {};
 
-      var hash = crypto
-        .createHash('sha256')
-        .update('Tx hash')
-        .digest();
+      var hash = StellarBase.hash('Tx hash');
 
       opts.signer = {
         preAuthTx: hash,
@@ -416,10 +412,7 @@ describe('Operation', function() {
     it('creates a setOptionsOp with preAuthTx signer from a hex string', function() {
       var opts = {};
 
-      var hash = crypto
-        .createHash('sha256')
-        .update('Tx hash')
-        .digest('hex');
+      var hash = StellarBase.hash('Tx hash').toString('hex');
       expect(isString(hash)).to.be.true;
 
       opts.signer = {
@@ -441,10 +434,7 @@ describe('Operation', function() {
     it('creates a setOptionsOp with hash signer', function() {
       var opts = {};
 
-      var hash = crypto
-        .createHash('sha256')
-        .update('Hash Preimage')
-        .digest();
+      var hash = StellarBase.hash('Hash Preimage');
 
       opts.signer = {
         sha256Hash: hash,
@@ -465,10 +455,7 @@ describe('Operation', function() {
     it('creates a setOptionsOp with hash signer from a hex string', function() {
       var opts = {};
 
-      var hash = crypto
-        .createHash('sha256')
-        .update('Hash Preimage')
-        .digest('hex');
+      var hash = StellarBase.hash('Hash Preimage').toString('hex');
       expect(isString(hash)).to.be.true;
 
       opts.signer = {
