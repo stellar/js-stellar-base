@@ -254,6 +254,47 @@ export class Operation {
     return true;
   }
 
+  static isValidReceivedAmount(unitPriceRaw, amount) {
+    if (!isString(amount)) {
+      return false;
+    }
+
+    // if the amount is zero, it's fine (zero amount = kill the offer)
+    if (new BigNumber(amount).isZero()) {
+      return true;
+    }
+
+    const unitPrice =
+      unitPriceRaw.n && unitPriceRaw.d
+        ? new BigNumber(unitPriceRaw.n).div(unitPriceRaw.d)
+        : unitPriceRaw;
+
+    let receivedAmount;
+    try {
+      receivedAmount = new BigNumber(amount).div(unitPrice);
+    } catch (e) {
+      return false;
+    }
+
+    if (
+      // < 0
+      receivedAmount.isNegative() ||
+      // > Max value
+      receivedAmount
+        .times(ONE)
+        .greaterThan(new BigNumber(MAX_INT64).toString()) ||
+      // Too small
+      receivedAmount.lt(0.0000001) ||
+      // NaN or Infinity
+      receivedAmount.isNaN() ||
+      !receivedAmount.isFinite()
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   static constructAmountRequirementsError(arg) {
     return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
   }

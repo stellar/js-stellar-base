@@ -22,14 +22,21 @@ export function manageOffer(opts) {
   const attributes = {};
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
+
   if (!this.isValidAmount(opts.amount, true)) {
     throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
-  attributes.amount = this._toXDRAmount(opts.amount);
+
   if (isUndefined(opts.price)) {
     throw new TypeError('price argument is required');
   }
+
+  attributes.amount = this._toXDRAmount(opts.amount);
   attributes.price = this._toXDRPrice(opts.price);
+
+  if (!this.isValidReceivedAmount(opts.price, opts.amount)) {
+    throw new TypeError('received amount is too small');
+  }
 
   if (!isUndefined(opts.offerId)) {
     opts.offerId = opts.offerId.toString();

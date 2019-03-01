@@ -700,6 +700,22 @@ describe('Operation', function() {
         /price must be positive/
       );
     });
+
+    it('creates an invalid manageOfferOp (received amount too small)', function() {
+      var opts = {};
+      opts.selling = new StellarBase.Asset.native();
+      opts.buying = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      opts.amount = '0.0000001';
+      opts.price = '1.956';
+      opts.offerId = '1';
+      expect(() => StellarBase.Operation.manageOffer(opts)).to.throw(
+        /received amount is too small/
+      );
+    });
+
     it('creates a manageOfferOp (number price)', function() {
       var opts = {};
       opts.selling = new StellarBase.Asset(
