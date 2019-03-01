@@ -269,6 +269,12 @@ export class Operation {
         ? new BigNumber(unitPriceRaw.n).div(unitPriceRaw.d)
         : unitPriceRaw;
 
+    /* 
+      Let's say I'm trying to sell an amount (10) XLM for USD at a price 
+      (50 XLM / 1 USD). That means we're receiving 
+      `amount / price`, or 10 * 1 / 50, or .20 USD.
+    */
+
     let receivedAmount;
     try {
       receivedAmount = new BigNumber(amount).div(unitPrice);
