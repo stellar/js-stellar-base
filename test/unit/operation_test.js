@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import randomBytes from 'randombytes';
 import isString from 'lodash/isString';
 
 describe('Operation', function() {
