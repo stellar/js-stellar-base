@@ -151,4 +151,21 @@ describe('Asset', function() {
         expect(asset.getIssuer()).to.equal(issuer);
       });
     });
+
+    describe('toString()', function() {
+      it("returns 'native' for native asset", function() {
+        var asset = StellarBase.Asset.native();
+        expect(asset.toString()).to.be.equal('native');
+      });
+
+      it("returns 'code-issuer' for non-native asset", function() {
+        var asset = new StellarBase.Asset(
+          'USD',
+          'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        );
+        expect(asset.toString()).to.be.equal(
+          'USD-GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        );
+      });
+    });
 });
