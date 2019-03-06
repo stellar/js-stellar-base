@@ -21,6 +21,10 @@ export function verify(data, signature, publicKey) {
   return actualMethods.verify(data, signature, publicKey);
 }
 
+export function generate(secretKey) {
+  return actualMethods.generate(secretKey);
+}
+
 function checkFastSigning() {
   return typeof window === 'undefined'
     ? checkFastSigningNode()
@@ -37,6 +41,11 @@ function checkFastSigningNode() {
   } catch (err) {
     return checkFastSigningBrowser();
   }
+
+  actualMethods.generate = (secretKey) => {
+    const keypair = ed25519.MakeKeypair(secretKey);
+    return keypair.publicKey;
+  };
 
   actualMethods.sign = (data, secretKey) =>
     ed25519.Sign(Buffer.from(data), secretKey);
@@ -58,6 +67,13 @@ function checkFastSigningBrowser() {
   // if there was a failure installing ed25519
   // eslint-disable-next-line
   const nacl = require('tweetnacl');
+
+  actualMethods.generate = (secretKey) => {
+    const secretKeyUint8 = new Uint8Array(secretKey);
+    const naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
+    return Buffer.from(naclKeys.publicKey);
+  };
+
   actualMethods.sign = (data, secretKey) => {
     data = Buffer.from(data);
     data = new Uint8Array(data.toJSON().data);

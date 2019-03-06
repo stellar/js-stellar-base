@@ -1,6 +1,6 @@
 import nacl from 'tweetnacl';
 import { Network } from './network';
-import { sign, verify } from './signing';
+import { sign, verify, generate } from './signing';
 import * as base58 from './base58';
 import { StrKey } from './strkey';
 import xdr from './generated/stellar-xdr_generated';
@@ -37,12 +37,9 @@ export class Keypair {
         throw new Error('secretKey length is invalid');
       }
 
-      const secretKeyUint8 = new Uint8Array(keys.secretKey);
-      const naclKeys = nacl.sign.keyPair.fromSeed(secretKeyUint8);
-
       this._secretSeed = keys.secretKey;
-      this._secretKey = Buffer.from(naclKeys.secretKey);
-      this._publicKey = Buffer.from(naclKeys.publicKey);
+      this._publicKey = generate(keys.secretKey);
+      this._secretKey = Buffer.concat([keys.secretKey, this._publicKey]);
 
       if (
         keys.publicKey &&
