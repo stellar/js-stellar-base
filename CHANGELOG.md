@@ -3,7 +3,7 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
-## In master
+## [v0.13.0](https://github.com/stellar/js-stellar-base/compare/v0.12.0...v0.13.0)
 
 - Remove the `crypto` library. This reduces the number of Node built-ins we have
   to shim into the production bundle, and incidentally fixes a bug with
