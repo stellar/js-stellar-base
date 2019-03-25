@@ -289,6 +289,61 @@ describe('Transaction', function() {
     expectBuffersToBeEqual(addedSignatureTx.hash(), signedTx.hash());
   });
 
+  it('does not add invalid signature', function() {
+    const sourceKey =
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
+    // make two sources so they have the same seq number
+    const source = new StellarBase.Account(sourceKey, '20');
+    const sourceCopy = new StellarBase.Account(sourceKey, '20');
+    const destination =
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+    const asset = StellarBase.Asset.native();
+    const originalAmount = '2000';
+    const alteredAmount = '1000';
+    const signer = StellarBase.Keypair.master();
+
+    const originalTx = new StellarBase.TransactionBuilder(source, {
+      timebounds: {
+        minTime: 0,
+        maxTime: 1739392569
+      },
+      fee: 100
+    })
+      .addOperation(
+        StellarBase.Operation.payment({
+          destination,
+          asset,
+          amount: originalAmount
+        })
+      )
+      .build();
+
+    const signature = new StellarBase.Transaction(
+      originalTx.toXDR()
+    ).getKeypairSignature(signer);
+
+    const alteredTx = new StellarBase.TransactionBuilder(sourceCopy, {
+      timebounds: {
+        minTime: 0,
+        maxTime: 1739392569
+      },
+      fee: 100
+    })
+      .addOperation(
+        StellarBase.Operation.payment({
+          destination,
+          asset,
+          amount: alteredAmount
+        })
+      )
+      .build();
+
+    function addSignature() {
+      alteredTx.addSignature(signer.publicKey(), signature);
+    }
+    expect(addSignature).to.throw('Invalid signature');
+  });
+
   it('accepts 0 as a valid transaction fee', function(done) {
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
