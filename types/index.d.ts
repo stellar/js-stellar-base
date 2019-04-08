@@ -244,6 +244,7 @@ export namespace OperationOptions {
   interface ManageOffer extends CreatePassiveOffer {
     offerId?: number | string;
   }
+  // tslint:disable-next-line
   interface Inflation extends BaseOptions {
     // tslint:disable-line
   }
