@@ -10,7 +10,7 @@
     "types": [],
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
-    "paths": { "stellar-sdk": ["../"] }
+    "paths": { "stellar-base": ["../"] }
   },
   "files": ["index.d.ts", "test.ts"]
 }
