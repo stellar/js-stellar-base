@@ -42,7 +42,7 @@ export const TimeoutInfinite = 0;
  * a payment to `destinationB`. The built transaction is then signed by `sourceKeypair`.</p>
  *
  * ```
- * var transaction = new TransactionBuilder(source)
+ * var transaction = new TransactionBuilder(source, fee)
  *  .addOperation(Operation.createAccount({
         destination: destinationA,
         startingBalance: "20"
