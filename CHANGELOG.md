@@ -6,6 +6,7 @@ A breaking change will get clearly notified in this log.
 ## [v0.13.1](https://github.com/stellar/js-stellar-base/compare/v0.13.0...v0.13.1)
 
 - Travis: Deploy NPM with an environment variable instead of an encrypted API key.
+- Instruct Travis to cache node_modules
 
 ## [v0.13.0](https://github.com/stellar/js-stellar-base/compare/v0.12.0...v0.13.0)
 
