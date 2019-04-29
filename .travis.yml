@@ -4,6 +4,7 @@ matrix:
     - node_js: 6.14.0
     - node_js: 8
     - node_js: 10
+      env: TYPE_TEST=true
     - node_js: 6.14.0
       env: SAUCE=true
 cache: 
@@ -22,7 +23,13 @@ script:
       fi
     else
       # Ugly but it's the only way to make istanbul generate coverage report
-      gulp test:node
+      yarn test
+
+      # only run the type test on node >8.2.1, since some of the type libs have
+      # trailing commas in function args
+      if [ "${TYPE_TEST}" = "true" ]; then
+          yarn dtslint
+      fi
     fi
 after_success:
   - |
