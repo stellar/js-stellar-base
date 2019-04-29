@@ -13,17 +13,19 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 - **[API Reference](https://stellar.github.io/js-stellar-base/)**
 
 > **Warning!** Node version of this package is using
-> [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a native
-> implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as an
+> [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a
+> native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as
+> an
 > [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
 > This means that if for any reason installation of this package fails,
 > `stellar-base` will fallback to the much slower implementation contained in
 > [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
 >
 > If you are using `stellar-base` in a browser you can ignore this. However, for
-> production backend deployments you should definitely be using `sodium-native`. If
-> `sodium-native` is successfully installed and working `StellarBase.FastSigning`
-> variable will be equal `true`. Otherwise it will be `false`.
+> production backend deployments you should definitely be using `sodium-native`.
+> If `sodium-native` is successfully installed and working
+> `StellarBase.FastSigning` variable will be equal `true`. Otherwise it will be
+> `false`.
 
 ## Quick start
 
@@ -101,47 +103,45 @@ Make sure that you are using the latest version number. They can be found on the
 
 ### To develop and test js-stellar-base itself
 
-1. Clone the repo
+1. Install Node 6.14.0
+
+Because we support earlier versions of Node, please install and develop on Node
+6.14.0 so you don't get surprised when your code works locally but breaks in CI.
+
+If you work on several projects that use different Node versions, you might find
+helpful to install a nodejs version manager.
+
+- https://github.com/creationix/nvm
+- https://github.com/wbyoung/avn
+- https://github.com/asdf-vm/asdf
+
+2. Install Yarn
+
+This project uses [Yarn](https://yarnpkg.com/) to manages its dependencies. To
+install Yarn, follow the project instructions available at
+https://yarnpkg.com/en/docs/install.
+
+3. Clone the repo
 
 ```shell
 git clone https://github.com/stellar/js-stellar-base.git
 ```
 
-2. Install dependencies inside js-stellar-base folder
+4. Install dependencies inside js-stellar-base folder
 
 ```shell
 cd js-stellar-base
-npm install
+yarn install
 ```
 
-3. Install Node 6.14.0
-
-Because we support earlier versions of Node, please install and develop on Node
-6.14.0 so you don't get surprised when your code works locally but breaks in CI.
-
-Here's out to install `nvm` if you haven't: https://github.com/creationix/nvm
-
-```shell
-nvm install
-
-# if you've never installed 6.14.0 before you'll want to re-install yarn
-npm install -g yarn
-```
-
-If you work on several projects that use different Node versions, you might it
-helpful to install this automatic version manager:
-https://github.com/wbyoung/avn
-
-````
-
-4. Observe the project's code style
+5. Observe the project's code style
 
 While you're making changes, make sure to run the linter-watcher to catch any
-   linting errors (in addition to making sure your text editor supports ESLint)
+linting errors (in addition to making sure your text editor supports ESLint)
 
 ```shell
 node_modules/.bin/gulp watch
-````
+```
 
 If you're working on a file not in `src`, limit your code to Node 6.16 ES! See
 what's supported here: https://node.green/ (The reason is that our npm library
