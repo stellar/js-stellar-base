@@ -26,6 +26,7 @@ script:
       # trailing commas in function args
       if [ "${TYPE_TEST}" = "true" ]; then
           yarn dtslint
+      fi
     fi
 after_success:
   - |
