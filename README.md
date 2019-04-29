@@ -148,6 +148,27 @@ what's supported here: https://node.green/ (The reason is that our npm library
 must support earlier versions of Node, so the tests need to run on those
 versions.)
 
+#### Updating XDR definitions
+
+1. Make sure you have [Ruby](https://www.ruby-lang.org/en/) installed. You can
+   either use a global installation, or use a version manager.
+
+- https://www.ruby-lang.org/en/downloads/
+- https://github.com/rbenv/rbenv
+- https://rvm.io
+- https://github.com/asdf-vm/asdf
+
+2. Install [Bundler](https://bundler.io).
+3. Install all dependencies.
+
+```shell
+bundle install
+```
+
+4. Copy xdr files from
+   https://github.com/stellar/stellar-core/tree/master/src/xdr to `./xdr`.
+5. Run `yarn xdr` js-stellar-base folder.
+
 ## Usage
 
 For information on how to use js-stellar-base, take a look at the docs in the
