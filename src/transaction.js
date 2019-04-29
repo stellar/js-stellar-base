@@ -101,6 +101,7 @@ export class Transaction {
   /**
    * Add a signature to the transaction. Useful when a party wants to pre-sign
    * a transaction but doesn't want to give access to their secret keys.
+   * This will also verify whether the signature is valid.
    *
    * Here's how you would use this feature to solicit multiple signatures.
    * - Use `TransactionBuilder` to build a new transaction.
@@ -130,18 +131,25 @@ export class Transaction {
       throw new Error('Invalid publicKey');
     }
 
+    let keypair;
     let hint;
+    const signatureBuffer = Buffer.from(signature, 'base64');
 
     try {
-      hint = Keypair.fromPublicKey(publicKey).signatureHint();
+      keypair = Keypair.fromPublicKey(publicKey);
+      hint = keypair.signatureHint();
     } catch (e) {
       throw new Error('Invalid publicKey');
+    }
+
+    if (!keypair.verify(this.hash(), signatureBuffer)) {
+      throw new Error('Invalid signature');
     }
 
     this.signatures.push(
       new xdr.DecoratedSignature({
         hint,
-        signature: Buffer.from(signature, 'base64')
+        signature: signatureBuffer
       })
     );
   }
