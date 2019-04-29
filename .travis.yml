@@ -19,7 +19,7 @@ script:
       fi
     else
       # Ugly but it's the only way to make istanbul generate coverage report
-      gulp test:node
+      yarn test
     fi
 after_success:
   - |
