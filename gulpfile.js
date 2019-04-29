@@ -47,8 +47,8 @@ gulp.task(
             ]
           },
           plugins: [
-            // Ignore native modules (ed25519)
-            new webpack.IgnorePlugin(/ed25519/)
+            // Ignore native modules (sodium-native)
+            new webpack.IgnorePlugin(/sodium-native/)
           ]
         })
       )
