@@ -454,6 +454,8 @@ export class Transaction<
   TOps extends Operation[] = Operation[]
 > {
   constructor(envelope: string | xdr.TransactionEnvelope);
+  addSignature(publicKey: string, signature: string): void;
+  getKeypairSignature(keypair: Keypair): string;
   hash(): Buffer;
   sign(...keypairs: Keypair[]): void;
   signatureBase(): Buffer;
