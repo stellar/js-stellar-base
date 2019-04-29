@@ -5,10 +5,10 @@
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "test": "gulp test:node && yarn dtslint",
+    "test": "gulp test:node",
     "docs": "jsdoc -c .jsdoc.json --verbose",
     "dtslint": "dtslint types",
-    "preversion": "gulp test && yarn dtslint",
+    "preversion": "gulp test",
     "version": "gulp build",
     "postversion": "git push && git push --tags",
     "prettier-all": "prettier --write **/*.js"
