@@ -48,7 +48,7 @@
 
 
     <section class="readme">
-        <article><h1>JS Stellar Base</h1><p><a href="https://travis-ci.org/stellar/js-stellar-base"><img src="https://travis-ci.org/stellar/js-stellar-base.svg" alt="Build Status"></a>
+        <article><h1>JS Stellar Base</h1><p><a href="https://travis-ci.com/stellar/js-stellar-base"><img src="https://travis-ci.com/stellar/js-stellar-base.svg?branch=master" alt="Build Status"></a>
 <a href="https://codeclimate.com/github/stellar/js-stellar-base"><img src="https://codeclimate.com/github/stellar/js-stellar-base/badges/gpa.svg" alt="Code Climate"></a>
 <a href="https://coveralls.io/github/stellar/js-stellar-base?branch=master"><img src="https://coveralls.io/repos/stellar/js-stellar-base/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a>
 <a href="https://david-dm.org/stellar/js-stellar-base"><img src="https://david-dm.org/stellar/js-stellar-base.svg" alt="Dependency Status"></a></p>
@@ -61,16 +61,18 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 </ul>
 <blockquote>
 <p><strong>Warning!</strong> Node version of this package is using
-<a href="https://www.npmjs.com/package/ed25519"><code>ed25519</code></a> package, a native
-implementation of <a href="https://ed25519.cr.yp.to/">Ed25519</a> in Node.js, as an
+<a href="https://www.npmjs.com/package/sodium-native"><code>sodium-native</code></a> package, a
+native implementation of <a href="https://ed25519.cr.yp.to/">Ed25519</a> in Node.js, as
+an
 <a href="https://docs.npmjs.com/files/package.json#optionaldependencies">optional dependency</a>.
 This means that if for any reason installation of this package fails,
 <code>stellar-base</code> will fallback to the much slower implementation contained in
 <a href="https://www.npmjs.com/package/tweetnacl"><code>tweetnacl</code></a>.</p>
 <p>If you are using <code>stellar-base</code> in a browser you can ignore this. However, for
-production backend deployments you should definitely be using <code>ed25519</code>. If
-<code>ed25519</code> is successfully installed and working <code>StellarBase.FastSigning</code>
-variable will be equal <code>true</code>. Otherwise it will be <code>false</code>.</p>
+production backend deployments you should definitely be using <code>sodium-native</code>.
+If <code>sodium-native</code> is successfully installed and working
+<code>StellarBase.FastSigning</code> variable will be equal <code>true</code>. Otherwise it will be
+<code>false</code>.</p>
 </blockquote>
 <h2>Quick start</h2><p>Using npm to include js-stellar-base in your own project:</p>
 <pre class="prettyprint source lang-shell"><code>npm install --save stellar-base</code></pre><p>For browsers, <a href="#to-use-in-the-browser">use Bower to install it</a>. It exports a
@@ -109,35 +111,58 @@ may not be entirely secure.</p>
 <p>Make sure that you are using the latest version number. They can be found on the
 <a href="https://github.com/stellar/js-stellar-base/releases">releases page in Github</a>.</p>
 <h3>To develop and test js-stellar-base itself</h3><ol>
-<li>Clone the repo</li>
-</ol>
-<pre class="prettyprint source lang-shell"><code>git clone https://github.com/stellar/js-stellar-base.git</code></pre><ol start="2">
-<li>Install dependencies inside js-stellar-base folder</li>
-</ol>
-<pre class="prettyprint source lang-shell"><code>cd js-stellar-base
-npm install</code></pre><ol start="3">
 <li>Install Node 6.14.0</li>
 </ol>
 <p>Because we support earlier versions of Node, please install and develop on Node
 6.14.0 so you don't get surprised when your code works locally but breaks in CI.</p>
-<p>Here's out to install <code>nvm</code> if you haven't: https://github.com/creationix/nvm</p>
-<pre class="prettyprint source lang-shell"><code>nvm install
-
-# if you've never installed 6.14.0 before you'll want to re-install yarn
-npm install -g yarn</code></pre><p>If you work on several projects that use different Node versions, you might it
-helpful to install this automatic version manager:
-https://github.com/wbyoung/avn</p>
-<pre class="prettyprint source"><code>
-4. Observe the project's code style
-
-While you're making changes, make sure to run the linter-watcher to catch any
-   linting errors (in addition to making sure your text editor supports ESLint)
-
-```shell
-node_modules/.bin/gulp watch</code></pre><p>If you're working on a file not in <code>src</code>, limit your code to Node 6.16 ES! See
+<p>If you work on several projects that use different Node versions, you might find
+helpful to install a nodejs version manager.</p>
+<ul>
+<li>https://github.com/creationix/nvm</li>
+<li>https://github.com/wbyoung/avn</li>
+<li><p>https://github.com/asdf-vm/asdf</p>
+</li>
+<li><p>Install Yarn</p>
+</li>
+</ul>
+<p>This project uses <a href="https://yarnpkg.com/">Yarn</a> to manages its dependencies. To
+install Yarn, follow the project instructions available at
+https://yarnpkg.com/en/docs/install.</p>
+<ol start="3">
+<li>Clone the repo</li>
+</ol>
+<pre class="prettyprint source lang-shell"><code>git clone https://github.com/stellar/js-stellar-base.git</code></pre><ol start="4">
+<li>Install dependencies inside js-stellar-base folder</li>
+</ol>
+<pre class="prettyprint source lang-shell"><code>cd js-stellar-base
+yarn install</code></pre><ol start="5">
+<li>Observe the project's code style</li>
+</ol>
+<p>While you're making changes, make sure to run the linter-watcher to catch any
+linting errors (in addition to making sure your text editor supports ESLint)</p>
+<pre class="prettyprint source lang-shell"><code>node_modules/.bin/gulp watch</code></pre><p>If you're working on a file not in <code>src</code>, limit your code to Node 6.16 ES! See
 what's supported here: https://node.green/ (The reason is that our npm library
 must support earlier versions of Node, so the tests need to run on those
 versions.)</p>
+<h4>Updating XDR definitions</h4><ol>
+<li><p>Make sure you have <a href="https://www.ruby-lang.org/en/">Ruby</a> installed. You can
+either use a global installation, or use a version manager.</p>
+</li>
+<li><p>https://<a href="http://www.ruby-lang.org/en/downloads/">www.ruby-lang.org/en/downloads/</a></p>
+</li>
+<li>https://github.com/rbenv/rbenv</li>
+<li>https://rvm.io</li>
+<li><p>https://github.com/asdf-vm/asdf</p>
+</li>
+<li><p>Install <a href="https://bundler.io">Bundler</a>.</p>
+</li>
+<li>Install all dependencies.</li>
+</ol>
+<pre class="prettyprint source lang-shell"><code>bundle install</code></pre><ol start="4">
+<li>Copy xdr files from
+https://github.com/stellar/stellar-core/tree/master/src/xdr to <code>./xdr</code>.</li>
+<li>Run <code>yarn xdr</code> js-stellar-base folder.</li>
+</ol>
 <h2>Usage</h2><p>For information on how to use js-stellar-base, take a look at the docs in the
 <a href="./docs">docs folder</a>.</p>
 <h2>Testing</h2><p>To run all tests:</p>
@@ -166,7 +191,7 @@ contribute to this project.</p>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 19 2019 19:03:05 GMT+0000 (UTC) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 30 2019 18:47:20 GMT+0000 (UTC) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
