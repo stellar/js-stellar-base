@@ -3,13 +3,19 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
-## In master
+## [v0.13.2](https://github.com/stellar/js-stellar-base/compare/v0.13.1...v0.13.2)
 
-- Add Typescript type definitions.
+- Bring DefinitelyTyped definitions into the repo for faster updating.
+- Add missing Typescript type definitions.
+- Add code to verify signatures when added to transactions.
+- Replace ed25519 with sodium-native.
+- Fix the xdr for SCP_MESSAGE.
+- Update the README for the latest info.
 
 ## [v0.13.1](https://github.com/stellar/js-stellar-base/compare/v0.13.0...v0.13.1)
 
-- Travis: Deploy NPM with an environment variable instead of an encrypted API key.
+- Travis: Deploy NPM with an environment variable instead of an encrypted API
+  key.
 - Instruct Travis to cache node_modules
 
 ## [v0.13.0](https://github.com/stellar/js-stellar-base/compare/v0.12.0...v0.13.0)
