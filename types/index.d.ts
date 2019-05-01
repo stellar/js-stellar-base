@@ -193,6 +193,7 @@ export namespace OperationType {
   type PathPayment = 'pathPayment';
   type CreatePassiveSellOffer = 'createPassiveSellOffer';
   type ManageSellOffer = 'manageSellOffer';
+  type ManageBuyOffer = 'manageBuyOffer';
   type SetOptions = 'setOptions';
   type ChangeTrust = 'changeTrust';
   type AllowTrust = 'allowTrust';
@@ -207,6 +208,7 @@ export type OperationType =
   | OperationType.PathPayment
   | OperationType.CreatePassiveSellOffer
   | OperationType.ManageSellOffer
+  | OperationType.ManageBuyOffer
   | OperationType.SetOptions
   | OperationType.ChangeTrust
   | OperationType.AllowTrust
@@ -242,6 +244,13 @@ export namespace OperationOptions {
     price: number | string | object /* bignumber.js */;
   }
   interface ManageSellOffer extends CreatePassiveSellOffer {
+    offerId?: number | string;
+  }
+  interface ManageBuyOffer {
+    selling: Asset;
+    buying: Asset;
+    buyAmount: string;
+    price: number | string | object /* bignumber.js */;
     offerId?: number | string;
   }
   // tslint:disable-next-line
@@ -286,6 +295,7 @@ export type OperationOptions =
   | OperationOptions.PathPayment
   | OperationOptions.CreatePassiveSellOffer
   | OperationOptions.ManageSellOffer
+  | OperationOptions.ManageBuyOffer
   | OperationOptions.SetOptions
   | OperationOptions.ChangeTrust
   | OperationOptions.AllowTrust
@@ -368,6 +378,17 @@ export namespace Operation {
     options: OperationOptions.ManageSellOffer
   ): xdr.Operation<ManageSellOffer>;
 
+  interface ManageBuyOffer extends BaseOperation<OperationType.ManageBuyOffer> {
+    selling: Asset;
+    buying: Asset;
+    buyAmount: string;
+    price: string;
+    offerId: string;
+  }
+  function manageBuyOffer(
+    options: OperationOptions.ManageBuyOffer
+  ): xdr.Operation<ManageBuyOffer>;
+
   interface PathPayment extends BaseOperation<OperationType.PathPayment> {
     sendAsset: Asset;
     sendMax: string;
@@ -426,6 +447,7 @@ export type Operation =
   | Operation.PathPayment
   | Operation.CreatePassiveSellOffer
   | Operation.ManageSellOffer
+  | Operation.ManageBuyOffer
   | Operation.SetOptions
   | Operation.ChangeTrust
   | Operation.AllowTrust

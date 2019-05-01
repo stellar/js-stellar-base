@@ -7,6 +7,7 @@ export { createPassiveSellOffer } from './create_passive_sell_offer';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
 export { manageSellOffer } from './manage_sell_offer';
+export { manageBuyOffer } from './manage_buy_offer';
 export { pathPayment } from './path_payment';
 export { payment } from './payment';
 export { setOptions } from './set_options';
