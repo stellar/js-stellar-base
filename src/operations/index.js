@@ -6,7 +6,7 @@ export { createAccount } from './create_account';
 export { createPassiveOffer } from './create_passive_offer';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
-export { manageOffer } from './manage_offer';
+export { manageSellOffer } from './manage_sell_offer';
 export { pathPayment } from './path_payment';
 export { payment } from './payment';
 export { setOptions } from './set_options';

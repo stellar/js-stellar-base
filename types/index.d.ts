@@ -192,7 +192,7 @@ export namespace OperationType {
   type Payment = 'payment';
   type PathPayment = 'pathPayment';
   type CreatePassiveOffer = 'createPassiveOffer';
-  type ManageOffer = 'manageOffer';
+  type ManageSellOffer = 'manageSellOffer';
   type SetOptions = 'setOptions';
   type ChangeTrust = 'changeTrust';
   type AllowTrust = 'allowTrust';
@@ -206,7 +206,7 @@ export type OperationType =
   | OperationType.Payment
   | OperationType.PathPayment
   | OperationType.CreatePassiveOffer
-  | OperationType.ManageOffer
+  | OperationType.ManageSellOffer
   | OperationType.SetOptions
   | OperationType.ChangeTrust
   | OperationType.AllowTrust
@@ -241,7 +241,7 @@ export namespace OperationOptions {
     amount: string;
     price: number | string | object /* bignumber.js */;
   }
-  interface ManageOffer extends CreatePassiveOffer {
+  interface ManageSellOffer extends CreatePassiveOffer {
     offerId?: number | string;
   }
   // tslint:disable-next-line
@@ -285,7 +285,7 @@ export type OperationOptions =
   | OperationOptions.Payment
   | OperationOptions.PathPayment
   | OperationOptions.CreatePassiveOffer
-  | OperationOptions.ManageOffer
+  | OperationOptions.ManageSellOffer
   | OperationOptions.SetOptions
   | OperationOptions.ChangeTrust
   | OperationOptions.AllowTrust
@@ -356,16 +356,17 @@ export namespace Operation {
     options: OperationOptions.ManageData
   ): xdr.Operation<ManageData>;
 
-  interface ManageOffer extends BaseOperation<OperationType.ManageOffer> {
+  interface ManageSellOffer
+    extends BaseOperation<OperationType.ManageSellOffer> {
     selling: Asset;
     buying: Asset;
     amount: string;
     price: string;
     offerId: string;
   }
-  function manageOffer(
-    options: OperationOptions.ManageOffer
-  ): xdr.Operation<ManageOffer>;
+  function manageSellOffer(
+    options: OperationOptions.ManageSellOffer
+  ): xdr.Operation<ManageSellOffer>;
 
   interface PathPayment extends BaseOperation<OperationType.PathPayment> {
     sendAsset: Asset;
@@ -424,7 +425,7 @@ export type Operation =
   | Operation.Payment
   | Operation.PathPayment
   | Operation.CreatePassiveOffer
-  | Operation.ManageOffer
+  | Operation.ManageSellOffer
   | Operation.SetOptions
   | Operation.ChangeTrust
   | Operation.AllowTrust

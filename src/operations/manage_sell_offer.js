@@ -1,11 +1,11 @@
 import isUndefined from 'lodash/isUndefined';
-import { UnsignedHyper } from 'js-xdr';
+import { Hyper } from 'js-xdr';
 import xdr from '../generated/stellar-xdr_generated';
 /**
- * Returns a XDR ManageOfferOp. A "manage offer" operation creates, updates, or
+ * Returns a XDR ManageSellOfferOp. A "manage sell offer" operation creates, updates, or
  * deletes an offer.
  * @function
- * @alias Operation.manageOffer
+ * @alias Operation.manageSellOffer
  * @param {object} opts Options object
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.
@@ -16,9 +16,9 @@ import xdr from '../generated/stellar-xdr_generated';
  * @param {number|string} [opts.offerId ] - If `0`, will create a new offer (default). Otherwise, edits an exisiting offer.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
- * @returns {xdr.ManageOfferOp} Manage Offer operation
+ * @returns {xdr.ManageSellOfferOp} Manage Sell Offer operation
  */
-export function manageOffer(opts) {
+export function manageSellOffer(opts) {
   const attributes = {};
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
@@ -37,11 +37,11 @@ export function manageOffer(opts) {
     opts.offerId = '0';
   }
 
-  attributes.offerId = UnsignedHyper.fromString(opts.offerId);
-  const manageOfferOp = new xdr.ManageOfferOp(attributes);
+  attributes.offerId = Hyper.fromString(opts.offerId);
+  const manageSellOfferOp = new xdr.ManageSellOfferOp(attributes);
 
   const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.manageOffer(manageOfferOp);
+  opAttributes.body = xdr.OperationBody.manageSellOffer(manageSellOfferOp);
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);

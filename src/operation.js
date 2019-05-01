@@ -45,7 +45,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`
  * * `{@link Operation.pathPayment}`
- * * `{@link Operation.manageOffer}`
+ * * `{@link Operation.manageSellOffer}`
  * * `{@link Operation.createPassiveOffer}`
  * * `{@link Operation.setOptions}`
  * * `{@link Operation.changeTrust}`
@@ -178,8 +178,8 @@ export class Operation {
         }
         break;
       }
-      case 'manageOffer': {
-        result.type = 'manageOffer';
+      case 'manageSellOffer': {
+        result.type = 'manageSellOffer';
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.amount = this._fromXDRAmount(attrs.amount());
@@ -357,7 +357,7 @@ Operation.createAccount = ops.createAccount;
 Operation.createPassiveOffer = ops.createPassiveOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
-Operation.manageOffer = ops.manageOffer;
+Operation.manageSellOffer = ops.manageSellOffer;
 Operation.pathPayment = ops.pathPayment;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
