@@ -191,7 +191,7 @@ export namespace OperationType {
   type CreateAccount = 'createAccount';
   type Payment = 'payment';
   type PathPayment = 'pathPayment';
-  type CreatePassiveOffer = 'createPassiveOffer';
+  type CreatePassiveSellOffer = 'createPassiveSellOffer';
   type ManageSellOffer = 'manageSellOffer';
   type SetOptions = 'setOptions';
   type ChangeTrust = 'changeTrust';
@@ -205,7 +205,7 @@ export type OperationType =
   | OperationType.CreateAccount
   | OperationType.Payment
   | OperationType.PathPayment
-  | OperationType.CreatePassiveOffer
+  | OperationType.CreatePassiveSellOffer
   | OperationType.ManageSellOffer
   | OperationType.SetOptions
   | OperationType.ChangeTrust
@@ -235,13 +235,13 @@ export namespace OperationOptions {
     destination: string;
     startingBalance: string;
   }
-  interface CreatePassiveOffer extends BaseOptions {
+  interface CreatePassiveSellOffer extends BaseOptions {
     selling: Asset;
     buying: Asset;
     amount: string;
     price: number | string | object /* bignumber.js */;
   }
-  interface ManageSellOffer extends CreatePassiveOffer {
+  interface ManageSellOffer extends CreatePassiveSellOffer {
     offerId?: number | string;
   }
   // tslint:disable-next-line
@@ -284,7 +284,7 @@ export type OperationOptions =
   | OperationOptions.CreateAccount
   | OperationOptions.Payment
   | OperationOptions.PathPayment
-  | OperationOptions.CreatePassiveOffer
+  | OperationOptions.CreatePassiveSellOffer
   | OperationOptions.ManageSellOffer
   | OperationOptions.SetOptions
   | OperationOptions.ChangeTrust
@@ -332,16 +332,16 @@ export namespace Operation {
     options: OperationOptions.CreateAccount
   ): xdr.Operation<CreateAccount>;
 
-  interface CreatePassiveOffer
-    extends BaseOperation<OperationType.CreatePassiveOffer> {
+  interface CreatePassiveSellOffer
+    extends BaseOperation<OperationType.CreatePassiveSellOffer> {
     selling: Asset;
     buying: Asset;
     amount: string;
     price: string;
   }
-  function createPassiveOffer(
-    options: OperationOptions.CreatePassiveOffer
-  ): xdr.Operation<CreatePassiveOffer>;
+  function createPassiveSellOffer(
+    options: OperationOptions.CreatePassiveSellOffer
+  ): xdr.Operation<CreatePassiveSellOffer>;
 
   interface Inflation extends BaseOperation<OperationType.Inflation> {}
   function inflation(
@@ -424,7 +424,7 @@ export type Operation =
   | Operation.CreateAccount
   | Operation.Payment
   | Operation.PathPayment
-  | Operation.CreatePassiveOffer
+  | Operation.CreatePassiveSellOffer
   | Operation.ManageSellOffer
   | Operation.SetOptions
   | Operation.ChangeTrust

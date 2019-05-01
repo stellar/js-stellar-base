@@ -2,12 +2,12 @@ import isUndefined from 'lodash/isUndefined';
 import xdr from '../generated/stellar-xdr_generated';
 
 /**
- * Returns a XDR CreatePasiveOfferOp. A "create passive offer" operation creates an
+ * Returns a XDR CreatePasiveSellOfferOp. A "create passive offer" operation creates an
  * offer that won't consume a counter offer that exactly matches this offer. This is
  * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
  * to manage this offer after using this operation to create it.
  * @function
- * @alias Operation.createPassiveOffer
+ * @alias Operation.createPassiveSellOffer
  * @param {object} opts Options object
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.
@@ -17,9 +17,9 @@ import xdr from '../generated/stellar-xdr_generated';
  * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
- * @returns {xdr.CreatePassiveOfferOp} Create Passive Offer operation
+ * @returns {xdr.CreatePassiveSellOfferOp} Create Passive Sell Offer operation
  */
-export function createPassiveOffer(opts) {
+export function createPassiveSellOffer(opts) {
   const attributes = {};
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
@@ -31,11 +31,11 @@ export function createPassiveOffer(opts) {
     throw new TypeError('price argument is required');
   }
   attributes.price = this._toXDRPrice(opts.price);
-  const createPassiveOfferOp = new xdr.CreatePassiveOfferOp(attributes);
+  const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp(attributes);
 
   const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.createPassiveOffer(
-    createPassiveOfferOp
+  opAttributes.body = xdr.OperationBody.createPassiveSellOffer(
+    createPassiveSellOfferOp
   );
   this.setSourceAccount(opAttributes, opts);
 

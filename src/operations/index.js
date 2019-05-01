@@ -3,7 +3,7 @@ export { allowTrust } from './allow_trust';
 export { bumpSequence } from './bump_sequence';
 export { changeTrust } from './change_trust';
 export { createAccount } from './create_account';
-export { createPassiveOffer } from './create_passive_offer';
+export { createPassiveSellOffer } from './create_passive_sell_offer';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
 export { manageSellOffer } from './manage_sell_offer';

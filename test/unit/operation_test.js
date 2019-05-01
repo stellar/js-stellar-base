@@ -888,8 +888,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.createPassiveOffer', function() {
-    it('creates a createPassiveOfferOp (string price)', function() {
+  describe('.createPassiveSellOffer', function() {
+    it('creates a createPassiveSellOfferOp (string price)', function() {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -901,13 +901,13 @@ describe('Operation', function() {
       );
       opts.amount = '11.2782700';
       opts.price = '3.07';
-      let op = StellarBase.Operation.createPassiveOffer(opts);
+      let op = StellarBase.Operation.createPassiveSellOffer(opts);
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
         Buffer.from(xdr, 'hex')
       );
       var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('createPassiveOffer');
+      expect(obj.type).to.be.equal('createPassiveSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
       expect(
@@ -921,7 +921,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal(opts.price);
     });
 
-    it('creates a createPassiveOfferOp (number price)', function() {
+    it('creates a createPassiveSellOfferOp (number price)', function() {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -933,13 +933,13 @@ describe('Operation', function() {
       );
       opts.amount = '11.2782700';
       opts.price = 3.07;
-      let op = StellarBase.Operation.createPassiveOffer(opts);
+      let op = StellarBase.Operation.createPassiveSellOffer(opts);
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
         Buffer.from(xdr, 'hex')
       );
       var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('createPassiveOffer');
+      expect(obj.type).to.be.equal('createPassiveSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
       expect(
@@ -953,7 +953,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal(opts.price.toString());
     });
 
-    it('creates a createPassiveOfferOp (BigNumber price)', function() {
+    it('creates a createPassiveSellOfferOp (BigNumber price)', function() {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -965,13 +965,13 @@ describe('Operation', function() {
       );
       opts.amount = '11.2782700';
       opts.price = new BigNumber(5).dividedBy(4);
-      let op = StellarBase.Operation.createPassiveOffer(opts);
+      let op = StellarBase.Operation.createPassiveSellOffer(opts);
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
         Buffer.from(xdr, 'hex')
       );
       var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('createPassiveOffer');
+      expect(obj.type).to.be.equal('createPassiveSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
       expect(
@@ -985,7 +985,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal('1.25');
     });
 
-    it('fails to create createPassiveOffer operation with an invalid amount', function() {
+    it('fails to create createPassiveSellOffer operation with an invalid amount', function() {
       let opts = {
         amount: 20,
         price: '10',
@@ -998,12 +998,12 @@ describe('Operation', function() {
           'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
         )
       };
-      expect(() => StellarBase.Operation.createPassiveOffer(opts)).to.throw(
+      expect(() => StellarBase.Operation.createPassiveSellOffer(opts)).to.throw(
         /amount argument must be of type String/
       );
     });
 
-    it('fails to create createPassiveOffer operation with missing price', function() {
+    it('fails to create createPassiveSellOffer operation with missing price', function() {
       let opts = {
         amount: '20',
         selling: new StellarBase.Asset(
@@ -1015,12 +1015,12 @@ describe('Operation', function() {
           'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
         )
       };
-      expect(() => StellarBase.Operation.createPassiveOffer(opts)).to.throw(
+      expect(() => StellarBase.Operation.createPassiveSellOffer(opts)).to.throw(
         /price argument is required/
       );
     });
 
-    it('fails to create createPassiveOffer operation with negative price', function() {
+    it('fails to create createPassiveSellOffer operation with negative price', function() {
       let opts = {
         amount: '20',
         price: '-2',
@@ -1033,7 +1033,7 @@ describe('Operation', function() {
           'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
         )
       };
-      expect(() => StellarBase.Operation.createPassiveOffer(opts)).to.throw(
+      expect(() => StellarBase.Operation.createPassiveSellOffer(opts)).to.throw(
         /price must be positive/
       );
     });
