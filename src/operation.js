@@ -45,8 +45,9 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`
  * * `{@link Operation.pathPayment}`
- * * `{@link Operation.manageOffer}`
- * * `{@link Operation.createPassiveOffer}`
+ * * `{@link Operation.manageSellOffer}`
+ * * `{@link Operation.manageBuyOffer}`
+ * * `{@link Operation.createPassiveSellOffer}`
  * * `{@link Operation.setOptions}`
  * * `{@link Operation.changeTrust}`
  * * `{@link Operation.allowTrust}`
@@ -178,8 +179,8 @@ export class Operation {
         }
         break;
       }
-      case 'manageOffer': {
-        result.type = 'manageOffer';
+      case 'manageSellOffer': {
+        result.type = 'manageSellOffer';
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.amount = this._fromXDRAmount(attrs.amount());
@@ -187,8 +188,17 @@ export class Operation {
         result.offerId = attrs.offerId().toString();
         break;
       }
-      case 'createPassiveOffer': {
-        result.type = 'createPassiveOffer';
+      case 'manageBuyOffer': {
+        result.type = 'manageBuyOffer';
+        result.selling = Asset.fromOperation(attrs.selling());
+        result.buying = Asset.fromOperation(attrs.buying());
+        result.buyAmount = this._fromXDRAmount(attrs.buyAmount());
+        result.price = this._fromXDRPrice(attrs.price());
+        result.offerId = attrs.offerId().toString();
+        break;
+      }
+      case 'createPassiveSellOffer': {
+        result.type = 'createPassiveSellOffer';
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.amount = this._fromXDRAmount(attrs.amount());
@@ -354,10 +364,11 @@ Operation.allowTrust = ops.allowTrust;
 Operation.bumpSequence = ops.bumpSequence;
 Operation.changeTrust = ops.changeTrust;
 Operation.createAccount = ops.createAccount;
-Operation.createPassiveOffer = ops.createPassiveOffer;
+Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
-Operation.manageOffer = ops.manageOffer;
+Operation.manageSellOffer = ops.manageSellOffer;
+Operation.manageBuyOffer = ops.manageBuyOffer;
 Operation.pathPayment = ops.pathPayment;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;

@@ -3,6 +3,13 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
+## unreleased
+
+- Add Stellar Protocol 11 compatibility (breaking change)
+  - Rename `manage_offer` to `manage_sell_offer`.
+  - Rename `create_passive_offer` to `create_passive_sell_offer`.
+  - Add `manage_buy_offer`.
+
 ## [v0.13.2](https://github.com/stellar/js-stellar-base/compare/v0.13.1...v0.13.2)
 
 - Bring DefinitelyTyped definitions into the repo for faster updating.
