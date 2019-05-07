@@ -73,7 +73,7 @@ export class TransactionBuilder {
     }
 
     if (isUndefined(opts.fee)) {
-      throw new Error('must specify fee for the transaction');
+      throw new Error('must specify fee for the transaction (in stroops)');
     }
 
     this.source = sourceAccount;
