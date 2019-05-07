@@ -75,7 +75,6 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
     let amount = '2000';
-    let signer = StellarBase.Keypair.master();
 
     expect(() =>
       new StellarBase.TransactionBuilder(source)
