@@ -71,15 +71,13 @@ export class TransactionBuilder {
     if (!sourceAccount) {
       throw new Error('must specify source account for the transaction');
     }
-    this.source = sourceAccount;
-    this.operations = [];
 
     if (isUndefined(opts.fee)) {
-      // eslint-disable-next-line no-console
-      console.log(
-        '[TransactionBuilder] The `fee` parameter of `TransactionBuilder` is required. Future versions of this library will error if not provided.'
-      );
+      throw new Error('must specify fee for the transaction (in stroops)');
     }
+
+    this.source = sourceAccount;
+    this.operations = [];
 
     this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
     this.timebounds = clone(opts.timebounds) || null;
