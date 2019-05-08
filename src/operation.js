@@ -56,6 +56,11 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.manageData}`
  * * `{@link Operation.bumpSequence}`
  *
+ * These operations are deprecated and will be removed in a later version:
+ * * `{@link Operation.manageOffer}`
+ * * `{@link Operation.createPassiveOffer}`
+ *
+ *
  * @class Operation
  */
 export class Operation {
@@ -179,6 +184,8 @@ export class Operation {
         }
         break;
       }
+      // the next case intentionally falls through!
+      case 'manageOffer':
       case 'manageSellOffer': {
         result.type = 'manageSellOffer';
         result.selling = Asset.fromOperation(attrs.selling());
@@ -197,6 +204,8 @@ export class Operation {
         result.offerId = attrs.offerId().toString();
         break;
       }
+      // the next case intentionally falls through!
+      case 'createPassiveOffer':
       case 'createPassiveSellOffer': {
         result.type = 'createPassiveSellOffer';
         result.selling = Asset.fromOperation(attrs.selling());
@@ -372,3 +381,7 @@ Operation.manageBuyOffer = ops.manageBuyOffer;
 Operation.pathPayment = ops.pathPayment;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
+
+// deprecated, to be removed after 1.0.1
+Operation.manageOffer = ops.manageOffer;
+Operation.createPassiveOffer = ops.createPassiveOffer;
