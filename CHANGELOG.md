@@ -3,14 +3,14 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
-## unreleased
+## [v1.0.0](https://github.com/stellar/js-stellar-base/compare/v0.13.2...v1.0.0)
 
 - **Breaking change** Stellar Protocol 11 compatibility
   - Rename `Operation.manageOffer` to `Operation.manageSellOffer`.
   - Rename `Operation.createPassiveOffer` to `Operation.createPassiveSellOffer`.
   - Add `Operation.manageBuyOffer`.
 - **Breaking change** The `fee` parameter to `TransactionBuilder` is now
-  required. Failing to provide a fee in stroops will throw an error.
+  required. Failing to provide a fee will throw an error.
 
 ## [v0.13.2](https://github.com/stellar/js-stellar-base/compare/v0.13.1...v0.13.2)
 
