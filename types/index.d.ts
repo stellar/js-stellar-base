@@ -491,7 +491,7 @@ export class Transaction<
   source: string;
   memo: TMemo;
   signatures: xdr.DecoratedSignature[];
-  timeBounds: {
+  timeBounds?: {
     minTime: string;
     maxTime: string;
   };
