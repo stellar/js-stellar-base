@@ -491,6 +491,10 @@ export class Transaction<
   source: string;
   memo: TMemo;
   signatures: xdr.DecoratedSignature[];
+  timeBounds: {
+    minTime: string;
+    maxTime: string;
+  };
 }
 
 export const TimeoutInfinite = 0;
