@@ -3,6 +3,12 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
+## [v1.0.1](https://github.com/stellar/js-stellar-base/compare/v1.0.0...v1.0.1)
+
+- Restore `Operation.manageOffer` and `Operation.createPassiveOffer`, and issue
+  a warning if they're called.
+- Add type definitions for the timeBounds property of transactions.
+
 ## [v1.0.0](https://github.com/stellar/js-stellar-base/compare/v0.13.2...v1.0.0)
 
 - **Breaking change** Stellar Protocol 11 compatibility
