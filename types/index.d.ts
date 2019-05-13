@@ -512,7 +512,7 @@ export class TransactionBuilder {
 
 export namespace TransactionBuilder {
   interface TransactionBuilderOptions {
-    fee?: number;
+    fee: number;
     timebounds?: {
       minTime?: number | string;
       maxTime?: number | string;
