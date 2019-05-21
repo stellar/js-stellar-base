@@ -140,14 +140,14 @@ export const AuthRequiredFlag: 1;
 export const AuthRevocableFlag: 2;
 export const AuthImmutableFlag: 4;
 export namespace AuthFlag {
+  type immutable = typeof AuthImmutableFlag;
   type required = typeof AuthRequiredFlag;
   type revocable = typeof AuthRevocableFlag;
-  type rmmutable = typeof AuthImmutableFlag;
 }
 export type AuthFlag =
+  | AuthFlag.immutable
   | AuthFlag.required
-  | AuthFlag.revocable
-  | AuthFlag.rmmutable;
+  | AuthFlag.revocable;
 
 export namespace Signer {
   interface Ed25519PublicKey {
