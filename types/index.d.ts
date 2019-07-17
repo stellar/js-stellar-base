@@ -4,7 +4,7 @@
 export {};
 
 export class Account {
-  constructor(accountId: string, sequence: string | number);
+  constructor(accountId: string, sequence: string);
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
