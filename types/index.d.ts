@@ -486,7 +486,7 @@ export class Transaction<
   toEnvelope(): xdr.TransactionEnvelope;
 
   operations: TOps;
-  sequence: number;
+  sequence: string;
   fee: number;
   source: string;
   memo: TMemo;
