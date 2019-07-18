@@ -90,15 +90,21 @@ export class Keypair {
 
   /**
    * Returns `Keypair` object representing network master key.
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Keypair}
    */
-  static master() {
-    if (Network.current() === null) {
+  static master(networkPassphrase) {
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (!networkPassphrase) {
+      console.warn('Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `Keypair.master(Networks.PUBLIC)`.')
+      networkPassphrase = Network.current()
+    }
+    if (networkPassphrase === null) {
       throw new Error(
         'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
       );
     }
-    return this.fromRawEd25519Seed(Network.current().networkId());
+    return this.fromRawEd25519Seed(networkPassphrase);
   }
 
   /**

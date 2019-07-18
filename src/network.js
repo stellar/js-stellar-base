@@ -24,6 +24,7 @@ let current = null;
  * Creates a new `Network` object.
  * @constructor
  * @param {string} networkPassphrase Network passphrase
+ * @deprecated
  */
 export class Network {
   constructor(networkPassphrase) {

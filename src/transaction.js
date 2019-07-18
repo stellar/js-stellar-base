@@ -61,11 +61,18 @@ export class Transaction {
 
   /**
    * Signs the transaction with the given {@link Keypair}.
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @param {...Keypair} keypairs Keypairs of signers
    * @returns {void}
    */
-  sign(...keypairs) {
-    const txHash = this.hash();
+  sign(networkPassphrase, ...keypairs) {
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (typeof networkPassphrase !== string) {
+      console.warn('Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `transaction.sign(Networks.PUBLIC, ...keypairs)`.')
+      keypairs.unshift(networkPassphrase)
+      networkPassphrase = Network.current()
+    }
+    const txHash = this.hash(networkPassphrase);
     each(keypairs, (kp) => {
       const sig = kp.signDecorated(txHash);
       this.signatures.push(sig);
@@ -92,10 +99,17 @@ export class Transaction {
    * ```
    *
    * @param {Keypair} keypair Keypair of signer
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {string} Signature string
    */
-  getKeypairSignature(keypair) {
-    return keypair.sign(this.hash()).toString('base64');
+  getKeypairSignature(keypair, networkPassphrase) {
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (!networkPassphrase) {
+      console.warn('Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `transaction.getKeypairSignature(keypair, Networks.PUBLIC)`.')
+      networkPassphrase = Network.current()
+    }
+
+    return keypair.sign(this.hash(networkPassphrase)).toString('base64');
   }
 
   /**
@@ -120,15 +134,22 @@ export class Transaction {
    *
    * @param {string} publicKey The public key of the signer
    * @param {string} signature The base64 value of the signature XDR
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {TransactionBuilder}
    */
-  addSignature(publicKey = '', signature = '') {
+  addSignature(publicKey = '', signature = '', networkPassphrase) {
     if (!signature || typeof signature !== 'string') {
       throw new Error('Invalid signature');
     }
 
     if (!publicKey || typeof publicKey !== 'string') {
       throw new Error('Invalid publicKey');
+    }
+
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (!networkPassphrase) {
+      console.warn('Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `transaction.addSignature(publicKey, signature, Networks.PUBLIC)`.')
+      networkPassphrase = Network.current()
     }
 
     let keypair;
@@ -142,7 +163,7 @@ export class Transaction {
       throw new Error('Invalid publicKey');
     }
 
-    if (!keypair.verify(this.hash(), signatureBuffer)) {
+    if (!keypair.verify(this.hash(networkPassphrase), signatureBuffer)) {
       throw new Error('Invalid signature');
     }
 
@@ -176,10 +197,16 @@ export class Transaction {
 
   /**
    * Returns a hash for this transaction, suitable for signing.
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Buffer}
    */
-  hash() {
-    return hash(this.signatureBase());
+  hash(networkPassphrase) {
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (!networkPassphrase) {
+      console.warn('Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `transaction.hash(Networks.PUBLIC)`.')
+      networkPassphrase = Network.current()
+    }
+    return hash(this.signatureBase(networkPassphrase));
   }
 
   /**
@@ -189,17 +216,23 @@ export class Transaction {
    *
    * It is composed of a 4 prefix bytes followed by the xdr-encoded form
    * of this transaction.
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Buffer}
    */
-  signatureBase() {
-    if (Network.current() === null) {
+  signatureBase(networkPassphrase) {
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (!networkPassphrase) {
+      console.warn('Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `transaction.signatureBase(Networks.PUBLIC)`.')
+      networkPassphrase = Network.current()
+    }
+    if (networkPassphrase === null) {
       throw new Error(
         'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
       );
     }
 
     return Buffer.concat([
-      Network.current().networkId(),
+      networkPassphrase,
       xdr.EnvelopeType.envelopeTypeTx().toXDR(),
       this.tx.toXDR()
     ]);
