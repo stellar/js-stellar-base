@@ -149,4 +149,12 @@ export class Asset {
   equals(asset) {
     return this.code === asset.getCode() && this.issuer === asset.getIssuer();
   }
+
+  toString() {
+    if (this.isNative()) {
+      return 'native';
+    }
+
+    return `${this.getCode()}-${this.getIssuer()}`;
+  }
 }
