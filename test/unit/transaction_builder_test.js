@@ -1,6 +1,14 @@
 import { isValidDate } from '../../src/transaction_builder.js';
 
 describe('TransactionBuilder', function() {
+  beforeEach(function() {
+    StellarBase.Network.useTestNetwork();
+  });
+
+  afterEach(function() {
+    StellarBase.Network.use(null);
+  });
+
   describe('constructs a native payment transaction with one operation', function() {
     var source;
     var destination;

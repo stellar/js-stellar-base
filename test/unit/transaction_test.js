@@ -45,7 +45,7 @@ describe('Transaction', function() {
     StellarBase.Network.use(null);
   });
 
-  it('does not sign when no Network selected', function() {
+  it('does not build when no Network selected', function() {
     StellarBase.Network.use(null);
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
@@ -55,15 +55,13 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
     let amount = '2000';
-    let signer = StellarBase.Keypair.random();
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let txBuilder = new StellarBase.TransactionBuilder(source, { fee: 100 })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
-      .setTimeout(StellarBase.TimeoutInfinite)
-      .build();
-    expect(() => tx.sign(signer)).to.throw(/No network selected/);
+      .setTimeout(StellarBase.TimeoutInfinite);
+    expect(() => txBuilder.build()).to.throw(/No network selected/);
   });
 
   it('throws when no fee is provided', function() {
