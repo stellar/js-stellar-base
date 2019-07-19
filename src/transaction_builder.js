@@ -6,6 +6,7 @@ import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';
+import { Network } from './network';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -75,6 +76,7 @@ export const TimeoutInfinite = 0;
  * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
  * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
  * @param {Memo} [opts.memo] - The memo for the transaction
+ * @param {string} [opts.networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -93,6 +95,7 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.timeoutSet = false;
+    this.networkPassphrase = opts.networkPassphrase || null;
   }
 
   /**
@@ -161,6 +164,16 @@ export class TransactionBuilder {
   }
 
   /**
+   * Adds a memo to the transaction.
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @returns {TransactionBuilder}
+   */
+  setNetworkPassphrase(networkPassphrase) {
+    this.networkPassphrase = networkPassphrase;
+    return this;
+  }
+
+  /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
@@ -175,6 +188,17 @@ export class TransactionBuilder {
       throw new Error(
         'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
       );
+    }
+    if (typeof this.networkPassphrase !== 'string') {
+      console.warn(
+        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
+      );
+      if (Network.current() === null) {
+        throw new Error(
+          'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+        );
+      }
+      this.networkPassphrase = Network.current().networkPassphrase();
     }
 
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
@@ -211,7 +235,7 @@ export class TransactionBuilder {
     xtx.operations(this.operations);
 
     const xenv = new xdr.TransactionEnvelope({ tx: xtx });
-    const tx = new Transaction(xenv);
+    const tx = new Transaction(xenv, this.networkPassphrase);
 
     this.source.incrementSequenceNumber();
 
