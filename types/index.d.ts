@@ -129,6 +129,8 @@ export class Network {
   static usePublicNetwork(): void;
   static useTestNetwork(): void;
   static current(): Network;
+  static networkPassphrase(): string;
+  static networkId(): string;
 
   constructor(passphrase: string);
 
