@@ -3,6 +3,20 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
+## [v1.0.3](https://github.com/stellar/js-stellar-base/compare/v1.0.2...v1.0.3)
+
+### Add
+
+- Add `toString()` to Asset ([#172](https://github.com/stellar/js-stellar-base/issues/172))
+- Add types for missing Network functions ([#208](https://github.com/stellar/js-stellar-base/issues/208))
+- Add BASE_FEE to TS types ([#209](https://github.com/stellar/js-stellar-base/issues/209))
+
+### Fix
+- Fix typo in types ([#194](https://github.com/stellar/js-stellar-base/issues/194))
+- Fix types: Fee is no longer optional ([#195](https://github.com/stellar/js-stellar-base/issues/195))
+- Fix typings for Account Sequence Number ([#203](https://github.com/stellar/js-stellar-base/issues/203))
+- Fix typings for Transaction Sequence Number ([#205](https://github.com/stellar/js-stellar-base/issues/205))
+
 ## [v1.0.2](https://github.com/stellar/js-stellar-base/compare/v1.0.1...v1.0.2)
 
 - Fix a bug where `sodium-native` was making it into the browser bundle, which
