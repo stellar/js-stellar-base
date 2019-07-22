@@ -499,6 +499,7 @@ export class Transaction<
   };
 }
 
+export const BASE_FEE = 100;
 export const TimeoutInfinite = 0;
 
 export class TransactionBuilder {
