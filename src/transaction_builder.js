@@ -7,6 +7,16 @@ import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';
 
+/**
+ * Minimum base fee for transactions. If this fee is below the network
+ * minimum, the transaction will fail. The more operations in the
+ * transaction, the greater the required fee. Use {@link
+ * Server#fetchBaseFee} to get an accurate value of minium transaction
+ * fee on the network.
+ *
+ * @constant
+ * @see [Fees](https://www.stellar.org/developers/guides/concepts/fees.html)
+ */
 export const BASE_FEE = 100; // Stroops
 
 /**
