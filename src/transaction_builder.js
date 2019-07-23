@@ -11,7 +11,7 @@ import { Memo } from './memo';
  * Minimum base fee for transactions. If this fee is below the network
  * minimum, the transaction will fail. The more operations in the
  * transaction, the greater the required fee. Use {@link
- * Server#fetchBaseFee} to get an accurate value of minium transaction
+ * Server#fetchBaseFee} to get an accurate value of minimum transaction
  * fee on the network.
  *
  * @constant
@@ -38,12 +38,12 @@ export const TimeoutInfinite = 0;
  * the desired operations, call the `build()` method on the `TransactionBuilder` to return a fully
  * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
  * sequence number of the source account and include the signature from the source account.</p>
- * 
+ *
  * <p><strong>Be careful about unsubmitted transactions!</strong> When you build a transaction, stellar-sdk
- * automatically increments the source account's sequence number. If you end up 
+ * automatically increments the source account's sequence number. If you end up
  * not submitting this transaction and submitting another one instead, it'll fail due to
  * the sequence number being wrong. So if you decide not to use a built transaction,
- * make sure to update the source account's sequence number 
+ * make sure to update the source account's sequence number
  * with [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount) before creating another transaction.</p>
  *
  * <p>The following code example creates a new transaction with {@link Operation.createAccount} and
