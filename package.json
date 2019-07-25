@@ -108,7 +108,8 @@
     "js-xdr": "^1.1.1",
     "lodash": "^4.17.11",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.0"
+    "tweetnacl": "^1.0.0",
+    "utility-types": "^3.7.0"
   },
   "optionalDependencies": {
     "sodium-native": "^2.3.0"

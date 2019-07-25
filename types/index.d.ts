@@ -1,11 +1,47 @@
 // TypeScript Version: 2.9
-
 /// <reference types="node" />
+
+import { Brand } from "utility-types";
+
+
 export {};
 
+/**
+ * 56-character long string, starts with S and passes `StrKey.isValidEd25519SecretSeed()`.
+ */
+export type Secret = Brand<string, 'Secret'>;
+
+/**
+ * 56-character long string, starts with G, passes `StrKey.isValidEd25519PublicKey()`
+ * and account does not exist on the given Network..
+ *
+ * See also `AccountId`, `PublicKey`.
+ */
+export type NonExistingAccountId = Brand<string, 'NonExistingAccountId'>;
+
+/**
+ * 56-character long string, starts with G, passes `StrKey.isValidEd25519PublicKey()`
+ * and account exists on the given Network.
+ *
+ * See also `NonExistingAccountId`, `PublicKey`.
+ */
+export type AccountId = Brand<string, 'AccountId'>;
+
+/**
+ * 56-character long string, starts with G and passes `StrKey.isValidEd25519PublicKey()`.
+ * Does **not** imply that an account with such address exists.
+ *
+ * See also `AccountId`, `NonExistingAccountId`.
+ */
+export type PublicKey = NonExistingAccountId | AccountId;
+
+/**
+ * `Account` can be created using either `AccountId` or `PublicKey`,
+ * and it's up to developer to ensure that Account exists at transaction submission.
+ */
 export class Account {
-  constructor(accountId: string, sequence: string);
-  accountId(): string;
+  constructor(accountId: PublicKey, sequence: string);
+  accountId(): AccountId;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
 }
@@ -24,17 +60,17 @@ export class Asset {
   static native(): Asset;
   static fromOperation(xdr: xdr.Asset): Asset;
 
-  constructor(code: string, issuer: string);
+  constructor(code: string, issuer: AccountId);
 
   getCode(): string;
-  getIssuer(): string;
+  getIssuer(): AccountId;
   getAssetType(): AssetType;
   isNative(): boolean;
   equals(other: Asset): boolean;
   toXDRObject(): xdr.Asset;
 
   code: string;
-  issuer: string;
+  issuer: AccountId;
 }
 
 export const FastSigning: boolean;
@@ -44,20 +80,20 @@ export type KeypairType = 'ed25519';
 export class Keypair {
   static fromRawEd25519Seed(secretSeed: Buffer): Keypair;
   static fromBase58Seed(secretSeed: string): Keypair;
-  static fromSecret(secretKey: string): Keypair;
+  static fromSecret(secretKey: Secret): Keypair;
   static master(): Keypair;
-  static fromPublicKey(publicKey: string): Keypair;
+  static fromPublicKey(publicKey: PublicKey): Keypair;
   static random(): Keypair;
 
   constructor(
     keys:
-      | { type: KeypairType; secretKey: string; publicKey?: string }
-      | { type: KeypairType; publicKey: string }
+      | { type: KeypairType; secretKey: Secret; publicKey?: PublicKey }
+      | { type: KeypairType; publicKey: PublicKey }
   );
 
   readonly type: KeypairType;
-  publicKey(): string;
-  secret(): string;
+  publicKey(): PublicKey;
+  secret(): Secret;
   rawPublicKey(): Buffer;
   rawSecretKey(): Buffer;
   canSign(): boolean;
@@ -153,7 +189,7 @@ export type AuthFlag =
 
 export namespace Signer {
   interface Ed25519PublicKey {
-    ed25519PublicKey: string;
+    ed25519PublicKey: PublicKey;
     weight: number | undefined;
   }
   interface Sha256Hash {
@@ -172,7 +208,7 @@ export type Signer =
 
 export namespace SignerOptions {
   interface Ed25519PublicKey {
-    ed25519PublicKey: string;
+    ed25519PublicKey: PublicKey;
     weight?: number | string;
   }
   interface Sha256Hash {
@@ -221,13 +257,13 @@ export type OperationType =
 
 export namespace OperationOptions {
   interface BaseOptions {
-    source?: string;
+    source?: AccountId;
   }
   interface AccountMerge extends BaseOptions {
-    destination: string;
+    destination: AccountId;
   }
   interface AllowTrust extends BaseOptions {
-    trustor: string;
+    trustor: AccountId;
     assetCode: string;
     authorize?: boolean;
   }
@@ -236,7 +272,7 @@ export namespace OperationOptions {
     limit?: string;
   }
   interface CreateAccount extends BaseOptions {
-    destination: string;
+    destination: NonExistingAccountId;
     startingBalance: string;
   }
   interface CreatePassiveSellOffer extends BaseOptions {
@@ -266,7 +302,7 @@ export namespace OperationOptions {
   interface PathPayment extends BaseOptions {
     sendAsset: Asset;
     sendMax: string;
-    destination: string;
+    destination: AccountId;
     destAsset: Asset;
     destAmount: string;
     path?: Asset[];
@@ -274,10 +310,10 @@ export namespace OperationOptions {
   interface Payment extends BaseOptions {
     amount: string;
     asset: Asset;
-    destination: string;
+    destination: AccountId;
   }
   interface SetOptions<T extends SignerOptions = never> extends BaseOptions {
-    inflationDest?: string;
+    inflationDest?: AccountId;
     clearFlags?: AuthFlag;
     setFlags?: AuthFlag;
     masterWeight?: number | string;
@@ -309,18 +345,18 @@ export type OperationOptions =
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
     type: T;
-    source?: string;
+    source?: AccountId;
   }
 
   interface AccountMerge extends BaseOperation<OperationType.AccountMerge> {
-    destination: string;
+    destination: NonExistingAccountId;
   }
   function accountMerge(
     options: OperationOptions.AccountMerge
   ): xdr.Operation<AccountMerge>;
 
   interface AllowTrust extends BaseOperation<OperationType.AllowTrust> {
-    trustor: string;
+    trustor: AccountId;
     assetCode: string;
     authorize: boolean | undefined;
   }
@@ -337,7 +373,7 @@ export namespace Operation {
   ): xdr.Operation<ChangeTrust>;
 
   interface CreateAccount extends BaseOperation<OperationType.CreateAccount> {
-    destination: string;
+    destination: AccountId;
     startingBalance: string;
   }
   function createAccount(
@@ -394,7 +430,7 @@ export namespace Operation {
   interface PathPayment extends BaseOperation<OperationType.PathPayment> {
     sendAsset: Asset;
     sendMax: string;
-    destination: string;
+    destination: AccountId;
     destAsset: Asset;
     destAmount: string;
     path: Asset[];
@@ -406,13 +442,13 @@ export namespace Operation {
   interface Payment extends BaseOperation<OperationType.Payment> {
     amount: string;
     asset: Asset;
-    destination: string;
+    destination: AccountId;
   }
   function payment(options: OperationOptions.Payment): xdr.Operation<Payment>;
 
   interface SetOptions<T extends SignerOptions = SignerOptions>
     extends BaseOperation<OperationType.SetOptions> {
-    inflationDest?: string;
+    inflationDest?: AccountId;
     clearFlags?: AuthFlag;
     setFlags?: AuthFlag;
     masterWeight?: number;
@@ -420,7 +456,7 @@ export namespace Operation {
     medThreshold?: number;
     highThreshold?: number;
     homeDomain?: string;
-    signer: T extends { ed25519PublicKey: any }
+    signer: T extends { ed25519PublicKey: PublicKey }
       ? Signer.Ed25519PublicKey
       : T extends { sha256Hash: any }
       ? Signer.Sha256Hash
@@ -459,13 +495,13 @@ export type Operation =
   | Operation.BumpSequence;
 
 export namespace StrKey {
-  function encodeEd25519PublicKey(data: Buffer): string;
-  function decodeEd25519PublicKey(data: string): Buffer;
-  function isValidEd25519PublicKey(Key: string): boolean;
+  function encodeEd25519PublicKey(data: Buffer): PublicKey;
+  function decodeEd25519PublicKey(publicKey: PublicKey): Buffer;
+  function isValidEd25519PublicKey(publicKey: string): publicKey is AccountId;
 
-  function encodeEd25519SecretSeed(data: Buffer): string;
-  function decodeEd25519SecretSeed(data: string): Buffer;
-  function isValidEd25519SecretSeed(seed: string): boolean;
+  function encodeEd25519SecretSeed(data: Buffer): Secret;
+  function decodeEd25519SecretSeed(secret: Secret): Buffer;
+  function isValidEd25519SecretSeed(secret: string): secret is Secret;
 
   function encodePreAuthTx(data: Buffer): string;
   function decodePreAuthTx(data: string): Buffer;
@@ -479,7 +515,7 @@ export class Transaction<
   TOps extends Operation[] = Operation[]
 > {
   constructor(envelope: string | xdr.TransactionEnvelope);
-  addSignature(publicKey: string, signature: string): void;
+  addSignature(publicKey: PublicKey, signature: Secret): void;
   getKeypairSignature(keypair: Keypair): string;
   hash(): Buffer;
   sign(...keypairs: Keypair[]): void;
@@ -490,7 +526,7 @@ export class Transaction<
   operations: TOps;
   sequence: string;
   fee: number;
-  source: string;
+  source: AccountId;
   memo: TMemo;
   signatures: xdr.DecoratedSignature[];
   timeBounds?: {
