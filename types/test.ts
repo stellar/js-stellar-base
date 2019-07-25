@@ -1,11 +1,10 @@
 import * as StellarSdk from 'stellar-base';
 
 const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
-const destKey = StellarSdk.Keypair.random();
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1');
 const transaction = new StellarSdk.TransactionBuilder(account)
   .addOperation(
-    StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() })
+    StellarSdk.Operation.accountMerge({ destination: account.accountId() })
   )
   .addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
