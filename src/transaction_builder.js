@@ -164,7 +164,8 @@ export class TransactionBuilder {
   }
 
   /**
-   * Adds a memo to the transaction.
+   * Set network nassphrase for the Transaction that will be built.
+   *
    * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {TransactionBuilder}
    */
