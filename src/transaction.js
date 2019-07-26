@@ -103,7 +103,7 @@ export class Transaction {
    * Example:
    * ```javascript
    * // `transactionXDR` is a string from the person generating the transaction
-   * const transaction = new Transaction(transactionXDR);
+   * const transaction = new Transaction(transactionXDR, networkPassphrase);
    * const keypair = Keypair.fromSecret(myStellarSeed);
    * return transaction.getKeypairSignature(keypair);
    * ```
