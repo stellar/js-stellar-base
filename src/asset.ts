@@ -5,6 +5,19 @@ import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
+// TS-TODO: Shall we keep this here or give it its own file?
+namespace AssetType {
+  export type native = 'native';
+  export type credit4 = 'credit_alphanum4';
+  export type credit12 = 'credit_alphanum12';
+}
+
+export type AssetType =
+  | AssetType.native
+  | AssetType.credit4
+  | AssetType.credit12;
+
+
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
  * or an asset code / issuer account ID pair.
@@ -17,7 +30,10 @@ import { StrKey } from './strkey';
  * @param {string} issuer - The account ID of the issuer.
  */
 export class Asset {
-  constructor(code, issuer) {
+  code: string;
+  issuer: string | undefined;
+
+  constructor(code: string, issuer?: string) {
     if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(
         'Asset code is invalid (maximum alphanumeric, 12 characters at max)'
@@ -38,7 +54,7 @@ export class Asset {
    * Returns an asset object for the native asset.
    * @Return {Asset}
    */
-  static native() {
+  static native(): Asset {
     return new Asset('XLM');
   }
 
@@ -47,7 +63,7 @@ export class Asset {
    * @param {xdr.Asset} assetXdr - The asset xdr object.
    * @returns {Asset}
    */
-  static fromOperation(assetXdr) {
+  static fromOperation(assetXdr: xdr.Asset): Asset {
     let anum;
     let code;
     let issuer;
@@ -71,7 +87,7 @@ export class Asset {
    * Returns the xdr object for this asset.
    * @returns {xdr.Asset} XDR Asset object
    */
-  toXDRObject() {
+  public toXDRObject(): xdr.Asset {
     if (this.isNative()) {
       return xdr.Asset.assetTypeNative();
     }
@@ -102,14 +118,14 @@ export class Asset {
   /**
    * @returns {string} Asset code
    */
-  getCode() {
+  public getCode(): string {
     return clone(this.code);
   }
 
   /**
    * @returns {string} Asset issuer
    */
-  getIssuer() {
+  public getIssuer(): string | undefined {
     return clone(this.issuer);
   }
 
@@ -121,7 +137,7 @@ export class Asset {
    * * `credit_alphanum4`
    * * `credit_alphanum12`
    */
-  getAssetType() {
+  public getAssetType(): AssetType | null {
     if (this.isNative()) {
       return 'native';
     }
@@ -138,7 +154,7 @@ export class Asset {
   /**
    * @returns {boolean}  true if this asset object is the native asset.
    */
-  isNative() {
+  public isNative(): boolean {
     return !this.issuer;
   }
 
@@ -146,11 +162,11 @@ export class Asset {
    * @param {Asset} asset Asset to compare
    * @returns {boolean} true if this asset equals the given asset.
    */
-  equals(asset) {
+  public equals(asset: Asset): boolean {
     return this.code === asset.getCode() && this.issuer === asset.getIssuer();
   }
 
-  toString() {
+  public toString(): string {
     if (this.isNative()) {
       return 'native';
     }
