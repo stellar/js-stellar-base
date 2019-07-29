@@ -45,6 +45,7 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
+    "@stellar/tsconfig": "^1.0.1",
     "@types/node": "^11.13.0",
     "babel-cli": "^6.26.0",
     "babel-core": "~6.26.3",
@@ -99,6 +100,8 @@
     "run-sequence": "^1.0.2",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3",
     "webpack": "^1.13.2"
   },
   "dependencies": {
