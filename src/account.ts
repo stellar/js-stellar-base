@@ -14,7 +14,10 @@ import { StrKey } from './strkey';
  * @param {string} sequence current sequence number of the account
  */
 export class Account {
-  constructor(accountId, sequence) {
+  private _accountId: string;
+  private sequence: BigNumber;
+
+  constructor(accountId: string, sequence: string) {
     if (!StrKey.isValidEd25519PublicKey(accountId)) {
       throw new Error('accountId is invalid');
     }
@@ -29,14 +32,14 @@ export class Account {
    * Returns Stellar account ID, ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`
    * @returns {string}
    */
-  accountId() {
+  public accountId(): string {
     return this._accountId;
   }
 
   /**
    * @returns {string}
    */
-  sequenceNumber() {
+  public sequenceNumber(): string {
     return this.sequence.toString();
   }
 
@@ -44,7 +47,7 @@ export class Account {
    * Increments sequence number in this object by one.
    * @returns {void}
    */
-  incrementSequenceNumber() {
+  public incrementSequenceNumber(): void {
     this.sequence = this.sequence.add(1);
   }
 }
