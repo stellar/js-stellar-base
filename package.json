@@ -46,7 +46,10 @@
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
     "@stellar/tsconfig": "^1.0.1",
+    "@types/crc": "^3.4.0",
+    "@types/lodash": "^4.14.136",
     "@types/node": "^11.13.0",
+    "@types/sha.js": "^2.4.0",
     "babel-cli": "^6.26.0",
     "babel-core": "~6.26.3",
     "babel-eslint": "^10.0.1",
