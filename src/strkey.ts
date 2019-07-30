@@ -185,7 +185,7 @@ export function encodeCheck(versionByteName: string, data: Buffer) {
   return base32.encode(unencoded);
 }
 
-function calculateChecksum(payload: string | Buffer) {
+function calculateChecksum(payload: string | Buffer): Buffer {
   // This code calculates CRC16-XModem checksum of payload
   // and returns it as Buffer in little-endian order.
   const checksum = Buffer.alloc(2);
