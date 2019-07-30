@@ -1,7 +1,7 @@
 import { Asset } from '../asset';
 import { SignerOptions, Signer } from './signer'
 import { AuthFlag } from './auth';
-import { Operation as XDROperation } from 'js-xdr';
+import { xdr } from './xdr';
 
 export namespace OperationType {
   export type CreateAccount = 'createAccount';
@@ -140,7 +140,7 @@ export namespace Operation {
 
   function allowTrust(
     options: OperationOptions.AllowTrust
-  ): XDROperation<AllowTrust>;
+  ): xdr.Operation<AllowTrust>;
 
   export interface ChangeTrust extends BaseOperation<OperationType.ChangeTrust> {
     line: Asset;
@@ -149,7 +149,7 @@ export namespace Operation {
 
   function changeTrust(
     options: OperationOptions.ChangeTrust
-  ): XDROperation<ChangeTrust>;
+  ): xdr.Operation<ChangeTrust>;
 
   export interface CreateAccount extends BaseOperation<OperationType.CreateAccount> {
     destination: string;
@@ -158,7 +158,7 @@ export namespace Operation {
 
   function createAccount(
     options: OperationOptions.CreateAccount
-  ): XDROperation<CreateAccount>;
+  ): xdr.Operation<CreateAccount>;
 
   export interface CreatePassiveSellOffer
     extends BaseOperation<OperationType.CreatePassiveSellOffer> {
@@ -170,13 +170,13 @@ export namespace Operation {
 
   function createPassiveSellOffer(
     options: OperationOptions.CreatePassiveSellOffer
-  ): XDROperation<CreatePassiveSellOffer>;
+  ): xdr.Operation<CreatePassiveSellOffer>;
 
   export interface Inflation extends BaseOperation<OperationType.Inflation> { }
 
   function inflation(
     options: OperationOptions.Inflation
-  ): XDROperation<Inflation>;
+  ): xdr.Operation<Inflation>;
 
   export interface ManageData extends BaseOperation<OperationType.ManageData> {
     name: string;
@@ -185,7 +185,7 @@ export namespace Operation {
 
   function manageData(
     options: OperationOptions.ManageData
-  ): XDROperation<ManageData>;
+  ): xdr.Operation<ManageData>;
 
   export interface ManageSellOffer
     extends BaseOperation<OperationType.ManageSellOffer> {
@@ -198,7 +198,7 @@ export namespace Operation {
 
   function manageSellOffer(
     options: OperationOptions.ManageSellOffer
-  ): XDROperation<ManageSellOffer>;
+  ): xdr.Operation<ManageSellOffer>;
 
   export interface ManageBuyOffer extends BaseOperation<OperationType.ManageBuyOffer> {
     selling: Asset;
@@ -210,7 +210,7 @@ export namespace Operation {
 
   function manageBuyOffer(
     options: OperationOptions.ManageBuyOffer
-  ): XDROperation<ManageBuyOffer>;
+  ): xdr.Operation<ManageBuyOffer>;
 
   export interface PathPayment extends BaseOperation<OperationType.PathPayment> {
     sendAsset: Asset;
@@ -223,7 +223,7 @@ export namespace Operation {
 
   function pathPayment(
     options: OperationOptions.PathPayment
-  ): XDROperation<PathPayment>;
+  ): xdr.Operation<PathPayment>;
 
   export interface Payment extends BaseOperation<OperationType.Payment> {
     amount: string;
@@ -231,7 +231,7 @@ export namespace Operation {
     destination: string;
   }
 
-  function payment(options: OperationOptions.Payment): XDROperation<Payment>;
+  function payment(options: OperationOptions.Payment): xdr.Operation<Payment>;
 
   export interface SetOptions<T extends SignerOptions = SignerOptions>
     extends BaseOperation<OperationType.SetOptions> {
@@ -254,7 +254,7 @@ export namespace Operation {
 
   function setOptions<T extends SignerOptions = never>(
     options: OperationOptions.SetOptions<T>
-  ): XDROperation<SetOptions<T>>;
+  ): xdr.Operation<SetOptions<T>>;
 
   export interface BumpSequence extends BaseOperation<OperationType.BumpSequence> {
     bumpTo: string;
@@ -262,10 +262,10 @@ export namespace Operation {
 
   function bumpSequence(
     options: OperationOptions.BumpSequence
-  ): XDROperation<BumpSequence>;
+  ): xdr.Operation<BumpSequence>;
 
   function fromXDRObject<T extends Operation = Operation>(
-    xdrOperation: XDROperation<T>
+    xdrOperation: xdr.Operation<T>
   ): T;
 }
 
