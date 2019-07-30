@@ -1,4 +1,4 @@
-import { Operation as BaseOperation } from '../operation';
+import { Operation as BaseOperation } from './operation';
 
 export namespace xdr {
   export class XDRStruct {
