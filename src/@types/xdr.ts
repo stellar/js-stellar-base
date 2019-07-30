@@ -1,14 +1,16 @@
-export namespace xdr {
-  // TS-TODO: Add original signature https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530
-  export class Operation extends XDRStruct {
-    static fromXDR(xdr: Buffer): Operation;
-  }
+import { Operation as BaseOperation } from '../operation';
 
+export namespace xdr {
   export class XDRStruct {
     static fromXDR(xdr: Buffer): XDRStruct;
 
     toXDR(base?: string): Buffer;
     toXDR(encoding: string): string;
+  }
+
+  // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
+  export class Operation<T extends BaseOperation = BaseOperation> extends XDRStruct {
+    static fromXDR(xdr: Buffer): Operation;
   }
 
   export class Asset extends XDRStruct {
