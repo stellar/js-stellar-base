@@ -1,7 +1,7 @@
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
 import clone from 'lodash/clone';
-import { UnsignedHyper, Memo as XDRMemo } from 'js-xdr';
+import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from './generated/stellar-xdr_generated';
 
@@ -229,7 +229,7 @@ export class Memo<T extends MemoType = MemoType> {
    * Returns XDR memo object.
    * @returns {xdr.Memo}
    */
-  toXDRObject(): XDRMemo | null {
+  toXDRObject(): xdr.Memo | null {
     switch (this._type) {
       case MemoNone:
         return xdr.Memo.memoNone();
@@ -251,7 +251,7 @@ export class Memo<T extends MemoType = MemoType> {
    * @param {xdr.Memo} xdrObject XDR memo object
    * @returns {Memo}
    */
-  static fromXDRObject(xdrObject: XDRMemo): Memo {
+  static fromXDRObject(xdrObject: xdr.Memo): Memo {
     switch (xdrObject.arm()) {
       case 'id':
         return Memo.id(xdrObject.value().toString());
