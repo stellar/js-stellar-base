@@ -132,10 +132,6 @@ export namespace Operation {
     destination: string;
   }
 
-  function accountMerge(
-    options: OperationOptions.AccountMerge
-  ): XDROperation<AccountMerge>;
-
   export interface AllowTrust extends BaseOperation<OperationType.AllowTrust> {
     trustor: string;
     assetCode: string;
