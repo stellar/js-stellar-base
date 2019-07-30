@@ -23,7 +23,7 @@ export class StrKey {
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodeEd25519PublicKey(data) {
+  static encodeEd25519PublicKey(data: Buffer): string {
     return encodeCheck('ed25519PublicKey', data);
   }
 
@@ -32,7 +32,7 @@ export class StrKey {
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodeEd25519PublicKey(data) {
+  static decodeEd25519PublicKey(data: string): Buffer {
     return decodeCheck('ed25519PublicKey', data);
   }
 
@@ -41,7 +41,7 @@ export class StrKey {
    * @param {string} publicKey public key to check
    * @returns {boolean}
    */
-  static isValidEd25519PublicKey(publicKey) {
+  static isValidEd25519PublicKey(publicKey: string): boolean {
     return isValid('ed25519PublicKey', publicKey);
   }
 
@@ -50,7 +50,7 @@ export class StrKey {
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodeEd25519SecretSeed(data) {
+  static encodeEd25519SecretSeed(data: Buffer): string {
     return encodeCheck('ed25519SecretSeed', data);
   }
 
@@ -59,7 +59,7 @@ export class StrKey {
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodeEd25519SecretSeed(data) {
+  static decodeEd25519SecretSeed(data: string): Buffer {
     return decodeCheck('ed25519SecretSeed', data);
   }
 
@@ -68,7 +68,7 @@ export class StrKey {
    * @param {string} seed seed to check
    * @returns {boolean}
    */
-  static isValidEd25519SecretSeed(seed) {
+  static isValidEd25519SecretSeed(seed: string): boolean {
     return isValid('ed25519SecretSeed', seed);
   }
 
@@ -77,7 +77,7 @@ export class StrKey {
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodePreAuthTx(data) {
+  static encodePreAuthTx(data: Buffer): string {
     return encodeCheck('preAuthTx', data);
   }
 
@@ -86,7 +86,7 @@ export class StrKey {
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodePreAuthTx(data) {
+  static decodePreAuthTx(data: string): Buffer {
     return decodeCheck('preAuthTx', data);
   }
 
@@ -95,7 +95,7 @@ export class StrKey {
    * @param {Buffer} data data to encode
    * @returns {string}
    */
-  static encodeSha256Hash(data) {
+  static encodeSha256Hash(data: Buffer): string {
     return encodeCheck('sha256Hash', data);
   }
 
@@ -104,12 +104,12 @@ export class StrKey {
    * @param {string} data data to decode
    * @returns {Buffer}
    */
-  static decodeSha256Hash(data) {
+  static decodeSha256Hash(data: string): Buffer {
     return decodeCheck('sha256Hash', data);
   }
 }
 
-function isValid(versionByteName, encoded) {
+function isValid(versionByteName: string, encoded: string) {
   if (encoded && encoded.length !== 56) {
     return false;
   }
@@ -125,7 +125,7 @@ function isValid(versionByteName, encoded) {
   return true;
 }
 
-export function decodeCheck(versionByteName, encoded) {
+export function decodeCheck(versionByteName: string, encoded: string) {
   if (!isString(encoded)) {
     throw new TypeError('encoded argument must be of type String');
   }
@@ -163,7 +163,7 @@ export function decodeCheck(versionByteName, encoded) {
   return Buffer.from(data);
 }
 
-export function encodeCheck(versionByteName, data) {
+export function encodeCheck(versionByteName: string, data: Buffer) {
   if (isNull(data) || isUndefined(data)) {
     throw new Error('cannot encode null data');
   }
@@ -185,7 +185,7 @@ export function encodeCheck(versionByteName, data) {
   return base32.encode(unencoded);
 }
 
-function calculateChecksum(payload) {
+function calculateChecksum(payload: string | Buffer) {
   // This code calculates CRC16-XModem checksum of payload
   // and returns it as Buffer in little-endian order.
   const checksum = Buffer.alloc(2);
