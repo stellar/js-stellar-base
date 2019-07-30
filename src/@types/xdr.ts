@@ -1,5 +1,4 @@
-// Type definitions for js-xdr v1.1.1
-declare module "js-xdr" {
+export namespace xdr {
   // TS-TODO: Add original signature https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530
   export class Operation extends XDRStruct {
     static fromXDR(xdr: Buffer): Operation;
