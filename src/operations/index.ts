@@ -1,3 +1,9 @@
+import xdr from '../generated/stellar-xdr_generated';
+import { Keypair } from '../keypair';
+import { StrKey } from '../strkey';
+import { Operation, OperationOptions } from '../@types/operation';
+import { xdr as xdrDef } from '../@types/xdr';
+
 import { manageSellOffer } from './manage_sell_offer';
 import { createPassiveSellOffer } from './create_passive_sell_offer';
 
@@ -32,4 +38,40 @@ export function createPassiveOffer(opts) {
   );
 
   return createPassiveSellOffer.call(this, opts);
+}
+
+export abstract class BaseOperation {
+  // TS-TODO: remove any
+  static setSourceAccount(opAttributes: any, opts: any) {
+    if (opts.source) {
+      if (!StrKey.isValidEd25519PublicKey(opts.source)) {
+        throw new Error('Source address is invalid');
+      }
+      opAttributes.sourceAccount = Keypair.fromPublicKey(
+        opts.source
+      ).xdrAccountId();
+    }
+  }
+
+  /**
+   * Transfers native balance to destination account.
+   * @function
+   * @alias Operation.accountMerge
+   * @param {object} opts Options object
+   * @param {string} opts.destination - Destination to merge the source account into.
+   * @param {string} [opts.source] - The source account (defaults to transaction source).
+   * @returns {xdr.AccountMergeOp} Account Merge operation
+   */
+  static accountMerge(opts: OperationOptions.AccountMerge): xdrDef.Operation<Operation.AccountMerge> {
+    const opAttributes = {};
+    if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
+      throw new Error('destination is invalid');
+    }
+    opAttributes.body = xdr.OperationBody.accountMerge(
+      Keypair.fromPublicKey(opts.destination).xdrAccountId()
+    );
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
 }
