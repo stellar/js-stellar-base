@@ -4,6 +4,8 @@
 //  native `sodium-native` package for node.js environments, and if that fails we
 //  fallback to `tweetnacl`
 
+// TS-TODO: Review this - it shows a warning below because we might be
+// calling an undefined method
 const actualMethods: {
   sign?(data: Buffer, secretKey: Buffer): Buffer;
   verify?(data: Buffer, signature: Buffer, publicKey: Buffer): boolean;
