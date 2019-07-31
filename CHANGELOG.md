@@ -12,23 +12,6 @@ Do not rely on global singleton Network. The following methods take optional net
 
 Also, whole class `Network` has been deprecated.
 
-BREAKING CHANGE: `Network.use(...)` has to be set earlier than before. Example:
-
-```ts
-// BEFORE
-const txb = new TransactionBuilder(account, opts)
-    .addOperation(op)
-const tx = txb.build()
-Network.useTestNetwork()
-tx.sign(kp)  // `Network.current()` was required before this step.
-
-// AFTER
-const txb = new TransactionBuilder(account, opts)
-    .addOperation(op)
-Network.useTestNetwork()
-const tx = txb.build()  // `Network.current()` is required before this step.
-tx.sign(kp)
-```
 
 ## [v1.0.3](https://github.com/stellar/js-stellar-base/compare/v1.0.2...v1.0.3)
 

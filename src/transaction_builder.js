@@ -190,17 +190,6 @@ export class TransactionBuilder {
         'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
       );
     }
-    if (typeof this.networkPassphrase !== 'string') {
-      console.warn(
-        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
-      );
-      if (Network.current() === null) {
-        throw new Error(
-          'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
-        );
-      }
-      this.networkPassphrase = Network.current().networkPassphrase();
-    }
 
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
 

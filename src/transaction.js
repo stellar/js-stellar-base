@@ -32,14 +32,8 @@ export class Transaction {
       console.warn(
         'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
       );
-      if (Network.current() === null) {
-        throw new Error(
-          'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
-        );
-      }
-      networkPassphrase = Network.current().networkPassphrase();
     }
-    this.networkPassphrase = networkPassphrase;
+    this._networkPassphrase = networkPassphrase;
 
     // since this transaction is immutable, save the tx
     this.tx = envelope.tx();
@@ -66,6 +60,28 @@ export class Transaction {
 
     const signatures = envelope.signatures() || [];
     this.signatures = map(signatures, (s) => s);
+  }
+
+  get networkPassphrase() {
+    if (this._networkPassphrase) {
+      return this._networkPassphrase;
+    }
+
+    console.warn(
+      'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
+    );
+
+    if (Network.current() === null) {
+      throw new Error(
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+      );
+    }
+
+    return Network.current().networkPassphrase();
+  }
+
+  set networkPassphrase(networkPassphrase) {
+    this._networkPassphrase = networkPassphrase;
   }
 
   get memo() {
