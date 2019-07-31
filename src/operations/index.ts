@@ -8,11 +8,10 @@ import isString from 'lodash/isString';
 import isUndefined from 'lodash/isUndefined';
 import BigNumber from 'bignumber.js';
 import { Hyper } from 'js-xdr';
+import { best_r } from '../util/continued_fraction';
 
 import { manageSellOffer } from './manage_sell_offer';
-import { createPassiveSellOffer } from './create_passive_sell_offer';
 
-export { createAccount } from './create_account';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
 export { manageBuyOffer } from './manage_buy_offer';
@@ -21,7 +20,6 @@ export { payment } from './payment';
 export { setOptions } from './set_options';
 
 export { manageSellOffer };
-export { createPassiveSellOffer };
 
 export function manageOffer(opts) {
   // eslint-disable-next-line no-console
@@ -100,6 +98,34 @@ export abstract class BaseOperation {
   static _toXDRAmount(value: string | BigNumber): Hyper {
     const amount = new BigNumber(value).mul(ONE);
     return Hyper.fromString(amount.toString());
+  }
+
+  // TS-TODO: Create price interface an use here.
+  /**
+   * @private
+   * @param {object} price Price object
+   * @param {function} price.n numerator function that returns a value
+   * @param {function} price.d denominator function that returns a value
+   * @returns {object} XDR price object
+   */
+  static _toXDRPrice(price: any) {
+    let xdrObject;
+    if (price.n && price.d) {
+      xdrObject = new xdr.Price(price);
+    } else {
+      price = new BigNumber(price);
+      const approx = best_r(price);
+      xdrObject = new xdr.Price({
+        n: parseInt(approx[0], 10),
+        d: parseInt(approx[1], 10)
+      });
+    }
+
+    if (xdrObject.n() < 0 || xdrObject.d() < 0) {
+      throw new Error('price must be positive');
+    }
+
+    return xdrObject;
   }
 
   /**
@@ -263,6 +289,47 @@ export abstract class BaseOperation {
 
     const opAttributes = {};
     opAttributes.body = xdr.OperationBody.createAccount(createAccountOp);
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
+
+  /**
+   * Returns a XDR CreatePasiveSellOfferOp. A "create passive offer" operation creates an
+   * offer that won't consume a counter offer that exactly matches this offer. This is
+   * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
+   * to manage this offer after using this operation to create it.
+   * @function
+   * @alias Operation.createPassiveSellOffer
+   * @param {object} opts Options object
+   * @param {Asset} opts.selling - What you're selling.
+   * @param {Asset} opts.buying - What you're buying.
+   * @param {string} opts.amount - The total amount you're selling. If 0, deletes the offer.
+   * @param {number|string|BigNumber|Object} opts.price - Price of 1 unit of `selling` in terms of `buying`.
+   * @param {number} opts.price.n - If `opts.price` is an object: the price numerator
+   * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
+   * @param {string} [opts.source] - The source account (defaults to transaction source).
+   * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
+   * @returns {xdr.CreatePassiveSellOfferOp} Create Passive Sell Offer operation
+   */
+  static createPassiveSellOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
+    const attributes = {};
+    attributes.selling = opts.selling.toXDRObject();
+    attributes.buying = opts.buying.toXDRObject();
+    if (!this.isValidAmount(opts.amount)) {
+      throw new TypeError(this.constructAmountRequirementsError('amount'));
+    }
+    attributes.amount = this._toXDRAmount(opts.amount);
+    if (isUndefined(opts.price)) {
+      throw new TypeError('price argument is required');
+    }
+    attributes.price = this._toXDRPrice(opts.price);
+    const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp(attributes);
+
+    const opAttributes = {};
+    opAttributes.body = xdr.OperationBody.createPassiveSellOffer(
+      createPassiveSellOfferOp
+    );
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);

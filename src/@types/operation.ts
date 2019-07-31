@@ -156,10 +156,6 @@ export namespace Operation {
     price: string;
   }
 
-  function createPassiveSellOffer(
-    options: OperationOptions.CreatePassiveSellOffer
-  ): xdr.Operation<CreatePassiveSellOffer>;
-
   export interface Inflation extends BaseOperation<OperationType.Inflation> { }
 
   function inflation(
