@@ -172,10 +172,6 @@ export namespace Operation {
     offerId: string;
   }
 
-  function manageSellOffer(
-    options: OperationOptions.ManageSellOffer
-  ): xdr.Operation<ManageSellOffer>;
-
   export interface ManageBuyOffer extends BaseOperation<OperationType.ManageBuyOffer> {
     selling: Asset;
     buying: Asset;
