@@ -3,6 +3,7 @@ import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 import { Operation, OperationOptions } from '../@types/operation';
 import { xdr as xdrDef } from '../@types/xdr';
+import padEnd from 'lodash/padEnd';
 
 import { manageSellOffer } from './manage_sell_offer';
 import { createPassiveSellOffer } from './create_passive_sell_offer';
@@ -74,4 +75,43 @@ export abstract class BaseOperation {
 
     return new xdr.Operation(opAttributes);
   }
+
+  /**
+   * Returns an XDR AllowTrustOp. An "allow trust" operation authorizes another
+   * account to hold your account's credit for a given asset.
+   * @function
+   * @alias Operation.allowTrust
+   * @param {object} opts Options object
+   * @param {string} opts.trustor - The trusting account (the one being authorized)
+   * @param {string} opts.assetCode - The asset code being authorized.
+   * @param {boolean} opts.authorize - True to authorize the line, false to deauthorize.
+   * @param {string} [opts.source] - The source account (defaults to transaction source).
+   * @returns {xdr.AllowTrustOp} Allow Trust operation
+   */
+  static allowTrust(opts: OperationOptions.AllowTrust): xdrDef.Operation<Operation.AllowTrust> {
+    if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
+      throw new Error('trustor is invalid');
+    }
+    // TS-TODO: Maybe use conditional types for attributes
+    const attributes = {};
+    attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
+    if (opts.assetCode.length <= 4) {
+      const code = padEnd(opts.assetCode, 4, '\0');
+      attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
+    } else if (opts.assetCode.length <= 12) {
+      const code = padEnd(opts.assetCode, 12, '\0');
+      attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
+    } else {
+      throw new Error('Asset code must be 12 characters at max.');
+    }
+    attributes.authorize = opts.authorize;
+    const allowTrustOp = new xdr.AllowTrustOp(attributes);
+
+    const opAttributes = {};
+    opAttributes.body = xdr.OperationBody.allowTrust(allowTrustOp);
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
+
 }
