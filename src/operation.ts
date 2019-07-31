@@ -12,7 +12,7 @@ import { Asset } from './asset';
 import { StrKey } from './strkey';
 import { Keypair } from './keypair';
 import xdr from './generated/stellar-xdr_generated';
-import * as ops from './operations/index';
+import { BaseOperation } from './operations/index';
 
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
@@ -63,18 +63,7 @@ export const AuthImmutableFlag = 1 << 2;
  *
  * @class Operation
  */
-export class Operation {
-  static setSourceAccount(opAttributes, opts) {
-    if (opts.source) {
-      if (!StrKey.isValidEd25519PublicKey(opts.source)) {
-        throw new Error('Source address is invalid');
-      }
-      opAttributes.sourceAccount = Keypair.fromPublicKey(
-        opts.source
-      ).xdrAccountId();
-    }
-  }
-
+export class Operation extends BaseOperation {
   /**
    * Converts the XDR Operation object to the opts object used to create the XDR
    * operation.
@@ -368,7 +357,7 @@ export class Operation {
 }
 
 // Attach all imported operations as static methods on the Operation class
-Operation.accountMerge = ops.accountMerge;
+// TS-TODO: move this to BaseOperation
 Operation.allowTrust = ops.allowTrust;
 Operation.bumpSequence = ops.bumpSequence;
 Operation.changeTrust = ops.changeTrust;
@@ -383,5 +372,6 @@ Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
 
 // deprecated, to be removed after 1.0.1
+// TS-TODO: move this to BaseOperation
 Operation.manageOffer = ops.manageOffer;
 Operation.createPassiveOffer = ops.createPassiveOffer;
