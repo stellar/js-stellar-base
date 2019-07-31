@@ -4,7 +4,11 @@
 //  native `sodium-native` package for node.js environments, and if that fails we
 //  fallback to `tweetnacl`
 
-const actualMethods = {};
+const actualMethods: {
+  sign?(data: Buffer, secretKey: Buffer): Buffer;
+  verify?(data: Buffer, signature: Buffer, publicKey: Buffer): boolean;
+  generate?(secretKey: Buffer): Buffer
+} = {};
 
 /**
  * Use this flag to check if fast signing (provided by `sodium-native` package) is available.
@@ -13,15 +17,15 @@ const actualMethods = {};
  */
 export const FastSigning = checkFastSigning();
 
-export function sign(data, secretKey) {
+export function sign(data: Buffer, secretKey: Buffer): Buffer {
   return actualMethods.sign(data, secretKey);
 }
 
-export function verify(data, signature, publicKey) {
+export function verify(data: Buffer, signature: Buffer, publicKey: Buffer): boolean {
   return actualMethods.verify(data, signature, publicKey);
 }
 
-export function generate(secretKey) {
+export function generate(secretKey: Buffer): Buffer {
   return actualMethods.generate(secretKey);
 }
 
