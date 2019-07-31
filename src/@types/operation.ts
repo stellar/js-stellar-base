@@ -148,10 +148,6 @@ export namespace Operation {
     startingBalance: string;
   }
 
-  function createAccount(
-    options: OperationOptions.CreateAccount
-  ): xdr.Operation<CreateAccount>;
-
   export interface CreatePassiveSellOffer
     extends BaseOperation<OperationType.CreatePassiveSellOffer> {
     selling: Asset;
