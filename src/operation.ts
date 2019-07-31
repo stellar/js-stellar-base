@@ -231,41 +231,6 @@ export class Operation extends BaseOperation {
     return result;
   }
 
-  static isValidAmount(value, allowZero = false) {
-    if (!isString(value)) {
-      return false;
-    }
-
-    let amount;
-    try {
-      amount = new BigNumber(value);
-    } catch (e) {
-      return false;
-    }
-
-    if (
-      // == 0
-      (!allowZero && amount.isZero()) ||
-      // < 0
-      amount.isNegative() ||
-      // > Max value
-      amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString()) ||
-      // Decimal places (max 7)
-      amount.decimalPlaces() > 7 ||
-      // NaN or Infinity
-      amount.isNaN() ||
-      !amount.isFinite()
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  static constructAmountRequirementsError(arg) {
-    return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
-  }
-
   /**
    * Returns value converted to uint32 value or undefined.
    * If `value` is not `Number`, `String` or `Undefined` then throws an error.
@@ -296,15 +261,6 @@ export class Operation extends BaseOperation {
       default:
         throw new Error(`${name} value is invalid`);
     }
-  }
-  /**
-   * @private
-   * @param {string|BigNumber} value Value
-   * @returns {Hyper} XDR amount
-   */
-  static _toXDRAmount(value) {
-    const amount = new BigNumber(value).mul(ONE);
-    return Hyper.fromString(amount.toString());
   }
 
   /**

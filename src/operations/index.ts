@@ -5,13 +5,13 @@ import { Operation, OperationOptions } from '../@types/operation';
 import { xdr as xdrDef } from '../@types/xdr';
 import padEnd from 'lodash/padEnd';
 import isString from 'lodash/isString';
+import isUndefined from 'lodash/isUndefined';
 import BigNumber from 'bignumber.js';
 import { Hyper } from 'js-xdr';
 
 import { manageSellOffer } from './manage_sell_offer';
 import { createPassiveSellOffer } from './create_passive_sell_offer';
 
-export { changeTrust } from './change_trust';
 export { createAccount } from './create_account';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
@@ -41,6 +41,9 @@ export function createPassiveOffer(opts) {
   return createPassiveSellOffer.call(this, opts);
 }
 
+const ONE = 10000000;
+const MAX_INT64 = '9223372036854775807';
+
 export abstract class BaseOperation {
   // TS-TODO: remove any
   static setSourceAccount(opAttributes: any, opts: any) {
@@ -52,6 +55,51 @@ export abstract class BaseOperation {
         opts.source
       ).xdrAccountId();
     }
+  }
+
+  static constructAmountRequirementsError(arg: string) {
+    return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
+  }
+
+  static isValidAmount(value: string, allowZero = false) {
+    if (!isString(value)) {
+      return false;
+    }
+
+    let amount;
+    try {
+      amount = new BigNumber(value);
+    } catch (e) {
+      return false;
+    }
+
+    if (
+      // == 0
+      (!allowZero && amount.isZero()) ||
+      // < 0
+      amount.isNegative() ||
+      // > Max value
+      amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString()) ||
+      // Decimal places (max 7)
+      amount.decimalPlaces() > 7 ||
+      // NaN or Infinity
+      amount.isNaN() ||
+      !amount.isFinite()
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * @private
+   * @param {string|BigNumber} value Value
+   * @returns {Hyper} XDR amount
+   */
+  static _toXDRAmount(value: string | BigNumber): Hyper {
+    const amount = new BigNumber(value).mul(ONE);
+    return Hyper.fromString(amount.toString());
   }
 
   /**
@@ -147,4 +195,43 @@ export abstract class BaseOperation {
 
     return new xdr.Operation(opAttributes);
   }
+
+  /**
+   * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
+   * trust line for a given asset from the source account to another. The issuer being
+   * trusted and the asset code are in the given Asset object.
+   * @function
+   * @alias Operation.changeTrust
+   * @param {object} opts Options object
+   * @param {Asset} opts.asset - The asset for the trust line.
+   * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
+   *                                If the limit is set to "0" it deletes the trustline.
+   * @param {string} [opts.source] - The source account (defaults to transaction source).
+   * @returns {xdr.ChangeTrustOp} Change Trust operation
+   */
+  static changeTrust(opts: OperationOptions.ChangeTrust): xdrDef.Operation<Operation.ChangeTrust> {
+    const attributes = {};
+    attributes.line = opts.asset.toXDRObject();
+    if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
+      throw new TypeError(this.constructAmountRequirementsError('limit'));
+    }
+
+    if (opts.limit) {
+      attributes.limit = this._toXDRAmount(opts.limit);
+    } else {
+      attributes.limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
+    }
+
+    if (opts.source) {
+      attributes.source = opts.source.masterKeypair;
+    }
+    const changeTrustOP = new xdr.ChangeTrustOp(attributes);
+
+    const opAttributes = {};
+    opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
+
 }
