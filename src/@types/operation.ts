@@ -188,10 +188,6 @@ export namespace Operation {
     offerId: string;
   }
 
-  function manageBuyOffer(
-    options: OperationOptions.ManageBuyOffer
-  ): xdr.Operation<ManageBuyOffer>;
-
   export interface PathPayment extends BaseOperation<OperationType.PathPayment> {
     sendAsset: Asset;
     sendMax: string;
