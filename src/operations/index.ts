@@ -4,11 +4,13 @@ import { StrKey } from '../strkey';
 import { Operation, OperationOptions } from '../@types/operation';
 import { xdr as xdrDef } from '../@types/xdr';
 import padEnd from 'lodash/padEnd';
+import isString from 'lodash/isString';
+import BigNumber from 'bignumber.js';
+import { Hyper } from 'js-xdr';
 
 import { manageSellOffer } from './manage_sell_offer';
 import { createPassiveSellOffer } from './create_passive_sell_offer';
 
-export { bumpSequence } from './bump_sequence';
 export { changeTrust } from './change_trust';
 export { createAccount } from './create_account';
 export { inflation } from './inflation';
@@ -112,4 +114,37 @@ export abstract class BaseOperation {
     return new xdr.Operation(opAttributes);
   }
 
+  /**
+   * This operation bumps sequence number.
+   * @function
+   * @alias Operation.bumpSequence
+   * @param {object} opts Options object
+   * @param {string} opts.bumpTo - Sequence number to bump to.
+   * @param {string} [opts.source] - The optional source account.
+   * @returns {xdr.BumpSequenceOp} Operation
+   */
+  static bumpSequence(opts: OperationOptions.BumpSequence): xdrDef.Operation<Operation.BumpSequence> {
+    const attributes = {};
+
+    if (!isString(opts.bumpTo)) {
+      throw new Error('bumpTo must be a string');
+    }
+
+    try {
+      // eslint-disable-next-line no-new
+      new BigNumber(opts.bumpTo);
+    } catch (e) {
+      throw new Error('bumpTo must be a stringified number');
+    }
+
+    attributes.bumpTo = Hyper.fromString(opts.bumpTo);
+
+    const bumpSequenceOp = new xdr.BumpSequenceOp(attributes);
+
+    const opAttributes = {};
+    opAttributes.body = xdr.OperationBody.bumpSequence(bumpSequenceOp);
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
 }

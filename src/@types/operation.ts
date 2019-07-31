@@ -256,10 +256,6 @@ export namespace Operation {
     bumpTo: string;
   }
 
-  function bumpSequence(
-    options: OperationOptions.BumpSequence
-  ): xdr.Operation<BumpSequence>;
-
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
