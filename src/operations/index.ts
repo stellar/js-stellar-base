@@ -10,21 +10,9 @@ import BigNumber from 'bignumber.js';
 import { Hyper } from 'js-xdr';
 import { best_r } from '../util/continued_fraction';
 
-export { manageBuyOffer } from './manage_buy_offer';
 export { pathPayment } from './path_payment';
 export { payment } from './payment';
 export { setOptions } from './set_options';
-
-export { manageSellOffer };
-
-export function manageOffer(opts) {
-  // eslint-disable-next-line no-console
-  console.log(
-    '[Operation] Operation.manageOffer has been renamed to Operation.manageSellOffer! The old name is deprecated and will be removed in a later version!'
-  );
-
-  return manageSellOffer.call(this, opts);
-}
 
 export function createPassiveOffer(opts) {
   // eslint-disable-next-line no-console
@@ -481,5 +469,15 @@ export abstract class BaseOperation {
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
+  }
+
+  // deprecated, to be removed after 1.0.1
+  static manageOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
+    // eslint-disable-next-line no-console
+    console.log(
+      '[Operation] Operation.manageOffer has been renamed to Operation.manageSellOffer! The old name is deprecated and will be removed in a later version!'
+    );
+
+    return this.manageSellOffer(opts);
   }
 }
