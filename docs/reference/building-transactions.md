@@ -32,8 +32,8 @@ The returned transaction will contain the sequence number of the source account.
 var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD","2319149195853854");
 
 var transaction = new StellarBase.TransactionBuilder(account, {
-      fee: StellarBase.BASE_FEE,
-    networkPassphrase: Networks.TESTNET
+        fee: StellarBase.BASE_FEE,
+        networkPassphrase: Networks.TESTNET
     })
         // add a payment operation to the transaction
         .addOperation(StellarBase.Operation.payment({
