@@ -1,17 +1,13 @@
 /* eslint-disable no-bitwise */
 
-import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import trimEnd from 'lodash/trimEnd';
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
 import isFinite from 'lodash/isFinite';
-import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
 import { StrKey } from './strkey';
-import { Keypair } from './keypair';
-import xdr from './generated/stellar-xdr_generated';
 import { BaseOperation } from './operations/index';
 
 const ONE = 10000000;
@@ -283,38 +279,10 @@ export class Operation extends BaseOperation {
     const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }
-
-  /**
-   * @private
-   * @param {object} price Price object
-   * @param {function} price.n numerator function that returns a value
-   * @param {function} price.d denominator function that returns a value
-   * @returns {object} XDR price object
-   */
-  static _toXDRPrice(price) {
-    let xdrObject;
-    if (price.n && price.d) {
-      xdrObject = new xdr.Price(price);
-    } else {
-      price = new BigNumber(price);
-      const approx = best_r(price);
-      xdrObject = new xdr.Price({
-        n: parseInt(approx[0], 10),
-        d: parseInt(approx[1], 10)
-      });
-    }
-
-    if (xdrObject.n() < 0 || xdrObject.d() < 0) {
-      throw new Error('price must be positive');
-    }
-
-    return xdrObject;
-  }
 }
 
 // Attach all imported operations as static methods on the Operation class
 // TS-TODO: move this to BaseOperation
-Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
 Operation.manageSellOffer = ops.manageSellOffer;
