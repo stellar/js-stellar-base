@@ -143,10 +143,6 @@ export namespace Operation {
     limit: string;
   }
 
-  function changeTrust(
-    options: OperationOptions.ChangeTrust
-  ): xdr.Operation<ChangeTrust>;
-
   export interface CreateAccount extends BaseOperation<OperationType.CreateAccount> {
     destination: string;
     startingBalance: string;
