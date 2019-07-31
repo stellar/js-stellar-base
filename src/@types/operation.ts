@@ -138,10 +138,6 @@ export namespace Operation {
     authorize: boolean | undefined;
   }
 
-  function allowTrust(
-    options: OperationOptions.AllowTrust
-  ): xdr.Operation<AllowTrust>;
-
   export interface ChangeTrust extends BaseOperation<OperationType.ChangeTrust> {
     line: Asset;
     limit: string;
