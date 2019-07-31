@@ -286,8 +286,3 @@ export class Operation extends BaseOperation {
 Operation.pathPayment = ops.pathPayment;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
-
-// deprecated, to be removed after 1.0.1
-// TS-TODO: move this to BaseOperation
-Operation.manageOffer = ops.manageOffer;
-Operation.createPassiveOffer = ops.createPassiveOffer;
