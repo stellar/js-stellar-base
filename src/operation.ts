@@ -285,7 +285,6 @@ export class Operation extends BaseOperation {
 // TS-TODO: move this to BaseOperation
 Operation.manageData = ops.manageData;
 Operation.manageSellOffer = ops.manageSellOffer;
-Operation.manageBuyOffer = ops.manageBuyOffer;
 Operation.pathPayment = ops.pathPayment;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
