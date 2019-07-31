@@ -14,15 +14,6 @@ export { pathPayment } from './path_payment';
 export { payment } from './payment';
 export { setOptions } from './set_options';
 
-export function createPassiveOffer(opts) {
-  // eslint-disable-next-line no-console
-  console.log(
-    '[Operation] Operation.createPassiveOffer has been renamed to Operation.createPassiveSellOffer! The old name is deprecated and will be removed in a later version!'
-  );
-
-  return createPassiveSellOffer.call(this, opts);
-}
-
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
 
@@ -317,6 +308,16 @@ export abstract class BaseOperation {
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
+  }
+
+  // deprecated, to be removed after 1.0.1
+  static createPassiveOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
+    // eslint-disable-next-line no-console
+    console.log(
+      '[Operation] Operation.createPassiveOffer has been renamed to Operation.createPassiveSellOffer! The old name is deprecated and will be removed in a later version!'
+    );
+
+    return this.createPassiveSellOffer(opts);
   }
 
   /**
