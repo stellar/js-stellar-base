@@ -85,22 +85,22 @@ function checkFastSigningBrowser() {
   };
 
   actualMethods.sign = (data, secretKey) => {
-    data = Buffer.from(data);
-    data = new Uint8Array(data.toJSON().data);
-    secretKey = new Uint8Array(secretKey.toJSON().data);
+    let buffer = Buffer.from(data);
+    let dataCopy = new Uint8Array(buffer.toJSON().data);
+    let secretKeyCopy = new Uint8Array(secretKey.toJSON().data);
 
-    const signature = nacl.sign.detached(data, secretKey);
+    const signature = nacl.sign.detached(dataCopy, secretKeyCopy);
 
     return Buffer.from(signature);
   };
 
   actualMethods.verify = (data, signature, publicKey) => {
-    data = Buffer.from(data);
-    data = new Uint8Array(data.toJSON().data);
-    signature = new Uint8Array(signature.toJSON().data);
-    publicKey = new Uint8Array(publicKey.toJSON().data);
+    let buffer = Buffer.from(data);
+    let dataCopy = new Uint8Array(buffer.toJSON().data);
+    let signatureCopy = new Uint8Array(signature.toJSON().data);
+    let publicKeyCopy = new Uint8Array(publicKey.toJSON().data);
 
-    return nacl.sign.detached.verify(data, signature, publicKey);
+    return nacl.sign.detached.verify(dataCopy, signatureCopy, publicKeyCopy);
   };
 
   return false;
