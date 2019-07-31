@@ -283,7 +283,6 @@ export class Operation extends BaseOperation {
 
 // Attach all imported operations as static methods on the Operation class
 // TS-TODO: move this to BaseOperation
-Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
 Operation.manageSellOffer = ops.manageSellOffer;
 Operation.manageBuyOffer = ops.manageBuyOffer;

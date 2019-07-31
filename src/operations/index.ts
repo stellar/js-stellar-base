@@ -12,7 +12,6 @@ import { best_r } from '../util/continued_fraction';
 
 import { manageSellOffer } from './manage_sell_offer';
 
-export { inflation } from './inflation';
 export { manageData } from './manage_data';
 export { manageBuyOffer } from './manage_buy_offer';
 export { pathPayment } from './path_payment';
@@ -332,6 +331,21 @@ export abstract class BaseOperation {
     );
     this.setSourceAccount(opAttributes, opts);
 
+    return new xdr.Operation(opAttributes);
+  }
+
+  /**
+   * This operation generates the inflation.
+   * @function
+   * @alias Operation.inflation
+   * @param {object} [opts] Options object
+   * @param {string} [opts.source] - The optional source account.
+   * @returns {xdr.InflationOp} Inflation operation
+   */
+  static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
+    const opAttributes = {};
+    opAttributes.body = xdr.OperationBody.inflation();
+    this.setSourceAccount(opAttributes, opts);
     return new xdr.Operation(opAttributes);
   }
 }

@@ -158,10 +158,6 @@ export namespace Operation {
 
   export interface Inflation extends BaseOperation<OperationType.Inflation> { }
 
-  function inflation(
-    options: OperationOptions.Inflation
-  ): xdr.Operation<Inflation>;
-
   export interface ManageData extends BaseOperation<OperationType.ManageData> {
     name: string;
     value: Buffer;
