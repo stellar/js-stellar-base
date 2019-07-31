@@ -4,7 +4,13 @@
 //  native `sodium-native` package for node.js environments, and if that fails we
 //  fallback to `tweetnacl`
 
-const actualMethods = {};
+// TS-TODO: Review this - it shows a warning below because we might be
+// calling an undefined method
+const actualMethods: {
+  sign?(data: Buffer, secretKey: Buffer): Buffer;
+  verify?(data: Buffer, signature: Buffer, publicKey: Buffer): boolean;
+  generate?(secretKey: Buffer): Buffer
+} = {};
 
 /**
  * Use this flag to check if fast signing (provided by `sodium-native` package) is available.
@@ -13,15 +19,15 @@ const actualMethods = {};
  */
 export const FastSigning = checkFastSigning();
 
-export function sign(data, secretKey) {
+export function sign(data: Buffer, secretKey: Buffer): Buffer {
   return actualMethods.sign(data, secretKey);
 }
 
-export function verify(data, signature, publicKey) {
+export function verify(data: Buffer, signature: Buffer, publicKey: Buffer): boolean {
   return actualMethods.verify(data, signature, publicKey);
 }
 
-export function generate(secretKey) {
+export function generate(secretKey: Buffer): Buffer {
   return actualMethods.generate(secretKey);
 }
 
@@ -81,22 +87,22 @@ function checkFastSigningBrowser() {
   };
 
   actualMethods.sign = (data, secretKey) => {
-    data = Buffer.from(data);
-    data = new Uint8Array(data.toJSON().data);
-    secretKey = new Uint8Array(secretKey.toJSON().data);
+    let buffer = Buffer.from(data);
+    let dataCopy = new Uint8Array(buffer.toJSON().data);
+    let secretKeyCopy = new Uint8Array(secretKey.toJSON().data);
 
-    const signature = nacl.sign.detached(data, secretKey);
+    const signature = nacl.sign.detached(dataCopy, secretKeyCopy);
 
     return Buffer.from(signature);
   };
 
   actualMethods.verify = (data, signature, publicKey) => {
-    data = Buffer.from(data);
-    data = new Uint8Array(data.toJSON().data);
-    signature = new Uint8Array(signature.toJSON().data);
-    publicKey = new Uint8Array(publicKey.toJSON().data);
+    let buffer = Buffer.from(data);
+    let dataCopy = new Uint8Array(buffer.toJSON().data);
+    let signatureCopy = new Uint8Array(signature.toJSON().data);
+    let publicKeyCopy = new Uint8Array(publicKey.toJSON().data);
 
-    return nacl.sign.detached.verify(data, signature, publicKey);
+    return nacl.sign.detached.verify(dataCopy, signatureCopy, publicKeyCopy);
   };
 
   return false;
