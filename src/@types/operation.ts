@@ -163,10 +163,6 @@ export namespace Operation {
     value: Buffer;
   }
 
-  function manageData(
-    options: OperationOptions.ManageData
-  ): xdr.Operation<ManageData>;
-
   export interface ManageSellOffer
     extends BaseOperation<OperationType.ManageSellOffer> {
     selling: Asset;
