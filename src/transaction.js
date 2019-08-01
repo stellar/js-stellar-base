@@ -30,7 +30,7 @@ export class Transaction {
     // Deprecation warning. TODO: remove optionality with next major release.
     if (typeof networkPassphrase !== 'string') {
       console.warn(
-        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
+        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
       );
     }
     this._networkPassphrase = networkPassphrase;
@@ -68,7 +68,7 @@ export class Transaction {
     }
 
     console.warn(
-      'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
+      'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
     );
 
     if (Network.current() === null) {

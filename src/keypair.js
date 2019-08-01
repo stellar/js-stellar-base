@@ -98,7 +98,7 @@ export class Keypair {
     // Deprecation warning. TODO: remove optionality with next major release.
     if (!networkPassphrase) {
       console.warn(
-        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `Keypair.master(Networks.PUBLIC)`.'
+        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `Keypair.master(Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
       );
       if (Network.current() === null) {
         throw new Error(
