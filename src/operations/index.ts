@@ -10,7 +10,6 @@ import BigNumber from 'bignumber.js';
 import { Hyper } from 'js-xdr';
 import { best_r } from '../util/continued_fraction';
 
-export { payment } from './payment';
 export { setOptions } from './set_options';
 
 const ONE = 10000000;
@@ -534,4 +533,40 @@ export abstract class BaseOperation {
     return new xdr.Operation(opAttributes);
   }
 
+  /**
+   * Create a payment operation.
+   * @function
+   * @alias Operation.payment
+   * @param {object} opts Options object
+   * @param {string} opts.destination - The destination account ID.
+   * @param {Asset} opts.asset - The asset to send.
+   * @param {string} opts.amount - The amount to send.
+   * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
+   * @returns {xdr.PaymentOp} Payment operation
+   */
+  static payment(opts: OperationOptions.Payment): xdrDef.Operation<Operation.Payment> {
+    if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
+      throw new Error('destination is invalid');
+    }
+    if (!opts.asset) {
+      throw new Error('Must provide an asset for a payment operation');
+    }
+    if (!this.isValidAmount(opts.amount)) {
+      throw new TypeError(this.constructAmountRequirementsError('amount'));
+    }
+
+    const attributes = {};
+    attributes.destination = Keypair.fromPublicKey(
+      opts.destination
+    ).xdrAccountId();
+    attributes.asset = opts.asset.toXDRObject();
+    attributes.amount = this._toXDRAmount(opts.amount);
+    const paymentOp = new xdr.PaymentOp(attributes);
+
+    const opAttributes = {};
+    opAttributes.body = xdr.OperationBody.payment(paymentOp);
+    this.setSourceAccount(opAttributes, opts);
+
+    return new xdr.Operation(opAttributes);
+  }
 }

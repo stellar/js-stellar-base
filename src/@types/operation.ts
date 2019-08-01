@@ -195,8 +195,6 @@ export namespace Operation {
     destination: string;
   }
 
-  function payment(options: OperationOptions.Payment): xdr.Operation<Payment>;
-
   export interface SetOptions<T extends SignerOptions = SignerOptions>
     extends BaseOperation<OperationType.SetOptions> {
     inflationDest?: string;
