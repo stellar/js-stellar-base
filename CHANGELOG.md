@@ -3,6 +3,16 @@
 As this project is pre 1.0, breaking changes may happen for minor version bumps.
 A breaking change will get clearly notified in this log.
 
+## Unreleased
+
+Do not rely on global singleton Network. The following methods take optional network passphrase, and `console.warn` if it is not passed.
+- static method `Keypair.master`
+- constructor `Transaction`
+- constructor `TransactionBuilder` and method `TransactionBuilder.setNetworkPassphrase`
+
+Also, whole class `Network` has been deprecated.
+
+
 ## [v1.0.3](https://github.com/stellar/js-stellar-base/compare/v1.0.2...v1.0.3)
 
 ### Add

@@ -24,6 +24,7 @@ let current = null;
  * Creates a new `Network` object.
  * @constructor
  * @param {string} networkPassphrase Network passphrase
+ * @deprecated
  */
 export class Network {
   constructor(networkPassphrase) {
@@ -52,6 +53,10 @@ export class Network {
    * @returns {void}
    */
   static use(network) {
+    console.warn(
+      'Global class `Network` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
+    );
+
     current = network;
   }
 

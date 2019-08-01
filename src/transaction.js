@@ -1,7 +1,8 @@
 import map from 'lodash/map';
 import each from 'lodash/each';
 import isString from 'lodash/isString';
-import { xdr, hash } from './index';
+import xdr from './generated/stellar-xdr_generated';
+import { hash } from './hashing';
 
 import { StrKey } from './strkey';
 import { Operation } from './operation';
@@ -17,13 +18,23 @@ import { Keypair } from './keypair';
  * submitting to the network or forwarding on to additional signers.
  * @constructor
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
+ * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
  */
 export class Transaction {
-  constructor(envelope) {
+  constructor(envelope, networkPassphrase) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
+
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (typeof networkPassphrase !== 'string') {
+      console.warn(
+        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
+      );
+    }
+    this._networkPassphrase = networkPassphrase;
+
     // since this transaction is immutable, save the tx
     this.tx = envelope.tx();
     this.source = StrKey.encodeEd25519PublicKey(
@@ -49,6 +60,28 @@ export class Transaction {
 
     const signatures = envelope.signatures() || [];
     this.signatures = map(signatures, (s) => s);
+  }
+
+  get networkPassphrase() {
+    if (this._networkPassphrase) {
+      return this._networkPassphrase;
+    }
+
+    console.warn(
+      'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
+    );
+
+    if (Network.current() === null) {
+      throw new Error(
+        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+      );
+    }
+
+    return Network.current().networkPassphrase();
+  }
+
+  set networkPassphrase(networkPassphrase) {
+    this._networkPassphrase = networkPassphrase;
   }
 
   get memo() {
@@ -86,7 +119,7 @@ export class Transaction {
    * Example:
    * ```javascript
    * // `transactionXDR` is a string from the person generating the transaction
-   * const transaction = new Transaction(transactionXDR);
+   * const transaction = new Transaction(transactionXDR, networkPassphrase);
    * const keypair = Keypair.fromSecret(myStellarSeed);
    * return transaction.getKeypairSignature(keypair);
    * ```
@@ -192,14 +225,8 @@ export class Transaction {
    * @returns {Buffer}
    */
   signatureBase() {
-    if (Network.current() === null) {
-      throw new Error(
-        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
-      );
-    }
-
     return Buffer.concat([
-      Network.current().networkId(),
+      hash(this.networkPassphrase),
       xdr.EnvelopeType.envelopeTypeTx().toXDR(),
       this.tx.toXDR()
     ]);

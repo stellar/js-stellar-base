@@ -4,6 +4,7 @@ import { sign, verify, generate } from './signing';
 import * as base58 from './base58';
 import { StrKey } from './strkey';
 import xdr from './generated/stellar-xdr_generated';
+import { hash } from './hashing';
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
@@ -90,15 +91,23 @@ export class Keypair {
 
   /**
    * Returns `Keypair` object representing network master key.
+   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Keypair}
    */
-  static master() {
-    if (Network.current() === null) {
-      throw new Error(
-        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+  static master(networkPassphrase) {
+    // Deprecation warning. TODO: remove optionality with next major release.
+    if (!networkPassphrase) {
+      console.warn(
+        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `Keypair.master(Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
       );
+      if (Network.current() === null) {
+        throw new Error(
+          'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+        );
+      }
+      networkPassphrase = Network.current().networkPassphrase();
     }
-    return this.fromRawEd25519Seed(Network.current().networkId());
+    return this.fromRawEd25519Seed(hash(networkPassphrase));
   }
 
   /**

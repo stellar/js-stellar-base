@@ -5,7 +5,8 @@ title: Transaction Examples
 - [Creating an account](#creating-an-account)
 - [Assets](#assets)
 - [Path payment](#path-payment)
-- [Multi-Signature account](#multi-signature-account)
+- [Multi-signature account](#multi-signature-account)
+  - [Set up multisig account](#set-up-multisig-account)
 
 ## Creating an account
 
@@ -19,15 +20,14 @@ const server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
 const source = StellarSdk.Keypair.fromSecret('SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L')
 const destination = StellarSdk.Keypair.random()
 
-StellarSdk.Network.useTestNetwork()
-
 server.accounts()
   .accountId(source.publicKey())
   .call()
   .then(({ sequence }) => {
     const account = new StellarSdk.Account(source.publicKey(), sequence)
     const transaction = new StellarSdk.TransactionBuilder(account, {
-      fee: StellarSdk.BASE_FEE
+      fee: StellarSdk.BASE_FEE,
+      networkPassphrase: Networks.TESTNET
     })
       .addOperation(StellarSdk.Operation.createAccount({
         destination: destination.publicKey(),
@@ -78,12 +78,12 @@ In the example below we're sending 1000 XLM (at max) from `GABJLI6IVBKJ7HIC5NN7H
 The [path payment](https://www.stellar.org/developers/learn/concepts/list-of-operations.html#path-payment) will cause the destination address to get 5.5 GBP. It will cost the sender no more than 1000 XLM. In this example there will be 3 exchanges, XLM -> USD, USD-> EUR, EUR->GBP.
 
 ```js
-StellarSdk.Network.useTestNetwork();
 var keypair = StellarSdk.Keypair.fromSecret(secretString);
 
 var source = new StellarSdk.Account(keypair.publicKey(), "46316927324160");
 var transaction = new StellarSdk.TransactionBuilder(source, {
-    fee: StellarSdk.BASE_FEE
+    fee: StellarSdk.BASE_FEE,
+    networkPassphrase: Networks.TESTNET
   })
   .addOperation(StellarSdk.Operation.pathPayment({
       sendAsset: StellarSdk.Asset.native(),
@@ -125,14 +125,14 @@ In each example, we'll use the root account.
 
 
 ```js
-StellarSdk.Network.useTestNetwork();
 var rootKeypair = StellarSdk.Keypair.fromSecret("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
 var account = new StellarSdk.Account(rootkeypair.publicKey(), "46316927324160");
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
 
 var transaction = new StellarSdk.TransactionBuilder(account, {
-    fee: StellarSdk.BASE_FEE
+    fee: StellarSdk.BASE_FEE,
+    networkPassphrase: Networks.TESTNET
   })
   .addOperation(StellarSdk.Operation.setOptions({
     signer: {
@@ -154,7 +154,8 @@ transaction.sign(rootKeypair); // only need to sign with the root signer as the 
 // now create a payment with the account that has two signers
 
 var transaction = new StellarSdk.TransactionBuilder(account, {
-      fee: StellarSdk.BASE_FEE
+      fee: StellarSdk.BASE_FEE,
+      networkPassphrase: Networks.TESTNET
     })
     .addOperation(StellarSdk.Operation.payment({
         destination: "GBTVUCDT5CNSXIHJTDHYSZG3YJFXBAJ6FM4CKS5GKSAWJOLZW6XX7NVC",
