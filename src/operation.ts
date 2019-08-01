@@ -283,6 +283,5 @@ export class Operation extends BaseOperation {
 
 // Attach all imported operations as static methods on the Operation class
 // TS-TODO: move this to BaseOperation
-Operation.pathPayment = ops.pathPayment;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;

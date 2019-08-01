@@ -189,10 +189,6 @@ export namespace Operation {
     path: Asset[];
   }
 
-  function pathPayment(
-    options: OperationOptions.PathPayment
-  ): xdr.Operation<PathPayment>;
-
   export interface Payment extends BaseOperation<OperationType.Payment> {
     amount: string;
     asset: Asset;
