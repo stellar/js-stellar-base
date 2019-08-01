@@ -5,13 +5,45 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
-Do not rely on global singleton Network. The following methods take optional network passphrase, and `console.warn` if it is not passed.
-- static method `Keypair.master`
-- constructor `Transaction`
-- constructor `TransactionBuilder` and method `TransactionBuilder.setNetworkPassphrase`
+## [v1.1.0](https://github.com/stellar/js-stellar-base/compare/v1.0.3...v1.1.0)
 
-Also, whole class `Network` has been deprecated.
+### Deprecated
 
+Deprecate global singleton for `Network`. The following classes and
+methods take an optional network passphrase, and issue a warning if it
+is not passed:
+
+#### `Keypair.master`
+
+```js
+Keypair.master(Networks.TESTNET)
+```
+
+#### constructor for `Transaction`
+
+```js
+const xenv = new xdr.TransactionEnvelope({ tx: xtx });
+new Transaction(xenv, Networks.TESTNET);
+```
+
+#### constructor for  `TransactionBuilder` and method `TransactionBuilder.setNetworkPassphrase`
+
+```js
+const transaction = new StellarSdk.TransactionBuilder(account, {
+  fee: StellarSdk.BASE_FEE,
+  networkPassphrase: Networks.TESTNET
+})
+```
+
+See [#207](https://github.com/stellar/js-stellar-base/issues/207) and [#112](https://github.com/stellar/js-stellar-base/issues/112) for more information.
+
+The `Network` class will be removed on the `2.0` release.
+
+### Add
+- Add docs for BASE_FEE const. ([#211](https://github.com/stellar/js-stellar-base/issues/211))
+
+### Fix
+- Fix typo. ([#213](https://github.com/stellar/js-stellar-base/issues/213))
 
 ## [v1.0.3](https://github.com/stellar/js-stellar-base/compare/v1.0.2...v1.0.3)
 
