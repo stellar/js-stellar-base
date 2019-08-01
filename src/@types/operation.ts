@@ -214,10 +214,6 @@ export namespace Operation {
     : never;
   }
 
-  function setOptions<T extends SignerOptions = never>(
-    options: OperationOptions.SetOptions<T>
-  ): xdr.Operation<SetOptions<T>>;
-
   export interface BumpSequence extends BaseOperation<OperationType.BumpSequence> {
     bumpTo: string;
   }

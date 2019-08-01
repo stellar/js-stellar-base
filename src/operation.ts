@@ -280,7 +280,3 @@ export class Operation extends BaseOperation {
     return n.div(new BigNumber(price.d())).toString();
   }
 }
-
-// Attach all imported operations as static methods on the Operation class
-// TS-TODO: move this to BaseOperation
-Operation.setOptions = ops.setOptions;
