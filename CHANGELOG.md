@@ -5,6 +5,11 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v1.1.1](https://github.com/stellar/js-stellar-base/compare/v1.1.0...v1.1.1)
+
+### Fix
+- Add types for new networkPassphrase argument. Fix [#237](https://github.com/stellar/js-stellar-base/issues/237). ([#238](https://github.com/stellar/js-stellar-base/issues/238))
+
 ## [v1.1.0](https://github.com/stellar/js-stellar-base/compare/v1.0.3...v1.1.0)
 
 ### Deprecated
