@@ -1,6 +1,6 @@
 {
   "name": "stellar-base",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Low level stellar support library",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
