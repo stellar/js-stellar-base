@@ -45,7 +45,7 @@ export class Keypair {
   static fromRawEd25519Seed(secretSeed: Buffer): Keypair;
   static fromBase58Seed(secretSeed: string): Keypair;
   static fromSecret(secretKey: string): Keypair;
-  static master(): Keypair;
+  static master(networkPassphrase?: string): Keypair;
   static fromPublicKey(publicKey: string): Keypair;
   static random(): Keypair;
 
@@ -478,7 +478,7 @@ export class Transaction<
   TMemo extends Memo = Memo,
   TOps extends Operation[] = Operation[]
 > {
-  constructor(envelope: string | xdr.TransactionEnvelope);
+  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase?: string);
   addSignature(publicKey: string, signature: string): void;
   getKeypairSignature(keypair: Keypair): string;
   hash(): Buffer;
@@ -492,6 +492,7 @@ export class Transaction<
   fee: number;
   source: string;
   memo: TMemo;
+  networkPassphrase: string;
   signatures: xdr.DecoratedSignature[];
   timeBounds?: {
     minTime: string;
@@ -511,6 +512,7 @@ export class TransactionBuilder {
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
+  setNetworkPassphrase(networkPassphrase: string): this;
 }
 
 export namespace TransactionBuilder {
@@ -521,6 +523,7 @@ export namespace TransactionBuilder {
       maxTime?: number | string;
     };
     memo?: Memo;
+    networkPassphrase?: string;
   }
 }
 

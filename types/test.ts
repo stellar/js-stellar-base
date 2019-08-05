@@ -1,15 +1,24 @@
 import * as StellarSdk from 'stellar-base';
 
+const masterKey = StellarSdk.Keypair.master(StellarSdk.Networks.TESTNET); // $ExpectType Keypair
 const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
 const destKey = StellarSdk.Keypair.random();
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1');
-const transaction = new StellarSdk.TransactionBuilder(account)
+const transaction = new StellarSdk.TransactionBuilder(account, {
+  fee: 100,
+  networkPassphrase: StellarSdk.Networks.TESTNET
+})
   .addOperation(
     StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() })
   )
   .addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
+
+const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>
+
+transactionFromXDR.networkPassphrase; // $ExpectType string
+transactionFromXDR.networkPassphrase = "SDF";
 
 const sig = StellarSdk.xdr.DecoratedSignature.fromXDR(Buffer.of(1, 2)); // $ExpectType DecoratedSignature
 sig.hint(); // $ExpectType Buffer
