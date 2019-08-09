@@ -23,7 +23,15 @@ import xdr from './generated/stellar-xdr_generated';
  * @param {Buffer} [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
  */
 export class Keypair {
-  constructor(keys) {
+  /**
+   * Only 'ed25519' is implemented so far.
+   */
+  public readonly type: string
+  protected readonly _publicKey: Buffer
+  protected readonly _secretKey?: Buffer
+  protected readonly _secretSeed?: Buffer
+
+  constructor(keys: Keypair.IKeys) {
     if (keys.type !== 'ed25519') {
       throw new Error('Invalid keys type');
     }
@@ -47,12 +55,14 @@ export class Keypair {
       ) {
         throw new Error('secretKey does not match publicKey');
       }
-    } else {
+    } else if(keys.publicKey) {
       this._publicKey = Buffer.from(keys.publicKey);
 
       if (this._publicKey.length !== 32) {
         throw new Error('publicKey length is invalid');
       }
+    } else {
+      throw new Error('either secretKey or publicKey must be provided')
     }
   }
 
@@ -62,7 +72,7 @@ export class Keypair {
    * @param {string} secret secret key (ex. `SDAKFNYEIAORZKKCYRILFQKLLOCNPL5SWJ3YY5NM3ZH6GJSZGXHZEPQS`)
    * @returns {Keypair}
    */
-  static fromSecret(secret) {
+  public static fromSecret(secret: string): Keypair {
     const rawSecret = StrKey.decodeEd25519SecretSeed(secret);
     return this.fromRawEd25519Seed(rawSecret);
   }
@@ -73,7 +83,7 @@ export class Keypair {
    * @deprecated Use {@link Keypair.fromSecret}
    * @returns {Keypair}
    */
-  static fromBase58Seed(seed) {
+  public static fromBase58Seed(seed: string): Keypair {
     const rawSeed = base58.decodeBase58Check('seed', seed);
     return this.fromRawEd25519Seed(rawSeed);
   }
@@ -84,7 +94,7 @@ export class Keypair {
    * @param {Buffer} rawSeed Raw 32-byte ed25519 secret key seed
    * @returns {Keypair}
    */
-  static fromRawEd25519Seed(rawSeed) {
+  public static fromRawEd25519Seed(rawSeed: Buffer): Keypair {
     return new this({ type: 'ed25519', secretKey: rawSeed });
   }
 
@@ -92,13 +102,14 @@ export class Keypair {
    * Returns `Keypair` object representing network master key.
    * @returns {Keypair}
    */
-  static master() {
-    if (Network.current() === null) {
+  public static master(): Keypair {
+    const currentNetwork = Network.current()
+    if (currentNetwork === null) {
       throw new Error(
         'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
       );
     }
-    return this.fromRawEd25519Seed(Network.current().networkId());
+    return this.fromRawEd25519Seed(currentNetwork.networkId());
   }
 
   /**
@@ -106,28 +117,28 @@ export class Keypair {
    * @param {string} publicKey public key (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
    * @returns {Keypair}
    */
-  static fromPublicKey(publicKey) {
-    publicKey = StrKey.decodeEd25519PublicKey(publicKey);
-    if (publicKey.length !== 32) {
+  public static fromPublicKey(publicKey: string): Keypair {
+    const rawPublicKey = StrKey.decodeEd25519PublicKey(publicKey);
+    if (rawPublicKey.length !== 32) {
       throw new Error('Invalid Stellar public key');
     }
-    return new this({ type: 'ed25519', publicKey });
+    return new this({ type: 'ed25519', publicKey: rawPublicKey });
   }
 
   /**
    * Create a random `Keypair` object.
    * @returns {Keypair}
    */
-  static random() {
-    const secret = nacl.randomBytes(32);
+  public static random(): Keypair {
+    const secret = nacl.randomBytes(32) as Buffer;  // TODO: Investigate `Uint8Array` vs `Buffer`.
     return this.fromRawEd25519Seed(secret);
   }
 
-  xdrAccountId() {
+  public xdrAccountId() {
     return new xdr.AccountId.publicKeyTypeEd25519(this._publicKey);
   }
 
-  xdrPublicKey() {
+  public xdrPublicKey() {
     return new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
   }
 
@@ -135,11 +146,11 @@ export class Keypair {
    * Returns raw public key
    * @returns {Buffer}
    */
-  rawPublicKey() {
+  public rawPublicKey(): Buffer {
     return this._publicKey;
   }
 
-  signatureHint() {
+  public signatureHint() {
     const a = this.xdrAccountId().toXDR();
 
     return a.slice(a.length - 4);
@@ -149,7 +160,7 @@ export class Keypair {
    * Returns public key associated with this `Keypair` object.
    * @returns {string}
    */
-  publicKey() {
+  public publicKey(): string {
     return StrKey.encodeEd25519PublicKey(this._publicKey);
   }
 
@@ -157,7 +168,7 @@ export class Keypair {
    * Returns secret key associated with this `Keypair` object
    * @returns {string}
    */
-  secret() {
+  public secret(): string {
     if (!this._secretSeed) {
       throw new Error('no secret key available');
     }
@@ -173,7 +184,7 @@ export class Keypair {
    * Returns raw secret key.
    * @returns {Buffer}
    */
-  rawSecretKey() {
+  public rawSecretKey(): Buffer | undefined {
     return this._secretSeed;
   }
 
@@ -181,7 +192,7 @@ export class Keypair {
    * Returns `true` if this `Keypair` object contains secret key and can sign.
    * @returns {boolean}
    */
-  canSign() {
+  public canSign(): boolean {
     return !!this._secretKey;
   }
 
@@ -190,12 +201,14 @@ export class Keypair {
    * @param {Buffer} data Data to sign
    * @returns {Buffer}
    */
-  sign(data) {
+  public sign(data: Buffer): Buffer {
     if (!this.canSign()) {
       throw new Error('cannot sign: no secret key available');
     }
 
-    return sign(data, this._secretKey);
+    // TODO: Condition above doesn't tell that `this._secretKey` is defined in a type-safe manner.
+    // Need to investigate alternatives, for now just manually override.
+    return sign(data, this._secretKey!);
   }
 
   /**
@@ -204,14 +217,24 @@ export class Keypair {
    * @param {Buffer} signature Signature
    * @returns {boolean}
    */
-  verify(data, signature) {
+  public verify(data: Buffer, signature: Buffer): boolean {
     return verify(data, signature, this._publicKey);
   }
 
-  signDecorated(data) {
+  public signDecorated(data: Buffer) {
     const signature = this.sign(data);
     const hint = this.signatureHint();
 
     return new xdr.DecoratedSignature({ hint, signature });
   }
+}
+
+export namespace Keypair {
+
+  export interface IKeys {
+    type: string
+    publicKey?: Buffer
+    secretKey?: Buffer
+  }
+
 }
