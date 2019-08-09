@@ -19,7 +19,19 @@ import { Keypair } from './keypair';
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
  */
 export class Transaction {
-  constructor(envelope) {
+  public readonly tx: any
+  public readonly source: string
+  public readonly fee: any
+  protected readonly _memo: any
+  public readonly sequence: string
+  public readonly timeBounds?: {
+    minTime: string,
+    maxTime: string,
+  }
+  public readonly operations: any[]
+  public readonly signatures: any[]
+
+  public constructor(envelope: any) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
@@ -51,11 +63,11 @@ export class Transaction {
     this.signatures = map(signatures, (s) => s);
   }
 
-  get memo() {
+  public get memo() {
     return Memo.fromXDRObject(this._memo);
   }
 
-  set memo(value) {
+  public set memo(value: unknown) {
     throw new Error('Transaction is immutable');
   }
 
@@ -64,7 +76,7 @@ export class Transaction {
    * @param {...Keypair} keypairs Keypairs of signers
    * @returns {void}
    */
-  sign(...keypairs) {
+  public sign(...keypairs: Keypair[]): void {
     const txHash = this.hash();
     each(keypairs, (kp) => {
       const sig = kp.signDecorated(txHash);
@@ -94,7 +106,7 @@ export class Transaction {
    * @param {Keypair} keypair Keypair of signer
    * @returns {string} Signature string
    */
-  getKeypairSignature(keypair) {
+  public getKeypairSignature(keypair: Keypair): string {
     return keypair.sign(this.hash()).toString('base64');
   }
 
@@ -122,7 +134,7 @@ export class Transaction {
    * @param {string} signature The base64 value of the signature XDR
    * @returns {TransactionBuilder}
    */
-  addSignature(publicKey = '', signature = '') {
+  public addSignature(publicKey: string = '', signature: string = ''): TransactionBuilder {
     if (!signature || typeof signature !== 'string') {
       throw new Error('Invalid signature');
     }
@@ -159,7 +171,7 @@ export class Transaction {
    * @param {Buffer|String} preimage Preimage of hash used as signer
    * @returns {void}
    */
-  signHashX(preimage) {
+  public signHashX(preimage: Buffer | string): void {
     if (isString(preimage)) {
       preimage = Buffer.from(preimage, 'hex');
     }
@@ -178,7 +190,7 @@ export class Transaction {
    * Returns a hash for this transaction, suitable for signing.
    * @returns {Buffer}
    */
-  hash() {
+  public hash(): Buffer {
     return hash(this.signatureBase());
   }
 
@@ -191,15 +203,16 @@ export class Transaction {
    * of this transaction.
    * @returns {Buffer}
    */
-  signatureBase() {
-    if (Network.current() === null) {
+  public signatureBase(): Buffer {
+    const currentNetwork = Network.current()
+    if (currentNetwork === null) {
       throw new Error(
         'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
       );
     }
 
     return Buffer.concat([
-      Network.current().networkId(),
+      currentNetwork.networkId(),
       xdr.EnvelopeType.envelopeTypeTx().toXDR(),
       this.tx.toXDR()
     ]);
@@ -209,7 +222,7 @@ export class Transaction {
    * To envelope returns a xdr.TransactionEnvelope which can be submitted to the network.
    * @returns {xdr.TransactionEnvelope}
    */
-  toEnvelope() {
+  public toEnvelope(): any {
     const tx = this.tx;
     const signatures = this.signatures;
     const envelope = new xdr.TransactionEnvelope({ tx, signatures });
@@ -221,7 +234,7 @@ export class Transaction {
    * Get the transaction envelope as a base64-encoded string
    * @returns {string} XDR string
    */
-  toXDR() {
+  public toXDR(): string {
     return this.toEnvelope()
       .toXDR()
       .toString('base64');
