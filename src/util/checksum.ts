@@ -1,4 +1,4 @@
-export function verifyChecksum(expected: string | Buffer, actual: string): boolean {
+export function verifyChecksum(expected: string | Buffer, actual: string | string[] | number[] | Buffer): boolean {
   if (expected.length !== actual.length) {
     return false;
   }
