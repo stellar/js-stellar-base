@@ -10,10 +10,10 @@ const MAX_INT = ((1 << 31) >>> 0) - 1;
  * @throws Error Throws `Error` when the best rational approximation cannot be found.
  * @returns {array} first element is n (numerator), second element is d (denominator)
  */
-export function best_r(rawNumber) {
+export function best_r(rawNumber: string|number|BigNumber): [number, number] {
   let number = new BigNumber(rawNumber);
-  let a;
-  let f;
+  let a: BigNumber;
+  let f: BigNumber;
   const fractions = [
     [new BigNumber(0), new BigNumber(1)],
     [new BigNumber(1), new BigNumber(0)]
