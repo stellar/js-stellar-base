@@ -9,7 +9,7 @@ const versionBytes = {
   seed: 0x21 // decimal 33
 };
 
-export function decodeBase58Check(versionByteName, encoded) {
+export function decodeBase58Check(versionByteName: keyof typeof versionBytes, encoded: string) {
   const decoded = bs58.decode(encoded);
   const versionByte = decoded[0];
   const payload = decoded.slice(0, decoded.length - 4);
@@ -30,7 +30,8 @@ export function decodeBase58Check(versionByteName, encoded) {
     );
   }
 
-  const expectedChecksum = calculateChecksum(payload);
+  // TODO: Investigate. This looks like a upstream typing bug, because empirically it works anyways.
+  const expectedChecksum = calculateChecksum(payload as unknown as Uint32Array);
 
   if (!verifyChecksum(expectedChecksum, checksum)) {
     throw new Error(`invalid checksum`);
@@ -45,7 +46,7 @@ export function decodeBase58Check(versionByteName, encoded) {
   return Buffer.from(data);
 }
 
-function calculateChecksum(payload) {
+function calculateChecksum(payload: Parameters<typeof hash>[0]) {
   const inner = hash(payload);
   const outer = hash(inner);
   return outer.slice(0, 4);
