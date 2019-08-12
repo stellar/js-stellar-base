@@ -95,8 +95,8 @@ export abstract class BaseOperation {
       price = new BigNumber(price);
       const approx = best_r(price);
       xdrObject = new xdr.Price({
-        n: parseInt(approx[0], 10),
-        d: parseInt(approx[1], 10)
+        n: parseInt(approx[0].toString(), 10),
+        d: parseInt(approx[1].toString(), 10)
       });
     }
 
@@ -117,13 +117,12 @@ export abstract class BaseOperation {
    * @returns {xdr.AccountMergeOp} Account Merge operation
    */
   static accountMerge(opts: OperationOptions.AccountMerge): xdrDef.Operation<Operation.AccountMerge> {
-    const opAttributes = {};
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
-    opAttributes.body = xdr.OperationBody.accountMerge(
-      Keypair.fromPublicKey(opts.destination).xdrAccountId()
-    );
+    const opAttributes = {
+        body: xdr.OperationBody.accountMerge(Keypair.fromPublicKey(opts.destination).xdrAccountId())
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -145,23 +144,27 @@ export abstract class BaseOperation {
     if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
       throw new Error('trustor is invalid');
     }
-    // TS-TODO: Maybe use conditional types for attributes
-    const attributes = {};
-    attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
+
+    let asset: any
     if (opts.assetCode.length <= 4) {
       const code = padEnd(opts.assetCode, 4, '\0');
-      attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
+      asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
     } else if (opts.assetCode.length <= 12) {
       const code = padEnd(opts.assetCode, 12, '\0');
-      attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
+      asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
     } else {
       throw new Error('Asset code must be 12 characters at max.');
     }
-    attributes.authorize = opts.authorize;
-    const allowTrustOp = new xdr.AllowTrustOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.allowTrust(allowTrustOp);
+    const allowTrustOp = new xdr.AllowTrustOp({
+      asset,
+      authorize: opts.authorize,
+      trustor: Keypair.fromPublicKey(opts.trustor).xdrAccountId(),
+    });
+
+    const opAttributes = {
+      body: xdr.OperationBody.allowTrust(allowTrustOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -177,8 +180,6 @@ export abstract class BaseOperation {
    * @returns {xdr.BumpSequenceOp} Operation
    */
   static bumpSequence(opts: OperationOptions.BumpSequence): xdrDef.Operation<Operation.BumpSequence> {
-    const attributes = {};
-
     if (!isString(opts.bumpTo)) {
       throw new Error('bumpTo must be a string');
     }
@@ -190,12 +191,13 @@ export abstract class BaseOperation {
       throw new Error('bumpTo must be a stringified number');
     }
 
-    attributes.bumpTo = Hyper.fromString(opts.bumpTo);
+    const bumpSequenceOp = new xdr.BumpSequenceOp({
+      bumpTo: Hyper.fromString(opts.bumpTo),
+    });
 
-    const bumpSequenceOp = new xdr.BumpSequenceOp(attributes);
-
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.bumpSequence(bumpSequenceOp);
+    const opAttributes = {
+      body: xdr.OperationBody.bumpSequence(bumpSequenceOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -215,25 +217,25 @@ export abstract class BaseOperation {
    * @returns {xdr.ChangeTrustOp} Change Trust operation
    */
   static changeTrust(opts: OperationOptions.ChangeTrust): xdrDef.Operation<Operation.ChangeTrust> {
-    const attributes = {};
-    attributes.line = opts.asset.toXDRObject();
     if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
       throw new TypeError(this.constructAmountRequirementsError('limit'));
     }
 
+    let limit: any
     if (opts.limit) {
-      attributes.limit = this._toXDRAmount(opts.limit);
+      limit = this._toXDRAmount(opts.limit);
     } else {
-      attributes.limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
+      limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
     }
 
-    if (opts.source) {
-      attributes.source = opts.source.masterKeypair;
-    }
-    const changeTrustOP = new xdr.ChangeTrustOp(attributes);
+    const changeTrustOP = new xdr.ChangeTrustOp({
+      limit,
+      line: opts.asset.toXDRObject(),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
+    const opAttributes = {
+      body: xdr.OperationBody.changeTrust(changeTrustOP),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -259,15 +261,15 @@ export abstract class BaseOperation {
         this.constructAmountRequirementsError('startingBalance')
       );
     }
-    const attributes = {};
-    attributes.destination = Keypair.fromPublicKey(
-      opts.destination
-    ).xdrAccountId();
-    attributes.startingBalance = this._toXDRAmount(opts.startingBalance);
-    const createAccountOp = new xdr.CreateAccountOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.createAccount(createAccountOp);
+    const createAccountOp = new xdr.CreateAccountOp({
+      destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+      startingBalance: this._toXDRAmount(opts.startingBalance),
+    });
+
+    const opAttributes = {
+      body: xdr.OperationBody.createAccount(createAccountOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -292,23 +294,23 @@ export abstract class BaseOperation {
    * @returns {xdr.CreatePassiveSellOfferOp} Create Passive Sell Offer operation
    */
   static createPassiveSellOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
-    const attributes = {};
-    attributes.selling = opts.selling.toXDRObject();
-    attributes.buying = opts.buying.toXDRObject();
     if (!this.isValidAmount(opts.amount)) {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
-    attributes.amount = this._toXDRAmount(opts.amount);
     if (isUndefined(opts.price)) {
       throw new TypeError('price argument is required');
     }
-    attributes.price = this._toXDRPrice(opts.price);
-    const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.createPassiveSellOffer(
-      createPassiveSellOfferOp
-    );
+    const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp({
+      amount: this._toXDRAmount(opts.amount),
+      buying: opts.buying.toXDRObject(),
+      price: this._toXDRPrice(opts.price),
+      selling: opts.selling.toXDRObject(),
+    });
+
+    const opAttributes = {
+      body: xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -333,8 +335,9 @@ export abstract class BaseOperation {
    * @returns {xdr.InflationOp} Inflation operation
    */
   static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.inflation();
+    const opAttributes = {
+      body: xdr.OperationBody.inflation(),
+    };
     this.setSourceAccount(opAttributes, opts);
     return new xdr.Operation(opAttributes);
   }
@@ -357,29 +360,29 @@ export abstract class BaseOperation {
    * @returns {xdr.ManageBuyOfferOp} Manage Buy Offer operation
    */
   static manageBuyOffer(opts: OperationOptions.ManageBuyOffer): xdrDef.Operation<Operation.ManageBuyOffer> {
-    const attributes = {};
-    attributes.selling = opts.selling.toXDRObject();
-    attributes.buying = opts.buying.toXDRObject();
     if (!this.isValidAmount(opts.buyAmount, true)) {
       throw new TypeError(this.constructAmountRequirementsError('buyAmount'));
     }
-    attributes.buyAmount = this._toXDRAmount(opts.buyAmount);
     if (isUndefined(opts.price)) {
       throw new TypeError('price argument is required');
     }
-    attributes.price = this._toXDRPrice(opts.price);
-
     if (!isUndefined(opts.offerId)) {
       opts.offerId = opts.offerId.toString();
     } else {
       opts.offerId = '0';
     }
 
-    attributes.offerId = Hyper.fromString(opts.offerId);
-    const manageBuyOfferOp = new xdr.ManageBuyOfferOp(attributes);
+    const manageBuyOfferOp = new xdr.ManageBuyOfferOp({
+      selling: opts.selling.toXDRObject(),
+      buying: opts.buying.toXDRObject(),
+      buyAmount: this._toXDRAmount(opts.buyAmount),
+      price: this._toXDRPrice(opts.price),
+      offerId: Hyper.fromString(opts.offerId),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.manageBuyOffer(manageBuyOfferOp);
+    const opAttributes = {
+      body: xdr.OperationBody.manageBuyOffer(manageBuyOfferOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -396,12 +399,9 @@ export abstract class BaseOperation {
    * @returns {xdr.ManageDataOp} Manage Data operation
    */
   static manageData(opts: OperationOptions.ManageData): xdrDef.Operation<Operation.ManageData> {
-    const attributes = {};
-
     if (!(isString(opts.name) && opts.name.length <= 64)) {
       throw new Error('name must be a string, up to 64 characters');
     }
-    attributes.dataName = opts.name;
 
     if (
       !isString(opts.value) &&
@@ -411,20 +411,25 @@ export abstract class BaseOperation {
       throw new Error('value must be a string, Buffer or null');
     }
 
+    let dataValue: Buffer
     if (isString(opts.value)) {
-      attributes.dataValue = Buffer.from(opts.value);
+      dataValue = Buffer.from(opts.value);
     } else {
-      attributes.dataValue = opts.value;
+      dataValue = opts.value;
     }
 
-    if (attributes.dataValue !== null && attributes.dataValue.length > 64) {
+    if (dataValue !== null && dataValue.length > 64) {
       throw new Error('value cannot be longer that 64 bytes');
     }
 
-    const manageDataOp = new xdr.ManageDataOp(attributes);
+    const manageDataOp = new xdr.ManageDataOp({
+      dataName: opts.name,
+      dataValue,
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.manageDatum(manageDataOp);
+    const opAttributes = {
+      body: xdr.OperationBody.manageDatum(manageDataOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -448,17 +453,12 @@ export abstract class BaseOperation {
    * @returns {xdr.ManageSellOfferOp} Manage Sell Offer operation
    */
   static manageSellOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
-    const attributes = {};
-    attributes.selling = opts.selling.toXDRObject();
-    attributes.buying = opts.buying.toXDRObject();
     if (!this.isValidAmount(opts.amount, true)) {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
-    attributes.amount = this._toXDRAmount(opts.amount);
     if (isUndefined(opts.price)) {
       throw new TypeError('price argument is required');
     }
-    attributes.price = this._toXDRPrice(opts.price);
 
     if (!isUndefined(opts.offerId)) {
       opts.offerId = opts.offerId.toString();
@@ -466,11 +466,17 @@ export abstract class BaseOperation {
       opts.offerId = '0';
     }
 
-    attributes.offerId = Hyper.fromString(opts.offerId);
-    const manageSellOfferOp = new xdr.ManageSellOfferOp(attributes);
+    const manageSellOfferOp = new xdr.ManageSellOfferOp({
+      selling: opts.selling.toXDRObject(),
+      buying: opts.buying.toXDRObject(),
+      amount: this._toXDRAmount(opts.amount),
+      price: this._toXDRPrice(opts.price),
+      offerId: Hyper.fromString(opts.offerId),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.manageSellOffer(manageSellOfferOp);
+    const opAttributes = {
+      body: xdr.OperationBody.manageSellOffer(manageSellOfferOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -503,37 +509,36 @@ export abstract class BaseOperation {
    * @returns {xdr.PathPaymentOp} Path Payment operation
    */
   static pathPayment(opts: OperationOptions.PathPayment): xdrDef.Operation<Operation.PathPayment> {
-    switch (true) {
-      case !opts.sendAsset:
+    if(!opts.sendAsset) {
         throw new Error('Must specify a send asset');
-      case !this.isValidAmount(opts.sendMax):
+    }
+    if(!this.isValidAmount(opts.sendMax)) {
         throw new TypeError(this.constructAmountRequirementsError('sendMax'));
-      case !StrKey.isValidEd25519PublicKey(opts.destination):
+    }
+    if(!StrKey.isValidEd25519PublicKey(opts.destination)) {
         throw new Error('destination is invalid');
-      case !opts.destAsset:
+    }
+    if(!opts.destAsset) {
         throw new Error('Must provide a destAsset for a payment operation');
-      case !this.isValidAmount(opts.destAmount):
+    }
+    if(!this.isValidAmount(opts.destAmount)) {
         throw new TypeError(this.constructAmountRequirementsError('destAmount'));
-      default:
-        break;
     }
 
-    const attributes = {};
-    attributes.sendAsset = opts.sendAsset.toXDRObject();
-    attributes.sendMax = this._toXDRAmount(opts.sendMax);
-    attributes.destination = Keypair.fromPublicKey(
-      opts.destination
-    ).xdrAccountId();
-    attributes.destAsset = opts.destAsset.toXDRObject();
-    attributes.destAmount = this._toXDRAmount(opts.destAmount);
-
     const path = opts.path ? opts.path : [];
-    attributes.path = path.map((x) => x.toXDRObject());
 
-    const payment = new xdr.PathPaymentOp(attributes);
+    const payment = new xdr.PathPaymentOp({
+      sendAsset: opts.sendAsset.toXDRObject(),
+      sendMax: this._toXDRAmount(opts.sendMax),
+      destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+      destAsset: opts.destAsset.toXDRObject(),
+      destAmount: this._toXDRAmount(opts.destAmount),
+      path: path.map((x) => x.toXDRObject()),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.pathPayment(payment);
+    const opAttributes = {
+      body: xdr.OperationBody.pathPayment(payment),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -561,16 +566,15 @@ export abstract class BaseOperation {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
 
-    const attributes = {};
-    attributes.destination = Keypair.fromPublicKey(
-      opts.destination
-    ).xdrAccountId();
-    attributes.asset = opts.asset.toXDRObject();
-    attributes.amount = this._toXDRAmount(opts.amount);
-    const paymentOp = new xdr.PaymentOp(attributes);
+    const paymentOp = new xdr.PaymentOp({
+      destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+      asset: opts.asset.toXDRObject(),
+      amount: this._toXDRAmount(opts.amount),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.payment(paymentOp);
+    const opAttributes = {
+      body: xdr.OperationBody.payment(paymentOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
@@ -607,7 +611,8 @@ export abstract class BaseOperation {
    * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
    */
   static setOptions<T extends SignerOptions = never>(opts: OperationOptions.SetOptions<T>): xdrDef.Operation<Operation.SetOptions<T>> {
-    const attributes = {};
+    // TS-TODO: `Partial<SetOptionsOp.IAttributes>`
+    const attributes: Record<string, unknown> = {};
 
     if (opts.inflationDest) {
       if (!StrKey.isValidEd25519PublicKey(opts.inflationDest)) {
@@ -721,8 +726,9 @@ export abstract class BaseOperation {
 
     const setOptionsOp = new xdr.SetOptionsOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.setOption(setOptionsOp);
+    const opAttributes = {
+      body: xdr.OperationBody.setOption(setOptionsOp),
+    };
     this.setSourceAccount(opAttributes, opts);
 
     return new xdr.Operation(opAttributes);
