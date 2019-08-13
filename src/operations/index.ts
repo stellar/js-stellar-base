@@ -4,9 +4,11 @@ import { StrKey } from '../strkey';
 import { Operation, OperationOptions } from '../@types/operation';
 import { xdr as xdrDef } from '../@types/xdr';
 import { SignerOptions } from '../@types/signer'
-import padEnd from 'lodash/padEnd';
+import isFinite from 'lodash/isFinite';
+import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import isUndefined from 'lodash/isUndefined';
+import padEnd from 'lodash/padEnd';
 import BigNumber from 'bignumber.js';
 import { Hyper } from 'js-xdr';
 import { best_r } from '../util/continued_fraction';
@@ -36,6 +38,38 @@ export abstract class BaseOperation {
       ).xdrAccountId();
     }
     return new xdr.Operation(opAttributes);
+  }
+
+  /**
+   * Returns value converted to uint32 value or undefined.
+   * If `value` is not `Number`, `String` or `Undefined` then throws an error.
+   * Used in {@link Operation.setOptions}.
+   * @private
+   * @param {string} name Name of the property (used in error message only)
+   * @param {*} value Value to check
+   * @param {function(value, name)} isValidFunction Function to check other constraints (the argument will be a `Number`)
+   * @returns {undefined|Number}
+   */
+  private static checkUnsignedIntValue(name: string, value: string | number | undefined, isValidFunction?: (value: number, name: string) => boolean): undefined | number {
+    if (isUndefined(value)) {
+      return undefined;
+    }
+
+    if (isString(value)) {
+      value = parseFloat(value);
+    }
+
+    switch (true) {
+      case !isNumber(value) || !isFinite(value) || value % 1 !== 0:
+        throw new Error(`${name} value is invalid`);
+      case value < 0:
+        throw new Error(`${name} value must be unsigned`);
+      case !isValidFunction ||
+        (isValidFunction && isValidFunction(value, name)):
+        return value;
+      default:
+        throw new Error(`${name} value is invalid`);
+    }
   }
 
   public static constructAmountRequirementsError(arg: string) {
@@ -569,27 +603,27 @@ export abstract class BaseOperation {
       ).xdrAccountId();
     }
 
-    attributes.clearFlags = this._checkUnsignedIntValue(
+    attributes.clearFlags = this.checkUnsignedIntValue(
       'clearFlags',
       opts.clearFlags
     );
-    attributes.setFlags = this._checkUnsignedIntValue('setFlags', opts.setFlags);
-    attributes.masterWeight = this._checkUnsignedIntValue(
+    attributes.setFlags = this.checkUnsignedIntValue('setFlags', opts.setFlags);
+    attributes.masterWeight = this.checkUnsignedIntValue(
       'masterWeight',
       opts.masterWeight,
       weightCheckFunction
     );
-    attributes.lowThreshold = this._checkUnsignedIntValue(
+    attributes.lowThreshold = this.checkUnsignedIntValue(
       'lowThreshold',
       opts.lowThreshold,
       weightCheckFunction
     );
-    attributes.medThreshold = this._checkUnsignedIntValue(
+    attributes.medThreshold = this.checkUnsignedIntValue(
       'medThreshold',
       opts.medThreshold,
       weightCheckFunction
     );
-    attributes.highThreshold = this._checkUnsignedIntValue(
+    attributes.highThreshold = this.checkUnsignedIntValue(
       'highThreshold',
       opts.highThreshold,
       weightCheckFunction
@@ -601,7 +635,7 @@ export abstract class BaseOperation {
     attributes.homeDomain = opts.homeDomain;
 
     if (opts.signer) {
-      const weight = this._checkUnsignedIntValue(
+      const weight = this.checkUnsignedIntValue(
         'signer.weight',
         opts.signer.weight,
         weightCheckFunction

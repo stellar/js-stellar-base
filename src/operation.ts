@@ -2,10 +2,6 @@
 
 import BigNumber from 'bignumber.js';
 import trimEnd from 'lodash/trimEnd';
-import isUndefined from 'lodash/isUndefined';
-import isString from 'lodash/isString';
-import isNumber from 'lodash/isNumber';
-import isFinite from 'lodash/isFinite';
 import { Asset } from './asset';
 import { StrKey } from './strkey';
 import { BaseOperation } from './operations/index';
@@ -225,38 +221,6 @@ export class Operation extends BaseOperation {
       }
     }
     return result;
-  }
-
-  /**
-   * Returns value converted to uint32 value or undefined.
-   * If `value` is not `Number`, `String` or `Undefined` then throws an error.
-   * Used in {@link Operation.setOptions}.
-   * @private
-   * @param {string} name Name of the property (used in error message only)
-   * @param {*} value Value to check
-   * @param {function(value, name)} isValidFunction Function to check other constraints (the argument will be a `Number`)
-   * @returns {undefined|Number}
-   */
-  static _checkUnsignedIntValue(name, value, isValidFunction = null) {
-    if (isUndefined(value)) {
-      return undefined;
-    }
-
-    if (isString(value)) {
-      value = parseFloat(value);
-    }
-
-    switch (true) {
-      case !isNumber(value) || !isFinite(value) || value % 1 !== 0:
-        throw new Error(`${name} value is invalid`);
-      case value < 0:
-        throw new Error(`${name} value must be unsigned`);
-      case !isValidFunction ||
-        (isValidFunction && isValidFunction(value, name)):
-        return value;
-      default:
-        throw new Error(`${name} value is invalid`);
-    }
   }
 
   /**
