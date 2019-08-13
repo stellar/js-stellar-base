@@ -4,9 +4,11 @@ import { StrKey } from '../strkey';
 import { Operation, OperationOptions } from '../@types/operation';
 import { xdr as xdrDef } from '../@types/xdr';
 import { SignerOptions } from '../@types/signer'
-import padEnd from 'lodash/padEnd';
+import isFinite from 'lodash/isFinite';
+import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import isUndefined from 'lodash/isUndefined';
+import padEnd from 'lodash/padEnd';
 import BigNumber from 'bignumber.js';
 import { Hyper } from 'js-xdr';
 import { best_r } from '../util/continued_fraction';
@@ -22,8 +24,11 @@ function weightCheckFunction(value: number, name: string): boolean {
 }
 
 export abstract class BaseOperation {
-  // TS-TODO: remove any
-  static setSourceAccount(opAttributes: any, opts: any) {
+  private static toXdrOperation(body: any, opts: any) {
+    // TS-TODO: Correct interface.
+    const opAttributes: {body: any, sourceAccount?: any} = {
+        body,
+    };
     if (opts.source) {
       if (!StrKey.isValidEd25519PublicKey(opts.source)) {
         throw new Error('Source address is invalid');
@@ -32,13 +37,46 @@ export abstract class BaseOperation {
         opts.source
       ).xdrAccountId();
     }
+    return new xdr.Operation(opAttributes);
   }
 
-  static constructAmountRequirementsError(arg: string) {
+  /**
+   * Returns value converted to uint32 value or undefined.
+   * If `value` is not `Number`, `String` or `Undefined` then throws an error.
+   * Used in {@link Operation.setOptions}.
+   * @private
+   * @param {string} name Name of the property (used in error message only)
+   * @param {*} value Value to check
+   * @param {function(value, name)} isValidFunction Function to check other constraints (the argument will be a `Number`)
+   * @returns {undefined|Number}
+   */
+  private static checkUnsignedIntValue(name: string, value: string | number | undefined, isValidFunction?: (value: number, name: string) => boolean): undefined | number {
+    if (isUndefined(value)) {
+      return undefined;
+    }
+
+    if (isString(value)) {
+      value = parseFloat(value);
+    }
+
+    switch (true) {
+      case !isNumber(value) || !isFinite(value) || value % 1 !== 0:
+        throw new Error(`${name} value is invalid`);
+      case value < 0:
+        throw new Error(`${name} value must be unsigned`);
+      case !isValidFunction ||
+        (isValidFunction && isValidFunction(value, name)):
+        return value;
+      default:
+        throw new Error(`${name} value is invalid`);
+    }
+  }
+
+  public static constructAmountRequirementsError(arg: string) {
     return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
   }
 
-  static isValidAmount(value: string, allowZero = false) {
+  public static isValidAmount(value: string, allowZero = false) {
     if (!isString(value)) {
       return false;
     }
@@ -74,7 +112,7 @@ export abstract class BaseOperation {
    * @param {string|BigNumber} value Value
    * @returns {Hyper} XDR amount
    */
-  static _toXDRAmount(value: string | BigNumber): Hyper {
+  public static _toXDRAmount(value: string | BigNumber): Hyper {
     const amount = new BigNumber(value).mul(ONE);
     return Hyper.fromString(amount.toString());
   }
@@ -87,7 +125,7 @@ export abstract class BaseOperation {
    * @param {function} price.d denominator function that returns a value
    * @returns {object} XDR price object
    */
-  static _toXDRPrice(price: any) {
+  public static _toXDRPrice(price: any) {
     let xdrObject;
     if (price.n && price.d) {
       xdrObject = new xdr.Price(price);
@@ -95,8 +133,8 @@ export abstract class BaseOperation {
       price = new BigNumber(price);
       const approx = best_r(price);
       xdrObject = new xdr.Price({
-        n: parseInt(approx[0], 10),
-        d: parseInt(approx[1], 10)
+        n: parseInt(approx[0].toString(), 10),
+        d: parseInt(approx[1].toString(), 10)
       });
     }
 
@@ -116,17 +154,12 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account (defaults to transaction source).
    * @returns {xdr.AccountMergeOp} Account Merge operation
    */
-  static accountMerge(opts: OperationOptions.AccountMerge): xdrDef.Operation<Operation.AccountMerge> {
-    const opAttributes = {};
+  public static accountMerge(opts: OperationOptions.AccountMerge): xdrDef.Operation<Operation.AccountMerge> {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
-    opAttributes.body = xdr.OperationBody.accountMerge(
-      Keypair.fromPublicKey(opts.destination).xdrAccountId()
-    );
-    this.setSourceAccount(opAttributes, opts);
 
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.accountMerge(Keypair.fromPublicKey(opts.destination).xdrAccountId()), opts)
   }
 
   /**
@@ -141,30 +174,29 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account (defaults to transaction source).
    * @returns {xdr.AllowTrustOp} Allow Trust operation
    */
-  static allowTrust(opts: OperationOptions.AllowTrust): xdrDef.Operation<Operation.AllowTrust> {
+  public static allowTrust(opts: OperationOptions.AllowTrust): xdrDef.Operation<Operation.AllowTrust> {
     if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
       throw new Error('trustor is invalid');
     }
-    // TS-TODO: Maybe use conditional types for attributes
-    const attributes = {};
-    attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
+
+    let asset: any
     if (opts.assetCode.length <= 4) {
       const code = padEnd(opts.assetCode, 4, '\0');
-      attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
+      asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
     } else if (opts.assetCode.length <= 12) {
       const code = padEnd(opts.assetCode, 12, '\0');
-      attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
+      asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
     } else {
       throw new Error('Asset code must be 12 characters at max.');
     }
-    attributes.authorize = opts.authorize;
-    const allowTrustOp = new xdr.AllowTrustOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.allowTrust(allowTrustOp);
-    this.setSourceAccount(opAttributes, opts);
+    const allowTrustOp = new xdr.AllowTrustOp({
+      asset,
+      authorize: opts.authorize,
+      trustor: Keypair.fromPublicKey(opts.trustor).xdrAccountId(),
+    });
 
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.allowTrust(allowTrustOp), opts)
   }
 
   /**
@@ -176,9 +208,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The optional source account.
    * @returns {xdr.BumpSequenceOp} Operation
    */
-  static bumpSequence(opts: OperationOptions.BumpSequence): xdrDef.Operation<Operation.BumpSequence> {
-    const attributes = {};
-
+  public static bumpSequence(opts: OperationOptions.BumpSequence): xdrDef.Operation<Operation.BumpSequence> {
     if (!isString(opts.bumpTo)) {
       throw new Error('bumpTo must be a string');
     }
@@ -190,15 +220,11 @@ export abstract class BaseOperation {
       throw new Error('bumpTo must be a stringified number');
     }
 
-    attributes.bumpTo = Hyper.fromString(opts.bumpTo);
+    const bumpSequenceOp = new xdr.BumpSequenceOp({
+      bumpTo: Hyper.fromString(opts.bumpTo),
+    });
 
-    const bumpSequenceOp = new xdr.BumpSequenceOp(attributes);
-
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.bumpSequence(bumpSequenceOp);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.bumpSequence(bumpSequenceOp), opts)
   }
 
   /**
@@ -214,29 +240,24 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account (defaults to transaction source).
    * @returns {xdr.ChangeTrustOp} Change Trust operation
    */
-  static changeTrust(opts: OperationOptions.ChangeTrust): xdrDef.Operation<Operation.ChangeTrust> {
-    const attributes = {};
-    attributes.line = opts.asset.toXDRObject();
+  public static changeTrust(opts: OperationOptions.ChangeTrust): xdrDef.Operation<Operation.ChangeTrust> {
     if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
       throw new TypeError(this.constructAmountRequirementsError('limit'));
     }
 
+    let limit: any
     if (opts.limit) {
-      attributes.limit = this._toXDRAmount(opts.limit);
+      limit = this._toXDRAmount(opts.limit);
     } else {
-      attributes.limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
+      limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
     }
 
-    if (opts.source) {
-      attributes.source = opts.source.masterKeypair;
-    }
-    const changeTrustOP = new xdr.ChangeTrustOp(attributes);
+    const changeTrustOP = new xdr.ChangeTrustOp({
+      limit,
+      line: opts.asset.toXDRObject(),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.changeTrust(changeTrustOP), opts)
   }
 
   /**
@@ -250,7 +271,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
    * @returns {xdr.CreateAccountOp} Create account operation
    */
-  static createAccount(opts: OperationOptions.CreateAccount): xdrDef.Operation<Operation.CreateAccount> {
+  public static createAccount(opts: OperationOptions.CreateAccount): xdrDef.Operation<Operation.CreateAccount> {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
@@ -259,18 +280,13 @@ export abstract class BaseOperation {
         this.constructAmountRequirementsError('startingBalance')
       );
     }
-    const attributes = {};
-    attributes.destination = Keypair.fromPublicKey(
-      opts.destination
-    ).xdrAccountId();
-    attributes.startingBalance = this._toXDRAmount(opts.startingBalance);
-    const createAccountOp = new xdr.CreateAccountOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.createAccount(createAccountOp);
-    this.setSourceAccount(opAttributes, opts);
+    const createAccountOp = new xdr.CreateAccountOp({
+      destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+      startingBalance: this._toXDRAmount(opts.startingBalance),
+    });
 
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.createAccount(createAccountOp), opts)
   }
 
   /**
@@ -291,31 +307,26 @@ export abstract class BaseOperation {
    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
    * @returns {xdr.CreatePassiveSellOfferOp} Create Passive Sell Offer operation
    */
-  static createPassiveSellOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
-    const attributes = {};
-    attributes.selling = opts.selling.toXDRObject();
-    attributes.buying = opts.buying.toXDRObject();
+  public static createPassiveSellOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
     if (!this.isValidAmount(opts.amount)) {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
-    attributes.amount = this._toXDRAmount(opts.amount);
     if (isUndefined(opts.price)) {
       throw new TypeError('price argument is required');
     }
-    attributes.price = this._toXDRPrice(opts.price);
-    const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.createPassiveSellOffer(
-      createPassiveSellOfferOp
-    );
-    this.setSourceAccount(opAttributes, opts);
+    const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp({
+      amount: this._toXDRAmount(opts.amount),
+      buying: opts.buying.toXDRObject(),
+      price: this._toXDRPrice(opts.price),
+      selling: opts.selling.toXDRObject(),
+    });
 
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp), opts)
   }
 
   // deprecated, to be removed after 1.0.1
-  static createPassiveOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
+  public static createPassiveOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
     // eslint-disable-next-line no-console
     console.log(
       '[Operation] Operation.createPassiveOffer has been renamed to Operation.createPassiveSellOffer! The old name is deprecated and will be removed in a later version!'
@@ -332,11 +343,8 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The optional source account.
    * @returns {xdr.InflationOp} Inflation operation
    */
-  static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.inflation();
-    this.setSourceAccount(opAttributes, opts);
-    return new xdr.Operation(opAttributes);
+  public static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
+    return this.toXdrOperation(xdr.OperationBody.inflation(), opts)
   }
 
   /**
@@ -356,33 +364,28 @@ export abstract class BaseOperation {
    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
    * @returns {xdr.ManageBuyOfferOp} Manage Buy Offer operation
    */
-  static manageBuyOffer(opts: OperationOptions.ManageBuyOffer): xdrDef.Operation<Operation.ManageBuyOffer> {
-    const attributes = {};
-    attributes.selling = opts.selling.toXDRObject();
-    attributes.buying = opts.buying.toXDRObject();
+  public static manageBuyOffer(opts: OperationOptions.ManageBuyOffer): xdrDef.Operation<Operation.ManageBuyOffer> {
     if (!this.isValidAmount(opts.buyAmount, true)) {
       throw new TypeError(this.constructAmountRequirementsError('buyAmount'));
     }
-    attributes.buyAmount = this._toXDRAmount(opts.buyAmount);
     if (isUndefined(opts.price)) {
       throw new TypeError('price argument is required');
     }
-    attributes.price = this._toXDRPrice(opts.price);
-
     if (!isUndefined(opts.offerId)) {
       opts.offerId = opts.offerId.toString();
     } else {
       opts.offerId = '0';
     }
 
-    attributes.offerId = Hyper.fromString(opts.offerId);
-    const manageBuyOfferOp = new xdr.ManageBuyOfferOp(attributes);
+    const manageBuyOfferOp = new xdr.ManageBuyOfferOp({
+      selling: opts.selling.toXDRObject(),
+      buying: opts.buying.toXDRObject(),
+      buyAmount: this._toXDRAmount(opts.buyAmount),
+      price: this._toXDRPrice(opts.price),
+      offerId: Hyper.fromString(opts.offerId),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.manageBuyOffer(manageBuyOfferOp);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.manageBuyOffer(manageBuyOfferOp), opts)
   }
 
   /**
@@ -395,13 +398,10 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The optional source account.
    * @returns {xdr.ManageDataOp} Manage Data operation
    */
-  static manageData(opts: OperationOptions.ManageData): xdrDef.Operation<Operation.ManageData> {
-    const attributes = {};
-
+  public static manageData(opts: OperationOptions.ManageData): xdrDef.Operation<Operation.ManageData> {
     if (!(isString(opts.name) && opts.name.length <= 64)) {
       throw new Error('name must be a string, up to 64 characters');
     }
-    attributes.dataName = opts.name;
 
     if (
       !isString(opts.value) &&
@@ -411,23 +411,23 @@ export abstract class BaseOperation {
       throw new Error('value must be a string, Buffer or null');
     }
 
+    let dataValue: Buffer
     if (isString(opts.value)) {
-      attributes.dataValue = Buffer.from(opts.value);
+      dataValue = Buffer.from(opts.value);
     } else {
-      attributes.dataValue = opts.value;
+      dataValue = opts.value;
     }
 
-    if (attributes.dataValue !== null && attributes.dataValue.length > 64) {
+    if (dataValue !== null && dataValue.length > 64) {
       throw new Error('value cannot be longer that 64 bytes');
     }
 
-    const manageDataOp = new xdr.ManageDataOp(attributes);
+    const manageDataOp = new xdr.ManageDataOp({
+      dataName: opts.name,
+      dataValue,
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.manageDatum(manageDataOp);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.manageDatum(manageDataOp), opts)
   }
 
   /**
@@ -447,18 +447,13 @@ export abstract class BaseOperation {
    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
    * @returns {xdr.ManageSellOfferOp} Manage Sell Offer operation
    */
-  static manageSellOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
-    const attributes = {};
-    attributes.selling = opts.selling.toXDRObject();
-    attributes.buying = opts.buying.toXDRObject();
+  public static manageSellOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
     if (!this.isValidAmount(opts.amount, true)) {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
-    attributes.amount = this._toXDRAmount(opts.amount);
     if (isUndefined(opts.price)) {
       throw new TypeError('price argument is required');
     }
-    attributes.price = this._toXDRPrice(opts.price);
 
     if (!isUndefined(opts.offerId)) {
       opts.offerId = opts.offerId.toString();
@@ -466,18 +461,19 @@ export abstract class BaseOperation {
       opts.offerId = '0';
     }
 
-    attributes.offerId = Hyper.fromString(opts.offerId);
-    const manageSellOfferOp = new xdr.ManageSellOfferOp(attributes);
+    const manageSellOfferOp = new xdr.ManageSellOfferOp({
+      selling: opts.selling.toXDRObject(),
+      buying: opts.buying.toXDRObject(),
+      amount: this._toXDRAmount(opts.amount),
+      price: this._toXDRPrice(opts.price),
+      offerId: Hyper.fromString(opts.offerId),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.manageSellOffer(manageSellOfferOp);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.manageSellOffer(manageSellOfferOp), opts)
   }
 
   // deprecated, to be removed after 1.0.1
-  static manageOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
+  public static manageOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
     // eslint-disable-next-line no-console
     console.log(
       '[Operation] Operation.manageOffer has been renamed to Operation.manageSellOffer! The old name is deprecated and will be removed in a later version!'
@@ -502,41 +498,35 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
    * @returns {xdr.PathPaymentOp} Path Payment operation
    */
-  static pathPayment(opts: OperationOptions.PathPayment): xdrDef.Operation<Operation.PathPayment> {
-    switch (true) {
-      case !opts.sendAsset:
+  public static pathPayment(opts: OperationOptions.PathPayment): xdrDef.Operation<Operation.PathPayment> {
+    if(!opts.sendAsset) {
         throw new Error('Must specify a send asset');
-      case !this.isValidAmount(opts.sendMax):
+    }
+    if(!this.isValidAmount(opts.sendMax)) {
         throw new TypeError(this.constructAmountRequirementsError('sendMax'));
-      case !StrKey.isValidEd25519PublicKey(opts.destination):
+    }
+    if(!StrKey.isValidEd25519PublicKey(opts.destination)) {
         throw new Error('destination is invalid');
-      case !opts.destAsset:
+    }
+    if(!opts.destAsset) {
         throw new Error('Must provide a destAsset for a payment operation');
-      case !this.isValidAmount(opts.destAmount):
+    }
+    if(!this.isValidAmount(opts.destAmount)) {
         throw new TypeError(this.constructAmountRequirementsError('destAmount'));
-      default:
-        break;
     }
 
-    const attributes = {};
-    attributes.sendAsset = opts.sendAsset.toXDRObject();
-    attributes.sendMax = this._toXDRAmount(opts.sendMax);
-    attributes.destination = Keypair.fromPublicKey(
-      opts.destination
-    ).xdrAccountId();
-    attributes.destAsset = opts.destAsset.toXDRObject();
-    attributes.destAmount = this._toXDRAmount(opts.destAmount);
-
     const path = opts.path ? opts.path : [];
-    attributes.path = path.map((x) => x.toXDRObject());
 
-    const payment = new xdr.PathPaymentOp(attributes);
+    const payment = new xdr.PathPaymentOp({
+      sendAsset: opts.sendAsset.toXDRObject(),
+      sendMax: this._toXDRAmount(opts.sendMax),
+      destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+      destAsset: opts.destAsset.toXDRObject(),
+      destAmount: this._toXDRAmount(opts.destAmount),
+      path: path.map((x) => x.toXDRObject()),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.pathPayment(payment);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.pathPayment(payment), opts)
   }
 
   /**
@@ -550,7 +540,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
    * @returns {xdr.PaymentOp} Payment operation
    */
-  static payment(opts: OperationOptions.Payment): xdrDef.Operation<Operation.Payment> {
+  public static payment(opts: OperationOptions.Payment): xdrDef.Operation<Operation.Payment> {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
@@ -561,19 +551,13 @@ export abstract class BaseOperation {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
 
-    const attributes = {};
-    attributes.destination = Keypair.fromPublicKey(
-      opts.destination
-    ).xdrAccountId();
-    attributes.asset = opts.asset.toXDRObject();
-    attributes.amount = this._toXDRAmount(opts.amount);
-    const paymentOp = new xdr.PaymentOp(attributes);
+    const paymentOp = new xdr.PaymentOp({
+      destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
+      asset: opts.asset.toXDRObject(),
+      amount: this._toXDRAmount(opts.amount),
+    });
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.payment(paymentOp);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.payment(paymentOp), opts)
   }
 
   /**
@@ -606,8 +590,9 @@ export abstract class BaseOperation {
    * @returns {xdr.SetOptionsOp}  XDR operation
    * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
    */
-  static setOptions<T extends SignerOptions = never>(opts: OperationOptions.SetOptions<T>): xdrDef.Operation<Operation.SetOptions<T>> {
-    const attributes = {};
+  public static setOptions<T extends SignerOptions = never>(opts: OperationOptions.SetOptions<T>): xdrDef.Operation<Operation.SetOptions<T>> {
+    // TS-TODO: `Partial<SetOptionsOp.IAttributes>`
+    const attributes: Record<string, unknown> = {};
 
     if (opts.inflationDest) {
       if (!StrKey.isValidEd25519PublicKey(opts.inflationDest)) {
@@ -618,27 +603,27 @@ export abstract class BaseOperation {
       ).xdrAccountId();
     }
 
-    attributes.clearFlags = this._checkUnsignedIntValue(
+    attributes.clearFlags = this.checkUnsignedIntValue(
       'clearFlags',
       opts.clearFlags
     );
-    attributes.setFlags = this._checkUnsignedIntValue('setFlags', opts.setFlags);
-    attributes.masterWeight = this._checkUnsignedIntValue(
+    attributes.setFlags = this.checkUnsignedIntValue('setFlags', opts.setFlags);
+    attributes.masterWeight = this.checkUnsignedIntValue(
       'masterWeight',
       opts.masterWeight,
       weightCheckFunction
     );
-    attributes.lowThreshold = this._checkUnsignedIntValue(
+    attributes.lowThreshold = this.checkUnsignedIntValue(
       'lowThreshold',
       opts.lowThreshold,
       weightCheckFunction
     );
-    attributes.medThreshold = this._checkUnsignedIntValue(
+    attributes.medThreshold = this.checkUnsignedIntValue(
       'medThreshold',
       opts.medThreshold,
       weightCheckFunction
     );
-    attributes.highThreshold = this._checkUnsignedIntValue(
+    attributes.highThreshold = this.checkUnsignedIntValue(
       'highThreshold',
       opts.highThreshold,
       weightCheckFunction
@@ -649,22 +634,28 @@ export abstract class BaseOperation {
     }
     attributes.homeDomain = opts.homeDomain;
 
-    if (opts.signer) {
-      const weight = this._checkUnsignedIntValue(
+    // TS-TODO: move to utils or elsewhere up.
+    const isSignerEd25519PublicKey = (signer: SignerOptions): signer is SignerOptions.Ed25519PublicKey => 'ed25519PublicKey' in signer && !!signer.ed25519PublicKey
+    const isSignerSha256Hash = (signer: SignerOptions): signer is SignerOptions.Sha256Hash => 'preAuthTx' in signer && !!signer.preAuthTx
+    const isSignerPreAuthTx = (signer: SignerOptions): signer is SignerOptions.PreAuthTx => 'sha256Hash' in signer && !!signer.sha256Hash
+
+    const {signer} = opts
+    if (signer) {
+      const weight = this.checkUnsignedIntValue(
         'signer.weight',
-        opts.signer.weight,
+        signer.weight,
         weightCheckFunction
       );
       let key;
 
       let setValues = 0;
 
-      if (opts.signer.ed25519PublicKey) {
-        if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
+      if (isSignerEd25519PublicKey(signer)) {
+        if (!StrKey.isValidEd25519PublicKey(signer.ed25519PublicKey)) {
           throw new Error('signer.ed25519PublicKey is invalid.');
         }
         const rawKey = StrKey.decodeEd25519PublicKey(
-          opts.signer.ed25519PublicKey
+          signer.ed25519PublicKey
         );
 
         // eslint-disable-next-line new-cap
@@ -672,41 +663,41 @@ export abstract class BaseOperation {
         setValues += 1;
       }
 
-      if (opts.signer.preAuthTx) {
-        if (isString(opts.signer.preAuthTx)) {
-          opts.signer.preAuthTx = Buffer.from(opts.signer.preAuthTx, 'hex');
+      if (isSignerPreAuthTx(signer)) {
+        if (isString(signer.preAuthTx)) {
+          signer.preAuthTx = Buffer.from(signer.preAuthTx, 'hex');
         }
 
         if (
           !(
-            Buffer.isBuffer(opts.signer.preAuthTx) &&
-            opts.signer.preAuthTx.length === 32
+            Buffer.isBuffer(signer.preAuthTx) &&
+            signer.preAuthTx.length === 32
           )
         ) {
           throw new Error('signer.preAuthTx must be 32 bytes Buffer.');
         }
 
         // eslint-disable-next-line new-cap
-        key = new xdr.SignerKey.signerKeyTypePreAuthTx(opts.signer.preAuthTx);
+        key = new xdr.SignerKey.signerKeyTypePreAuthTx(signer.preAuthTx);
         setValues += 1;
       }
 
-      if (opts.signer.sha256Hash) {
-        if (isString(opts.signer.sha256Hash)) {
-          opts.signer.sha256Hash = Buffer.from(opts.signer.sha256Hash, 'hex');
+      if (isSignerSha256Hash(signer)) {
+        if (isString(signer.sha256Hash)) {
+          signer.sha256Hash = Buffer.from(signer.sha256Hash, 'hex');
         }
 
         if (
           !(
-            Buffer.isBuffer(opts.signer.sha256Hash) &&
-            opts.signer.sha256Hash.length === 32
+            Buffer.isBuffer(signer.sha256Hash) &&
+            signer.sha256Hash.length === 32
           )
         ) {
           throw new Error('signer.sha256Hash must be 32 bytes Buffer.');
         }
 
         // eslint-disable-next-line new-cap
-        key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
+        key = new xdr.SignerKey.signerKeyTypeHashX(signer.sha256Hash);
         setValues += 1;
       }
 
@@ -721,10 +712,6 @@ export abstract class BaseOperation {
 
     const setOptionsOp = new xdr.SetOptionsOp(attributes);
 
-    const opAttributes = {};
-    opAttributes.body = xdr.OperationBody.setOption(setOptionsOp);
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.setOption(setOptionsOp), opts)
   }
 }
