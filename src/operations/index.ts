@@ -22,8 +22,11 @@ function weightCheckFunction(value: number, name: string): boolean {
 }
 
 export abstract class BaseOperation {
-  // TS-TODO: remove any
-  static setSourceAccount(opAttributes: any, opts: any) {
+  private static toXdrOperation(body: any, opts: any) {
+    // TS-TODO: Correct interface.
+    const opAttributes: {body: any, sourceAccount?: any} = {
+        body,
+    };
     if (opts.source) {
       if (!StrKey.isValidEd25519PublicKey(opts.source)) {
         throw new Error('Source address is invalid');
@@ -32,21 +35,14 @@ export abstract class BaseOperation {
         opts.source
       ).xdrAccountId();
     }
-  }
-
-  static toXdrOperation(body: any, opts: any) {
-    const opAttributes = {
-        body,
-    };
-    this.setSourceAccount(opAttributes, opts);
     return new xdr.Operation(opAttributes);
   }
 
-  static constructAmountRequirementsError(arg: string) {
+  public static constructAmountRequirementsError(arg: string) {
     return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
   }
 
-  static isValidAmount(value: string, allowZero = false) {
+  public static isValidAmount(value: string, allowZero = false) {
     if (!isString(value)) {
       return false;
     }
@@ -82,7 +78,7 @@ export abstract class BaseOperation {
    * @param {string|BigNumber} value Value
    * @returns {Hyper} XDR amount
    */
-  static _toXDRAmount(value: string | BigNumber): Hyper {
+  public static _toXDRAmount(value: string | BigNumber): Hyper {
     const amount = new BigNumber(value).mul(ONE);
     return Hyper.fromString(amount.toString());
   }
@@ -95,7 +91,7 @@ export abstract class BaseOperation {
    * @param {function} price.d denominator function that returns a value
    * @returns {object} XDR price object
    */
-  static _toXDRPrice(price: any) {
+  public static _toXDRPrice(price: any) {
     let xdrObject;
     if (price.n && price.d) {
       xdrObject = new xdr.Price(price);
@@ -124,7 +120,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account (defaults to transaction source).
    * @returns {xdr.AccountMergeOp} Account Merge operation
    */
-  static accountMerge(opts: OperationOptions.AccountMerge): xdrDef.Operation<Operation.AccountMerge> {
+  public static accountMerge(opts: OperationOptions.AccountMerge): xdrDef.Operation<Operation.AccountMerge> {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
@@ -144,7 +140,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account (defaults to transaction source).
    * @returns {xdr.AllowTrustOp} Allow Trust operation
    */
-  static allowTrust(opts: OperationOptions.AllowTrust): xdrDef.Operation<Operation.AllowTrust> {
+  public static allowTrust(opts: OperationOptions.AllowTrust): xdrDef.Operation<Operation.AllowTrust> {
     if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
       throw new Error('trustor is invalid');
     }
@@ -178,7 +174,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The optional source account.
    * @returns {xdr.BumpSequenceOp} Operation
    */
-  static bumpSequence(opts: OperationOptions.BumpSequence): xdrDef.Operation<Operation.BumpSequence> {
+  public static bumpSequence(opts: OperationOptions.BumpSequence): xdrDef.Operation<Operation.BumpSequence> {
     if (!isString(opts.bumpTo)) {
       throw new Error('bumpTo must be a string');
     }
@@ -210,7 +206,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account (defaults to transaction source).
    * @returns {xdr.ChangeTrustOp} Change Trust operation
    */
-  static changeTrust(opts: OperationOptions.ChangeTrust): xdrDef.Operation<Operation.ChangeTrust> {
+  public static changeTrust(opts: OperationOptions.ChangeTrust): xdrDef.Operation<Operation.ChangeTrust> {
     if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
       throw new TypeError(this.constructAmountRequirementsError('limit'));
     }
@@ -241,7 +237,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
    * @returns {xdr.CreateAccountOp} Create account operation
    */
-  static createAccount(opts: OperationOptions.CreateAccount): xdrDef.Operation<Operation.CreateAccount> {
+  public static createAccount(opts: OperationOptions.CreateAccount): xdrDef.Operation<Operation.CreateAccount> {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
@@ -277,7 +273,7 @@ export abstract class BaseOperation {
    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
    * @returns {xdr.CreatePassiveSellOfferOp} Create Passive Sell Offer operation
    */
-  static createPassiveSellOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
+  public static createPassiveSellOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
     if (!this.isValidAmount(opts.amount)) {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
@@ -296,7 +292,7 @@ export abstract class BaseOperation {
   }
 
   // deprecated, to be removed after 1.0.1
-  static createPassiveOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
+  public static createPassiveOffer(opts: OperationOptions.CreatePassiveSellOffer): xdrDef.Operation<Operation.CreatePassiveSellOffer> {
     // eslint-disable-next-line no-console
     console.log(
       '[Operation] Operation.createPassiveOffer has been renamed to Operation.createPassiveSellOffer! The old name is deprecated and will be removed in a later version!'
@@ -313,7 +309,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The optional source account.
    * @returns {xdr.InflationOp} Inflation operation
    */
-  static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
+  public static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
     return this.toXdrOperation(xdr.OperationBody.inflation(), opts)
   }
 
@@ -334,7 +330,7 @@ export abstract class BaseOperation {
    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
    * @returns {xdr.ManageBuyOfferOp} Manage Buy Offer operation
    */
-  static manageBuyOffer(opts: OperationOptions.ManageBuyOffer): xdrDef.Operation<Operation.ManageBuyOffer> {
+  public static manageBuyOffer(opts: OperationOptions.ManageBuyOffer): xdrDef.Operation<Operation.ManageBuyOffer> {
     if (!this.isValidAmount(opts.buyAmount, true)) {
       throw new TypeError(this.constructAmountRequirementsError('buyAmount'));
     }
@@ -368,7 +364,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The optional source account.
    * @returns {xdr.ManageDataOp} Manage Data operation
    */
-  static manageData(opts: OperationOptions.ManageData): xdrDef.Operation<Operation.ManageData> {
+  public static manageData(opts: OperationOptions.ManageData): xdrDef.Operation<Operation.ManageData> {
     if (!(isString(opts.name) && opts.name.length <= 64)) {
       throw new Error('name must be a string, up to 64 characters');
     }
@@ -417,7 +413,7 @@ export abstract class BaseOperation {
    * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
    * @returns {xdr.ManageSellOfferOp} Manage Sell Offer operation
    */
-  static manageSellOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
+  public static manageSellOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
     if (!this.isValidAmount(opts.amount, true)) {
       throw new TypeError(this.constructAmountRequirementsError('amount'));
     }
@@ -443,7 +439,7 @@ export abstract class BaseOperation {
   }
 
   // deprecated, to be removed after 1.0.1
-  static manageOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
+  public static manageOffer(opts: OperationOptions.ManageSellOffer): xdrDef.Operation<Operation.ManageSellOffer> {
     // eslint-disable-next-line no-console
     console.log(
       '[Operation] Operation.manageOffer has been renamed to Operation.manageSellOffer! The old name is deprecated and will be removed in a later version!'
@@ -468,7 +464,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
    * @returns {xdr.PathPaymentOp} Path Payment operation
    */
-  static pathPayment(opts: OperationOptions.PathPayment): xdrDef.Operation<Operation.PathPayment> {
+  public static pathPayment(opts: OperationOptions.PathPayment): xdrDef.Operation<Operation.PathPayment> {
     if(!opts.sendAsset) {
         throw new Error('Must specify a send asset');
     }
@@ -510,7 +506,7 @@ export abstract class BaseOperation {
    * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
    * @returns {xdr.PaymentOp} Payment operation
    */
-  static payment(opts: OperationOptions.Payment): xdrDef.Operation<Operation.Payment> {
+  public static payment(opts: OperationOptions.Payment): xdrDef.Operation<Operation.Payment> {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
@@ -560,7 +556,7 @@ export abstract class BaseOperation {
    * @returns {xdr.SetOptionsOp}  XDR operation
    * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
    */
-  static setOptions<T extends SignerOptions = never>(opts: OperationOptions.SetOptions<T>): xdrDef.Operation<Operation.SetOptions<T>> {
+  public static setOptions<T extends SignerOptions = never>(opts: OperationOptions.SetOptions<T>): xdrDef.Operation<Operation.SetOptions<T>> {
     // TS-TODO: `Partial<SetOptionsOp.IAttributes>`
     const attributes: Record<string, unknown> = {};
 
