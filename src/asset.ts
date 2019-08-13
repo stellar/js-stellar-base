@@ -1,7 +1,7 @@
 import clone from 'lodash/clone';
 import padEnd from 'lodash/padEnd';
 import trimEnd from 'lodash/trimEnd';
-import xdr from './generated/stellar-xdr_generated';
+import {xdr, Xdr} from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
@@ -63,7 +63,7 @@ export class Asset {
    * @param {xdr.Asset} assetXdr - The asset xdr object.
    * @returns {Asset}
    */
-  static fromOperation(assetXdr: xdr.Asset): Asset {
+  static fromOperation(assetXdr: Xdr.Asset): Asset {
     let anum;
     let code;
     let issuer;
@@ -87,13 +87,15 @@ export class Asset {
    * Returns the xdr object for this asset.
    * @returns {xdr.Asset} XDR Asset object
    */
-  public toXDRObject(): xdr.Asset {
+  public toXDRObject(): Xdr.Asset {
+    // TS-TODO: perhaps better `if(!this.issuer)`?
     if (this.isNative()) {
       return xdr.Asset.assetTypeNative();
     }
+    const issuer = this.issuer!
 
-    let xdrType;
-    let xdrTypeString;
+    let xdrType: typeof Xdr.AssetAlphaNum4 | typeof Xdr.AssetAlphaNum12;
+    let xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12';
     if (this.code.length <= 4) {
       xdrType = xdr.AssetAlphaNum4;
       xdrTypeString = 'assetTypeCreditAlphanum4';
@@ -109,7 +111,7 @@ export class Asset {
     // eslint-disable-next-line new-cap
     const assetType = new xdrType({
       assetCode: paddedCode,
-      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
+      issuer: Keypair.fromPublicKey(issuer).xdrAccountId()
     });
 
     return new xdr.Asset(xdrTypeString, assetType);

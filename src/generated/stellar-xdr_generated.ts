@@ -5,9 +5,9 @@
 /* jshint esnext:true  */
 
 import * as XDR from 'js-xdr';
+import { IXdr } from '../xdr_definitions';
 
-
-var types = XDR.config(xdr => {
+export const xdr: IXdr = XDR.config((xdr: any) => {
 
 // === xdr source ============================================================
 //
@@ -3881,4 +3881,6 @@ xdr.struct("HmacSha256Mac", [
 ]);
 
 });
-export default types;
+
+export default xdr;
+export { XdrNS as Xdr } from '../xdr_definitions';
