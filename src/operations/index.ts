@@ -634,22 +634,28 @@ export abstract class BaseOperation {
     }
     attributes.homeDomain = opts.homeDomain;
 
-    if (opts.signer) {
+    // TS-TODO: move to utils or elsewhere up.
+    const isSignerEd25519PublicKey = (signer: SignerOptions): signer is SignerOptions.Ed25519PublicKey => 'ed25519PublicKey' in signer && !!signer.ed25519PublicKey
+    const isSignerSha256Hash = (signer: SignerOptions): signer is SignerOptions.Sha256Hash => 'preAuthTx' in signer && !!signer.preAuthTx
+    const isSignerPreAuthTx = (signer: SignerOptions): signer is SignerOptions.PreAuthTx => 'sha256Hash' in signer && !!signer.sha256Hash
+
+    const {signer} = opts
+    if (signer) {
       const weight = this.checkUnsignedIntValue(
         'signer.weight',
-        opts.signer.weight,
+        signer.weight,
         weightCheckFunction
       );
       let key;
 
       let setValues = 0;
 
-      if (opts.signer.ed25519PublicKey) {
-        if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
+      if (isSignerEd25519PublicKey(signer)) {
+        if (!StrKey.isValidEd25519PublicKey(signer.ed25519PublicKey)) {
           throw new Error('signer.ed25519PublicKey is invalid.');
         }
         const rawKey = StrKey.decodeEd25519PublicKey(
-          opts.signer.ed25519PublicKey
+          signer.ed25519PublicKey
         );
 
         // eslint-disable-next-line new-cap
@@ -657,41 +663,41 @@ export abstract class BaseOperation {
         setValues += 1;
       }
 
-      if (opts.signer.preAuthTx) {
-        if (isString(opts.signer.preAuthTx)) {
-          opts.signer.preAuthTx = Buffer.from(opts.signer.preAuthTx, 'hex');
+      if (isSignerPreAuthTx(signer)) {
+        if (isString(signer.preAuthTx)) {
+          signer.preAuthTx = Buffer.from(signer.preAuthTx, 'hex');
         }
 
         if (
           !(
-            Buffer.isBuffer(opts.signer.preAuthTx) &&
-            opts.signer.preAuthTx.length === 32
+            Buffer.isBuffer(signer.preAuthTx) &&
+            signer.preAuthTx.length === 32
           )
         ) {
           throw new Error('signer.preAuthTx must be 32 bytes Buffer.');
         }
 
         // eslint-disable-next-line new-cap
-        key = new xdr.SignerKey.signerKeyTypePreAuthTx(opts.signer.preAuthTx);
+        key = new xdr.SignerKey.signerKeyTypePreAuthTx(signer.preAuthTx);
         setValues += 1;
       }
 
-      if (opts.signer.sha256Hash) {
-        if (isString(opts.signer.sha256Hash)) {
-          opts.signer.sha256Hash = Buffer.from(opts.signer.sha256Hash, 'hex');
+      if (isSignerSha256Hash(signer)) {
+        if (isString(signer.sha256Hash)) {
+          signer.sha256Hash = Buffer.from(signer.sha256Hash, 'hex');
         }
 
         if (
           !(
-            Buffer.isBuffer(opts.signer.sha256Hash) &&
-            opts.signer.sha256Hash.length === 32
+            Buffer.isBuffer(signer.sha256Hash) &&
+            signer.sha256Hash.length === 32
           )
         ) {
           throw new Error('signer.sha256Hash must be 32 bytes Buffer.');
         }
 
         // eslint-disable-next-line new-cap
-        key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
+        key = new xdr.SignerKey.signerKeyTypeHashX(signer.sha256Hash);
         setValues += 1;
       }
 
