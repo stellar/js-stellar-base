@@ -34,6 +34,14 @@ export abstract class BaseOperation {
     }
   }
 
+  static toXdrOperation(body: any, opts: any) {
+    const opAttributes = {
+        body,
+    };
+    this.setSourceAccount(opAttributes, opts);
+    return new xdr.Operation(opAttributes);
+  }
+
   static constructAmountRequirementsError(arg: string) {
     return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
   }
@@ -120,12 +128,8 @@ export abstract class BaseOperation {
     if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
       throw new Error('destination is invalid');
     }
-    const opAttributes = {
-        body: xdr.OperationBody.accountMerge(Keypair.fromPublicKey(opts.destination).xdrAccountId())
-    };
-    this.setSourceAccount(opAttributes, opts);
 
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.accountMerge(Keypair.fromPublicKey(opts.destination).xdrAccountId()), opts)
   }
 
   /**
@@ -162,12 +166,7 @@ export abstract class BaseOperation {
       trustor: Keypair.fromPublicKey(opts.trustor).xdrAccountId(),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.allowTrust(allowTrustOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.allowTrust(allowTrustOp), opts)
   }
 
   /**
@@ -195,12 +194,7 @@ export abstract class BaseOperation {
       bumpTo: Hyper.fromString(opts.bumpTo),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.bumpSequence(bumpSequenceOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.bumpSequence(bumpSequenceOp), opts)
   }
 
   /**
@@ -233,12 +227,7 @@ export abstract class BaseOperation {
       line: opts.asset.toXDRObject(),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.changeTrust(changeTrustOP),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.changeTrust(changeTrustOP), opts)
   }
 
   /**
@@ -267,12 +256,7 @@ export abstract class BaseOperation {
       startingBalance: this._toXDRAmount(opts.startingBalance),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.createAccount(createAccountOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.createAccount(createAccountOp), opts)
   }
 
   /**
@@ -308,12 +292,7 @@ export abstract class BaseOperation {
       selling: opts.selling.toXDRObject(),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp), opts)
   }
 
   // deprecated, to be removed after 1.0.1
@@ -335,11 +314,7 @@ export abstract class BaseOperation {
    * @returns {xdr.InflationOp} Inflation operation
    */
   static inflation(opts: OperationOptions.Inflation = {}): xdrDef.Operation<Operation.Inflation> {
-    const opAttributes = {
-      body: xdr.OperationBody.inflation(),
-    };
-    this.setSourceAccount(opAttributes, opts);
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.inflation(), opts)
   }
 
   /**
@@ -380,12 +355,7 @@ export abstract class BaseOperation {
       offerId: Hyper.fromString(opts.offerId),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.manageBuyOffer(manageBuyOfferOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.manageBuyOffer(manageBuyOfferOp), opts)
   }
 
   /**
@@ -427,12 +397,7 @@ export abstract class BaseOperation {
       dataValue,
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.manageDatum(manageDataOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.manageDatum(manageDataOp), opts)
   }
 
   /**
@@ -474,12 +439,7 @@ export abstract class BaseOperation {
       offerId: Hyper.fromString(opts.offerId),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.manageSellOffer(manageSellOfferOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.manageSellOffer(manageSellOfferOp), opts)
   }
 
   // deprecated, to be removed after 1.0.1
@@ -536,12 +496,7 @@ export abstract class BaseOperation {
       path: path.map((x) => x.toXDRObject()),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.pathPayment(payment),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.pathPayment(payment), opts)
   }
 
   /**
@@ -572,12 +527,7 @@ export abstract class BaseOperation {
       amount: this._toXDRAmount(opts.amount),
     });
 
-    const opAttributes = {
-      body: xdr.OperationBody.payment(paymentOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.payment(paymentOp), opts)
   }
 
   /**
@@ -726,11 +676,6 @@ export abstract class BaseOperation {
 
     const setOptionsOp = new xdr.SetOptionsOp(attributes);
 
-    const opAttributes = {
-      body: xdr.OperationBody.setOption(setOptionsOp),
-    };
-    this.setSourceAccount(opAttributes, opts);
-
-    return new xdr.Operation(opAttributes);
+    return this.toXdrOperation(xdr.OperationBody.setOption(setOptionsOp), opts)
   }
 }
