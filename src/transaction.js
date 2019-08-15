@@ -73,7 +73,7 @@ export class Transaction {
 
     if (Network.current() === null) {
       throw new Error(
-        'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+        'No network selected. Please pass a network argument, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
       );
     }
 
