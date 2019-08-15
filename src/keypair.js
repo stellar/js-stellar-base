@@ -102,7 +102,7 @@ export class Keypair {
       );
       if (Network.current() === null) {
         throw new Error(
-          'No network selected. Use `Network.use`, `Network.usePublicNetwork` or `Network.useTestNetwork` helper methods to select network.'
+          'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
         );
       }
       networkPassphrase = Network.current().networkPassphrase();
