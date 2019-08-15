@@ -5,6 +5,11 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v1.1.2](https://github.com/stellar/js-stellar-base/compare/v1.1.1...v1.1.2)
+
+### Fix
+- Fix no-network warnings ([#248](https://github.com/stellar/js-stellar-base/issues/248))
+
 ## [v1.1.1](https://github.com/stellar/js-stellar-base/compare/v1.1.0...v1.1.1)
 
 ### Fix
