@@ -1,7 +1,6 @@
-import { Operation as BaseOperation } from './operation';
-import xdrGenerated from './generated/stellar-xdr_generated';
+import { Operation as BaseOperation } from '../operation';
 
-export declare namespace IXdr {
+declare namespace xdr {
   export class XDRStruct {
     static fromXDR(xdr: Buffer): XDRStruct;
 
@@ -69,18 +68,5 @@ export declare namespace IXdr {
   }
 }
 
-export interface IXdr {
-  Asset: typeof IXdr.Asset,
-  AssetAlphaNum12: typeof IXdr.AssetAlphaNum12,
-  AssetAlphaNum4: typeof IXdr.AssetAlphaNum4,
-  AssetType: typeof IXdr.AssetType,
-  DecoratedSignature: typeof IXdr.DecoratedSignature,
-  Memo: typeof IXdr.Memo,
-  Operation: typeof IXdr.Operation,
-  TransactionEnvelope: typeof IXdr.TransactionEnvelope,
-  TransactionResult: typeof IXdr.TransactionResult,
-  XDRStruct: typeof IXdr.XDRStruct,
-}
-
-
-export const xdr = xdrGenerated as IXdr
+export default xdr
+// export as namespace xdr

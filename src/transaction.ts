@@ -1,7 +1,7 @@
 import map from 'lodash/map';
 import each from 'lodash/each';
 import isString from 'lodash/isString';
-import { xdr } from './xdr_definitions';
+import xdr from './generated/stellar-xdr_generated';
 
 import { StrKey } from './strkey';
 import { Operation } from './operation';
