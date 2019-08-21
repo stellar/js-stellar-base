@@ -3,7 +3,7 @@ import { Network } from './network';
 import { sign, verify, generate } from './signing';
 import * as base58 from './base58';
 import { StrKey } from './strkey';
-import xdr from './generated/stellar-xdr_generated';
+import { xdr } from './xdr_definitions';
 
 /**
  * `Keypair` represents public (and secret) keys of the account.

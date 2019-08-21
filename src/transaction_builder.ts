@@ -2,7 +2,7 @@ import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import clone from 'lodash/clone';
 import isUndefined from 'lodash/isUndefined';
-import { xdr, IXdr } from './xdr_definitions';
+import { xdr } from './xdr_definitions';
 import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';

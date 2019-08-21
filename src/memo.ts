@@ -3,7 +3,7 @@ import isString from 'lodash/isString';
 import clone from 'lodash/clone';
 import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
-import { xdr, IXdr } from './xdr_definitions';
+import { xdr } from './xdr_definitions';
 
 /**
  * Type of {@link Memo}.
