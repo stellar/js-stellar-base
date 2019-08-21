@@ -1,6 +1,6 @@
-import xdr from './generated/stellar-xdr_generated';
+import { xdr, IXdr } from './xdr_definitions';
 
-export { xdr };
+export { xdr, IXdr };
 export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';
 export { Keypair } from './keypair';
