@@ -1,6 +1,6 @@
-import { Operation as BaseOperation } from './operation';
+import { Operation as BaseOperation } from '../operation';
 
-export namespace xdr {
+declare namespace xdr {
   export class XDRStruct {
     static fromXDR(xdr: Buffer): XDRStruct;
 
@@ -13,8 +13,34 @@ export namespace xdr {
     static fromXDR(xdr: Buffer): Operation;
   }
 
+  export class AssetType extends XDRStruct {
+    static fromXDR(xdr: Buffer): AssetType;
+    static assetTypeNative(): AssetType;
+    static assetTypeCreditAlphanum4(): AssetType;
+    static assetTypeCreditAlphanum12(): AssetType;
+    name: string;
+  }
+
   export class Asset extends XDRStruct {
+    constructor(xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12', xdrType: AssetAlphaNum4 | AssetAlphaNum12)
     static fromXDR(xdr: Buffer): Asset;
+    static assetTypeNative(): Asset;
+    alphaNum12(): AssetAlphaNum12;
+    alphaNum4(): AssetAlphaNum4;
+    switch(): AssetType;
+  }
+
+  export abstract class AbstractAssetAlphaNum extends XDRStruct {
+    constructor(attributes: {
+      assetCode: string,
+      issuer: any,
+    })
+    assetCode(): any;
+    issuer(): any;
+  }
+  export class AssetAlphaNum4 extends AbstractAssetAlphaNum {
+  }
+  export class AssetAlphaNum12 extends AbstractAssetAlphaNum {
   }
 
   export class Memo extends XDRStruct {
@@ -41,3 +67,6 @@ export namespace xdr {
     static fromXDR(xdr: Buffer): TransactionResult;
   }
 }
+
+export default xdr
+// export as namespace xdr

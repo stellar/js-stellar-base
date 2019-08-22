@@ -88,12 +88,14 @@ export class Asset {
    * @returns {xdr.Asset} XDR Asset object
    */
   public toXDRObject(): xdr.Asset {
+    // TS-TODO: perhaps better `if(!this.issuer)`?
     if (this.isNative()) {
       return xdr.Asset.assetTypeNative();
     }
+    const issuer = this.issuer!
 
-    let xdrType;
-    let xdrTypeString;
+    let xdrType: typeof xdr.AssetAlphaNum4 | typeof xdr.AssetAlphaNum12;
+    let xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12';
     if (this.code.length <= 4) {
       xdrType = xdr.AssetAlphaNum4;
       xdrTypeString = 'assetTypeCreditAlphanum4';
@@ -109,7 +111,7 @@ export class Asset {
     // eslint-disable-next-line new-cap
     const assetType = new xdrType({
       assetCode: paddedCode,
-      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
+      issuer: Keypair.fromPublicKey(issuer).xdrAccountId()
     });
 
     return new xdr.Asset(xdrTypeString, assetType);

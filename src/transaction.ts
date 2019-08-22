@@ -1,13 +1,14 @@
 import map from 'lodash/map';
 import each from 'lodash/each';
 import isString from 'lodash/isString';
-import { xdr, hash } from './index';
+import xdr from './generated/stellar-xdr_generated';
 
 import { StrKey } from './strkey';
 import { Operation } from './operation';
 import { Network } from './network';
 import { Memo } from './memo';
 import { Keypair } from './keypair';
+import { hash } from './hashing';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object, unless you have
