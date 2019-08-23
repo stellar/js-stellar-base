@@ -60,6 +60,16 @@ declare namespace xdr {
     signature(): Buffer;
   }
 
+  export class PublicKeyTypeEd25519 extends XDRStruct {
+      constructor(somekindBuffer: Buffer);
+  }
+  export class AccountId extends XDRStruct {
+    static publicKeyTypeEd25519: typeof PublicKeyTypeEd25519
+  }
+  export class PublicKey extends XDRStruct {
+    static publicKeyTypeEd25519: typeof PublicKeyTypeEd25519
+  }
+
   export type SignatureHint = Buffer;
   export type Signature = Buffer;
 
