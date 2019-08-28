@@ -5,6 +5,12 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.0.0](https://github.com/stellar/js-stellar-base/compare/v1.1.2...v2.0.0)
+
+### BREAKING CHANGES
+
+- Drop Support for Node 6 since it has been end-of-lifed and no longer in LTS. We now require Node 10 which is the current LTS until April 1st, 2021. ([#255](https://github.com/stellar/js-stellar-base/pull/255))
+
 ## [v1.1.2](https://github.com/stellar/js-stellar-base/compare/v1.1.1...v1.1.2)
 
 ### Fix
