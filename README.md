@@ -103,10 +103,10 @@ Make sure that you are using the latest version number. They can be found on the
 
 ### To develop and test js-stellar-base itself
 
-1. Install Node 6.14.0
+1. Install Node 10.16.3
 
 Because we support earlier versions of Node, please install and develop on Node
-6.14.0 so you don't get surprised when your code works locally but breaks in CI.
+10.16.3 so you don't get surprised when your code works locally but breaks in CI.
 
 If you work on several projects that use different Node versions, you might find
 helpful to install a nodejs version manager.
