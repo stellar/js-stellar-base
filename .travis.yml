@@ -5,7 +5,7 @@ matrix:
     - node_js: 11
     - node_js: 12
       env: TYPE_TEST=true
-    - node_js: 10.16.3
+    - node_js: 12
       env: SAUCE=true
 cache:
   directories:
