@@ -5,6 +5,10 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.0.1](https://github.com/stellar/js-stellar-base/compare/v2.0.0...v2.0.1)
+
+No changes. Fixes deploy script and includes changes from [v2.0.0](https://github.com/stellar/js-stellar-base/compare/v1.1.2...v2.0.0).
+
 ## [v2.0.0](https://github.com/stellar/js-stellar-base/compare/v1.1.2...v2.0.0)
 
 ### BREAKING CHANGES
