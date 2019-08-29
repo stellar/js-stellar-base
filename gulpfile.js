@@ -3,6 +3,7 @@
 var gulp = require('gulp');
 var isparta = require('isparta');
 var plugins = require('gulp-load-plugins')();
+var coveralls = require('@kollavarsham/gulp-coveralls');
 var clear = require('clear');
 var webpack = require('webpack');
 var del = require('del');
@@ -158,5 +159,5 @@ gulp.task(
 );
 
 gulp.task('submit-coverage', function submitCoverage() {
-  return gulp.src('./coverage/**/lcov.info').pipe(plugins.coveralls());
+  return gulp.src('./coverage/**/lcov.info').pipe(coveralls());
 });
