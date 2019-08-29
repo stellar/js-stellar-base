@@ -5,6 +5,7 @@ var isparta = require('isparta');
 var plugins = require('gulp-load-plugins')();
 var coveralls = require('@kollavarsham/gulp-coveralls');
 var clear = require('clear');
+var gulpWebpack = require('webpack-stream');
 var webpack = require('webpack');
 var del = require('del');
 
@@ -41,10 +42,11 @@ gulp.task(
     return gulp
       .src('src/browser.js')
       .pipe(
-        plugins.webpack({
+        gulpWebpack({
           output: { library: 'StellarBase' },
+          mode: 'development',
           module: {
-            loaders: [
+            rules: [
               { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
             ]
           },
