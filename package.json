@@ -45,6 +45,7 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
+    "@kollavarsham/gulp-coveralls": "0.2.8",
     "@types/node": "^11.13.0",
     "babel-cli": "^6.26.0",
     "babel-core": "~6.26.3",
@@ -68,7 +69,6 @@
     "ghooks": "^0.3.0",
     "gulp": "^4.0.0",
     "gulp-babel": "^6.1.3",
-    "gulp-coveralls": "^0.1.3",
     "gulp-eslint": "^5.0.0",
     "gulp-istanbul": "^1.1.1",
     "gulp-load-plugins": "^1.5.0",
