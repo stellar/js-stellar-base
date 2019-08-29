@@ -154,15 +154,6 @@ gulp.task('test', gulp.series('clean', 'test:node', 'test:browser'));
 gulp.task('default', gulp.series('build'));
 
 gulp.task(
-  'hooks:precommit',
-  gulp.series('build', function hooksPrecommit() {
-    return gulp
-      .src(['dist/*', 'lib/*'], { allowEmpty: true })
-      .pipe(plugins.git.add());
-  })
-);
-
-gulp.task(
   'watch',
   gulp.series('build', function watch() {
     gulp.watch('src/**/*', ['clear-screen', 'build']);
