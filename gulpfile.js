@@ -5,6 +5,7 @@ var isparta = require('isparta');
 var plugins = require('gulp-load-plugins')();
 var clear = require('clear');
 var webpack = require('webpack');
+var del = require('del');
 
 gulp.task('lint:src', function lintSrc() {
   return gulp
@@ -67,9 +68,7 @@ gulp.task(
 );
 
 gulp.task('clean-coverage', function cleanCoverage() {
-  return gulp
-    .src(['coverage'], { read: false, allowEmpty: true })
-    .pipe(plugins.rimraf());
+  return del(['coverage/']);
 });
 
 gulp.task(
@@ -142,9 +141,7 @@ gulp.task('clear-screen', function clearScreen(cb) {
 });
 
 gulp.task('clean', function clean() {
-  return gulp
-    .src(['dist', 'lib'], { read: false, allowEmpty: true })
-    .pipe(plugins.rimraf());
+  return del(['dist/', 'lib/']);
 });
 
 gulp.task('build', gulp.series('clean', 'build:node', 'build:browser'));
