@@ -5,7 +5,8 @@ var isparta = require('isparta');
 var plugins = require('gulp-load-plugins')();
 var coveralls = require('@kollavarsham/gulp-coveralls');
 var clear = require('clear');
-var webpack = require('webpack');
+var webpackConfigBrowser = require('./webpack.config.browser.js');
+var webpack = require('webpack-stream');
 var del = require('del');
 
 gulp.task('lint:src', function lintSrc() {
@@ -40,20 +41,7 @@ gulp.task(
   gulp.series('lint:src', function buildNode() {
     return gulp
       .src('src/browser.js')
-      .pipe(
-        plugins.webpack({
-          output: { library: 'StellarBase' },
-          module: {
-            loaders: [
-              { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
-            ]
-          },
-          plugins: [
-            // Ignore native modules (sodium-native)
-            new webpack.IgnorePlugin(/sodium-native/)
-          ]
-        })
-      )
+      .pipe(webpack(webpackConfigBrowser))
       .pipe(plugins.rename('stellar-base.js'))
       .pipe(gulp.dest('dist'))
       .pipe(
