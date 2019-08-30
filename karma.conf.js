@@ -1,3 +1,7 @@
+var webpackConfig = require('./webpack.config.browser.js');
+delete webpackConfig.plugins;
+delete webpackConfig.output;
+
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
@@ -9,13 +13,7 @@ module.exports = function(config) {
       'test/unit/**/*.js': ['webpack']
     },
 
-    webpack: {
-      module: {
-        rules: [
-          { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
-        ]
-      }
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true
