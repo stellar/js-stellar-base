@@ -3,34 +3,60 @@
 // Definitions by: Adolfo Builes <https://github.com/abuiles>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.4.1
-declare module "js-xdr" {
-    import Long from "long";
 
-    // interface IOMixin {
-    //     toXDR(format?: 'raw'): Buffer
-    //     toXDR(format: 'hex' | 'base64'): string
-    // }
-    // interface IOMixinBuilder<TInstance extends IOMixin> {
-    //     new (): TInstance;
-    //     toXDR(val: Buffer): Buffer
-    //     fromXDR(input: Buffer, format: 'raw'): TInstance
-    //     fromXDR(input: string, format?: 'hex' | 'base64'): TInstance
-    // }
+declare module "js-xdr" {  // `IOMixin`.
+
     export class IOMixin {
-        /**
-         * **REMEMBER TO REPLACE** static method `toXDR` to return the appropriate class.
-         */
-        static toXDR(val: Buffer): IOMixin
+        static toXDR(val: Buffer): Buffer
         /**
          * **REMEMBER TO REPLACE** static method `fromXDR` to return the appropriate class.
          */
-        static fromXDR(input: Buffer, format: 'raw'): IOMixin
-        static fromXDR(input: string, format?: 'hex' | 'base64'): IOMixin
+        static fromXDR(input: Buffer, format?: 'raw'): IOMixin
+        static fromXDR(input: string, format: 'hex' | 'base64'): IOMixin
+        toXDR(format?: 'raw'): Buffer
+        toXDR(format: 'hex' | 'base64'): string
+    }
+}
+
+declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadruple, Bool, String, Opaque, VarOpaque.
+    import Long from "long";
+    import { IOMixin } from "js-xdr";
+
+    export class Void {
+        static fromXDR(input: Buffer, format?: 'raw'): Void
+        static fromXDR(input: string, format: 'hex' | 'base64'): Void
     }
 
-    export class Bool extends IOMixin {
+    export class Hyper extends Long implements IOMixin {
+        static MAX_VALUE: Hyper
+        static MIN_VALUE: Hyper
+        static toXDR(val: Buffer): Buffer
+        static fromXDR(input: Buffer, format?: 'raw'): Hyper
+        static fromXDR(input: string, format: 'hex' | 'base64'): Hyper
+        toXDR(format?: 'raw'): Buffer
+        toXDR(format: 'hex' | 'base64'): string
+        isValid(value: Buffer): boolean
+    }
+    export class UnsignedHyper extends Long implements IOMixin {
+        static MAX_VALUE: Hyper
+        static MIN_VALUE: Hyper
+        static toXDR(val: Buffer): Buffer
+        static fromXDR(input: Buffer, format?: 'raw'): UnsignedHyper
+        static fromXDR(input: string, format: 'hex' | 'base64'): UnsignedHyper
+        toXDR(format?: 'raw'): Buffer
+        toXDR(format: 'hex' | 'base64'): string
+    }
+    export class Int extends IOMixin {
+        static MAX_VALUE: number
+        static MIN_VALUE: number
+        static fromXDR(input: Buffer, format?: 'raw'): Int
+        static fromXDR(input: string, format: 'hex' | 'base64'): Int
     }
     export class UnsignedInt extends IOMixin {
+        static MAX_VALUE: number
+        static MIN_VALUE: number
+        static fromXDR(input: Buffer, format?: 'raw'): Int
+        static fromXDR(input: string, format: 'hex' | 'base64'): Int
     }
     export class Float extends IOMixin {
     }
@@ -38,10 +64,41 @@ declare module "js-xdr" {
     }
     export class Quadruple extends IOMixin {
     }
-    export class Int extends IOMixin {
+
+    export class Bool extends IOMixin {
     }
 
-    export class Array {
+    export class String extends IOMixin {
+        constructor(maxLength?: number);
+    }
+
+    export class Opaque extends IOMixin {
+        constructor(length: number);
+    }
+    export class VarOpaque {
+        constructor(length?: number);
+    }
+
+}
+
+declare module "js-xdr" {  // Array and VarArray.
+
+    // export * from './array';
+    // export * from './var-array';
+
+    // export * from './option';
+
+    // export * from './enum';
+    // export * from './struct';
+    // export * from './union';
+
+
+    export class Array<T extends IOMixin> {
+        constructor(childType: T, length: number);
+        public _childType: T;
+        public _length: number;
+    }
+    export class VarArray {
         public _childType: any;
         public _length: number;
     }
@@ -55,19 +112,11 @@ declare module "js-xdr" {
         public fromName(string: string): Enum;
     }
 
-    export class Hyper extends Long {
-    }
-
-    export class Opaque extends IOMixin {
-        new (length: number): Opaque;
-    }
 
     export class Struct {
         public _attributes: object;
     }
 
-    export class String {
-    }
 
     export class Union {
         public switch(): any;
@@ -76,24 +125,12 @@ declare module "js-xdr" {
         public arm(): any;
     }
 
-    export class UnsignedHyper extends Long {
-    }
 
-    export class VarArray {
-        public _childType: any;
-        public _length: number;
-    }
-
-    export class VarOpaque {
-        constructor(length?: number);
-    }
 
     export class Option {
         public _childType: any;
     }
 
-    export class Void {
-    }
 
 }
 

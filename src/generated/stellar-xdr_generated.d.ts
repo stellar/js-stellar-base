@@ -1,19 +1,14 @@
 import { Operation as BaseOperation } from '../operation';
+import { Struct, Opaque, Void } from 'js-xdr';
 
 declare namespace xdr {
-  export class XDRStruct {
-    static fromXDR(xdr: Buffer): XDRStruct;
-
-    toXDR(base?: string): Buffer;
-    toXDR(encoding: string): string;
-  }
 
   // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
-  export class Operation<T extends BaseOperation = BaseOperation> extends XDRStruct {
+  export class Operation<T extends BaseOperation = BaseOperation> extends Struct {
     static fromXDR(xdr: Buffer): Operation;
   }
 
-  export class AssetType extends XDRStruct {
+  export class AssetType extends Struct {
     static fromXDR(xdr: Buffer): AssetType;
     static assetTypeNative(): AssetType;
     static assetTypeCreditAlphanum4(): AssetType;
@@ -21,7 +16,10 @@ declare namespace xdr {
     name: string;
   }
 
-  export class Asset extends XDRStruct {
+  export class AssetCode4 extends Opaque {}
+  export class AssetCode12 extends Opaque {}
+
+  export class Asset extends Struct {
     constructor(xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12', xdrType: AssetAlphaNum4 | AssetAlphaNum12)
     static fromXDR(xdr: Buffer): Asset;
     static assetTypeNative(): Asset;
@@ -30,28 +28,28 @@ declare namespace xdr {
     switch(): AssetType;
   }
 
-  export abstract class AbstractAssetAlphaNum extends XDRStruct {
+  export abstract class AbstractAssetAlphaNum<TAssetCode extends Void | AssetCode4 | AssetCode12 = Void | AssetCode4 | AssetCode12> extends Struct {
     constructor(attributes: {
       assetCode: string,
       issuer: any,
     })
-    assetCode(): any;
+    assetCode(): TAssetCode;
     issuer(): any;
   }
-  export class AssetAlphaNum4 extends AbstractAssetAlphaNum {
+  export class AssetAlphaNum4 extends AbstractAssetAlphaNum<AssetCode4> {
   }
-  export class AssetAlphaNum12 extends AbstractAssetAlphaNum {
+  export class AssetAlphaNum12 extends AbstractAssetAlphaNum<AssetCode12> {
   }
 
-  export class Memo extends XDRStruct {
+  export class Memo extends Struct {
     static fromXDR(xdr: Buffer): Memo;
   }
 
-  export class TransactionEnvelope extends XDRStruct {
+  export class TransactionEnvelope extends Struct {
     static fromXDR(xdr: Buffer): TransactionEnvelope;
   }
 
-  export class DecoratedSignature extends XDRStruct {
+  export class DecoratedSignature extends Struct {
     static fromXDR(xdr: Buffer): DecoratedSignature;
 
     constructor(keys: { hint: SignatureHint; signature: Signature });
@@ -60,20 +58,20 @@ declare namespace xdr {
     signature(): Buffer;
   }
 
-  export class PublicKeyTypeEd25519 extends XDRStruct {
+  export class PublicKeyTypeEd25519 extends Struct {
       constructor(somekindBuffer: Buffer);
   }
-  export class AccountId extends XDRStruct {
+  export class AccountId extends Struct {
     static publicKeyTypeEd25519: typeof PublicKeyTypeEd25519
   }
-  export class PublicKey extends XDRStruct {
+  export class PublicKey extends Struct {
     static publicKeyTypeEd25519: typeof PublicKeyTypeEd25519
   }
 
   export type SignatureHint = Buffer;
   export type Signature = Buffer;
 
-  export class TransactionResult extends XDRStruct {
+  export class TransactionResult extends Struct {
     static fromXDR(xdr: Buffer): TransactionResult;
   }
 }
