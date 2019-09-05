@@ -76,7 +76,7 @@ declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadru
   export class Opaque extends IOMixin {
     constructor(length: number);
   }
-  export class VarOpaque {
+  export class VarOpaque extends IOMixin {
     constructor(length?: number);
   }
   
@@ -107,19 +107,19 @@ declare module "js-xdr" {  // Array and VarArray.
   export class ChildStruct extends Struct {
   }
   
-  export class Enum {
+  export class Enum extends IOMixin {
     public name: string;
     public value: number;
     public fromName(string: string): Enum;
   }
   
   
-  export class Struct {
+  export class Struct extends IOMixin {
     public _attributes: object;
   }
   
   
-  export class Union {
+  export class Union extends IOMixin {
     public switch(): any;
     public armType(): any;
     public value(): any;
@@ -128,7 +128,7 @@ declare module "js-xdr" {  // Array and VarArray.
   
   
   
-  export class Option {
+  export class Option<T> extends IOMixin {
     public _childType: any;
   }
   
@@ -137,54 +137,54 @@ declare module "js-xdr" {  // Array and VarArray.
 
 declare module "js-xdr" {  // `XDR.config`.
 
-interface UnionConfigurationInt {
-  switchOn: Int,
-  switchName: string,
-  switches: [number, string | Void][],
-  arms: Record<string, Reference>
-}
-interface UnionConfigurationEnum {
-  switchOn: Reference,
-  switchName: string,
-  switches: [string, string | Void][],
-  arms: Record<string, Reference>
-  defaultArm?: IOMixin
-}
+  interface UnionConfigurationInt {
+    switchOn: Int,
+    switchName: string,
+    switches: [number, string | Void][],
+    arms: Record<string, Reference>
+  }
+  interface UnionConfigurationEnum {
+    switchOn: Reference,
+    switchName: string,
+    switches: [string, string | Void][],
+    arms: Record<string, Reference>
+    defaultArm?: IOMixin
+  }
 
-class Reference {
-  resolve(context: unknown): void
-}
-class TypeBuilder {
-  constructor(destination: {})
-  
-  enum(name: string, members: Record<string, number>): void
-  struct(name: string, members: [string, Reference | IOMixin][]): void
-  union(name: string, cfg: UnionConfigurationInt | UnionConfigurationEnum): void
-  typedef(name: string, cfg: Reference | IOMixin): void
-  const(name: string, cfg: number): void
-  
-  void(): Void;
-  bool(): Bool;
-  int(): Int;
-  hyper(): Hyper;
-  uint(): UnsignedInt;
-  uhyper(): UnsignedHyper;
-  float(): Float;
-  double(): Double;
-  quadruple(): Quadruple;
-  
-  string(length: number): Reference
-  opaque(length: number): Reference
-  varOpaque(length?: number): Reference
-  
-  array(childType: IOMixin, length: number): Reference
-  varArray(childType: IOMixin, maxLength: Reference | number): Reference
-  
-  option(childType: IOMixin): Reference
-  
-  lookup(name: string): Reference
-}
+  class Reference {
+    resolve(context: unknown): void
+  }
+  class TypeBuilder {
+    constructor(destination: {})
+    
+    enum(name: string, members: Record<string, number>): void
+    struct(name: string, members: [string, Reference | IOMixin][]): void
+    union(name: string, cfg: UnionConfigurationInt | UnionConfigurationEnum): void
+    typedef(name: string, cfg: Reference | IOMixin): void
+    const(name: string, cfg: number): void
+    
+    void(): Void;
+    bool(): Bool;
+    int(): Int;
+    hyper(): Hyper;
+    uint(): UnsignedInt;
+    uhyper(): UnsignedHyper;
+    float(): Float;
+    double(): Double;
+    quadruple(): Quadruple;
+    
+    string(length: number): Reference
+    opaque(length: number): Reference
+    varOpaque(length?: number): Reference
+    
+    array(childType: IOMixin, length: number): Reference
+    varArray(childType: IOMixin, maxLength: Reference | number): Reference
+    
+    option(childType: IOMixin): Reference
+    
+    lookup(name: string): Reference
+  }
 
-export function config(fn: (builder: TypeBuilder) => void, types?: any): any;
+  export function config(fn: (builder: TypeBuilder) => void, types?: any): any;
 
 }

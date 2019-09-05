@@ -1,5 +1,5 @@
 import { Operation as BaseOperation } from '../operation';
-import { Struct, Opaque, Void, Union, Hyper, UnsignedHyper, UnsignedInt, Int, VarOpaque, String as StringXDR, Bool } from 'js-xdr';
+import { Struct, Opaque, Void, Union, Hyper, UnsignedHyper, UnsignedInt, Int, VarOpaque, String as StringXDR, Bool, Option } from 'js-xdr';
 
 declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadruple, Bool, String, Opaque, VarOpaque.
 
@@ -18,9 +18,10 @@ declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadrupl
   export class AssetCode4 extends Opaque {}
   export class AssetCode12 extends Opaque {}
 
-  export class Asset extends Struct {
+  export class Asset extends Union {
+    static fromXDR(input: Buffer, format?: 'raw'): Asset
+    static fromXDR(input: string, format: 'hex' | 'base64'): Asset
     constructor(xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12', xdrType: AssetAlphaNum4 | AssetAlphaNum12)
-    static fromXDR(xdr: Buffer): Asset;
     static assetTypeNative(): Asset;
     alphaNum12(): AssetAlphaNum12;
     alphaNum4(): AssetAlphaNum4;
@@ -39,11 +40,15 @@ declare namespace xdr {  // Array and VarArray.
 
   // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
   export class Operation<T extends BaseOperation = BaseOperation> extends Struct {
-    static fromXDR(xdr: Buffer): Operation;
+    static fromXDR(input: Buffer, format?: 'raw'): Operation
+    static fromXDR(input: string, format: 'hex' | 'base64'): Operation
+    sourceAccount: Option<AccountId>
+    body: OperationBody
   }
 
   export class AssetType extends Struct {
-    static fromXDR(xdr: Buffer): AssetType;
+    static fromXDR(input: Buffer, format?: 'raw'): AssetType
+    static fromXDR(input: string, format: 'hex' | 'base64'): AssetType
     static assetTypeNative(): AssetType;
     static assetTypeCreditAlphanum4(): AssetType;
     static assetTypeCreditAlphanum12(): AssetType;
@@ -58,16 +63,34 @@ declare namespace xdr {  // Array and VarArray.
     issuer(): any;
   }
 
-  export class Memo extends Struct {
-    static fromXDR(xdr: Buffer): Memo;
+  export class Memo extends Union {
+    static fromXDR(input: Buffer, format?: 'raw'): Memo
+    static fromXDR(input: string, format: 'hex' | 'base64'): Memo
+    // switchOn: xdr.lookup("MemoType"),
+    // switchName: "type",
+    // switches: [
+    //   ["memoNone", xdr.void()],
+    //   ["memoText", "text"],
+    //   ["memoId", "id"],
+    //   ["memoHash", "hash"],
+    //   ["memoReturn", "retHash"],
+    // ],
+    // arms: {
+    //   text: xdr.string(28),
+    //   id: xdr.lookup("Uint64"),
+    //   hash: xdr.lookup("Hash"),
+    //   retHash: xdr.lookup("Hash"),
+    // },
   }
 
   export class TransactionEnvelope extends Struct {
-    static fromXDR(xdr: Buffer): TransactionEnvelope;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionEnvelope
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionEnvelope
   }
 
   export class DecoratedSignature extends Struct {
-    static fromXDR(xdr: Buffer): DecoratedSignature;
+    static fromXDR(input: Buffer, format?: 'raw'): DecoratedSignature
+    static fromXDR(input: string, format: 'hex' | 'base64'): DecoratedSignature
 
     constructor(keys: { hint: SignatureHint; signature: Signature });
 
@@ -76,8 +99,8 @@ declare namespace xdr {  // Array and VarArray.
   }
 
   export class PublicKeyTypeEd25519 extends Struct {
-    static fromXDR(xdr: Buffer): PublicKeyTypeEd25519;
-    toXDR(): Buffer;
+    static fromXDR(input: Buffer, format?: 'raw'): PublicKeyTypeEd25519
+    static fromXDR(input: string, format: 'hex' | 'base64'): PublicKeyTypeEd25519
     constructor(somekindBuffer: Buffer);
   }
 
@@ -117,7 +140,8 @@ declare namespace xdr {  // Array and VarArray.
 
 
   export class TransactionResult extends Struct {
-    static fromXDR(xdr: Buffer): TransactionResult;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResult
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult
   }
 
   export class AllowTrustOpAsset extends Union {}
