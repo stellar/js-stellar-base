@@ -88,14 +88,18 @@ declare namespace xdr {  // Array and VarArray.
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionEnvelope
   }
 
-  export class DecoratedSignature extends Struct {
+  export class DecoratedSignature extends Struct<DecoratedSignature.IAttributes> {
     static fromXDR(input: Buffer, format?: 'raw'): DecoratedSignature
     static fromXDR(input: string, format: 'hex' | 'base64'): DecoratedSignature
 
-    constructor(keys: { hint: SignatureHint; signature: Signature });
-
     hint(): SignatureHint;
-    signature(): Buffer;
+    signature(): Signature;
+  }
+  export namespace DecoratedSignature {
+    export interface IAttributes {
+      hint: SignatureHint
+      signature: Signature
+    }
   }
 
   export class PublicKeyTypeEd25519 extends Struct {

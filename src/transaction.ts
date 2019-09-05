@@ -30,7 +30,7 @@ export class Transaction {
     maxTime: string,
   }
   public readonly operations: any[]
-  public readonly signatures: any[]
+  public readonly signatures: xdr.DecoratedSignature[]
 
   public constructor(envelope: any) {
     if (typeof envelope === 'string') {

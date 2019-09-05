@@ -114,8 +114,9 @@ declare module "js-xdr" {  // Array and VarArray.
   }
   
   
-  export class Struct extends IOMixin {
-    public _attributes: object;
+  export class Struct<TAttributes extends object = object> extends IOMixin {
+    constructor(attributes: TAttributes)
+    public _attributes: TAttributes;
   }
   
   
