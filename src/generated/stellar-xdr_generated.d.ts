@@ -18,7 +18,7 @@ declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadrupl
   export class AssetCode4 extends Opaque {}
   export class AssetCode12 extends Opaque {}
 
-  export class Asset extends Union {
+  export class Asset extends Union<typeof Asset> {
     static fromXDR(input: Buffer, format?: 'raw'): Asset
     static fromXDR(input: string, format: 'hex' | 'base64'): Asset
     constructor(xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12', xdrType: AssetAlphaNum4 | AssetAlphaNum12)
@@ -77,7 +77,7 @@ declare namespace xdr {  // Array and VarArray.
     static Return(): Enum<'Return', 4>
   }
 
-  export class Memo extends Union {
+  export class Memo extends Union<typeof Memo> {
     static fromXDR(input: Buffer, format?: 'raw'): Memo
     static fromXDR(input: string, format: 'hex' | 'base64'): Memo
     static memoNone(): Memo
@@ -109,7 +109,7 @@ declare namespace xdr {  // Array and VarArray.
     maxTime(): TimePoint
   }
 
-  export class TransactionExt extends Union {}
+  export class TransactionExt extends Union<typeof TransactionExt> {}
 
   export class Transaction extends Struct<Transaction> {
     static fromXDR(input: Buffer, format?: 'raw'): Transaction
@@ -151,38 +151,46 @@ declare namespace xdr {  // Array and VarArray.
     constructor(somekindBuffer: Buffer);
   }
 
-  export class Price extends Struct<Price> {}
+  export class Price extends Struct<Price> {
+    n(): Int32
+    d(): Int32
+  }
 
-  export class OperationBody extends Union {}
-
-  export class PublicKey extends Union {
+  export class PublicKey extends Union<typeof PublicKey> {
     static publicKeyTypeEd25519: typeof PublicKeyTypeEd25519
     ed25519(): Uint256
   }
   export class AccountId extends PublicKey {}
 
-  export class SignerKey extends Union {
-    // switchOn: xdr.lookup("SignerKeyType"),
-    // switchName: "type",
-    // switches: [
-    //   ["signerKeyTypeEd25519", "ed25519"],
-    //   ["signerKeyTypePreAuthTx", "preAuthTx"],
-    //   ["signerKeyTypeHashX", "hashX"],
-    // ],
-    // arms: {
-    //   ed25519: xdr.lookup("Uint256"),
-    //   preAuthTx: xdr.lookup("Uint256"),
-    //   hashX: xdr.lookup("Uint256"),
-    // },
+
+
+  export class SignerKey extends Union<typeof SignerKey> {
+    static signerKeyTypeEd25519(...args: ConstructorParameters<typeof Uint256>): Uint256
+    static signerKeyTypePreAuthTx(...args: ConstructorParameters<typeof Uint256>): Uint256
+    static signerKeyTypeHashX(...args: ConstructorParameters<typeof Uint256>): Uint256
+    ed25519(): Uint256
+    preAuthTx(): Uint256
+    hashX(): Uint256
   }
 
+  export class Signer extends Struct<Signer> {
+    static fromXDR(input: Buffer, format?: 'raw'): Signer
+    static fromXDR(input: string, format: 'hex' | 'base64'): Signer
+    key(): SignerKey
+    weight(): Uint32
+  }
 
   export class TransactionResult extends Struct<TransactionResult> {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResult
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult
   }
 
-  export class AllowTrustOpAsset extends Union {}
+  export class AllowTrustOpAsset extends Union<typeof AllowTrustOpAsset> {
+    static assetTypeCreditAlphanum4(...args: ConstructorParameters<typeof AssetCode4>): AssetCode4
+    static assetTypeCreditAlphanum12(...args: ConstructorParameters<typeof AssetCode12>): AssetCode12
+    assetCode4(): AssetCode4
+    assetCode12(): AssetCode12
+  }
 
   export class AllowTrust extends Struct<AllowTrust> {}
 
@@ -271,6 +279,35 @@ declare namespace xdr {  // Operations
   }
 
 
+  export class OperationBody extends Union<typeof OperationBody> {
+    // switchOn: xdr.lookup("OperationType"),
+    // switchName: "type",
+    static createAccount(...args: ConstructorParameters<typeof CreateAccountOp>): CreateAccountOp
+    static payment(...args: ConstructorParameters<typeof PaymentOp>): PaymentOp
+    static pathPayment(...args: ConstructorParameters<typeof PathPaymentOp>): PathPaymentOp
+    static manageSellOffer(...args: ConstructorParameters<typeof ManageSellOfferOp>): ManageSellOfferOp
+    static createPassiveSellOffer(...args: ConstructorParameters<typeof CreatePassiveSellOfferOp>): CreatePassiveSellOfferOp
+    static setOption(...args: ConstructorParameters<typeof SetOptionsOp>): SetOptionsOp
+    static changeTrust(...args: ConstructorParameters<typeof ChangeTrustOp>): ChangeTrustOp
+    static allowTrust(...args: ConstructorParameters<typeof AllowTrustOp>): AllowTrustOp
+    static accountMerge(...args: ConstructorParameters<typeof AccountId>): AccountId
+    static inflation(...args: ConstructorParameters<typeof Void>): Void
+    static manageDatum(...args: ConstructorParameters<typeof ManageDataOp>): ManageDataOp
+    static bumpSequence(...args: ConstructorParameters<typeof BumpSequenceOp>): BumpSequenceOp
+    static manageBuyOffer(...args: ConstructorParameters<typeof ManageBuyOfferOp>): ManageBuyOfferOp
+    createAccountOp(): CreateAccountOp
+    paymentOp(): PaymentOp
+    pathPaymentOp(): PathPaymentOp
+    manageSellOfferOp(): ManageSellOfferOp
+    createPassiveSellOfferOp(): CreatePassiveSellOfferOp
+    setOptionsOp(): SetOptionsOp
+    changeTrustOp(): ChangeTrustOp
+    allowTrustOp(): AllowTrustOp
+    destination(): AccountId
+    manageDataOp(): ManageDataOp
+    bumpSequenceOp(): BumpSequenceOp
+    manageBuyOfferOp(): ManageBuyOfferOp
+  }
 
 }
 

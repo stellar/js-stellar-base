@@ -125,7 +125,7 @@ export abstract class BaseOperation {
    * @returns {object} XDR price object
    */
   public static _toXDRPrice(price: any) {
-    let xdrObject;
+    let xdrObject: xdr.Price;
     if (price.n && price.d) {
       xdrObject = new xdr.Price(price);
     } else {
@@ -645,7 +645,7 @@ export abstract class BaseOperation {
         signer.weight,
         weightCheckFunction
       );
-      let key;
+      let key: xdr.Uint256;
 
       let setValues = 0;
 

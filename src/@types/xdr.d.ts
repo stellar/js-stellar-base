@@ -135,7 +135,39 @@ declare module "js-xdr" {  // Array and VarArray.
     }
   }
 
-  export class Union extends IOMixin {
+
+  /**
+   * Example definition:
+   * ```ts
+   * xdr.union("AllowTrustOpAsset", {
+   *   switchOn: xdr.lookup("AssetType"),
+   *   switchName: "type",
+   *   switches: [
+   *     ["assetTypeCreditAlphanum4", "assetCode4"],
+   *     ["assetTypeCreditAlphanum12", "assetCode12"],
+   *   ],
+   *   arms: {
+   *     assetCode4: xdr.lookup("AssetCode4"),
+   *     assetCode12: xdr.lookup("AssetCode12"),
+   *   },
+   * });
+   * ```
+   * Example matching types:
+   * ```ts
+   * export class AllowTrustOpAsset extends Union<typeof AllowTrustOpAsset> {
+   *   static assetTypeCreditAlphanum4(...args: ConstructorParameters<typeof AssetCode4>): AssetCode4
+   *   static assetTypeCreditAlphanum12(...args: ConstructorParameters<typeof AssetCode12>): AssetCode12
+   *   assetCode4(): AssetCode4
+   *   assetCode12(): AssetCode12
+   * }
+   * ```
+   */
+  export class Union<T extends new (...args: any) => any> extends IOMixin {
+    /**
+     * @param {magic} switches Instance of a class on T static property.
+     * @memberof Union
+     */
+    constructor(switches: InstanceType<Extract<T[keyof Omit<T, 'fromXDR' | 'toXDR'>], new (...args: any) => any>>)
     public switch(): any;
     public armType(): any;
     public value(): any;
