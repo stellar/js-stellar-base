@@ -6,184 +6,185 @@
 
 declare module "js-xdr" {  // `IOMixin`.
 
-    export class IOMixin {
-        static toXDR(val: Buffer): Buffer
-        /**
-         * **REMEMBER TO REPLACE** static method `fromXDR` to return the appropriate class.
-         */
-        static fromXDR(input: Buffer, format?: 'raw'): IOMixin
-        static fromXDR(input: string, format: 'hex' | 'base64'): IOMixin
-        toXDR(format?: 'raw'): Buffer
-        toXDR(format: 'hex' | 'base64'): string
-    }
+export class IOMixin {
+  static toXDR(val: Buffer): Buffer
+  /**
+  * **REMEMBER TO REPLACE** static method `fromXDR` to return the appropriate class.
+  */
+  static fromXDR(input: Buffer, format?: 'raw'): IOMixin
+  static fromXDR(input: string, format: 'hex' | 'base64'): IOMixin
+  toXDR(format?: 'raw'): Buffer
+  toXDR(format: 'hex' | 'base64'): string
+}
 }
 
 declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadruple, Bool, String, Opaque, VarOpaque.
-    import Long from "long";
-    import { IOMixin } from "js-xdr";
-
-    export class Void {
-        static fromXDR(input: Buffer, format?: 'raw'): Void
-        static fromXDR(input: string, format: 'hex' | 'base64'): Void
-    }
-
-    export class Hyper extends Long implements IOMixin {
-        static MAX_VALUE: Hyper
-        static MIN_VALUE: Hyper
-        static toXDR(val: Buffer): Buffer
-        static fromXDR(input: Buffer, format?: 'raw'): Hyper
-        static fromXDR(input: string, format: 'hex' | 'base64'): Hyper
-        toXDR(format?: 'raw'): Buffer
-        toXDR(format: 'hex' | 'base64'): string
-        isValid(value: Buffer): boolean
-    }
-    export class UnsignedHyper extends Long implements IOMixin {
-        static MAX_VALUE: Hyper
-        static MIN_VALUE: Hyper
-        static toXDR(val: Buffer): Buffer
-        static fromXDR(input: Buffer, format?: 'raw'): UnsignedHyper
-        static fromXDR(input: string, format: 'hex' | 'base64'): UnsignedHyper
-        toXDR(format?: 'raw'): Buffer
-        toXDR(format: 'hex' | 'base64'): string
-    }
-    export class Int extends IOMixin {
-        static MAX_VALUE: number
-        static MIN_VALUE: number
-        static fromXDR(input: Buffer, format?: 'raw'): Int
-        static fromXDR(input: string, format: 'hex' | 'base64'): Int
-    }
-    export class UnsignedInt extends IOMixin {
-        static MAX_VALUE: number
-        static MIN_VALUE: number
-        static fromXDR(input: Buffer, format?: 'raw'): Int
-        static fromXDR(input: string, format: 'hex' | 'base64'): Int
-    }
-    export class Float extends IOMixin {
-    }
-    export class Double extends IOMixin {
-    }
-    export class Quadruple extends IOMixin {
-    }
-
-    export class Bool extends IOMixin {
-    }
-
-    export class String extends IOMixin {
-        constructor(maxLength?: number);
-    }
-
-    export class Opaque extends IOMixin {
-        constructor(length: number);
-    }
-    export class VarOpaque {
-        constructor(length?: number);
-    }
-
+  import Long from "long";
+  import { IOMixin } from "js-xdr";
+  
+  export class Void {
+    static fromXDR(input: Buffer, format?: 'raw'): Void
+    static fromXDR(input: string, format: 'hex' | 'base64'): Void
+  }
+  
+  export class Hyper extends Long implements IOMixin {
+    static MAX_VALUE: Hyper
+    static MIN_VALUE: Hyper
+    static toXDR(val: Buffer): Buffer
+    static fromXDR(input: Buffer, format?: 'raw'): Hyper
+    static fromXDR(input: string, format: 'hex' | 'base64'): Hyper
+    toXDR(format?: 'raw'): Buffer
+    toXDR(format: 'hex' | 'base64'): string
+    isValid(value: Buffer): boolean
+    static fromString( str: string, unsigned?: boolean | number, radix?: number ): Hyper;
+  }
+  export class UnsignedHyper extends Long implements IOMixin {
+    static MAX_VALUE: Hyper
+    static MIN_VALUE: Hyper
+    static toXDR(val: Buffer): Buffer
+    static fromXDR(input: Buffer, format?: 'raw'): UnsignedHyper
+    static fromXDR(input: string, format: 'hex' | 'base64'): UnsignedHyper
+    toXDR(format?: 'raw'): Buffer
+    toXDR(format: 'hex' | 'base64'): string
+  }
+  export class Int extends IOMixin {
+    static MAX_VALUE: number
+    static MIN_VALUE: number
+    static fromXDR(input: Buffer, format?: 'raw'): Int
+    static fromXDR(input: string, format: 'hex' | 'base64'): Int
+  }
+  export class UnsignedInt extends IOMixin {
+    static MAX_VALUE: number
+    static MIN_VALUE: number
+    static fromXDR(input: Buffer, format?: 'raw'): Int
+    static fromXDR(input: string, format: 'hex' | 'base64'): Int
+  }
+  export class Float extends IOMixin {
+  }
+  export class Double extends IOMixin {
+  }
+  export class Quadruple extends IOMixin {
+  }
+  
+  export class Bool extends IOMixin {
+  }
+  
+  export class String extends IOMixin {
+    constructor(maxLength?: number);
+  }
+  
+  export class Opaque extends IOMixin {
+    constructor(length: number);
+  }
+  export class VarOpaque {
+    constructor(length?: number);
+  }
+  
 }
 
 declare module "js-xdr" {  // Array and VarArray.
-
-    // export * from './array';
-    // export * from './var-array';
-
-    // export * from './option';
-
-    // export * from './enum';
-    // export * from './struct';
-    // export * from './union';
-
-
-    export class Array<T extends IOMixin> {
-        constructor(childType: T, length: number);
-        public _childType: T;
-        public _length: number;
-    }
-    export class VarArray {
-        public _childType: any;
-        public _length: number;
-    }
-
-    export class ChildStruct extends Struct {
-    }
-
-    export class Enum {
-        public name: string;
-        public value: number;
-        public fromName(string: string): Enum;
-    }
-
-
-    export class Struct {
-        public _attributes: object;
-    }
-
-
-    export class Union {
-        public switch(): any;
-        public armType(): any;
-        public value(): any;
-        public arm(): any;
-    }
-
-
-
-    export class Option {
-        public _childType: any;
-    }
-
-
+  
+  // export * from './array';
+  // export * from './var-array';
+  
+  // export * from './option';
+  
+  // export * from './enum';
+  // export * from './struct';
+  // export * from './union';
+  
+  
+  export class Array<T extends IOMixin> {
+    constructor(childType: T, length: number);
+    public _childType: T;
+    public _length: number;
+  }
+  export class VarArray {
+    public _childType: any;
+    public _length: number;
+  }
+  
+  export class ChildStruct extends Struct {
+  }
+  
+  export class Enum {
+    public name: string;
+    public value: number;
+    public fromName(string: string): Enum;
+  }
+  
+  
+  export class Struct {
+    public _attributes: object;
+  }
+  
+  
+  export class Union {
+    public switch(): any;
+    public armType(): any;
+    public value(): any;
+    public arm(): any;
+  }
+  
+  
+  
+  export class Option {
+    public _childType: any;
+  }
+  
+  
 }
 
 declare module "js-xdr" {  // `XDR.config`.
 
-    interface UnionConfigurationInt {
-        switchOn: Int,
-        switchName: string,
-        switches: [number, string | Void][],
-        arms: Record<string, Reference>
-    }
-    interface UnionConfigurationEnum {
-        switchOn: Reference,
-        switchName: string,
-        switches: [string, string | Void][],
-        arms: Record<string, Reference>
-        defaultArm?: IOMixin
-    }
+interface UnionConfigurationInt {
+  switchOn: Int,
+  switchName: string,
+  switches: [number, string | Void][],
+  arms: Record<string, Reference>
+}
+interface UnionConfigurationEnum {
+  switchOn: Reference,
+  switchName: string,
+  switches: [string, string | Void][],
+  arms: Record<string, Reference>
+  defaultArm?: IOMixin
+}
 
-    class Reference {
-        resolve(context: unknown): void
-    }
-    class TypeBuilder {
-        constructor(destination: {})
+class Reference {
+  resolve(context: unknown): void
+}
+class TypeBuilder {
+  constructor(destination: {})
+  
+  enum(name: string, members: Record<string, number>): void
+  struct(name: string, members: [string, Reference | IOMixin][]): void
+  union(name: string, cfg: UnionConfigurationInt | UnionConfigurationEnum): void
+  typedef(name: string, cfg: Reference | IOMixin): void
+  const(name: string, cfg: number): void
+  
+  void(): Void;
+  bool(): Bool;
+  int(): Int;
+  hyper(): Hyper;
+  uint(): UnsignedInt;
+  uhyper(): UnsignedHyper;
+  float(): Float;
+  double(): Double;
+  quadruple(): Quadruple;
+  
+  string(length: number): Reference
+  opaque(length: number): Reference
+  varOpaque(length?: number): Reference
+  
+  array(childType: IOMixin, length: number): Reference
+  varArray(childType: IOMixin, maxLength: Reference | number): Reference
+  
+  option(childType: IOMixin): Reference
+  
+  lookup(name: string): Reference
+}
 
-        enum(name: string, members: Record<string, number>): void
-        struct(name: string, members: [string, Reference | IOMixin][]): void
-        union(name: string, cfg: UnionConfigurationInt | UnionConfigurationEnum): void
-        typedef(name: string, cfg: Reference | IOMixin): void
-        const(name: string, cfg: number): void
-
-        void(): Void;
-        bool(): Bool;
-        int(): Int;
-        hyper(): Hyper;
-        uint(): UnsignedInt;
-        uhyper(): UnsignedHyper;
-        float(): Float;
-        double(): Double;
-        quadruple(): Quadruple;
-
-        string(length: number): Reference
-        opaque(length: number): Reference
-        varOpaque(length?: number): Reference
-
-        array(childType: IOMixin, length: number): Reference
-        varArray(childType: IOMixin, maxLength: Reference | number): Reference
-
-        option(childType: IOMixin): Reference
-
-        lookup(name: string): Reference
-    }
-
-    export function config(fn: (builder: TypeBuilder) => void, types?: any): any;
+export function config(fn: (builder: TypeBuilder) => void, types?: any): any;
 
 }
