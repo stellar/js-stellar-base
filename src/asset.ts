@@ -76,7 +76,7 @@ export class Asset {
       case xdr.AssetType.assetTypeCreditAlphanum12():
         anum = anum || assetXdr.alphaNum12();
         issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
-        code = trimEnd(anum.assetCode(), '\0');
+        code = trimEnd(String(anum.assetCode()), '\0');
         return new this(code, issuer);
       default:
         throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
