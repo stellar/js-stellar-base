@@ -3,7 +3,7 @@
 // Definitions by: Adolfo Builes <https://github.com/abuiles>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.4.1
-/// <reference types="utility-types" />
+
 
 declare module "js-xdr" {  // `IOMixin`.
 
