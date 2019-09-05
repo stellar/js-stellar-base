@@ -4,7 +4,8 @@ import BigNumber from 'bignumber.js';
 import trimEnd from 'lodash/trimEnd';
 import { Asset } from './asset';
 import { StrKey } from './strkey';
-import { BaseOperation } from './operations/index';
+import { BaseOperation } from './operations';
+import { Operation as OperationNS } from './@types/operation';
 
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
@@ -62,7 +63,7 @@ export class Operation extends BaseOperation {
    * @param {xdr.Operation} operation - An XDR Operation.
    * @return {Operation}
    */
-  static fromXDRObject(operation) {
+  static fromXDRObject(operation): OperationNS {
     function accountIdtoAddress(accountId) {
       return StrKey.encodeEd25519PublicKey(accountId.ed25519());
     }

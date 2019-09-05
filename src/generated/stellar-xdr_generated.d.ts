@@ -1,5 +1,5 @@
 import { Operation as BaseOperation } from '../operation';
-import { Struct, Opaque, Void, Union, Hyper, UnsignedHyper, UnsignedInt, Int, VarOpaque, String as StringXDR, Bool, Option, Enum } from 'js-xdr';
+import { Struct, Opaque, Void, Union, Hyper, UnsignedHyper, UnsignedInt, Int, VarOpaque, String as StringXDR, Bool, Option, Enum, VarArray } from 'js-xdr';
 
 declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadruple, Bool, String, Opaque, VarOpaque.
 
@@ -63,12 +63,18 @@ declare namespace xdr {  // Array and VarArray.
     issuer(): any;
   }
 
+  export class EnvelopeType extends Enum<never, never> {
+    static envelopeTypeScp(): Enum<'envelopeTypeScp', 1>
+    static envelopeTypeTx(): Enum<'envelopeTypeTx', 2>
+    static envelopeTypeAuth(): Enum<'envelopeTypeAuth', 3>
+    static envelopeTypeScpvalue(): Enum<'envelopeTypeScpvalue', 4>
+  }
   export class MemoType extends Enum<never, never> {
-    static None: Enum<'None', 0>
-    static Text: Enum<'Text', 1>
-    static Id: Enum<'Id', 2>
-    static Hash: Enum<'Hash', 3>
-    static Return: Enum<'Return', 4>
+    static None(): Enum<'None', 0>
+    static Text(): Enum<'Text', 1>
+    static Id(): Enum<'Id', 2>
+    static Hash(): Enum<'Hash', 3>
+    static Return(): Enum<'Return', 4>
   }
 
   export class Memo extends Union {
@@ -96,9 +102,32 @@ declare namespace xdr {  // Array and VarArray.
     // },
   }
 
+  export class TimeBounds extends Struct<TimeBounds> {
+    static fromXDR(input: Buffer, format?: 'raw'): TimeBounds
+    static fromXDR(input: string, format: 'hex' | 'base64'): TimeBounds
+    minTime(): TimePoint
+    maxTime(): TimePoint
+  }
+
+  export class TransactionExt extends Union {}
+
+  export class Transaction extends Struct<Transaction> {
+    static fromXDR(input: Buffer, format?: 'raw'): Transaction
+    static fromXDR(input: string, format: 'hex' | 'base64'): Transaction
+    sourceAccount(): AccountId
+    fee(): Uint32
+    seqNum(): SequenceNumber
+    timeBounds(): Option<TimeBounds>
+    memo(): Memo
+    operations(): VarArray<Operation>
+    ext(): TransactionExt
+  }
+
   export class TransactionEnvelope extends Struct<TransactionEnvelope> {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionEnvelope
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionEnvelope
+    tx(): Transaction
+    signatures(): VarArray<DecoratedSignature>
   }
   type asdf<TAttributes extends object> = {[key in keyof TAttributes]: () => TAttributes[key]}
 
@@ -124,20 +153,11 @@ declare namespace xdr {  // Array and VarArray.
 
   export class Price extends Struct<Price> {}
 
-  export class OperationBody extends Union {
-
-  }
+  export class OperationBody extends Union {}
 
   export class PublicKey extends Union {
     static publicKeyTypeEd25519: typeof PublicKeyTypeEd25519
-    // switchOn: xdr.lookup("PublicKeyType"),
-    // switchName: "type",
-    // switches: [
-    //   ["publicKeyTypeEd25519", "ed25519"],
-    // ],
-    // arms: {
-    //   ed25519: xdr.lookup("Uint256"),
-    // },
+    ed25519(): Uint256
   }
   export class AccountId extends PublicKey {}
 

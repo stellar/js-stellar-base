@@ -75,8 +75,12 @@ declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadru
     constructor(maxLength?: number);
   }
 
-  export class Opaque extends IOMixin {
+  export class Opaque extends Buffer implements IOMixin {
     constructor(length: number);
+    static fromXDR(input: Buffer, format?: 'raw'): Opaque
+    static fromXDR(input: string, format: 'hex' | 'base64'): Opaque
+    toXDR(format?: 'raw'): Buffer
+    toXDR(format: 'hex' | 'base64'): string
   }
   export class VarOpaque extends IOMixin {
     constructor(length?: number);
@@ -91,9 +95,9 @@ declare module "js-xdr" {  // Array and VarArray.
     public _childType: T;
     public _length: number;
   }
-  export class VarArray {
-    public _childType: any;
-    public _length: number;
+  export class VarArray<T extends IOMixin> {
+    static _childType: any;
+    static _length: number;
   }
 
   export class ChildStruct extends Struct {
@@ -140,11 +144,7 @@ declare module "js-xdr" {  // Array and VarArray.
 
 
 
-  export class Option<T> extends IOMixin {
-    public _childType: any;
-  }
-
-
+  export type Option<T extends IOMixin> = T | undefined
 }
 
 declare module "js-xdr" {  // `XDR.config`.
