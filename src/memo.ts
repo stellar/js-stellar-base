@@ -5,45 +5,44 @@ import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from './generated/stellar-xdr_generated';
 
-/**
- * Type of {@link Memo}.
- */
-export const MemoNone = 'none';
-/**
- * Type of {@link Memo}.
- */
-export const MemoID = 'id';
-/**
- * Type of {@link Memo}.
- */
-export const MemoText = 'text';
-/**
- * Type of {@link Memo}.
- */
-export const MemoHash = 'hash';
-/**
- * Type of {@link Memo}.
- */
-export const MemoReturn = 'return';
-
-export namespace MemoType {
-  export type None = typeof MemoNone;
-  export type ID = typeof MemoID;
-  export type Text = typeof MemoText;
-  export type Hash = typeof MemoHash;
-  export type Return = typeof MemoReturn;
+export enum MemoType {
+  None = 'none',
+  Text = 'text',
+  Id = 'id',
+  Hash = 'hash',
+  Return = 'return',
 }
 
-export type MemoType =
-  | MemoType.None
-  | MemoType.ID
-  | MemoType.Text
-  | MemoType.Hash
-  | MemoType.Return;
+/**
+ * Type of {@link Memo}.
+ * @deprecated use `(MemoType.None)` instead.
+ */
+export const MemoNone = (MemoType.None);
+/**
+ * Type of {@link Memo}.
+ * @deprecated use `MemoType.Id` instead.
+ */
+export const MemoID = MemoType.Id;
+/**
+ * Type of {@link Memo}.
+ * @deprecated use `MemoType.Text` instead.
+ */
+export const MemoText = MemoType.Text;
+/**
+ * Type of {@link Memo}.
+ * @deprecated use `MemoType.Hash` instead.
+ */
+export const MemoHash = MemoType.Hash;
+/**
+ * Type of {@link Memo}.
+ * @deprecated use `MemoType.Return` instead.
+ */
+export const MemoReturn = MemoType.Return;
+
 
 export type MemoValue<T> =
   T extends MemoType.None ? null :
-  T extends MemoType.ID ? string :
+  T extends MemoType.Id ? string :
   T extends MemoType.Text ? string | Buffer : // github.com/stellar/js-stellar-base/issues/152
   T extends MemoType.Hash ? string | Buffer :
   T extends MemoType.Return ? string | Buffer
@@ -52,8 +51,8 @@ export type MemoValue<T> =
 /**
  * `Memo` represents memos attached to transactions.
  *
- * @param {string} memoType - `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
- * @param {*} value - `string` for `MemoID`, `MemoText`, buffer of hex string for `MemoHash` or `MemoReturn`
+ * @param {string} memoType - `(MemoType.None)`, `MemoType.Id`, `MemoType.Text`, `MemoType.Hash` or `MemoType.Return`
+ * @param {*} value - `string` for `MemoType.Id`, `MemoType.Text`, buffer of hex string for `MemoType.Hash` or `MemoType.Return`
  * @see [Transactions concept](https://www.stellar.org/developers/learn/concepts/transactions.html)
  * @class Memo
  */
@@ -66,16 +65,16 @@ export class Memo<T extends MemoType = MemoType> {
     this._value = value as MemoValue<T>;
 
     switch (this._type) {
-      case MemoNone:
+      case (MemoType.None):
         break;
-      case MemoID:
-        Memo._validateIdValue(value as MemoValue<MemoType.ID>);
+      case MemoType.Id:
+        Memo._validateIdValue(value as MemoValue<MemoType.Id>);
         break;
-      case MemoText:
+      case MemoType.Text:
         Memo._validateTextValue(value as MemoValue<MemoType.Text>);
         break;
-      case MemoHash:
-      case MemoReturn:
+      case MemoType.Hash:
+      case MemoType.Return:
         Memo._validateHashValue(value as MemoValue<MemoType.Hash>);
         // We want MemoHash and MemoReturn to have Buffer as a value
         if (isString(value)) {
@@ -88,7 +87,7 @@ export class Memo<T extends MemoType = MemoType> {
   }
 
   /**
-   * Contains memo type: `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
+   * Contains memo type: `(MemoType.None)`, `MemoType.Id`, `MemoType.Text`, `MemoType.Hash` or `MemoType.Return`.
    */
   get type(): T {
     return clone(this._type);
@@ -100,20 +99,20 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Contains memo value:
-   * * `null` for `MemoNone`,
-   * * `string` for `MemoID`,
-   * * `Buffer` for `MemoText` after decoding using `fromXDRObject`, original value otherwise,
-   * * `Buffer` for `MemoHash`, `MemoReturn`.
+   * * `null` for `(MemoType.None)`,
+   * * `string` for `MemoType.Id`,
+   * * `Buffer` for `MemoType.Text` after decoding using `fromXDRObject`, original value otherwise,
+   * * `Buffer` for `MemoType.Hash`, `MemoType.Return`.
    */
   get value(): MemoValue<T> {
     switch (this._type) {
-      case MemoNone:
+      case (MemoType.None):
         return null as MemoValue<T>;
-      case MemoID:
+      case MemoType.Id:
       case MemoText:
         return clone(this._value);
-      case MemoHash:
-      case MemoReturn:
+      case MemoType.Hash:
+      case MemoType.Return:
         return Buffer.from(this._value as string) as MemoValue<T>;
       default:
         throw new Error('Invalid memo type');
@@ -124,7 +123,7 @@ export class Memo<T extends MemoType = MemoType> {
     throw new Error('Memo is immutable');
   }
 
-  static _validateIdValue(value: MemoValue<MemoType.ID>) {
+  static _validateIdValue(value: MemoValue<MemoType.Id>) {
     const error = new Error(`Expects a int64 as a string. Got ${value}`);
 
     if (!isString(value)) {
@@ -182,47 +181,47 @@ export class Memo<T extends MemoType = MemoType> {
   }
 
   /**
-   * Returns an empty memo (`MemoNone`).
+   * Returns an empty memo (`(MemoType.None)`).
    * @returns {Memo}
    */
   static none(): Memo {
-    return new Memo(MemoNone);
+    return new Memo((MemoType.None));
   }
 
   /**
-   * Creates and returns a `MemoText` memo.
+   * Creates and returns a `MemoType.Text` memo.
    * @param {string} text - memo text
    * @returns {Memo}
    */
   static text(text: MemoValue<MemoType.Text>): Memo {
-    return new Memo(MemoText, text);
+    return new Memo(MemoType.Text, text);
   }
 
   /**
-   * Creates and returns a `MemoID` memo.
+   * Creates and returns a `MemoType.Id` memo.
    * @param {string} id - 64-bit number represented as a string
    * @returns {Memo}
    */
-  static id(id: MemoValue<MemoType.ID>): Memo {
-    return new Memo(MemoID, id);
+  static id(id: MemoValue<MemoType.Id>): Memo {
+    return new Memo(MemoType.Id, id);
   }
 
   /**
-   * Creates and returns a `MemoHash` memo.
+   * Creates and returns a `MemoType.Hash` memo.
    * @param {array|string} hash - 32 byte hash or hex encoded string
    * @returns {Memo}
    */
   static hash(hash: MemoValue<MemoType.Hash>): Memo {
-    return new Memo(MemoHash, hash);
+    return new Memo(MemoType.Hash, hash);
   }
 
   /**
-   * Creates and returns a `MemoReturn` memo.
+   * Creates and returns a `MemoType.Return` memo.
    * @param {array|string} hash - 32 byte hash or hex encoded string
    * @returns {Memo}
    */
   static return(hash: MemoValue<MemoType.Return>): Memo {
-    return new Memo(MemoReturn, hash);
+    return new Memo(MemoType.Return, hash);
   }
 
   /**
@@ -230,17 +229,18 @@ export class Memo<T extends MemoType = MemoType> {
    * @returns {xdr.Memo}
    */
   toXDRObject(): xdr.Memo | null {
-    switch (this._type) {
-      case MemoNone:
+    const type: MemoType = this._type
+    switch (type) {
+      case (MemoType.None):
         return xdr.Memo.memoNone();
-      case MemoID:
-        return xdr.Memo.memoId(UnsignedHyper.fromString(this._value));
-      case MemoText:
-        return xdr.Memo.memoText(this._value);
-      case MemoHash:
-        return xdr.Memo.memoHash(this._value);
-      case MemoReturn:
-        return xdr.Memo.memoReturn(this._value);
+      case MemoType.Id:
+        return xdr.Memo.memoId(UnsignedHyper.fromString(this._value as MemoValue<typeof type>));
+      case MemoType.Text:
+        return xdr.Memo.memoText(this._value as MemoValue<typeof type>);
+      case MemoType.Hash:
+        return xdr.Memo.memoHash(this._value as MemoValue<typeof type>);
+      case MemoType.Return:
+        return xdr.Memo.memoReturn(this._value as MemoValue<typeof type>);
       default:
         return null;
     }

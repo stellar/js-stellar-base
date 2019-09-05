@@ -34,10 +34,10 @@ declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadru
     static toXDR(val: Buffer): Buffer
     static fromXDR(input: Buffer, format?: 'raw'): Hyper
     static fromXDR(input: string, format: 'hex' | 'base64'): Hyper
+    static fromString( str: string, unsigned?: boolean | number, radix?: number ): Hyper;
     toXDR(format?: 'raw'): Buffer
     toXDR(format: 'hex' | 'base64'): string
     isValid(value: Buffer): boolean
-    static fromString( str: string, unsigned?: boolean | number, radix?: number ): Hyper;
   }
   export class UnsignedHyper extends Long implements IOMixin {
     static MAX_VALUE: Hyper
@@ -45,6 +45,7 @@ declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadru
     static toXDR(val: Buffer): Buffer
     static fromXDR(input: Buffer, format?: 'raw'): UnsignedHyper
     static fromXDR(input: string, format: 'hex' | 'base64'): UnsignedHyper
+    static fromString(str: string, unsigned?: boolean | number, radix?: number ): UnsignedHyper;
     toXDR(format?: 'raw'): Buffer
     toXDR(format: 'hex' | 'base64'): string
   }
@@ -98,10 +99,9 @@ declare module "js-xdr" {  // Array and VarArray.
   export class ChildStruct extends Struct {
   }
 
-  export class Enum extends IOMixin {
-    public name: string;
-    public value: number;
-    public fromName(string: string): Enum;
+  export class Enum<TName extends string, TValue extends number> extends IOMixin {
+    public name: TName;
+    public value: TValue;
   }
 
   /**

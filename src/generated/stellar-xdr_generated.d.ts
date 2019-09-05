@@ -1,5 +1,5 @@
 import { Operation as BaseOperation } from '../operation';
-import { Struct, Opaque, Void, Union, Hyper, UnsignedHyper, UnsignedInt, Int, VarOpaque, String as StringXDR, Bool, Option } from 'js-xdr';
+import { Struct, Opaque, Void, Union, Hyper, UnsignedHyper, UnsignedInt, Int, VarOpaque, String as StringXDR, Bool, Option, Enum } from 'js-xdr';
 
 declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadruple, Bool, String, Opaque, VarOpaque.
 
@@ -39,7 +39,7 @@ declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadrupl
 declare namespace xdr {  // Array and VarArray.
 
   // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
-  export class Operation<T extends BaseOperation = BaseOperation> extends Struct<AbstractAssetAlphaNum> {
+  export class Operation<T extends BaseOperation = BaseOperation> extends Struct {
     static fromXDR(input: Buffer, format?: 'raw'): Operation
     static fromXDR(input: string, format: 'hex' | 'base64'): Operation
     sourceAccount: Option<AccountId>
@@ -63,9 +63,22 @@ declare namespace xdr {  // Array and VarArray.
     issuer(): any;
   }
 
+  export class MemoType extends Enum<never, never> {
+    static None: Enum<'None', 0>
+    static Text: Enum<'Text', 1>
+    static Id: Enum<'Id', 2>
+    static Hash: Enum<'Hash', 3>
+    static Return: Enum<'Return', 4>
+  }
+
   export class Memo extends Union {
     static fromXDR(input: Buffer, format?: 'raw'): Memo
     static fromXDR(input: string, format: 'hex' | 'base64'): Memo
+    static memoNone(): Memo
+    static memoText(value: StringXDR): Memo
+    static memoId(value: Uint64): Memo
+    static memoHash(value: Hash): Memo
+    static memoReturn(value: Hash): Memo
     // switchOn: xdr.lookup("MemoType"),
     // switchName: "type",
     // switches: [
