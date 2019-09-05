@@ -3,6 +3,7 @@
 // Definitions by: Adolfo Builes <https://github.com/abuiles>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.4.1
+/// <reference types="utility-types" />
 
 declare module "js-xdr" {  // `IOMixin`.
 
@@ -21,12 +22,12 @@ export class IOMixin {
 declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadruple, Bool, String, Opaque, VarOpaque.
   import Long from "long";
   import { IOMixin } from "js-xdr";
-  
+
   export class Void {
     static fromXDR(input: Buffer, format?: 'raw'): Void
     static fromXDR(input: string, format: 'hex' | 'base64'): Void
   }
-  
+
   export class Hyper extends Long implements IOMixin {
     static MAX_VALUE: Hyper
     static MIN_VALUE: Hyper
@@ -65,35 +66,25 @@ declare module "js-xdr" {  // Primitives Void, Hyper, Int, Float, Double, Quadru
   }
   export class Quadruple extends IOMixin {
   }
-  
+
   export class Bool extends IOMixin {
   }
-  
+
   export class String extends IOMixin {
     constructor(maxLength?: number);
   }
-  
+
   export class Opaque extends IOMixin {
     constructor(length: number);
   }
   export class VarOpaque extends IOMixin {
     constructor(length?: number);
   }
-  
+
 }
 
 declare module "js-xdr" {  // Array and VarArray.
-  
-  // export * from './array';
-  // export * from './var-array';
-  
-  // export * from './option';
-  
-  // export * from './enum';
-  // export * from './struct';
-  // export * from './union';
-  
-  
+
   export class Array<T extends IOMixin> {
     constructor(childType: T, length: number);
     public _childType: T;
@@ -103,37 +94,57 @@ declare module "js-xdr" {  // Array and VarArray.
     public _childType: any;
     public _length: number;
   }
-  
+
   export class ChildStruct extends Struct {
   }
-  
+
   export class Enum extends IOMixin {
     public name: string;
     public value: number;
     public fromName(string: string): Enum;
   }
-  
-  
-  export class Struct<TAttributes extends object = object> extends IOMixin {
-    constructor(attributes: TAttributes)
-    public _attributes: TAttributes;
+
+  /**
+   * Example definition:
+   * ```ts
+   *     xdr.struct("DecoratedSignature", [
+   *       ["hint", xdr.lookup("SignatureHint")],
+   *       ["signature", xdr.lookup("Signature")],
+   *     ]);
+   * ```
+   * Example matching types:
+   * ```ts
+   *     export class DecoratedSignature extends Struct<DecoratedSignature> {
+   *       hint(): SignatureHint
+   *       signature(): Signature
+   *       ...
+   *     }
+   * ```
+   */
+  export class Struct<TThis extends object = object> extends IOMixin {
+    constructor(attributes: Struct.Attributes<TThis>)
+    public _attributes: Struct.Attributes<TThis>;
   }
-  
-  
+  export namespace Struct {
+    export type Attributes<TAttributes extends object = object> = {
+      [key in Exclude<keyof TAttributes, keyof Struct>]: TAttributes[key] extends () => any ? ReturnType<TAttributes[key]> : never
+    }
+  }
+
   export class Union extends IOMixin {
     public switch(): any;
     public armType(): any;
     public value(): any;
     public arm(): any;
   }
-  
-  
-  
+
+
+
   export class Option<T> extends IOMixin {
     public _childType: any;
   }
-  
-  
+
+
 }
 
 declare module "js-xdr" {  // `XDR.config`.
@@ -157,13 +168,13 @@ declare module "js-xdr" {  // `XDR.config`.
   }
   class TypeBuilder {
     constructor(destination: {})
-    
+
     enum(name: string, members: Record<string, number>): void
     struct(name: string, members: [string, Reference | IOMixin][]): void
     union(name: string, cfg: UnionConfigurationInt | UnionConfigurationEnum): void
     typedef(name: string, cfg: Reference | IOMixin): void
     const(name: string, cfg: number): void
-    
+
     void(): Void;
     bool(): Bool;
     int(): Int;
@@ -173,16 +184,16 @@ declare module "js-xdr" {  // `XDR.config`.
     float(): Float;
     double(): Double;
     quadruple(): Quadruple;
-    
+
     string(length: number): Reference
     opaque(length: number): Reference
     varOpaque(length?: number): Reference
-    
+
     array(childType: IOMixin, length: number): Reference
     varArray(childType: IOMixin, maxLength: Reference | number): Reference
-    
+
     option(childType: IOMixin): Reference
-    
+
     lookup(name: string): Reference
   }
 

@@ -39,14 +39,14 @@ declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadrupl
 declare namespace xdr {  // Array and VarArray.
 
   // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
-  export class Operation<T extends BaseOperation = BaseOperation> extends Struct {
+  export class Operation<T extends BaseOperation = BaseOperation> extends Struct<AbstractAssetAlphaNum> {
     static fromXDR(input: Buffer, format?: 'raw'): Operation
     static fromXDR(input: string, format: 'hex' | 'base64'): Operation
     sourceAccount: Option<AccountId>
     body: OperationBody
   }
 
-  export class AssetType extends Struct {
+  export class AssetType extends Struct<AssetType> {
     static fromXDR(input: Buffer, format?: 'raw'): AssetType
     static fromXDR(input: string, format: 'hex' | 'base64'): AssetType
     static assetTypeNative(): AssetType;
@@ -54,7 +54,7 @@ declare namespace xdr {  // Array and VarArray.
     static assetTypeCreditAlphanum12(): AssetType;
     name: string;
   }
-  export abstract class AbstractAssetAlphaNum<TAssetCode extends Void | AssetCode4 | AssetCode12 = Void | AssetCode4 | AssetCode12> extends Struct {
+  export abstract class AbstractAssetAlphaNum<TAssetCode extends Void | AssetCode4 | AssetCode12 = Void | AssetCode4 | AssetCode12> extends Struct<AbstractAssetAlphaNum> {
     constructor(attributes: {
       assetCode: string,
       issuer: any,
@@ -83,18 +83,19 @@ declare namespace xdr {  // Array and VarArray.
     // },
   }
 
-  export class TransactionEnvelope extends Struct {
+  export class TransactionEnvelope extends Struct<TransactionEnvelope> {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionEnvelope
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionEnvelope
   }
+  type asdf<TAttributes extends object> = {[key in keyof TAttributes]: () => TAttributes[key]}
 
-  export class DecoratedSignature extends Struct<DecoratedSignature.IAttributes> {
+  export class DecoratedSignature extends Struct<DecoratedSignature> {
     static fromXDR(input: Buffer, format?: 'raw'): DecoratedSignature
     static fromXDR(input: string, format: 'hex' | 'base64'): DecoratedSignature
-
-    hint(): SignatureHint;
-    signature(): Signature;
+    hint(): SignatureHint
+    signature(): Signature
   }
+
   export namespace DecoratedSignature {
     export interface IAttributes {
       hint: SignatureHint
@@ -102,13 +103,13 @@ declare namespace xdr {  // Array and VarArray.
     }
   }
 
-  export class PublicKeyTypeEd25519 extends Struct {
+  export class PublicKeyTypeEd25519 extends Struct<PublicKeyTypeEd25519> {
     static fromXDR(input: Buffer, format?: 'raw'): PublicKeyTypeEd25519
     static fromXDR(input: string, format: 'hex' | 'base64'): PublicKeyTypeEd25519
     constructor(somekindBuffer: Buffer);
   }
 
-  export class Price extends Struct {}
+  export class Price extends Struct<Price> {}
 
   export class OperationBody extends Union {
 
@@ -143,32 +144,32 @@ declare namespace xdr {  // Array and VarArray.
   }
 
 
-  export class TransactionResult extends Struct {
+  export class TransactionResult extends Struct<TransactionResult> {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResult
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult
   }
 
   export class AllowTrustOpAsset extends Union {}
 
-  export class AllowTrust extends Struct {}
+  export class AllowTrust extends Struct<AllowTrust> {}
 
 }
 
 declare namespace xdr {  // Operations
-  export class CreateAccountOp extends Struct {
+  export class CreateAccountOp extends Struct<CreateAccountOp> {
     destination: AccountId
     startingBalance: Int64
   }
 
 
-  export class PaymentOp extends Struct {
+  export class PaymentOp extends Struct<PaymentOp> {
     destination: AccountId
     asset: Asset
     amount: Int64
   }
 
 
-  export class PathPaymentOp extends Struct {
+  export class PathPaymentOp extends Struct<PathPaymentOp> {
     sendAsset: Asset
     sendMax: Int64
     destination: AccountId
@@ -177,7 +178,7 @@ declare namespace xdr {  // Operations
     // ["path", xdr.varArray(xdr.lookup("Asset"), 5)],
   }
 
-  export class ManageSellOfferOp extends Struct {
+  export class ManageSellOfferOp extends Struct<ManageSellOfferOp> {
     selling: Asset
     buying: Asset
     amount: Int64
@@ -186,7 +187,7 @@ declare namespace xdr {  // Operations
   }
 
 
-  export class ManageBuyOfferOp extends Struct {
+  export class ManageBuyOfferOp extends Struct<ManageBuyOfferOp> {
     selling: Asset
     buying: Asset
     buyAmount: Int64
@@ -195,7 +196,7 @@ declare namespace xdr {  // Operations
   }
 
 
-  export class CreatePassiveSellOfferOp extends Struct {
+  export class CreatePassiveSellOfferOp extends Struct<CreatePassiveSellOfferOp> {
     selling: Asset
     buying: Asset
     amount: Int64
@@ -203,7 +204,7 @@ declare namespace xdr {  // Operations
   }
 
 
-  export class SetOptionsOp extends Struct {
+  export class SetOptionsOp extends Struct<SetOptionsOp> {
     inflationDest: AccountId
     clearFlags: Uint32
     setFlags: Uint32
@@ -213,26 +214,26 @@ declare namespace xdr {  // Operations
     highThreshold: Uint32
   }
 
-  export class ChangeTrustOp extends Struct {
+  export class ChangeTrustOp extends Struct<ChangeTrustOp> {
     line: Asset
     limit: Int64
   }
 
 
-  export class AllowTrustOp extends Struct {
+  export class AllowTrustOp extends Struct<AllowTrustOp> {
     trustor: AccountId
     asset: AllowTrustOpAsset
     authorize: Bool
   }
 
 
-  export class ManageDataOp extends Struct {
+  export class ManageDataOp extends Struct<ManageDataOp> {
     dataName: String64
     dataValue: DataValue
   }
 
 
-  export class BumpSequenceOp extends Struct {
+  export class BumpSequenceOp extends Struct<BumpSequenceOp> {
     bumpTo: SequenceNumber
   }
 
