@@ -277,20 +277,47 @@ declare namespace xdr {  // Operations
     bumpTo(): SequenceNumber
   }
 
-  export enum OperationType {
-    createAccount = 0,
-    payment = 1,
-    pathPayment = 2,
-    manageSellOffer = 3,
-    createPassiveSellOffer = 4,
-    setOption = 5,
-    changeTrust = 6,
-    allowTrust = 7,
-    accountMerge = 8,
-    inflation = 9,
-    manageDatum = 10,
-    bumpSequence = 11,
-    manageBuyOffer = 12,
+  export type OperationType =
+    | OperationType.createAccount
+    | OperationType.payment
+    | OperationType.pathPayment
+    | OperationType.manageSellOffer
+    | OperationType.createPassiveSellOffer
+    | OperationType.setOption
+    | OperationType.changeTrust
+    | OperationType.allowTrust
+    | OperationType.accountMerge
+    | OperationType.inflation
+    | OperationType.manageDatum
+    | OperationType.bumpSequence
+    | OperationType.manageBuyOffer
+  export namespace OperationType {
+    export type createAccount = Enum<'createAccount', 0>
+    export type payment = Enum<'payment', 1>
+    export type pathPayment = Enum<'pathPayment', 2>
+    export type manageSellOffer = Enum<'manageSellOffer', 3>
+    export type createPassiveSellOffer = Enum<'createPassiveSellOffer', 4>
+    export type setOption = Enum<'setOption', 5>
+    export type changeTrust = Enum<'changeTrust', 6>
+    export type allowTrust = Enum<'allowTrust', 7>
+    export type accountMerge = Enum<'accountMerge', 8>
+    export type inflation = Enum<'inflation', 9>
+    export type manageDatum = Enum<'manageDatum', 10>
+    export type bumpSequence = Enum<'bumpSequence', 11>
+    export type manageBuyOffer = Enum<'manageBuyOffer', 12>
+    export const createAccount: () => createAccount
+    export const payment: () => payment
+    export const pathPayment: () => pathPayment
+    export const manageSellOffer: () => manageSellOffer
+    export const createPassiveSellOffer: () => createPassiveSellOffer
+    export const setOption: () => setOption
+    export const changeTrust: () => changeTrust
+    export const allowTrust: () => allowTrust
+    export const accountMerge: () => accountMerge
+    export const inflation: () => inflation
+    export const manageDatum: () => manageDatum
+    export const bumpSequence: () => bumpSequence
+    export const manageBuyOffer: () => manageBuyOffer
   }
   export class OperationBody<T extends OperationType = OperationType> extends UnionWithFunctions<typeof OperationBody, OperationType> {
     static createAccount(op: CreateAccountOp): OperationBody<OperationType.createAccount>

@@ -121,12 +121,12 @@ declare module "js-xdr" {  // Array and VarArray.
    *   export type assetTypeNative = Enum<'assetTypeNative', 0>
    *   export type assetTypeCreditAlphanum4 = Enum<'assetTypeCreditAlphanum4', 1>
    *   export type assetTypeCreditAlphanum12 = Enum<'assetTypeCreditAlphanum12', 2>
-   *   export const assetTypeNative: () => Enum<'assetTypeNative', 0>
-   *   export const assetTypeCreditAlphanum4: () => Enum<'assetTypeCreditAlphanum4', 1>
-   *   export const assetTypeCreditAlphanum12: () => Enum<'assetTypeCreditAlphanum12', 2>
+   *   export const assetTypeNative: () => assetTypeNative
+   *   export const assetTypeCreditAlphanum4: () => assetTypeCreditAlphanum4
+   *   export const assetTypeCreditAlphanum12: () => assetTypeCreditAlphanum12
    * }
    *
-   * // But shortcut works fine if Enum is not used directly (excluding AssetType):
+   * // But shortcut works fine if Enum is not used directly (excluding AssetType, OperationType):
    * export enum AssetType {
    *   assetTypeNative = 0,
    *   assetTypeCreditAlphanum4 = 1,
@@ -188,10 +188,10 @@ declare module "js-xdr" {  // Array and VarArray.
   export type Union = never
 
   class UnionHidden<T> extends IOMixin {
-    public switch(): T;
-    public armType(): unknown;
-    public value(): unknown;  // TODO: type as return value between instance methods that's conditional on T
     public arm(): unknown;  // TODO: type as literal name of T
+    public armType(): unknown;
+    public switch(): T;
+    public value(): ReturnType<Extract<this[keyof Omit<this, keyof UnionHidden<unknown>>], () => any>>;
   }
 
   /**
