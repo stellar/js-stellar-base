@@ -150,7 +150,7 @@ export class Keypair {
     return this._publicKey;
   }
 
-  public signatureHint() {
+  public signatureHint(): Buffer {
     const a = this.xdrAccountId().toXDR();
 
     return a.slice(a.length - 4);
@@ -221,7 +221,7 @@ export class Keypair {
     return verify(data, signature, this._publicKey);
   }
 
-  public signDecorated(data: Buffer) {
+  public signDecorated(data: Buffer): xdr.DecoratedSignature {
     const signature = this.sign(data);
     const hint = this.signatureHint();
 

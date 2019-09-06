@@ -65,11 +65,11 @@ export class Transaction {
     this.signatures = map(signatures, (s) => s);
   }
 
-  public get memo() {
+  public get memo(): Memo {
     return Memo.fromXDRObject(this._memo);
   }
 
-  public set memo(value: unknown) {
+  public set memo(value: Memo) {
     throw new Error('Transaction is immutable');
   }
 

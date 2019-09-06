@@ -265,7 +265,7 @@ export class Operation extends BaseOperation {
    * @param {string|BigNumber} value XDR amount
    * @returns {BigNumber} Number
    */
-  static _fromXDRAmount(value: xdr.Int64) {
+  static _fromXDRAmount(value: xdr.Int64): BigNumber {
     return new BigNumber(value).div(ONE).toFixed(7);
   }
 
@@ -276,7 +276,7 @@ export class Operation extends BaseOperation {
    * @param {function} price.d denominator function that returns a value
    * @returns {BigNumber} Big string
    */
-  static _fromXDRPrice(price: xdr.Price) {
+  static _fromXDRPrice(price: xdr.Price): BigNumber {
     const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }

@@ -148,13 +148,13 @@ export class Memo<T extends MemoType = MemoType> {
     }
   }
 
-  static _validateTextValue(value: MemoValue<MemoType.Text>) {
+  static _validateTextValue(value: MemoValue<MemoType.Text>): void {
     if (!xdr.Memo.armTypeForArm('text').isValid(value)) {
       throw new Error('Expects string, array or buffer, max 28 bytes');
     }
   }
 
-  static _validateHashValue(value: MemoValue<MemoType.Hash>) {
+  static _validateHashValue(value: MemoValue<MemoType.Hash>): void {
     const error = new Error(
       `Expects a 32 byte hash value or hex encoded string. Got ${value}`
     );
