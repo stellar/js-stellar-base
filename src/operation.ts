@@ -6,6 +6,7 @@ import { Asset } from './asset';
 import { StrKey } from './strkey';
 import { BaseOperation } from './operations';
 import { Operation as OperationNS } from './@types/operation';
+import xdr from './generated/stellar-xdr_generated';
 
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
@@ -63,7 +64,7 @@ export class Operation extends BaseOperation {
    * @param {xdr.Operation} operation - An XDR Operation.
    * @return {Operation}
    */
-  static fromXDRObject(operation): OperationNS {
+  static fromXDRObject(operation: xdr.Operation): OperationNS {
     function accountIdtoAddress(accountId) {
       return StrKey.encodeEd25519PublicKey(accountId.ed25519());
     }
@@ -229,7 +230,7 @@ export class Operation extends BaseOperation {
    * @param {string|BigNumber} value XDR amount
    * @returns {BigNumber} Number
    */
-  static _fromXDRAmount(value) {
+  static _fromXDRAmount(value: xdr.Int64) {
     return new BigNumber(value).div(ONE).toFixed(7);
   }
 
@@ -240,7 +241,7 @@ export class Operation extends BaseOperation {
    * @param {function} price.d denominator function that returns a value
    * @returns {BigNumber} Big string
    */
-  static _fromXDRPrice(price) {
+  static _fromXDRPrice(price: xdr.Price) {
     const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }

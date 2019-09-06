@@ -36,7 +36,7 @@ declare namespace xdr {  // Array and VarArray.
     static assetTypeCreditAlphanum12(value: AssetAlphaNum4): Asset<AssetType.assetTypeCreditAlphanum12>
     alphaNum12(): T extends AssetType.assetTypeCreditAlphanum12 ? AssetAlphaNum12 : never;
     alphaNum4(): T extends AssetType.assetTypeCreditAlphanum4 ? AssetAlphaNum4 : never;
-    switch(): AssetType;
+    switch(): T;
   }
 
   // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
@@ -173,10 +173,17 @@ declare namespace xdr {  // Array and VarArray.
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult
   }
 
-  export enum AssetType {
-    assetTypeNative = 0,
-    assetTypeCreditAlphanum4 = 1,
-    assetTypeCreditAlphanum12 = 2,
+  export type AssetType =
+    | AssetType.assetTypeNative
+    | AssetType.assetTypeCreditAlphanum4
+    | AssetType.assetTypeCreditAlphanum12
+  export namespace AssetType {
+    export type assetTypeNative = Enum<'assetTypeNative', 0>
+    export type assetTypeCreditAlphanum4 = Enum<'assetTypeCreditAlphanum4', 1>
+    export type assetTypeCreditAlphanum12 = Enum<'assetTypeCreditAlphanum12', 2>
+    export const assetTypeNative: () => Enum<'assetTypeNative', 0>
+    export const assetTypeCreditAlphanum4: () => Enum<'assetTypeCreditAlphanum4', 1>
+    export const assetTypeCreditAlphanum12: () => Enum<'assetTypeCreditAlphanum12', 2>
   }
   export class AllowTrustOpAsset<T extends AssetType = AssetType> extends UnionWithFunctions<typeof AllowTrustOpAsset> {
     static assetTypeCreditAlphanum4(assetCode: AssetCode4): AllowTrustOpAsset

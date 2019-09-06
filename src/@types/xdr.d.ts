@@ -103,6 +103,38 @@ declare module "js-xdr" {  // Array and VarArray.
   export class ChildStruct extends Struct {
   }
 
+  /**
+   * Example definition:
+   * ```ts
+   * xdr.enum("AssetType", {
+   *   assetTypeNative: 0,
+   *   assetTypeCreditAlphanum4: 1,
+   *   assetTypeCreditAlphanum12: 2,
+   * });
+   *
+   * // becomes...
+   * export type AssetType =
+   *   | AssetType.assetTypeNative
+   *   | AssetType.assetTypeCreditAlphanum4
+   *   | AssetType.assetTypeCreditAlphanum12
+   * export namespace AssetType {
+   *   export type assetTypeNative = Enum<'assetTypeNative', 0>
+   *   export type assetTypeCreditAlphanum4 = Enum<'assetTypeCreditAlphanum4', 1>
+   *   export type assetTypeCreditAlphanum12 = Enum<'assetTypeCreditAlphanum12', 2>
+   *   export const assetTypeNative: () => Enum<'assetTypeNative', 0>
+   *   export const assetTypeCreditAlphanum4: () => Enum<'assetTypeCreditAlphanum4', 1>
+   *   export const assetTypeCreditAlphanum12: () => Enum<'assetTypeCreditAlphanum12', 2>
+   * }
+   *
+   * // But shortcut works fine if Enum is not used directly (excluding AssetType):
+   * export enum AssetType {
+   *   assetTypeNative = 0,
+   *   assetTypeCreditAlphanum4 = 1,
+   *   assetTypeCreditAlphanum12 = 2,
+   * }
+   * ```
+   *
+   */
   export class Enum<TName extends string, TValue extends number> extends IOMixin {
     public name: TName;
     public value: TValue;
