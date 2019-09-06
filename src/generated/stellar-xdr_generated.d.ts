@@ -198,84 +198,84 @@ declare namespace xdr {  // Array and VarArray.
 
 declare namespace xdr {  // Operations
   export class CreateAccountOp extends Struct<CreateAccountOp> {
-    destination: AccountId
-    startingBalance: Int64
+    destination(): AccountId
+    startingBalance(): Int64
   }
 
 
   export class PaymentOp extends Struct<PaymentOp> {
-    destination: AccountId
-    asset: Asset
-    amount: Int64
+    destination(): AccountId
+    asset(): Asset
+    amount(): Int64
   }
 
 
   export class PathPaymentOp extends Struct<PathPaymentOp> {
-    sendAsset: Asset
-    sendMax: Int64
-    destination: AccountId
-    destAsset: Asset
-    destAmount: Int64
+    sendAsset(): Asset
+    sendMax(): Int64
+    destination(): AccountId
+    destAsset(): Asset
+    destAmount(): Int64
     // ["path", xdr.varArray(xdr.lookup("Asset"), 5)],
   }
 
   export class ManageSellOfferOp extends Struct<ManageSellOfferOp> {
-    selling: Asset
-    buying: Asset
-    amount: Int64
-    price: Price
-    offerId: Int64
+    selling(): Asset
+    buying(): Asset
+    amount(): Int64
+    price(): Price
+    offerId(): Int64
   }
 
 
   export class ManageBuyOfferOp extends Struct<ManageBuyOfferOp> {
-    selling: Asset
-    buying: Asset
-    buyAmount: Int64
-    price: Price
-    offerId: Int64
+    selling(): Asset
+    buying(): Asset
+    buyAmount(): Int64
+    price(): Price
+    offerId(): Int64
   }
 
 
   export class CreatePassiveSellOfferOp extends Struct<CreatePassiveSellOfferOp> {
-    selling: Asset
-    buying: Asset
-    amount: Int64
-    price: Price
+    selling(): Asset
+    buying(): Asset
+    amount(): Int64
+    price(): Price
   }
 
 
   export class SetOptionsOp extends Struct<SetOptionsOp> {
-    inflationDest: AccountId
-    clearFlags: Uint32
-    setFlags: Uint32
-    masterWeight: Uint32
-    lowThreshold: Uint32
-    medThreshold: Uint32
-    highThreshold: Uint32
+    inflationDest(): AccountId
+    clearFlags(): Uint32
+    setFlags(): Uint32
+    masterWeight(): Uint32
+    lowThreshold(): Uint32
+    medThreshold(): Uint32
+    highThreshold(): Uint32
   }
 
   export class ChangeTrustOp extends Struct<ChangeTrustOp> {
-    line: Asset
-    limit: Int64
+    line(): Asset
+    limit(): Int64
   }
 
 
   export class AllowTrustOp extends Struct<AllowTrustOp> {
-    trustor: AccountId
-    asset: AllowTrustOpAsset
-    authorize: Bool
+    trustor(): AccountId
+    asset(): AllowTrustOpAsset
+    authorize(): Bool
   }
 
 
   export class ManageDataOp extends Struct<ManageDataOp> {
-    dataName: String64
-    dataValue: DataValue
+    dataName(): String64
+    dataValue(): DataValue
   }
 
 
   export class BumpSequenceOp extends Struct<BumpSequenceOp> {
-    bumpTo: SequenceNumber
+    bumpTo(): SequenceNumber
   }
 
 
