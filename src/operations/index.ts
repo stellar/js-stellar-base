@@ -178,7 +178,7 @@ export abstract class BaseOperation {
       throw new Error('trustor is invalid');
     }
 
-    let asset: any
+    let asset: xdr.AllowTrustOpAsset
     if (opts.assetCode.length <= 4) {
       const code = padEnd(opts.assetCode, 4, '\0');
       asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
@@ -645,7 +645,7 @@ export abstract class BaseOperation {
         signer.weight,
         weightCheckFunction
       );
-      let key: xdr.Uint256;
+      let key: xdr.SignerKey;
 
       let setValues = 0;
 

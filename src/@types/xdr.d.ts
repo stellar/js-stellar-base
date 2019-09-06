@@ -135,10 +135,34 @@ declare module "js-xdr" {  // Array and VarArray.
     }
   }
 
+  /**
+   * **Problem**: It has static properties that are called either as constructors, or as functions.
+   *
+   * **Workaround**:Use `UnionWithFunctions` and `UnionWithConstructors`.
+   *
+   * TODO: merge into one class.
+   * ```ts
+   * // Many for direct call, e.g.
+   * xdr.OperationBody.setOption(setOptionsOp)
+   *
+   * // Only 5 cases for constructor call:
+   * new xdr.AccountId.publicKeyTypeEd25519(this._publicKey);
+   * new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
+   * new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
+   * new xdr.SignerKey.signerKeyTypePreAuthTx(signer.preAuthTx);
+   * new xdr.SignerKey.signerKeyTypeHashX(signer.sha256Hash);
+   * ```
+   */
+  export type Union = never
 
   /**
-   * Example definition:
+   * #### Example definition for direct call:
    * ```ts
+   * xdr.enum("AssetType", {
+   *   assetTypeNative: 0,
+   *   assetTypeCreditAlphanum4: 1,
+   *   assetTypeCreditAlphanum12: 2,
+   * });
    * xdr.union("AllowTrustOpAsset", {
    *   switchOn: xdr.lookup("AssetType"),
    *   switchName: "type",
@@ -151,18 +175,60 @@ declare module "js-xdr" {  // Array and VarArray.
    *     assetCode12: xdr.lookup("AssetCode12"),
    *   },
    * });
+   * // becomes...
+   * export enum AssetType {
+   *   assetTypeNative = 0,
+   *   assetTypeCreditAlphanum4 = 1,
+   *   assetTypeCreditAlphanum12 = 2,
+   * }
+   * export class AllowTrustOpAsset<T extends AssetType = AssetType> extends Union<typeof AllowTrustOpAsset> {
+   *   static assetTypeCreditAlphanum4(value: AssetCode4): AllowTrustOpAsset<AssetType.assetTypeCreditAlphanum4>
+   *   static assetTypeCreditAlphanum12(value: AssetCode12): AllowTrustOpAsset<AssetType.assetTypeCreditAlphanum12>
+   *   assetCode4(): T extends AssetType.assetTypeCreditAlphanum4 ? AssetCode4 : never
+   *   assetCode12(): T extends AssetType.assetTypeCreditAlphanum12 ? AssetCode12 : never
+   * }
    * ```
-   * Example matching types:
+   *
+   */
+  export class UnionWithFunctions<T extends new (...args: any) => any> extends IOMixin {
+    /**
+     * @param {magic} switches Instance of a class on T static property.
+     * @memberof Union
+     */
+    constructor(switches: InstanceType<Extract<T[keyof Omit<T, 'fromXDR' | 'toXDR'>], new (...args: any) => any>>)
+    public switch(): any;
+    public armType(): any;
+    public value(): any;
+    public arm(): any;
+  }
+
+  /**
+   * #### Example matching type for constuctor call:
    * ```ts
-   * export class AllowTrustOpAsset extends Union<typeof AllowTrustOpAsset> {
-   *   static assetTypeCreditAlphanum4(...args: ConstructorParameters<typeof AssetCode4>): AssetCode4
-   *   static assetTypeCreditAlphanum12(...args: ConstructorParameters<typeof AssetCode12>): AssetCode12
-   *   assetCode4(): AssetCode4
-   *   assetCode12(): AssetCode12
+   * xdr.enum("PublicKeyType", {
+   *   publicKeyTypeEd25519: 0,
+   * });
+   * xdr.union("PublicKey", {
+   *   switchOn: xdr.lookup("PublicKeyType"),
+   *   switchName: "type",
+   *   switches: [
+   *     ["publicKeyTypeEd25519", "ed25519"],
+   *   ],
+   *   arms: {
+   *     ed25519: xdr.lookup("Uint256"),
+   *   },
+   * });
+   * // becomes...
+   * export enum PublicKeyType {
+   *   publicKeyTypeEd25519 = 0,
+   * }
+   * export class PublicKey<T extends PublicKeyType = PublicKeyType> extends Union<typeof PublicKey> {
+   *   static publicKeyTypeEd25519: new (...args: ConstructorParameters<typeof PublicKeyTypeEd25519>) => PublicKey<PublicKeyType.publicKeyTypeEd25519>
+   *   ed25519(): T extends PublicKeyType.PublicKeyTypeEd25519 ? Uint256 : never
    * }
    * ```
    */
-  export class Union<T extends new (...args: any) => any> extends IOMixin {
+  export class UnionWithConstructors<T extends new (...args: any) => any> extends IOMixin {
     /**
      * @param {magic} switches Instance of a class on T static property.
      * @memberof Union
