@@ -187,6 +187,13 @@ declare module "js-xdr" {  // Array and VarArray.
    */
   export type Union = never
 
+  class UnionHidden<T> extends IOMixin {
+    public switch(): T;
+    public armType(): unknown;
+    public value(): unknown;  // TODO: type as return value between instance methods that's conditional on T
+    public arm(): unknown;  // TODO: type as literal name of T
+  }
+
   /**
    * #### Example definition for direct call:
    * ```ts
@@ -222,16 +229,12 @@ declare module "js-xdr" {  // Array and VarArray.
    * ```
    *
    */
-  export class UnionWithFunctions<T extends new (...args: any) => any> extends IOMixin {
+  export class UnionWithFunctions<T extends new (...args: any) => any, U> extends UnionHidden<U> {
     /**
      * @param {magic} switches Instance of a class on T static property.
      * @memberof Union
      */
     constructor(switches: InstanceType<Extract<T[keyof Omit<T, 'fromXDR' | 'toXDR'>], new (...args: any) => any>>)
-    public switch(): any;
-    public armType(): any;
-    public value(): any;
-    public arm(): any;
   }
 
   /**
@@ -260,16 +263,12 @@ declare module "js-xdr" {  // Array and VarArray.
    * }
    * ```
    */
-  export class UnionWithConstructors<T extends new (...args: any) => any> extends IOMixin {
+  export class UnionWithConstructors<T extends new (...args: any) => any, U> extends UnionHidden<U> {
     /**
      * @param {magic} switches Instance of a class on T static property.
      * @memberof Union
      */
     constructor(switches: InstanceType<Extract<T[keyof Omit<T, 'fromXDR' | 'toXDR'>], new (...args: any) => any>>)
-    public switch(): any;
-    public armType(): any;
-    public value(): any;
-    public arm(): any;
   }
 
 

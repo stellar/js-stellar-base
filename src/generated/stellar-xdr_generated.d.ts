@@ -27,7 +27,7 @@ declare namespace xdr {  // Primitives Void, Hyper, Int, Float, Double, Quadrupl
 
 declare namespace xdr {  // Array and VarArray.
 
-  export class Asset<T extends AssetType = AssetType> extends UnionWithFunctions<typeof Asset> {
+  export class Asset<T extends AssetType = AssetType> extends UnionWithFunctions<typeof Asset, AssetType> {
     static fromXDR(input: Buffer, format?: 'raw'): Asset
     static fromXDR(input: string, format: 'hex' | 'base64'): Asset
     constructor(xdrTypeString: 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12', xdrType: AssetAlphaNum4 | AssetAlphaNum12)
@@ -36,7 +36,6 @@ declare namespace xdr {  // Array and VarArray.
     static assetTypeCreditAlphanum12(value: AssetAlphaNum4): Asset<AssetType.assetTypeCreditAlphanum12>
     alphaNum12(): T extends AssetType.assetTypeCreditAlphanum12 ? AssetAlphaNum12 : never;
     alphaNum4(): T extends AssetType.assetTypeCreditAlphanum4 ? AssetAlphaNum4 : never;
-    switch(): T;
   }
 
   // TS-TODO: Can someone double check this achieve the same as https://github.com/stellar/js-stellar-base/blob/typescript/types/index.d.ts#L530 ?
@@ -70,7 +69,7 @@ declare namespace xdr {  // Array and VarArray.
     Hash = 3,
     Return = 4,
   }
-  export class Memo<T extends MemoType = MemoType> extends UnionWithFunctions<typeof Memo> {
+  export class Memo<T extends MemoType = MemoType> extends UnionWithFunctions<typeof Memo, MemoType> {
     static fromXDR(input: Buffer, format?: 'raw'): Memo
     static fromXDR(input: string, format: 'hex' | 'base64'): Memo
     static memoNone(): Memo<MemoType.None>
@@ -139,7 +138,7 @@ declare namespace xdr {  // Array and VarArray.
   export enum PublicKeyType {
     publicKeyTypeEd25519 = 0,
   }
-  export class PublicKey<T extends PublicKeyType = PublicKeyType> extends UnionWithConstructors<typeof PublicKey> {
+  export class PublicKey<T extends PublicKeyType = PublicKeyType> extends UnionWithConstructors<typeof PublicKey, PublicKeyType> {
     static publicKeyTypeEd25519: new (...args: ConstructorParameters<typeof PublicKeyTypeEd25519>) => PublicKey<PublicKeyType.publicKeyTypeEd25519>
     ed25519(): T extends PublicKeyType.publicKeyTypeEd25519 ? Uint256 : never
   }
@@ -152,7 +151,7 @@ declare namespace xdr {  // Array and VarArray.
     signerKeyTypePreAuthTx = 1,
     signerKeyTypeHashX = 2,
   }
-  export class SignerKey<T extends SignerKeyType = SignerKeyType> extends UnionWithConstructors<typeof SignerKey> {
+  export class SignerKey<T extends SignerKeyType = SignerKeyType> extends UnionWithConstructors<typeof SignerKey, SignerKeyType> {
     static signerKeyTypeEd25519: new (...args: ConstructorParameters<typeof Uint256>) => SignerKey<SignerKeyType.signerKeyTypeEd25519>
     static signerKeyTypePreAuthTx: new (...args: ConstructorParameters<typeof Uint256>) => SignerKey<SignerKeyType.signerKeyTypePreAuthTx>
     static signerKeyTypeHashX: new (...args: ConstructorParameters<typeof Uint256>) => SignerKey<SignerKeyType.signerKeyTypeHashX>
@@ -185,7 +184,7 @@ declare namespace xdr {  // Array and VarArray.
     export const assetTypeCreditAlphanum4: () => Enum<'assetTypeCreditAlphanum4', 1>
     export const assetTypeCreditAlphanum12: () => Enum<'assetTypeCreditAlphanum12', 2>
   }
-  export class AllowTrustOpAsset<T extends AssetType = AssetType> extends UnionWithFunctions<typeof AllowTrustOpAsset> {
+  export class AllowTrustOpAsset<T extends AssetType = AssetType> extends UnionWithFunctions<typeof AllowTrustOpAsset, AssetType> {
     static assetTypeCreditAlphanum4(assetCode: AssetCode4): AllowTrustOpAsset
     static assetTypeCreditAlphanum12(assetCode: AssetCode12): AllowTrustOpAsset
     assetCode4(): T extends AssetType.assetTypeCreditAlphanum4 ? AssetCode4 : never
@@ -293,7 +292,7 @@ declare namespace xdr {  // Operations
     bumpSequence = 11,
     manageBuyOffer = 12,
   }
-  export class OperationBody<T extends OperationType = OperationType> extends UnionWithFunctions<typeof OperationBody> {
+  export class OperationBody<T extends OperationType = OperationType> extends UnionWithFunctions<typeof OperationBody, OperationType> {
     static createAccount(op: CreateAccountOp): OperationBody<OperationType.createAccount>
     static payment(op: PaymentOp): OperationBody<OperationType.payment>
     static pathPayment(op: PathPaymentOp): OperationBody<OperationType.pathPayment>
