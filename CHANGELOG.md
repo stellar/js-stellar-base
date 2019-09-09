@@ -5,6 +5,11 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.0.2](https://github.com/stellar/js-stellar-base/compare/v2.0.1...v2.0.2)
+
+### Fix
+- Fix issue [#269](https://github.com/stellar/js-stellar-base/issues/269). ManageBuyOffer should extend BaseOptions and inherited property "source". ([#270](https://github.com/stellar/js-stellar-base/pull/270)).
+
 ## [v2.0.1](https://github.com/stellar/js-stellar-base/compare/v2.0.0...v2.0.1)
 
 No changes. Fixes deploy script and includes changes from [v2.0.0](https://github.com/stellar/js-stellar-base/compare/v1.1.2...v2.0.0).
