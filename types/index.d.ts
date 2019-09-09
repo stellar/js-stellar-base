@@ -248,7 +248,7 @@ export namespace OperationOptions {
   interface ManageSellOffer extends CreatePassiveSellOffer {
     offerId?: number | string;
   }
-  interface ManageBuyOffer {
+  interface ManageBuyOffer extends BaseOptions {
     selling: Asset;
     buying: Asset;
     buyAmount: string;
