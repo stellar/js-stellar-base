@@ -4,7 +4,9 @@ import BigNumber from 'bignumber.js';
 import trimEnd from 'lodash/trimEnd';
 import { Asset } from './asset';
 import { StrKey } from './strkey';
-import { BaseOperation } from './operations/index';
+import { BaseOperation } from './operations';
+import { Operation as OperationNS } from './@types/operation';
+import xdr from './generated/stellar-xdr_generated';
 
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
@@ -62,40 +64,48 @@ export class Operation extends BaseOperation {
    * @param {xdr.Operation} operation - An XDR Operation.
    * @return {Operation}
    */
-  static fromXDRObject(operation) {
-    function accountIdtoAddress(accountId) {
+  static fromXDRObject(operation: xdr.Operation): OperationNS {
+    function accountIdtoAddress(accountId: xdr.AccountId) {
       return StrKey.encodeEd25519PublicKey(accountId.ed25519());
     }
 
-    const result = {};
-    if (operation.sourceAccount()) {
-      result.source = accountIdtoAddress(operation.sourceAccount());
-    }
-
-    const attrs = operation.body().value();
+    const sourceAccount = operation.sourceAccount()
+    const withSource: {source?: string} = sourceAccount
+      ? {source: accountIdtoAddress(sourceAccount)}
+      : {}
 
     switch (operation.body().switch().name) {
       case 'createAccount': {
-        result.type = 'createAccount';
-        result.destination = accountIdtoAddress(attrs.destination());
-        result.startingBalance = this._fromXDRAmount(attrs.startingBalance());
-        break;
+        const attrs = operation.body().value() as xdr.CreateAccountOp;
+        return {
+          ...withSource,
+          type: 'createAccount',
+          destination: accountIdtoAddress(attrs.destination()),
+          startingBalance: this._fromXDRAmount(attrs.startingBalance()),
+        }
       }
       case 'payment': {
-        result.type = 'payment';
-        result.destination = accountIdtoAddress(attrs.destination());
-        result.asset = Asset.fromOperation(attrs.asset());
-        result.amount = this._fromXDRAmount(attrs.amount());
-        break;
+        const attrs = operation.body().value() as xdr.PaymentOp;
+        return {
+          ...withSource,
+          type: 'payment',
+          destination: accountIdtoAddress(attrs.destination()),
+          asset: Asset.fromOperation(attrs.asset()),
+          amount: this._fromXDRAmount(attrs.amount()),
+        }
       }
       case 'pathPayment': {
-        result.type = 'pathPayment';
-        result.sendAsset = Asset.fromOperation(attrs.sendAsset());
-        result.sendMax = this._fromXDRAmount(attrs.sendMax());
-        result.destination = accountIdtoAddress(attrs.destination());
-        result.destAsset = Asset.fromOperation(attrs.destAsset());
-        result.destAmount = this._fromXDRAmount(attrs.destAmount());
-        result.path = [];
+        const attrs = operation.body().value() as xdr.PathPaymentOp;
+        const result = {
+          ...withSource,
+          type: 'pathPayment',
+          sendAsset: Asset.fromOperation(attrs.sendAsset()),
+          sendMax: this._fromXDRAmount(attrs.sendMax()),
+          destination: accountIdtoAddress(attrs.destination()),
+          destAsset: Asset.fromOperation(attrs.destAsset()),
+          destAmount: this._fromXDRAmount(attrs.destAmount()),
+          path: [],
+        }
 
         const path = attrs.path();
 
@@ -106,24 +116,34 @@ export class Operation extends BaseOperation {
         break;
       }
       case 'changeTrust': {
-        result.type = 'changeTrust';
-        result.line = Asset.fromOperation(attrs.line());
-        result.limit = this._fromXDRAmount(attrs.limit());
-        break;
+        const attrs = operation.body().value() as xdr.ChangeTrustOp;
+        return {
+          ...withSource,
+          type: 'changeTrust',
+          line: Asset.fromOperation(attrs.line()),
+          limit: this._fromXDRAmount(attrs.limit()),
+        }
       }
       case 'allowTrust': {
-        result.type = 'allowTrust';
-        result.trustor = accountIdtoAddress(attrs.trustor());
-        result.assetCode = attrs
-          .asset()
-          .value()
-          .toString();
-        result.assetCode = trimEnd(result.assetCode, '\0');
-        result.authorize = attrs.authorize();
-        break;
+        const attrs = operation.body().value() as xdr.AllowTrustOp;
+        const assetCode = attrs
+            .asset()
+            .value()
+            .toString()
+        return {
+          ...withSource,
+          type: 'allowTrust',
+          trustor: accountIdtoAddress(attrs.trustor()),
+          assetCode: trimEnd(assetCode, '\0'),
+          authorize: attrs.authorize(),
+        }
       }
       case 'setOption': {
-        result.type = 'setOptions';
+        const attrs = operation.body().value() as xdr.SetOptionsOp;
+        const result = {
+          ...withSource,
+          type: 'setOptions',
+        }
         if (attrs.inflationDest()) {
           result.inflationDest = accountIdtoAddress(attrs.inflationDest());
         }
@@ -168,59 +188,76 @@ export class Operation extends BaseOperation {
       // the next case intentionally falls through!
       case 'manageOffer':
       case 'manageSellOffer': {
-        result.type = 'manageSellOffer';
-        result.selling = Asset.fromOperation(attrs.selling());
-        result.buying = Asset.fromOperation(attrs.buying());
-        result.amount = this._fromXDRAmount(attrs.amount());
-        result.price = this._fromXDRPrice(attrs.price());
-        result.offerId = attrs.offerId().toString();
-        break;
+        const attrs = operation.body().value() as xdr.ManageSellOfferOp;
+        return {
+          ...withSource,
+          type: 'manageSellOffer',
+          selling: Asset.fromOperation(attrs.selling()),
+          buying: Asset.fromOperation(attrs.buying()),
+          amount: this._fromXDRAmount(attrs.amount()),
+          price: this._fromXDRPrice(attrs.price()),
+          offerId: attrs.offerId().toString(),
+        }
       }
       case 'manageBuyOffer': {
-        result.type = 'manageBuyOffer';
-        result.selling = Asset.fromOperation(attrs.selling());
-        result.buying = Asset.fromOperation(attrs.buying());
-        result.buyAmount = this._fromXDRAmount(attrs.buyAmount());
-        result.price = this._fromXDRPrice(attrs.price());
-        result.offerId = attrs.offerId().toString();
-        break;
+        const attrs = operation.body().value() as xdr.ManageBuyOfferOp;
+        return {
+          ...withSource,
+          type: 'manageBuyOffer',
+          selling: Asset.fromOperation(attrs.selling()),
+          buying: Asset.fromOperation(attrs.buying()),
+          buyAmount: this._fromXDRAmount(attrs.buyAmount()),
+          price: this._fromXDRPrice(attrs.price()),
+          offerId: attrs.offerId().toString(),
+        }
       }
       // the next case intentionally falls through!
       case 'createPassiveOffer':
       case 'createPassiveSellOffer': {
-        result.type = 'createPassiveSellOffer';
-        result.selling = Asset.fromOperation(attrs.selling());
-        result.buying = Asset.fromOperation(attrs.buying());
-        result.amount = this._fromXDRAmount(attrs.amount());
-        result.price = this._fromXDRPrice(attrs.price());
-        break;
+        const attrs = operation.body().value() as xdr.CreatePassiveSellOfferOp;
+        return {
+          ...withSource,
+          type: 'createPassiveSellOffer',
+          selling: Asset.fromOperation(attrs.selling()),
+          buying: Asset.fromOperation(attrs.buying()),
+          amount: this._fromXDRAmount(attrs.amount()),
+          price: this._fromXDRPrice(attrs.price()),
+        }
       }
       case 'accountMerge': {
-        result.type = 'accountMerge';
-        result.destination = accountIdtoAddress(attrs);
-        break;
+        const attrs = operation.body().value() as xdr.AccountId;
+        return {
+          ...withSource,
+          type: 'accountMerge',
+          destination: accountIdtoAddress(attrs),
+        }
       }
       case 'manageDatum': {
-        result.type = 'manageData';
-        // manage_data.name is checked by iscntrl in stellar-core
-        result.name = attrs.dataName().toString('ascii');
-        result.value = attrs.dataValue();
-        break;
+        const attrs = operation.body().value() as xdr.ManageDataOp;
+        return {
+          ...withSource,
+          type: 'manageData',
+          // manage_data.name is checked by iscntrl in stellar-core
+          name: attrs.dataName().toString('ascii'),
+          value: attrs.dataValue(),
+        }
       }
       case 'inflation': {
-        result.type = 'inflation';
-        break;
+        return {
+          ...withSource,
+          type: 'inflation',
+        }
       }
       case 'bumpSequence': {
-        result.type = 'bumpSequence';
-        result.bumpTo = attrs.bumpTo().toString();
-        break;
-      }
-      default: {
-        throw new Error('Unknown operation');
+        const attrs = operation.body().value() as xdr.BumpSequenceOp;
+        return {
+          ...withSource,
+          type: 'bumpSequence',
+          bumpTo: attrs.bumpTo().toString(),
+        }
       }
     }
-    return result;
+    throw new Error('Unknown operation');
   }
 
   /**
@@ -228,7 +265,7 @@ export class Operation extends BaseOperation {
    * @param {string|BigNumber} value XDR amount
    * @returns {BigNumber} Number
    */
-  static _fromXDRAmount(value) {
+  static _fromXDRAmount(value: xdr.Int64): BigNumber {
     return new BigNumber(value).div(ONE).toFixed(7);
   }
 
@@ -239,7 +276,7 @@ export class Operation extends BaseOperation {
    * @param {function} price.d denominator function that returns a value
    * @returns {BigNumber} Big string
    */
-  static _fromXDRPrice(price) {
+  static _fromXDRPrice(price: xdr.Price): BigNumber {
     const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }

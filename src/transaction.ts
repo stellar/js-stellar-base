@@ -9,6 +9,7 @@ import { Network } from './network';
 import { Memo } from './memo';
 import { Keypair } from './keypair';
 import { hash } from './hashing';
+import { Operation as OperationNS } from './@types/operation';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object, unless you have
@@ -20,19 +21,19 @@ import { hash } from './hashing';
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
  */
 export class Transaction {
-  public readonly tx: any
+  public readonly tx: xdr.Transaction
   public readonly source: string
-  public readonly fee: any
-  protected readonly _memo: any
+  public readonly fee: xdr.Uint32
+  protected readonly _memo: xdr.Memo
   public readonly sequence: string
   public readonly timeBounds?: {
     minTime: string,
     maxTime: string,
   }
-  public readonly operations: any[]
-  public readonly signatures: any[]
+  public readonly operations: OperationNS[]
+  public readonly signatures: xdr.DecoratedSignature[]
 
-  public constructor(envelope: any) {
+  public constructor(envelope: string | xdr.TransactionEnvelope) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
@@ -64,11 +65,11 @@ export class Transaction {
     this.signatures = map(signatures, (s) => s);
   }
 
-  public get memo() {
+  public get memo(): Memo {
     return Memo.fromXDRObject(this._memo);
   }
 
-  public set memo(value: unknown) {
+  public set memo(value: Memo) {
     throw new Error('Transaction is immutable');
   }
 
@@ -223,7 +224,7 @@ export class Transaction {
    * To envelope returns a xdr.TransactionEnvelope which can be submitted to the network.
    * @returns {xdr.TransactionEnvelope}
    */
-  public toEnvelope(): any {
+  public toEnvelope(): xdr.TransactionEnvelope {
     const tx = this.tx;
     const signatures = this.signatures;
     const envelope = new xdr.TransactionEnvelope({ tx, signatures });

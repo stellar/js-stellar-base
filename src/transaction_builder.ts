@@ -100,7 +100,7 @@ export class TransactionBuilder {
    * @param {xdr.Operation} operation The xdr operation object, use {@link Operation} static methods.
    * @returns {TransactionBuilder}
    */
-  addOperation(operation) {
+  addOperation(operation): this {
     this.operations.push(operation);
     return this;
   }
@@ -110,7 +110,7 @@ export class TransactionBuilder {
    * @param {Memo} memo {@link Memo} object
    * @returns {TransactionBuilder}
    */
-  addMemo(memo) {
+  addMemo(memo): this {
     this.memo = memo;
     return this;
   }
@@ -133,7 +133,7 @@ export class TransactionBuilder {
    * @return {TransactionBuilder}
    * @see TimeoutInfinite
    */
-  setTimeout(timeout) {
+  setTimeout(timeout): this {
     if (this.timebounds != null && this.timebounds.maxTime > 0) {
       throw new Error(
         'TimeBounds.max_time has been already set - setting timeout would overwrite it.'
@@ -165,7 +165,7 @@ export class TransactionBuilder {
    * It will also increment the source account's sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
-  build() {
+  build(): Transaction {
     // Ensure setTimeout called or maxTime is set
     if (
       (this.timebounds === null ||
@@ -224,8 +224,8 @@ export class TransactionBuilder {
  * @argument {Date} d date object
  * @returns {boolean}
  */
-export function isValidDate(d) {
+export function isValidDate(d: Date): boolean {
   // isnan is okay here because it correctly checks for invalid date objects
   // eslint-disable-next-line no-restricted-globals
-  return d instanceof Date && !isNaN(d);
+  return d instanceof Date && !isNaN(d as any);
 }

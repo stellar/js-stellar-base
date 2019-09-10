@@ -109,7 +109,7 @@ export class StrKey {
   }
 }
 
-function isValid(versionByteName: string, encoded: string) {
+function isValid(versionByteName: string, encoded: string): boolean {
   if (encoded && encoded.length !== 56) {
     return false;
   }
@@ -125,7 +125,7 @@ function isValid(versionByteName: string, encoded: string) {
   return true;
 }
 
-export function decodeCheck(versionByteName: string, encoded: string) {
+export function decodeCheck(versionByteName: string, encoded: string): Buffer {
   if (!isString(encoded)) {
     throw new TypeError('encoded argument must be of type String');
   }
@@ -163,7 +163,7 @@ export function decodeCheck(versionByteName: string, encoded: string) {
   return Buffer.from(data);
 }
 
-export function encodeCheck(versionByteName: string, data: Buffer) {
+export function encodeCheck(versionByteName: string, data: Buffer): string {
   if (isNull(data) || isUndefined(data)) {
     throw new Error('cannot encode null data');
   }
