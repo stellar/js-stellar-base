@@ -24,7 +24,7 @@ export class Asset {
   static native(): Asset;
   static fromOperation(xdr: xdr.Asset): Asset;
 
-  constructor(code: string, issuer: string);
+  constructor(code: string, issuer?: string);
 
   getCode(): string;
   getIssuer(): string;
