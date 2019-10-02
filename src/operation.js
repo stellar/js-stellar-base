@@ -380,6 +380,7 @@ Operation.manageData = ops.manageData;
 Operation.manageSellOffer = ops.manageSellOffer;
 Operation.manageBuyOffer = ops.manageBuyOffer;
 Operation.pathPayment = ops.pathPayment;
+Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
 
