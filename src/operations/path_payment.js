@@ -46,10 +46,10 @@ export function pathPayment(opts) {
   const path = opts.path ? opts.path : [];
   attributes.path = path.map((x) => x.toXDRObject());
 
-  const payment = new xdr.PathPaymentOp(attributes);
+  const payment = new xdr.PathPaymentStrictReceiveOp(attributes);
 
   const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.pathPayment(payment);
+  opAttributes.body = xdr.OperationBody.pathPaymentStrictReceive(payment);
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);

@@ -115,7 +115,7 @@ describe('Operation', function() {
   });
 
   describe('.pathPayment()', function() {
-    it('creates a pathPaymentOp', function() {
+    it('creates a pathPaymentStrictReceiveOp', function() {
       var sendAsset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -151,7 +151,7 @@ describe('Operation', function() {
         Buffer.from(xdr, 'hex')
       );
       var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('pathPayment');
+      expect(obj.type).to.be.equal('pathPaymentStrictReceive');
       expect(obj.sendAsset.equals(sendAsset)).to.be.true;
       expect(
         operation

@@ -92,8 +92,9 @@ export class Operation {
     }
 
     const attrs = operation.body().value();
+    const operationName = operation.body().switch().name;
 
-    switch (operation.body().switch().name) {
+    switch (operationName) {
       case 'createAccount': {
         result.type = 'createAccount';
         result.destination = accountIdtoAddress(attrs.destination());
@@ -107,8 +108,8 @@ export class Operation {
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
       }
-      case 'pathPayment': {
-        result.type = 'pathPayment';
+      case 'pathPaymentStrictReceive': {
+        result.type = 'pathPaymentStrictReceive';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
         result.destination = accountIdtoAddress(attrs.destination());
@@ -236,7 +237,7 @@ export class Operation {
         break;
       }
       default: {
-        throw new Error('Unknown operation');
+        throw new Error(`Unknown operation: ${operationName}`);
       }
     }
     return result;
