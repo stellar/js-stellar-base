@@ -5,7 +5,7 @@ import { pathPaymentStrictReceive } from './path_payment_strict_receive';
  * destination account, optionally through a path. XLM payments create the destination
  * account if it does not exist.
  * @function
- * @deprecated since version 2.0.3, use pathPaymentStrictReceive.
+ * @deprecated Use {@link Operation.pathPaymentStrictReceive}
  * @alias Operation.pathPayment
  * @param {object} opts Options object
  * @param {Asset} opts.sendAsset - The asset to pay with.

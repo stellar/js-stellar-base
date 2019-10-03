@@ -3,11 +3,11 @@ import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 
 /**
- * Returns a XDR PathPaymentStrictSendOp. A "PathPaymentStrictSend" operation send the specified amount to the
+ * Returns a XDR PathPaymentStrictSendOp. A `PathPaymentStrictSend` operation send the specified amount to the
  * destination account crediting at least `destMin` of `destAsset`, optionally through a path. XLM payments create the destination
  * account if it does not exist.
  * @function
- * @alias Operation.pathPayment
+ * @alias Operation.pathPaymentStrictSend
  * @param {object} opts Options object
  * @param {Asset} opts.sendAsset - The asset to pay with.
  * @param {string} opts.sendAmount - Amount of sendAsset to send (excluding fees).
@@ -16,7 +16,7 @@ import { StrKey } from '../strkey';
  * @param {string} opts.destMin - The minimum amount of destAsset to be received
  * @param {Asset[]} opts.path - An array of Asset objects to use as the path.
  * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
- * @returns {xdr.PathPaymentStrictReceiveOp} Path Payment Strict Receive operation
+ * @returns {xdr.PathPaymentStrictSendOp} Path Payment Strict Receive operation
  */
 export function pathPaymentStrictSend(opts) {
   switch (true) {
