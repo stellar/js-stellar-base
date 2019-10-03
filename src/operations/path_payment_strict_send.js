@@ -3,8 +3,8 @@ import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 
 /**
- * Returns a XDR PathPaymentStrictSendOp. A "payment" operation send the specified amount to the
- * destination account, optionally through a path. XLM payments create the destination
+ * Returns a XDR PathPaymentStrictSendOp. A "PathPaymentStrictSend" operation send the specified amount to the
+ * destination account crediting at least `destMin` of `destAsset`, optionally through a path. XLM payments create the destination
  * account if it does not exist.
  * @function
  * @alias Operation.pathPayment
