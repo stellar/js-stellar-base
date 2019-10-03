@@ -5,6 +5,17 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+This release adds support for [stellar-core protocol 12 release](https://github.com/stellar/stellar-core/projects/11) and [CAP 24](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0024.md) ("Make PathPayment Symmetrical").
+
+### Add
+
+ - `Operation.pathPaymentStrictSend`: Sends a path payments, debiting from the source account exactly an specified amount of one asset, crediting at least a given amount of another asset. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+ - `Operation.pathPaymentStrictReceive`: This behaves the same as the former `pathPayments` operation. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+
+## Deprecated
+
+- `Operation.pathPayment` is being deprecated in favor of `Operation.pathPaymentStrictReceive`. Both functions take the same arguments and behave the same. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+
 ## [v2.0.2](https://github.com/stellar/js-stellar-base/compare/v2.0.1...v2.0.2)
 
 ### Fix
