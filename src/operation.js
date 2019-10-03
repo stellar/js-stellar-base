@@ -125,6 +125,23 @@ export class Operation {
         });
         break;
       }
+      case 'pathPaymentStrictSend': {
+        result.type = 'pathPaymentStrictSend';
+        result.sendAsset = Asset.fromOperation(attrs.sendAsset());
+        result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
+        result.destination = accountIdtoAddress(attrs.destination());
+        result.destAsset = Asset.fromOperation(attrs.destAsset());
+        result.destMin = this._fromXDRAmount(attrs.destMin());
+        result.path = [];
+
+        const path = attrs.path();
+
+        // note that Object.values isn't supported by node 6!
+        Object.keys(path).forEach((pathKey) => {
+          result.path.push(Asset.fromOperation(path[pathKey]));
+        });
+        break;
+      }
       case 'changeTrust': {
         result.type = 'changeTrust';
         result.line = Asset.fromOperation(attrs.line());
@@ -381,6 +398,7 @@ Operation.manageSellOffer = ops.manageSellOffer;
 Operation.manageBuyOffer = ops.manageBuyOffer;
 Operation.pathPayment = ops.pathPayment;
 Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
+Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
 
