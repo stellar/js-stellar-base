@@ -9,9 +9,9 @@ This release adds support for [stellar-core protocol 12 release](https://github.
 
 ### Add ➕
 
- - `Operation.pathPaymentStrictSend`: Sends a path payments, debiting from the source account exactly an specified amount of one asset, crediting at least a given amount of another asset. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+ - `Operation.pathPaymentStrictSend`: Sends a path payments, debiting from the source account exactly a specified amount of one asset, crediting at least a given amount of another asset. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
 
-    The following operation will debit exactly $10 USD from the source acount, crediting at least $9.2 EUR in the destination account 💸:
+    The following operation will debit exactly 10 USD from the source account, crediting at least 9.2 EUR in the destination account 💸:
     ```js
     var sendAsset = new StellarBase.Asset(
       'USD',
@@ -46,7 +46,7 @@ This release adds support for [stellar-core protocol 12 release](https://github.
     ```
  - `Operation.pathPaymentStrictReceive`: This behaves the same as the former `pathPayments` operation. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
 
-   The following operation will debit maximum $10 USD from the source acount, crediting exactly $9.2 EUR in the destination account  💸:
+   The following operation will debit maximum 10 USD from the source account, crediting exactly 9.2 EUR in the destination account  💸:
    ```js
    var sendAsset = new StellarBase.Asset(
      'USD',
