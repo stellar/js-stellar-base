@@ -193,6 +193,7 @@ export namespace OperationType {
   type CreateAccount = 'createAccount';
   type Payment = 'payment';
   type PathPaymentStrictReceive = 'pathPaymentStrictReceive';
+  type PathPaymentStrictSend = 'pathPaymentStrictSend';
   type CreatePassiveSellOffer = 'createPassiveSellOffer';
   type ManageSellOffer = 'manageSellOffer';
   type ManageBuyOffer = 'manageBuyOffer';
@@ -208,6 +209,7 @@ export type OperationType =
   | OperationType.CreateAccount
   | OperationType.Payment
   | OperationType.PathPaymentStrictReceive
+  | OperationType.PathPaymentStrictSend
   | OperationType.CreatePassiveSellOffer
   | OperationType.ManageSellOffer
   | OperationType.ManageBuyOffer
@@ -271,6 +273,14 @@ export namespace OperationOptions {
     destAmount: string;
     path?: Asset[];
   }
+  interface PathPaymentStrictSend extends BaseOptions {
+    sendAsset: Asset;
+    sendAmount: string;
+    destination: string;
+    destAsset: Asset;
+    destMin: string;
+    path?: Asset[];
+  }
   interface Payment extends BaseOptions {
     amount: string;
     asset: Asset;
@@ -295,6 +305,7 @@ export type OperationOptions =
   | OperationOptions.CreateAccount
   | OperationOptions.Payment
   | OperationOptions.PathPaymentStrictReceive
+  | OperationOptions.PathPaymentStrictSend
   | OperationOptions.CreatePassiveSellOffer
   | OperationOptions.ManageSellOffer
   | OperationOptions.ManageBuyOffer
@@ -402,9 +413,22 @@ export namespace Operation {
   function pathPaymentStrictReceive(
     options: OperationOptions.PathPaymentStrictReceive
   ): xdr.Operation<PathPaymentStrictReceive>;
+
   function pathPayment(
     options: OperationOptions.PathPaymentStrictReceive
   ): xdr.Operation<PathPaymentStrictReceive>;
+
+  interface PathPaymentStrictSend extends BaseOperation<OperationType.PathPaymentStrictSend> {
+    sendAsset: Asset;
+    sendAmount: string;
+    destination: string;
+    destAsset: Asset;
+    destMin: string;
+    path: Asset[];
+  }
+  function pathPaymentStrictSend(
+    options: OperationOptions.PathPaymentStrictSend
+  ): xdr.Operation<PathPaymentStrictSend>;
 
   interface Payment extends BaseOperation<OperationType.Payment> {
     amount: string;
@@ -450,6 +474,7 @@ export type Operation =
   | Operation.CreateAccount
   | Operation.Payment
   | Operation.PathPaymentStrictReceive
+  | Operation.PathPaymentStrictSend
   | Operation.CreatePassiveSellOffer
   | Operation.ManageSellOffer
   | Operation.ManageBuyOffer
