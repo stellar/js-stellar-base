@@ -10,7 +10,7 @@ import xdr from '../generated/stellar-xdr_generated';
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.
  * @param {string} opts.buyAmount - The total amount you're buying. If 0, deletes the offer.
- * @param {number|string|BigNumber|Object} opts.price - Price of 1 unit of `selling` in terms of `buying`.
+ * @param {number|string|BigNumber|Object} opts.price - Price of 1 unit of `buying` in terms of `selling`.
  * @param {number} opts.price.n - If `opts.price` is an object: the price numerator
  * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
  * @param {number|string} [opts.offerId ] - If `0`, will create a new offer (default). Otherwise, edits an exisiting offer.
