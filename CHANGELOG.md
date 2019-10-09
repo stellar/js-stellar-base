@@ -5,6 +5,8 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.0](https://github.com/stellar/js-stellar-base/compare/v2.0.2...v2.1.0)
+
 This release adds support for [stellar-core protocol 12 release](https://github.com/stellar/stellar-core/projects/11) and [CAP 24](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0024.md) ("Make PathPayment Symmetrical").
 
 ### Add ➕
