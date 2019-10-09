@@ -1,4 +1,4 @@
-// Automatically generated on 2019-04-30T12:43:38-07:00
+// Automatically generated on 2019-10-02T15:45:16-07:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -2072,7 +2072,7 @@ xdr.struct("DecoratedSignature", [
 //   {
 //       CREATE_ACCOUNT = 0,
 //       PAYMENT = 1,
-//       PATH_PAYMENT = 2,
+//       PATH_PAYMENT_STRICT_RECEIVE = 2,
 //       MANAGE_SELL_OFFER = 3,
 //       CREATE_PASSIVE_SELL_OFFER = 4,
 //       SET_OPTIONS = 5,
@@ -2082,14 +2082,15 @@ xdr.struct("DecoratedSignature", [
 //       INFLATION = 9,
 //       MANAGE_DATA = 10,
 //       BUMP_SEQUENCE = 11,
-//       MANAGE_BUY_OFFER = 12
+//       MANAGE_BUY_OFFER = 12,
+//       PATH_PAYMENT_STRICT_SEND = 13
 //   };
 //
 // ===========================================================================
 xdr.enum("OperationType", {
   createAccount: 0,
   payment: 1,
-  pathPayment: 2,
+  pathPaymentStrictReceive: 2,
   manageSellOffer: 3,
   createPassiveSellOffer: 4,
   setOption: 5,
@@ -2100,6 +2101,7 @@ xdr.enum("OperationType", {
   manageDatum: 10,
   bumpSequence: 11,
   manageBuyOffer: 12,
+  pathPaymentStrictSend: 13,
 });
 
 // === xdr source ============================================================
@@ -2134,7 +2136,7 @@ xdr.struct("PaymentOp", [
 
 // === xdr source ============================================================
 //
-//   struct PathPaymentOp
+//   struct PathPaymentStrictReceiveOp
 //   {
 //       Asset sendAsset; // asset we pay with
 //       int64 sendMax;   // the maximum amount of sendAsset to
@@ -2149,12 +2151,38 @@ xdr.struct("PaymentOp", [
 //   };
 //
 // ===========================================================================
-xdr.struct("PathPaymentOp", [
+xdr.struct("PathPaymentStrictReceiveOp", [
   ["sendAsset", xdr.lookup("Asset")],
   ["sendMax", xdr.lookup("Int64")],
   ["destination", xdr.lookup("AccountId")],
   ["destAsset", xdr.lookup("Asset")],
   ["destAmount", xdr.lookup("Int64")],
+  ["path", xdr.varArray(xdr.lookup("Asset"), 5)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct PathPaymentStrictSendOp
+//   {
+//       Asset sendAsset;  // asset we pay with
+//       int64 sendAmount; // amount of sendAsset to send (excluding fees)
+//   
+//       AccountID destination; // recipient of the payment
+//       Asset destAsset;       // what they end up with
+//       int64 destMin;         // the minimum amount of dest asset to
+//                              // be received
+//                              // The operation will fail if it can't be met
+//   
+//       Asset path<5>; // additional hops it must go through to get there
+//   };
+//
+// ===========================================================================
+xdr.struct("PathPaymentStrictSendOp", [
+  ["sendAsset", xdr.lookup("Asset")],
+  ["sendAmount", xdr.lookup("Int64")],
+  ["destination", xdr.lookup("AccountId")],
+  ["destAsset", xdr.lookup("Asset")],
+  ["destMin", xdr.lookup("Int64")],
   ["path", xdr.varArray(xdr.lookup("Asset"), 5)],
 ]);
 
@@ -2362,8 +2390,8 @@ xdr.struct("BumpSequenceOp", [
 //           CreateAccountOp createAccountOp;
 //       case PAYMENT:
 //           PaymentOp paymentOp;
-//       case PATH_PAYMENT:
-//           PathPaymentOp pathPaymentOp;
+//       case PATH_PAYMENT_STRICT_RECEIVE:
+//           PathPaymentStrictReceiveOp pathPaymentStrictReceiveOp;
 //       case MANAGE_SELL_OFFER:
 //           ManageSellOfferOp manageSellOfferOp;
 //       case CREATE_PASSIVE_SELL_OFFER:
@@ -2384,6 +2412,8 @@ xdr.struct("BumpSequenceOp", [
 //           BumpSequenceOp bumpSequenceOp;
 //       case MANAGE_BUY_OFFER:
 //           ManageBuyOfferOp manageBuyOfferOp;
+//       case PATH_PAYMENT_STRICT_SEND:
+//           PathPaymentStrictSendOp pathPaymentStrictSendOp;
 //       }
 //
 // ===========================================================================
@@ -2393,7 +2423,7 @@ xdr.union("OperationBody", {
   switches: [
     ["createAccount", "createAccountOp"],
     ["payment", "paymentOp"],
-    ["pathPayment", "pathPaymentOp"],
+    ["pathPaymentStrictReceive", "pathPaymentStrictReceiveOp"],
     ["manageSellOffer", "manageSellOfferOp"],
     ["createPassiveSellOffer", "createPassiveSellOfferOp"],
     ["setOption", "setOptionsOp"],
@@ -2404,11 +2434,12 @@ xdr.union("OperationBody", {
     ["manageDatum", "manageDataOp"],
     ["bumpSequence", "bumpSequenceOp"],
     ["manageBuyOffer", "manageBuyOfferOp"],
+    ["pathPaymentStrictSend", "pathPaymentStrictSendOp"],
   ],
   arms: {
     createAccountOp: xdr.lookup("CreateAccountOp"),
     paymentOp: xdr.lookup("PaymentOp"),
-    pathPaymentOp: xdr.lookup("PathPaymentOp"),
+    pathPaymentStrictReceiveOp: xdr.lookup("PathPaymentStrictReceiveOp"),
     manageSellOfferOp: xdr.lookup("ManageSellOfferOp"),
     createPassiveSellOfferOp: xdr.lookup("CreatePassiveSellOfferOp"),
     setOptionsOp: xdr.lookup("SetOptionsOp"),
@@ -2418,6 +2449,7 @@ xdr.union("OperationBody", {
     manageDataOp: xdr.lookup("ManageDataOp"),
     bumpSequenceOp: xdr.lookup("BumpSequenceOp"),
     manageBuyOfferOp: xdr.lookup("ManageBuyOfferOp"),
+    pathPaymentStrictSendOp: xdr.lookup("PathPaymentStrictSendOp"),
   },
 });
 
@@ -2436,8 +2468,8 @@ xdr.union("OperationBody", {
 //           CreateAccountOp createAccountOp;
 //       case PAYMENT:
 //           PaymentOp paymentOp;
-//       case PATH_PAYMENT:
-//           PathPaymentOp pathPaymentOp;
+//       case PATH_PAYMENT_STRICT_RECEIVE:
+//           PathPaymentStrictReceiveOp pathPaymentStrictReceiveOp;
 //       case MANAGE_SELL_OFFER:
 //           ManageSellOfferOp manageSellOfferOp;
 //       case CREATE_PASSIVE_SELL_OFFER:
@@ -2458,6 +2490,8 @@ xdr.union("OperationBody", {
 //           BumpSequenceOp bumpSequenceOp;
 //       case MANAGE_BUY_OFFER:
 //           ManageBuyOfferOp manageBuyOfferOp;
+//       case PATH_PAYMENT_STRICT_SEND:
+//           PathPaymentStrictSendOp pathPaymentStrictSendOp;
 //       }
 //       body;
 //   };
@@ -2790,41 +2824,41 @@ xdr.union("PaymentResult", {
 
 // === xdr source ============================================================
 //
-//   enum PathPaymentResultCode
+//   enum PathPaymentStrictReceiveResultCode
 //   {
 //       // codes considered as "success" for the operation
-//       PATH_PAYMENT_SUCCESS = 0, // success
+//       PATH_PAYMENT_STRICT_RECEIVE_SUCCESS = 0, // success
 //   
 //       // codes considered as "failure" for the operation
-//       PATH_PAYMENT_MALFORMED = -1,          // bad input
-//       PATH_PAYMENT_UNDERFUNDED = -2,        // not enough funds in source account
-//       PATH_PAYMENT_SRC_NO_TRUST = -3,       // no trust line on source account
-//       PATH_PAYMENT_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
-//       PATH_PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
-//       PATH_PAYMENT_NO_TRUST = -6,           // dest missing a trust line for asset
-//       PATH_PAYMENT_NOT_AUTHORIZED = -7,     // dest not authorized to hold asset
-//       PATH_PAYMENT_LINE_FULL = -8,          // dest would go above their limit
-//       PATH_PAYMENT_NO_ISSUER = -9,          // missing issuer on one asset
-//       PATH_PAYMENT_TOO_FEW_OFFERS = -10,    // not enough offers to satisfy path
-//       PATH_PAYMENT_OFFER_CROSS_SELF = -11,  // would cross one of its own offers
-//       PATH_PAYMENT_OVER_SENDMAX = -12       // could not satisfy sendmax
+//       PATH_PAYMENT_STRICT_RECEIVE_MALFORMED = -1,          // bad input
+//       PATH_PAYMENT_STRICT_RECEIVE_UNDERFUNDED = -2,        // not enough funds in source account
+//       PATH_PAYMENT_STRICT_RECEIVE_SRC_NO_TRUST = -3,       // no trust line on source account
+//       PATH_PAYMENT_STRICT_RECEIVE_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
+//       PATH_PAYMENT_STRICT_RECEIVE_NO_DESTINATION = -5,     // destination account does not exist
+//       PATH_PAYMENT_STRICT_RECEIVE_NO_TRUST = -6,           // dest missing a trust line for asset
+//       PATH_PAYMENT_STRICT_RECEIVE_NOT_AUTHORIZED = -7,     // dest not authorized to hold asset
+//       PATH_PAYMENT_STRICT_RECEIVE_LINE_FULL = -8,          // dest would go above their limit
+//       PATH_PAYMENT_STRICT_RECEIVE_NO_ISSUER = -9,          // missing issuer on one asset
+//       PATH_PAYMENT_STRICT_RECEIVE_TOO_FEW_OFFERS = -10,    // not enough offers to satisfy path
+//       PATH_PAYMENT_STRICT_RECEIVE_OFFER_CROSS_SELF = -11,  // would cross one of its own offers
+//       PATH_PAYMENT_STRICT_RECEIVE_OVER_SENDMAX = -12       // could not satisfy sendmax
 //   };
 //
 // ===========================================================================
-xdr.enum("PathPaymentResultCode", {
-  pathPaymentSuccess: 0,
-  pathPaymentMalformed: -1,
-  pathPaymentUnderfunded: -2,
-  pathPaymentSrcNoTrust: -3,
-  pathPaymentSrcNotAuthorized: -4,
-  pathPaymentNoDestination: -5,
-  pathPaymentNoTrust: -6,
-  pathPaymentNotAuthorized: -7,
-  pathPaymentLineFull: -8,
-  pathPaymentNoIssuer: -9,
-  pathPaymentTooFewOffer: -10,
-  pathPaymentOfferCrossSelf: -11,
-  pathPaymentOverSendmax: -12,
+xdr.enum("PathPaymentStrictReceiveResultCode", {
+  pathPaymentStrictReceiveSuccess: 0,
+  pathPaymentStrictReceiveMalformed: -1,
+  pathPaymentStrictReceiveUnderfunded: -2,
+  pathPaymentStrictReceiveSrcNoTrust: -3,
+  pathPaymentStrictReceiveSrcNotAuthorized: -4,
+  pathPaymentStrictReceiveNoDestination: -5,
+  pathPaymentStrictReceiveNoTrust: -6,
+  pathPaymentStrictReceiveNotAuthorized: -7,
+  pathPaymentStrictReceiveLineFull: -8,
+  pathPaymentStrictReceiveNoIssuer: -9,
+  pathPaymentStrictReceiveTooFewOffer: -10,
+  pathPaymentStrictReceiveOfferCrossSelf: -11,
+  pathPaymentStrictReceiveOverSendmax: -12,
 });
 
 // === xdr source ============================================================
@@ -2852,37 +2886,121 @@ xdr.struct("SimplePaymentResult", [
 //       }
 //
 // ===========================================================================
-xdr.struct("PathPaymentResultSuccess", [
+xdr.struct("PathPaymentStrictReceiveResultSuccess", [
   ["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)],
   ["last", xdr.lookup("SimplePaymentResult")],
 ]);
 
 // === xdr source ============================================================
 //
-//   union PathPaymentResult switch (PathPaymentResultCode code)
+//   union PathPaymentStrictReceiveResult switch (PathPaymentStrictReceiveResultCode code)
 //   {
-//   case PATH_PAYMENT_SUCCESS:
+//   case PATH_PAYMENT_STRICT_RECEIVE_SUCCESS:
 //       struct
 //       {
 //           ClaimOfferAtom offers<>;
 //           SimplePaymentResult last;
 //       } success;
-//   case PATH_PAYMENT_NO_ISSUER:
+//   case PATH_PAYMENT_STRICT_RECEIVE_NO_ISSUER:
 //       Asset noIssuer; // the asset that caused the error
 //   default:
 //       void;
 //   };
 //
 // ===========================================================================
-xdr.union("PathPaymentResult", {
-  switchOn: xdr.lookup("PathPaymentResultCode"),
+xdr.union("PathPaymentStrictReceiveResult", {
+  switchOn: xdr.lookup("PathPaymentStrictReceiveResultCode"),
   switchName: "code",
   switches: [
-    ["pathPaymentSuccess", "success"],
-    ["pathPaymentNoIssuer", "noIssuer"],
+    ["pathPaymentStrictReceiveSuccess", "success"],
+    ["pathPaymentStrictReceiveNoIssuer", "noIssuer"],
   ],
   arms: {
-    success: xdr.lookup("PathPaymentResultSuccess"),
+    success: xdr.lookup("PathPaymentStrictReceiveResultSuccess"),
+    noIssuer: xdr.lookup("Asset"),
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
+//   enum PathPaymentStrictSendResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       PATH_PAYMENT_STRICT_SEND_SUCCESS = 0, // success
+//   
+//       // codes considered as "failure" for the operation
+//       PATH_PAYMENT_STRICT_SEND_MALFORMED = -1,          // bad input
+//       PATH_PAYMENT_STRICT_SEND_UNDERFUNDED = -2,        // not enough funds in source account
+//       PATH_PAYMENT_STRICT_SEND_SRC_NO_TRUST = -3,       // no trust line on source account
+//       PATH_PAYMENT_STRICT_SEND_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
+//       PATH_PAYMENT_STRICT_SEND_NO_DESTINATION = -5,     // destination account does not exist
+//       PATH_PAYMENT_STRICT_SEND_NO_TRUST = -6,           // dest missing a trust line for asset
+//       PATH_PAYMENT_STRICT_SEND_NOT_AUTHORIZED = -7,     // dest not authorized to hold asset
+//       PATH_PAYMENT_STRICT_SEND_LINE_FULL = -8,          // dest would go above their limit
+//       PATH_PAYMENT_STRICT_SEND_NO_ISSUER = -9,          // missing issuer on one asset
+//       PATH_PAYMENT_STRICT_SEND_TOO_FEW_OFFERS = -10,    // not enough offers to satisfy path
+//       PATH_PAYMENT_STRICT_SEND_OFFER_CROSS_SELF = -11,  // would cross one of its own offers
+//       PATH_PAYMENT_STRICT_SEND_UNDER_DESTMIN = -12      // could not satisfy destMin
+//   };
+//
+// ===========================================================================
+xdr.enum("PathPaymentStrictSendResultCode", {
+  pathPaymentStrictSendSuccess: 0,
+  pathPaymentStrictSendMalformed: -1,
+  pathPaymentStrictSendUnderfunded: -2,
+  pathPaymentStrictSendSrcNoTrust: -3,
+  pathPaymentStrictSendSrcNotAuthorized: -4,
+  pathPaymentStrictSendNoDestination: -5,
+  pathPaymentStrictSendNoTrust: -6,
+  pathPaymentStrictSendNotAuthorized: -7,
+  pathPaymentStrictSendLineFull: -8,
+  pathPaymentStrictSendNoIssuer: -9,
+  pathPaymentStrictSendTooFewOffer: -10,
+  pathPaymentStrictSendOfferCrossSelf: -11,
+  pathPaymentStrictSendUnderDestmin: -12,
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           ClaimOfferAtom offers<>;
+//           SimplePaymentResult last;
+//       }
+//
+// ===========================================================================
+xdr.struct("PathPaymentStrictSendResultSuccess", [
+  ["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)],
+  ["last", xdr.lookup("SimplePaymentResult")],
+]);
+
+// === xdr source ============================================================
+//
+//   union PathPaymentStrictSendResult switch (PathPaymentStrictSendResultCode code)
+//   {
+//   case PATH_PAYMENT_STRICT_SEND_SUCCESS:
+//       struct
+//       {
+//           ClaimOfferAtom offers<>;
+//           SimplePaymentResult last;
+//       } success;
+//   case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:
+//       Asset noIssuer; // the asset that caused the error
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("PathPaymentStrictSendResult", {
+  switchOn: xdr.lookup("PathPaymentStrictSendResultCode"),
+  switchName: "code",
+  switches: [
+    ["pathPaymentStrictSendSuccess", "success"],
+    ["pathPaymentStrictSendNoIssuer", "noIssuer"],
+  ],
+  arms: {
+    success: xdr.lookup("PathPaymentStrictSendResultSuccess"),
     noIssuer: xdr.lookup("Asset"),
   },
   defaultArm: xdr.void(),
@@ -3450,8 +3568,8 @@ xdr.enum("OperationResultCode", {
 //           CreateAccountResult createAccountResult;
 //       case PAYMENT:
 //           PaymentResult paymentResult;
-//       case PATH_PAYMENT:
-//           PathPaymentResult pathPaymentResult;
+//       case PATH_PAYMENT_STRICT_RECEIVE:
+//           PathPaymentStrictReceiveResult pathPaymentStrictReceiveResult;
 //       case MANAGE_SELL_OFFER:
 //           ManageSellOfferResult manageSellOfferResult;
 //       case CREATE_PASSIVE_SELL_OFFER:
@@ -3472,6 +3590,8 @@ xdr.enum("OperationResultCode", {
 //           BumpSequenceResult bumpSeqResult;
 //       case MANAGE_BUY_OFFER:
 //   	ManageBuyOfferResult manageBuyOfferResult;
+//       case PATH_PAYMENT_STRICT_SEND:
+//           PathPaymentStrictSendResult pathPaymentStrictSendResult;
 //       }
 //
 // ===========================================================================
@@ -3481,7 +3601,7 @@ xdr.union("OperationResultTr", {
   switches: [
     ["createAccount", "createAccountResult"],
     ["payment", "paymentResult"],
-    ["pathPayment", "pathPaymentResult"],
+    ["pathPaymentStrictReceive", "pathPaymentStrictReceiveResult"],
     ["manageSellOffer", "manageSellOfferResult"],
     ["createPassiveSellOffer", "createPassiveSellOfferResult"],
     ["setOption", "setOptionsResult"],
@@ -3492,11 +3612,12 @@ xdr.union("OperationResultTr", {
     ["manageDatum", "manageDataResult"],
     ["bumpSequence", "bumpSeqResult"],
     ["manageBuyOffer", "manageBuyOfferResult"],
+    ["pathPaymentStrictSend", "pathPaymentStrictSendResult"],
   ],
   arms: {
     createAccountResult: xdr.lookup("CreateAccountResult"),
     paymentResult: xdr.lookup("PaymentResult"),
-    pathPaymentResult: xdr.lookup("PathPaymentResult"),
+    pathPaymentStrictReceiveResult: xdr.lookup("PathPaymentStrictReceiveResult"),
     manageSellOfferResult: xdr.lookup("ManageSellOfferResult"),
     createPassiveSellOfferResult: xdr.lookup("ManageSellOfferResult"),
     setOptionsResult: xdr.lookup("SetOptionsResult"),
@@ -3507,6 +3628,7 @@ xdr.union("OperationResultTr", {
     manageDataResult: xdr.lookup("ManageDataResult"),
     bumpSeqResult: xdr.lookup("BumpSequenceResult"),
     manageBuyOfferResult: xdr.lookup("ManageBuyOfferResult"),
+    pathPaymentStrictSendResult: xdr.lookup("PathPaymentStrictSendResult"),
   },
 });
 
@@ -3521,8 +3643,8 @@ xdr.union("OperationResultTr", {
 //           CreateAccountResult createAccountResult;
 //       case PAYMENT:
 //           PaymentResult paymentResult;
-//       case PATH_PAYMENT:
-//           PathPaymentResult pathPaymentResult;
+//       case PATH_PAYMENT_STRICT_RECEIVE:
+//           PathPaymentStrictReceiveResult pathPaymentStrictReceiveResult;
 //       case MANAGE_SELL_OFFER:
 //           ManageSellOfferResult manageSellOfferResult;
 //       case CREATE_PASSIVE_SELL_OFFER:
@@ -3543,6 +3665,8 @@ xdr.union("OperationResultTr", {
 //           BumpSequenceResult bumpSeqResult;
 //       case MANAGE_BUY_OFFER:
 //   	ManageBuyOfferResult manageBuyOfferResult;
+//       case PATH_PAYMENT_STRICT_SEND:
+//           PathPaymentStrictSendResult pathPaymentStrictSendResult;
 //       }
 //       tr;
 //   default:

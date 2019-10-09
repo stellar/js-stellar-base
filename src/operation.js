@@ -92,8 +92,9 @@ export class Operation {
     }
 
     const attrs = operation.body().value();
+    const operationName = operation.body().switch().name;
 
-    switch (operation.body().switch().name) {
+    switch (operationName) {
       case 'createAccount': {
         result.type = 'createAccount';
         result.destination = accountIdtoAddress(attrs.destination());
@@ -107,13 +108,30 @@ export class Operation {
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
       }
-      case 'pathPayment': {
-        result.type = 'pathPayment';
+      case 'pathPaymentStrictReceive': {
+        result.type = 'pathPaymentStrictReceive';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
         result.destination = accountIdtoAddress(attrs.destination());
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
+        result.path = [];
+
+        const path = attrs.path();
+
+        // note that Object.values isn't supported by node 6!
+        Object.keys(path).forEach((pathKey) => {
+          result.path.push(Asset.fromOperation(path[pathKey]));
+        });
+        break;
+      }
+      case 'pathPaymentStrictSend': {
+        result.type = 'pathPaymentStrictSend';
+        result.sendAsset = Asset.fromOperation(attrs.sendAsset());
+        result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
+        result.destination = accountIdtoAddress(attrs.destination());
+        result.destAsset = Asset.fromOperation(attrs.destAsset());
+        result.destMin = this._fromXDRAmount(attrs.destMin());
         result.path = [];
 
         const path = attrs.path();
@@ -236,7 +254,7 @@ export class Operation {
         break;
       }
       default: {
-        throw new Error('Unknown operation');
+        throw new Error(`Unknown operation: ${operationName}`);
       }
     }
     return result;
@@ -379,6 +397,8 @@ Operation.manageData = ops.manageData;
 Operation.manageSellOffer = ops.manageSellOffer;
 Operation.manageBuyOffer = ops.manageBuyOffer;
 Operation.pathPayment = ops.pathPayment;
+Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
+Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
 

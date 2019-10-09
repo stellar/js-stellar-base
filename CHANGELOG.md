@@ -5,6 +5,85 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+This release adds support for [stellar-core protocol 12 release](https://github.com/stellar/stellar-core/projects/11) and [CAP 24](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0024.md) ("Make PathPayment Symmetrical").
+
+### Add ➕
+
+ - `Operation.pathPaymentStrictSend`: Sends a path payments, debiting from the source account exactly a specified amount of one asset, crediting at least a given amount of another asset. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+
+    The following operation will debit exactly 10 USD from the source account, crediting at least 9.2 EUR in the destination account 💸:
+    ```js
+    var sendAsset = new StellarBase.Asset(
+      'USD',
+      'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+    );
+    var sendAmount = '10';
+    var destination =
+      'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+    var destAsset = new StellarBase.Asset(
+      'USD',
+      'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+    );
+    var destMin = '9.2';
+    var path = [
+      new StellarBase.Asset(
+        'USD',
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+      ),
+      new StellarBase.Asset(
+        'EUR',
+        'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
+      )
+    ];
+    let op = StellarBase.Operation.pathPaymentStrictSend({
+      sendAsset,
+      sendAmount,
+      destination,
+      destAsset,
+      destMin,
+      path
+    });
+    ```
+ - `Operation.pathPaymentStrictReceive`: This behaves the same as the former `pathPayments` operation. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+
+   The following operation will debit maximum 10 USD from the source account, crediting exactly 9.2 EUR in the destination account  💸:
+   ```js
+   var sendAsset = new StellarBase.Asset(
+     'USD',
+     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+   );
+   var sendMax = '10';
+   var destination =
+     'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+   var destAsset = new StellarBase.Asset(
+     'USD',
+     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+   );
+   var destAmount = '9.2';
+   var path = [
+     new StellarBase.Asset(
+       'USD',
+       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+     ),
+     new StellarBase.Asset(
+       'EUR',
+       'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
+     )
+   ];
+   let op = StellarBase.Operation.pathPaymentStrictReceive({
+     sendAsset,
+     sendMax,
+     destination,
+     destAsset,
+     destAmount,
+     path
+   });
+   ```
+
+## Deprecated ❗️
+
+- `Operation.pathPayment` is being deprecated in favor of `Operation.pathPaymentStrictReceive`. Both functions take the same arguments and behave the same. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+
 ## [v2.0.2](https://github.com/stellar/js-stellar-base/compare/v2.0.1...v2.0.2)
 
 ### Fix

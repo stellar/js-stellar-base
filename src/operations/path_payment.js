@@ -1,12 +1,11 @@
-import xdr from '../generated/stellar-xdr_generated';
-import { Keypair } from '../keypair';
-import { StrKey } from '../strkey';
+import { pathPaymentStrictReceive } from './path_payment_strict_receive';
 
 /**
- * Returns a XDR PaymentOp. A "payment" operation send the specified amount to the
+ * Returns a XDR PathPaymentOp. A "payment" operation send the specified amount to the
  * destination account, optionally through a path. XLM payments create the destination
  * account if it does not exist.
  * @function
+ * @deprecated Use {@link Operation.pathPaymentStrictReceive}
  * @alias Operation.pathPayment
  * @param {object} opts Options object
  * @param {Asset} opts.sendAsset - The asset to pay with.
@@ -19,38 +18,10 @@ import { StrKey } from '../strkey';
  * @returns {xdr.PathPaymentOp} Path Payment operation
  */
 export function pathPayment(opts) {
-  switch (true) {
-    case !opts.sendAsset:
-      throw new Error('Must specify a send asset');
-    case !this.isValidAmount(opts.sendMax):
-      throw new TypeError(this.constructAmountRequirementsError('sendMax'));
-    case !StrKey.isValidEd25519PublicKey(opts.destination):
-      throw new Error('destination is invalid');
-    case !opts.destAsset:
-      throw new Error('Must provide a destAsset for a payment operation');
-    case !this.isValidAmount(opts.destAmount):
-      throw new TypeError(this.constructAmountRequirementsError('destAmount'));
-    default:
-      break;
-  }
+  // eslint-disable-next-line no-console
+  console.log(
+    '[Operation] Operation.pathPayment has been renamed to Operation.pathPaymentStrictReceive - The old name is deprecated and will be removed in a later version!'
+  );
 
-  const attributes = {};
-  attributes.sendAsset = opts.sendAsset.toXDRObject();
-  attributes.sendMax = this._toXDRAmount(opts.sendMax);
-  attributes.destination = Keypair.fromPublicKey(
-    opts.destination
-  ).xdrAccountId();
-  attributes.destAsset = opts.destAsset.toXDRObject();
-  attributes.destAmount = this._toXDRAmount(opts.destAmount);
-
-  const path = opts.path ? opts.path : [];
-  attributes.path = path.map((x) => x.toXDRObject());
-
-  const payment = new xdr.PathPaymentOp(attributes);
-
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.pathPayment(payment);
-  this.setSourceAccount(opAttributes, opts);
-
-  return new xdr.Operation(opAttributes);
+  return pathPaymentStrictReceive.call(this, opts);
 }
