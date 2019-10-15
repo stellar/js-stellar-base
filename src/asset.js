@@ -155,6 +155,6 @@ export class Asset {
       return 'native';
     }
 
-    return `${this.getCode()}-${this.getIssuer()}`;
+    return `${this.getCode()}:${this.getIssuer()}`;
   }
 }
