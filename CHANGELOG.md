@@ -5,6 +5,12 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## Update ❗️
+
+- Update `asset.toString()` to return canonical representation for asset. ([277](https://github.com/stellar/js-stellar-base/pull/277)).
+
+  Calling `asset.toString()` will return `native` for `XLM` or `AssetCode:AssetIssuer` for issued assets. See [this PR](https://github.com/stellar/stellar-protocol/pull/313/files) for more information.
+
 ## [v2.1.0](https://github.com/stellar/js-stellar-base/compare/v2.0.2...v2.1.0)
 
 This release adds support for [stellar-core protocol 12 release](https://github.com/stellar/stellar-core/projects/11) and [CAP 24](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0024.md) ("Make PathPayment Symmetrical").
