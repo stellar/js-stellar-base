@@ -5,11 +5,13 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
-## Update ❗️
+## [v2.1.1](https://github.com/stellar/js-stellar-base/compare/v2.1.0...v2.1.1)
+
+## Update 📣
 
 - Update `asset.toString()` to return canonical representation for asset. ([277](https://github.com/stellar/js-stellar-base/pull/277)).
 
-  Calling `asset.toString()` will return `native` for `XLM` or `AssetCode:AssetIssuer` for issued assets. See [this PR](https://github.com/stellar/stellar-protocol/pull/313/files) for more information.
+  Calling `asset.toString()` will return `native` for `XLM` or `AssetCode:AssetIssuer` for issued assets. See [this PR](https://github.com/stellar/stellar-protocol/pull/313) for more information.
 
 ## [v2.1.0](https://github.com/stellar/js-stellar-base/compare/v2.0.2...v2.1.0)
 
