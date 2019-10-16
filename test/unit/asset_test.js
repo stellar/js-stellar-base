@@ -212,7 +212,7 @@ describe('Asset', function() {
       expect(asset.toString()).to.be.equal('native');
     });
 
-    it("returns 'code-issuer' for non-native asset", function() {
+    it("returns 'code:issuer' for non-native asset", function() {
       var asset = new StellarBase.Asset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
