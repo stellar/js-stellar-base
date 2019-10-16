@@ -5,6 +5,8 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.2](https://github.com/stellar/js-stellar-base/compare/v2.1.1...v2.1.2)
+
 ## Update 📣
 
 - Update documentation for `Operation` to show `pathPaymentStrictSend` and `pathPaymentStrictReceive`. ([279](https://github.com/stellar/js-stellar-base/pull/279))
