@@ -44,7 +44,8 @@ export const AuthImmutableFlag = 1 << 2;
  * Use one of static methods to create operations:
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`
- * * `{@link Operation.pathPayment}`
+ * * `{@link Operation.pathPaymentStrictReceive}`
+ * * `{@link Operation.pathPaymentStrictSend}`
  * * `{@link Operation.manageSellOffer}`
  * * `{@link Operation.manageBuyOffer}`
  * * `{@link Operation.createPassiveSellOffer}`
@@ -59,6 +60,7 @@ export const AuthImmutableFlag = 1 << 2;
  * These operations are deprecated and will be removed in a later version:
  * * `{@link Operation.manageOffer}`
  * * `{@link Operation.createPassiveOffer}`
+ * * `{@link Operation.pathPayment}`
  *
  *
  * @class Operation
