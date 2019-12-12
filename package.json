@@ -5,6 +5,7 @@
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "prepare": "gulp build",
     "test": "gulp test:node",
     "xdr": "bundle exec xdrgen -o src/generated -l javascript -n stellar-xdr xdr/Stellar-ledger-entries.x xdr/Stellar-ledger.x xdr/Stellar-overlay.x xdr/Stellar-SCP.x xdr/Stellar-transaction.x xdr/Stellar-types.x",
     "docs": "jsdoc -c .jsdoc.json --verbose",
