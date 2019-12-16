@@ -28,15 +28,14 @@ export class Transaction {
     }
 
     // Deprecation warning. TODO: remove optionality with next major release.
-    if (networkPassphrase === undefined) {
+    if (networkPassphrase === null || networkPassphrase === undefined) {
       console.warn(
         'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
       );
-    }
-    if (typeof networkPassphrase !== 'string') {
+    } else if (typeof networkPassphrase !== 'string') {
       throw new Error(
-       `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
-      )
+        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
+      );
     }
     this._networkPassphrase = networkPassphrase;
 
