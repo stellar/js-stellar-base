@@ -35,7 +35,7 @@ export class Transaction {
     }
     if (typeof networkPassphrase !== 'string') {
       throw new Error(
-        'Invalid passphrase provided to Transaction: expected a string but got a ' + typeof networkPassphrase
+       `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
       )
     }
     this._networkPassphrase = networkPassphrase;
