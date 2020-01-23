@@ -6,7 +6,6 @@ var plugins = require('gulp-load-plugins')();
 var coveralls = require('@kollavarsham/gulp-coveralls');
 var clear = require('clear');
 var webpackConfigBrowser = require('./webpack.config.browser.js');
-var webpackConfigCommonJs = require('./webpack.config.common.js');
 var webpack = require('webpack-stream');
 var del = require('del');
 
@@ -53,26 +52,6 @@ gulp.task(
         })
       )
       .pipe(plugins.rename('stellar-base.min.js'))
-      .pipe(gulp.dest('dist'));
-  })
-);
-
-gulp.task(
-  'build:commonjs',
-  gulp.series('lint:src', function buildCommonJs() {
-    return gulp
-      .src('src/browser.js')
-      .pipe(webpack(webpackConfigCommonJs))
-      .pipe(plugins.rename('stellar-base-common.js'))
-      .pipe(gulp.dest('dist'))
-      .pipe(
-        plugins.uglify({
-          output: {
-            ascii_only: true
-          }
-        })
-      )
-      .pipe(plugins.rename('stellar-base-common.min.js'))
       .pipe(gulp.dest('dist'));
   })
 );
@@ -154,10 +133,7 @@ gulp.task('clean', function clean() {
   return del(['dist/', 'lib/']);
 });
 
-gulp.task(
-  'build',
-  gulp.series('clean', 'build:node', 'build:browser', 'build:commonjs')
-);
+gulp.task('build', gulp.series('clean', 'build:node', 'build:browser'));
 
 gulp.task('test', gulp.series('clean', 'test:node', 'test:browser'));
 
