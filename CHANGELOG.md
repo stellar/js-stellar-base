@@ -5,6 +5,14 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.3](https://github.com/stellar/js-stellar-base/compare/v2.1.2...v2.1.3)
+
+## Update 📣
+
+- Throw errors when obviously invalid network passphrases are used in
+  `new Transaction()`.
+  ([284](https://github.com/stellar/js-stellar-base/pull/284))
+
 ## [v2.1.2](https://github.com/stellar/js-stellar-base/compare/v2.1.1...v2.1.2)
 
 ## Update 📣

@@ -66,6 +66,35 @@ describe('Transaction', function() {
     expect(() => tx.sign(signer)).to.throw(/No network selected/);
   });
 
+  it('throws when a garbage Network is selected', () => {
+    let source = new StellarBase.Account(
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
+    );
+    let destination =
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+    let asset = StellarBase.Asset.native();
+    let amount = '2000.0000000';
+
+    let input = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      .addOperation(
+        StellarBase.Operation.payment({ destination, asset, amount })
+      )
+      .addMemo(StellarBase.Memo.text('Happy birthday!'))
+      .setTimeout(StellarBase.TimeoutInfinite)
+      .build()
+      .toEnvelope()
+      .toXDR('base64');
+
+    expect(() => {
+      new StellarBase.Transaction(input, { garbage: 'yes' });
+    }).to.throw(/expected a string/);
+
+    expect(() => {
+      new StellarBase.Transaction(input, 1234);
+    }).to.throw(/expected a string/);
+  });
+
   it('throws when no fee is provided', function() {
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
