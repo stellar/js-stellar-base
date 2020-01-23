@@ -1,4 +1,4 @@
-// Automatically generated on 2019-10-02T15:45:16-07:00
+// Automatically generated on 2020-01-22T20:41:44-08:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -1465,12 +1465,32 @@ xdr.struct("TransactionMetaV1", [
 
 // === xdr source ============================================================
 //
+//   struct TransactionMetaV2
+//   {
+//       LedgerEntryChanges txChangesBefore; // tx level changes before operations
+//                                           // are applied if any
+//       OperationMeta operations<>;         // meta for each operation
+//       LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
+//                                           // applied if any
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionMetaV2", [
+  ["txChangesBefore", xdr.lookup("LedgerEntryChanges")],
+  ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
+  ["txChangesAfter", xdr.lookup("LedgerEntryChanges")],
+]);
+
+// === xdr source ============================================================
+//
 //   union TransactionMeta switch (int v)
 //   {
 //   case 0:
 //       OperationMeta operations<>;
 //   case 1:
 //       TransactionMetaV1 v1;
+//   case 2:
+//       TransactionMetaV2 v2;
 //   };
 //
 // ===========================================================================
@@ -1480,10 +1500,91 @@ xdr.union("TransactionMeta", {
   switches: [
     [0, "operations"],
     [1, "v1"],
+    [2, "v2"],
   ],
   arms: {
     operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
     v1: xdr.lookup("TransactionMetaV1"),
+    v2: xdr.lookup("TransactionMetaV2"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionResultMeta
+//   {
+//       TransactionResultPair result;
+//       LedgerEntryChanges feeProcessing;
+//       TransactionMeta txApplyProcessing;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionResultMeta", [
+  ["result", xdr.lookup("TransactionResultPair")],
+  ["feeProcessing", xdr.lookup("LedgerEntryChanges")],
+  ["txApplyProcessing", xdr.lookup("TransactionMeta")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct UpgradeEntryMeta
+//   {
+//       LedgerUpgrade upgrade;
+//       LedgerEntryChanges changes;
+//   };
+//
+// ===========================================================================
+xdr.struct("UpgradeEntryMeta", [
+  ["upgrade", xdr.lookup("LedgerUpgrade")],
+  ["changes", xdr.lookup("LedgerEntryChanges")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct LedgerCloseMetaV0
+//   {
+//       LedgerHeaderHistoryEntry ledgerHeader;
+//       // NB: txSet is sorted in "Hash order"
+//       TransactionSet txSet;
+//   
+//       // NB: transactions are sorted in apply order here
+//       // fees for all transactions are processed first
+//       // followed by applying transactions
+//       TransactionResultMeta txProcessing<>;
+//   
+//       // upgrades are applied last
+//       UpgradeEntryMeta upgradesProcessing<>;
+//   
+//       // other misc information attached to the ledger close
+//       SCPHistoryEntry scpInfo<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerCloseMetaV0", [
+  ["ledgerHeader", xdr.lookup("LedgerHeaderHistoryEntry")],
+  ["txSet", xdr.lookup("TransactionSet")],
+  ["txProcessing", xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647)],
+  ["upgradesProcessing", xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647)],
+  ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   union LedgerCloseMeta switch (int v)
+//   {
+//   case 0:
+//        LedgerCloseMetaV0 v0;
+//   };
+//
+// ===========================================================================
+xdr.union("LedgerCloseMeta", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, "v0"],
+  ],
+  arms: {
+    v0: xdr.lookup("LedgerCloseMetaV0"),
   },
 });
 
@@ -1663,7 +1764,10 @@ xdr.struct("PeerAddress", [
 //       GET_SCP_STATE = 12,
 //   
 //       // new messages
-//       HELLO = 13
+//       HELLO = 13,
+//   
+//       SURVEY_REQUEST = 14,
+//       SURVEY_RESPONSE = 15
 //   };
 //
 // ===========================================================================
@@ -1681,6 +1785,8 @@ xdr.enum("MessageType", {
   scpMessage: 11,
   getScpState: 12,
   hello: 13,
+  surveyRequest: 14,
+  surveyResponse: 15,
 });
 
 // === xdr source ============================================================
@@ -1696,6 +1802,181 @@ xdr.struct("DontHave", [
   ["type", xdr.lookup("MessageType")],
   ["reqHash", xdr.lookup("Uint256")],
 ]);
+
+// === xdr source ============================================================
+//
+//   enum SurveyMessageCommandType
+//   {
+//       SURVEY_TOPOLOGY = 0
+//   };
+//
+// ===========================================================================
+xdr.enum("SurveyMessageCommandType", {
+  surveyTopology: 0,
+});
+
+// === xdr source ============================================================
+//
+//   struct SurveyRequestMessage
+//   {
+//       NodeID surveyorPeerID;
+//       NodeID surveyedPeerID;
+//       uint32 ledgerNum;
+//       Curve25519Public encryptionKey;
+//       SurveyMessageCommandType commandType;
+//   };
+//
+// ===========================================================================
+xdr.struct("SurveyRequestMessage", [
+  ["surveyorPeerId", xdr.lookup("NodeId")],
+  ["surveyedPeerId", xdr.lookup("NodeId")],
+  ["ledgerNum", xdr.lookup("Uint32")],
+  ["encryptionKey", xdr.lookup("Curve25519Public")],
+  ["commandType", xdr.lookup("SurveyMessageCommandType")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct SignedSurveyRequestMessage
+//   {
+//       Signature requestSignature;
+//       SurveyRequestMessage request;
+//   };
+//
+// ===========================================================================
+xdr.struct("SignedSurveyRequestMessage", [
+  ["requestSignature", xdr.lookup("Signature")],
+  ["request", xdr.lookup("SurveyRequestMessage")],
+]);
+
+// === xdr source ============================================================
+//
+//   typedef opaque EncryptedBody<64000>;
+//
+// ===========================================================================
+xdr.typedef("EncryptedBody", xdr.varOpaque(64000));
+
+// === xdr source ============================================================
+//
+//   struct SurveyResponseMessage
+//   {
+//       NodeID surveyorPeerID;
+//       NodeID surveyedPeerID;
+//       uint32 ledgerNum;
+//       SurveyMessageCommandType commandType;
+//       EncryptedBody encryptedBody;
+//   };
+//
+// ===========================================================================
+xdr.struct("SurveyResponseMessage", [
+  ["surveyorPeerId", xdr.lookup("NodeId")],
+  ["surveyedPeerId", xdr.lookup("NodeId")],
+  ["ledgerNum", xdr.lookup("Uint32")],
+  ["commandType", xdr.lookup("SurveyMessageCommandType")],
+  ["encryptedBody", xdr.lookup("EncryptedBody")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct SignedSurveyResponseMessage
+//   {
+//       Signature responseSignature;
+//       SurveyResponseMessage response;
+//   };
+//
+// ===========================================================================
+xdr.struct("SignedSurveyResponseMessage", [
+  ["responseSignature", xdr.lookup("Signature")],
+  ["response", xdr.lookup("SurveyResponseMessage")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct PeerStats
+//   {
+//       NodeID id;
+//       string versionStr<100>;
+//       uint64 messagesRead;
+//       uint64 messagesWritten;
+//       uint64 bytesRead;
+//       uint64 bytesWritten;
+//       uint64 secondsConnected;
+//   
+//       uint64 uniqueFloodBytesRecv;
+//       uint64 duplicateFloodBytesRecv;
+//       uint64 uniqueFetchBytesRecv;
+//       uint64 duplicateFetchBytesRecv;
+//   
+//       uint64 uniqueFloodMessageRecv;
+//       uint64 duplicateFloodMessageRecv;
+//       uint64 uniqueFetchMessageRecv;
+//       uint64 duplicateFetchMessageRecv;
+//   };
+//
+// ===========================================================================
+xdr.struct("PeerStats", [
+  ["id", xdr.lookup("NodeId")],
+  ["versionStr", xdr.string(100)],
+  ["messagesRead", xdr.lookup("Uint64")],
+  ["messagesWritten", xdr.lookup("Uint64")],
+  ["bytesRead", xdr.lookup("Uint64")],
+  ["bytesWritten", xdr.lookup("Uint64")],
+  ["secondsConnected", xdr.lookup("Uint64")],
+  ["uniqueFloodBytesRecv", xdr.lookup("Uint64")],
+  ["duplicateFloodBytesRecv", xdr.lookup("Uint64")],
+  ["uniqueFetchBytesRecv", xdr.lookup("Uint64")],
+  ["duplicateFetchBytesRecv", xdr.lookup("Uint64")],
+  ["uniqueFloodMessageRecv", xdr.lookup("Uint64")],
+  ["duplicateFloodMessageRecv", xdr.lookup("Uint64")],
+  ["uniqueFetchMessageRecv", xdr.lookup("Uint64")],
+  ["duplicateFetchMessageRecv", xdr.lookup("Uint64")],
+]);
+
+// === xdr source ============================================================
+//
+//   typedef PeerStats PeerStatList<25>;
+//
+// ===========================================================================
+xdr.typedef("PeerStatList", xdr.varArray(xdr.lookup("PeerStats"), 25));
+
+// === xdr source ============================================================
+//
+//   struct TopologyResponseBody
+//   {
+//       PeerStatList inboundPeers;
+//       PeerStatList outboundPeers;
+//   
+//       uint32 totalInboundPeerCount;
+//       uint32 totalOutboundPeerCount;
+//   };
+//
+// ===========================================================================
+xdr.struct("TopologyResponseBody", [
+  ["inboundPeers", xdr.lookup("PeerStatList")],
+  ["outboundPeers", xdr.lookup("PeerStatList")],
+  ["totalInboundPeerCount", xdr.lookup("Uint32")],
+  ["totalOutboundPeerCount", xdr.lookup("Uint32")],
+]);
+
+// === xdr source ============================================================
+//
+//   union SurveyResponseBody switch (SurveyMessageCommandType type)
+//   {
+//       case SURVEY_TOPOLOGY:
+//           TopologyResponseBody topologyResponseBody;
+//   };
+//
+// ===========================================================================
+xdr.union("SurveyResponseBody", {
+  switchOn: xdr.lookup("SurveyMessageCommandType"),
+  switchName: "type",
+  switches: [
+    ["surveyTopology", "topologyResponseBody"],
+  ],
+  arms: {
+    topologyResponseBody: xdr.lookup("TopologyResponseBody"),
+  },
+});
 
 // === xdr source ============================================================
 //
@@ -1722,6 +2003,12 @@ xdr.struct("DontHave", [
 //   case TRANSACTION:
 //       TransactionEnvelope transaction;
 //   
+//   case SURVEY_REQUEST:
+//       SignedSurveyRequestMessage signedSurveyRequestMessage;
+//   
+//   case SURVEY_RESPONSE:
+//       SignedSurveyResponseMessage signedSurveyResponseMessage;
+//   
 //   // SCP
 //   case GET_SCP_QUORUMSET:
 //       uint256 qSetHash;
@@ -1747,6 +2034,8 @@ xdr.union("StellarMessage", {
     ["getTxSet", "txSetHash"],
     ["txSet", "txSet"],
     ["transaction", "transaction"],
+    ["surveyRequest", "signedSurveyRequestMessage"],
+    ["surveyResponse", "signedSurveyResponseMessage"],
     ["getScpQuorumset", "qSetHash"],
     ["scpQuorumset", "qSet"],
     ["scpMessage", "envelope"],
@@ -1761,6 +2050,8 @@ xdr.union("StellarMessage", {
     txSetHash: xdr.lookup("Uint256"),
     txSet: xdr.lookup("TransactionSet"),
     transaction: xdr.lookup("TransactionEnvelope"),
+    signedSurveyRequestMessage: xdr.lookup("SignedSurveyRequestMessage"),
+    signedSurveyResponseMessage: xdr.lookup("SignedSurveyResponseMessage"),
     qSetHash: xdr.lookup("Uint256"),
     qSet: xdr.lookup("ScpQuorumSet"),
     envelope: xdr.lookup("ScpEnvelope"),
