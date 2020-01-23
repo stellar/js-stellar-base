@@ -5,6 +5,11 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.4](https://github.com/stellar/js-stellar-base/compare/v2.1.3..v2.1.4)
+
+## Update
+- Regenerate the XDR definitions to include MetaV2 ([#288](https://github.com/stellar/js-stellar-base/issues/288))
+
 ## [v2.1.3](https://github.com/stellar/js-stellar-base/compare/v2.1.2...v2.1.3)
 
 ## Update 📣
