@@ -514,6 +514,7 @@ export class Transaction<
   signatureBase(): Buffer;
   signHashX(preimage: Buffer | string): void;
   toEnvelope(): xdr.TransactionEnvelope;
+  toXDR(): string;
 
   operations: TOps;
   sequence: string;
