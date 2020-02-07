@@ -40,7 +40,7 @@ export const AuthRevocableFlag = 1 << 1;
 export const AuthImmutableFlag = 1 << 2;
 
 /**
- * `Operation` class represents [operations](https://www.stellar.org/developers/learn/concepts/operations.html) in Stellar network.
+ * `Operation` class represents [operations](https://www.stellar.org/developers/guides/concepts/operations.html) in Stellar network.
  * Use one of static methods to create operations:
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`

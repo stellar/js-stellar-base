@@ -114,7 +114,7 @@ export class Asset {
   }
 
   /**
-   * @see [Assets concept](https://www.stellar.org/developers/learn/concepts/assets.html)
+   * @see [Assets concept](https://www.stellar.org/developers/guides/concepts/assets.html)
    * @returns {string} Asset type. Can be one of following types:
    *
    * * `native`
