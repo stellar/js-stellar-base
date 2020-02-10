@@ -33,6 +33,7 @@ server.accounts()
         destination: destination.publicKey(),
         startingBalance: '25'
       }))
+      .setTimeout(30)
       .build()
     transaction.sign(StellarSdk.Keypair.fromSecret(source.secret()))
     return server.submitTransaction(transaction)
