@@ -5,6 +5,21 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.5](https://github.com/stellar/js-stellar-base/compare/v2.1.4..v2.1.5)
+
+### Add
+- Add `toXDR` type to Transaction class ([#296](https://github.com/stellar/js-stellar-base/issues/296))
+
+### Fix
+- Fix doc link ([#298](https://github.com/stellar/js-stellar-base/issues/298))
+
+### Remove
+- Remove node engine restriction ([#294](https://github.com/stellar/js-stellar-base/issues/294))
+
+### Update
+- Update creating an account example ([#299](https://github.com/stellar/js-stellar-base/issues/299))
+- Use `console.trace` to get line num in `Networks.use` ([#300](https://github.com/stellar/js-stellar-base/issues/300))
+
 ## [v2.1.4](https://github.com/stellar/js-stellar-base/compare/v2.1.3..v2.1.4)
 
 ## Update
