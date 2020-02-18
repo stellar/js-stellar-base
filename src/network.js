@@ -53,7 +53,7 @@ export class Network {
    * @returns {void}
    */
   static use(network) {
-    console.warn(
+    console.trace(
       'Global class `Network` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
     );
 
