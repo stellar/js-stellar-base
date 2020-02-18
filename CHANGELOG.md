@@ -5,6 +5,12 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.6](https://github.com/stellar/js-stellar-base/compare/v2.1.5..v2.1.6)
+
+### Fix
+
+- Fix npm deployment.
+
 ## [v2.1.5](https://github.com/stellar/js-stellar-base/compare/v2.1.4..v2.1.5)
 
 ### Add
