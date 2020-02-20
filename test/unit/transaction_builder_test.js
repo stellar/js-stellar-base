@@ -384,5 +384,26 @@ describe('TransactionBuilder', function() {
         timeoutTimestamp.toString()
       );
     });
+
+    it('does not crash when timebounds are only partially set', function() {
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          timebounds: {
+            minTime: '1455287522'
+          },
+          fee: 100
+        });
+        new StellarBase.TransactionBuilder(source, {
+          timebounds: {
+            maxTime: '1455287522'
+          },
+          fee: 100
+        });
+      }).to.not.throw();
+    });
   });
 });

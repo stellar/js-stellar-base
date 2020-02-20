@@ -211,12 +211,15 @@ export class TransactionBuilder {
         this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
       }
 
-      this.timebounds.minTime = UnsignedHyper.fromString(
-        this.timebounds.minTime.toString()
-      );
-      this.timebounds.maxTime = UnsignedHyper.fromString(
-        this.timebounds.maxTime.toString()
-      );
+      this.timebounds.minTime =
+        typeof this.timebounds.minTime !== 'undefined'
+          ? UnsignedHyper.fromString(this.timebounds.minTime.toString())
+          : undefined;
+
+      this.timebounds.maxTime =
+        typeof this.timebounds.maxTime !== 'undefined'
+          ? UnsignedHyper.fromString(this.timebounds.maxTime.toString())
+          : undefined;
 
       attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
     }
