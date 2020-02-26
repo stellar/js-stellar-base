@@ -579,7 +579,7 @@ export namespace xdr {
     static fromXDR(xdr: Buffer): Memo;
   }
   class TransactionEnvelope extends XDRStruct {
-    static fromXDR(xdr: Buffer): TransactionEnvelope;
+    static fromXDR(xdr: Buffer, format?: string): TransactionEnvelope;
   }
   class DecoratedSignature extends XDRStruct {
     static fromXDR(xdr: Buffer): DecoratedSignature;
