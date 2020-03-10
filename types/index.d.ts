@@ -263,7 +263,7 @@ export namespace OperationOptions {
   }
   interface ManageData extends BaseOptions {
     name: string;
-    value: string | Buffer;
+    value: string | Buffer | null;
   }
   interface PathPaymentStrictReceive extends BaseOptions {
     sendAsset: Asset;
