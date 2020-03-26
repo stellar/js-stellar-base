@@ -5,10 +5,15 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.7](https://github.com/stellar/js-stellar-base/compare/v2.1.6..v2.1.7)
+
+### Fix
+- Fix TypeScript options for `ManageData` operation to allow setting value to `null` ([#310](https://github.com/stellar/js-stellar-base/issues/310))
+- Fix crash on partially defined time bounds ([#303](https://github.com/stellar/js-stellar-base/issues/303))
+
 ## [v2.1.6](https://github.com/stellar/js-stellar-base/compare/v2.1.5..v2.1.6)
 
 ### Fix
-
 - Fix npm deployment.
 
 ## [v2.1.5](https://github.com/stellar/js-stellar-base/compare/v2.1.4..v2.1.5)
