@@ -106,6 +106,10 @@ gulp.task(
   })
 );
 
+gulp.task('test:watch', function() {
+  return gulp.watch(['src/**/*', 'test/unit/**/*.js'], gulp.series(['clear-screen', 'test:node']));
+});
+
 gulp.task(
   'test:sauce',
   gulp.series('build:browser', function testSauce(done) {
