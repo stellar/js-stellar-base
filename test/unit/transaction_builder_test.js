@@ -260,7 +260,63 @@ describe('TransactionBuilder', function() {
       done();
     });
   });
-
+  describe('timebounds', function(){
+    it('requires maxTime', function(){
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          timebounds: {
+            minTime: '0'
+          },
+          fee: 100
+        }).build();
+      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+    });
+    it('requires minTime', function(){
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          timebounds: {
+            maxTime: '10'
+          },
+          fee: 100
+        }).build();
+      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+    });
+    it('works with timebounds defined', function(){
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          timebounds: {
+            minTime: '1',
+            maxTime: '10'
+          },
+          fee: 100
+        }).build();
+      }).to.not.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+    });
+    it('fails with empty timebounds', function(){
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          timebounds: {},
+          fee: 100
+        }).build();
+      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+    });
+  });
   describe('setTimeout', function() {
     it('not called', function() {
       let source = new StellarBase.Account(
@@ -384,25 +440,15 @@ describe('TransactionBuilder', function() {
         timeoutTimestamp.toString()
       );
     });
-
-    it('does not crash when timebounds are only partially set', function() {
+    it('works with TimeoutInfinite', function(){
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
-          timebounds: {
-            minTime: '1455287522'
-          },
           fee: 100
-        });
-        new StellarBase.TransactionBuilder(source, {
-          timebounds: {
-            maxTime: '1455287522'
-          },
-          fee: 100
-        });
+        }).setTimeout(0).build();
       }).to.not.throw();
     });
   });
