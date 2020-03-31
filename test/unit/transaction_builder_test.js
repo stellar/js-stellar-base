@@ -302,7 +302,7 @@ describe('TransactionBuilder', function() {
           },
           fee: 100
         }).build();
-      }).to.not.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.not.throw();
     });
     it('fails with empty timebounds', function(){
       let source = new StellarBase.Account(
