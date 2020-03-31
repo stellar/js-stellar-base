@@ -6,7 +6,6 @@ import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { Memo } from './memo';
-import { Network } from './network';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -94,7 +93,6 @@ export class TransactionBuilder {
     this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
-    this.timeoutSet = false;
     this.networkPassphrase = opts.networkPassphrase || null;
   }
 
@@ -137,7 +135,7 @@ export class TransactionBuilder {
    * @see TimeoutInfinite
    */
   setTimeout(timeout) {
-    if (this.timebounds != null && this.timebounds.maxTime > 0) {
+    if (this.timebounds !== null && this.timebounds.maxTime > 0) {
       throw new Error(
         'TimeBounds.max_time has been already set - setting timeout would overwrite it.'
       );
@@ -147,7 +145,6 @@ export class TransactionBuilder {
       throw new Error('timeout cannot be negative');
     }
 
-    this.timeoutSet = true;
     if (timeout > 0) {
       const timeoutTimestamp = Math.floor(Date.now() / 1000) + timeout;
       if (this.timebounds === null) {
@@ -158,6 +155,11 @@ export class TransactionBuilder {
           maxTime: timeoutTimestamp
         };
       }
+    } else {
+      this.timebounds = {
+        minTime: 0,
+        maxTime: 0
+      };
     }
 
     return this;
@@ -180,19 +182,7 @@ export class TransactionBuilder {
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
   build() {
-    // Ensure setTimeout called or maxTime is set
-    if (
-      (this.timebounds === null ||
-        (this.timebounds !== null && this.timebounds.maxTime === 0)) &&
-      !this.timeoutSet
-    ) {
-      throw new Error(
-        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
-      );
-    }
-
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
-
     const attrs = {
       sourceAccount: Keypair.fromPublicKey(
         this.source.accountId()
@@ -203,26 +193,23 @@ export class TransactionBuilder {
       ext: new xdr.TransactionExt(0)
     };
 
-    if (this.timebounds) {
-      if (isValidDate(this.timebounds.minTime)) {
-        this.timebounds.minTime = this.timebounds.minTime.getTime() / 1000;
-      }
-      if (isValidDate(this.timebounds.maxTime)) {
-        this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
-      }
-
-      this.timebounds.minTime =
-        typeof this.timebounds.minTime !== 'undefined'
-          ? UnsignedHyper.fromString(this.timebounds.minTime.toString())
-          : undefined;
-
-      this.timebounds.maxTime =
-        typeof this.timebounds.maxTime !== 'undefined'
-          ? UnsignedHyper.fromString(this.timebounds.maxTime.toString())
-          : undefined;
-
-      attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
+    if (this.timebounds === null || typeof this.timebounds.minTime === 'undefined' || typeof this.timebounds.maxTime === 'undefined') {
+      throw new Error(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     }
+
+    if (isValidDate(this.timebounds.minTime)) {
+      this.timebounds.minTime = this.timebounds.minTime.getTime() / 1000;
+    }
+    if (isValidDate(this.timebounds.maxTime)) {
+      this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
+    }
+
+    this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime.toString());
+    this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime.toString())
+    
+    attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
 
     const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
