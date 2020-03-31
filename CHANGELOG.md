@@ -5,6 +5,11 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.8](https://github.com/stellar/js-stellar-base/compare/v2.1.7..v2.1.8)
+
+### Fix
+- Fix `setTimeout(0)` and partially defined timebounds ([#315](https://github.com/stellar/js-stellar-base/pull/315)).
+
 ## [v2.1.7](https://github.com/stellar/js-stellar-base/compare/v2.1.6..v2.1.7)
 
 ### Fix
