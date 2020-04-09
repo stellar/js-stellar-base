@@ -285,7 +285,11 @@ export class Transaction {
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
         envelope = new xdr.TransactionEnvelope.envelopeTypeTx(
+<<<<<<< HEAD
           new xdr.TransactionV1Envelope({ tx, signatures })
+=======
+          new xdr.TransactionEnvelope({ tx, signatures })
+>>>>>>> Fix hash generation with v1 or v0 transactions.
         );
         break;
       default:
