@@ -39,14 +39,28 @@ export class Transaction {
     }
     this._networkPassphrase = networkPassphrase;
 
+    const txe = envelope.value();
+    let sourceAccount;
+    this._envelopeType = envelope.switch();
+
+    switch (this._envelopeType) {
+      case xdr.EnvelopeType.envelopeTypeTxV0():
+        sourceAccount = txe.tx().sourceAccountEd25519();
+        break;
+      case xdr.EnvelopeType.envelopeTypeTx():
+        sourceAccount = txe
+          .tx()
+          .sourceAccount()
+          .ed25519();
+        break;
+      default:
+        // TODO: Add support for FeeBumpTransaction
+        throw new Error('Invalid transaction.');
+    }
+
     // since this transaction is immutable, save the tx
-    this.tx = envelope.tx();
-    this.source = StrKey.encodeEd25519PublicKey(
-      envelope
-        .tx()
-        .sourceAccount()
-        .ed25519()
-    );
+    this.tx = txe.tx();
+    this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
     this.fee = this.tx.fee();
     this._memo = this.tx.memo();
     this.sequence = this.tx.seqNum().toString();
@@ -62,7 +76,7 @@ export class Transaction {
     const operations = this.tx.operations() || [];
     this.operations = map(operations, (op) => Operation.fromXDRObject(op));
 
-    const signatures = envelope.signatures() || [];
+    const signatures = txe.signatures() || [];
     this.signatures = map(signatures, (s) => s);
   }
 
@@ -229,11 +243,30 @@ export class Transaction {
    * @returns {Buffer}
    */
   signatureBase() {
-    return Buffer.concat([
-      hash(this.networkPassphrase),
-      xdr.EnvelopeType.envelopeTypeTx().toXDR(),
-      this.tx.toXDR()
-    ]);
+    let tx = this.tx;
+
+    // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
+    // we need a Transaction to generate the signature base
+    if (this._envelopeType === xdr.EnvelopeType.envelopeTypeTxV0()) {
+      tx = xdr.Transaction.fromXDR(
+        Buffer.concat([
+          // TransactionV0 is a transaction with the AccountID discriminant
+          // stripped off, we need to put it back to build a valid transaction
+          // which we can use to build a TransactionSignaturePayloadTaggedTransaction
+          xdr.PublicKeyType.publicKeyTypeEd25519().toXDR(),
+          tx.toXDR()
+        ])
+      );
+    }
+
+    const txSignature = new xdr.TransactionSignaturePayload({
+      networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),
+      taggedTransaction: new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
+        tx
+      )
+    });
+
+    return txSignature.toXDR();
   }
 
   /**
@@ -243,7 +276,22 @@ export class Transaction {
   toEnvelope() {
     const tx = this.tx;
     const signatures = this.signatures;
-    const envelope = new xdr.TransactionEnvelope({ tx, signatures });
+
+    let envelope;
+    switch (this._envelopeType) {
+      case xdr.EnvelopeType.envelopeTypeTxV0():
+        envelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
+          new xdr.TransactionV0Envelope({ tx, signatures })
+        );
+        break;
+      case xdr.EnvelopeType.envelopeTypeTx():
+        envelope = new xdr.TransactionEnvelope.envelopeTypeTx(
+          new xdr.TransactionEnvelope({ tx, signatures })
+        );
+        break;
+      default:
+        throw new Error('Invalid transaction');
+    }
 
     return envelope;
   }
