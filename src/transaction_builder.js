@@ -193,7 +193,11 @@ export class TransactionBuilder {
       ext: new xdr.TransactionExt(0)
     };
 
-    if (this.timebounds === null || typeof this.timebounds.minTime === 'undefined' || typeof this.timebounds.maxTime === 'undefined') {
+    if (
+      this.timebounds === null ||
+      typeof this.timebounds.minTime === 'undefined' ||
+      typeof this.timebounds.maxTime === 'undefined'
+    ) {
       throw new Error(
         'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
       );
@@ -206,15 +210,22 @@ export class TransactionBuilder {
       this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
     }
 
-    this.timebounds.minTime = UnsignedHyper.fromString(this.timebounds.minTime.toString());
-    this.timebounds.maxTime = UnsignedHyper.fromString(this.timebounds.maxTime.toString())
-    
+    this.timebounds.minTime = UnsignedHyper.fromString(
+      this.timebounds.minTime.toString()
+    );
+    this.timebounds.maxTime = UnsignedHyper.fromString(
+      this.timebounds.maxTime.toString()
+    );
+
     attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
 
     const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
 
-    const xenv = new xdr.TransactionEnvelope({ tx: xtx });
+    const xenv = new xdr.TransactionEnvelope.envelopeTypeTx(
+      new xdr.TransactionV1Envelope({ tx: xtx })
+    );
+
     const tx = new Transaction(xenv, this.networkPassphrase);
 
     this.source.incrementSequenceNumber();

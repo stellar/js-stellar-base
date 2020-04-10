@@ -42,7 +42,6 @@ export class Transaction {
     const txe = envelope.value();
     let sourceAccount;
     this._envelopeType = envelope.switch();
-
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
         sourceAccount = txe.tx().sourceAccountEd25519();
@@ -286,7 +285,7 @@ export class Transaction {
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
         envelope = new xdr.TransactionEnvelope.envelopeTypeTx(
-          new xdr.TransactionEnvelope({ tx, signatures })
+          new xdr.TransactionV1Envelope({ tx, signatures })
         );
         break;
       default:
