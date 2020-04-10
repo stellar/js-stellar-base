@@ -21,27 +21,6 @@ import { Keypair } from './keypair';
  * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
  */
 export class Transaction {
-  static buildFeeBumpTransaction(feeSource, fee, innerTx, networkPassphrase) {
-    const tx = new xdr.FeeBumpTransaction({
-      feeSource: feeSource.xdrAccountId(),
-      fee: xdr.Int64.fromString(fee),
-      innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(innerTx.value()),
-      ext: new xdr.FeeBumpTransactionExt(0)
-    });
-    const feeBumpTxEnvelope = new xdr.FeeBumpTransactionEnvelope({
-      tx,
-      signatures: []
-    });
-    const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
-      feeBumpTxEnvelope
-    );
-
-    // force validation at the XDR level
-    envelope.toXDR();
-
-    return new Transaction(envelope, networkPassphrase);
-  }
-
   constructor(envelope, networkPassphrase) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
@@ -351,10 +330,8 @@ export class Transaction {
 
   /**
    * isFeeBump returns true if the transaction represents a FeeBumpTransaction
-   * @returns {booelan}
-   * @class
-   * @ignore
-   * Tell jsdoc to ignore for now, we'll make it available once core 13 is available.
+   * @returns {boolean}
+   * @ignore tell jsdoc to not show this method for now
    */
   isFeeBump() {
     return this._envelopeType === xdr.EnvelopeType.envelopeTypeTxFeeBump();
@@ -368,5 +345,35 @@ export class Transaction {
     return this.toEnvelope()
       .toXDR()
       .toString('base64');
+  }
+
+  /**
+   * Builds a FeeBumpTransaction
+   * @param {StrKey} feeSource - The account paying for the transaction.
+   * @param {string} fee - The maximum fee the account is willing to pay for this transaction.
+   * @param {TransactionEnvelope} innerTx - The Transaction to be bumped by this transaction.
+   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @returns {Transaction}
+   * @ignore tell jsdoc to not show this method for now
+   */
+  static buildFeeBumpTransaction(feeSource, fee, innerTx, networkPassphrase) {
+    const tx = new xdr.FeeBumpTransaction({
+      feeSource: feeSource.xdrAccountId(),
+      fee: xdr.Int64.fromString(fee),
+      innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(innerTx.value()),
+      ext: new xdr.FeeBumpTransactionExt(0)
+    });
+    const feeBumpTxEnvelope = new xdr.FeeBumpTransactionEnvelope({
+      tx,
+      signatures: []
+    });
+    const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
+      feeBumpTxEnvelope
+    );
+
+    // force validation at the XDR level
+    envelope.toXDR();
+
+    return new Transaction(envelope, networkPassphrase);
   }
 }
