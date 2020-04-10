@@ -184,13 +184,13 @@ export class TransactionBuilder {
   build() {
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
     const attrs = {
-      sourceAccount: Keypair.fromPublicKey(
-        this.source.accountId()
-      ).xdrAccountId(),
+      sourceAccountEd25519: Keypair.fromPublicKey(this.source.accountId())
+        .xdrAccountId()
+        .value(),
       fee: this.baseFee * this.operations.length,
       seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
       memo: this.memo ? this.memo.toXDRObject() : null,
-      ext: new xdr.TransactionExt(0)
+      ext: new xdr.TransactionV0Ext(0)
     };
 
     if (
@@ -219,11 +219,11 @@ export class TransactionBuilder {
 
     attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
 
-    const xtx = new xdr.Transaction(attrs);
+    const xtx = new xdr.TransactionV0(attrs);
     xtx.operations(this.operations);
 
-    const xenv = new xdr.TransactionEnvelope.envelopeTypeTx(
-      new xdr.TransactionV1Envelope({ tx: xtx })
+    const xenv = new xdr.TransactionEnvelope.envelopeTypeTxV0(
+      new xdr.TransactionV0Envelope({ tx: xtx })
     );
 
     const tx = new Transaction(xenv, this.networkPassphrase);
