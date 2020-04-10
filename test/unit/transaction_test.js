@@ -473,7 +473,7 @@ describe('Transaction', function() {
           minTime: 0,
           maxTime: 0
         },
-        _v1: true
+        v1: true
       })
         .addOperation(
           StellarBase.Operation.payment({

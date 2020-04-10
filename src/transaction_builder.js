@@ -95,8 +95,10 @@ export class TransactionBuilder {
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
 
-    // undocumented to allow alpha testing of core-13 transactions
-    this._v1 = opts._v1 || false;
+    // Undocumented.  Feature flag to allow alpha testing of core-13
+    // transactions. We can remove this once all transactions are supposed to be
+    // v1.
+    this.v1 = opts.v1 || false;
   }
 
   /**
@@ -220,7 +222,7 @@ export class TransactionBuilder {
 
     let txEnvelope;
 
-    if (this._v1) {
+    if (this.v1) {
       attrs.sourceAccount = Keypair.fromPublicKey(
         this.source.accountId()
       ).xdrAccountId();
