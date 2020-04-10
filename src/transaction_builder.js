@@ -94,6 +94,9 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
+
+    // undocumented to allow alpha testing of core-13 transactions
+    this._v1 = opts._v1 || false;
   }
 
   /**
@@ -184,13 +187,9 @@ export class TransactionBuilder {
   build() {
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
     const attrs = {
-      sourceAccountEd25519: Keypair.fromPublicKey(this.source.accountId())
-        .xdrAccountId()
-        .value(),
       fee: this.baseFee * this.operations.length,
       seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
-      memo: this.memo ? this.memo.toXDRObject() : null,
-      ext: new xdr.TransactionV0Ext(0)
+      memo: this.memo ? this.memo.toXDRObject() : null
     };
 
     if (
@@ -219,14 +218,35 @@ export class TransactionBuilder {
 
     attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
 
-    const xtx = new xdr.TransactionV0(attrs);
-    xtx.operations(this.operations);
+    let txEnvelope;
 
-    const xenv = new xdr.TransactionEnvelope.envelopeTypeTxV0(
-      new xdr.TransactionV0Envelope({ tx: xtx })
-    );
+    if (this._v1) {
+      attrs.sourceAccount = Keypair.fromPublicKey(
+        this.source.accountId()
+      ).xdrAccountId();
+      attrs.ext = new xdr.TransactionExt(0);
 
-    const tx = new Transaction(xenv, this.networkPassphrase);
+      const xtx = new xdr.Transaction(attrs);
+      xtx.operations(this.operations);
+      txEnvelope = new xdr.TransactionEnvelope.envelopeTypeTx(
+        new xdr.TransactionV1Envelope({ tx: xtx })
+      );
+    } else {
+      attrs.sourceAccountEd25519 = Keypair.fromPublicKey(
+        this.source.accountId()
+      )
+        .xdrAccountId()
+        .value();
+      attrs.ext = new xdr.TransactionV0Ext(0);
+
+      const xtx = new xdr.TransactionV0(attrs);
+      xtx.operations(this.operations);
+      txEnvelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
+        new xdr.TransactionV0Envelope({ tx: xtx })
+      );
+    }
+
+    const tx = new Transaction(txEnvelope, this.networkPassphrase);
 
     this.source.incrementSequenceNumber();
 
