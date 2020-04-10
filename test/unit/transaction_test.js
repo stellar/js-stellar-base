@@ -456,6 +456,76 @@ describe('Transaction', function() {
     expect(typeof transaction.toXDR).to.be.equal('function');
     expect(transaction.toXDR()).to.be.equal(xdrString);
   });
+
+  describe('.buildFeeBumpTransaction', function() {
+    it('builds a fee bump transaction', function(done) {
+      let networkPassphrase = 'Standalone Network ; February 2017';
+      let innerSource = StellarBase.Keypair.master(networkPassphrase);
+      let innerAccount = new StellarBase.Account(innerSource.publicKey(), '7');
+      let destination =
+        'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
+      let amount = '2000.0000000';
+
+      let innerTX = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: 100,
+        networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        },
+        _v1: true
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset: StellarBase.Asset.native(),
+            amount
+          })
+        )
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
+        .build();
+
+      innerTX.sign(innerSource);
+
+      let feeSource = StellarBase.Keypair.fromSecret(
+        'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
+      );
+      let bumpFee = '25000000';
+      let transaction = StellarBase.Transaction.buildFeeBumpTransaction(
+        feeSource,
+        bumpFee,
+        innerTX.toEnvelope(),
+        networkPassphrase
+      );
+      transaction.sign(feeSource);
+      const expectedXDR =
+        'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAABfXhAAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAtRbc7GZeE8cJyZ+R7XGTZKy8s1lTp0rViCHhUa7pDzkaWUI0WUQ5mjsc8+/YhJUXAlPVTbeEbiM6knnPBUFwDw==';
+
+      expect(transaction.isFeeBump()).to.equal(true);
+      expect(
+        transaction
+          .toEnvelope()
+          .toXDR()
+          .toString('base64')
+      ).to.be.equal(expectedXDR);
+
+      expect(transaction.source).to.be.equal(innerAccount.accountId());
+      expect(transaction.feeSource).to.be.equal(feeSource.publicKey());
+      // shows new fee
+      expect(transaction.fee).to.be.equal(bumpFee);
+
+      // show innerTx operations and memo
+      let operation = transaction.operations[0];
+      expect(transaction.memo.type).to.be.equal(StellarBase.MemoText);
+      expect(transaction.memo.value.toString('ascii')).to.be.equal(
+        'Happy birthday!'
+      );
+      expect(operation.type).to.be.equal('payment');
+      expect(operation.destination).to.be.equal(destination);
+      expect(operation.amount).to.be.equal(amount);
+      done();
+    });
+  });
 });
 
 function expectBuffersToBeEqual(left, right) {

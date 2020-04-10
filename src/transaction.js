@@ -21,6 +21,27 @@ import { Keypair } from './keypair';
  * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
  */
 export class Transaction {
+  static buildFeeBumpTransaction(feeSource, fee, innerTx, networkPassphrase) {
+    const tx = new xdr.FeeBumpTransaction({
+      feeSource: feeSource.xdrAccountId(),
+      fee: xdr.Int64.fromString(fee),
+      innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(innerTx.value()),
+      ext: new xdr.FeeBumpTransactionExt(0)
+    });
+    const feeBumpTxEnvelope = new xdr.FeeBumpTransactionEnvelope({
+      tx,
+      signatures: []
+    });
+    const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
+      feeBumpTxEnvelope
+    );
+
+    // force validation at the XDR level
+    envelope.toXDR();
+
+    return new Transaction(envelope, networkPassphrase);
+  }
+
   constructor(envelope, networkPassphrase) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
@@ -39,43 +60,61 @@ export class Transaction {
     }
     this._networkPassphrase = networkPassphrase;
 
-    const txe = envelope.value();
+    const txEnvelope = envelope.value();
     let sourceAccount;
     this._envelopeType = envelope.switch();
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
-        sourceAccount = txe.tx().sourceAccountEd25519();
+        sourceAccount = txEnvelope.tx().sourceAccountEd25519();
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
-        sourceAccount = txe
+        sourceAccount = txEnvelope
           .tx()
           .sourceAccount()
           .ed25519();
         break;
+      case xdr.EnvelopeType.envelopeTypeTxFeeBump():
+        sourceAccount = txEnvelope
+          .tx()
+          .feeSource()
+          .ed25519();
+        break;
       default:
-        // TODO: Add support for FeeBumpTransaction
-        throw new Error('Invalid transaction.');
+        throw new Error('Unknown TransactionEnvelope');
     }
 
     // since this transaction is immutable, save the tx
-    this.tx = txe.tx();
-    this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
-    this.fee = this.tx.fee();
-    this._memo = this.tx.memo();
-    this.sequence = this.tx.seqNum().toString();
+    this.tx = txEnvelope.tx();
+    let tx = this.tx;
 
-    const timeBounds = this.tx.timeBounds();
+    // if isFeeBumpTx override tx with innerTx, which we use to expose data about the innerTx
+    if (this.isFeeBump()) {
+      this.fee = this.tx.fee().toString();
+      tx = tx
+        .innerTx()
+        .value()
+        .tx();
+      this.source = StrKey.encodeEd25519PublicKey(tx.sourceAccount().ed25519());
+      this.feeSource = StrKey.encodeEd25519PublicKey(sourceAccount);
+    } else {
+      this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
+      this.fee = tx.fee();
+    }
+
+    this._memo = tx.memo();
+    this.sequence = tx.seqNum().toString();
+
+    const timeBounds = tx.timeBounds();
     if (timeBounds) {
       this.timeBounds = {
         minTime: timeBounds.minTime().toString(),
         maxTime: timeBounds.maxTime().toString()
       };
     }
-
-    const operations = this.tx.operations() || [];
+    const operations = tx.operations() || [];
     this.operations = map(operations, (op) => Operation.fromXDRObject(op));
 
-    const signatures = txe.signatures() || [];
+    const signatures = txEnvelope.signatures() || [];
     this.signatures = map(signatures, (s) => s);
   }
 
@@ -258,11 +297,21 @@ export class Transaction {
       );
     }
 
+    let taggedTransaction;
+
+    if (this.isFeeBump()) {
+      taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
+        tx
+      );
+    } else {
+      taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
+        tx
+      );
+    }
+
     const txSignature = new xdr.TransactionSignaturePayload({
       networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),
-      taggedTransaction: new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
-        tx
-      )
+      taggedTransaction
     });
 
     return txSignature.toXDR();
@@ -288,11 +337,27 @@ export class Transaction {
           new xdr.TransactionV1Envelope({ tx, signatures })
         );
         break;
+      case xdr.EnvelopeType.envelopeTypeTxFeeBump():
+        envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
+          new xdr.FeeBumpTransactionEnvelope({ tx, signatures })
+        );
+        break;
       default:
-        throw new Error('Invalid transaction');
+        throw new Error('Unknown TransactionEnvelope');
     }
 
     return envelope;
+  }
+
+  /**
+   * isFeeBump returns true if the transaction represents a FeeBumpTransaction
+   * @returns {booelan}
+   * @class
+   * @ignore
+   * Tell jsdoc to ignore for now, we'll make it available once core 13 is available.
+   */
+  isFeeBump() {
+    return this._envelopeType === xdr.EnvelopeType.envelopeTypeTxFeeBump();
   }
 
   /**
