@@ -11,7 +11,10 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000.0000000';
 
-    let input = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let input = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -37,14 +40,6 @@ describe('Transaction', function() {
     done();
   });
 
-  beforeEach(function() {
-    StellarBase.Network.useTestNetwork();
-  });
-
-  afterEach(function() {
-    StellarBase.Network.use(null);
-  });
-
   it('does not sign when no Network selected', function() {
     StellarBase.Network.use(null);
     let source = new StellarBase.Account(
@@ -57,7 +52,9 @@ describe('Transaction', function() {
     let amount = '2000';
     let signer = StellarBase.Keypair.random();
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -106,7 +103,9 @@ describe('Transaction', function() {
     let amount = '2000';
 
     expect(() =>
-      new StellarBase.TransactionBuilder(source)
+      new StellarBase.TransactionBuilder(source, {
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({ destination, asset, amount })
         )
@@ -124,9 +123,12 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
     let amount = '2000';
-    let signer = StellarBase.Keypair.master();
+    let signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -154,7 +156,10 @@ describe('Transaction', function() {
     let preimage = randomBytes(64);
     let hash = StellarBase.hash(preimage);
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -182,7 +187,10 @@ describe('Transaction', function() {
 
     let preimage = randomBytes(2 * 64);
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -204,14 +212,15 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
     const amount = '2000';
-    const signer = StellarBase.Keypair.master();
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const signedTx = new StellarBase.TransactionBuilder(signedSource, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
@@ -230,7 +239,8 @@ describe('Transaction', function() {
           minTime: 0,
           maxTime: 1739392569
         },
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       }
     )
       .addOperation(
@@ -274,14 +284,15 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
     const amount = '2000';
-    const signer = StellarBase.Keypair.master();
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const signedTx = new StellarBase.TransactionBuilder(signedSource, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
@@ -294,7 +305,8 @@ describe('Transaction', function() {
     const envelopeSigned = signedTx.toEnvelope();
 
     const signature = new StellarBase.Transaction(
-      signedTx.toXDR()
+      signedTx.toXDR(),
+      StellarBase.Networks.TESTNET
     ).getKeypairSignature(signer);
 
     expect(signer.sign(presignHash).toString('base64')).to.equal(signature);
@@ -306,7 +318,8 @@ describe('Transaction', function() {
           minTime: 0,
           maxTime: 1739392569
         },
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       }
     )
       .addOperation(
@@ -349,14 +362,15 @@ describe('Transaction', function() {
     const asset = StellarBase.Asset.native();
     const originalAmount = '2000';
     const alteredAmount = '1000';
-    const signer = StellarBase.Keypair.master();
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const originalTx = new StellarBase.TransactionBuilder(source, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({
@@ -368,7 +382,8 @@ describe('Transaction', function() {
       .build();
 
     const signature = new StellarBase.Transaction(
-      originalTx.toXDR()
+      originalTx.toXDR(),
+      StellarBase.Networks.TESTNET
     ).getKeypairSignature(signer);
 
     const alteredTx = new StellarBase.TransactionBuilder(sourceCopy, {
@@ -376,7 +391,8 @@ describe('Transaction', function() {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({
@@ -403,7 +419,10 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000';
 
-    let input = new StellarBase.TransactionBuilder(source, { fee: 0 })
+    let input = new StellarBase.TransactionBuilder(source, {
+      fee: 0,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
