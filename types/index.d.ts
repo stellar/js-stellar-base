@@ -518,8 +518,7 @@ export class Transaction<
   signHashX(preimage: Buffer | string): void;
   toEnvelope(): xdr.TransactionEnvelope;
   toXDR(): string;
-  static buildFeeBumpTransaction(feeSource: Keypair, fee: string, innerTx: xdr.TransactionEnvelope, networkPassphrase: string): Transaction;
-
+  
   operations: TOps;
   sequence: string;
   fee: string;
@@ -549,6 +548,7 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
+  static buildFeeBumpTransaction(feeSource: Keypair, fee: string, innerTx: xdr.TransactionEnvelope, networkPassphrase: string): Transaction;
 }
 
 export namespace TransactionBuilder {
