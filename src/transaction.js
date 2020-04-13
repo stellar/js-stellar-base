@@ -10,6 +10,7 @@ import { Operation } from './operation';
 import { Network } from './network';
 import { Memo } from './memo';
 import { Keypair } from './keypair';
+import { BASE_FEE } from './transaction_builder';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object, unless you have
@@ -367,10 +368,18 @@ export class Transaction {
     networkPassphrase
   ) {
     const innerOps = innerTxEnvelope.tx().operations().length;
-    const fee = new BigNumber(baseFee).mul(innerOps + 1).toString();
+    const minFee = new BigNumber(BASE_FEE).mul(innerOps + 1);
+    const fee = new BigNumber(baseFee).mul(innerOps + 1);
+
+    if (fee.lessThan(minFee)) {
+      throw new Error(
+        `Invalid baseFee, it should be at least ${BASE_FEE} stroops.`
+      );
+    }
+
     const tx = new xdr.FeeBumpTransaction({
       feeSource: feeSource.xdrAccountId(),
-      fee: xdr.Int64.fromString(fee),
+      fee: xdr.Int64.fromString(fee.toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(innerTxEnvelope),
       ext: new xdr.FeeBumpTransactionExt(0)
     });

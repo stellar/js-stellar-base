@@ -592,6 +592,15 @@ describe('Transaction', function() {
           .toString('base64')
       );
 
+      expect(() => {
+        StellarBase.Transaction.buildFeeBumpTransaction(
+          feeSource,
+          '99.999',
+          innerTx.toEnvelope().value(),
+          networkPassphrase
+        );
+      }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
+
       done();
     });
   });
