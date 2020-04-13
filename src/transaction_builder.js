@@ -17,7 +17,7 @@ import { Memo } from './memo';
  * @constant
  * @see [Fees](https://www.stellar.org/developers/guides/concepts/fees.html)
  */
-export const BASE_FEE = 100; // Stroops
+export const BASE_FEE = '100'; // Stroops
 
 /**
  * @constant
@@ -70,7 +70,7 @@ export const TimeoutInfinite = 0;
  * @constructor
  * @param {Account} sourceAccount - The source account for this transaction.
  * @param {object} opts Options object
- * @param {number} opts.fee - The max fee willing to pay per operation in this transaction (**in stroops**). Required.
+ * @param {string} opts.fee - The max fee willing to pay per operation in this transaction (**in stroops**). Required.
  * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
  * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
  * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
@@ -188,8 +188,11 @@ export class TransactionBuilder {
    */
   build() {
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
+    const fee = new BigNumber(this.baseFee)
+      .mul(this.operations.length)
+      .toNumber();
     const attrs = {
-      fee: this.baseFee * this.operations.length,
+      fee,
       seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
       memo: this.memo ? this.memo.toXDRObject() : null
     };

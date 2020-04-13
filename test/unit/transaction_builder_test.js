@@ -53,7 +53,7 @@ describe('TransactionBuilder', function() {
     });
 
     it('should have 100 stroops fee', function(done) {
-      expect(transaction.fee).to.be.equal(100);
+      expect(transaction.fee).to.be.equal('100');
       done();
     });
   });
@@ -120,7 +120,7 @@ describe('TransactionBuilder', function() {
     });
 
     it('should have 200 stroops fee', function(done) {
-      expect(transaction.fee).to.be.equal(200);
+      expect(transaction.fee).to.be.equal('200');
       done();
     });
   });
@@ -165,7 +165,7 @@ describe('TransactionBuilder', function() {
     });
 
     it('should have 2000 stroops fee', function(done) {
-      expect(transaction.fee).to.be.equal(2000);
+      expect(transaction.fee).to.be.equal('2000');
       done();
     });
   });
@@ -260,8 +260,8 @@ describe('TransactionBuilder', function() {
       done();
     });
   });
-  describe('timebounds', function(){
-    it('requires maxTime', function(){
+  describe('timebounds', function() {
+    it('requires maxTime', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -273,9 +273,11 @@ describe('TransactionBuilder', function() {
           },
           fee: 100
         }).build();
-      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.throw(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     });
-    it('requires minTime', function(){
+    it('requires minTime', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -287,9 +289,11 @@ describe('TransactionBuilder', function() {
           },
           fee: 100
         }).build();
-      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.throw(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     });
-    it('works with timebounds defined', function(){
+    it('works with timebounds defined', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -304,7 +308,7 @@ describe('TransactionBuilder', function() {
         }).build();
       }).to.not.throw();
     });
-    it('fails with empty timebounds', function(){
+    it('fails with empty timebounds', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -314,7 +318,9 @@ describe('TransactionBuilder', function() {
           timebounds: {},
           fee: 100
         }).build();
-      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.throw(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     });
   });
   describe('setTimeout', function() {
@@ -440,7 +446,7 @@ describe('TransactionBuilder', function() {
         timeoutTimestamp.toString()
       );
     });
-    it('works with TimeoutInfinite', function(){
+    it('works with TimeoutInfinite', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -448,7 +454,9 @@ describe('TransactionBuilder', function() {
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
           fee: 100
-        }).setTimeout(0).build();
+        })
+          .setTimeout(0)
+          .build();
       }).to.not.throw();
     });
   });

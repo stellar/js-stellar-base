@@ -31,7 +31,7 @@ describe('Transaction', function() {
     var operation = transaction.operations[0];
 
     expect(transaction.source).to.be.equal(source.accountId());
-    expect(transaction.fee).to.be.equal(100);
+    expect(transaction.fee).to.be.equal('100');
     expect(transaction.memo.type).to.be.equal(StellarBase.MemoText);
     expect(transaction.memo.value.toString('ascii')).to.be.equal(
       'Happy birthday!'
@@ -440,7 +440,7 @@ describe('Transaction', function() {
     );
     var operation = transaction.operations[0];
 
-    expect(transaction.fee).to.be.equal(0);
+    expect(transaction.fee).to.be.equal('0');
 
     done();
   });

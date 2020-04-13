@@ -536,7 +536,7 @@ export class Transaction<
   };
 }
 
-export const BASE_FEE = 100;
+export const BASE_FEE = "100";
 export const TimeoutInfinite = 0;
 
 export class TransactionBuilder {
@@ -553,7 +553,7 @@ export class TransactionBuilder {
 
 export namespace TransactionBuilder {
   interface TransactionBuilderOptions {
-    fee: number;
+    fee: string;
     timebounds?: {
       minTime?: number | string;
       maxTime?: number | string;
