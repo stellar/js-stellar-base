@@ -493,16 +493,16 @@ describe('TransactionBuilder', function() {
       let feeSource = StellarBase.Keypair.fromSecret(
         'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
       );
-      let bumpFee = '25000000';
+      let baseFee = '100';
       let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         feeSource,
-        bumpFee,
-        innerTX.toEnvelope(),
+        baseFee,
+        innerTX.toEnvelope().value(),
         networkPassphrase
       );
       transaction.sign(feeSource);
       const expectedXDR =
-        'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAABfXhAAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAtRbc7GZeE8cJyZ+R7XGTZKy8s1lTp0rViCHhUa7pDzkaWUI0WUQ5mjsc8+/YhJUXAlPVTbeEbiM6knnPBUFwDw==';
+        'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
 
       expect(transaction.isFeeBump()).to.equal(true);
       expect(
@@ -516,7 +516,7 @@ describe('TransactionBuilder', function() {
       expect(transaction.feeSource).to.be.equal(feeSource.publicKey());
 
       // shows new fee
-      expect(transaction.fee).to.be.equal(bumpFee);
+      expect(transaction.fee).to.be.equal('200');
 
       // can read inner fee
       expect(transaction.innerFee).to.be.equal('100');

@@ -547,7 +547,7 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
-  static buildFeeBumpTransaction(feeSource: Keypair, fee: string, innerTx: xdr.TransactionEnvelope, networkPassphrase: string): Transaction;
+  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: xdr.TransactionV1Envelope, networkPassphrase: string): Transaction;
 }
 
 export namespace TransactionBuilder {
@@ -596,6 +596,10 @@ export namespace xdr {
   class TransactionEnvelope extends XDRStruct {
     static fromXDR(xdr: Buffer, format?: 'raw'): TransactionEnvelope;
     static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionEnvelope;
+  }
+  class TransactionV1Envelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV1Envelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV1Envelope;
   }
   class DecoratedSignature extends XDRStruct {
     static fromXDR(xdr: Buffer, format?: 'raw'): DecoratedSignature;
