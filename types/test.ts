@@ -5,7 +5,7 @@ const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
 const destKey = StellarSdk.Keypair.random();
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1');
 const transaction = new StellarSdk.TransactionBuilder(account, {
-  fee: 100,
+  fee: "100",
   networkPassphrase: StellarSdk.Networks.TESTNET
 })
   .addOperation(

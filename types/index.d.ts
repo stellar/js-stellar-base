@@ -518,7 +518,6 @@ export class Transaction<
   signHashX(preimage: Buffer | string): void;
   toEnvelope(): xdr.TransactionEnvelope;
   toXDR(): string;
-  
   operations: TOps;
   sequence: string;
   fee: string;
