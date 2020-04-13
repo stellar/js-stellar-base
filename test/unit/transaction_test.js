@@ -528,16 +528,66 @@ describe('Transaction', function() {
       expect(operation.destination).to.be.equal(destination);
       expect(operation.amount).to.be.equal(amount);
 
-      // signatures
-      expect(transaction.signatures.length).to.equal(1);
-      let [signature] = transaction.signatures;
-      expect(signature.hint().equals(feeSource.signatureHint())).to.equal(true);
+      let expectedTxEnvelope = StellarBase.xdr.TransactionEnvelope.fromXDR(
+        expectedXDR,
+        'base64'
+      ).value();
 
-      // match inner signatures
+      expect(transaction.source).to.equal(
+        StellarBase.StrKey.encodeEd25519PublicKey(
+          expectedTxEnvelope
+            .tx()
+            .innerTx()
+            .value()
+            .tx()
+            .sourceAccount()
+            .ed25519()
+        )
+      );
+      expect(transaction.feeSource).to.equal(
+        StellarBase.StrKey.encodeEd25519PublicKey(
+          expectedTxEnvelope
+            .tx()
+            .feeSource()
+            .ed25519()
+        )
+      );
+
+      expect(transaction.innerFee).to.equal(
+        expectedTxEnvelope
+          .tx()
+          .innerTx()
+          .value()
+          .tx()
+          .fee()
+          .toString()
+      );
+      expect(transaction.fee).to.equal(
+        expectedTxEnvelope
+          .tx()
+          .fee()
+          .toString()
+      );
+
       expect(transaction.innerSignatures.length).to.equal(1);
-      [signature] = transaction.innerSignatures;
-      expect(signature.hint().equals(innerSource.signatureHint())).to.equal(
-        true
+      expect(
+        transaction.innerSignatures[0].toXDR().toString('base64')
+      ).to.equal(
+        expectedTxEnvelope
+          .tx()
+          .innerTx()
+          .value()
+          .signatures()[0]
+          .toXDR()
+          .toString('base64')
+      );
+
+      expect(transaction.signatures.length).to.equal(1);
+      expect(transaction.signatures[0].toXDR().toString('base64')).to.equal(
+        expectedTxEnvelope
+          .signatures()[0]
+          .toXDR()
+          .toString('base64')
       );
 
       done();
