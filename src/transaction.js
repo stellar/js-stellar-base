@@ -66,18 +66,21 @@ export class Transaction {
     this.tx = txEnvelope.tx();
     let tx = this.tx;
 
-    // if isFeeBumpTx override tx with innerTx, which we use to expose data about the innerTx
+    this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
+    this.fee = tx.fee();
+
+    // if tx is FeeBump, override tx with innerTx, which we use to expose data
+    // about the innerTx like operations and memo.
     if (this.isFeeBump()) {
       this.fee = this.tx.fee().toString();
       tx = tx
         .innerTx()
         .value()
         .tx();
+
+      // make inner transaction the source account and add field feeSource
       this.source = StrKey.encodeEd25519PublicKey(tx.sourceAccount().ed25519());
       this.feeSource = StrKey.encodeEd25519PublicKey(sourceAccount);
-    } else {
-      this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
-      this.fee = tx.fee();
     }
 
     this._memo = tx.memo();
