@@ -560,7 +560,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('allowTrust');
       expect(obj.trustor).to.be.equal(trustor);
       expect(obj.assetCode).to.be.equal(assetCode);
-      expect(obj.authorize).to.be.equal(authorize);
+      expect(obj.authorize).to.be.equal(1);
     });
 
     it('fails to create allowTrust operation with an invalid trustor address', function() {

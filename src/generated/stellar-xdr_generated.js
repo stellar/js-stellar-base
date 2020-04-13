@@ -1,4 +1,4 @@
-// Automatically generated on 2020-01-22T20:41:44-08:00
+// Automatically generated on 2020-04-06T19:00:45-05:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -8,1585 +8,6 @@ import * as XDR from 'js-xdr';
 
 
 var types = XDR.config(xdr => {
-
-// === xdr source ============================================================
-//
-//   typedef PublicKey AccountID;
-//
-// ===========================================================================
-xdr.typedef("AccountId", xdr.lookup("PublicKey"));
-
-// === xdr source ============================================================
-//
-//   typedef opaque Thresholds[4];
-//
-// ===========================================================================
-xdr.typedef("Thresholds", xdr.opaque(4));
-
-// === xdr source ============================================================
-//
-//   typedef string string32<32>;
-//
-// ===========================================================================
-xdr.typedef("String32", xdr.string(32));
-
-// === xdr source ============================================================
-//
-//   typedef string string64<64>;
-//
-// ===========================================================================
-xdr.typedef("String64", xdr.string(64));
-
-// === xdr source ============================================================
-//
-//   typedef int64 SequenceNumber;
-//
-// ===========================================================================
-xdr.typedef("SequenceNumber", xdr.lookup("Int64"));
-
-// === xdr source ============================================================
-//
-//   typedef uint64 TimePoint;
-//
-// ===========================================================================
-xdr.typedef("TimePoint", xdr.lookup("Uint64"));
-
-// === xdr source ============================================================
-//
-//   typedef opaque DataValue<64>;
-//
-// ===========================================================================
-xdr.typedef("DataValue", xdr.varOpaque(64));
-
-// === xdr source ============================================================
-//
-//   typedef opaque AssetCode4[4];
-//
-// ===========================================================================
-xdr.typedef("AssetCode4", xdr.opaque(4));
-
-// === xdr source ============================================================
-//
-//   typedef opaque AssetCode12[12];
-//
-// ===========================================================================
-xdr.typedef("AssetCode12", xdr.opaque(12));
-
-// === xdr source ============================================================
-//
-//   enum AssetType
-//   {
-//       ASSET_TYPE_NATIVE = 0,
-//       ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
-//       ASSET_TYPE_CREDIT_ALPHANUM12 = 2
-//   };
-//
-// ===========================================================================
-xdr.enum("AssetType", {
-  assetTypeNative: 0,
-  assetTypeCreditAlphanum4: 1,
-  assetTypeCreditAlphanum12: 2,
-});
-
-// === xdr source ============================================================
-//
-//   struct
-//       {
-//           AssetCode4 assetCode;
-//           AccountID issuer;
-//       }
-//
-// ===========================================================================
-xdr.struct("AssetAlphaNum4", [
-  ["assetCode", xdr.lookup("AssetCode4")],
-  ["issuer", xdr.lookup("AccountId")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct
-//       {
-//           AssetCode12 assetCode;
-//           AccountID issuer;
-//       }
-//
-// ===========================================================================
-xdr.struct("AssetAlphaNum12", [
-  ["assetCode", xdr.lookup("AssetCode12")],
-  ["issuer", xdr.lookup("AccountId")],
-]);
-
-// === xdr source ============================================================
-//
-//   union Asset switch (AssetType type)
-//   {
-//   case ASSET_TYPE_NATIVE: // Not credit
-//       void;
-//   
-//   case ASSET_TYPE_CREDIT_ALPHANUM4:
-//       struct
-//       {
-//           AssetCode4 assetCode;
-//           AccountID issuer;
-//       } alphaNum4;
-//   
-//   case ASSET_TYPE_CREDIT_ALPHANUM12:
-//       struct
-//       {
-//           AssetCode12 assetCode;
-//           AccountID issuer;
-//       } alphaNum12;
-//   
-//       // add other asset types here in the future
-//   };
-//
-// ===========================================================================
-xdr.union("Asset", {
-  switchOn: xdr.lookup("AssetType"),
-  switchName: "type",
-  switches: [
-    ["assetTypeNative", xdr.void()],
-    ["assetTypeCreditAlphanum4", "alphaNum4"],
-    ["assetTypeCreditAlphanum12", "alphaNum12"],
-  ],
-  arms: {
-    alphaNum4: xdr.lookup("AssetAlphaNum4"),
-    alphaNum12: xdr.lookup("AssetAlphaNum12"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct Price
-//   {
-//       int32 n; // numerator
-//       int32 d; // denominator
-//   };
-//
-// ===========================================================================
-xdr.struct("Price", [
-  ["n", xdr.lookup("Int32")],
-  ["d", xdr.lookup("Int32")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct Liabilities
-//   {
-//       int64 buying;
-//       int64 selling;
-//   };
-//
-// ===========================================================================
-xdr.struct("Liabilities", [
-  ["buying", xdr.lookup("Int64")],
-  ["selling", xdr.lookup("Int64")],
-]);
-
-// === xdr source ============================================================
-//
-//   enum ThresholdIndexes
-//   {
-//       THRESHOLD_MASTER_WEIGHT = 0,
-//       THRESHOLD_LOW = 1,
-//       THRESHOLD_MED = 2,
-//       THRESHOLD_HIGH = 3
-//   };
-//
-// ===========================================================================
-xdr.enum("ThresholdIndices", {
-  thresholdMasterWeight: 0,
-  thresholdLow: 1,
-  thresholdMed: 2,
-  thresholdHigh: 3,
-});
-
-// === xdr source ============================================================
-//
-//   enum LedgerEntryType
-//   {
-//       ACCOUNT = 0,
-//       TRUSTLINE = 1,
-//       OFFER = 2,
-//       DATA = 3
-//   };
-//
-// ===========================================================================
-xdr.enum("LedgerEntryType", {
-  account: 0,
-  trustline: 1,
-  offer: 2,
-  datum: 3,
-});
-
-// === xdr source ============================================================
-//
-//   struct Signer
-//   {
-//       SignerKey key;
-//       uint32 weight; // really only need 1 byte
-//   };
-//
-// ===========================================================================
-xdr.struct("Signer", [
-  ["key", xdr.lookup("SignerKey")],
-  ["weight", xdr.lookup("Uint32")],
-]);
-
-// === xdr source ============================================================
-//
-//   enum AccountFlags
-//   { // masks for each flag
-//   
-//       // Flags set on issuer accounts
-//       // TrustLines are created with authorized set to "false" requiring
-//       // the issuer to set it for each TrustLine
-//       AUTH_REQUIRED_FLAG = 0x1,
-//       // If set, the authorized flag in TrustLines can be cleared
-//       // otherwise, authorization cannot be revoked
-//       AUTH_REVOCABLE_FLAG = 0x2,
-//       // Once set, causes all AUTH_* flags to be read-only
-//       AUTH_IMMUTABLE_FLAG = 0x4
-//   };
-//
-// ===========================================================================
-xdr.enum("AccountFlags", {
-  authRequiredFlag: 1,
-  authRevocableFlag: 2,
-  authImmutableFlag: 4,
-});
-
-// === xdr source ============================================================
-//
-//   const MASK_ACCOUNT_FLAGS = 0x7;
-//
-// ===========================================================================
-xdr.const("MASK_ACCOUNT_FLAGS", 0x7);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//
-// ===========================================================================
-xdr.union("AccountEntryV1Ext", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct
-//           {
-//               Liabilities liabilities;
-//   
-//               union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//               ext;
-//           }
-//
-// ===========================================================================
-xdr.struct("AccountEntryV1", [
-  ["liabilities", xdr.lookup("Liabilities")],
-  ["ext", xdr.lookup("AccountEntryV1Ext")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       case 1:
-//           struct
-//           {
-//               Liabilities liabilities;
-//   
-//               union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//               ext;
-//           } v1;
-//       }
-//
-// ===========================================================================
-xdr.union("AccountEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-    [1, "v1"],
-  ],
-  arms: {
-    v1: xdr.lookup("AccountEntryV1"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct AccountEntry
-//   {
-//       AccountID accountID;      // master public key for this account
-//       int64 balance;            // in stroops
-//       SequenceNumber seqNum;    // last sequence number used for this account
-//       uint32 numSubEntries;     // number of sub-entries this account has
-//                                 // drives the reserve
-//       AccountID* inflationDest; // Account to vote for during inflation
-//       uint32 flags;             // see AccountFlags
-//   
-//       string32 homeDomain; // can be used for reverse federation and memo lookup
-//   
-//       // fields used for signatures
-//       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
-//       Thresholds thresholds;
-//   
-//       Signer signers<20>; // possible signers for this account
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       case 1:
-//           struct
-//           {
-//               Liabilities liabilities;
-//   
-//               union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//               ext;
-//           } v1;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("AccountEntry", [
-  ["accountId", xdr.lookup("AccountId")],
-  ["balance", xdr.lookup("Int64")],
-  ["seqNum", xdr.lookup("SequenceNumber")],
-  ["numSubEntries", xdr.lookup("Uint32")],
-  ["inflationDest", xdr.option(xdr.lookup("AccountId"))],
-  ["flags", xdr.lookup("Uint32")],
-  ["homeDomain", xdr.lookup("String32")],
-  ["thresholds", xdr.lookup("Thresholds")],
-  ["signers", xdr.varArray(xdr.lookup("Signer"), 20)],
-  ["ext", xdr.lookup("AccountEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   enum TrustLineFlags
-//   {
-//       // issuer has authorized account to perform transactions with its credit
-//       AUTHORIZED_FLAG = 1
-//   };
-//
-// ===========================================================================
-xdr.enum("TrustLineFlags", {
-  authorizedFlag: 1,
-});
-
-// === xdr source ============================================================
-//
-//   const MASK_TRUSTLINE_FLAGS = 1;
-//
-// ===========================================================================
-xdr.const("MASK_TRUSTLINE_FLAGS", 1);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//
-// ===========================================================================
-xdr.union("TrustLineEntryV1Ext", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct
-//           {
-//               Liabilities liabilities;
-//   
-//               union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//               ext;
-//           }
-//
-// ===========================================================================
-xdr.struct("TrustLineEntryV1", [
-  ["liabilities", xdr.lookup("Liabilities")],
-  ["ext", xdr.lookup("TrustLineEntryV1Ext")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       case 1:
-//           struct
-//           {
-//               Liabilities liabilities;
-//   
-//               union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//               ext;
-//           } v1;
-//       }
-//
-// ===========================================================================
-xdr.union("TrustLineEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-    [1, "v1"],
-  ],
-  arms: {
-    v1: xdr.lookup("TrustLineEntryV1"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct TrustLineEntry
-//   {
-//       AccountID accountID; // account this trustline belongs to
-//       Asset asset;         // type of asset (with issuer)
-//       int64 balance;       // how much of this asset the user has.
-//                            // Asset defines the unit for this;
-//   
-//       int64 limit;  // balance cannot be above this
-//       uint32 flags; // see TrustLineFlags
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       case 1:
-//           struct
-//           {
-//               Liabilities liabilities;
-//   
-//               union switch (int v)
-//               {
-//               case 0:
-//                   void;
-//               }
-//               ext;
-//           } v1;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("TrustLineEntry", [
-  ["accountId", xdr.lookup("AccountId")],
-  ["asset", xdr.lookup("Asset")],
-  ["balance", xdr.lookup("Int64")],
-  ["limit", xdr.lookup("Int64")],
-  ["flags", xdr.lookup("Uint32")],
-  ["ext", xdr.lookup("TrustLineEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   enum OfferEntryFlags
-//   {
-//       // issuer has authorized account to perform transactions with its credit
-//       PASSIVE_FLAG = 1
-//   };
-//
-// ===========================================================================
-xdr.enum("OfferEntryFlags", {
-  passiveFlag: 1,
-});
-
-// === xdr source ============================================================
-//
-//   const MASK_OFFERENTRY_FLAGS = 1;
-//
-// ===========================================================================
-xdr.const("MASK_OFFERENTRY_FLAGS", 1);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("OfferEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct OfferEntry
-//   {
-//       AccountID sellerID;
-//       int64 offerID;
-//       Asset selling; // A
-//       Asset buying;  // B
-//       int64 amount;  // amount of A
-//   
-//       /* price for this offer:
-//           price of A in terms of B
-//           price=AmountB/AmountA=priceNumerator/priceDenominator
-//           price is after fees
-//       */
-//       Price price;
-//       uint32 flags; // see OfferEntryFlags
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("OfferEntry", [
-  ["sellerId", xdr.lookup("AccountId")],
-  ["offerId", xdr.lookup("Int64")],
-  ["selling", xdr.lookup("Asset")],
-  ["buying", xdr.lookup("Asset")],
-  ["amount", xdr.lookup("Int64")],
-  ["price", xdr.lookup("Price")],
-  ["flags", xdr.lookup("Uint32")],
-  ["ext", xdr.lookup("OfferEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("DataEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct DataEntry
-//   {
-//       AccountID accountID; // account this data belongs to
-//       string64 dataName;
-//       DataValue dataValue;
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("DataEntry", [
-  ["accountId", xdr.lookup("AccountId")],
-  ["dataName", xdr.lookup("String64")],
-  ["dataValue", xdr.lookup("DataValue")],
-  ["ext", xdr.lookup("DataEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (LedgerEntryType type)
-//       {
-//       case ACCOUNT:
-//           AccountEntry account;
-//       case TRUSTLINE:
-//           TrustLineEntry trustLine;
-//       case OFFER:
-//           OfferEntry offer;
-//       case DATA:
-//           DataEntry data;
-//       }
-//
-// ===========================================================================
-xdr.union("LedgerEntryData", {
-  switchOn: xdr.lookup("LedgerEntryType"),
-  switchName: "type",
-  switches: [
-    ["account", "account"],
-    ["trustline", "trustLine"],
-    ["offer", "offer"],
-    ["datum", "data"],
-  ],
-  arms: {
-    account: xdr.lookup("AccountEntry"),
-    trustLine: xdr.lookup("TrustLineEntry"),
-    offer: xdr.lookup("OfferEntry"),
-    data: xdr.lookup("DataEntry"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("LedgerEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct LedgerEntry
-//   {
-//       uint32 lastModifiedLedgerSeq; // ledger the LedgerEntry was last changed
-//   
-//       union switch (LedgerEntryType type)
-//       {
-//       case ACCOUNT:
-//           AccountEntry account;
-//       case TRUSTLINE:
-//           TrustLineEntry trustLine;
-//       case OFFER:
-//           OfferEntry offer;
-//       case DATA:
-//           DataEntry data;
-//       }
-//       data;
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("LedgerEntry", [
-  ["lastModifiedLedgerSeq", xdr.lookup("Uint32")],
-  ["data", xdr.lookup("LedgerEntryData")],
-  ["ext", xdr.lookup("LedgerEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   enum EnvelopeType
-//   {
-//       ENVELOPE_TYPE_SCP = 1,
-//       ENVELOPE_TYPE_TX = 2,
-//       ENVELOPE_TYPE_AUTH = 3,
-//       ENVELOPE_TYPE_SCPVALUE = 4
-//   };
-//
-// ===========================================================================
-xdr.enum("EnvelopeType", {
-  envelopeTypeScp: 1,
-  envelopeTypeTx: 2,
-  envelopeTypeAuth: 3,
-  envelopeTypeScpvalue: 4,
-});
-
-// === xdr source ============================================================
-//
-//   typedef opaque UpgradeType<128>;
-//
-// ===========================================================================
-xdr.typedef("UpgradeType", xdr.varOpaque(128));
-
-// === xdr source ============================================================
-//
-//   enum StellarValueType
-//   {
-//       STELLAR_VALUE_BASIC = 0,
-//       STELLAR_VALUE_SIGNED = 1
-//   };
-//
-// ===========================================================================
-xdr.enum("StellarValueType", {
-  stellarValueBasic: 0,
-  stellarValueSigned: 1,
-});
-
-// === xdr source ============================================================
-//
-//   struct LedgerCloseValueSignature
-//   {
-//       NodeID nodeID;       // which node introduced the value
-//       Signature signature; // nodeID's signature
-//   };
-//
-// ===========================================================================
-xdr.struct("LedgerCloseValueSignature", [
-  ["nodeId", xdr.lookup("NodeId")],
-  ["signature", xdr.lookup("Signature")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (StellarValueType v)
-//       {
-//       case STELLAR_VALUE_BASIC:
-//           void;
-//       case STELLAR_VALUE_SIGNED:
-//           LedgerCloseValueSignature lcValueSignature;
-//       }
-//
-// ===========================================================================
-xdr.union("StellarValueExt", {
-  switchOn: xdr.lookup("StellarValueType"),
-  switchName: "v",
-  switches: [
-    ["stellarValueBasic", xdr.void()],
-    ["stellarValueSigned", "lcValueSignature"],
-  ],
-  arms: {
-    lcValueSignature: xdr.lookup("LedgerCloseValueSignature"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct StellarValue
-//   {
-//       Hash txSetHash;      // transaction set to apply to previous ledger
-//       TimePoint closeTime; // network close time
-//   
-//       // upgrades to apply to the previous ledger (usually empty)
-//       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
-//       // unknown steps during consensus if needed.
-//       // see notes below on 'LedgerUpgrade' for more detail
-//       // max size is dictated by number of upgrade types (+ room for future)
-//       UpgradeType upgrades<6>;
-//   
-//       // reserved for future use
-//       union switch (StellarValueType v)
-//       {
-//       case STELLAR_VALUE_BASIC:
-//           void;
-//       case STELLAR_VALUE_SIGNED:
-//           LedgerCloseValueSignature lcValueSignature;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("StellarValue", [
-  ["txSetHash", xdr.lookup("Hash")],
-  ["closeTime", xdr.lookup("TimePoint")],
-  ["upgrades", xdr.varArray(xdr.lookup("UpgradeType"), 6)],
-  ["ext", xdr.lookup("StellarValueExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("LedgerHeaderExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct LedgerHeader
-//   {
-//       uint32 ledgerVersion;    // the protocol version of the ledger
-//       Hash previousLedgerHash; // hash of the previous ledger header
-//       StellarValue scpValue;   // what consensus agreed to
-//       Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
-//       Hash bucketListHash;     // hash of the ledger state
-//   
-//       uint32 ledgerSeq; // sequence number of this ledger
-//   
-//       int64 totalCoins; // total number of stroops in existence.
-//                         // 10,000,000 stroops in 1 XLM
-//   
-//       int64 feePool;       // fees burned since last inflation run
-//       uint32 inflationSeq; // inflation sequence number
-//   
-//       uint64 idPool; // last used global ID, used for generating objects
-//   
-//       uint32 baseFee;     // base fee per operation in stroops
-//       uint32 baseReserve; // account base reserve in stroops
-//   
-//       uint32 maxTxSetSize; // maximum size a transaction set can be
-//   
-//       Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
-//                         // in time without walking the chain back ledger by ledger
-//                         // each slot contains the oldest ledger that is mod of
-//                         // either 50  5000  50000 or 500000 depending on index
-//                         // skipList[0] mod(50), skipList[1] mod(5000), etc
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("LedgerHeader", [
-  ["ledgerVersion", xdr.lookup("Uint32")],
-  ["previousLedgerHash", xdr.lookup("Hash")],
-  ["scpValue", xdr.lookup("StellarValue")],
-  ["txSetResultHash", xdr.lookup("Hash")],
-  ["bucketListHash", xdr.lookup("Hash")],
-  ["ledgerSeq", xdr.lookup("Uint32")],
-  ["totalCoins", xdr.lookup("Int64")],
-  ["feePool", xdr.lookup("Int64")],
-  ["inflationSeq", xdr.lookup("Uint32")],
-  ["idPool", xdr.lookup("Uint64")],
-  ["baseFee", xdr.lookup("Uint32")],
-  ["baseReserve", xdr.lookup("Uint32")],
-  ["maxTxSetSize", xdr.lookup("Uint32")],
-  ["skipList", xdr.array(xdr.lookup("Hash"), 4)],
-  ["ext", xdr.lookup("LedgerHeaderExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   enum LedgerUpgradeType
-//   {
-//       LEDGER_UPGRADE_VERSION = 1,
-//       LEDGER_UPGRADE_BASE_FEE = 2,
-//       LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
-//       LEDGER_UPGRADE_BASE_RESERVE = 4
-//   };
-//
-// ===========================================================================
-xdr.enum("LedgerUpgradeType", {
-  ledgerUpgradeVersion: 1,
-  ledgerUpgradeBaseFee: 2,
-  ledgerUpgradeMaxTxSetSize: 3,
-  ledgerUpgradeBaseReserve: 4,
-});
-
-// === xdr source ============================================================
-//
-//   union LedgerUpgrade switch (LedgerUpgradeType type)
-//   {
-//   case LEDGER_UPGRADE_VERSION:
-//       uint32 newLedgerVersion; // update ledgerVersion
-//   case LEDGER_UPGRADE_BASE_FEE:
-//       uint32 newBaseFee; // update baseFee
-//   case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
-//       uint32 newMaxTxSetSize; // update maxTxSetSize
-//   case LEDGER_UPGRADE_BASE_RESERVE:
-//       uint32 newBaseReserve; // update baseReserve
-//   };
-//
-// ===========================================================================
-xdr.union("LedgerUpgrade", {
-  switchOn: xdr.lookup("LedgerUpgradeType"),
-  switchName: "type",
-  switches: [
-    ["ledgerUpgradeVersion", "newLedgerVersion"],
-    ["ledgerUpgradeBaseFee", "newBaseFee"],
-    ["ledgerUpgradeMaxTxSetSize", "newMaxTxSetSize"],
-    ["ledgerUpgradeBaseReserve", "newBaseReserve"],
-  ],
-  arms: {
-    newLedgerVersion: xdr.lookup("Uint32"),
-    newBaseFee: xdr.lookup("Uint32"),
-    newMaxTxSetSize: xdr.lookup("Uint32"),
-    newBaseReserve: xdr.lookup("Uint32"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct
-//       {
-//           AccountID accountID;
-//       }
-//
-// ===========================================================================
-xdr.struct("LedgerKeyAccount", [
-  ["accountId", xdr.lookup("AccountId")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct
-//       {
-//           AccountID accountID;
-//           Asset asset;
-//       }
-//
-// ===========================================================================
-xdr.struct("LedgerKeyTrustLine", [
-  ["accountId", xdr.lookup("AccountId")],
-  ["asset", xdr.lookup("Asset")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct
-//       {
-//           AccountID sellerID;
-//           int64 offerID;
-//       }
-//
-// ===========================================================================
-xdr.struct("LedgerKeyOffer", [
-  ["sellerId", xdr.lookup("AccountId")],
-  ["offerId", xdr.lookup("Int64")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct
-//       {
-//           AccountID accountID;
-//           string64 dataName;
-//       }
-//
-// ===========================================================================
-xdr.struct("LedgerKeyData", [
-  ["accountId", xdr.lookup("AccountId")],
-  ["dataName", xdr.lookup("String64")],
-]);
-
-// === xdr source ============================================================
-//
-//   union LedgerKey switch (LedgerEntryType type)
-//   {
-//   case ACCOUNT:
-//       struct
-//       {
-//           AccountID accountID;
-//       } account;
-//   
-//   case TRUSTLINE:
-//       struct
-//       {
-//           AccountID accountID;
-//           Asset asset;
-//       } trustLine;
-//   
-//   case OFFER:
-//       struct
-//       {
-//           AccountID sellerID;
-//           int64 offerID;
-//       } offer;
-//   
-//   case DATA:
-//       struct
-//       {
-//           AccountID accountID;
-//           string64 dataName;
-//       } data;
-//   };
-//
-// ===========================================================================
-xdr.union("LedgerKey", {
-  switchOn: xdr.lookup("LedgerEntryType"),
-  switchName: "type",
-  switches: [
-    ["account", "account"],
-    ["trustline", "trustLine"],
-    ["offer", "offer"],
-    ["datum", "data"],
-  ],
-  arms: {
-    account: xdr.lookup("LedgerKeyAccount"),
-    trustLine: xdr.lookup("LedgerKeyTrustLine"),
-    offer: xdr.lookup("LedgerKeyOffer"),
-    data: xdr.lookup("LedgerKeyData"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   enum BucketEntryType
-//   {
-//       METAENTRY =
-//           -1, // At-and-after protocol 11: bucket metadata, should come first.
-//       LIVEENTRY = 0, // Before protocol 11: created-or-updated;
-//                      // At-and-after protocol 11: only updated.
-//       DEADENTRY = 1,
-//       INITENTRY = 2 // At-and-after protocol 11: only created.
-//   };
-//
-// ===========================================================================
-xdr.enum("BucketEntryType", {
-  metaentry: -1,
-  liveentry: 0,
-  deadentry: 1,
-  initentry: 2,
-});
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("BucketMetadataExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct BucketMetadata
-//   {
-//       // Indicates the protocol version used to create / merge this bucket.
-//       uint32 ledgerVersion;
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("BucketMetadata", [
-  ["ledgerVersion", xdr.lookup("Uint32")],
-  ["ext", xdr.lookup("BucketMetadataExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   union BucketEntry switch (BucketEntryType type)
-//   {
-//   case LIVEENTRY:
-//   case INITENTRY:
-//       LedgerEntry liveEntry;
-//   
-//   case DEADENTRY:
-//       LedgerKey deadEntry;
-//   case METAENTRY:
-//       BucketMetadata metaEntry;
-//   };
-//
-// ===========================================================================
-xdr.union("BucketEntry", {
-  switchOn: xdr.lookup("BucketEntryType"),
-  switchName: "type",
-  switches: [
-    ["liveentry", "liveEntry"],
-    ["initentry", "liveEntry"],
-    ["deadentry", "deadEntry"],
-    ["metaentry", "metaEntry"],
-  ],
-  arms: {
-    liveEntry: xdr.lookup("LedgerEntry"),
-    deadEntry: xdr.lookup("LedgerKey"),
-    metaEntry: xdr.lookup("BucketMetadata"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct TransactionSet
-//   {
-//       Hash previousLedgerHash;
-//       TransactionEnvelope txs<>;
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionSet", [
-  ["previousLedgerHash", xdr.lookup("Hash")],
-  ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)],
-]);
-
-// === xdr source ============================================================
-//
-//   struct TransactionResultPair
-//   {
-//       Hash transactionHash;
-//       TransactionResult result; // result for the transaction
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionResultPair", [
-  ["transactionHash", xdr.lookup("Hash")],
-  ["result", xdr.lookup("TransactionResult")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct TransactionResultSet
-//   {
-//       TransactionResultPair results<>;
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionResultSet", [
-  ["results", xdr.varArray(xdr.lookup("TransactionResultPair"), 2147483647)],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("TransactionHistoryEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct TransactionHistoryEntry
-//   {
-//       uint32 ledgerSeq;
-//       TransactionSet txSet;
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionHistoryEntry", [
-  ["ledgerSeq", xdr.lookup("Uint32")],
-  ["txSet", xdr.lookup("TransactionSet")],
-  ["ext", xdr.lookup("TransactionHistoryEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("TransactionHistoryResultEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct TransactionHistoryResultEntry
-//   {
-//       uint32 ledgerSeq;
-//       TransactionResultSet txResultSet;
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionHistoryResultEntry", [
-  ["ledgerSeq", xdr.lookup("Uint32")],
-  ["txResultSet", xdr.lookup("TransactionResultSet")],
-  ["ext", xdr.lookup("TransactionHistoryResultEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//
-// ===========================================================================
-xdr.union("LedgerHeaderHistoryEntryExt", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, xdr.void()],
-  ],
-  arms: {
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct LedgerHeaderHistoryEntry
-//   {
-//       Hash hash;
-//       LedgerHeader header;
-//   
-//       // reserved for future use
-//       union switch (int v)
-//       {
-//       case 0:
-//           void;
-//       }
-//       ext;
-//   };
-//
-// ===========================================================================
-xdr.struct("LedgerHeaderHistoryEntry", [
-  ["hash", xdr.lookup("Hash")],
-  ["header", xdr.lookup("LedgerHeader")],
-  ["ext", xdr.lookup("LedgerHeaderHistoryEntryExt")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct LedgerSCPMessages
-//   {
-//       uint32 ledgerSeq;
-//       SCPEnvelope messages<>;
-//   };
-//
-// ===========================================================================
-xdr.struct("LedgerScpMessages", [
-  ["ledgerSeq", xdr.lookup("Uint32")],
-  ["messages", xdr.varArray(xdr.lookup("ScpEnvelope"), 2147483647)],
-]);
-
-// === xdr source ============================================================
-//
-//   struct SCPHistoryEntryV0
-//   {
-//       SCPQuorumSet quorumSets<>; // additional quorum sets used by ledgerMessages
-//       LedgerSCPMessages ledgerMessages;
-//   };
-//
-// ===========================================================================
-xdr.struct("ScpHistoryEntryV0", [
-  ["quorumSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
-  ["ledgerMessages", xdr.lookup("LedgerScpMessages")],
-]);
-
-// === xdr source ============================================================
-//
-//   union SCPHistoryEntry switch (int v)
-//   {
-//   case 0:
-//       SCPHistoryEntryV0 v0;
-//   };
-//
-// ===========================================================================
-xdr.union("ScpHistoryEntry", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, "v0"],
-  ],
-  arms: {
-    v0: xdr.lookup("ScpHistoryEntryV0"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   enum LedgerEntryChangeType
-//   {
-//       LEDGER_ENTRY_CREATED = 0, // entry was added to the ledger
-//       LEDGER_ENTRY_UPDATED = 1, // entry was modified in the ledger
-//       LEDGER_ENTRY_REMOVED = 2, // entry was removed from the ledger
-//       LEDGER_ENTRY_STATE = 3    // value of the entry
-//   };
-//
-// ===========================================================================
-xdr.enum("LedgerEntryChangeType", {
-  ledgerEntryCreated: 0,
-  ledgerEntryUpdated: 1,
-  ledgerEntryRemoved: 2,
-  ledgerEntryState: 3,
-});
-
-// === xdr source ============================================================
-//
-//   union LedgerEntryChange switch (LedgerEntryChangeType type)
-//   {
-//   case LEDGER_ENTRY_CREATED:
-//       LedgerEntry created;
-//   case LEDGER_ENTRY_UPDATED:
-//       LedgerEntry updated;
-//   case LEDGER_ENTRY_REMOVED:
-//       LedgerKey removed;
-//   case LEDGER_ENTRY_STATE:
-//       LedgerEntry state;
-//   };
-//
-// ===========================================================================
-xdr.union("LedgerEntryChange", {
-  switchOn: xdr.lookup("LedgerEntryChangeType"),
-  switchName: "type",
-  switches: [
-    ["ledgerEntryCreated", "created"],
-    ["ledgerEntryUpdated", "updated"],
-    ["ledgerEntryRemoved", "removed"],
-    ["ledgerEntryState", "state"],
-  ],
-  arms: {
-    created: xdr.lookup("LedgerEntry"),
-    updated: xdr.lookup("LedgerEntry"),
-    removed: xdr.lookup("LedgerKey"),
-    state: xdr.lookup("LedgerEntry"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   typedef LedgerEntryChange LedgerEntryChanges<>;
-//
-// ===========================================================================
-xdr.typedef("LedgerEntryChanges", xdr.varArray(xdr.lookup("LedgerEntryChange"), 2147483647));
-
-// === xdr source ============================================================
-//
-//   struct OperationMeta
-//   {
-//       LedgerEntryChanges changes;
-//   };
-//
-// ===========================================================================
-xdr.struct("OperationMeta", [
-  ["changes", xdr.lookup("LedgerEntryChanges")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct TransactionMetaV1
-//   {
-//       LedgerEntryChanges txChanges; // tx level changes if any
-//       OperationMeta operations<>;   // meta for each operation
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionMetaV1", [
-  ["txChanges", xdr.lookup("LedgerEntryChanges")],
-  ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
-]);
-
-// === xdr source ============================================================
-//
-//   struct TransactionMetaV2
-//   {
-//       LedgerEntryChanges txChangesBefore; // tx level changes before operations
-//                                           // are applied if any
-//       OperationMeta operations<>;         // meta for each operation
-//       LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
-//                                           // applied if any
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionMetaV2", [
-  ["txChangesBefore", xdr.lookup("LedgerEntryChanges")],
-  ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
-  ["txChangesAfter", xdr.lookup("LedgerEntryChanges")],
-]);
-
-// === xdr source ============================================================
-//
-//   union TransactionMeta switch (int v)
-//   {
-//   case 0:
-//       OperationMeta operations<>;
-//   case 1:
-//       TransactionMetaV1 v1;
-//   case 2:
-//       TransactionMetaV2 v2;
-//   };
-//
-// ===========================================================================
-xdr.union("TransactionMeta", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, "operations"],
-    [1, "v1"],
-    [2, "v2"],
-  ],
-  arms: {
-    operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
-    v1: xdr.lookup("TransactionMetaV1"),
-    v2: xdr.lookup("TransactionMetaV2"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   struct TransactionResultMeta
-//   {
-//       TransactionResultPair result;
-//       LedgerEntryChanges feeProcessing;
-//       TransactionMeta txApplyProcessing;
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionResultMeta", [
-  ["result", xdr.lookup("TransactionResultPair")],
-  ["feeProcessing", xdr.lookup("LedgerEntryChanges")],
-  ["txApplyProcessing", xdr.lookup("TransactionMeta")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct UpgradeEntryMeta
-//   {
-//       LedgerUpgrade upgrade;
-//       LedgerEntryChanges changes;
-//   };
-//
-// ===========================================================================
-xdr.struct("UpgradeEntryMeta", [
-  ["upgrade", xdr.lookup("LedgerUpgrade")],
-  ["changes", xdr.lookup("LedgerEntryChanges")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct LedgerCloseMetaV0
-//   {
-//       LedgerHeaderHistoryEntry ledgerHeader;
-//       // NB: txSet is sorted in "Hash order"
-//       TransactionSet txSet;
-//   
-//       // NB: transactions are sorted in apply order here
-//       // fees for all transactions are processed first
-//       // followed by applying transactions
-//       TransactionResultMeta txProcessing<>;
-//   
-//       // upgrades are applied last
-//       UpgradeEntryMeta upgradesProcessing<>;
-//   
-//       // other misc information attached to the ledger close
-//       SCPHistoryEntry scpInfo<>;
-//   };
-//
-// ===========================================================================
-xdr.struct("LedgerCloseMetaV0", [
-  ["ledgerHeader", xdr.lookup("LedgerHeaderHistoryEntry")],
-  ["txSet", xdr.lookup("TransactionSet")],
-  ["txProcessing", xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647)],
-  ["upgradesProcessing", xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647)],
-  ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
-]);
-
-// === xdr source ============================================================
-//
-//   union LedgerCloseMeta switch (int v)
-//   {
-//   case 0:
-//        LedgerCloseMetaV0 v0;
-//   };
-//
-// ===========================================================================
-xdr.union("LedgerCloseMeta", {
-  switchOn: xdr.int(),
-  switchName: "v",
-  switches: [
-    [0, "v0"],
-  ],
-  arms: {
-    v0: xdr.lookup("LedgerCloseMetaV0"),
-  },
-});
 
 // === xdr source ============================================================
 //
@@ -2102,245 +523,207 @@ xdr.union("AuthenticatedMessage", {
 
 // === xdr source ============================================================
 //
-//   typedef opaque Value<>;
+//   typedef opaque Hash[32];
 //
 // ===========================================================================
-xdr.typedef("Value", xdr.varOpaque());
+xdr.typedef("Hash", xdr.opaque(32));
 
 // === xdr source ============================================================
 //
-//   struct SCPBallot
-//   {
-//       uint32 counter; // n
-//       Value value;    // x
-//   };
+//   typedef opaque uint256[32];
 //
 // ===========================================================================
-xdr.struct("ScpBallot", [
-  ["counter", xdr.lookup("Uint32")],
-  ["value", xdr.lookup("Value")],
-]);
+xdr.typedef("Uint256", xdr.opaque(32));
 
 // === xdr source ============================================================
 //
-//   enum SCPStatementType
+//   typedef unsigned int uint32;
+//
+// ===========================================================================
+xdr.typedef("Uint32", xdr.uint());
+
+// === xdr source ============================================================
+//
+//   typedef int int32;
+//
+// ===========================================================================
+xdr.typedef("Int32", xdr.int());
+
+// === xdr source ============================================================
+//
+//   typedef unsigned hyper uint64;
+//
+// ===========================================================================
+xdr.typedef("Uint64", xdr.uhyper());
+
+// === xdr source ============================================================
+//
+//   typedef hyper int64;
+//
+// ===========================================================================
+xdr.typedef("Int64", xdr.hyper());
+
+// === xdr source ============================================================
+//
+//   enum CryptoKeyType
 //   {
-//       SCP_ST_PREPARE = 0,
-//       SCP_ST_CONFIRM = 1,
-//       SCP_ST_EXTERNALIZE = 2,
-//       SCP_ST_NOMINATE = 3
+//       KEY_TYPE_ED25519 = 0,
+//       KEY_TYPE_PRE_AUTH_TX = 1,
+//       KEY_TYPE_HASH_X = 2
 //   };
 //
 // ===========================================================================
-xdr.enum("ScpStatementType", {
-  scpStPrepare: 0,
-  scpStConfirm: 1,
-  scpStExternalize: 2,
-  scpStNominate: 3,
+xdr.enum("CryptoKeyType", {
+  keyTypeEd25519: 0,
+  keyTypePreAuthTx: 1,
+  keyTypeHashX: 2,
 });
 
 // === xdr source ============================================================
 //
-//   struct SCPNomination
+//   enum PublicKeyType
 //   {
-//       Hash quorumSetHash; // D
-//       Value votes<>;      // X
-//       Value accepted<>;   // Y
+//       PUBLIC_KEY_TYPE_ED25519 = KEY_TYPE_ED25519
 //   };
 //
 // ===========================================================================
-xdr.struct("ScpNomination", [
-  ["quorumSetHash", xdr.lookup("Hash")],
-  ["votes", xdr.varArray(xdr.lookup("Value"), 2147483647)],
-  ["accepted", xdr.varArray(xdr.lookup("Value"), 2147483647)],
-]);
+xdr.enum("PublicKeyType", {
+  publicKeyTypeEd25519: 0,
+});
 
 // === xdr source ============================================================
 //
-//   struct
-//           {
-//               Hash quorumSetHash;       // D
-//               SCPBallot ballot;         // b
-//               SCPBallot* prepared;      // p
-//               SCPBallot* preparedPrime; // p'
-//               uint32 nC;                // c.n
-//               uint32 nH;                // h.n
-//           }
+//   enum SignerKeyType
+//   {
+//       SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
+//       SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
+//       SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
+//   };
 //
 // ===========================================================================
-xdr.struct("ScpStatementPrepare", [
-  ["quorumSetHash", xdr.lookup("Hash")],
-  ["ballot", xdr.lookup("ScpBallot")],
-  ["prepared", xdr.option(xdr.lookup("ScpBallot"))],
-  ["preparedPrime", xdr.option(xdr.lookup("ScpBallot"))],
-  ["nC", xdr.lookup("Uint32")],
-  ["nH", xdr.lookup("Uint32")],
-]);
+xdr.enum("SignerKeyType", {
+  signerKeyTypeEd25519: 0,
+  signerKeyTypePreAuthTx: 1,
+  signerKeyTypeHashX: 2,
+});
 
 // === xdr source ============================================================
 //
-//   struct
-//           {
-//               SCPBallot ballot;   // b
-//               uint32 nPrepared;   // p.n
-//               uint32 nCommit;     // c.n
-//               uint32 nH;          // h.n
-//               Hash quorumSetHash; // D
-//           }
+//   union PublicKey switch (PublicKeyType type)
+//   {
+//   case PUBLIC_KEY_TYPE_ED25519:
+//       uint256 ed25519;
+//   };
 //
 // ===========================================================================
-xdr.struct("ScpStatementConfirm", [
-  ["ballot", xdr.lookup("ScpBallot")],
-  ["nPrepared", xdr.lookup("Uint32")],
-  ["nCommit", xdr.lookup("Uint32")],
-  ["nH", xdr.lookup("Uint32")],
-  ["quorumSetHash", xdr.lookup("Hash")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct
-//           {
-//               SCPBallot commit;         // c
-//               uint32 nH;                // h.n
-//               Hash commitQuorumSetHash; // D used before EXTERNALIZE
-//           }
-//
-// ===========================================================================
-xdr.struct("ScpStatementExternalize", [
-  ["commit", xdr.lookup("ScpBallot")],
-  ["nH", xdr.lookup("Uint32")],
-  ["commitQuorumSetHash", xdr.lookup("Hash")],
-]);
-
-// === xdr source ============================================================
-//
-//   union switch (SCPStatementType type)
-//       {
-//       case SCP_ST_PREPARE:
-//           struct
-//           {
-//               Hash quorumSetHash;       // D
-//               SCPBallot ballot;         // b
-//               SCPBallot* prepared;      // p
-//               SCPBallot* preparedPrime; // p'
-//               uint32 nC;                // c.n
-//               uint32 nH;                // h.n
-//           } prepare;
-//       case SCP_ST_CONFIRM:
-//           struct
-//           {
-//               SCPBallot ballot;   // b
-//               uint32 nPrepared;   // p.n
-//               uint32 nCommit;     // c.n
-//               uint32 nH;          // h.n
-//               Hash quorumSetHash; // D
-//           } confirm;
-//       case SCP_ST_EXTERNALIZE:
-//           struct
-//           {
-//               SCPBallot commit;         // c
-//               uint32 nH;                // h.n
-//               Hash commitQuorumSetHash; // D used before EXTERNALIZE
-//           } externalize;
-//       case SCP_ST_NOMINATE:
-//           SCPNomination nominate;
-//       }
-//
-// ===========================================================================
-xdr.union("ScpStatementPledges", {
-  switchOn: xdr.lookup("ScpStatementType"),
+xdr.union("PublicKey", {
+  switchOn: xdr.lookup("PublicKeyType"),
   switchName: "type",
   switches: [
-    ["scpStPrepare", "prepare"],
-    ["scpStConfirm", "confirm"],
-    ["scpStExternalize", "externalize"],
-    ["scpStNominate", "nominate"],
+    ["publicKeyTypeEd25519", "ed25519"],
   ],
   arms: {
-    prepare: xdr.lookup("ScpStatementPrepare"),
-    confirm: xdr.lookup("ScpStatementConfirm"),
-    externalize: xdr.lookup("ScpStatementExternalize"),
-    nominate: xdr.lookup("ScpNomination"),
+    ed25519: xdr.lookup("Uint256"),
   },
 });
 
 // === xdr source ============================================================
 //
-//   struct SCPStatement
+//   union SignerKey switch (SignerKeyType type)
 //   {
-//       NodeID nodeID;    // v
-//       uint64 slotIndex; // i
-//   
-//       union switch (SCPStatementType type)
-//       {
-//       case SCP_ST_PREPARE:
-//           struct
-//           {
-//               Hash quorumSetHash;       // D
-//               SCPBallot ballot;         // b
-//               SCPBallot* prepared;      // p
-//               SCPBallot* preparedPrime; // p'
-//               uint32 nC;                // c.n
-//               uint32 nH;                // h.n
-//           } prepare;
-//       case SCP_ST_CONFIRM:
-//           struct
-//           {
-//               SCPBallot ballot;   // b
-//               uint32 nPrepared;   // p.n
-//               uint32 nCommit;     // c.n
-//               uint32 nH;          // h.n
-//               Hash quorumSetHash; // D
-//           } confirm;
-//       case SCP_ST_EXTERNALIZE:
-//           struct
-//           {
-//               SCPBallot commit;         // c
-//               uint32 nH;                // h.n
-//               Hash commitQuorumSetHash; // D used before EXTERNALIZE
-//           } externalize;
-//       case SCP_ST_NOMINATE:
-//           SCPNomination nominate;
-//       }
-//       pledges;
+//   case SIGNER_KEY_TYPE_ED25519:
+//       uint256 ed25519;
+//   case SIGNER_KEY_TYPE_PRE_AUTH_TX:
+//       /* SHA-256 Hash of TransactionSignaturePayload structure */
+//       uint256 preAuthTx;
+//   case SIGNER_KEY_TYPE_HASH_X:
+//       /* Hash of random 256 bit preimage X */
+//       uint256 hashX;
 //   };
 //
 // ===========================================================================
-xdr.struct("ScpStatement", [
-  ["nodeId", xdr.lookup("NodeId")],
-  ["slotIndex", xdr.lookup("Uint64")],
-  ["pledges", xdr.lookup("ScpStatementPledges")],
+xdr.union("SignerKey", {
+  switchOn: xdr.lookup("SignerKeyType"),
+  switchName: "type",
+  switches: [
+    ["signerKeyTypeEd25519", "ed25519"],
+    ["signerKeyTypePreAuthTx", "preAuthTx"],
+    ["signerKeyTypeHashX", "hashX"],
+  ],
+  arms: {
+    ed25519: xdr.lookup("Uint256"),
+    preAuthTx: xdr.lookup("Uint256"),
+    hashX: xdr.lookup("Uint256"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   typedef opaque Signature<64>;
+//
+// ===========================================================================
+xdr.typedef("Signature", xdr.varOpaque(64));
+
+// === xdr source ============================================================
+//
+//   typedef opaque SignatureHint[4];
+//
+// ===========================================================================
+xdr.typedef("SignatureHint", xdr.opaque(4));
+
+// === xdr source ============================================================
+//
+//   typedef PublicKey NodeID;
+//
+// ===========================================================================
+xdr.typedef("NodeId", xdr.lookup("PublicKey"));
+
+// === xdr source ============================================================
+//
+//   struct Curve25519Secret
+//   {
+//           opaque key[32];
+//   };
+//
+// ===========================================================================
+xdr.struct("Curve25519Secret", [
+  ["key", xdr.opaque(32)],
 ]);
 
 // === xdr source ============================================================
 //
-//   struct SCPEnvelope
+//   struct Curve25519Public
 //   {
-//       SCPStatement statement;
-//       Signature signature;
+//           opaque key[32];
 //   };
 //
 // ===========================================================================
-xdr.struct("ScpEnvelope", [
-  ["statement", xdr.lookup("ScpStatement")],
-  ["signature", xdr.lookup("Signature")],
+xdr.struct("Curve25519Public", [
+  ["key", xdr.opaque(32)],
 ]);
 
 // === xdr source ============================================================
 //
-//   struct SCPQuorumSet
+//   struct HmacSha256Key
 //   {
-//       uint32 threshold;
-//       PublicKey validators<>;
-//       SCPQuorumSet innerSets<>;
+//           opaque key[32];
 //   };
 //
 // ===========================================================================
-xdr.struct("ScpQuorumSet", [
-  ["threshold", xdr.lookup("Uint32")],
-  ["validators", xdr.varArray(xdr.lookup("PublicKey"), 2147483647)],
-  ["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
+xdr.struct("HmacSha256Key", [
+  ["key", xdr.opaque(32)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct HmacSha256Mac
+//   {
+//           opaque mac[32];
+//   };
+//
+// ===========================================================================
+xdr.struct("HmacSha256Mac", [
+  ["mac", xdr.opaque(32)],
 ]);
 
 // === xdr source ============================================================
@@ -2637,14 +1020,15 @@ xdr.union("AllowTrustOpAsset", {
 //       }
 //       asset;
 //   
-//       bool authorize;
+//       // 0, or any bitwise combination of TrustLineFlags
+//       uint32 authorize;
 //   };
 //
 // ===========================================================================
 xdr.struct("AllowTrustOp", [
   ["trustor", xdr.lookup("AccountId")],
   ["asset", xdr.lookup("AllowTrustOpAsset")],
-  ["authorize", xdr.bool()],
+  ["authorize", xdr.lookup("Uint32")],
 ]);
 
 // === xdr source ============================================================
@@ -2871,6 +1255,67 @@ xdr.const("MAX_OPS_PER_TX", 100);
 
 // === xdr source ============================================================
 //
+//   union switch (int v) {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("TransactionV0Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionV0
+//   {
+//       uint256 sourceAccountEd25519;
+//       uint32 fee;
+//       SequenceNumber seqNum;
+//       TimeBounds* timeBounds;
+//       Memo memo;
+//       Operation operations<MAX_OPS_PER_TX>;
+//       union switch (int v) {
+//       case 0:
+//           void;
+//       } ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionV0", [
+  ["sourceAccountEd25519", xdr.lookup("Uint256")],
+  ["fee", xdr.lookup("Uint32")],
+  ["seqNum", xdr.lookup("SequenceNumber")],
+  ["timeBounds", xdr.option(xdr.lookup("TimeBounds"))],
+  ["memo", xdr.lookup("Memo")],
+  ["operations", xdr.varArray(xdr.lookup("Operation"), xdr.lookup("MAX_OPS_PER_TX"))],
+  ["ext", xdr.lookup("TransactionV0Ext")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct TransactionV0Envelope
+//   {
+//       TransactionV0 tx;
+//       /* Each decorated signature is a signature over the SHA256 hash of
+//        * a TransactionSignaturePayload */
+//       DecoratedSignature signatures<20>;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionV0Envelope", [
+  ["tx", xdr.lookup("TransactionV0")],
+  ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (int v)
 //       {
 //       case 0:
@@ -2930,11 +1375,135 @@ xdr.struct("Transaction", [
 
 // === xdr source ============================================================
 //
+//   struct TransactionV1Envelope
+//   {
+//       Transaction tx;
+//       /* Each decorated signature is a signature over the SHA256 hash of
+//        * a TransactionSignaturePayload */
+//       DecoratedSignature signatures<20>;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionV1Envelope", [
+  ["tx", xdr.lookup("Transaction")],
+  ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (EnvelopeType type)
 //       {
 //       case ENVELOPE_TYPE_TX:
+//           TransactionV1Envelope v1;
+//       }
+//
+// ===========================================================================
+xdr.union("FeeBumpTransactionInnerTx", {
+  switchOn: xdr.lookup("EnvelopeType"),
+  switchName: "type",
+  switches: [
+    ["envelopeTypeTx", "v1"],
+  ],
+  arms: {
+    v1: xdr.lookup("TransactionV1Envelope"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   union switch (int v) {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("FeeBumpTransactionExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct FeeBumpTransaction
+//   {
+//       AccountID feeSource;
+//       int64 fee;
+//       union switch (EnvelopeType type)
+//       {
+//       case ENVELOPE_TYPE_TX:
+//           TransactionV1Envelope v1;
+//       } innerTx;
+//       union switch (int v) {
+//       case 0:
+//           void;
+//       } ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("FeeBumpTransaction", [
+  ["feeSource", xdr.lookup("AccountId")],
+  ["fee", xdr.lookup("Int64")],
+  ["innerTx", xdr.lookup("FeeBumpTransactionInnerTx")],
+  ["ext", xdr.lookup("FeeBumpTransactionExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct FeeBumpTransactionEnvelope
+//   {
+//       FeeBumpTransaction tx;
+//       /* Each decorated signature is a signature over the SHA256 hash of
+//        * a TransactionSignaturePayload */
+//       DecoratedSignature signatures<20>;
+//   };
+//
+// ===========================================================================
+xdr.struct("FeeBumpTransactionEnvelope", [
+  ["tx", xdr.lookup("FeeBumpTransaction")],
+  ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
+]);
+
+// === xdr source ============================================================
+//
+//   union TransactionEnvelope switch (EnvelopeType type) {
+//   case ENVELOPE_TYPE_TX_V0:
+//       TransactionV0Envelope v0;
+//   case ENVELOPE_TYPE_TX:
+//       TransactionV1Envelope v1;
+//   case ENVELOPE_TYPE_TX_FEE_BUMP:
+//       FeeBumpTransactionEnvelope feeBump;
+//   };
+//
+// ===========================================================================
+xdr.union("TransactionEnvelope", {
+  switchOn: xdr.lookup("EnvelopeType"),
+  switchName: "type",
+  switches: [
+    ["envelopeTypeTxV0", "v0"],
+    ["envelopeTypeTx", "v1"],
+    ["envelopeTypeTxFeeBump", "feeBump"],
+  ],
+  arms: {
+    v0: xdr.lookup("TransactionV0Envelope"),
+    v1: xdr.lookup("TransactionV1Envelope"),
+    feeBump: xdr.lookup("FeeBumpTransactionEnvelope"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   union switch (EnvelopeType type)
+//       {
+//       // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
+//       case ENVELOPE_TYPE_TX:
 //           Transaction tx;
-//           /* All other values of type are invalid */
+//       case ENVELOPE_TYPE_TX_FEE_BUMP:
+//           FeeBumpTransaction feeBump;
 //       }
 //
 // ===========================================================================
@@ -2943,9 +1512,11 @@ xdr.union("TransactionSignaturePayloadTaggedTransaction", {
   switchName: "type",
   switches: [
     ["envelopeTypeTx", "tx"],
+    ["envelopeTypeTxFeeBump", "feeBump"],
   ],
   arms: {
     tx: xdr.lookup("Transaction"),
+    feeBump: xdr.lookup("FeeBumpTransaction"),
   },
 });
 
@@ -2956,9 +1527,11 @@ xdr.union("TransactionSignaturePayloadTaggedTransaction", {
 //       Hash networkId;
 //       union switch (EnvelopeType type)
 //       {
+//       // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
 //       case ENVELOPE_TYPE_TX:
 //           Transaction tx;
-//           /* All other values of type are invalid */
+//       case ENVELOPE_TYPE_TX_FEE_BUMP:
+//           FeeBumpTransaction feeBump;
 //       }
 //       taggedTransaction;
 //   };
@@ -2967,22 +1540,6 @@ xdr.union("TransactionSignaturePayloadTaggedTransaction", {
 xdr.struct("TransactionSignaturePayload", [
   ["networkId", xdr.lookup("Hash")],
   ["taggedTransaction", xdr.lookup("TransactionSignaturePayloadTaggedTransaction")],
-]);
-
-// === xdr source ============================================================
-//
-//   struct TransactionEnvelope
-//   {
-//       Transaction tx;
-//       /* Each decorated signature is a signature over the SHA256 hash of
-//        * a TransactionSignaturePayload */
-//       DecoratedSignature signatures<20>;
-//   };
-//
-// ===========================================================================
-xdr.struct("TransactionEnvelope", [
-  ["tx", xdr.lookup("Transaction")],
-  ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
 ]);
 
 // === xdr source ============================================================
@@ -3981,6 +2538,7 @@ xdr.union("OperationResult", {
 //
 //   enum TransactionResultCode
 //   {
+//       txFEE_BUMP_INNER_SUCCESS = 1, // fee bump inner transaction succeeded
 //       txSUCCESS = 0, // all operations succeeded
 //   
 //       txFAILED = -1, // one of the operations failed (none were applied)
@@ -3995,11 +2553,15 @@ xdr.union("OperationResult", {
 //       txNO_ACCOUNT = -8,           // source account not found
 //       txINSUFFICIENT_FEE = -9,     // fee is too small
 //       txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
-//       txINTERNAL_ERROR = -11       // an unknown error occured
+//       txINTERNAL_ERROR = -11,      // an unknown error occured
+//   
+//       txNOT_SUPPORTED = -12,        // transaction type not supported
+//       txFEE_BUMP_INNER_FAILED = -13 // fee bump inner transaction failed
 //   };
 //
 // ===========================================================================
 xdr.enum("TransactionResultCode", {
+  txFeeBumpInnerSuccess: 1,
   txSuccess: 0,
   txFailed: -1,
   txTooEarly: -2,
@@ -4012,12 +2574,142 @@ xdr.enum("TransactionResultCode", {
   txInsufficientFee: -9,
   txBadAuthExtra: -10,
   txInternalError: -11,
+  txNotSupported: -12,
+  txFeeBumpInnerFailed: -13,
 });
 
 // === xdr source ============================================================
 //
 //   union switch (TransactionResultCode code)
 //       {
+//       // txFEE_BUMP_INNER_SUCCESS is not included
+//       case txSUCCESS:
+//       case txFAILED:
+//           OperationResult results<>;
+//       case txTOO_EARLY:
+//       case txTOO_LATE:
+//       case txMISSING_OPERATION:
+//       case txBAD_SEQ:
+//       case txBAD_AUTH:
+//       case txINSUFFICIENT_BALANCE:
+//       case txNO_ACCOUNT:
+//       case txINSUFFICIENT_FEE:
+//       case txBAD_AUTH_EXTRA:
+//       case txINTERNAL_ERROR:
+//       case txNOT_SUPPORTED:
+//       // txFEE_BUMP_INNER_FAILED is not included
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("InnerTransactionResultResult", {
+  switchOn: xdr.lookup("TransactionResultCode"),
+  switchName: "code",
+  switches: [
+    ["txSuccess", "results"],
+    ["txFailed", "results"],
+    ["txTooEarly", xdr.void()],
+    ["txTooLate", xdr.void()],
+    ["txMissingOperation", xdr.void()],
+    ["txBadSeq", xdr.void()],
+    ["txBadAuth", xdr.void()],
+    ["txInsufficientBalance", xdr.void()],
+    ["txNoAccount", xdr.void()],
+    ["txInsufficientFee", xdr.void()],
+    ["txBadAuthExtra", xdr.void()],
+    ["txInternalError", xdr.void()],
+    ["txNotSupported", xdr.void()],
+  ],
+  arms: {
+    results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("InnerTransactionResultExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct InnerTransactionResult
+//   {
+//       // Always 0. Here for binary compatibility.
+//       int64 feeCharged;
+//   
+//       union switch (TransactionResultCode code)
+//       {
+//       // txFEE_BUMP_INNER_SUCCESS is not included
+//       case txSUCCESS:
+//       case txFAILED:
+//           OperationResult results<>;
+//       case txTOO_EARLY:
+//       case txTOO_LATE:
+//       case txMISSING_OPERATION:
+//       case txBAD_SEQ:
+//       case txBAD_AUTH:
+//       case txINSUFFICIENT_BALANCE:
+//       case txNO_ACCOUNT:
+//       case txINSUFFICIENT_FEE:
+//       case txBAD_AUTH_EXTRA:
+//       case txINTERNAL_ERROR:
+//       case txNOT_SUPPORTED:
+//       // txFEE_BUMP_INNER_FAILED is not included
+//           void;
+//       }
+//       result;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("InnerTransactionResult", [
+  ["feeCharged", xdr.lookup("Int64")],
+  ["result", xdr.lookup("InnerTransactionResultResult")],
+  ["ext", xdr.lookup("InnerTransactionResultExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct InnerTransactionResultPair
+//   {
+//       Hash transactionHash;          // hash of the inner transaction
+//       InnerTransactionResult result; // result for the inner transaction
+//   };
+//
+// ===========================================================================
+xdr.struct("InnerTransactionResultPair", [
+  ["transactionHash", xdr.lookup("Hash")],
+  ["result", xdr.lookup("InnerTransactionResult")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (TransactionResultCode code)
+//       {
+//       case txFEE_BUMP_INNER_SUCCESS:
+//       case txFEE_BUMP_INNER_FAILED:
+//           InnerTransactionResultPair innerResultPair;
 //       case txSUCCESS:
 //       case txFAILED:
 //           OperationResult results<>;
@@ -4030,10 +2722,13 @@ xdr.union("TransactionResultResult", {
   switchOn: xdr.lookup("TransactionResultCode"),
   switchName: "code",
   switches: [
+    ["txFeeBumpInnerSuccess", "innerResultPair"],
+    ["txFeeBumpInnerFailed", "innerResultPair"],
     ["txSuccess", "results"],
     ["txFailed", "results"],
   ],
   arms: {
+    innerResultPair: xdr.lookup("InnerTransactionResultPair"),
     results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
   },
   defaultArm: xdr.void(),
@@ -4066,6 +2761,9 @@ xdr.union("TransactionResultExt", {
 //   
 //       union switch (TransactionResultCode code)
 //       {
+//       case txFEE_BUMP_INNER_SUCCESS:
+//       case txFEE_BUMP_INNER_FAILED:
+//           InnerTransactionResultPair innerResultPair;
 //       case txSUCCESS:
 //       case txFAILED:
 //           OperationResult results<>;
@@ -4092,208 +2790,1840 @@ xdr.struct("TransactionResult", [
 
 // === xdr source ============================================================
 //
-//   typedef opaque Hash[32];
+//   typedef opaque Value<>;
 //
 // ===========================================================================
-xdr.typedef("Hash", xdr.opaque(32));
+xdr.typedef("Value", xdr.varOpaque());
 
 // === xdr source ============================================================
 //
-//   typedef opaque uint256[32];
-//
-// ===========================================================================
-xdr.typedef("Uint256", xdr.opaque(32));
-
-// === xdr source ============================================================
-//
-//   typedef unsigned int uint32;
-//
-// ===========================================================================
-xdr.typedef("Uint32", xdr.uint());
-
-// === xdr source ============================================================
-//
-//   typedef int int32;
-//
-// ===========================================================================
-xdr.typedef("Int32", xdr.int());
-
-// === xdr source ============================================================
-//
-//   typedef unsigned hyper uint64;
-//
-// ===========================================================================
-xdr.typedef("Uint64", xdr.uhyper());
-
-// === xdr source ============================================================
-//
-//   typedef hyper int64;
-//
-// ===========================================================================
-xdr.typedef("Int64", xdr.hyper());
-
-// === xdr source ============================================================
-//
-//   enum CryptoKeyType
+//   struct SCPBallot
 //   {
-//       KEY_TYPE_ED25519 = 0,
-//       KEY_TYPE_PRE_AUTH_TX = 1,
-//       KEY_TYPE_HASH_X = 2
+//       uint32 counter; // n
+//       Value value;    // x
 //   };
 //
 // ===========================================================================
-xdr.enum("CryptoKeyType", {
-  keyTypeEd25519: 0,
-  keyTypePreAuthTx: 1,
-  keyTypeHashX: 2,
+xdr.struct("ScpBallot", [
+  ["counter", xdr.lookup("Uint32")],
+  ["value", xdr.lookup("Value")],
+]);
+
+// === xdr source ============================================================
+//
+//   enum SCPStatementType
+//   {
+//       SCP_ST_PREPARE = 0,
+//       SCP_ST_CONFIRM = 1,
+//       SCP_ST_EXTERNALIZE = 2,
+//       SCP_ST_NOMINATE = 3
+//   };
+//
+// ===========================================================================
+xdr.enum("ScpStatementType", {
+  scpStPrepare: 0,
+  scpStConfirm: 1,
+  scpStExternalize: 2,
+  scpStNominate: 3,
 });
 
 // === xdr source ============================================================
 //
-//   enum PublicKeyType
+//   struct SCPNomination
 //   {
-//       PUBLIC_KEY_TYPE_ED25519 = KEY_TYPE_ED25519
+//       Hash quorumSetHash; // D
+//       Value votes<>;      // X
+//       Value accepted<>;   // Y
 //   };
 //
 // ===========================================================================
-xdr.enum("PublicKeyType", {
-  publicKeyTypeEd25519: 0,
-});
+xdr.struct("ScpNomination", [
+  ["quorumSetHash", xdr.lookup("Hash")],
+  ["votes", xdr.varArray(xdr.lookup("Value"), 2147483647)],
+  ["accepted", xdr.varArray(xdr.lookup("Value"), 2147483647)],
+]);
 
 // === xdr source ============================================================
 //
-//   enum SignerKeyType
-//   {
-//       SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
-//       SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
-//       SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
-//   };
+//   struct
+//           {
+//               Hash quorumSetHash;       // D
+//               SCPBallot ballot;         // b
+//               SCPBallot* prepared;      // p
+//               SCPBallot* preparedPrime; // p'
+//               uint32 nC;                // c.n
+//               uint32 nH;                // h.n
+//           }
 //
 // ===========================================================================
-xdr.enum("SignerKeyType", {
-  signerKeyTypeEd25519: 0,
-  signerKeyTypePreAuthTx: 1,
-  signerKeyTypeHashX: 2,
-});
+xdr.struct("ScpStatementPrepare", [
+  ["quorumSetHash", xdr.lookup("Hash")],
+  ["ballot", xdr.lookup("ScpBallot")],
+  ["prepared", xdr.option(xdr.lookup("ScpBallot"))],
+  ["preparedPrime", xdr.option(xdr.lookup("ScpBallot"))],
+  ["nC", xdr.lookup("Uint32")],
+  ["nH", xdr.lookup("Uint32")],
+]);
 
 // === xdr source ============================================================
 //
-//   union PublicKey switch (PublicKeyType type)
-//   {
-//   case PUBLIC_KEY_TYPE_ED25519:
-//       uint256 ed25519;
-//   };
+//   struct
+//           {
+//               SCPBallot ballot;   // b
+//               uint32 nPrepared;   // p.n
+//               uint32 nCommit;     // c.n
+//               uint32 nH;          // h.n
+//               Hash quorumSetHash; // D
+//           }
 //
 // ===========================================================================
-xdr.union("PublicKey", {
-  switchOn: xdr.lookup("PublicKeyType"),
+xdr.struct("ScpStatementConfirm", [
+  ["ballot", xdr.lookup("ScpBallot")],
+  ["nPrepared", xdr.lookup("Uint32")],
+  ["nCommit", xdr.lookup("Uint32")],
+  ["nH", xdr.lookup("Uint32")],
+  ["quorumSetHash", xdr.lookup("Hash")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct
+//           {
+//               SCPBallot commit;         // c
+//               uint32 nH;                // h.n
+//               Hash commitQuorumSetHash; // D used before EXTERNALIZE
+//           }
+//
+// ===========================================================================
+xdr.struct("ScpStatementExternalize", [
+  ["commit", xdr.lookup("ScpBallot")],
+  ["nH", xdr.lookup("Uint32")],
+  ["commitQuorumSetHash", xdr.lookup("Hash")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (SCPStatementType type)
+//       {
+//       case SCP_ST_PREPARE:
+//           struct
+//           {
+//               Hash quorumSetHash;       // D
+//               SCPBallot ballot;         // b
+//               SCPBallot* prepared;      // p
+//               SCPBallot* preparedPrime; // p'
+//               uint32 nC;                // c.n
+//               uint32 nH;                // h.n
+//           } prepare;
+//       case SCP_ST_CONFIRM:
+//           struct
+//           {
+//               SCPBallot ballot;   // b
+//               uint32 nPrepared;   // p.n
+//               uint32 nCommit;     // c.n
+//               uint32 nH;          // h.n
+//               Hash quorumSetHash; // D
+//           } confirm;
+//       case SCP_ST_EXTERNALIZE:
+//           struct
+//           {
+//               SCPBallot commit;         // c
+//               uint32 nH;                // h.n
+//               Hash commitQuorumSetHash; // D used before EXTERNALIZE
+//           } externalize;
+//       case SCP_ST_NOMINATE:
+//           SCPNomination nominate;
+//       }
+//
+// ===========================================================================
+xdr.union("ScpStatementPledges", {
+  switchOn: xdr.lookup("ScpStatementType"),
   switchName: "type",
   switches: [
-    ["publicKeyTypeEd25519", "ed25519"],
+    ["scpStPrepare", "prepare"],
+    ["scpStConfirm", "confirm"],
+    ["scpStExternalize", "externalize"],
+    ["scpStNominate", "nominate"],
   ],
   arms: {
-    ed25519: xdr.lookup("Uint256"),
+    prepare: xdr.lookup("ScpStatementPrepare"),
+    confirm: xdr.lookup("ScpStatementConfirm"),
+    externalize: xdr.lookup("ScpStatementExternalize"),
+    nominate: xdr.lookup("ScpNomination"),
   },
 });
 
 // === xdr source ============================================================
 //
-//   union SignerKey switch (SignerKeyType type)
+//   struct SCPStatement
 //   {
-//   case SIGNER_KEY_TYPE_ED25519:
-//       uint256 ed25519;
-//   case SIGNER_KEY_TYPE_PRE_AUTH_TX:
-//       /* SHA-256 Hash of TransactionSignaturePayload structure */
-//       uint256 preAuthTx;
-//   case SIGNER_KEY_TYPE_HASH_X:
-//       /* Hash of random 256 bit preimage X */
-//       uint256 hashX;
+//       NodeID nodeID;    // v
+//       uint64 slotIndex; // i
+//   
+//       union switch (SCPStatementType type)
+//       {
+//       case SCP_ST_PREPARE:
+//           struct
+//           {
+//               Hash quorumSetHash;       // D
+//               SCPBallot ballot;         // b
+//               SCPBallot* prepared;      // p
+//               SCPBallot* preparedPrime; // p'
+//               uint32 nC;                // c.n
+//               uint32 nH;                // h.n
+//           } prepare;
+//       case SCP_ST_CONFIRM:
+//           struct
+//           {
+//               SCPBallot ballot;   // b
+//               uint32 nPrepared;   // p.n
+//               uint32 nCommit;     // c.n
+//               uint32 nH;          // h.n
+//               Hash quorumSetHash; // D
+//           } confirm;
+//       case SCP_ST_EXTERNALIZE:
+//           struct
+//           {
+//               SCPBallot commit;         // c
+//               uint32 nH;                // h.n
+//               Hash commitQuorumSetHash; // D used before EXTERNALIZE
+//           } externalize;
+//       case SCP_ST_NOMINATE:
+//           SCPNomination nominate;
+//       }
+//       pledges;
 //   };
 //
 // ===========================================================================
-xdr.union("SignerKey", {
-  switchOn: xdr.lookup("SignerKeyType"),
+xdr.struct("ScpStatement", [
+  ["nodeId", xdr.lookup("NodeId")],
+  ["slotIndex", xdr.lookup("Uint64")],
+  ["pledges", xdr.lookup("ScpStatementPledges")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct SCPEnvelope
+//   {
+//       SCPStatement statement;
+//       Signature signature;
+//   };
+//
+// ===========================================================================
+xdr.struct("ScpEnvelope", [
+  ["statement", xdr.lookup("ScpStatement")],
+  ["signature", xdr.lookup("Signature")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct SCPQuorumSet
+//   {
+//       uint32 threshold;
+//       PublicKey validators<>;
+//       SCPQuorumSet innerSets<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("ScpQuorumSet", [
+  ["threshold", xdr.lookup("Uint32")],
+  ["validators", xdr.varArray(xdr.lookup("PublicKey"), 2147483647)],
+  ["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   typedef PublicKey AccountID;
+//
+// ===========================================================================
+xdr.typedef("AccountId", xdr.lookup("PublicKey"));
+
+// === xdr source ============================================================
+//
+//   typedef opaque Thresholds[4];
+//
+// ===========================================================================
+xdr.typedef("Thresholds", xdr.opaque(4));
+
+// === xdr source ============================================================
+//
+//   typedef string string32<32>;
+//
+// ===========================================================================
+xdr.typedef("String32", xdr.string(32));
+
+// === xdr source ============================================================
+//
+//   typedef string string64<64>;
+//
+// ===========================================================================
+xdr.typedef("String64", xdr.string(64));
+
+// === xdr source ============================================================
+//
+//   typedef int64 SequenceNumber;
+//
+// ===========================================================================
+xdr.typedef("SequenceNumber", xdr.lookup("Int64"));
+
+// === xdr source ============================================================
+//
+//   typedef uint64 TimePoint;
+//
+// ===========================================================================
+xdr.typedef("TimePoint", xdr.lookup("Uint64"));
+
+// === xdr source ============================================================
+//
+//   typedef opaque DataValue<64>;
+//
+// ===========================================================================
+xdr.typedef("DataValue", xdr.varOpaque(64));
+
+// === xdr source ============================================================
+//
+//   typedef opaque AssetCode4[4];
+//
+// ===========================================================================
+xdr.typedef("AssetCode4", xdr.opaque(4));
+
+// === xdr source ============================================================
+//
+//   typedef opaque AssetCode12[12];
+//
+// ===========================================================================
+xdr.typedef("AssetCode12", xdr.opaque(12));
+
+// === xdr source ============================================================
+//
+//   enum AssetType
+//   {
+//       ASSET_TYPE_NATIVE = 0,
+//       ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
+//       ASSET_TYPE_CREDIT_ALPHANUM12 = 2
+//   };
+//
+// ===========================================================================
+xdr.enum("AssetType", {
+  assetTypeNative: 0,
+  assetTypeCreditAlphanum4: 1,
+  assetTypeCreditAlphanum12: 2,
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           AssetCode4 assetCode;
+//           AccountID issuer;
+//       }
+//
+// ===========================================================================
+xdr.struct("AssetAlphaNum4", [
+  ["assetCode", xdr.lookup("AssetCode4")],
+  ["issuer", xdr.lookup("AccountId")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           AssetCode12 assetCode;
+//           AccountID issuer;
+//       }
+//
+// ===========================================================================
+xdr.struct("AssetAlphaNum12", [
+  ["assetCode", xdr.lookup("AssetCode12")],
+  ["issuer", xdr.lookup("AccountId")],
+]);
+
+// === xdr source ============================================================
+//
+//   union Asset switch (AssetType type)
+//   {
+//   case ASSET_TYPE_NATIVE: // Not credit
+//       void;
+//   
+//   case ASSET_TYPE_CREDIT_ALPHANUM4:
+//       struct
+//       {
+//           AssetCode4 assetCode;
+//           AccountID issuer;
+//       } alphaNum4;
+//   
+//   case ASSET_TYPE_CREDIT_ALPHANUM12:
+//       struct
+//       {
+//           AssetCode12 assetCode;
+//           AccountID issuer;
+//       } alphaNum12;
+//   
+//       // add other asset types here in the future
+//   };
+//
+// ===========================================================================
+xdr.union("Asset", {
+  switchOn: xdr.lookup("AssetType"),
   switchName: "type",
   switches: [
-    ["signerKeyTypeEd25519", "ed25519"],
-    ["signerKeyTypePreAuthTx", "preAuthTx"],
-    ["signerKeyTypeHashX", "hashX"],
+    ["assetTypeNative", xdr.void()],
+    ["assetTypeCreditAlphanum4", "alphaNum4"],
+    ["assetTypeCreditAlphanum12", "alphaNum12"],
   ],
   arms: {
-    ed25519: xdr.lookup("Uint256"),
-    preAuthTx: xdr.lookup("Uint256"),
-    hashX: xdr.lookup("Uint256"),
+    alphaNum4: xdr.lookup("AssetAlphaNum4"),
+    alphaNum12: xdr.lookup("AssetAlphaNum12"),
   },
 });
 
 // === xdr source ============================================================
 //
-//   typedef opaque Signature<64>;
-//
-// ===========================================================================
-xdr.typedef("Signature", xdr.varOpaque(64));
-
-// === xdr source ============================================================
-//
-//   typedef opaque SignatureHint[4];
-//
-// ===========================================================================
-xdr.typedef("SignatureHint", xdr.opaque(4));
-
-// === xdr source ============================================================
-//
-//   typedef PublicKey NodeID;
-//
-// ===========================================================================
-xdr.typedef("NodeId", xdr.lookup("PublicKey"));
-
-// === xdr source ============================================================
-//
-//   struct Curve25519Secret
+//   struct Price
 //   {
-//           opaque key[32];
+//       int32 n; // numerator
+//       int32 d; // denominator
 //   };
 //
 // ===========================================================================
-xdr.struct("Curve25519Secret", [
-  ["key", xdr.opaque(32)],
+xdr.struct("Price", [
+  ["n", xdr.lookup("Int32")],
+  ["d", xdr.lookup("Int32")],
 ]);
 
 // === xdr source ============================================================
 //
-//   struct Curve25519Public
+//   struct Liabilities
 //   {
-//           opaque key[32];
+//       int64 buying;
+//       int64 selling;
 //   };
 //
 // ===========================================================================
-xdr.struct("Curve25519Public", [
-  ["key", xdr.opaque(32)],
+xdr.struct("Liabilities", [
+  ["buying", xdr.lookup("Int64")],
+  ["selling", xdr.lookup("Int64")],
 ]);
 
 // === xdr source ============================================================
 //
-//   struct HmacSha256Key
+//   enum ThresholdIndexes
 //   {
-//           opaque key[32];
+//       THRESHOLD_MASTER_WEIGHT = 0,
+//       THRESHOLD_LOW = 1,
+//       THRESHOLD_MED = 2,
+//       THRESHOLD_HIGH = 3
 //   };
 //
 // ===========================================================================
-xdr.struct("HmacSha256Key", [
-  ["key", xdr.opaque(32)],
+xdr.enum("ThresholdIndices", {
+  thresholdMasterWeight: 0,
+  thresholdLow: 1,
+  thresholdMed: 2,
+  thresholdHigh: 3,
+});
+
+// === xdr source ============================================================
+//
+//   enum LedgerEntryType
+//   {
+//       ACCOUNT = 0,
+//       TRUSTLINE = 1,
+//       OFFER = 2,
+//       DATA = 3
+//   };
+//
+// ===========================================================================
+xdr.enum("LedgerEntryType", {
+  account: 0,
+  trustline: 1,
+  offer: 2,
+  datum: 3,
+});
+
+// === xdr source ============================================================
+//
+//   struct Signer
+//   {
+//       SignerKey key;
+//       uint32 weight; // really only need 1 byte
+//   };
+//
+// ===========================================================================
+xdr.struct("Signer", [
+  ["key", xdr.lookup("SignerKey")],
+  ["weight", xdr.lookup("Uint32")],
 ]);
 
 // === xdr source ============================================================
 //
-//   struct HmacSha256Mac
-//   {
-//           opaque mac[32];
+//   enum AccountFlags
+//   { // masks for each flag
+//   
+//       // Flags set on issuer accounts
+//       // TrustLines are created with authorized set to "false" requiring
+//       // the issuer to set it for each TrustLine
+//       AUTH_REQUIRED_FLAG = 0x1,
+//       // If set, the authorized flag in TrustLines can be cleared
+//       // otherwise, authorization cannot be revoked
+//       AUTH_REVOCABLE_FLAG = 0x2,
+//       // Once set, causes all AUTH_* flags to be read-only
+//       AUTH_IMMUTABLE_FLAG = 0x4
 //   };
 //
 // ===========================================================================
-xdr.struct("HmacSha256Mac", [
-  ["mac", xdr.opaque(32)],
+xdr.enum("AccountFlags", {
+  authRequiredFlag: 1,
+  authRevocableFlag: 2,
+  authImmutableFlag: 4,
+});
+
+// === xdr source ============================================================
+//
+//   const MASK_ACCOUNT_FLAGS = 0x7;
+//
+// ===========================================================================
+xdr.const("MASK_ACCOUNT_FLAGS", 0x7);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//
+// ===========================================================================
+xdr.union("AccountEntryV1Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           }
+//
+// ===========================================================================
+xdr.struct("AccountEntryV1", [
+  ["liabilities", xdr.lookup("Liabilities")],
+  ["ext", xdr.lookup("AccountEntryV1Ext")],
 ]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
+//       }
+//
+// ===========================================================================
+xdr.union("AccountEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+    [1, "v1"],
+  ],
+  arms: {
+    v1: xdr.lookup("AccountEntryV1"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct AccountEntry
+//   {
+//       AccountID accountID;      // master public key for this account
+//       int64 balance;            // in stroops
+//       SequenceNumber seqNum;    // last sequence number used for this account
+//       uint32 numSubEntries;     // number of sub-entries this account has
+//                                 // drives the reserve
+//       AccountID* inflationDest; // Account to vote for during inflation
+//       uint32 flags;             // see AccountFlags
+//   
+//       string32 homeDomain; // can be used for reverse federation and memo lookup
+//   
+//       // fields used for signatures
+//       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
+//       Thresholds thresholds;
+//   
+//       Signer signers<20>; // possible signers for this account
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("AccountEntry", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["balance", xdr.lookup("Int64")],
+  ["seqNum", xdr.lookup("SequenceNumber")],
+  ["numSubEntries", xdr.lookup("Uint32")],
+  ["inflationDest", xdr.option(xdr.lookup("AccountId"))],
+  ["flags", xdr.lookup("Uint32")],
+  ["homeDomain", xdr.lookup("String32")],
+  ["thresholds", xdr.lookup("Thresholds")],
+  ["signers", xdr.varArray(xdr.lookup("Signer"), 20)],
+  ["ext", xdr.lookup("AccountEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   enum TrustLineFlags
+//   {
+//       // issuer has authorized account to perform transactions with its credit
+//       AUTHORIZED_FLAG = 1,
+//       // issuer has authorized account to maintain and reduce liabilities for its
+//       // credit
+//       AUTHORIZED_TO_MAINTAIN_LIABILITIES_FLAG = 2
+//   };
+//
+// ===========================================================================
+xdr.enum("TrustLineFlags", {
+  authorizedFlag: 1,
+  authorizedToMaintainLiabilitiesFlag: 2,
+});
+
+// === xdr source ============================================================
+//
+//   const MASK_TRUSTLINE_FLAGS = 1;
+//
+// ===========================================================================
+xdr.const("MASK_TRUSTLINE_FLAGS", 1);
+
+// === xdr source ============================================================
+//
+//   const MASK_TRUSTLINE_FLAGS_V13 = 3;
+//
+// ===========================================================================
+xdr.const("MASK_TRUSTLINE_FLAGS_V13", 3);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//
+// ===========================================================================
+xdr.union("TrustLineEntryV1Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           }
+//
+// ===========================================================================
+xdr.struct("TrustLineEntryV1", [
+  ["liabilities", xdr.lookup("Liabilities")],
+  ["ext", xdr.lookup("TrustLineEntryV1Ext")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
+//       }
+//
+// ===========================================================================
+xdr.union("TrustLineEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+    [1, "v1"],
+  ],
+  arms: {
+    v1: xdr.lookup("TrustLineEntryV1"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TrustLineEntry
+//   {
+//       AccountID accountID; // account this trustline belongs to
+//       Asset asset;         // type of asset (with issuer)
+//       int64 balance;       // how much of this asset the user has.
+//                            // Asset defines the unit for this;
+//   
+//       int64 limit;  // balance cannot be above this
+//       uint32 flags; // see TrustLineFlags
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       case 1:
+//           struct
+//           {
+//               Liabilities liabilities;
+//   
+//               union switch (int v)
+//               {
+//               case 0:
+//                   void;
+//               }
+//               ext;
+//           } v1;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("TrustLineEntry", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["asset", xdr.lookup("Asset")],
+  ["balance", xdr.lookup("Int64")],
+  ["limit", xdr.lookup("Int64")],
+  ["flags", xdr.lookup("Uint32")],
+  ["ext", xdr.lookup("TrustLineEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   enum OfferEntryFlags
+//   {
+//       // issuer has authorized account to perform transactions with its credit
+//       PASSIVE_FLAG = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("OfferEntryFlags", {
+  passiveFlag: 1,
+});
+
+// === xdr source ============================================================
+//
+//   const MASK_OFFERENTRY_FLAGS = 1;
+//
+// ===========================================================================
+xdr.const("MASK_OFFERENTRY_FLAGS", 1);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("OfferEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct OfferEntry
+//   {
+//       AccountID sellerID;
+//       int64 offerID;
+//       Asset selling; // A
+//       Asset buying;  // B
+//       int64 amount;  // amount of A
+//   
+//       /* price for this offer:
+//           price of A in terms of B
+//           price=AmountB/AmountA=priceNumerator/priceDenominator
+//           price is after fees
+//       */
+//       Price price;
+//       uint32 flags; // see OfferEntryFlags
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("OfferEntry", [
+  ["sellerId", xdr.lookup("AccountId")],
+  ["offerId", xdr.lookup("Int64")],
+  ["selling", xdr.lookup("Asset")],
+  ["buying", xdr.lookup("Asset")],
+  ["amount", xdr.lookup("Int64")],
+  ["price", xdr.lookup("Price")],
+  ["flags", xdr.lookup("Uint32")],
+  ["ext", xdr.lookup("OfferEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("DataEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct DataEntry
+//   {
+//       AccountID accountID; // account this data belongs to
+//       string64 dataName;
+//       DataValue dataValue;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("DataEntry", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["dataName", xdr.lookup("String64")],
+  ["dataValue", xdr.lookup("DataValue")],
+  ["ext", xdr.lookup("DataEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (LedgerEntryType type)
+//       {
+//       case ACCOUNT:
+//           AccountEntry account;
+//       case TRUSTLINE:
+//           TrustLineEntry trustLine;
+//       case OFFER:
+//           OfferEntry offer;
+//       case DATA:
+//           DataEntry data;
+//       }
+//
+// ===========================================================================
+xdr.union("LedgerEntryData", {
+  switchOn: xdr.lookup("LedgerEntryType"),
+  switchName: "type",
+  switches: [
+    ["account", "account"],
+    ["trustline", "trustLine"],
+    ["offer", "offer"],
+    ["datum", "data"],
+  ],
+  arms: {
+    account: xdr.lookup("AccountEntry"),
+    trustLine: xdr.lookup("TrustLineEntry"),
+    offer: xdr.lookup("OfferEntry"),
+    data: xdr.lookup("DataEntry"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("LedgerEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct LedgerEntry
+//   {
+//       uint32 lastModifiedLedgerSeq; // ledger the LedgerEntry was last changed
+//   
+//       union switch (LedgerEntryType type)
+//       {
+//       case ACCOUNT:
+//           AccountEntry account;
+//       case TRUSTLINE:
+//           TrustLineEntry trustLine;
+//       case OFFER:
+//           OfferEntry offer;
+//       case DATA:
+//           DataEntry data;
+//       }
+//       data;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerEntry", [
+  ["lastModifiedLedgerSeq", xdr.lookup("Uint32")],
+  ["data", xdr.lookup("LedgerEntryData")],
+  ["ext", xdr.lookup("LedgerEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   enum EnvelopeType
+//   {
+//       ENVELOPE_TYPE_TX_V0 = 0,
+//       ENVELOPE_TYPE_SCP = 1,
+//       ENVELOPE_TYPE_TX = 2,
+//       ENVELOPE_TYPE_AUTH = 3,
+//       ENVELOPE_TYPE_SCPVALUE = 4,
+//       ENVELOPE_TYPE_TX_FEE_BUMP = 5
+//   };
+//
+// ===========================================================================
+xdr.enum("EnvelopeType", {
+  envelopeTypeTxV0: 0,
+  envelopeTypeScp: 1,
+  envelopeTypeTx: 2,
+  envelopeTypeAuth: 3,
+  envelopeTypeScpvalue: 4,
+  envelopeTypeTxFeeBump: 5,
+});
+
+// === xdr source ============================================================
+//
+//   typedef opaque UpgradeType<128>;
+//
+// ===========================================================================
+xdr.typedef("UpgradeType", xdr.varOpaque(128));
+
+// === xdr source ============================================================
+//
+//   enum StellarValueType
+//   {
+//       STELLAR_VALUE_BASIC = 0,
+//       STELLAR_VALUE_SIGNED = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("StellarValueType", {
+  stellarValueBasic: 0,
+  stellarValueSigned: 1,
+});
+
+// === xdr source ============================================================
+//
+//   struct LedgerCloseValueSignature
+//   {
+//       NodeID nodeID;       // which node introduced the value
+//       Signature signature; // nodeID's signature
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerCloseValueSignature", [
+  ["nodeId", xdr.lookup("NodeId")],
+  ["signature", xdr.lookup("Signature")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (StellarValueType v)
+//       {
+//       case STELLAR_VALUE_BASIC:
+//           void;
+//       case STELLAR_VALUE_SIGNED:
+//           LedgerCloseValueSignature lcValueSignature;
+//       }
+//
+// ===========================================================================
+xdr.union("StellarValueExt", {
+  switchOn: xdr.lookup("StellarValueType"),
+  switchName: "v",
+  switches: [
+    ["stellarValueBasic", xdr.void()],
+    ["stellarValueSigned", "lcValueSignature"],
+  ],
+  arms: {
+    lcValueSignature: xdr.lookup("LedgerCloseValueSignature"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct StellarValue
+//   {
+//       Hash txSetHash;      // transaction set to apply to previous ledger
+//       TimePoint closeTime; // network close time
+//   
+//       // upgrades to apply to the previous ledger (usually empty)
+//       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
+//       // unknown steps during consensus if needed.
+//       // see notes below on 'LedgerUpgrade' for more detail
+//       // max size is dictated by number of upgrade types (+ room for future)
+//       UpgradeType upgrades<6>;
+//   
+//       // reserved for future use
+//       union switch (StellarValueType v)
+//       {
+//       case STELLAR_VALUE_BASIC:
+//           void;
+//       case STELLAR_VALUE_SIGNED:
+//           LedgerCloseValueSignature lcValueSignature;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("StellarValue", [
+  ["txSetHash", xdr.lookup("Hash")],
+  ["closeTime", xdr.lookup("TimePoint")],
+  ["upgrades", xdr.varArray(xdr.lookup("UpgradeType"), 6)],
+  ["ext", xdr.lookup("StellarValueExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("LedgerHeaderExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct LedgerHeader
+//   {
+//       uint32 ledgerVersion;    // the protocol version of the ledger
+//       Hash previousLedgerHash; // hash of the previous ledger header
+//       StellarValue scpValue;   // what consensus agreed to
+//       Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
+//       Hash bucketListHash;     // hash of the ledger state
+//   
+//       uint32 ledgerSeq; // sequence number of this ledger
+//   
+//       int64 totalCoins; // total number of stroops in existence.
+//                         // 10,000,000 stroops in 1 XLM
+//   
+//       int64 feePool;       // fees burned since last inflation run
+//       uint32 inflationSeq; // inflation sequence number
+//   
+//       uint64 idPool; // last used global ID, used for generating objects
+//   
+//       uint32 baseFee;     // base fee per operation in stroops
+//       uint32 baseReserve; // account base reserve in stroops
+//   
+//       uint32 maxTxSetSize; // maximum size a transaction set can be
+//   
+//       Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
+//                         // in time without walking the chain back ledger by ledger
+//                         // each slot contains the oldest ledger that is mod of
+//                         // either 50  5000  50000 or 500000 depending on index
+//                         // skipList[0] mod(50), skipList[1] mod(5000), etc
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerHeader", [
+  ["ledgerVersion", xdr.lookup("Uint32")],
+  ["previousLedgerHash", xdr.lookup("Hash")],
+  ["scpValue", xdr.lookup("StellarValue")],
+  ["txSetResultHash", xdr.lookup("Hash")],
+  ["bucketListHash", xdr.lookup("Hash")],
+  ["ledgerSeq", xdr.lookup("Uint32")],
+  ["totalCoins", xdr.lookup("Int64")],
+  ["feePool", xdr.lookup("Int64")],
+  ["inflationSeq", xdr.lookup("Uint32")],
+  ["idPool", xdr.lookup("Uint64")],
+  ["baseFee", xdr.lookup("Uint32")],
+  ["baseReserve", xdr.lookup("Uint32")],
+  ["maxTxSetSize", xdr.lookup("Uint32")],
+  ["skipList", xdr.array(xdr.lookup("Hash"), 4)],
+  ["ext", xdr.lookup("LedgerHeaderExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   enum LedgerUpgradeType
+//   {
+//       LEDGER_UPGRADE_VERSION = 1,
+//       LEDGER_UPGRADE_BASE_FEE = 2,
+//       LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
+//       LEDGER_UPGRADE_BASE_RESERVE = 4
+//   };
+//
+// ===========================================================================
+xdr.enum("LedgerUpgradeType", {
+  ledgerUpgradeVersion: 1,
+  ledgerUpgradeBaseFee: 2,
+  ledgerUpgradeMaxTxSetSize: 3,
+  ledgerUpgradeBaseReserve: 4,
+});
+
+// === xdr source ============================================================
+//
+//   union LedgerUpgrade switch (LedgerUpgradeType type)
+//   {
+//   case LEDGER_UPGRADE_VERSION:
+//       uint32 newLedgerVersion; // update ledgerVersion
+//   case LEDGER_UPGRADE_BASE_FEE:
+//       uint32 newBaseFee; // update baseFee
+//   case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
+//       uint32 newMaxTxSetSize; // update maxTxSetSize
+//   case LEDGER_UPGRADE_BASE_RESERVE:
+//       uint32 newBaseReserve; // update baseReserve
+//   };
+//
+// ===========================================================================
+xdr.union("LedgerUpgrade", {
+  switchOn: xdr.lookup("LedgerUpgradeType"),
+  switchName: "type",
+  switches: [
+    ["ledgerUpgradeVersion", "newLedgerVersion"],
+    ["ledgerUpgradeBaseFee", "newBaseFee"],
+    ["ledgerUpgradeMaxTxSetSize", "newMaxTxSetSize"],
+    ["ledgerUpgradeBaseReserve", "newBaseReserve"],
+  ],
+  arms: {
+    newLedgerVersion: xdr.lookup("Uint32"),
+    newBaseFee: xdr.lookup("Uint32"),
+    newMaxTxSetSize: xdr.lookup("Uint32"),
+    newBaseReserve: xdr.lookup("Uint32"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           AccountID accountID;
+//       }
+//
+// ===========================================================================
+xdr.struct("LedgerKeyAccount", [
+  ["accountId", xdr.lookup("AccountId")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           AccountID accountID;
+//           Asset asset;
+//       }
+//
+// ===========================================================================
+xdr.struct("LedgerKeyTrustLine", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["asset", xdr.lookup("Asset")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           AccountID sellerID;
+//           int64 offerID;
+//       }
+//
+// ===========================================================================
+xdr.struct("LedgerKeyOffer", [
+  ["sellerId", xdr.lookup("AccountId")],
+  ["offerId", xdr.lookup("Int64")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct
+//       {
+//           AccountID accountID;
+//           string64 dataName;
+//       }
+//
+// ===========================================================================
+xdr.struct("LedgerKeyData", [
+  ["accountId", xdr.lookup("AccountId")],
+  ["dataName", xdr.lookup("String64")],
+]);
+
+// === xdr source ============================================================
+//
+//   union LedgerKey switch (LedgerEntryType type)
+//   {
+//   case ACCOUNT:
+//       struct
+//       {
+//           AccountID accountID;
+//       } account;
+//   
+//   case TRUSTLINE:
+//       struct
+//       {
+//           AccountID accountID;
+//           Asset asset;
+//       } trustLine;
+//   
+//   case OFFER:
+//       struct
+//       {
+//           AccountID sellerID;
+//           int64 offerID;
+//       } offer;
+//   
+//   case DATA:
+//       struct
+//       {
+//           AccountID accountID;
+//           string64 dataName;
+//       } data;
+//   };
+//
+// ===========================================================================
+xdr.union("LedgerKey", {
+  switchOn: xdr.lookup("LedgerEntryType"),
+  switchName: "type",
+  switches: [
+    ["account", "account"],
+    ["trustline", "trustLine"],
+    ["offer", "offer"],
+    ["datum", "data"],
+  ],
+  arms: {
+    account: xdr.lookup("LedgerKeyAccount"),
+    trustLine: xdr.lookup("LedgerKeyTrustLine"),
+    offer: xdr.lookup("LedgerKeyOffer"),
+    data: xdr.lookup("LedgerKeyData"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   enum BucketEntryType
+//   {
+//       METAENTRY =
+//           -1, // At-and-after protocol 11: bucket metadata, should come first.
+//       LIVEENTRY = 0, // Before protocol 11: created-or-updated;
+//                      // At-and-after protocol 11: only updated.
+//       DEADENTRY = 1,
+//       INITENTRY = 2 // At-and-after protocol 11: only created.
+//   };
+//
+// ===========================================================================
+xdr.enum("BucketEntryType", {
+  metaentry: -1,
+  liveentry: 0,
+  deadentry: 1,
+  initentry: 2,
+});
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("BucketMetadataExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct BucketMetadata
+//   {
+//       // Indicates the protocol version used to create / merge this bucket.
+//       uint32 ledgerVersion;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("BucketMetadata", [
+  ["ledgerVersion", xdr.lookup("Uint32")],
+  ["ext", xdr.lookup("BucketMetadataExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   union BucketEntry switch (BucketEntryType type)
+//   {
+//   case LIVEENTRY:
+//   case INITENTRY:
+//       LedgerEntry liveEntry;
+//   
+//   case DEADENTRY:
+//       LedgerKey deadEntry;
+//   case METAENTRY:
+//       BucketMetadata metaEntry;
+//   };
+//
+// ===========================================================================
+xdr.union("BucketEntry", {
+  switchOn: xdr.lookup("BucketEntryType"),
+  switchName: "type",
+  switches: [
+    ["liveentry", "liveEntry"],
+    ["initentry", "liveEntry"],
+    ["deadentry", "deadEntry"],
+    ["metaentry", "metaEntry"],
+  ],
+  arms: {
+    liveEntry: xdr.lookup("LedgerEntry"),
+    deadEntry: xdr.lookup("LedgerKey"),
+    metaEntry: xdr.lookup("BucketMetadata"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionSet
+//   {
+//       Hash previousLedgerHash;
+//       TransactionEnvelope txs<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionSet", [
+  ["previousLedgerHash", xdr.lookup("Hash")],
+  ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct TransactionResultPair
+//   {
+//       Hash transactionHash;
+//       TransactionResult result; // result for the transaction
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionResultPair", [
+  ["transactionHash", xdr.lookup("Hash")],
+  ["result", xdr.lookup("TransactionResult")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct TransactionResultSet
+//   {
+//       TransactionResultPair results<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionResultSet", [
+  ["results", xdr.varArray(xdr.lookup("TransactionResultPair"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("TransactionHistoryEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionHistoryEntry
+//   {
+//       uint32 ledgerSeq;
+//       TransactionSet txSet;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionHistoryEntry", [
+  ["ledgerSeq", xdr.lookup("Uint32")],
+  ["txSet", xdr.lookup("TransactionSet")],
+  ["ext", xdr.lookup("TransactionHistoryEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("TransactionHistoryResultEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionHistoryResultEntry
+//   {
+//       uint32 ledgerSeq;
+//       TransactionResultSet txResultSet;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionHistoryResultEntry", [
+  ["ledgerSeq", xdr.lookup("Uint32")],
+  ["txResultSet", xdr.lookup("TransactionResultSet")],
+  ["ext", xdr.lookup("TransactionHistoryResultEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("LedgerHeaderHistoryEntryExt", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct LedgerHeaderHistoryEntry
+//   {
+//       Hash hash;
+//       LedgerHeader header;
+//   
+//       // reserved for future use
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerHeaderHistoryEntry", [
+  ["hash", xdr.lookup("Hash")],
+  ["header", xdr.lookup("LedgerHeader")],
+  ["ext", xdr.lookup("LedgerHeaderHistoryEntryExt")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct LedgerSCPMessages
+//   {
+//       uint32 ledgerSeq;
+//       SCPEnvelope messages<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerScpMessages", [
+  ["ledgerSeq", xdr.lookup("Uint32")],
+  ["messages", xdr.varArray(xdr.lookup("ScpEnvelope"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct SCPHistoryEntryV0
+//   {
+//       SCPQuorumSet quorumSets<>; // additional quorum sets used by ledgerMessages
+//       LedgerSCPMessages ledgerMessages;
+//   };
+//
+// ===========================================================================
+xdr.struct("ScpHistoryEntryV0", [
+  ["quorumSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
+  ["ledgerMessages", xdr.lookup("LedgerScpMessages")],
+]);
+
+// === xdr source ============================================================
+//
+//   union SCPHistoryEntry switch (int v)
+//   {
+//   case 0:
+//       SCPHistoryEntryV0 v0;
+//   };
+//
+// ===========================================================================
+xdr.union("ScpHistoryEntry", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, "v0"],
+  ],
+  arms: {
+    v0: xdr.lookup("ScpHistoryEntryV0"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   enum LedgerEntryChangeType
+//   {
+//       LEDGER_ENTRY_CREATED = 0, // entry was added to the ledger
+//       LEDGER_ENTRY_UPDATED = 1, // entry was modified in the ledger
+//       LEDGER_ENTRY_REMOVED = 2, // entry was removed from the ledger
+//       LEDGER_ENTRY_STATE = 3    // value of the entry
+//   };
+//
+// ===========================================================================
+xdr.enum("LedgerEntryChangeType", {
+  ledgerEntryCreated: 0,
+  ledgerEntryUpdated: 1,
+  ledgerEntryRemoved: 2,
+  ledgerEntryState: 3,
+});
+
+// === xdr source ============================================================
+//
+//   union LedgerEntryChange switch (LedgerEntryChangeType type)
+//   {
+//   case LEDGER_ENTRY_CREATED:
+//       LedgerEntry created;
+//   case LEDGER_ENTRY_UPDATED:
+//       LedgerEntry updated;
+//   case LEDGER_ENTRY_REMOVED:
+//       LedgerKey removed;
+//   case LEDGER_ENTRY_STATE:
+//       LedgerEntry state;
+//   };
+//
+// ===========================================================================
+xdr.union("LedgerEntryChange", {
+  switchOn: xdr.lookup("LedgerEntryChangeType"),
+  switchName: "type",
+  switches: [
+    ["ledgerEntryCreated", "created"],
+    ["ledgerEntryUpdated", "updated"],
+    ["ledgerEntryRemoved", "removed"],
+    ["ledgerEntryState", "state"],
+  ],
+  arms: {
+    created: xdr.lookup("LedgerEntry"),
+    updated: xdr.lookup("LedgerEntry"),
+    removed: xdr.lookup("LedgerKey"),
+    state: xdr.lookup("LedgerEntry"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   typedef LedgerEntryChange LedgerEntryChanges<>;
+//
+// ===========================================================================
+xdr.typedef("LedgerEntryChanges", xdr.varArray(xdr.lookup("LedgerEntryChange"), 2147483647));
+
+// === xdr source ============================================================
+//
+//   struct OperationMeta
+//   {
+//       LedgerEntryChanges changes;
+//   };
+//
+// ===========================================================================
+xdr.struct("OperationMeta", [
+  ["changes", xdr.lookup("LedgerEntryChanges")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct TransactionMetaV1
+//   {
+//       LedgerEntryChanges txChanges; // tx level changes if any
+//       OperationMeta operations<>;   // meta for each operation
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionMetaV1", [
+  ["txChanges", xdr.lookup("LedgerEntryChanges")],
+  ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct TransactionMetaV2
+//   {
+//       LedgerEntryChanges txChangesBefore; // tx level changes before operations
+//                                           // are applied if any
+//       OperationMeta operations<>;         // meta for each operation
+//       LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
+//                                           // applied if any
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionMetaV2", [
+  ["txChangesBefore", xdr.lookup("LedgerEntryChanges")],
+  ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
+  ["txChangesAfter", xdr.lookup("LedgerEntryChanges")],
+]);
+
+// === xdr source ============================================================
+//
+//   union TransactionMeta switch (int v)
+//   {
+//   case 0:
+//       OperationMeta operations<>;
+//   case 1:
+//       TransactionMetaV1 v1;
+//   case 2:
+//       TransactionMetaV2 v2;
+//   };
+//
+// ===========================================================================
+xdr.union("TransactionMeta", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, "operations"],
+    [1, "v1"],
+    [2, "v2"],
+  ],
+  arms: {
+    operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
+    v1: xdr.lookup("TransactionMetaV1"),
+    v2: xdr.lookup("TransactionMetaV2"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TransactionResultMeta
+//   {
+//       TransactionResultPair result;
+//       LedgerEntryChanges feeProcessing;
+//       TransactionMeta txApplyProcessing;
+//   };
+//
+// ===========================================================================
+xdr.struct("TransactionResultMeta", [
+  ["result", xdr.lookup("TransactionResultPair")],
+  ["feeProcessing", xdr.lookup("LedgerEntryChanges")],
+  ["txApplyProcessing", xdr.lookup("TransactionMeta")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct UpgradeEntryMeta
+//   {
+//       LedgerUpgrade upgrade;
+//       LedgerEntryChanges changes;
+//   };
+//
+// ===========================================================================
+xdr.struct("UpgradeEntryMeta", [
+  ["upgrade", xdr.lookup("LedgerUpgrade")],
+  ["changes", xdr.lookup("LedgerEntryChanges")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct LedgerCloseMetaV0
+//   {
+//       LedgerHeaderHistoryEntry ledgerHeader;
+//       // NB: txSet is sorted in "Hash order"
+//       TransactionSet txSet;
+//   
+//       // NB: transactions are sorted in apply order here
+//       // fees for all transactions are processed first
+//       // followed by applying transactions
+//       TransactionResultMeta txProcessing<>;
+//   
+//       // upgrades are applied last
+//       UpgradeEntryMeta upgradesProcessing<>;
+//   
+//       // other misc information attached to the ledger close
+//       SCPHistoryEntry scpInfo<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerCloseMetaV0", [
+  ["ledgerHeader", xdr.lookup("LedgerHeaderHistoryEntry")],
+  ["txSet", xdr.lookup("TransactionSet")],
+  ["txProcessing", xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647)],
+  ["upgradesProcessing", xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647)],
+  ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   union LedgerCloseMeta switch (int v)
+//   {
+//   case 0:
+//        LedgerCloseMetaV0 v0;
+//   };
+//
+// ===========================================================================
+xdr.union("LedgerCloseMeta", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, "v0"],
+  ],
+  arms: {
+    v0: xdr.lookup("LedgerCloseMetaV0"),
+  },
+});
 
 });
 export default types;

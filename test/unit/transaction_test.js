@@ -11,7 +11,10 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000.0000000';
 
-    let input = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let input = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -21,7 +24,10 @@ describe('Transaction', function() {
       .toEnvelope()
       .toXDR('base64');
 
-    var transaction = new StellarBase.Transaction(input);
+    var transaction = new StellarBase.Transaction(
+      input,
+      StellarBase.Networks.TESTNET
+    );
     var operation = transaction.operations[0];
 
     expect(transaction.source).to.be.equal(source.accountId());
@@ -37,16 +43,7 @@ describe('Transaction', function() {
     done();
   });
 
-  beforeEach(function() {
-    StellarBase.Network.useTestNetwork();
-  });
-
-  afterEach(function() {
-    StellarBase.Network.use(null);
-  });
-
   it('does not sign when no Network selected', function() {
-    StellarBase.Network.use(null);
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
       '0'
@@ -57,7 +54,9 @@ describe('Transaction', function() {
     let amount = '2000';
     let signer = StellarBase.Keypair.random();
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -106,7 +105,9 @@ describe('Transaction', function() {
     let amount = '2000';
 
     expect(() =>
-      new StellarBase.TransactionBuilder(source)
+      new StellarBase.TransactionBuilder(source, {
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({ destination, asset, amount })
         )
@@ -124,9 +125,12 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
     let amount = '2000';
-    let signer = StellarBase.Keypair.master();
+    let signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -134,7 +138,7 @@ describe('Transaction', function() {
       .build();
     tx.sign(signer);
 
-    let env = tx.toEnvelope();
+    let env = tx.toEnvelope().value();
 
     let rawSig = env.signatures()[0].signature();
     let verified = signer.verify(tx.hash(), rawSig);
@@ -154,7 +158,10 @@ describe('Transaction', function() {
     let preimage = randomBytes(64);
     let hash = StellarBase.hash(preimage);
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -162,7 +169,7 @@ describe('Transaction', function() {
       .build();
     tx.signHashX(preimage);
 
-    let env = tx.toEnvelope();
+    let env = tx.toEnvelope().value();
     expectBuffersToBeEqual(env.signatures()[0].signature(), preimage);
     expectBuffersToBeEqual(
       env.signatures()[0].hint(),
@@ -182,7 +189,10 @@ describe('Transaction', function() {
 
     let preimage = randomBytes(2 * 64);
 
-    let tx = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -204,14 +214,15 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
     const amount = '2000';
-    const signer = StellarBase.Keypair.master();
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const signedTx = new StellarBase.TransactionBuilder(signedSource, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
@@ -221,7 +232,7 @@ describe('Transaction', function() {
     const presignHash = signedTx.hash();
     signedTx.sign(signer);
 
-    const envelopeSigned = signedTx.toEnvelope();
+    const envelopeSigned = signedTx.toEnvelope().value();
 
     const addedSignatureTx = new StellarBase.TransactionBuilder(
       addedSignatureSource,
@@ -230,7 +241,8 @@ describe('Transaction', function() {
           minTime: 0,
           maxTime: 1739392569
         },
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       }
     )
       .addOperation(
@@ -242,7 +254,7 @@ describe('Transaction', function() {
 
     addedSignatureTx.addSignature(signer.publicKey(), signature);
 
-    const envelopeAddedSignature = addedSignatureTx.toEnvelope();
+    const envelopeAddedSignature = addedSignatureTx.toEnvelope().value();
 
     expect(
       signer.verify(
@@ -274,14 +286,15 @@ describe('Transaction', function() {
       'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
     const amount = '2000';
-    const signer = StellarBase.Keypair.master();
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const signedTx = new StellarBase.TransactionBuilder(signedSource, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
@@ -291,10 +304,11 @@ describe('Transaction', function() {
     const presignHash = signedTx.hash();
     signedTx.sign(signer);
 
-    const envelopeSigned = signedTx.toEnvelope();
+    const envelopeSigned = signedTx.toEnvelope().value();
 
     const signature = new StellarBase.Transaction(
-      signedTx.toXDR()
+      signedTx.toXDR(),
+      StellarBase.Networks.TESTNET
     ).getKeypairSignature(signer);
 
     expect(signer.sign(presignHash).toString('base64')).to.equal(signature);
@@ -306,7 +320,8 @@ describe('Transaction', function() {
           minTime: 0,
           maxTime: 1739392569
         },
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       }
     )
       .addOperation(
@@ -316,7 +331,7 @@ describe('Transaction', function() {
 
     addedSignatureTx.addSignature(signer.publicKey(), signature);
 
-    const envelopeAddedSignature = addedSignatureTx.toEnvelope();
+    const envelopeAddedSignature = addedSignatureTx.toEnvelope().value();
 
     expect(
       signer.verify(
@@ -349,14 +364,15 @@ describe('Transaction', function() {
     const asset = StellarBase.Asset.native();
     const originalAmount = '2000';
     const alteredAmount = '1000';
-    const signer = StellarBase.Keypair.master();
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const originalTx = new StellarBase.TransactionBuilder(source, {
       timebounds: {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({
@@ -368,7 +384,8 @@ describe('Transaction', function() {
       .build();
 
     const signature = new StellarBase.Transaction(
-      originalTx.toXDR()
+      originalTx.toXDR(),
+      StellarBase.Networks.TESTNET
     ).getKeypairSignature(signer);
 
     const alteredTx = new StellarBase.TransactionBuilder(sourceCopy, {
@@ -376,7 +393,8 @@ describe('Transaction', function() {
         minTime: 0,
         maxTime: 1739392569
       },
-      fee: 100
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
     })
       .addOperation(
         StellarBase.Operation.payment({
@@ -403,7 +421,10 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000';
 
-    let input = new StellarBase.TransactionBuilder(source, { fee: 0 })
+    let input = new StellarBase.TransactionBuilder(source, {
+      fee: 0,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -413,7 +434,10 @@ describe('Transaction', function() {
       .toEnvelope()
       .toXDR('base64');
 
-    var transaction = new StellarBase.Transaction(input);
+    var transaction = new StellarBase.Transaction(
+      input,
+      StellarBase.Networks.TESTNET
+    );
     var operation = transaction.operations[0];
 
     expect(transaction.fee).to.be.equal(0);
@@ -424,7 +448,10 @@ describe('Transaction', function() {
   it('outputs xdr as a string', () => {
     const xdrString =
       'AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=';
-    const transaction = new StellarBase.Transaction(xdrString);
+    const transaction = new StellarBase.Transaction(
+      xdrString,
+      StellarBase.Networks.TESTNET
+    );
     expect(typeof transaction).to.be.equal('object');
     expect(typeof transaction.toXDR).to.be.equal('function');
     expect(transaction.toXDR()).to.be.equal(xdrString);
