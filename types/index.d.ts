@@ -532,6 +532,7 @@ export class Transaction<
     minTime: string;
     maxTime: string;
   };
+  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: xdr.TransactionV1Envelope, networkPassphrase: string): Transaction;
 }
 
 export const BASE_FEE = "100";
@@ -547,7 +548,6 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
-  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: xdr.TransactionV1Envelope, networkPassphrase: string): Transaction;
 }
 
 export namespace TransactionBuilder {
