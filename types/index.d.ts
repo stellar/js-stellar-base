@@ -522,12 +522,14 @@ export class Transaction<
 
   operations: TOps;
   sequence: string;
-  fee: number|string;
+  fee: string;
+  innerFee?: string;
   source: string;
   feeSource?: string;
   memo: TMemo;
   networkPassphrase: string;
   signatures: xdr.DecoratedSignature[];
+  innerSignatures?: xdr.DecoratedSignature[];
   timeBounds?: {
     minTime: string;
     maxTime: string;

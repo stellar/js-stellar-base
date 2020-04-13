@@ -67,20 +67,20 @@ export class Transaction {
     let tx = this.tx;
 
     this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
-    this.fee = tx.fee();
+    this.fee = tx.fee().toString();
 
     // if tx is FeeBump, override tx with innerTx, which we use to expose data
     // about the innerTx like operations and memo.
     if (this.isFeeBump()) {
-      this.fee = this.tx.fee().toString();
-      tx = tx
-        .innerTx()
-        .value()
-        .tx();
+      const innerTxEnvelope = tx.innerTx().value();
+      tx = innerTxEnvelope.tx();
 
       // make inner transaction the source account and add field feeSource
-      this.source = StrKey.encodeEd25519PublicKey(tx.sourceAccount().ed25519());
       this.feeSource = StrKey.encodeEd25519PublicKey(sourceAccount);
+
+      this.source = StrKey.encodeEd25519PublicKey(tx.sourceAccount().ed25519());
+      this.innerSignatures = map(innerTxEnvelope.signatures() || [], (s) => s);
+      this.innerFee = tx.fee().toString();
     }
 
     this._memo = tx.memo();

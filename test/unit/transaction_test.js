@@ -511,8 +511,12 @@ describe('Transaction', function() {
 
       expect(transaction.source).to.be.equal(innerAccount.accountId());
       expect(transaction.feeSource).to.be.equal(feeSource.publicKey());
+
       // shows new fee
       expect(transaction.fee).to.be.equal(bumpFee);
+
+      // can read inner fee
+      expect(transaction.innerFee).to.be.equal('100');
 
       // show innerTx operations and memo
       let operation = transaction.operations[0];
@@ -523,6 +527,19 @@ describe('Transaction', function() {
       expect(operation.type).to.be.equal('payment');
       expect(operation.destination).to.be.equal(destination);
       expect(operation.amount).to.be.equal(amount);
+
+      // signatures
+      expect(transaction.signatures.length).to.equal(1);
+      let [signature] = transaction.signatures;
+      expect(signature.hint().equals(feeSource.signatureHint())).to.equal(true);
+
+      // match inner signatures
+      expect(transaction.innerSignatures.length).to.equal(1);
+      [signature] = transaction.innerSignatures;
+      expect(signature.hint().equals(innerSource.signatureHint())).to.equal(
+        true
+      );
+
       done();
     });
   });
