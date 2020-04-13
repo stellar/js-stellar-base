@@ -11,7 +11,7 @@ import { StrKey } from '../strkey';
  * @param {object} opts Options object
  * @param {string} opts.trustor - The trusting account (the one being authorized)
  * @param {string} opts.assetCode - The asset code being authorized.
- * @param {boolean} opts.authorize - True to authorize the line, false to deauthorize.
+ * @param {boolean|number} opts.authorize - True to authorize the line, false to deauthorize.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  * @returns {xdr.AllowTrustOp} Allow Trust operation
  */
@@ -30,7 +30,13 @@ export function allowTrust(opts) {
   } else {
     throw new Error('Asset code must be 12 characters at max.');
   }
-  attributes.authorize = opts.authorize;
+
+  if (typeof opts.authorize === 'boolean') {
+    attributes.authorize = +opts.authorize;
+  } else {
+    attributes.authorize = opts.authorize;
+  }
+
   const allowTrustOp = new xdr.AllowTrustOp(attributes);
 
   const opAttributes = {};

@@ -231,7 +231,7 @@ export namespace OperationOptions {
   interface AllowTrust extends BaseOptions {
     trustor: string;
     assetCode: string;
-    authorize?: boolean;
+    authorize?: boolean | number;
   }
   interface ChangeTrust extends BaseOptions {
     asset: Asset;
@@ -333,7 +333,8 @@ export namespace Operation {
   interface AllowTrust extends BaseOperation<OperationType.AllowTrust> {
     trustor: string;
     assetCode: string;
-    authorize: boolean | undefined;
+    // this is a boolean or a number so that it can support protocol 12 or 13
+    authorize: boolean | number | undefined;
   }
   function allowTrust(
     options: OperationOptions.AllowTrust
