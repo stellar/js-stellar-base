@@ -10,7 +10,6 @@ import { Operation } from './operation';
 import { Network } from './network';
 import { Memo } from './memo';
 import { Keypair } from './keypair';
-import { BASE_FEE } from './transaction_builder';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object, unless you have
@@ -367,6 +366,7 @@ export class Transaction {
     innerTxEnvelope,
     networkPassphrase
   ) {
+    const BASE_FEE = '100';
     const innerOps = innerTxEnvelope.tx().operations().length;
     const minFee = new BigNumber(BASE_FEE).mul(innerOps + 1);
     const fee = new BigNumber(baseFee).mul(innerOps + 1);
