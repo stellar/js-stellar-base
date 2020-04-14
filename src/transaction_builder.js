@@ -257,6 +257,51 @@ export class TransactionBuilder {
 
     return tx;
   }
+
+  /**
+   * Builds a FeeBumpTransaction
+   * @param {StrKey} feeSource - The account paying for the transaction.
+   * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
+   * @param {TransactionV1Envelope} innerTxEnvelope - The TransactionV1Envelope to be bumped by this transaction.
+   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @returns {Transaction}
+   * @ignore tell jsdoc to not show this method for now
+   */
+  static buildFeeBumpTransaction(
+    feeSource,
+    baseFee,
+    innerTxEnvelope,
+    networkPassphrase
+  ) {
+    const innerOps = innerTxEnvelope.tx().operations().length;
+    const minFee = new BigNumber(BASE_FEE).mul(innerOps + 1);
+    const fee = new BigNumber(baseFee).mul(innerOps + 1);
+
+    if (fee.lessThan(minFee)) {
+      throw new Error(
+        `Invalid baseFee, it should be at least ${BASE_FEE} stroops.`
+      );
+    }
+
+    const tx = new xdr.FeeBumpTransaction({
+      feeSource: feeSource.xdrAccountId(),
+      fee: xdr.Int64.fromString(fee.toString()),
+      innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(innerTxEnvelope),
+      ext: new xdr.FeeBumpTransactionExt(0)
+    });
+    const feeBumpTxEnvelope = new xdr.FeeBumpTransactionEnvelope({
+      tx,
+      signatures: []
+    });
+    const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
+      feeBumpTxEnvelope
+    );
+
+    // force validation at the XDR level
+    envelope.toXDR();
+
+    return new Transaction(envelope, networkPassphrase);
+  }
 }
 
 /**

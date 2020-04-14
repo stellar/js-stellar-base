@@ -460,4 +460,59 @@ describe('TransactionBuilder', function() {
       }).to.not.throw();
     });
   });
+  describe('.buildFeeBumpTransaction', function() {
+    it('builds a fee bump transaction', function(done) {
+      let networkPassphrase = 'Standalone Network ; February 2017';
+      let innerSource = StellarBase.Keypair.master(networkPassphrase);
+      let innerAccount = new StellarBase.Account(innerSource.publicKey(), '7');
+      let destination =
+        'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
+      let amount = '2000.0000000';
+
+      let innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: 100,
+        networkPassphrase: networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        },
+        v1: true
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset: StellarBase.Asset.native(),
+            amount
+          })
+        )
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
+        .build();
+
+      innerTx.sign(innerSource);
+      let feeSource = StellarBase.Keypair.fromSecret(
+        'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
+      );
+      let baseFee = '100';
+      let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        feeSource,
+        baseFee,
+        innerTx.toEnvelope().value(),
+        networkPassphrase
+      );
+      transaction.sign(feeSource);
+
+      expect(transaction.isFeeBump()).to.equal(true);
+
+      expect(() => {
+        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '99.999',
+          innerTx.toEnvelope().value(),
+          networkPassphrase
+        );
+      }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
+
+      done();
+    });
+  });
 });
