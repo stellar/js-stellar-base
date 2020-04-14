@@ -274,8 +274,20 @@ export class TransactionBuilder {
     networkPassphrase
   ) {
     const innerOps = innerTxEnvelope.tx().operations().length;
+    const innerBaseFeeRate = new BigNumber(innerTxEnvelope.tx().fee()).div(
+      innerOps
+    );
+    const base = new BigNumber(baseFee);
+
+    // The fee rate for fee bump is at least the fee rate of the inner transaction
+    if (base.lessThan(innerBaseFeeRate)) {
+      throw new Error(
+        `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
+      );
+    }
+
+    const fee = base.mul(innerOps + 1);
     const minFee = new BigNumber(BASE_FEE).mul(innerOps + 1);
-    const fee = new BigNumber(baseFee).mul(innerOps + 1);
 
     if (fee.lessThan(minFee)) {
       throw new Error(

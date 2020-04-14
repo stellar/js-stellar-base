@@ -462,15 +462,19 @@ describe('TransactionBuilder', function() {
   });
   describe('.buildFeeBumpTransaction', function() {
     it('builds a fee bump transaction', function(done) {
-      let networkPassphrase = 'Standalone Network ; February 2017';
-      let innerSource = StellarBase.Keypair.master(networkPassphrase);
-      let innerAccount = new StellarBase.Account(innerSource.publicKey(), '7');
-      let destination =
+      const networkPassphrase = 'Standalone Network ; February 2017';
+      const innerSource = StellarBase.Keypair.master(networkPassphrase);
+      const innerAccount = new StellarBase.Account(
+        innerSource.publicKey(),
+        '7'
+      );
+      const destination =
         'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
-      let amount = '2000.0000000';
+      const amount = '2000.0000000';
+      const asset = StellarBase.Asset.native();
 
       let innerTx = new StellarBase.TransactionBuilder(innerAccount, {
-        fee: 100,
+        fee: '200',
         networkPassphrase: networkPassphrase,
         timebounds: {
           minTime: 0,
@@ -481,32 +485,59 @@ describe('TransactionBuilder', function() {
         .addOperation(
           StellarBase.Operation.payment({
             destination,
-            asset: StellarBase.Asset.native(),
+            asset,
             amount
           })
         )
         .addMemo(StellarBase.Memo.text('Happy birthday!'))
         .build();
 
-      innerTx.sign(innerSource);
       let feeSource = StellarBase.Keypair.fromSecret(
         'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
       );
-      let baseFee = '100';
       let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         feeSource,
-        baseFee,
+        '200',
         innerTx.toEnvelope().value(),
         networkPassphrase
       );
-      transaction.sign(feeSource);
 
       expect(transaction.isFeeBump()).to.equal(true);
 
+      // The fee rate for fee bump is at least the fee rate of the inner transaction
       expect(() => {
         StellarBase.TransactionBuilder.buildFeeBumpTransaction(
           feeSource,
-          '99.999',
+          '100',
+          innerTx.toEnvelope().value(),
+          networkPassphrase
+        );
+      }).to.throw(/Invalid baseFee, it should be at least 200 stroops./);
+
+      innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: '80',
+        networkPassphrase: networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        },
+        v1: true
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset,
+            amount
+          })
+        )
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
+        .build();
+
+      // The fee rate for fee bump is at least the minimum fee
+      expect(() => {
+        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '90',
           innerTx.toEnvelope().value(),
           networkPassphrase
         );
