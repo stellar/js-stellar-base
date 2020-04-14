@@ -594,6 +594,25 @@ describe('Transaction', function() {
           .toString('base64')
       );
 
+      let tampered = transaction.toEnvelope();
+      tampered._switch = {
+        name: 'envelopeTypeTxInvalid',
+        value: 99
+      };
+
+      expect(() => {
+        new StellarBase.Transaction(tampered, networkPassphrase);
+      }).to.throw(/Invalid EnvelopeType: envelopeTypeTxInvalid./);
+
+      transaction._envelopeType = {
+        name: 'envelopeTypeTxInvalid',
+        value: 99
+      };
+
+      expect(() => {
+        transaction.toEnvelope();
+      }).to.throw(/Invalid EnvelopeType: envelopeTypeTxInvalid./);
+
       done();
     });
   });
