@@ -228,7 +228,7 @@ export class TransactionBuilder {
     if (this.v1) {
       attrs.sourceAccount = Keypair.fromPublicKey(
         this.source.accountId()
-      ).xdrAccountId();
+      ).xdrMuxedAccount();
       attrs.ext = new xdr.TransactionExt(0);
 
       const xtx = new xdr.Transaction(attrs);

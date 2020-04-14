@@ -39,7 +39,7 @@ export function pathPaymentStrictSend(opts) {
   attributes.sendAmount = this._toXDRAmount(opts.sendAmount);
   attributes.destination = Keypair.fromPublicKey(
     opts.destination
-  ).xdrAccountId();
+  ).xdrMuxedAccount();
   attributes.destAsset = opts.destAsset.toXDRObject();
   attributes.destMin = this._toXDRAmount(opts.destMin);
 

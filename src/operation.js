@@ -73,7 +73,7 @@ export class Operation {
       }
       opAttributes.sourceAccount = Keypair.fromPublicKey(
         opts.source
-      ).xdrAccountId();
+      ).xdrMuxedAccount();
     }
   }
 
