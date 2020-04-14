@@ -293,13 +293,20 @@ export class TransactionBuilder {
       );
     }
 
-    const fee = base.mul(innerOps + 1);
+    const innerTxEnvelope = innerTx.toEnvelope();
+    const envelopeType = innerTxEnvelope.switch();
+
+    if (envelopeType !== xdr.EnvelopeType.envelopeTypeTx()) {
+      throw new Error(
+        `Invalid innerTransaction type, it should be a envelopeTypeTx but received a ${envelopeType.name}.`
+      );
+    }
 
     const tx = new xdr.FeeBumpTransaction({
       feeSource: feeSource.xdrAccountId(),
-      fee: xdr.Int64.fromString(fee.toString()),
+      fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
-        innerTx.toEnvelope().value()
+        innerTxEnvelope.v1()
       ),
       ext: new xdr.FeeBumpTransactionExt(0)
     });
@@ -310,9 +317,6 @@ export class TransactionBuilder {
     const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
       feeBumpTxEnvelope
     );
-
-    // force validation at the XDR level
-    envelope.toXDR();
 
     return new Transaction(envelope, networkPassphrase);
   }

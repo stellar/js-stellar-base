@@ -543,6 +543,34 @@ describe('TransactionBuilder', function() {
         );
       }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
 
+      innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: '100',
+        networkPassphrase: networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        }
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset,
+            amount
+          })
+        )
+        .build();
+
+      expect(() => {
+        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '200',
+          innerTx,
+          networkPassphrase
+        );
+      }).to.throw(
+        /Invalid innerTransaction type, it should be a envelopeTypeTx but received a envelopeTypeTxV0./
+      );
+
       done();
     });
   });
