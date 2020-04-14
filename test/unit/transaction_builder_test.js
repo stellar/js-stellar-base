@@ -498,7 +498,7 @@ describe('TransactionBuilder', function() {
       let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         feeSource,
         '200',
-        innerTx.toEnvelope().value(),
+        innerTx,
         networkPassphrase
       );
 
@@ -509,7 +509,7 @@ describe('TransactionBuilder', function() {
         StellarBase.TransactionBuilder.buildFeeBumpTransaction(
           feeSource,
           '100',
-          innerTx.toEnvelope().value(),
+          innerTx,
           networkPassphrase
         );
       }).to.throw(/Invalid baseFee, it should be at least 200 stroops./);
@@ -538,7 +538,7 @@ describe('TransactionBuilder', function() {
         StellarBase.TransactionBuilder.buildFeeBumpTransaction(
           feeSource,
           '90',
-          innerTx.toEnvelope().value(),
+          innerTx,
           networkPassphrase
         );
       }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
