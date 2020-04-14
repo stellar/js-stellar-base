@@ -60,7 +60,7 @@ export class Transaction {
           .ed25519();
         break;
       default:
-        throw new Error(`Invalid EnvelopeType: ${this.envelopeType}.`);
+        throw new Error(`Invalid EnvelopeType: ${this._envelopeType}.`);
     }
 
     // since this transaction is immutable, save the tx
@@ -326,7 +326,7 @@ export class Transaction {
         );
         break;
       default:
-        throw new Error(`Invalid EnvelopeType: ${this.envelopeType}.`);
+        throw new Error(`Invalid EnvelopeType: ${this._envelopeType}.`);
     }
 
     return envelope;
