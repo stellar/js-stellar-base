@@ -547,7 +547,7 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
-  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: xdr.TransactionV1Envelope, networkPassphrase: string): Transaction;
+  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): Transaction;
 }
 
 export namespace TransactionBuilder {
