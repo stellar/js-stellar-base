@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import map from 'lodash/map';
 import each from 'lodash/each';
 import isString from 'lodash/isString';
