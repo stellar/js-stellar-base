@@ -65,6 +65,7 @@ export class Keypair {
   signDecorated(data: Buffer): xdr.DecoratedSignature;
   signatureHint(): xdr.SignatureHint;
   verify(data: Buffer, signature: xdr.Signature): boolean;
+  xdrAccountId(): xdr.AccountId;
 }
 
 export const MemoNone = 'none';
@@ -511,26 +512,29 @@ export class Transaction<
   addSignature(publicKey: string, signature: string): void;
   getKeypairSignature(keypair: Keypair): string;
   hash(): Buffer;
+  isFeeBump(): boolean;
   sign(...keypairs: Keypair[]): void;
   signatureBase(): Buffer;
   signHashX(preimage: Buffer | string): void;
   toEnvelope(): xdr.TransactionEnvelope;
   toXDR(): string;
-
   operations: TOps;
   sequence: string;
-  fee: number;
+  fee: string;
+  innerFee?: string;
   source: string;
+  feeSource?: string;
   memo: TMemo;
   networkPassphrase: string;
   signatures: xdr.DecoratedSignature[];
+  innerSignatures?: xdr.DecoratedSignature[];
   timeBounds?: {
     minTime: string;
     maxTime: string;
   };
 }
 
-export const BASE_FEE = 100;
+export const BASE_FEE = "100";
 export const TimeoutInfinite = 0;
 
 export class TransactionBuilder {
@@ -543,17 +547,19 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
+  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): Transaction;
 }
 
 export namespace TransactionBuilder {
   interface TransactionBuilderOptions {
-    fee: number;
+    fee: string;
     timebounds?: {
       minTime?: number | string;
       maxTime?: number | string;
     };
     memo?: Memo;
     networkPassphrase?: string;
+    v1?: boolean;
   }
 }
 
@@ -561,29 +567,43 @@ export namespace TransactionBuilder {
 declare namespace xdrHidden {
   // tslint:disable-line:strict-export-declare-modifiers
   class Operation2<T extends Operation = Operation> extends xdr.XDRStruct {
-    static fromXDR(xdr: Buffer): xdr.Operation;
+    static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
+    static fromXDR(input: string, format: 'hex' | 'base64'): xdr.Operation;
   }
 }
 
 export namespace xdr {
   class XDRStruct {
-    static fromXDR(xdr: Buffer): XDRStruct;
+    static fromXDR(input: Buffer, format?: 'raw'): XDRStruct;
+    static fromXDR(input: string, format: 'hex' | 'base64'): XDRStruct;
 
     toXDR(base?: string): Buffer;
     toXDR(encoding: string): string;
   }
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+  class AccountId extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): AccountId;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): AccountId;
+  }
   class Asset extends XDRStruct {
-    static fromXDR(xdr: Buffer): Asset;
+    static fromXDR(xdr: Buffer, format?: 'raw'): Asset;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): Asset;
   }
   class Memo extends XDRStruct {
-    static fromXDR(xdr: Buffer): Memo;
+    static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
   }
   class TransactionEnvelope extends XDRStruct {
-    static fromXDR(xdr: Buffer): TransactionEnvelope;
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionEnvelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionEnvelope;
+  }
+  class TransactionV1Envelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV1Envelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV1Envelope;
   }
   class DecoratedSignature extends XDRStruct {
-    static fromXDR(xdr: Buffer): DecoratedSignature;
+    static fromXDR(xdr: Buffer, format?: 'raw'): DecoratedSignature;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): DecoratedSignature;
 
     constructor(keys: { hint: SignatureHint; signature: Signature });
 
@@ -594,7 +614,8 @@ export namespace xdr {
   type Signature = Buffer;
 
   class TransactionResult extends XDRStruct {
-    static fromXDR(xdr: Buffer): TransactionResult;
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionResult;
+    static fromXDR(xdr: string, format: 'hex'): TransactionResult;
   }
 }
 
