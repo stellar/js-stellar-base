@@ -39,43 +39,64 @@ export class Transaction {
     }
     this._networkPassphrase = networkPassphrase;
 
-    const txe = envelope.value();
+    const txEnvelope = envelope.value();
     let sourceAccount;
     this._envelopeType = envelope.switch();
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
-        sourceAccount = txe.tx().sourceAccountEd25519();
+        sourceAccount = txEnvelope.tx().sourceAccountEd25519();
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
-        sourceAccount = txe
+        sourceAccount = txEnvelope
           .tx()
           .sourceAccount()
           .ed25519();
         break;
+      case xdr.EnvelopeType.envelopeTypeTxFeeBump():
+        sourceAccount = txEnvelope
+          .tx()
+          .feeSource()
+          .ed25519();
+        break;
       default:
-        // TODO: Add support for FeeBumpTransaction
-        throw new Error('Invalid transaction.');
+        throw new Error(`Invalid EnvelopeType: ${this._envelopeType.name}.`);
     }
 
     // since this transaction is immutable, save the tx
-    this.tx = txe.tx();
-    this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
-    this.fee = this.tx.fee();
-    this._memo = this.tx.memo();
-    this.sequence = this.tx.seqNum().toString();
+    this.tx = txEnvelope.tx();
+    let tx = this.tx;
 
-    const timeBounds = this.tx.timeBounds();
+    this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
+    this.fee = tx.fee().toString();
+
+    // if tx is FeeBump, override tx with innerTx, which we use to expose data
+    // about the innerTx like operations and memo.
+    if (this.isFeeBump()) {
+      const innerTxEnvelope = tx.innerTx().value();
+      tx = innerTxEnvelope.tx();
+
+      // make inner transaction the source account and add field feeSource
+      this.feeSource = StrKey.encodeEd25519PublicKey(sourceAccount);
+
+      this.source = StrKey.encodeEd25519PublicKey(tx.sourceAccount().ed25519());
+      this.innerSignatures = map(innerTxEnvelope.signatures() || [], (s) => s);
+      this.innerFee = tx.fee().toString();
+    }
+
+    this._memo = tx.memo();
+    this.sequence = tx.seqNum().toString();
+
+    const timeBounds = tx.timeBounds();
     if (timeBounds) {
       this.timeBounds = {
         minTime: timeBounds.minTime().toString(),
         maxTime: timeBounds.maxTime().toString()
       };
     }
-
-    const operations = this.tx.operations() || [];
+    const operations = tx.operations() || [];
     this.operations = map(operations, (op) => Operation.fromXDRObject(op));
 
-    const signatures = txe.signatures() || [];
+    const signatures = txEnvelope.signatures() || [];
     this.signatures = map(signatures, (s) => s);
   }
 
@@ -258,11 +279,21 @@ export class Transaction {
       );
     }
 
+    let taggedTransaction;
+
+    if (this.isFeeBump()) {
+      taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
+        tx
+      );
+    } else {
+      taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
+        tx
+      );
+    }
+
     const txSignature = new xdr.TransactionSignaturePayload({
       networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),
-      taggedTransaction: new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
-        tx
-      )
+      taggedTransaction
     });
 
     return txSignature.toXDR();
@@ -288,11 +319,25 @@ export class Transaction {
           new xdr.TransactionV1Envelope({ tx, signatures })
         );
         break;
+      case xdr.EnvelopeType.envelopeTypeTxFeeBump():
+        envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
+          new xdr.FeeBumpTransactionEnvelope({ tx, signatures })
+        );
+        break;
       default:
-        throw new Error('Invalid transaction');
+        throw new Error(`Invalid EnvelopeType: ${this._envelopeType.name}.`);
     }
 
     return envelope;
+  }
+
+  /**
+   * isFeeBump returns true if the transaction represents a FeeBumpTransaction
+   * @returns {boolean}
+   * @ignore tell jsdoc to not show this method for now
+   */
+  isFeeBump() {
+    return this._envelopeType === xdr.EnvelopeType.envelopeTypeTxFeeBump();
   }
 
   /**

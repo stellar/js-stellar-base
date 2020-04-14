@@ -17,7 +17,7 @@ import { Memo } from './memo';
  * @constant
  * @see [Fees](https://www.stellar.org/developers/guides/concepts/fees.html)
  */
-export const BASE_FEE = 100; // Stroops
+export const BASE_FEE = '100'; // Stroops
 
 /**
  * @constant
@@ -70,7 +70,7 @@ export const TimeoutInfinite = 0;
  * @constructor
  * @param {Account} sourceAccount - The source account for this transaction.
  * @param {object} opts Options object
- * @param {number} opts.fee - The max fee willing to pay per operation in this transaction (**in stroops**). Required.
+ * @param {string} opts.fee - The max fee willing to pay per operation in this transaction (**in stroops**). Required.
  * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
  * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
  * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
@@ -94,6 +94,11 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
+
+    // Undocumented.  Feature flag to allow alpha testing of core-13
+    // transactions. We can remove this once all transactions are supposed to be
+    // v1.
+    this.v1 = opts.v1 || false;
   }
 
   /**
@@ -183,14 +188,13 @@ export class TransactionBuilder {
    */
   build() {
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
+    const fee = new BigNumber(this.baseFee)
+      .mul(this.operations.length)
+      .toNumber();
     const attrs = {
-      sourceAccountEd25519: Keypair.fromPublicKey(this.source.accountId())
-        .xdrAccountId()
-        .value(),
-      fee: this.baseFee * this.operations.length,
+      fee,
       seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
-      memo: this.memo ? this.memo.toXDRObject() : null,
-      ext: new xdr.TransactionV0Ext(0)
+      memo: this.memo ? this.memo.toXDRObject() : null
     };
 
     if (
@@ -219,18 +223,102 @@ export class TransactionBuilder {
 
     attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
 
-    const xtx = new xdr.TransactionV0(attrs);
-    xtx.operations(this.operations);
+    let txEnvelope;
 
-    const xenv = new xdr.TransactionEnvelope.envelopeTypeTxV0(
-      new xdr.TransactionV0Envelope({ tx: xtx })
-    );
+    if (this.v1) {
+      attrs.sourceAccount = Keypair.fromPublicKey(
+        this.source.accountId()
+      ).xdrAccountId();
+      attrs.ext = new xdr.TransactionExt(0);
 
-    const tx = new Transaction(xenv, this.networkPassphrase);
+      const xtx = new xdr.Transaction(attrs);
+      xtx.operations(this.operations);
+      txEnvelope = new xdr.TransactionEnvelope.envelopeTypeTx(
+        new xdr.TransactionV1Envelope({ tx: xtx })
+      );
+    } else {
+      attrs.sourceAccountEd25519 = Keypair.fromPublicKey(
+        this.source.accountId()
+      )
+        .xdrAccountId()
+        .value();
+      attrs.ext = new xdr.TransactionV0Ext(0);
+
+      const xtx = new xdr.TransactionV0(attrs);
+      xtx.operations(this.operations);
+      txEnvelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
+        new xdr.TransactionV0Envelope({ tx: xtx })
+      );
+    }
+
+    const tx = new Transaction(txEnvelope, this.networkPassphrase);
 
     this.source.incrementSequenceNumber();
 
     return tx;
+  }
+
+  /**
+   * Builds a FeeBumpTransaction
+   * @param {StrKey} feeSource - The account paying for the transaction.
+   * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
+   * @param {Transaction} innerTx - The Transaction to be bumped by the fee bump transaction.
+   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @returns {Transaction}
+   * @ignore tell jsdoc to not show this method for now
+   */
+  static buildFeeBumpTransaction(
+    feeSource,
+    baseFee,
+    innerTx,
+    networkPassphrase
+  ) {
+    const innerOps = innerTx.operations.length;
+    const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
+    const base = new BigNumber(baseFee);
+
+    // The fee rate for fee bump is at least the fee rate of the inner transaction
+    if (base.lessThan(innerBaseFeeRate)) {
+      throw new Error(
+        `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
+      );
+    }
+
+    const minBaseFee = new BigNumber(BASE_FEE);
+
+    // The fee rate is at least the minimum fee
+    if (base.lessThan(minBaseFee)) {
+      throw new Error(
+        `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
+      );
+    }
+
+    const innerTxEnvelope = innerTx.toEnvelope();
+    const envelopeType = innerTxEnvelope.switch();
+
+    if (envelopeType !== xdr.EnvelopeType.envelopeTypeTx()) {
+      throw new Error(
+        `Invalid innerTransaction type, it should be a envelopeTypeTx but received a ${envelopeType.name}.`
+      );
+    }
+
+    const tx = new xdr.FeeBumpTransaction({
+      feeSource: feeSource.xdrAccountId(),
+      fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
+      innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
+        innerTxEnvelope.v1()
+      ),
+      ext: new xdr.FeeBumpTransactionExt(0)
+    });
+    const feeBumpTxEnvelope = new xdr.FeeBumpTransactionEnvelope({
+      tx,
+      signatures: []
+    });
+    const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
+      feeBumpTxEnvelope
+    );
+
+    return new Transaction(envelope, networkPassphrase);
   }
 }
 
