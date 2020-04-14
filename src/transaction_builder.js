@@ -289,6 +289,7 @@ export class TransactionBuilder {
     const fee = base.mul(innerOps + 1);
     const minFee = new BigNumber(BASE_FEE).mul(innerOps + 1);
 
+    // The fee is at least the minimum fee
     if (fee.lessThan(minFee)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${BASE_FEE} stroops.`
