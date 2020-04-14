@@ -1,6 +1,4 @@
 import randomBytes from 'randombytes';
-import { doesNotReject } from 'assert';
-import { afterEach } from 'mocha';
 
 describe('Transaction', function() {
   it('constructs Transaction object from a TransactionEnvelope', function(done) {
