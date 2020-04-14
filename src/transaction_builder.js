@@ -286,15 +286,16 @@ export class TransactionBuilder {
       );
     }
 
-    const fee = base.mul(innerOps + 1);
-    const minFee = new BigNumber(BASE_FEE).mul(innerOps + 1);
+    const minBaseFee = new BigNumber(BASE_FEE);
 
-    // The fee is at least the minimum fee
-    if (fee.lessThan(minFee)) {
+    // The fee rate is at least the minimum fee
+    if (base.lessThan(minBaseFee)) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${BASE_FEE} stroops.`
+        `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
       );
     }
+
+    const fee = base.mul(innerOps + 1);
 
     const tx = new xdr.FeeBumpTransaction({
       feeSource: feeSource.xdrAccountId(),
