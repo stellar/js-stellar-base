@@ -615,6 +615,71 @@ describe('Transaction', function() {
 
       done();
     });
+
+    describe('TransactionEnvelope with MuxedAccount', function() {
+      it('handles muxed accounts', function() {
+        let baseFee = '100';
+        const networkPassphrase = 'Standalone Network ; February 2017';
+        const source = StellarBase.Keypair.master(networkPassphrase);
+        const account = new StellarBase.Account(source.publicKey(), '7');
+        const destination =
+          'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
+        const amount = '2000.0000000';
+        const asset = StellarBase.Asset.native();
+
+        let tx = new StellarBase.TransactionBuilder(account, {
+          fee: '100',
+          networkPassphrase: networkPassphrase,
+          timebounds: {
+            minTime: 0,
+            maxTime: 0
+          },
+          v1: true
+        })
+          .addOperation(
+            StellarBase.Operation.payment({
+              destination,
+              asset,
+              amount
+            })
+          )
+          .addMemo(StellarBase.Memo.text('Happy birthday!'))
+          .build();
+
+        let med25519 = new StellarBase.xdr.MuxedAccountMed25519({
+          id: StellarBase.xdr.Uint64.fromString('0'),
+          ed25519: source.rawPublicKey()
+        });
+        let muxedAccount = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
+          med25519
+        );
+
+        const envelope = tx.toEnvelope();
+        envelope
+          .v1()
+          .tx()
+          .sourceAccount(muxedAccount);
+        const txWithMuxedAccount = new StellarBase.Transaction(
+          envelope,
+          networkPassphrase
+        );
+
+        expect(txWithMuxedAccount.source).to.equal(tx.source);
+
+        let feeSource = StellarBase.Keypair.fromSecret(
+          'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
+        );
+        const feeBumpTx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '200',
+          txWithMuxedAccount,
+          networkPassphrase
+        );
+
+        expect(feeBumpTx.source).to.equal(txWithMuxedAccount.source);
+        expect(feeBumpTx.feeSource).to.equal(feeSource.publicKey());
+      });
+    });
   });
 });
 

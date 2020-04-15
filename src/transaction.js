@@ -47,10 +47,7 @@ export class Transaction {
         sourceAccount = txEnvelope.tx().sourceAccountEd25519();
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
-        sourceAccount = txEnvelope
-          .tx()
-          .sourceAccount()
-          .ed25519();
+        sourceAccount = this._getSourceAccount(txEnvelope.tx().sourceAccount());
         break;
       case xdr.EnvelopeType.envelopeTypeTxFeeBump():
         sourceAccount = txEnvelope
@@ -78,7 +75,9 @@ export class Transaction {
       // make inner transaction the source account and add field feeSource
       this.feeSource = StrKey.encodeEd25519PublicKey(sourceAccount);
 
-      this.source = StrKey.encodeEd25519PublicKey(tx.sourceAccount().ed25519());
+      this.source = StrKey.encodeEd25519PublicKey(
+        this._getSourceAccount(tx.sourceAccount())
+      );
       this.innerSignatures = map(innerTxEnvelope.signatures() || [], (s) => s);
       this.innerFee = tx.fee().toString();
     }
@@ -348,5 +347,13 @@ export class Transaction {
     return this.toEnvelope()
       .toXDR()
       .toString('base64');
+  }
+
+  _getSourceAccount(muxedAccount) {
+    if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
+      return muxedAccount.ed25519();
+    }
+
+    return muxedAccount.med25519().ed25519();
   }
 }
