@@ -11,7 +11,8 @@ const versionBytes = {
   ed25519PublicKey: 6 << 3, // G
   ed25519SecretSeed: 18 << 3, // S
   preAuthTx: 19 << 3, // T
-  sha256Hash: 23 << 3 // X
+  sha256Hash: 23 << 3, // X
+  muxedAccount: 12 << 3 // M
 };
 
 /**
@@ -107,6 +108,15 @@ export class StrKey {
   static decodeSha256Hash(data) {
     return decodeCheck('sha256Hash', data);
   }
+
+  /**
+   * Encodes data to strkey muxed account.
+   * @param {Buffer} data data to encode
+   * @returns {string}
+   */
+  static encodeMuxedAccount(data) {
+    return encodeCheck('muxedAccount', data);
+  }
 }
 
 function isValid(versionByteName, encoded) {
@@ -172,11 +182,11 @@ export function encodeCheck(versionByteName, data) {
 
   if (isUndefined(versionByte)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`
+      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
     );
   }
-
   data = Buffer.from(data);
+
   const versionBuffer = Buffer.from([versionByte]);
   const payload = Buffer.concat([versionBuffer, data]);
   const checksum = calculateChecksum(payload);
