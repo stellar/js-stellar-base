@@ -1,81 +1,238 @@
 describe('StrKey', function() {
   before(function() {
-    StellarBase.Network.useTestNetwork();
-    var keypair           = StellarBase.Keypair.master();
-    this.unencodedBuffer  = keypair.rawPublicKey();
-    this.unencoded        = this.unencodedBuffer.toString();
+    var keypair = StellarBase.Keypair.master(
+      'Test SDF Network ; September 2015'
+    );
+    this.unencodedBuffer = keypair.rawPublicKey();
+    this.unencoded = this.unencodedBuffer.toString();
     this.accountIdEncoded = keypair.publicKey();
-    this.seedEncoded      = StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer);
-  })
-
+    this.seedEncoded = StellarBase.StrKey.encodeEd25519SecretSeed(
+      this.unencodedBuffer
+    );
+  });
   after(function() {
     StellarBase.Network.use(null);
-  })
+  });
 
   describe('#decodeCheck', function() {
-    it("decodes correctly", function() {
-      expect(StellarBase.StrKey.decodeEd25519PublicKey(this.accountIdEncoded)).to.eql(this.unencodedBuffer);
-      expect(StellarBase.StrKey.decodeEd25519SecretSeed(this.seedEncoded)).to.eql(this.unencodedBuffer);
+    it('decodes correctly', function() {
+      expect(
+        StellarBase.StrKey.decodeEd25519PublicKey(this.accountIdEncoded)
+      ).to.eql(this.unencodedBuffer);
+      expect(
+        StellarBase.StrKey.decodeEd25519SecretSeed(this.seedEncoded)
+      ).to.eql(this.unencodedBuffer);
     });
 
-    it("throws an error when the version byte is wrong", function() {
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("GBPXXOA5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL")).to.throw(/invalid version/);
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU")).to.throw(/invalid version/);
+    it('throws an error when the version byte is wrong', function() {
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'GBPXXOA5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL'
+        )
+      ).to.throw(/invalid version/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU'
+        )
+      ).to.throw(/invalid version/);
     });
 
-    it("throws an error when decoded data encodes to other string", function() {
+    it('throws an error when decoded data encodes to other string', function() {
       // accountId
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("GBPXX0A5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("GCFZB6L25D26RQFDWSSBDEYQ32JHLRMTT44ZYE3DZQUTYOL7WY43PLBG++")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("GADE5QJ2TY7S5ZB65Q43DFGWYWCPHIYDJ2326KZGAGBN7AE5UY6JVDRRA")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2T")).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'GBPXX0A5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'GCFZB6L25D26RQFDWSSBDEYQ32JHLRMTT44ZYE3DZQUTYOL7WY43PLBG++'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'GADE5QJ2TY7S5ZB65Q43DFGWYWCPHIYDJ2326KZGAGBN7AE5UY6JVDRRA'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'GB6OWYST45X57HCJY5XWOHDEBULB6XUROWPIKW77L5DSNANBEQGUPADT2T'
+        )
+      ).to.throw(/invalid encoded string/);
       // seed
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("SB7OJNF5727F3RJUG5ASQJ3LUM44ELLNKW35ZZQDHMVUUQNGYW")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("SB7OJNF5727F3RJUG5ASQJ3LUM44ELLNKW35ZZQDHMVUUQNGYWMEGB2W2")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("SB7OJNF5727F3RJUG5ASQJ3LUM44ELLNKW35ZZQDHMVUUQNGYWMEGB2W2T")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("SCMB30FQCIQAWZ4WQTS6SVK37LGMAFJGXOZIHTH2PY6EXLP37G46H6DT")).to.throw(/invalid encoded string/);
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("SAYC2LQ322EEHZYWNSKBEW6N66IRTDREEBUXXU5HPVZGMAXKLIZNM45H++")).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'SB7OJNF5727F3RJUG5ASQJ3LUM44ELLNKW35ZZQDHMVUUQNGYW'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'SB7OJNF5727F3RJUG5ASQJ3LUM44ELLNKW35ZZQDHMVUUQNGYWMEGB2W2'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'SB7OJNF5727F3RJUG5ASQJ3LUM44ELLNKW35ZZQDHMVUUQNGYWMEGB2W2T'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'SCMB30FQCIQAWZ4WQTS6SVK37LGMAFJGXOZIHTH2PY6EXLP37G46H6DT'
+        )
+      ).to.throw(/invalid encoded string/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'SAYC2LQ322EEHZYWNSKBEW6N66IRTDREEBUXXU5HPVZGMAXKLIZNM45H++'
+        )
+      ).to.throw(/invalid encoded string/);
     });
 
-    it("throws an error when the checksum is wrong", function() {
-      expect(() => StellarBase.StrKey.decodeEd25519PublicKey("GBPXXOA5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVT")).to.throw(/invalid checksum/);
-      expect(() => StellarBase.StrKey.decodeEd25519SecretSeed("SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCX")).to.throw(/invalid checksum/);
+    it('throws an error when the checksum is wrong', function() {
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519PublicKey(
+          'GBPXXOA5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVT'
+        )
+      ).to.throw(/invalid checksum/);
+      expect(() =>
+        StellarBase.StrKey.decodeEd25519SecretSeed(
+          'SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCX'
+        )
+      ).to.throw(/invalid checksum/);
+    });
+
+    describe('muxed account', function() {
+      it('decodes correctly', function() {
+        const med25519 = new StellarBase.xdr.MuxedAccountMed25519({
+          id: StellarBase.xdr.Uint64.fromString('0'),
+          ed25519: StellarBase.StrKey.decodeEd25519PublicKey(
+            'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+          )
+        });
+        let expectedBuffer = med25519.toXDR();
+        let strkey =
+          'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+        expect(StellarBase.StrKey.decodeMuxedAccount(strkey)).to.eql(
+          expectedBuffer
+        );
+      });
+
+      it('throws an error: unused trailing bit must be zero in the encoding of the last three bytes (24 bits) as five base-32 symbols (25 bits)', function() {
+        // unused trailing bit must be zero in the encoding of the last three bytes (24 bits) as five base-32 symbols (25 bits)
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL7'
+          )
+        ).to.throw(/invalid encoded string/);
+      });
+
+      it('throws an error if strkey has an invalid algorithm', function() {
+        // Invalid algorithm (low 3 bits of version byte are 7)
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'M4AAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITIU2K'
+          )
+        ).to.throw(/invalid version byte/);
+      });
+
+      it('throws an error if strkey has an invalid length', function() {
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MCAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITKNOGA'
+          )
+        ).to.throw(/invalid encoded string/);
+      });
+
+      it('throws an error with if strkey has padding bytes ', function() {
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6==='
+          )
+        ).to.throw(/invalid encoded string/);
+      });
+
+      it('throws an error with an invalid checksum', function() {
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL4'
+          )
+        ).to.throw(/invalid checksum/);
+      });
     });
   });
 
   describe('#encodeCheck', function() {
-    it("encodes a buffer correctly", function() {
-      expect(StellarBase.StrKey.encodeEd25519PublicKey(this.unencodedBuffer)).to.eql(this.accountIdEncoded);
-      expect(StellarBase.StrKey.encodeEd25519PublicKey(this.unencodedBuffer)).to.match(/^G/);
-      expect(StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer)).to.eql(this.seedEncoded);
-      expect(StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer)).to.match(/^S/);
+    it('encodes a buffer correctly', function() {
+      expect(
+        StellarBase.StrKey.encodeEd25519PublicKey(this.unencodedBuffer)
+      ).to.eql(this.accountIdEncoded);
+      expect(
+        StellarBase.StrKey.encodeEd25519PublicKey(this.unencodedBuffer)
+      ).to.match(/^G/);
+      expect(
+        StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer)
+      ).to.eql(this.seedEncoded);
+      expect(
+        StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer)
+      ).to.match(/^S/);
 
       var strkeyEncoded;
 
       strkeyEncoded = StellarBase.StrKey.encodePreAuthTx(this.unencodedBuffer);
       expect(strkeyEncoded).to.match(/^T/);
-      expect(StellarBase.StrKey.decodePreAuthTx(strkeyEncoded)).to.eql(this.unencodedBuffer);
+      expect(StellarBase.StrKey.decodePreAuthTx(strkeyEncoded)).to.eql(
+        this.unencodedBuffer
+      );
 
       strkeyEncoded = StellarBase.StrKey.encodeSha256Hash(this.unencodedBuffer);
       expect(strkeyEncoded).to.match(/^X/);
-      expect(StellarBase.StrKey.decodeSha256Hash(strkeyEncoded)).to.eql(this.unencodedBuffer);
+      expect(StellarBase.StrKey.decodeSha256Hash(strkeyEncoded)).to.eql(
+        this.unencodedBuffer
+      );
     });
 
-    it("encodes a buffer correctly", function() {
-      expect(StellarBase.StrKey.encodeEd25519PublicKey(this.unencodedBuffer)).to.eql(this.accountIdEncoded);
-      expect(StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer)).to.eql(this.seedEncoded);
+    it('encodes a buffer correctly', function() {
+      expect(
+        StellarBase.StrKey.encodeEd25519PublicKey(this.unencodedBuffer)
+      ).to.eql(this.accountIdEncoded);
+      expect(
+        StellarBase.StrKey.encodeEd25519SecretSeed(this.unencodedBuffer)
+      ).to.eql(this.seedEncoded);
     });
 
+    it('throws an error when the data is null', function() {
+      expect(() => StellarBase.StrKey.encodeEd25519SecretSeed(null)).to.throw(
+        /null data/
+      );
+      expect(() => StellarBase.StrKey.encodeEd25519PublicKey(null)).to.throw(
+        /null data/
+      );
+    });
 
-    it("throws an error when the data is null", function() {
-      expect(() => StellarBase.StrKey.encodeEd25519SecretSeed(null)).to.throw(/null data/);
-      expect(() => StellarBase.StrKey.encodeEd25519PublicKey(null)).to.throw(/null data/);
+    describe('muxed account', function() {
+      it('encodes a buffer correctly', function() {
+        const med25519 = new StellarBase.xdr.MuxedAccountMed25519({
+          id: StellarBase.xdr.Uint64.fromString('0'),
+          ed25519: StellarBase.StrKey.decodeEd25519PublicKey(
+            'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+          )
+        });
+        let buffer = med25519.toXDR();
+        let expectedMuxedAccount =
+          'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+        expect(StellarBase.StrKey.encodeMuxedAccount(buffer)).to.eql(
+          expectedMuxedAccount
+        );
+      });
     });
   });
 
   describe('#isValidEd25519PublicKey', function() {
-    it("returns true for valid public key", function() {
+    it('returns true for valid public key', function() {
       var keys = [
         'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
         'GB7KKHHVYLDIZEKYJPAJUOTBE5E3NJAXPSDZK7O6O44WR3EBRO5HRPVT',
@@ -94,7 +251,7 @@ describe('StrKey', function() {
       }
     });
 
-    it("returns false for invalid public key", function() {
+    it('returns false for invalid public key', function() {
       var keys = [
         'GBPXX0A5N4JYPESHAADMQKBPWZWQDQ64ZV6ZL2S3LAGW4SY7NTCMWIVL',
         'GCFZB6L25D26RQFDWSSBDEYQ32JHLRMTT44ZYE3DZQUTYOL7WY43PLBG++',
@@ -113,11 +270,10 @@ describe('StrKey', function() {
         expect(StellarBase.StrKey.isValidEd25519PublicKey(keys[i])).to.be.false;
       }
     });
-
   });
 
   describe('#isValidSecretKey', function() {
-    it("returns true for valid secret key", function() {
+    it('returns true for valid secret key', function() {
       var keys = [
         'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
         'SCZTUEKSEH2VYZQC6VLOTOM4ZDLMAGV4LUMH4AASZ4ORF27V2X64F2S2',
@@ -132,7 +288,7 @@ describe('StrKey', function() {
       }
     });
 
-    it("returns false for invalid secret key", function() {
+    it('returns false for invalid secret key', function() {
       var keys = [
         'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
         'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDYT', // Too long
@@ -143,10 +299,9 @@ describe('StrKey', function() {
       ];
 
       for (var i in keys) {
-        expect(StellarBase.StrKey.isValidEd25519SecretSeed(keys[i])).to.be.false;
+        expect(StellarBase.StrKey.isValidEd25519SecretSeed(keys[i])).to.be
+          .false;
       }
     });
-
   });
-
 });
