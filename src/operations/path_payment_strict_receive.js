@@ -39,7 +39,7 @@ export function pathPaymentStrictReceive(opts) {
   attributes.sendMax = this._toXDRAmount(opts.sendMax);
   attributes.destination = Keypair.fromPublicKey(
     opts.destination
-  ).xdrAccountId();
+  ).xdrMuxedAccount();
   attributes.destAsset = opts.destAsset.toXDRObject();
   attributes.destAmount = this._toXDRAmount(opts.destAmount);
 
