@@ -117,6 +117,15 @@ export class StrKey {
   static encodeMuxedAccount(data) {
     return encodeCheck('muxedAccount', data);
   }
+
+  /**
+   * Decodes strkey muxed account to raw data.
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodeMuxedAccount(data) {
+    return decodeCheck('muxedAccount', data);
+  }
 }
 
 function isValid(versionByteName, encoded) {
@@ -154,7 +163,7 @@ export function decodeCheck(versionByteName, encoded) {
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`
+      `${versionByteName} is not a valid version byte name. Expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
     );
   }
 
@@ -182,7 +191,7 @@ export function encodeCheck(versionByteName, data) {
 
   if (isUndefined(versionByte)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
+      `${versionByteName} is not a valid version byte name. Expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
     );
   }
   data = Buffer.from(data);

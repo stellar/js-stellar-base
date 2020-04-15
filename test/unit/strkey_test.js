@@ -101,6 +101,56 @@ describe('StrKey', function() {
         )
       ).to.throw(/invalid checksum/);
     });
+
+    describe('muxed account', function() {
+      it('decodes correctly', function() {
+        const med25519 = new StellarBase.xdr.MuxedAccountMed25519({
+          id: StellarBase.xdr.Uint64.fromString('0'),
+          ed25519: StellarBase.StrKey.decodeEd25519PublicKey(
+            'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+          )
+        });
+        let expectedBuffer = med25519.toXDR();
+        let strkey =
+          'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+        expect(StellarBase.StrKey.decodeMuxedAccount(strkey)).to.eql(
+          expectedBuffer
+        );
+      });
+
+      it('throws an error if strkey has an invalid algorithm', function() {
+        // Invalid algorithm (low 3 bits of version byte are 7)
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'M4AAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITIU2K'
+          )
+        ).to.throw(/invalid version byte/);
+      });
+
+      it('throws an error if strkey has an invalid length', function() {
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MCAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITKNOGA'
+          )
+        ).to.throw(/invalid encoded string/);
+      });
+
+      it('throws an error with if strkey has padding bytes ', function() {
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6==='
+          )
+        ).to.throw(/invalid encoded string/);
+      });
+
+      it('throws an error with an invalid checksum', function() {
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL4'
+          )
+        ).to.throw(/invalid checksum/);
+      });
+    });
   });
 
   describe('#encodeCheck', function() {
@@ -151,7 +201,7 @@ describe('StrKey', function() {
       );
     });
 
-    describe('med25519', function() {
+    describe('muxed account', function() {
       it('encodes a buffer correctly', function() {
         const med25519 = new StellarBase.xdr.MuxedAccountMed25519({
           id: StellarBase.xdr.Uint64.fromString('0'),
