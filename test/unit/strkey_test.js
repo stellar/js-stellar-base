@@ -121,6 +121,15 @@ describe('StrKey', function() {
         );
       });
 
+      it('throws an error: unused trailing bit must be zero in the encoding of the last three bytes (24 bits) as five base-32 symbols (25 bits)', function() {
+        // unused trailing bit must be zero in the encoding of the last three bytes (24 bits) as five base-32 symbols (25 bits)
+        expect(() =>
+          StellarBase.StrKey.decodeMuxedAccount(
+            'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL7'
+          )
+        ).to.throw(/invalid encoded string/);
+      });
+
       it('throws an error if strkey has an invalid algorithm', function() {
         // Invalid algorithm (low 3 bits of version byte are 7)
         expect(() =>
