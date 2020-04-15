@@ -10,6 +10,9 @@ describe('StrKey', function() {
       this.unencodedBuffer
     );
   });
+  after(function() {
+    StellarBase.Network.use(null);
+  });
 
   describe('#decodeCheck', function() {
     it('decodes correctly', function() {
