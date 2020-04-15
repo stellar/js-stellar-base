@@ -27,7 +27,7 @@ export function payment(opts) {
   const attributes = {};
   attributes.destination = Keypair.fromPublicKey(
     opts.destination
-  ).xdrAccountId();
+  ).xdrMuxedAccount();
   attributes.asset = opts.asset.toXDRObject();
   attributes.amount = this._toXDRAmount(opts.amount);
   const paymentOp = new xdr.PaymentOp(attributes);

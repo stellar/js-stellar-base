@@ -140,6 +140,10 @@ export class Keypair {
     return new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
   }
 
+  xdrMuxedAccount() {
+    return new xdr.MuxedAccount.keyTypeEd25519(this._publicKey);
+  }
+
   /**
    * Returns raw public key
    * @returns {Buffer}
