@@ -2,7 +2,10 @@ import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
 import { Keypair } from './keypair';
 
-export default class TransactionBase {
+/**
+ * @ignore
+ */
+export class TransactionBase {
   constructor(tx, signatures, fee, networkPassphrase) {
     if (typeof networkPassphrase !== 'string') {
       throw new Error(

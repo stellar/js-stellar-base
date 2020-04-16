@@ -3,7 +3,7 @@ import { hash } from './hashing';
 
 import { StrKey } from './strkey';
 import { Transaction } from './transaction';
-import TransactionBase from './transaction_base';
+import { TransactionBase } from './transaction_base';
 
 /**
  * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a FeeBumpTransaction object, unless you have
@@ -11,10 +11,9 @@ import TransactionBase from './transaction_base';
  * Once a {@link FeeBumpTransaction} has been created, its attributes and operations
  * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
  * submitting to the network or forwarding on to additional signers.
- * @constructor
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
  * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
- * @ignore tell jsdoc to now show this class
+ * @extends TransactionBase
  */
 export class FeeBumpTransaction extends TransactionBase {
   constructor(envelope, networkPassphrase) {
