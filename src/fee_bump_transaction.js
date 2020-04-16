@@ -54,10 +54,18 @@ export class FeeBumpTransaction extends TransactionBase {
     );
   }
 
+  /**
+   * @type {Transaction}
+   * @readonly
+   */
   get innerTransaction() {
     return this._innerTransaction;
   }
 
+  /**
+   * @type {string}
+   * @readonly
+   */
   get feeSource() {
     return this._feeSource;
   }
