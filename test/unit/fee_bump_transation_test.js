@@ -1,17 +1,22 @@
-describe('FeeBumpTransaction', function() {
-  it('constructs a FeeBumTransaction object from a TransactionEnvelope', function() {
-    let baseFee = '100';
-    const networkPassphrase = 'Standalone Network ; February 2017';
-    const innerSource = StellarBase.Keypair.master(networkPassphrase);
-    const innerAccount = new StellarBase.Account(innerSource.publicKey(), '7');
-    const destination =
-      'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
-    const amount = '2000.0000000';
-    const asset = StellarBase.Asset.native();
+import randomBytes from 'randombytes';
 
-    let innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+describe('FeeBumpTransaction', function() {
+  beforeEach(function() {
+    this.baseFee = '100';
+    this.networkPassphrase = 'Standalone Network ; February 2017';
+    this.innerSource = StellarBase.Keypair.master(this.networkPassphrase);
+    this.innerAccount = new StellarBase.Account(
+      this.innerSource.publicKey(),
+      '7'
+    );
+    this.destination =
+      'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
+    this.amount = '2000.0000000';
+    this.asset = StellarBase.Asset.native();
+
+    this.innerTx = new StellarBase.TransactionBuilder(this.innerAccount, {
       fee: '100',
-      networkPassphrase: networkPassphrase,
+      networkPassphrase: this.networkPassphrase,
       timebounds: {
         minTime: 0,
         maxTime: 0
@@ -20,43 +25,45 @@ describe('FeeBumpTransaction', function() {
     })
       .addOperation(
         StellarBase.Operation.payment({
-          destination,
-          asset,
-          amount
+          destination: this.destination,
+          asset: this.asset,
+          amount: this.amount
         })
       )
       .addMemo(StellarBase.Memo.text('Happy birthday!'))
       .build();
-    innerTx.sign(innerSource);
-
-    let feeSource = StellarBase.Keypair.fromSecret(
+    this.innerTx.sign(this.innerSource);
+    this.feeSource = StellarBase.Keypair.fromSecret(
       'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
     );
-
-    let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
-      feeSource,
+    this.transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+      this.feeSource,
       '100',
-      innerTx,
-      networkPassphrase
+      this.innerTx,
+      this.networkPassphrase
     );
+  });
 
-    transaction.sign(feeSource);
-    expect(transaction.feeSource).to.be.equal(feeSource.publicKey());
+  it('constructs a FeeBumTransaction object from a TransactionEnvelope', function() {
+    const transaction = this.transaction;
+    transaction.sign(this.feeSource);
+
+    expect(transaction.feeSource).to.be.equal(this.feeSource.publicKey());
     expect(transaction.fee).to.be.equal('200');
 
     const innerTransaction = transaction.innerTransaction;
 
-    expect(innerTransaction.toXDR()).to.be.equal(innerTx.toXDR());
-    expect(innerTransaction.source).to.be.equal(innerSource.publicKey());
+    expect(innerTransaction.toXDR()).to.be.equal(this.innerTx.toXDR());
+    expect(innerTransaction.source).to.be.equal(this.innerSource.publicKey());
     expect(innerTransaction.fee).to.be.equal('100');
     expect(innerTransaction.memo.type).to.be.equal(StellarBase.MemoText);
     expect(innerTransaction.memo.value.toString('ascii')).to.be.equal(
       'Happy birthday!'
     );
-    let operation = innerTransaction.operations[0];
+    const operation = innerTransaction.operations[0];
     expect(operation.type).to.be.equal('payment');
-    expect(operation.destination).to.be.equal(destination);
-    expect(operation.amount).to.be.equal(amount);
+    expect(operation.destination).to.be.equal(this.destination);
+    expect(operation.amount).to.be.equal(this.amount);
 
     const expectedXDR =
       'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
@@ -67,7 +74,7 @@ describe('FeeBumpTransaction', function() {
         .toXDR()
         .toString('base64')
     ).to.be.equal(expectedXDR);
-    let expectedTxEnvelope = StellarBase.xdr.TransactionEnvelope.fromXDR(
+    const expectedTxEnvelope = StellarBase.xdr.TransactionEnvelope.fromXDR(
       expectedXDR,
       'base64'
     ).value();
@@ -127,4 +134,171 @@ describe('FeeBumpTransaction', function() {
         .toString('base64')
     );
   });
+
+  it('throws when a garbage Network is selected', function() {
+    const input = this.transaction.toEnvelope();
+
+    expect(() => {
+      new StellarBase.FeeBumpTransaction(input, { garbage: 'yes' });
+    }).to.throw(/expected a string/);
+
+    expect(() => {
+      new StellarBase.FeeBumpTransaction(input, 1234);
+    }).to.throw(/expected a string/);
+  });
+
+  it('signs correctly', function() {
+    const tx = this.transaction;
+    tx.sign(this.feeSource);
+    const rawSig = tx
+      .toEnvelope()
+      .feeBump()
+      .signatures()[0]
+      .signature();
+    expect(this.feeSource.verify(tx.hash(), rawSig)).to.equal(true);
+  });
+
+  it('signs using hash preimage', function() {
+    let preimage = randomBytes(64);
+    let hash = StellarBase.hash(preimage);
+    let tx = this.transaction;
+    tx.signHashX(preimage);
+    let env = tx.toEnvelope().feeBump();
+    expectBuffersToBeEqual(env.signatures()[0].signature(), preimage);
+    expectBuffersToBeEqual(
+      env.signatures()[0].hint(),
+      hash.slice(hash.length - 4)
+    );
+  });
+
+  it('returns error when signing using hash preimage that is too long', function() {
+    let preimage = randomBytes(2 * 64);
+    let tx = this.transaction;
+    expect(() => tx.signHashX(preimage)).to.throw(
+      /preimage cannnot be longer than 64 bytes/
+    );
+  });
+
+  it('adds signature correctly', function() {
+    const transaction = this.transaction;
+    const signer = this.feeSource;
+    const presignHash = transaction.hash();
+
+    const addedSignatureTx = new StellarBase.FeeBumpTransaction(
+      transaction.toEnvelope(),
+      this.networkPassphrase
+    );
+
+    const signature = signer.sign(presignHash).toString('base64');
+
+    addedSignatureTx.addSignature(signer.publicKey(), signature);
+
+    const envelopeAddedSignature = addedSignatureTx.toEnvelope().feeBump();
+
+    expect(
+      signer.verify(
+        addedSignatureTx.hash(),
+        envelopeAddedSignature.signatures()[0].signature()
+      )
+    ).to.equal(true);
+
+    transaction.sign(signer);
+    const envelopeSigned = transaction.toEnvelope().feeBump();
+
+    expectBuffersToBeEqual(
+      envelopeSigned.signatures()[0].signature(),
+      envelopeAddedSignature.signatures()[0].signature()
+    );
+
+    expectBuffersToBeEqual(
+      envelopeSigned.signatures()[0].hint(),
+      envelopeAddedSignature.signatures()[0].hint()
+    );
+
+    expectBuffersToBeEqual(addedSignatureTx.hash(), transaction.hash());
+  });
+
+  it('adds signature generated by getKeypairSignature', function() {
+    const transaction = this.transaction;
+    const presignHash = transaction.hash();
+    const signer = this.feeSource;
+
+    const signature = new StellarBase.FeeBumpTransaction(
+      transaction.toEnvelope(),
+      this.networkPassphrase
+    ).getKeypairSignature(signer);
+
+    expect(signer.sign(presignHash).toString('base64')).to.equal(signature);
+
+    const addedSignatureTx = new StellarBase.FeeBumpTransaction(
+      transaction.toEnvelope(),
+      this.networkPassphrase
+    );
+
+    expect(addedSignatureTx.signatures.length).to.equal(0);
+    addedSignatureTx.addSignature(signer.publicKey(), signature);
+
+    const envelopeAddedSignature = addedSignatureTx.toEnvelope().feeBump();
+
+    expect(
+      signer.verify(
+        transaction.hash(),
+        envelopeAddedSignature.signatures()[0].signature()
+      )
+    ).to.equal(true);
+
+    expect(transaction.signatures.length).to.equal(0);
+    transaction.sign(signer);
+    const envelopeSigned = transaction.toEnvelope().feeBump();
+
+    expectBuffersToBeEqual(
+      envelopeSigned.signatures()[0].signature(),
+      envelopeAddedSignature.signatures()[0].signature()
+    );
+
+    expectBuffersToBeEqual(
+      envelopeSigned.signatures()[0].hint(),
+      envelopeAddedSignature.signatures()[0].hint()
+    );
+
+    expectBuffersToBeEqual(addedSignatureTx.hash(), transaction.hash());
+  });
+
+  it('does not add invalid signature', function() {
+    const transaction = this.transaction;
+    const signer = this.feeSource;
+
+    const signature = new StellarBase.FeeBumpTransaction(
+      transaction.toEnvelope(),
+      this.networkPassphrase
+    ).getKeypairSignature(signer);
+
+    const alteredTx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+      this.feeSource,
+      '200',
+      this.innerTx,
+      this.networkPassphrase
+    );
+
+    expect(() => {
+      alteredTx.addSignature(signer.publicKey(), signature);
+    }).to.throw('Invalid signature');
+  });
+
+  it('outputs xdr as a string', function() {
+    const xdrString =
+      'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
+    const transaction = new StellarBase.FeeBumpTransaction(
+      xdrString,
+      this.networkPassphrase
+    );
+    expect(transaction).to.be.instanceof(StellarBase.FeeBumpTransaction);
+    expect(transaction.toXDR()).to.be.equal(xdrString);
+  });
 });
+
+function expectBuffersToBeEqual(left, right) {
+  let leftHex = left.toString('hex');
+  let rightHex = right.toString('hex');
+  expect(leftHex).to.eql(rightHex);
+}
