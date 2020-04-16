@@ -18,7 +18,10 @@ describe('TransactionBuilder', function() {
       asset = StellarBase.Asset.native();
       memo = StellarBase.Memo.id('100');
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination,
@@ -78,7 +81,10 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -145,7 +151,10 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 1000 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 1000,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -182,7 +191,8 @@ describe('TransactionBuilder', function() {
       };
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -236,7 +246,8 @@ describe('TransactionBuilder', function() {
 
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -304,7 +315,8 @@ describe('TransactionBuilder', function() {
             minTime: '1',
             maxTime: '10'
           },
-          fee: 100
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
         }).build();
       }).to.not.throw();
     });
@@ -373,7 +385,10 @@ describe('TransactionBuilder', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
@@ -428,7 +443,8 @@ describe('TransactionBuilder', function() {
       );
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -453,7 +469,8 @@ describe('TransactionBuilder', function() {
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
-          fee: 100
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
         })
           .setTimeout(0)
           .build();

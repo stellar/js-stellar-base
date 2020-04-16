@@ -43,28 +43,6 @@ describe('Transaction', function() {
     done();
   });
 
-  it('does not sign when no Network selected', function() {
-    let source = new StellarBase.Account(
-      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      '0'
-    );
-    let destination =
-      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
-    let asset = StellarBase.Asset.native();
-    let amount = '2000';
-    let signer = StellarBase.Keypair.random();
-
-    let tx = new StellarBase.TransactionBuilder(source, {
-      fee: 100
-    })
-      .addOperation(
-        StellarBase.Operation.payment({ destination, asset, amount })
-      )
-      .setTimeout(StellarBase.TimeoutInfinite)
-      .build();
-    expect(() => tx.sign(signer)).to.throw(/No network selected/);
-  });
-
   it('throws when a garbage Network is selected', () => {
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
@@ -75,7 +53,10 @@ describe('Transaction', function() {
     let asset = StellarBase.Asset.native();
     let amount = '2000.0000000';
 
-    let input = new StellarBase.TransactionBuilder(source, { fee: 100 })
+    let input = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
@@ -91,6 +72,34 @@ describe('Transaction', function() {
 
     expect(() => {
       new StellarBase.Transaction(input, 1234);
+    }).to.throw(/expected a string/);
+  });
+
+  it('throws when a Network is not passed', () => {
+    let source = new StellarBase.Account(
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
+    );
+    let destination =
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+    let asset = StellarBase.Asset.native();
+    let amount = '2000.0000000';
+
+    let input = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
+      .addOperation(
+        StellarBase.Operation.payment({ destination, asset, amount })
+      )
+      .addMemo(StellarBase.Memo.text('Happy birthday!'))
+      .setTimeout(StellarBase.TimeoutInfinite)
+      .build()
+      .toEnvelope()
+      .toXDR('base64');
+
+    expect(() => {
+      new StellarBase.Transaction(input);
     }).to.throw(/expected a string/);
   });
 

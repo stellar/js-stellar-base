@@ -33,7 +33,7 @@ export class FeeBumpTransaction extends TransactionBase {
     const tx = txEnvelope.tx();
     const fee = tx.fee().toString();
     // clone signatures
-    const signatures = txEnvelope.signatures().slice();
+    const signatures = (txEnvelope.signatures() || []).slice();
 
     super(tx, signatures, fee, networkPassphrase);
 
