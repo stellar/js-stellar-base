@@ -1,4 +1,4 @@
-// Automatically generated on 2020-04-14T16:01:24-05:00
+// Automatically generated on 2020-04-16T16:15:58-05:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -1481,7 +1481,7 @@ xdr.union("FeeBumpTransactionExt", {
 //
 //   struct FeeBumpTransaction
 //   {
-//       AccountID feeSource;
+//       MuxedAccount feeSource;
 //       int64 fee;
 //       union switch (EnvelopeType type)
 //       {
@@ -1499,7 +1499,7 @@ xdr.union("FeeBumpTransactionExt", {
 //
 // ===========================================================================
 xdr.struct("FeeBumpTransaction", [
-  ["feeSource", xdr.lookup("AccountId")],
+  ["feeSource", xdr.lookup("MuxedAccount")],
   ["fee", xdr.lookup("Int64")],
   ["innerTx", xdr.lookup("FeeBumpTransactionInnerTx")],
   ["ext", xdr.lookup("FeeBumpTransactionExt")],
