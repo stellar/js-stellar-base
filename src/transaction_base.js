@@ -19,6 +19,10 @@ export class TransactionBase {
     this._fee = fee;
   }
 
+  /**
+   * @type {Array.<xdr.DecoratedSignature>}
+   * @readonly
+   */
   get signatures() {
     return this._signatures;
   }
@@ -31,6 +35,10 @@ export class TransactionBase {
     throw new Error('Transaction is immutable');
   }
 
+  /**
+   * @type {string}
+   * @readonly
+   */
   get fee() {
     return this._fee;
   }
@@ -39,6 +47,10 @@ export class TransactionBase {
     throw new Error('Transaction is immutable');
   }
 
+  /**
+   * @type {string}
+   * @readonly
+   */
   get networkPassphrase() {
     return this._networkPassphrase;
   }
@@ -63,7 +75,7 @@ export class TransactionBase {
   /**
    * Signs a transaction with the given {@link Keypair}. Useful if someone sends
    * you a transaction XDR for you to sign and return (see
-   * {@link FeeBumpTransaction#addSignature} for how that works).
+   * {@link #addSignature} for how that works).
    *
    * When you get a transaction XDR to sign....
    * - Instantiate a `Transaction` object with the XDR
@@ -74,7 +86,7 @@ export class TransactionBase {
    * Example:
    * ```javascript
    * // `transactionXDR` is a string from the person generating the transaction
-   * const transaction = new FeeBumpTransaction(transactionXDR, networkPassphrase);
+   * const transaction = new Transaction(transactionXDR, networkPassphrase);
    * const keypair = Keypair.fromSecret(myStellarSeed);
    * return transaction.getKeypairSignature(keypair);
    * ```
@@ -101,9 +113,9 @@ export class TransactionBase {
    * transactions onto your account! Doing so will invalidate this pre-compiled
    * transaction!
    * - Send this XDR string to your other parties. They can use the instructions
-   * for {@link FeeBumpTransaction#getKeypairSignature} to sign the transaction.
+   * for {@link #getKeypairSignature} to sign the transaction.
    * - They should send you back their `publicKey` and the `signature` string
-   * from {@link FeeBumpTransaction#getKeypairSignature}, both of which you pass to
+   * from {@link #getKeypairSignature}, both of which you pass to
    * this function.
    *
    * @param {string} publicKey The public key of the signer
