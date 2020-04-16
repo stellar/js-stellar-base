@@ -11,12 +11,13 @@ import { Transaction } from './transaction';
 /**
  * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a FeeBumpTransaction object, unless you have
  * an object or base64-encoded string of the transaction envelope XDR.
- * Once a FeeBumpTransaction has been created, its attributes and operations
- * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) to a Transaction object before
+ * Once a {@link FeeBumpTransaction} has been created, its attributes and operations
+ * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
  * submitting to the network or forwarding on to additional signers.
  * @constructor
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
  * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+ * @ignore tell jsdoc to now show this class
  */
 export class FeeBumpTransaction {
   constructor(envelope, networkPassphrase) {
@@ -146,7 +147,7 @@ export class FeeBumpTransaction {
    *
    * @param {string} publicKey The public key of the signer
    * @param {string} signature The base64 value of the signature XDR
-   * @returns {TransactionBuilder}
+   * @returns {void}
    */
   addSignature(publicKey = '', signature = '') {
     if (!signature || typeof signature !== 'string') {

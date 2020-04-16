@@ -265,7 +265,7 @@ export class TransactionBuilder {
    * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
    * @param {Transaction} innerTx - The Transaction to be bumped by the fee bump transaction.
    * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
-   * @returns {Transaction}
+   * @returns {FeeBumpTransaction}
    * @ignore tell jsdoc to not show this method for now
    */
   static buildFeeBumpTransaction(

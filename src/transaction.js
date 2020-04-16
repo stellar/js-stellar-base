@@ -168,7 +168,7 @@ export class Transaction {
    *
    * @param {string} publicKey The public key of the signer
    * @param {string} signature The base64 value of the signature XDR
-   * @returns {TransactionBuilder}
+   * @returns {void}
    */
   addSignature(publicKey = '', signature = '') {
     if (!signature || typeof signature !== 'string') {
