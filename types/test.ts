@@ -20,6 +20,8 @@ const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), 
 transactionFromXDR.networkPassphrase; // $ExpectType string
 transactionFromXDR.networkPassphrase = "SDF";
 
+StellarSdk.TransactionBuilder.fromXDR(transaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
+
 const sig = StellarSdk.xdr.DecoratedSignature.fromXDR(Buffer.of(1, 2)); // $ExpectType DecoratedSignature
 sig.hint(); // $ExpectType Buffer
 sig.signature(); // $ExpectType Buffer
@@ -43,6 +45,8 @@ feeBumptransaction.fee; // $ExpectType string
 feeBumptransaction.toXDR(); // $ExpectType string
 feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
 feeBumptransaction.hash(); // $ExpectType Buffer
+
+StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
 
 // P.S. don't use Memo constructor
 new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf').value; // $ExpectType MemoValue

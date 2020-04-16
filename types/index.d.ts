@@ -553,6 +553,7 @@ export class TransactionBuilder {
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): FeeBumpTransaction;
+  static fromXDR(envelope: string, networkPassphrase: string): Transaction|FeeBumpTransaction;
 }
 
 export namespace TransactionBuilder {
