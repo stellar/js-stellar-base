@@ -152,6 +152,9 @@ describe('Transaction', function() {
     let rawSig = env.signatures()[0].signature();
     let verified = signer.verify(tx.hash(), rawSig);
     expect(verified).to.equal(true);
+
+    env.signatures().push({});
+    expect(tx.signatures.length).to.equal(1);
   });
 
   it('signs using hash preimage', function() {
@@ -510,7 +513,10 @@ describe('Transaction', function() {
         envelope,
         networkPassphrase
       );
-      expect(txWithMuxedAccount.source).to.equal(tx.source);
+      expect(txWithMuxedAccount.source).to.equal(
+        StellarBase.StrKey.encodeMuxedAccount(med25519.toXDR())
+      );
+      expect(tx.source).to.equal(source.publicKey());
     });
   });
 });

@@ -44,18 +44,7 @@ export class Transaction extends TransactionBase {
 
     super(tx, signatures, fee, networkPassphrase);
 
-    let sourceAccount;
-    switch (envelopeType) {
-      case xdr.EnvelopeType.envelopeTypeTxV0():
-        sourceAccount = tx.sourceAccountEd25519();
-        break;
-      default:
-        sourceAccount = this._getSourceAccount(tx.sourceAccount());
-        break;
-    }
-
     this._envelopeType = envelopeType;
-    this._source = StrKey.encodeEd25519PublicKey(sourceAccount);
     this._memo = tx.memo();
     this._sequence = tx.seqNum().toString();
 
@@ -101,7 +90,33 @@ export class Transaction extends TransactionBase {
    * @readonly
    */
   get source() {
-    return this._source;
+    const envelopeType = this._envelopeType;
+    let source;
+
+    switch (envelopeType) {
+      case xdr.EnvelopeType.envelopeTypeTxV0():
+        source = StrKey.encodeEd25519PublicKey(this.tx.sourceAccountEd25519());
+        break;
+      default:
+        if (
+          this.tx.sourceAccount().switch() ===
+          xdr.CryptoKeyType.keyTypeEd25519()
+        ) {
+          source = StrKey.encodeEd25519PublicKey(
+            this.tx.sourceAccount().ed25519()
+          );
+        } else {
+          source = StrKey.encodeMuxedAccount(
+            this.tx
+              .sourceAccount()
+              .med25519()
+              .toXDR()
+          );
+        }
+        break;
+    }
+
+    return source;
   }
 
   set source(value) {
@@ -175,19 +190,25 @@ export class Transaction extends TransactionBase {
    * @returns {xdr.TransactionEnvelope}
    */
   toEnvelope() {
-    const tx = this.tx;
-    const signatures = this.signatures;
+    const rawTx = Buffer.concat([this.tx.toXDR()]);
+    const signatures = this.signatures.slice(); // make a copy of signatures
 
     let envelope;
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
         envelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
-          new xdr.TransactionV0Envelope({ tx, signatures })
+          new xdr.TransactionV0Envelope({
+            tx: xdr.TransactionV0.fromXDR(rawTx), // make a copy of tx
+            signatures
+          })
         );
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
         envelope = new xdr.TransactionEnvelope.envelopeTypeTx(
-          new xdr.TransactionV1Envelope({ tx, signatures })
+          new xdr.TransactionV1Envelope({
+            tx: xdr.Transaction.fromXDR(rawTx), // make a copy of tx
+            signatures
+          })
         );
         break;
       default:
@@ -197,13 +218,5 @@ export class Transaction extends TransactionBase {
     }
 
     return envelope;
-  }
-
-  _getSourceAccount(muxedAccount) {
-    if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
-      return muxedAccount.ed25519();
-    }
-
-    return muxedAccount.med25519().ed25519();
   }
 }
