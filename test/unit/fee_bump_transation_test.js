@@ -312,6 +312,30 @@ describe('FeeBumpTransaction', function() {
     expect(transaction).to.be.instanceof(StellarBase.FeeBumpTransaction);
     expect(transaction.toXDR()).to.be.equal(xdrString);
   });
+
+  it('handles muxed accounts', function() {
+    let med25519 = new StellarBase.xdr.MuxedAccountMed25519({
+      id: StellarBase.xdr.Uint64.fromString('0'),
+      ed25519: this.feeSource.rawPublicKey()
+    });
+
+    let muxedAccount = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
+      med25519
+    );
+
+    const envelope = this.transaction.toEnvelope();
+    envelope
+      .feeBump()
+      .tx()
+      .feeSource(muxedAccount);
+    const txWithMuxedAccount = new StellarBase.FeeBumpTransaction(
+      envelope,
+      this.networkPassphrase
+    );
+    expect(txWithMuxedAccount.feeSource).to.equal(
+      StellarBase.StrKey.encodeMuxedAccount(med25519.toXDR())
+    );
+  });
 });
 
 function expectBuffersToBeEqual(left, right) {

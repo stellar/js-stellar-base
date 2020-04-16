@@ -98,21 +98,7 @@ export class Transaction extends TransactionBase {
         source = StrKey.encodeEd25519PublicKey(this.tx.sourceAccountEd25519());
         break;
       default:
-        if (
-          this.tx.sourceAccount().switch() ===
-          xdr.CryptoKeyType.keyTypeEd25519()
-        ) {
-          source = StrKey.encodeEd25519PublicKey(
-            this.tx.sourceAccount().ed25519()
-          );
-        } else {
-          source = StrKey.encodeMuxedAccount(
-            this.tx
-              .sourceAccount()
-              .med25519()
-              .toXDR()
-          );
-        }
+        source = this._muxedToString(this.tx.sourceAccount());
         break;
     }
 

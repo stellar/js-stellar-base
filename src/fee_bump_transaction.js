@@ -37,13 +37,6 @@ export class FeeBumpTransaction extends TransactionBase {
 
     super(tx, signatures, fee, networkPassphrase);
 
-    const feeSource = txEnvelope
-      .tx()
-      .feeSource()
-      .ed25519();
-
-    this._feeSource = StrKey.encodeEd25519PublicKey(feeSource);
-
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
       tx.innerTx().v1()
     );
@@ -67,7 +60,7 @@ export class FeeBumpTransaction extends TransactionBase {
    * @readonly
    */
   get feeSource() {
-    return this._feeSource;
+    return this._muxedToString(this.tx.feeSource());
   }
 
   /**

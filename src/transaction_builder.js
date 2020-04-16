@@ -303,7 +303,7 @@ export class TransactionBuilder {
     }
 
     const tx = new xdr.FeeBumpTransaction({
-      feeSource: feeSource.xdrAccountId(),
+      feeSource: feeSource.xdrMuxedAccount(),
       fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
