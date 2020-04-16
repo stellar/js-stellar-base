@@ -35,6 +35,15 @@ StellarSdk.Memo.text('asdf').value; // $ExpectType string | Buffer
 StellarSdk.Memo.return('asdf').value; // $ExpectType Buffer
 StellarSdk.Memo.hash('asdf').value; // $ExpectType Buffer
 
+const feeBumptransaction = StellarSdk.TransactionBuilder.buildFeeBumpTransaction(masterKey, "120", transaction, StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction
+
+feeBumptransaction.feeSource; // $ExpectType string
+feeBumptransaction.innerTransaction; // $ExpectType Transaction<Memo<MemoType>, Operation[]>
+feeBumptransaction.fee; // $ExpectType string
+feeBumptransaction.toXDR(); // $ExpectType string
+feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
+feeBumptransaction.hash(); // $ExpectType Buffer
+
 // P.S. don't use Memo constructor
 new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf').value; // $ExpectType MemoValue
 // (new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf')).type; // $ExpectType MemoType  // TODO: Inspect what's wrong with linter.

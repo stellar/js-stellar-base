@@ -5,106 +5,84 @@ import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
 
 import { StrKey } from './strkey';
-import { Operation } from './operation';
-import { Network } from './network';
-import { Memo } from './memo';
 import { Keypair } from './keypair';
+import { Transaction } from './transaction';
 
 /**
- * Use {@link TransactionBuilder} to build a transaction object, unless you have
+ * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a FeeBumpTransaction object, unless you have
  * an object or base64-encoded string of the transaction envelope XDR.
- * Once a Transaction has been created, its attributes and operations
- * should not be changed. You should only add signatures (using {@link Transaction#sign}) to a Transaction object before
+ * Once a FeeBumpTransaction has been created, its attributes and operations
+ * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) to a Transaction object before
  * submitting to the network or forwarding on to additional signers.
  * @constructor
  * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
- * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+ * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
  */
-export class Transaction {
+export class FeeBumpTransaction {
   constructor(envelope, networkPassphrase) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
 
-    // Deprecation warning. TODO: remove optionality with next major release.
-    if (networkPassphrase === null || networkPassphrase === undefined) {
-      console.warn(
-        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
-      );
-    } else if (typeof networkPassphrase !== 'string') {
+    if (typeof networkPassphrase !== 'string') {
       throw new Error(
         `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
       );
     }
     this._networkPassphrase = networkPassphrase;
 
-    const txEnvelope = envelope.value();
-    let sourceAccount;
-    this._envelopeType = envelope.switch();
-    switch (this._envelopeType) {
-      case xdr.EnvelopeType.envelopeTypeTxV0():
-        sourceAccount = txEnvelope.tx().sourceAccountEd25519();
-        break;
-      case xdr.EnvelopeType.envelopeTypeTx():
-        sourceAccount = this._getSourceAccount(txEnvelope.tx().sourceAccount());
-        break;
-      default:
-        throw new Error(
-          `Invalid TransactionEnvelope: expected an envelopeTypeTxV0 or envelopeTypeTx but received an ${this._envelopeType.name}.`
-        );
-    }
-
-    // since this transaction is immutable, save the tx
-    this.tx = txEnvelope.tx();
-    this.source = StrKey.encodeEd25519PublicKey(sourceAccount);
-    this.fee = this.tx.fee().toString();
-
-    this._memo = this.tx.memo();
-    this.sequence = this.tx.seqNum().toString();
-
-    const timeBounds = this.tx.timeBounds();
-    if (timeBounds) {
-      this.timeBounds = {
-        minTime: timeBounds.minTime().toString(),
-        maxTime: timeBounds.maxTime().toString()
-      };
-    }
-    const operations = this.tx.operations() || [];
-    this.operations = map(operations, (op) => Operation.fromXDRObject(op));
-
-    const signatures = txEnvelope.signatures() || [];
-    this.signatures = map(signatures, (s) => s);
-  }
-
-  get networkPassphrase() {
-    if (this._networkPassphrase) {
-      return this._networkPassphrase;
-    }
-
-    console.warn(
-      'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `new Transaction(envelope, Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
-    );
-
-    if (Network.current() === null) {
+    const envelopeType = envelope.switch();
+    if (envelopeType !== xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
       throw new Error(
-        'No network selected. Please pass a network argument, e.g. `new Transaction(envelope, Networks.PUBLIC)`.'
+        `Invalid TransactionEnvelope: expected an envelopeTypeTxFeeBump but received an ${envelopeType.name}.`
       );
     }
 
-    return Network.current().networkPassphrase();
+    const txEnvelope = envelope.value();
+    const sourceAccount = txEnvelope
+      .tx()
+      .feeSource()
+      .ed25519();
+
+    // since this transaction is immutable, save the tx
+    this._tx = txEnvelope.tx();
+    this._feeSource = StrKey.encodeEd25519PublicKey(sourceAccount);
+    this._fee = this._tx.fee().toString();
+
+    const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
+      this.tx.innerTx().v1()
+    );
+    this._innerTransaction = new Transaction(
+      innerTxEnvelope,
+      networkPassphrase
+    );
+    this.signatures = map(txEnvelope.signatures() || [], (s) => s);
+  }
+
+  get tx() {
+    return this._tx;
+  }
+
+  get innerTransaction() {
+    return this._innerTransaction;
+  }
+
+  get feeSource() {
+    return this._feeSource;
+  }
+
+  get fee() {
+    return this._fee;
+  }
+
+  get networkPassphrase() {
+    return this._networkPassphrase;
   }
 
   set networkPassphrase(networkPassphrase) {
+    this.innerTransaction.networkPassphrase = networkPassphrase;
     this._networkPassphrase = networkPassphrase;
-  }
-
-  get memo() {
-    return Memo.fromXDRObject(this._memo);
-  }
-
-  set memo(value) {
-    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -123,7 +101,7 @@ export class Transaction {
   /**
    * Signs a transaction with the given {@link Keypair}. Useful if someone sends
    * you a transaction XDR for you to sign and return (see
-   * {@link Transaction#addSignature} for how that works).
+   * {@link FeeBumpTransaction#addSignature} for how that works).
    *
    * When you get a transaction XDR to sign....
    * - Instantiate a `Transaction` object with the XDR
@@ -134,7 +112,7 @@ export class Transaction {
    * Example:
    * ```javascript
    * // `transactionXDR` is a string from the person generating the transaction
-   * const transaction = new Transaction(transactionXDR, networkPassphrase);
+   * const transaction = new FeeBumpTransaction(transactionXDR, networkPassphrase);
    * const keypair = Keypair.fromSecret(myStellarSeed);
    * return transaction.getKeypairSignature(keypair);
    * ```
@@ -161,9 +139,9 @@ export class Transaction {
    * transactions onto your account! Doing so will invalidate this pre-compiled
    * transaction!
    * - Send this XDR string to your other parties. They can use the instructions
-   * for {@link Transaction#getKeypairSignature} to sign the transaction.
+   * for {@link FeeBumpTransaction#getKeypairSignature} to sign the transaction.
    * - They should send you back their `publicKey` and the `signature` string
-   * from {@link Transaction#getKeypairSignature}, both of which you pass to
+   * from {@link FeeBumpTransaction#getKeypairSignature}, both of which you pass to
    * this function.
    *
    * @param {string} publicKey The public key of the signer
@@ -240,24 +218,8 @@ export class Transaction {
    * @returns {Buffer}
    */
   signatureBase() {
-    let tx = this.tx;
-
-    // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
-    // we need a Transaction to generate the signature base
-    if (this._envelopeType === xdr.EnvelopeType.envelopeTypeTxV0()) {
-      tx = xdr.Transaction.fromXDR(
-        Buffer.concat([
-          // TransactionV0 is a transaction with the AccountID discriminant
-          // stripped off, we need to put it back to build a valid transaction
-          // which we can use to build a TransactionSignaturePayloadTaggedTransaction
-          xdr.PublicKeyType.publicKeyTypeEd25519().toXDR(),
-          tx.toXDR()
-        ])
-      );
-    }
-
-    const taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
-      tx
+    const taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
+      this.tx
     );
 
     const txSignature = new xdr.TransactionSignaturePayload({
@@ -273,28 +235,12 @@ export class Transaction {
    * @returns {xdr.TransactionEnvelope}
    */
   toEnvelope() {
-    const tx = this.tx;
-    const signatures = this.signatures;
+    const envelope = new xdr.FeeBumpTransactionEnvelope({
+      tx: this.tx,
+      signatures: this.signatures
+    });
 
-    let envelope;
-    switch (this._envelopeType) {
-      case xdr.EnvelopeType.envelopeTypeTxV0():
-        envelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
-          new xdr.TransactionV0Envelope({ tx, signatures })
-        );
-        break;
-      case xdr.EnvelopeType.envelopeTypeTx():
-        envelope = new xdr.TransactionEnvelope.envelopeTypeTx(
-          new xdr.TransactionV1Envelope({ tx, signatures })
-        );
-        break;
-      default:
-        throw new Error(
-          `Invalid TransactionEnvelope: expected an envelopeTypeTxV0 or envelopeTypeTx but received an ${this._envelopeType.name}.`
-        );
-    }
-
-    return envelope;
+    return new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(envelope);
   }
 
   /**
@@ -305,13 +251,5 @@ export class Transaction {
     return this.toEnvelope()
       .toXDR()
       .toString('base64');
-  }
-
-  _getSourceAccount(muxedAccount) {
-    if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
-      return muxedAccount.ed25519();
-    }
-
-    return muxedAccount.med25519().ed25519();
   }
 }

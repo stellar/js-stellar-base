@@ -6,6 +6,7 @@ export { sign, verify, FastSigning } from './signing';
 export { Keypair } from './keypair';
 export { UnsignedHyper, Hyper } from 'js-xdr';
 export { Transaction } from './transaction';
+export { FeeBumpTransaction } from './fee_bump_transaction';
 export {
   TransactionBuilder,
   TimeoutInfinite,

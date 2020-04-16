@@ -5,6 +5,7 @@ import isUndefined from 'lodash/isUndefined';
 import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { Transaction } from './transaction';
+import { FeeBumpTransaction } from './fee_bump_transaction';
 import { Memo } from './memo';
 
 /**
@@ -318,7 +319,7 @@ export class TransactionBuilder {
       feeBumpTxEnvelope
     );
 
-    return new Transaction(envelope, networkPassphrase);
+    return new FeeBumpTransaction(envelope, networkPassphrase);
   }
 }
 

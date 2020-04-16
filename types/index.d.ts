@@ -504,30 +504,35 @@ export namespace StrKey {
   function decodeSha256Hash(data: string): Buffer;
 }
 
-export class Transaction<
-  TMemo extends Memo = Memo,
-  TOps extends Operation[] = Operation[]
-> {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase?: string);
+export class TransactionI {
   addSignature(publicKey: string, signature: string): void;
+  fee: string;
   getKeypairSignature(keypair: Keypair): string;
   hash(): Buffer;
-  isFeeBump(): boolean;
+  networkPassphrase: string;
   sign(...keypairs: Keypair[]): void;
   signatureBase(): Buffer;
+  signatures: xdr.DecoratedSignature[];
   signHashX(preimage: Buffer | string): void;
   toEnvelope(): xdr.TransactionEnvelope;
   toXDR(): string;
+}
+
+export class FeeBumpTransaction extends TransactionI {
+  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+  feeSource: string;
+  innerTransaction: Transaction;
+}
+
+export class Transaction<
+  TMemo extends Memo = Memo,
+  TOps extends Operation[] = Operation[]
+> extends TransactionI {
+  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase?: string);
+  memo: TMemo;
   operations: TOps;
   sequence: string;
-  fee: string;
-  innerFee?: string;
   source: string;
-  feeSource?: string;
-  memo: TMemo;
-  networkPassphrase: string;
-  signatures: xdr.DecoratedSignature[];
-  innerSignatures?: xdr.DecoratedSignature[];
   timeBounds?: {
     minTime: string;
     maxTime: string;
@@ -547,7 +552,7 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
-  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): Transaction;
+  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): FeeBumpTransaction;
 }
 
 export namespace TransactionBuilder {

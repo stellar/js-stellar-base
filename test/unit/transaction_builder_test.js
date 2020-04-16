@@ -489,7 +489,6 @@ describe('TransactionBuilder', function() {
             amount
           })
         )
-        .addMemo(StellarBase.Memo.text('Happy birthday!'))
         .build();
 
       let feeSource = StellarBase.Keypair.fromSecret(
@@ -502,7 +501,7 @@ describe('TransactionBuilder', function() {
         networkPassphrase
       );
 
-      expect(transaction.isFeeBump()).to.equal(true);
+      expect(transaction).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
 
       // The fee rate for fee bump is at least the fee rate of the inner transaction
       expect(() => {
