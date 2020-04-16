@@ -179,6 +179,23 @@ describe('FeeBumpTransaction', function() {
     );
   });
 
+  describe('toEnvelope', function() {
+    it('does not return a reference to source signatures', function() {
+      const transaction = this.transaction;
+      const envelope = transaction.toEnvelope().value();
+      envelope.signatures().push({});
+
+      expect(transaction.signatures.length).to.equal(0);
+    });
+    it('does not return a reference to the source transaction', function() {
+      const transaction = this.transaction;
+      const envelope = transaction.toEnvelope().value();
+      envelope.tx().fee(StellarBase.xdr.Int64.fromString('300'));
+
+      expect(transaction.tx.fee().toString()).to.equal('200');
+    });
+  });
+
   it('adds signature correctly', function() {
     const transaction = this.transaction;
     const signer = this.feeSource;

@@ -98,8 +98,8 @@ export class FeeBumpTransaction extends TransactionBase {
    */
   toEnvelope() {
     const envelope = new xdr.FeeBumpTransactionEnvelope({
-      tx: this.tx,
-      signatures: this.signatures
+      tx: xdr.FeeBumpTransaction.fromXDR(this.tx.toXDR()), // make a copy of the tx
+      signatures: this.signatures.slice() // make a copy of the signatures
     });
 
     return new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(envelope);

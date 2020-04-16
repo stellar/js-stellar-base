@@ -43,6 +43,45 @@ describe('Transaction', function() {
     done();
   });
 
+  describe('toEnvelope', function() {
+    beforeEach(function() {
+      let source = new StellarBase.Account(
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+        '0'
+      );
+      let destination =
+        'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+      let asset = StellarBase.Asset.native();
+      let amount = '2000.0000000';
+
+      this.transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+          StellarBase.Operation.payment({ destination, asset, amount })
+        )
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+    });
+
+    it('does not return a reference to source signatures', function() {
+      const transaction = this.transaction;
+      const envelope = transaction.toEnvelope().value();
+      envelope.signatures().push({});
+
+      expect(transaction.signatures.length).to.equal(0);
+    });
+    it('does not return a reference to the source transaction', function() {
+      const transaction = this.transaction;
+      const envelope = transaction.toEnvelope().value();
+      envelope.tx().fee(StellarBase.xdr.Int64.fromString('300'));
+
+      expect(transaction.tx.fee().toString()).to.equal('100');
+    });
+  });
+
   it('throws when a garbage Network is selected', () => {
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
@@ -152,9 +191,6 @@ describe('Transaction', function() {
     let rawSig = env.signatures()[0].signature();
     let verified = signer.verify(tx.hash(), rawSig);
     expect(verified).to.equal(true);
-
-    env.signatures().push({});
-    expect(tx.signatures.length).to.equal(1);
   });
 
   it('signs using hash preimage', function() {

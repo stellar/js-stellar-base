@@ -190,8 +190,8 @@ export class Transaction extends TransactionBase {
    * @returns {xdr.TransactionEnvelope}
    */
   toEnvelope() {
-    const rawTx = Buffer.concat([this.tx.toXDR()]);
-    const signatures = this.signatures.slice(); // make a copy of signatures
+    const rawTx = this.tx.toXDR();
+    const signatures = this.signatures.slice(); // make a copy of the signatures
 
     let envelope;
     switch (this._envelopeType) {
