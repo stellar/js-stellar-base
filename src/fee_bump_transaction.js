@@ -42,7 +42,7 @@ export class FeeBumpTransaction extends TransactionBase {
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
       tx.innerTx().v1()
     );
-
+    this._feeSource = StrKey.encodeMuxedAccount(this.tx.feeSource().toXDR());
     this._innerTransaction = new Transaction(
       innerTxEnvelope,
       networkPassphrase
@@ -62,7 +62,7 @@ export class FeeBumpTransaction extends TransactionBase {
    * @readonly
    */
   get feeSource() {
-    return this._muxedToString(this.tx.feeSource());
+    return this._feeSource;
   }
 
   /**

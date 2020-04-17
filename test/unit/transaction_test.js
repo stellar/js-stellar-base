@@ -550,7 +550,7 @@ describe('Transaction', function() {
         networkPassphrase
       );
       expect(txWithMuxedAccount.source).to.equal(
-        StellarBase.StrKey.encodeMuxedAccount(med25519.toXDR())
+        StellarBase.StrKey.encodeMuxedAccount(muxedAccount.toXDR())
       );
       expect(tx.source).to.equal(source.publicKey());
     });

@@ -1,7 +1,6 @@
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
 import { Keypair } from './keypair';
-import { StrKey } from './strkey';
 
 /**
  * @ignore
@@ -199,13 +198,5 @@ export class TransactionBase {
     return this.toEnvelope()
       .toXDR()
       .toString('base64');
-  }
-
-  _muxedToString(muxedAccount) {
-    if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
-      return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
-    }
-
-    return StrKey.encodeMuxedAccount(muxedAccount.med25519().toXDR());
   }
 }

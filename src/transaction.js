@@ -49,6 +49,19 @@ export class Transaction extends TransactionBase {
     this._memo = tx.memo();
     this._sequence = tx.seqNum().toString();
 
+    switch (this._envelopeType) {
+      case xdr.EnvelopeType.envelopeTypeTxV0():
+        this._source = StrKey.encodeEd25519PublicKey(
+          this.tx.sourceAccountEd25519()
+        );
+        break;
+      default:
+        this._source = StrKey.encodeMuxedAccount(
+          this.tx.sourceAccount().toXDR()
+        );
+        break;
+    }
+
     const timeBounds = tx.timeBounds();
     if (timeBounds) {
       this._timeBounds = {
@@ -91,19 +104,7 @@ export class Transaction extends TransactionBase {
    * @readonly
    */
   get source() {
-    const envelopeType = this._envelopeType;
-    let source;
-
-    switch (envelopeType) {
-      case xdr.EnvelopeType.envelopeTypeTxV0():
-        source = StrKey.encodeEd25519PublicKey(this.tx.sourceAccountEd25519());
-        break;
-      default:
-        source = this._muxedToString(this.tx.sourceAccount());
-        break;
-    }
-
-    return source;
+    return this._source;
   }
 
   set source(value) {
