@@ -43,7 +43,6 @@ export type KeypairType = 'ed25519';
 
 export class Keypair {
   static fromRawEd25519Seed(secretSeed: Buffer): Keypair;
-  static fromBase58Seed(secretSeed: string): Keypair;
   static fromSecret(secretKey: string): Keypair;
   static master(networkPassphrase: string): Keypair;
   static fromPublicKey(publicKey: string): Keypair;

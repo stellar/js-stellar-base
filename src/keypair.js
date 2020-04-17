@@ -1,6 +1,5 @@
 import nacl from 'tweetnacl';
 import { sign, verify, generate } from './signing';
-import * as base58 from './base58';
 import { StrKey } from './strkey';
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
@@ -65,17 +64,6 @@ export class Keypair {
   static fromSecret(secret) {
     const rawSecret = StrKey.decodeEd25519SecretSeed(secret);
     return this.fromRawEd25519Seed(rawSecret);
-  }
-
-  /**
-   * Base58 address encoding is **DEPRECATED**! Use this method only for transition to strkey encoding.
-   * @param {string} seed Base58 secret seed
-   * @deprecated Use {@link Keypair.fromSecret}
-   * @returns {Keypair}
-   */
-  static fromBase58Seed(seed) {
-    const rawSeed = base58.decodeBase58Check('seed', seed);
-    return this.fromRawEd25519Seed(rawSeed);
   }
 
   /**

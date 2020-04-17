@@ -57,57 +57,6 @@ describe('Keypair.fromSecret', function() {
   });
 });
 
-describe('Keypair.fromBase58Seed', function() {
-  it('creates a keypair correctly', function() {
-    let keys = [
-      {
-        oldSeed: 's3wpFU2RY8EyYRDKxhWNj3wJFBd4qHLKnaccXw9uGyYwrWVLDkB',
-        newSeed: 'SCCMVPLGK4NLKPGGMYD4ANCC4VXMXKD7RTA24EIJ2Y6NMCCP5WJQ2TXB',
-        newAddress: 'GDF7RAKSHWC5GKY2NRLYTZTBGFES5WX5Q6PRLX4VGH7X6TGLHLRPFIGD'
-      },
-      {
-        oldSeed: 's3Gj77MCTCDGggmr3ExjjEMX814jCgWD4wZzjo6PiprPk7uKu6w',
-        newSeed: 'SCJ7PY5AITP6NBXPEFSB52BH7JQYJ3GPAMXBMMT6ISY2VOSEXNNGVHHH',
-        newAddress: 'GDBAERNWWNLSZCDHTKP34N7CJHE47IRK74WAY3ZHE33ERVLB2FNTM34J'
-      },
-      {
-        oldSeed: 'sfYffC9uMbEoV3FiFZpnUrKyVLL89AT5QVpPsTpCFsz8w9oMbLw',
-        newSeed: 'SAZS3RDL5QTPJSWARQ4MWLIKKXM446VKBBYXBXBUCXGKJCCH72TVUC6U',
-        newAddress: 'GCIQKXYV3OLMYUU72C32LNC766TS5LY6O3MXPP5WY2XICB4G3OPYXRGP'
-      },
-      {
-        oldSeed: 's37qzijJQNy7MqPQyZJY8zFmiEzszjpBVP9CZMXJJiPmmrxdPj8',
-        newSeed: 'SCXXRH5QY6DAQOQNHMMF5PBKPB732US6QFNI7722VDRUCNJ5MNFDJJJL',
-        newAddress: 'GAPVNVE4S2ZKPWYM6SWPVNNYPQUTBQXNKOSIPJ3LRQWJTREP5CDLXG2B'
-      },
-      {
-        oldSeed: 's3StuXjYd8Hrgyy8WyG5aSRmDDebJZ2oTgPcGADbi4qRXThPBL4',
-        newSeed: 'SCVQWNPUXGDRW2IOOM6SS5NQB4KK3Z2MH7ZMM4O6CXKX5L3NRZ5E6V2J',
-        newAddress: 'GBNBJUKKTC4TZFB5QY5CXNC7UPOAYIW3DKWSSHJXXWKBDV7CZIFPBAMN'
-      }
-    ];
-
-    for (let i in keys) {
-      let key = keys[i];
-      let keyPair = StellarBase.Keypair.fromBase58Seed(key.oldSeed);
-      expect(keyPair.secret()).to.equal(key.newSeed);
-      expect(keyPair.publicKey()).to.equal(key.newAddress);
-    }
-  });
-
-  it("throw an error if the arg isn't base58 encoded as a seed", function() {
-    expect(() => StellarBase.Keypair.fromBase58Seed('hel0')).to.throw();
-    expect(() =>
-      StellarBase.Keypair.fromBase58Seed('masterpassphrasemasterpassphrase')
-    ).to.throw();
-    expect(() =>
-      StellarBase.Keypair.fromBase58Seed(
-        'gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu'
-      )
-    ).to.throw();
-  });
-});
-
 describe('Keypair.fromRawEd25519Seed', function() {
   it('creates a keypair correctly', function() {
     let seed = 'masterpassphrasemasterpassphrase';
