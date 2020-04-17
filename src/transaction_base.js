@@ -200,12 +200,4 @@ export class TransactionBase {
       .toXDR()
       .toString('base64');
   }
-
-  _muxedToString(muxedAccount) {
-    if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
-      return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
-    }
-
-    return StrKey.encodeMuxedAccount(muxedAccount.med25519().toXDR());
-  }
 }

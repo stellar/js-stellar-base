@@ -62,7 +62,7 @@ export class FeeBumpTransaction extends TransactionBase {
    * @readonly
    */
   get feeSource() {
-    return this._muxedToString(this.tx.feeSource());
+    return StrKey.encodeMuxedAccount(this.tx.feeSource().toXDR());
   }
 
   /**

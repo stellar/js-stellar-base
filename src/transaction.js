@@ -99,7 +99,7 @@ export class Transaction extends TransactionBase {
         source = StrKey.encodeEd25519PublicKey(this.tx.sourceAccountEd25519());
         break;
       default:
-        source = this._muxedToString(this.tx.sourceAccount());
+        source = StrKey.encodeMuxedAccount(this.tx.sourceAccount().toXDR());
         break;
     }
 
