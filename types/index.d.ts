@@ -416,10 +416,6 @@ export namespace Operation {
     options: OperationOptions.PathPaymentStrictReceive
   ): xdr.Operation<PathPaymentStrictReceive>;
 
-  function pathPayment(
-    options: OperationOptions.PathPaymentStrictReceive
-  ): xdr.Operation<PathPaymentStrictReceive>;
-
   interface PathPaymentStrictSend extends BaseOperation<OperationType.PathPaymentStrictSend> {
     sendAsset: Asset;
     sendAmount: string;

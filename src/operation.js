@@ -60,7 +60,6 @@ export const AuthImmutableFlag = 1 << 2;
  * These operations are deprecated and will be removed in a later version:
  * * `{@link Operation.manageOffer}`
  * * `{@link Operation.createPassiveOffer}`
- * * `{@link Operation.pathPayment}`
  *
  *
  * @class Operation
@@ -398,7 +397,6 @@ Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
 Operation.manageSellOffer = ops.manageSellOffer;
 Operation.manageBuyOffer = ops.manageBuyOffer;
-Operation.pathPayment = ops.pathPayment;
 Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
 Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;

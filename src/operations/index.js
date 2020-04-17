@@ -9,7 +9,6 @@ export { createAccount } from './create_account';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
 export { manageBuyOffer } from './manage_buy_offer';
-export { pathPayment } from './path_payment';
 export { pathPaymentStrictReceive } from './path_payment_strict_receive';
 export { pathPaymentStrictSend } from './path_payment_strict_send';
 export { payment } from './payment';
