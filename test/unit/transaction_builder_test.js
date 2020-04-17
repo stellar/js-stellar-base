@@ -595,20 +595,36 @@ describe('TransactionBuilder', function() {
     it('builds a fee bump transaction', function() {
       const xdr =
         'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
-      const tx = StellarBase.TransactionBuilder.fromXDR(
+      let tx = StellarBase.TransactionBuilder.fromXDR(
         xdr,
         StellarBase.Networks.TESTNET
       );
       expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      expect(tx.toXDR()).to.equal(xdr);
+
+      tx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toEnvelope(), // xdr object
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      expect(tx.toXDR()).to.equal(xdr);
     });
     it('builds a transaction', function() {
       const xdr =
         'AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=';
-      const tx = StellarBase.TransactionBuilder.fromXDR(
+      let tx = StellarBase.TransactionBuilder.fromXDR(
         xdr,
         StellarBase.Networks.TESTNET
       );
       expect(tx).to.be.an.instanceof(StellarBase.Transaction);
+      expect(tx.toXDR()).to.equal(xdr);
+
+      tx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toEnvelope(), // xdr object
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.Transaction);
+      expect(tx.toXDR()).to.equal(xdr);
     });
   });
 });

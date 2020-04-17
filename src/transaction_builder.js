@@ -322,19 +322,21 @@ export class TransactionBuilder {
   }
 
   /**
-   * Build a {@link Transaction} or {@link FeeBumpTransaction} from a TransactionEnvelope encoded in base64.
-   * @param {string} envelope - TransactionEnvelope encoded in base64.
+   * Build a {@link Transaction} or {@link FeeBumpTransaction} from an xdr.TransactionEnvelope.
+   * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
    * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Transaction|FeeBumpTransaction}
    */
   static fromXDR(envelope, networkPassphrase) {
-    const txEnvelope = xdr.TransactionEnvelope.fromXDR(envelope, 'base64');
-
-    if (txEnvelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
-      return new FeeBumpTransaction(txEnvelope, networkPassphrase);
+    if (typeof envelope === 'string') {
+      envelope = xdr.TransactionEnvelope.fromXDR(envelope, 'base64');
     }
 
-    return new Transaction(txEnvelope, networkPassphrase);
+    if (envelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
+      return new FeeBumpTransaction(envelope, networkPassphrase);
+    }
+
+    return new Transaction(envelope, networkPassphrase);
   }
 }
 
