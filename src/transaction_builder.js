@@ -5,6 +5,7 @@ import isUndefined from 'lodash/isUndefined';
 import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { Transaction } from './transaction';
+import { FeeBumpTransaction } from './fee_bump_transaction';
 import { Memo } from './memo';
 
 /**
@@ -259,13 +260,12 @@ export class TransactionBuilder {
   }
 
   /**
-   * Builds a FeeBumpTransaction
+   * Builds a {@link FeeBumpTransaction}
    * @param {StrKey} feeSource - The account paying for the transaction.
    * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
    * @param {Transaction} innerTx - The Transaction to be bumped by the fee bump transaction.
    * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
-   * @returns {Transaction}
-   * @ignore tell jsdoc to not show this method for now
+   * @returns {FeeBumpTransaction}
    */
   static buildFeeBumpTransaction(
     feeSource,
@@ -303,7 +303,7 @@ export class TransactionBuilder {
     }
 
     const tx = new xdr.FeeBumpTransaction({
-      feeSource: feeSource.xdrAccountId(),
+      feeSource: feeSource.xdrMuxedAccount(),
       fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
@@ -317,6 +317,24 @@ export class TransactionBuilder {
     const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
       feeBumpTxEnvelope
     );
+
+    return new FeeBumpTransaction(envelope, networkPassphrase);
+  }
+
+  /**
+   * Build a {@link Transaction} or {@link FeeBumpTransaction} from an xdr.TransactionEnvelope.
+   * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
+   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @returns {Transaction|FeeBumpTransaction}
+   */
+  static fromXDR(envelope, networkPassphrase) {
+    if (typeof envelope === 'string') {
+      envelope = xdr.TransactionEnvelope.fromXDR(envelope, 'base64');
+    }
+
+    if (envelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
+      return new FeeBumpTransaction(envelope, networkPassphrase);
+    }
 
     return new Transaction(envelope, networkPassphrase);
   }

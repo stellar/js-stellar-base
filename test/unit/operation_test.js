@@ -712,13 +712,19 @@ describe('Operation', function() {
       const account = new StellarBase.Account(keypair.publicKey(), '0');
 
       // First operation do nothing.
-      const tx1 = new StellarBase.TransactionBuilder(account, { fee: 100 })
+      const tx1 = new StellarBase.TransactionBuilder(account, {
+        fee: 100,
+        networkPassphrase: 'Some Network'
+      })
         .addOperation(StellarBase.Operation.setOptions({}))
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
 
       // Second operation unset homeDomain
-      const tx2 = new StellarBase.TransactionBuilder(account, { fee: 100 })
+      const tx2 = new StellarBase.TransactionBuilder(account, {
+        fee: 100,
+        networkPassphrase: 'Some Network'
+      })
         .addOperation(StellarBase.Operation.setOptions({ homeDomain: '' }))
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
