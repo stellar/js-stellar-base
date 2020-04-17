@@ -333,7 +333,7 @@ describe('FeeBumpTransaction', function() {
       this.networkPassphrase
     );
     expect(txWithMuxedAccount.feeSource).to.equal(
-      StellarBase.StrKey.encodeMuxedAccount(med25519.toXDR())
+      StellarBase.StrKey.encodeMuxedAccount(muxedAccount.toXDR())
     );
   });
 });

@@ -106,16 +106,33 @@ describe('StrKey', function() {
     });
 
     describe('muxed account', function() {
-      it('decodes correctly', function() {
+      it('decodes med25519 correctly', function() {
         const med25519 = new StellarBase.xdr.MuxedAccountMed25519({
           id: StellarBase.xdr.Uint64.fromString('0'),
           ed25519: StellarBase.StrKey.decodeEd25519PublicKey(
             'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
           )
         });
-        let expectedBuffer = med25519.toXDR();
+        let expectedBuffer = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
+          med25519
+        ).toXDR();
         let strkey =
           'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+        expect(StellarBase.StrKey.decodeMuxedAccount(strkey)).to.eql(
+          expectedBuffer
+        );
+      });
+
+      it('decodes ed25519 correctly', function() {
+        const rawEd25519 = StellarBase.StrKey.decodeEd25519PublicKey(
+          'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+        );
+        const expectedBuffer = StellarBase.xdr.MuxedAccount.keyTypeEd25519(
+          rawEd25519
+        ).toXDR();
+        const strkey =
+          'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+
         expect(StellarBase.StrKey.decodeMuxedAccount(strkey)).to.eql(
           expectedBuffer
         );
@@ -214,16 +231,34 @@ describe('StrKey', function() {
     });
 
     describe('muxed account', function() {
-      it('encodes a buffer correctly', function() {
+      it('encodes med25519 accounts correctly', function() {
         const med25519 = new StellarBase.xdr.MuxedAccountMed25519({
           id: StellarBase.xdr.Uint64.fromString('0'),
           ed25519: StellarBase.StrKey.decodeEd25519PublicKey(
             'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
           )
         });
-        let buffer = med25519.toXDR();
+        const buffer = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
+          med25519
+        ).toXDR();
+
         let expectedMuxedAccount =
           'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+        expect(StellarBase.StrKey.encodeMuxedAccount(buffer)).to.eql(
+          expectedMuxedAccount
+        );
+      });
+      it('encodes ed25519 accounts correctly', function() {
+        const ed25519 = StellarBase.StrKey.decodeEd25519PublicKey(
+          'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+        );
+
+        const buffer = StellarBase.xdr.MuxedAccount.keyTypeEd25519(
+          ed25519
+        ).toXDR();
+
+        let expectedMuxedAccount =
+          'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
         expect(StellarBase.StrKey.encodeMuxedAccount(buffer)).to.eql(
           expectedMuxedAccount
         );
