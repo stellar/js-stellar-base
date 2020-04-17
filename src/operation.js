@@ -57,11 +57,6 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.manageData}`
  * * `{@link Operation.bumpSequence}`
  *
- * These operations are deprecated and will be removed in a later version:
- * * `{@link Operation.manageOffer}`
- * * `{@link Operation.createPassiveOffer}`
- *
- *
  * @class Operation
  */
 export class Operation {
@@ -401,7 +396,3 @@ Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
 Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
-
-// deprecated, to be removed after 1.0.1
-Operation.manageOffer = ops.manageOffer;
-Operation.createPassiveOffer = ops.createPassiveOffer;
