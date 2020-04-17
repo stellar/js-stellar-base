@@ -1,5 +1,5 @@
 describe('StrKey', function() {
-  before(function() {
+  beforeEach(function() {
     var keypair = StellarBase.Keypair.master(
       'Test SDF Network ; September 2015'
     );
@@ -10,10 +10,6 @@ describe('StrKey', function() {
       this.unencodedBuffer
     );
   });
-  after(function() {
-    StellarBase.Network.use(null);
-  });
-
   describe('#decodeCheck', function() {
     it('decodes correctly', function() {
       expect(
