@@ -8,8 +8,9 @@ import { Memo } from './memo';
 import { TransactionBase } from './transaction_base';
 
 /**
- * Use {@link TransactionBuilder} to build a transaction object, unless you have
- * an object or base64-encoded string of the transaction envelope XDR.
+ * Use {@link TransactionBuilder} to build a transaction object. If you have
+ * an object or base64-encoded string of the transaction envelope XDR use {@link TransactionBuilder.fromXDR}.
+ *
  * Once a Transaction has been created, its attributes and operations
  * should not be changed. You should only add signatures (using {@link Transaction#sign}) to a Transaction object before
  * submitting to the network or forwarding on to additional signers.

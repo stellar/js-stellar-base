@@ -6,8 +6,10 @@ import { Transaction } from './transaction';
 import { TransactionBase } from './transaction_base';
 
 /**
- * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a FeeBumpTransaction object, unless you have
- * an object or base64-encoded string of the transaction envelope XDR.
+ * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a
+ * FeeBumpTransaction object. If you have an object or base64-encoded string of
+ * the transaction envelope XDR use {@link TransactionBuilder.fromXDR}.
+ *
  * Once a {@link FeeBumpTransaction} has been created, its attributes and operations
  * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
  * submitting to the network or forwarding on to additional signers.
