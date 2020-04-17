@@ -45,7 +45,7 @@ export class Keypair {
   static fromRawEd25519Seed(secretSeed: Buffer): Keypair;
   static fromBase58Seed(secretSeed: string): Keypair;
   static fromSecret(secretKey: string): Keypair;
-  static master(networkPassphrase?: string): Keypair;
+  static master(networkPassphrase: string): Keypair;
   static fromPublicKey(publicKey: string): Keypair;
   static random(): Keypair;
 
@@ -123,20 +123,6 @@ export class Memo<T extends MemoType = MemoType> {
 export enum Networks {
   PUBLIC = 'Public Global Stellar Network ; September 2015',
   TESTNET = 'Test SDF Network ; September 2015'
-}
-
-export class Network {
-  static use(network: Network): void;
-  static usePublicNetwork(): void;
-  static useTestNetwork(): void;
-  static current(): Network;
-  static networkPassphrase(): string;
-  static networkId(): string;
-
-  constructor(passphrase: string);
-
-  networkPassphrase(): string;
-  networkId(): string;
 }
 
 export const AuthRequiredFlag: 1;

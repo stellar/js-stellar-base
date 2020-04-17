@@ -1,5 +1,4 @@
 import nacl from 'tweetnacl';
-import { Network } from './network';
 import { sign, verify, generate } from './signing';
 import * as base58 from './base58';
 import { StrKey } from './strkey';
@@ -91,22 +90,17 @@ export class Keypair {
 
   /**
    * Returns `Keypair` object representing network master key.
-   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Keypair}
    */
   static master(networkPassphrase) {
     // Deprecation warning. TODO: remove optionality with next major release.
     if (!networkPassphrase) {
-      console.warn(
-        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `Keypair.master(Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
+      throw new Error(
+        'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
       );
-      if (Network.current() === null) {
-        throw new Error(
-          'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
-        );
-      }
-      networkPassphrase = Network.current().networkPassphrase();
     }
+
     return this.fromRawEd25519Seed(hash(networkPassphrase));
   }
 
