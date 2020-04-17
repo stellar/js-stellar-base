@@ -82,7 +82,6 @@ export class Keypair {
    * @returns {Keypair}
    */
   static master(networkPassphrase) {
-    // Deprecation warning. TODO: remove optionality with next major release.
     if (!networkPassphrase) {
       throw new Error(
         'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
