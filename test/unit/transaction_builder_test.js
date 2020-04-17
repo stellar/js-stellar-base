@@ -18,7 +18,10 @@ describe('TransactionBuilder', function() {
       asset = StellarBase.Asset.native();
       memo = StellarBase.Memo.id('100');
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination,
@@ -78,7 +81,10 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -145,7 +151,10 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 1000 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 1000,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -182,7 +191,8 @@ describe('TransactionBuilder', function() {
       };
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -236,7 +246,8 @@ describe('TransactionBuilder', function() {
 
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -304,7 +315,8 @@ describe('TransactionBuilder', function() {
             minTime: '1',
             maxTime: '10'
           },
-          fee: 100
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
         }).build();
       }).to.not.throw();
     });
@@ -373,7 +385,10 @@ describe('TransactionBuilder', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
@@ -428,7 +443,8 @@ describe('TransactionBuilder', function() {
       );
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -453,7 +469,8 @@ describe('TransactionBuilder', function() {
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
-          fee: 100
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
         })
           .setTimeout(0)
           .build();
@@ -489,7 +506,6 @@ describe('TransactionBuilder', function() {
             amount
           })
         )
-        .addMemo(StellarBase.Memo.text('Happy birthday!'))
         .build();
 
       let feeSource = StellarBase.Keypair.fromSecret(
@@ -502,7 +518,7 @@ describe('TransactionBuilder', function() {
         networkPassphrase
       );
 
-      expect(transaction.isFeeBump()).to.equal(true);
+      expect(transaction).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
 
       // The fee rate for fee bump is at least the fee rate of the inner transaction
       expect(() => {
@@ -572,6 +588,43 @@ describe('TransactionBuilder', function() {
       );
 
       done();
+    });
+  });
+
+  describe('.fromXDR', function() {
+    it('builds a fee bump transaction', function() {
+      const xdr =
+        'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
+      let tx = StellarBase.TransactionBuilder.fromXDR(
+        xdr,
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      expect(tx.toXDR()).to.equal(xdr);
+
+      tx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toEnvelope(), // xdr object
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      expect(tx.toXDR()).to.equal(xdr);
+    });
+    it('builds a transaction', function() {
+      const xdr =
+        'AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=';
+      let tx = StellarBase.TransactionBuilder.fromXDR(
+        xdr,
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.Transaction);
+      expect(tx.toXDR()).to.equal(xdr);
+
+      tx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toEnvelope(), // xdr object
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.Transaction);
+      expect(tx.toXDR()).to.equal(xdr);
     });
   });
 });
