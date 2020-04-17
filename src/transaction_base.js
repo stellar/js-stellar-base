@@ -1,7 +1,6 @@
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
 import { Keypair } from './keypair';
-import { StrKey } from './strkey';
 
 /**
  * @ignore
