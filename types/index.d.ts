@@ -580,9 +580,29 @@ export namespace xdr {
     static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
     static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
   }
+  class EnvelopeType extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
+    name: string;
+    value: number;
+  }
   class TransactionEnvelope extends XDRStruct {
     static fromXDR(xdr: Buffer, format?: 'raw'): TransactionEnvelope;
     static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionEnvelope;
+    
+    switch(): EnvelopeType;
+    v0(): TransactionV0Envelope;
+    v1(): TransactionV1Envelope;
+    feeBump(): FeeBumpTransactionEnvelope;
+    value(): TransactionV0Envelope | TransactionV1Envelope | FeeBumpTransactionEnvelope;
+  }
+  class FeeBumpTransactionEnvelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): FeeBumpTransactionEnvelope;
+  }
+  class TransactionV0Envelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV0Envelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV0Envelope;
   }
   class TransactionV1Envelope extends XDRStruct {
     static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV1Envelope;
