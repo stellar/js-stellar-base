@@ -32,7 +32,11 @@ export function allowTrust(opts) {
   }
 
   if (typeof opts.authorize === 'boolean') {
-    attributes.authorize = +opts.authorize;
+    if (opts.authorize) {
+      attributes.authorize = xdr.TrustLineFlags.authorizedFlag().value;
+    } else {
+      attributes.authorize = 0;
+    }
   } else {
     attributes.authorize = opts.authorize;
   }
