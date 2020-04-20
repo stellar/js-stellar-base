@@ -27,6 +27,10 @@ export class TransactionBase {
     return this._signatures;
   }
 
+  set signatures(value) {
+    throw new Error('Transaction is immutable');
+  }
+
   get tx() {
     return this._tx;
   }
