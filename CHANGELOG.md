@@ -5,6 +5,11 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v2.1.9](https://github.com/stellar/js-stellar-base/compare/v2.1.8..v2.1.9)
+
+### Fix
+- Update dependencies which depend on minimist. ([#332](https://github.com/stellar/js-stellar-base/pull/332))
+
 ## [v2.1.8](https://github.com/stellar/js-stellar-base/compare/v2.1.7..v2.1.8)
 
 ### Fix
