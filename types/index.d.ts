@@ -589,7 +589,6 @@ export namespace xdr {
   class TransactionEnvelope extends XDRStruct {
     static fromXDR(xdr: Buffer, format?: 'raw'): TransactionEnvelope;
     static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionEnvelope;
-    
     switch(): EnvelopeType;
     v0(): TransactionV0Envelope;
     v1(): TransactionV1Envelope;
