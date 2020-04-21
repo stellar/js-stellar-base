@@ -15,6 +15,11 @@
     "postversion": "git push && git push --tags",
     "prettier-all": "prettier --write **/*.js"
   },
+  "files": [
+    "/lib",
+    "/dist",
+    "/types/index.d.ts"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
