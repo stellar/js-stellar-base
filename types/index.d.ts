@@ -509,7 +509,7 @@ export class Transaction<
   TMemo extends Memo = Memo,
   TOps extends Operation[] = Operation[]
 > extends TransactionI {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase?: string);
+  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
   memo: TMemo;
   operations: TOps;
   sequence: string;
