@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Global - Documentation</title>
+    <title>fee_bump_transaction.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,1080 +29,121 @@
 
 <div id="main">
     
-    <h1 class="page-title">Global</h1>
-    
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="AuthImmutableFlag"><span class="type-signature">(constant) </span>AuthImmutableFlag<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>When set using <code><a href="Operation.html#.setOptions">Operation.setOptions</a></code> option, then none of the authorization flags
-can be set and the account can never be deleted.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line39">line 39</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><p><a href="https://www.stellar.org/developers/guides/concepts/accounts.html#flags">Account flags</a></p></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="AuthRequiredFlag"><span class="type-signature">(constant) </span>AuthRequiredFlag<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>When set using <code><a href="Operation.html#.setOptions">Operation.setOptions</a></code> option, requires the issuing account to
-give other accounts permission before they can hold the issuing account’s credit.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line25">line 25</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><p><a href="https://www.stellar.org/developers/guides/concepts/accounts.html#flags">Account flags</a></p></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="AuthRevocableFlag"><span class="type-signature">(constant) </span>AuthRevocableFlag<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>When set using <code><a href="Operation.html#.setOptions">Operation.setOptions</a></code> option, allows the issuing account to
-revoke its credit held by other accounts.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line32">line 32</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><p><a href="https://www.stellar.org/developers/guides/concepts/accounts.html#flags">Account flags</a></p></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="BASE_FEE"><span class="type-signature">(constant) </span>BASE_FEE<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Minimum base fee for transactions. If this fee is below the network
-minimum, the transaction will fail. The more operations in the
-transaction, the greater the required fee. Use Server#fetchBaseFee to get an accurate value of minimum transaction
-fee on the network.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line21">line 21</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><p><a href="https://www.stellar.org/developers/guides/concepts/fees.html">Fees</a></p></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="FastSigning"><span class="type-signature">(constant) </span>FastSigning<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Use this flag to check if fast signing (provided by <code>sodium-native</code> package) is available.
-If your app is signing a large number of transaction or verifying a large number
-of signatures make sure <code>sodium-native</code> package is installed.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="signing.js.html">signing.js</a>, <a href="signing.js.html#line14">line 14</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="MemoHash"><span class="type-signature">(constant) </span>MemoHash<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Type of <a href="Memo.html">Memo</a>.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line23">line 23</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="MemoID"><span class="type-signature">(constant) </span>MemoID<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Type of <a href="Memo.html">Memo</a>.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line15">line 15</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="MemoNone"><span class="type-signature">(constant) </span>MemoNone<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Type of <a href="Memo.html">Memo</a>.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line11">line 11</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="MemoReturn"><span class="type-signature">(constant) </span>MemoReturn<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Type of <a href="Memo.html">Memo</a>.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line27">line 27</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="MemoText"><span class="type-signature">(constant) </span>MemoText<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Type of <a href="Memo.html">Memo</a>.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line19">line 19</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="Networks"><span class="type-signature">(constant) </span>Networks<span class="type-signature"> :Object</span></h4>
-
-
-
-
-<div class="description">
-    <p>Contains passphrases for common networks:</p>
-<ul>
-<li><code>Networks.PUBLIC</code>: <code>Public Global Stellar Network ; September 2015</code></li>
-<li><code>Networks.TESTNET</code>: <code>Test SDF Network ; September 2015</code></li>
-</ul>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="network.js.html">network.js</a>, <a href="network.js.html#line7">line 7</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><code>Object</code></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="TimeoutInfinite"><span class="type-signature">(constant) </span>TimeoutInfinite<span class="type-signature"></span></h4>
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line28">line 28</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="TransactionBuilder.html#setTimeout">TransactionBuilder#setTimeout</a></li>
-        
-            <li><p><a href="https://www.stellar.org/developers/horizon/reference/endpoints/transactions-create.html#timeout">Timeout</a></p></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="isValidDate"><span class="type-signature"></span>isValidDate<span class="signature">(d)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Checks whether a provided object is a valid Date.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line348">line 348</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>d</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Date</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>date object</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">fee_bump_transaction.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import xdr from './generated/stellar-xdr_generated';
+import { hash } from './hashing';
+
+import { StrKey } from './strkey';
+import { Transaction } from './transaction';
+import { TransactionBase } from './transaction_base';
+
+/**
+ * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a
+ * FeeBumpTransaction object. If you have an object or base64-encoded string of
+ * the transaction envelope XDR use {@link TransactionBuilder.fromXDR}.
+ *
+ * Once a {@link FeeBumpTransaction} has been created, its attributes and operations
+ * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
+ * submitting to the network or forwarding on to additional signers.
+ * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
+ * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+ * @extends TransactionBase
+ */
+export class FeeBumpTransaction extends TransactionBase {
+  constructor(envelope, networkPassphrase) {
+    if (typeof envelope === 'string') {
+      const buffer = Buffer.from(envelope, 'base64');
+      envelope = xdr.TransactionEnvelope.fromXDR(buffer);
+    }
+
+    const envelopeType = envelope.switch();
+    if (envelopeType !== xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
+      throw new Error(
+        `Invalid TransactionEnvelope: expected an envelopeTypeTxFeeBump but received an ${envelopeType.name}.`
+      );
+    }
+
+    const txEnvelope = envelope.value();
+    const tx = txEnvelope.tx();
+    const fee = tx.fee().toString();
+    // clone signatures
+    const signatures = (txEnvelope.signatures() || []).slice();
+
+    super(tx, signatures, fee, networkPassphrase);
+
+    const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
+      tx.innerTx().v1()
+    );
+    this._feeSource = StrKey.encodeMuxedAccount(this.tx.feeSource().toXDR());
+    this._innerTransaction = new Transaction(
+      innerTxEnvelope,
+      networkPassphrase
+    );
+  }
+
+  /**
+   * @type {Transaction}
+   * @readonly
+   */
+  get innerTransaction() {
+    return this._innerTransaction;
+  }
+
+  /**
+   * @type {string}
+   * @readonly
+   */
+  get feeSource() {
+    return this._feeSource;
+  }
+
+  /**
+   * Returns the "signature base" of this transaction, which is the value
+   * that, when hashed, should be signed to create a signature that
+   * validators on the Stellar Network will accept.
+   *
+   * It is composed of a 4 prefix bytes followed by the xdr-encoded form
+   * of this transaction.
+   * @returns {Buffer}
+   */
+  signatureBase() {
+    const taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
+      this.tx
+    );
+
+    const txSignature = new xdr.TransactionSignaturePayload({
+      networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),
+      taggedTransaction
+    });
+
+    return txSignature.toXDR();
+  }
+
+  /**
+   * To envelope returns a xdr.TransactionEnvelope which can be submitted to the network.
+   * @returns {xdr.TransactionEnvelope}
+   */
+  toEnvelope() {
+    const envelope = new xdr.FeeBumpTransactionEnvelope({
+      tx: xdr.FeeBumpTransaction.fromXDR(this.tx.toXDR()), // make a copy of the tx
+      signatures: this.signatures.slice() // make a copy of the signatures
+    });
+
+    return new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(envelope);
+  }
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
