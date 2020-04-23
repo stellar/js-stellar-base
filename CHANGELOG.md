@@ -5,6 +5,32 @@ A breaking change will get clearly notified in this log.
 
 ## Unreleased
 
+## [v3.0.0-alpha.1](https://github.com/stellar/js-stellar-base/compare/v3.0.0-alpha.0..v3.0.0-alpha.1)
+
+### Update
+
+- Update operations builder to support multiplexed accounts ([#337](https://github.com/stellar/js-stellar-base/pull/337)).
+
+  This allows you to specify an `M` account as the destination or source:
+  ```
+  var destination = 'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+  var amount = '1000.0000000';
+  var asset = new StellarBase.Asset(
+    'USDUSD',
+    'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+  );
+  var source =
+    'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+  StellarBase.Operation.payment({
+    destination,
+    asset,
+    amount,
+    source
+  });
+  ```
+
+  **To use multiplexed accounts you need an instance of Stellar running on Protocol 13 or higher**
+
 ## [v3.0.0-alpha.0](https://github.com/stellar/js-stellar-base/compare/v2.1.9..v3.0.0-alpha.0)
 
 This version brings protocol 13 support with backwards compatibility support for protocol 12.
