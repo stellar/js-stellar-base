@@ -1,5 +1,4 @@
 import xdr from '../generated/stellar-xdr_generated';
-import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 
 /**
@@ -14,9 +13,6 @@ import { StrKey } from '../strkey';
  * @returns {xdr.PaymentOp} Payment operation
  */
 export function payment(opts) {
-  if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
-    throw new Error('destination is invalid');
-  }
   if (!opts.asset) {
     throw new Error('Must provide an asset for a payment operation');
   }
@@ -25,9 +21,14 @@ export function payment(opts) {
   }
 
   const attributes = {};
-  attributes.destination = Keypair.fromPublicKey(
-    opts.destination
-  ).xdrMuxedAccount();
+  try {
+    attributes.destination = xdr.MuxedAccount.fromXDR(
+      StrKey.decodeMuxedAccount(opts.destination)
+    );
+  } catch (e) {
+    throw new Error('destination is invalid');
+  }
+
   attributes.asset = opts.asset.toXDRObject();
   attributes.amount = this._toXDRAmount(opts.amount);
   const paymentOp = new xdr.PaymentOp(attributes);

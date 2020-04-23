@@ -28,7 +28,6 @@ describe('Operation', function() {
       ).to.be.equal('10000000000');
       expect(obj.startingBalance).to.be.equal(startingBalance);
     });
-
     it('fails to create createAccount operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
@@ -80,15 +79,31 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('payment');
       expect(obj.destination).to.be.equal(destination);
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('10000000000');
-      expect(obj.amount).to.be.equal(amount);
-      expect(obj.asset.equals(asset)).to.be.true;
+    });
+    it('supports muxed accounts', function() {
+      var destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var amount = '1000.0000000';
+      var asset = new StellarBase.Asset(
+        'USDUSD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      let op = StellarBase.Operation.payment({
+        destination,
+        asset,
+        amount,
+        source
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('payment');
+      expect(obj.destination).to.be.equal(destination);
+      expect(obj.source).to.be.equal(source);
     });
 
     it('fails to create payment operation with an invalid destination address', function() {
@@ -180,7 +195,48 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-
+    it('supports muxed accounts', function() {
+      var sendAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var sendMax = '3.0070000';
+      var destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var destAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var destAmount = '3.1415000';
+      var path = [
+        new StellarBase.Asset(
+          'USD',
+          'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+        ),
+        new StellarBase.Asset(
+          'EUR',
+          'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
+        )
+      ];
+      let op = StellarBase.Operation.pathPaymentStrictReceive({
+        sendAsset,
+        sendMax,
+        destination,
+        destAsset,
+        destAmount,
+        path,
+        source
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.destination).to.be.equal(destination);
+      expect(obj.source).to.be.equal(destination);
+    });
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
@@ -296,7 +352,45 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-
+    it('supports muxed accounts', function() {
+      var sendAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var sendAmount = '3.0070000';
+      var destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var destAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var destMin = '3.1415000';
+      var path = [
+        new StellarBase.Asset(
+          'USD',
+          'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+        )
+      ];
+      let op = StellarBase.Operation.pathPaymentStrictSend({
+        sendAsset,
+        sendAmount,
+        destination,
+        destAsset,
+        destMin,
+        path,
+        source
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('pathPaymentStrictSend');
+      expect(obj.destination).to.be.equal(destination);
+      expect(obj.source).to.be.equal(source);
+    });
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
@@ -1443,7 +1537,22 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('accountMerge');
       expect(obj.destination).to.be.equal(opts.destination);
     });
-
+    it('supports muxed accounts', function() {
+      var opts = {};
+      opts.destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      opts.source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      let op = StellarBase.Operation.accountMerge(opts);
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('accountMerge');
+      expect(obj.destination).to.be.equal(opts.destination);
+      expect(obj.source).to.be.equal(opts.source);
+    });
     it('fails to create accountMerge operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW'

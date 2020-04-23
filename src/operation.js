@@ -10,7 +10,6 @@ import isFinite from 'lodash/isFinite';
 import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
 import { StrKey } from './strkey';
-import { Keypair } from './keypair';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 
@@ -62,12 +61,13 @@ export const AuthImmutableFlag = 1 << 2;
 export class Operation {
   static setSourceAccount(opAttributes, opts) {
     if (opts.source) {
-      if (!StrKey.isValidEd25519PublicKey(opts.source)) {
+      try {
+        opAttributes.sourceAccount = xdr.MuxedAccount.fromXDR(
+          StrKey.decodeMuxedAccount(opts.source)
+        );
+      } catch (e) {
         throw new Error('Source address is invalid');
       }
-      opAttributes.sourceAccount = Keypair.fromPublicKey(
-        opts.source
-      ).xdrMuxedAccount();
     }
   }
 
@@ -81,10 +81,13 @@ export class Operation {
     function accountIdtoAddress(accountId) {
       return StrKey.encodeEd25519PublicKey(accountId.ed25519());
     }
+    function muxedAccounttoAddress(accountId) {
+      return StrKey.encodeMuxedAccount(accountId.toXDR());
+    }
 
     const result = {};
     if (operation.sourceAccount()) {
-      result.source = accountIdtoAddress(operation.sourceAccount());
+      result.source = muxedAccounttoAddress(operation.sourceAccount());
     }
 
     const attrs = operation.body().value();
@@ -99,7 +102,7 @@ export class Operation {
       }
       case 'payment': {
         result.type = 'payment';
-        result.destination = accountIdtoAddress(attrs.destination());
+        result.destination = muxedAccounttoAddress(attrs.destination());
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
@@ -108,7 +111,7 @@ export class Operation {
         result.type = 'pathPaymentStrictReceive';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
-        result.destination = accountIdtoAddress(attrs.destination());
+        result.destination = muxedAccounttoAddress(attrs.destination());
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
         result.path = [];
@@ -125,7 +128,7 @@ export class Operation {
         result.type = 'pathPaymentStrictSend';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
-        result.destination = accountIdtoAddress(attrs.destination());
+        result.destination = muxedAccounttoAddress(attrs.destination());
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destMin = this._fromXDRAmount(attrs.destMin());
         result.path = [];
@@ -230,7 +233,7 @@ export class Operation {
       }
       case 'accountMerge': {
         result.type = 'accountMerge';
-        result.destination = accountIdtoAddress(attrs);
+        result.destination = muxedAccounttoAddress(attrs);
         break;
       }
       case 'manageDatum': {
