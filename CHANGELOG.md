@@ -43,7 +43,7 @@ This version brings protocol 13 support with backwards compatibility support for
 ### Breaking changes
 
 - `Transaction.toEnvelope()` returns a protocol 13 `xdr.TransactionEnvelope` which is an `xdr.Union` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
-  If you have code that looks like this `transaction.toEnvelope().tx` you have two options:
+  If you have code that looks like this - `transaction.toEnvelope().tx` - you have two options:
     - You can grab the value wrapped by the union, calling `value()` like `transaction.toEnvelope().value().tx`.
     - You can check which is the discriminant by using `switch()` and then call `v0()`, `v1()`, or `feeBump()`.
 - The return value from `Transaction.fee` changed from `number` to `string`. This brings support for `Int64` values ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
