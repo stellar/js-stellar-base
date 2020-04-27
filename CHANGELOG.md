@@ -38,7 +38,7 @@ This version brings protocol 13 support with backwards compatibility support for
   });
   ```
 
-  **To use multiplexed accounts you need an instance of Stellar running on Protocol 13 or higher**
+  **To use multiplexed accounts you need a Stellar network instance running Protocol 13 or higher**
 
 ### Breaking changes
 
