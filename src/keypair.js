@@ -1,7 +1,5 @@
 import nacl from 'tweetnacl';
-import { Network } from './network';
 import { sign, verify, generate } from './signing';
-import * as base58 from './base58';
 import { StrKey } from './strkey';
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
@@ -69,17 +67,6 @@ export class Keypair {
   }
 
   /**
-   * Base58 address encoding is **DEPRECATED**! Use this method only for transition to strkey encoding.
-   * @param {string} seed Base58 secret seed
-   * @deprecated Use {@link Keypair.fromSecret}
-   * @returns {Keypair}
-   */
-  static fromBase58Seed(seed) {
-    const rawSeed = base58.decodeBase58Check('seed', seed);
-    return this.fromRawEd25519Seed(rawSeed);
-  }
-
-  /**
    * Creates a new `Keypair` object from ed25519 secret key seed raw bytes.
    *
    * @param {Buffer} rawSeed Raw 32-byte ed25519 secret key seed
@@ -91,22 +78,16 @@ export class Keypair {
 
   /**
    * Returns `Keypair` object representing network master key.
-   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    * @returns {Keypair}
    */
   static master(networkPassphrase) {
-    // Deprecation warning. TODO: remove optionality with next major release.
     if (!networkPassphrase) {
-      console.warn(
-        'Global `Network.current()` is deprecated. Please pass explicit argument instead, e.g. `Keypair.master(Networks.PUBLIC)` (see https://git.io/fj9fG for more info).'
+      throw new Error(
+        'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
       );
-      if (Network.current() === null) {
-        throw new Error(
-          'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
-        );
-      }
-      networkPassphrase = Network.current().networkPassphrase();
     }
+
     return this.fromRawEd25519Seed(hash(networkPassphrase));
   }
 
@@ -138,6 +119,10 @@ export class Keypair {
 
   xdrPublicKey() {
     return new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
+  }
+
+  xdrMuxedAccount() {
+    return new xdr.MuxedAccount.keyTypeEd25519(this._publicKey);
   }
 
   /**

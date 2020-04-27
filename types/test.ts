@@ -5,7 +5,7 @@ const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
 const destKey = StellarSdk.Keypair.random();
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1');
 const transaction = new StellarSdk.TransactionBuilder(account, {
-  fee: 100,
+  fee: "100",
   networkPassphrase: StellarSdk.Networks.TESTNET
 })
   .addOperation(
@@ -19,6 +19,9 @@ const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), 
 
 transactionFromXDR.networkPassphrase; // $ExpectType string
 transactionFromXDR.networkPassphrase = "SDF";
+
+StellarSdk.TransactionBuilder.fromXDR(transaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
+StellarSdk.TransactionBuilder.fromXDR(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
 
 const sig = StellarSdk.xdr.DecoratedSignature.fromXDR(Buffer.of(1, 2)); // $ExpectType DecoratedSignature
 sig.hint(); // $ExpectType Buffer
@@ -34,6 +37,18 @@ StellarSdk.Memo.id('asdf').value; // $ExpectType string
 StellarSdk.Memo.text('asdf').value; // $ExpectType string | Buffer
 StellarSdk.Memo.return('asdf').value; // $ExpectType Buffer
 StellarSdk.Memo.hash('asdf').value; // $ExpectType Buffer
+
+const feeBumptransaction = StellarSdk.TransactionBuilder.buildFeeBumpTransaction(masterKey, "120", transaction, StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction
+
+feeBumptransaction.feeSource; // $ExpectType string
+feeBumptransaction.innerTransaction; // $ExpectType Transaction<Memo<MemoType>, Operation[]>
+feeBumptransaction.fee; // $ExpectType string
+feeBumptransaction.toXDR(); // $ExpectType string
+feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
+feeBumptransaction.hash(); // $ExpectType Buffer
+
+StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
+StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
 
 // P.S. don't use Memo constructor
 new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf').value; // $ExpectType MemoValue

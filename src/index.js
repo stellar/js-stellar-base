@@ -5,7 +5,9 @@ export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';
 export { Keypair } from './keypair';
 export { UnsignedHyper, Hyper } from 'js-xdr';
+export { TransactionBase } from './transaction_base';
 export { Transaction } from './transaction';
+export { FeeBumpTransaction } from './fee_bump_transaction';
 export {
   TransactionBuilder,
   TimeoutInfinite,
@@ -20,7 +22,7 @@ export {
 } from './operation';
 export * from './memo';
 export { Account } from './account';
-export { Network, Networks } from './network';
+export { Networks } from './network';
 export { StrKey } from './strkey';
 
 export default module.exports;

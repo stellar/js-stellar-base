@@ -1,5 +1,4 @@
 import xdr from '../generated/stellar-xdr_generated';
-import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 
 /**
@@ -24,8 +23,6 @@ export function pathPaymentStrictReceive(opts) {
       throw new Error('Must specify a send asset');
     case !this.isValidAmount(opts.sendMax):
       throw new TypeError(this.constructAmountRequirementsError('sendMax'));
-    case !StrKey.isValidEd25519PublicKey(opts.destination):
-      throw new Error('destination is invalid');
     case !opts.destAsset:
       throw new Error('Must provide a destAsset for a payment operation');
     case !this.isValidAmount(opts.destAmount):
@@ -37,9 +34,15 @@ export function pathPaymentStrictReceive(opts) {
   const attributes = {};
   attributes.sendAsset = opts.sendAsset.toXDRObject();
   attributes.sendMax = this._toXDRAmount(opts.sendMax);
-  attributes.destination = Keypair.fromPublicKey(
-    opts.destination
-  ).xdrAccountId();
+
+  try {
+    attributes.destination = xdr.MuxedAccount.fromXDR(
+      StrKey.decodeMuxedAccount(opts.destination)
+    );
+  } catch (e) {
+    throw new Error('destination is invalid');
+  }
+
   attributes.destAsset = opts.destAsset.toXDRObject();
   attributes.destAmount = this._toXDRAmount(opts.destAmount);
 

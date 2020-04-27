@@ -28,7 +28,6 @@ describe('Operation', function() {
       ).to.be.equal('10000000000');
       expect(obj.startingBalance).to.be.equal(startingBalance);
     });
-
     it('fails to create createAccount operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
@@ -80,15 +79,31 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('payment');
       expect(obj.destination).to.be.equal(destination);
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('10000000000');
-      expect(obj.amount).to.be.equal(amount);
-      expect(obj.asset.equals(asset)).to.be.true;
+    });
+    it('supports muxed accounts', function() {
+      var destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var amount = '1000.0000000';
+      var asset = new StellarBase.Asset(
+        'USDUSD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      let op = StellarBase.Operation.payment({
+        destination,
+        asset,
+        amount,
+        source
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('payment');
+      expect(obj.destination).to.be.equal(destination);
+      expect(obj.source).to.be.equal(source);
     });
 
     it('fails to create payment operation with an invalid destination address', function() {
@@ -110,122 +125,6 @@ describe('Operation', function() {
       };
       expect(() => StellarBase.Operation.payment(opts)).to.throw(
         /amount argument must be of type String/
-      );
-    });
-  });
-
-  describe('.pathPayment()', function() {
-    it('creates a pathPaymentStrictReceiveOp', function() {
-      var sendAsset = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      var sendMax = '3.0070000';
-      var destination =
-        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
-      var destAsset = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      var destAmount = '3.1415000';
-      var path = [
-        new StellarBase.Asset(
-          'USD',
-          'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
-        ),
-        new StellarBase.Asset(
-          'EUR',
-          'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
-        )
-      ];
-      let op = StellarBase.Operation.pathPayment({
-        sendAsset,
-        sendMax,
-        destination,
-        destAsset,
-        destAmount,
-        path
-      });
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('pathPaymentStrictReceive');
-      expect(obj.sendAsset.equals(sendAsset)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .sendMax()
-          .toString()
-      ).to.be.equal('30070000');
-      expect(obj.sendMax).to.be.equal(sendMax);
-      expect(obj.destination).to.be.equal(destination);
-      expect(obj.destAsset.equals(destAsset)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .destAmount()
-          .toString()
-      ).to.be.equal('31415000');
-      expect(obj.destAmount).to.be.equal(destAmount);
-      expect(obj.path[0].getCode()).to.be.equal('USD');
-      expect(obj.path[0].getIssuer()).to.be.equal(
-        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
-      );
-      expect(obj.path[1].getCode()).to.be.equal('EUR');
-      expect(obj.path[1].getIssuer()).to.be.equal(
-        'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
-      );
-    });
-
-    it('fails to create path payment operation with an invalid destination address', function() {
-      let opts = {
-        destination: 'GCEZW',
-        sendMax: '20',
-        destAmount: '50',
-        sendAsset: StellarBase.Asset.native(),
-        destAsset: new StellarBase.Asset(
-          'USD',
-          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-        )
-      };
-      expect(() => StellarBase.Operation.pathPayment(opts)).to.throw(
-        /destination is invalid/
-      );
-    });
-
-    it('fails to create path payment operation with an invalid sendMax', function() {
-      let opts = {
-        destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
-        sendMax: 20,
-        destAmount: '50',
-        sendAsset: StellarBase.Asset.native(),
-        destAsset: new StellarBase.Asset(
-          'USD',
-          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-        )
-      };
-      expect(() => StellarBase.Operation.pathPayment(opts)).to.throw(
-        /sendMax argument must be of type String/
-      );
-    });
-
-    it('fails to create path payment operation with an invalid destAmount', function() {
-      let opts = {
-        destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
-        sendMax: '20',
-        destAmount: 50,
-        sendAsset: StellarBase.Asset.native(),
-        destAsset: new StellarBase.Asset(
-          'USD',
-          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-        )
-      };
-      expect(() => StellarBase.Operation.pathPayment(opts)).to.throw(
-        /destAmount argument must be of type String/
       );
     });
   });
@@ -296,7 +195,48 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-
+    it('supports muxed accounts', function() {
+      var sendAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var sendMax = '3.0070000';
+      var destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var destAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var destAmount = '3.1415000';
+      var path = [
+        new StellarBase.Asset(
+          'USD',
+          'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+        ),
+        new StellarBase.Asset(
+          'EUR',
+          'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
+        )
+      ];
+      let op = StellarBase.Operation.pathPaymentStrictReceive({
+        sendAsset,
+        sendMax,
+        destination,
+        destAsset,
+        destAmount,
+        path,
+        source
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.destination).to.be.equal(destination);
+      expect(obj.source).to.be.equal(destination);
+    });
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
@@ -412,7 +352,45 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-
+    it('supports muxed accounts', function() {
+      var sendAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var sendAmount = '3.0070000';
+      var destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      var destAsset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      var destMin = '3.1415000';
+      var path = [
+        new StellarBase.Asset(
+          'USD',
+          'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+        )
+      ];
+      let op = StellarBase.Operation.pathPaymentStrictSend({
+        sendAsset,
+        sendAmount,
+        destination,
+        destAsset,
+        destMin,
+        path,
+        source
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('pathPaymentStrictSend');
+      expect(obj.destination).to.be.equal(destination);
+      expect(obj.source).to.be.equal(source);
+    });
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
@@ -560,7 +538,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('allowTrust');
       expect(obj.trustor).to.be.equal(trustor);
       expect(obj.assetCode).to.be.equal(assetCode);
-      expect(obj.authorize).to.be.equal(authorize);
+      expect(obj.authorize).to.be.equal(1);
     });
 
     it('fails to create allowTrust operation with an invalid trustor address', function() {
@@ -712,13 +690,19 @@ describe('Operation', function() {
       const account = new StellarBase.Account(keypair.publicKey(), '0');
 
       // First operation do nothing.
-      const tx1 = new StellarBase.TransactionBuilder(account, { fee: 100 })
+      const tx1 = new StellarBase.TransactionBuilder(account, {
+        fee: 100,
+        networkPassphrase: 'Some Network'
+      })
         .addOperation(StellarBase.Operation.setOptions({}))
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
 
       // Second operation unset homeDomain
-      const tx2 = new StellarBase.TransactionBuilder(account, { fee: 100 })
+      const tx2 = new StellarBase.TransactionBuilder(account, {
+        fee: 100,
+        networkPassphrase: 'Some Network'
+      })
         .addOperation(StellarBase.Operation.setOptions({ homeDomain: '' }))
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
@@ -852,52 +836,6 @@ describe('Operation', function() {
     });
   });
 
-  describe('.manageOffer', function() {
-    beforeEach(function() {
-      sinon.spy(console, 'log');
-    });
-
-    afterEach(function() {
-      console.log.restore();
-    });
-
-    it('creates a manageSellOfferOp (string price) (and warns)', function() {
-      var opts = {};
-      opts.selling = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      opts.buying = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      opts.amount = '3.1234560';
-      opts.price = '8.141592';
-      opts.offerId = '1';
-      let op = StellarBase.Operation.manageOffer(opts);
-
-      expect(console.log).to.be.called;
-
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('manageSellOffer');
-      expect(obj.selling.equals(opts.selling)).to.be.true;
-      expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('31234560');
-      expect(obj.amount).to.be.equal(opts.amount);
-      expect(obj.price).to.be.equal(opts.price);
-      expect(obj.offerId).to.be.equal(opts.offerId);
-    });
-  });
   describe('.manageSellOffer', function() {
     it('creates a manageSellOfferOp (string price)', function() {
       var opts = {};
@@ -1434,51 +1372,6 @@ describe('Operation', function() {
     });
   });
 
-  describe('.createPassiveOffer', function() {
-    beforeEach(function() {
-      sinon.spy(console, 'log');
-    });
-
-    afterEach(function() {
-      console.log.restore();
-    });
-
-    it('creates a createPassiveSellOfferOp (string price) (and warns)', function() {
-      var opts = {};
-      opts.selling = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      opts.buying = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      opts.amount = '11.2782700';
-      opts.price = '3.07';
-      let op = StellarBase.Operation.createPassiveOffer(opts);
-
-      expect(console.log).to.be.called;
-
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('createPassiveSellOffer');
-      expect(obj.selling.equals(opts.selling)).to.be.true;
-      expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('112782700');
-      expect(obj.amount).to.be.equal(opts.amount);
-      expect(obj.price).to.be.equal(opts.price);
-    });
-  });
-
   describe('.createPassiveSellOffer', function() {
     it('creates a createPassiveSellOfferOp (string price)', function() {
       var opts = {};
@@ -1644,7 +1537,22 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('accountMerge');
       expect(obj.destination).to.be.equal(opts.destination);
     });
-
+    it('supports muxed accounts', function() {
+      var opts = {};
+      opts.destination =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      opts.source =
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+      let op = StellarBase.Operation.accountMerge(opts);
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('accountMerge');
+      expect(obj.destination).to.be.equal(opts.destination);
+      expect(obj.source).to.be.equal(opts.source);
+    });
     it('fails to create accountMerge operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW'

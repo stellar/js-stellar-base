@@ -6,12 +6,14 @@ import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import isString from 'lodash/isString';
 import { verifyChecksum } from './util/checksum';
+import xdr from './generated/stellar-xdr_generated';
 
 const versionBytes = {
   ed25519PublicKey: 6 << 3, // G
   ed25519SecretSeed: 18 << 3, // S
   preAuthTx: 19 << 3, // T
-  sha256Hash: 23 << 3 // X
+  sha256Hash: 23 << 3, // X
+  muxedAccount: 12 << 3 // M
 };
 
 /**
@@ -107,6 +109,46 @@ export class StrKey {
   static decodeSha256Hash(data) {
     return decodeCheck('sha256Hash', data);
   }
+
+  /**
+   * Encodes data to strkey.
+   * @param {Buffer} data data to encode. It must represent a valid xdr.MuxedAccount
+   * @returns {string}
+   */
+  static encodeMuxedAccount(data) {
+    const muxed = xdr.MuxedAccount.fromXDR(data);
+
+    if (muxed.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
+      return encodeCheck('ed25519PublicKey', muxed.ed25519());
+    }
+
+    return encodeCheck('muxedAccount', muxed.med25519().toXDR());
+  }
+
+  /**
+   * Decodes strkey muxed account to raw data. The raw data can be used to create a valid xdr.MuxedAccount
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodeMuxedAccount(data) {
+    let muxed;
+    switch (data.length) {
+      case 56:
+        muxed = xdr.MuxedAccount.keyTypeEd25519(
+          decodeCheck('ed25519PublicKey', data)
+        );
+        break;
+      case 69:
+        muxed = xdr.MuxedAccount.keyTypeMuxedEd25519(
+          xdr.MuxedAccountMed25519.fromXDR(decodeCheck('muxedAccount', data))
+        );
+        break;
+      default:
+        throw new Error('invalid encoded string');
+    }
+
+    return muxed.toXDR();
+  }
 }
 
 function isValid(versionByteName, encoded) {
@@ -144,7 +186,7 @@ export function decodeCheck(versionByteName, encoded) {
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "accountId" or "seed"`
+      `${versionByteName} is not a valid version byte name. Expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
     );
   }
 
@@ -172,11 +214,11 @@ export function encodeCheck(versionByteName, data) {
 
   if (isUndefined(versionByte)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name.  expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash"`
+      `${versionByteName} is not a valid version byte name. Expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
     );
   }
-
   data = Buffer.from(data);
+
   const versionBuffer = Buffer.from([versionByte]);
   const payload = Buffer.concat([versionBuffer, data]);
   const checksum = calculateChecksum(payload);

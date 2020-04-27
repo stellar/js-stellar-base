@@ -43,9 +43,8 @@ export type KeypairType = 'ed25519';
 
 export class Keypair {
   static fromRawEd25519Seed(secretSeed: Buffer): Keypair;
-  static fromBase58Seed(secretSeed: string): Keypair;
   static fromSecret(secretKey: string): Keypair;
-  static master(networkPassphrase?: string): Keypair;
+  static master(networkPassphrase: string): Keypair;
   static fromPublicKey(publicKey: string): Keypair;
   static random(): Keypair;
 
@@ -65,6 +64,7 @@ export class Keypair {
   signDecorated(data: Buffer): xdr.DecoratedSignature;
   signatureHint(): xdr.SignatureHint;
   verify(data: Buffer, signature: xdr.Signature): boolean;
+  xdrAccountId(): xdr.AccountId;
 }
 
 export const MemoNone = 'none';
@@ -122,20 +122,6 @@ export class Memo<T extends MemoType = MemoType> {
 export enum Networks {
   PUBLIC = 'Public Global Stellar Network ; September 2015',
   TESTNET = 'Test SDF Network ; September 2015'
-}
-
-export class Network {
-  static use(network: Network): void;
-  static usePublicNetwork(): void;
-  static useTestNetwork(): void;
-  static current(): Network;
-  static networkPassphrase(): string;
-  static networkId(): string;
-
-  constructor(passphrase: string);
-
-  networkPassphrase(): string;
-  networkId(): string;
 }
 
 export const AuthRequiredFlag: 1;
@@ -231,7 +217,7 @@ export namespace OperationOptions {
   interface AllowTrust extends BaseOptions {
     trustor: string;
     assetCode: string;
-    authorize?: boolean;
+    authorize?: boolean | number;
   }
   interface ChangeTrust extends BaseOptions {
     asset: Asset;
@@ -333,7 +319,8 @@ export namespace Operation {
   interface AllowTrust extends BaseOperation<OperationType.AllowTrust> {
     trustor: string;
     assetCode: string;
-    authorize: boolean | undefined;
+    // this is a boolean or a number so that it can support protocol 12 or 13
+    authorize: boolean | number | undefined;
   }
   function allowTrust(
     options: OperationOptions.AllowTrust
@@ -411,10 +398,6 @@ export namespace Operation {
     path: Asset[];
   }
   function pathPaymentStrictReceive(
-    options: OperationOptions.PathPaymentStrictReceive
-  ): xdr.Operation<PathPaymentStrictReceive>;
-
-  function pathPayment(
     options: OperationOptions.PathPaymentStrictReceive
   ): xdr.Operation<PathPaymentStrictReceive>;
 
@@ -500,36 +483,47 @@ export namespace StrKey {
 
   function encodeSha256Hash(data: Buffer): string;
   function decodeSha256Hash(data: string): Buffer;
+
+  function encodeMuxedAccount(data: Buffer): string;
+  function decodeMuxedAccount(data: string): Buffer;
+}
+
+export class TransactionI {
+  addSignature(publicKey: string, signature: string): void;
+  fee: string;
+  getKeypairSignature(keypair: Keypair): string;
+  hash(): Buffer;
+  networkPassphrase: string;
+  sign(...keypairs: Keypair[]): void;
+  signatureBase(): Buffer;
+  signatures: xdr.DecoratedSignature[];
+  signHashX(preimage: Buffer | string): void;
+  toEnvelope(): xdr.TransactionEnvelope;
+  toXDR(): string;
+}
+
+export class FeeBumpTransaction extends TransactionI {
+  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+  feeSource: string;
+  innerTransaction: Transaction;
 }
 
 export class Transaction<
   TMemo extends Memo = Memo,
   TOps extends Operation[] = Operation[]
-> {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase?: string);
-  addSignature(publicKey: string, signature: string): void;
-  getKeypairSignature(keypair: Keypair): string;
-  hash(): Buffer;
-  sign(...keypairs: Keypair[]): void;
-  signatureBase(): Buffer;
-  signHashX(preimage: Buffer | string): void;
-  toEnvelope(): xdr.TransactionEnvelope;
-  toXDR(): string;
-
+> extends TransactionI {
+  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+  memo: TMemo;
   operations: TOps;
   sequence: string;
-  fee: number;
   source: string;
-  memo: TMemo;
-  networkPassphrase: string;
-  signatures: xdr.DecoratedSignature[];
   timeBounds?: {
     minTime: string;
     maxTime: string;
   };
 }
 
-export const BASE_FEE = 100;
+export const BASE_FEE = "100";
 export const TimeoutInfinite = 0;
 
 export class TransactionBuilder {
@@ -542,17 +536,20 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
+  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): FeeBumpTransaction;
+  static fromXDR(envelope: string|xdr.TransactionEnvelope, networkPassphrase: string): Transaction|FeeBumpTransaction;
 }
 
 export namespace TransactionBuilder {
   interface TransactionBuilderOptions {
-    fee: number;
+    fee: string;
     timebounds?: {
       minTime?: number | string;
       maxTime?: number | string;
     };
     memo?: Memo;
     networkPassphrase?: string;
+    v1?: boolean;
   }
 }
 
@@ -560,29 +557,62 @@ export namespace TransactionBuilder {
 declare namespace xdrHidden {
   // tslint:disable-line:strict-export-declare-modifiers
   class Operation2<T extends Operation = Operation> extends xdr.XDRStruct {
-    static fromXDR(xdr: Buffer): xdr.Operation;
+    static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
+    static fromXDR(input: string, format: 'hex' | 'base64'): xdr.Operation;
   }
 }
 
 export namespace xdr {
   class XDRStruct {
-    static fromXDR(xdr: Buffer): XDRStruct;
+    static fromXDR(input: Buffer, format?: 'raw'): XDRStruct;
+    static fromXDR(input: string, format: 'hex' | 'base64'): XDRStruct;
 
     toXDR(base?: string): Buffer;
     toXDR(encoding: string): string;
   }
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+  class AccountId extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): AccountId;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): AccountId;
+  }
   class Asset extends XDRStruct {
-    static fromXDR(xdr: Buffer): Asset;
+    static fromXDR(xdr: Buffer, format?: 'raw'): Asset;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): Asset;
   }
   class Memo extends XDRStruct {
-    static fromXDR(xdr: Buffer): Memo;
+    static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
+  }
+  class EnvelopeType extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
+    name: string;
+    value: number;
   }
   class TransactionEnvelope extends XDRStruct {
-    static fromXDR(xdr: Buffer): TransactionEnvelope;
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionEnvelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionEnvelope;
+    switch(): EnvelopeType;
+    v0(): TransactionV0Envelope;
+    v1(): TransactionV1Envelope;
+    feeBump(): FeeBumpTransactionEnvelope;
+    value(): TransactionV0Envelope | TransactionV1Envelope | FeeBumpTransactionEnvelope;
+  }
+  class FeeBumpTransactionEnvelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): FeeBumpTransactionEnvelope;
+  }
+  class TransactionV0Envelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV0Envelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV0Envelope;
+  }
+  class TransactionV1Envelope extends XDRStruct {
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV1Envelope;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV1Envelope;
   }
   class DecoratedSignature extends XDRStruct {
-    static fromXDR(xdr: Buffer): DecoratedSignature;
+    static fromXDR(xdr: Buffer, format?: 'raw'): DecoratedSignature;
+    static fromXDR(xdr: string, format: 'hex' | 'base64'): DecoratedSignature;
 
     constructor(keys: { hint: SignatureHint; signature: Signature });
 
@@ -593,7 +623,8 @@ export namespace xdr {
   type Signature = Buffer;
 
   class TransactionResult extends XDRStruct {
-    static fromXDR(xdr: Buffer): TransactionResult;
+    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionResult;
+    static fromXDR(xdr: string, format: 'hex'): TransactionResult;
   }
 }
 

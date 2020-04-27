@@ -18,7 +18,10 @@ describe('TransactionBuilder', function() {
       asset = StellarBase.Asset.native();
       memo = StellarBase.Memo.id('100');
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination,
@@ -53,7 +56,7 @@ describe('TransactionBuilder', function() {
     });
 
     it('should have 100 stroops fee', function(done) {
-      expect(transaction.fee).to.be.equal(100);
+      expect(transaction.fee).to.be.equal('100');
       done();
     });
   });
@@ -78,7 +81,10 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -120,7 +126,7 @@ describe('TransactionBuilder', function() {
     });
 
     it('should have 200 stroops fee', function(done) {
-      expect(transaction.fee).to.be.equal(200);
+      expect(transaction.fee).to.be.equal('200');
       done();
     });
   });
@@ -145,7 +151,10 @@ describe('TransactionBuilder', function() {
       destination2 = 'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
       amount2 = '2000';
 
-      transaction = new StellarBase.TransactionBuilder(source, { fee: 1000 })
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 1000,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
@@ -165,7 +174,7 @@ describe('TransactionBuilder', function() {
     });
 
     it('should have 2000 stroops fee', function(done) {
-      expect(transaction.fee).to.be.equal(2000);
+      expect(transaction.fee).to.be.equal('2000');
       done();
     });
   });
@@ -182,7 +191,8 @@ describe('TransactionBuilder', function() {
       };
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -236,7 +246,8 @@ describe('TransactionBuilder', function() {
 
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -260,8 +271,8 @@ describe('TransactionBuilder', function() {
       done();
     });
   });
-  describe('timebounds', function(){
-    it('requires maxTime', function(){
+  describe('timebounds', function() {
+    it('requires maxTime', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -273,9 +284,11 @@ describe('TransactionBuilder', function() {
           },
           fee: 100
         }).build();
-      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.throw(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     });
-    it('requires minTime', function(){
+    it('requires minTime', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -287,9 +300,11 @@ describe('TransactionBuilder', function() {
           },
           fee: 100
         }).build();
-      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.throw(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     });
-    it('works with timebounds defined', function(){
+    it('works with timebounds defined', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -300,11 +315,12 @@ describe('TransactionBuilder', function() {
             minTime: '1',
             maxTime: '10'
           },
-          fee: 100
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
         }).build();
       }).to.not.throw();
     });
-    it('fails with empty timebounds', function(){
+    it('fails with empty timebounds', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -314,7 +330,9 @@ describe('TransactionBuilder', function() {
           timebounds: {},
           fee: 100
         }).build();
-      }).to.throw('TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).');
+      }).to.throw(
+        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+      );
     });
   });
   describe('setTimeout', function() {
@@ -367,7 +385,10 @@ describe('TransactionBuilder', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
@@ -422,7 +443,8 @@ describe('TransactionBuilder', function() {
       );
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -440,16 +462,169 @@ describe('TransactionBuilder', function() {
         timeoutTimestamp.toString()
       );
     });
-    it('works with TimeoutInfinite', function(){
+    it('works with TimeoutInfinite', function() {
       let source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
-          fee: 100
-        }).setTimeout(0).build();
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
+        })
+          .setTimeout(0)
+          .build();
       }).to.not.throw();
+    });
+  });
+  describe('.buildFeeBumpTransaction', function() {
+    it('builds a fee bump transaction', function(done) {
+      const networkPassphrase = 'Standalone Network ; February 2017';
+      const innerSource = StellarBase.Keypair.master(networkPassphrase);
+      const innerAccount = new StellarBase.Account(
+        innerSource.publicKey(),
+        '7'
+      );
+      const destination =
+        'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
+      const amount = '2000.0000000';
+      const asset = StellarBase.Asset.native();
+
+      let innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: '200',
+        networkPassphrase: networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        },
+        v1: true
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset,
+            amount
+          })
+        )
+        .build();
+
+      let feeSource = StellarBase.Keypair.fromSecret(
+        'SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V'
+      );
+      let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        feeSource,
+        '200',
+        innerTx,
+        networkPassphrase
+      );
+
+      expect(transaction).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+
+      // The fee rate for fee bump is at least the fee rate of the inner transaction
+      expect(() => {
+        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '100',
+          innerTx,
+          networkPassphrase
+        );
+      }).to.throw(/Invalid baseFee, it should be at least 200 stroops./);
+
+      innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: '80',
+        networkPassphrase: networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        },
+        v1: true
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset,
+            amount
+          })
+        )
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
+        .build();
+
+      // The fee rate for fee bump is at least the minimum fee
+      expect(() => {
+        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '90',
+          innerTx,
+          networkPassphrase
+        );
+      }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
+
+      innerTx = new StellarBase.TransactionBuilder(innerAccount, {
+        fee: '100',
+        networkPassphrase: networkPassphrase,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0
+        }
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination,
+            asset,
+            amount
+          })
+        )
+        .build();
+
+      expect(() => {
+        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+          feeSource,
+          '200',
+          innerTx,
+          networkPassphrase
+        );
+      }).to.throw(
+        /Invalid innerTransaction type, it should be a envelopeTypeTx but received a envelopeTypeTxV0./
+      );
+
+      done();
+    });
+  });
+
+  describe('.fromXDR', function() {
+    it('builds a fee bump transaction', function() {
+      const xdr =
+        'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
+      let tx = StellarBase.TransactionBuilder.fromXDR(
+        xdr,
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      expect(tx.toXDR()).to.equal(xdr);
+
+      tx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toEnvelope(), // xdr object
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      expect(tx.toXDR()).to.equal(xdr);
+    });
+    it('builds a transaction', function() {
+      const xdr =
+        'AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=';
+      let tx = StellarBase.TransactionBuilder.fromXDR(
+        xdr,
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.Transaction);
+      expect(tx.toXDR()).to.equal(xdr);
+
+      tx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toEnvelope(), // xdr object
+        StellarBase.Networks.TESTNET
+      );
+      expect(tx).to.be.an.instanceof(StellarBase.Transaction);
+      expect(tx.toXDR()).to.equal(xdr);
     });
   });
 });
