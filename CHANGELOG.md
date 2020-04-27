@@ -1,9 +1,71 @@
 # Changelog
 
-As this project is pre 1.0, breaking changes may happen for minor version bumps.
-A breaking change will get clearly notified in this log.
-
 ## Unreleased
+
+## [v3.0.0](https://github.com/stellar/js-stellar-base/compare/v2.1.9..v3.0.0)
+
+This version brings protocol 13 support with backwards compatibility support for protocol 12.
+
+### Add
+- Add `TransactionBuilder.buildFeeBumpTransaction` which makes it easy to create `FeeBumpTransaction` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- Adds a feature flag which allow consumers of this library to create V1 (protocol 13) transactions using the `TransactionBuilder` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- Add support for [CAP0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md): First-class multiplexed accounts ([#325](https://github.com/stellar/js-stellar-base/pull/325)).
+- Add `Keypair.xdrMuxedAccount` which creates a new `xdr.MuxedAccount`([#325](https://github.com/stellar/js-stellar-base/pull/325)).
+- Add `FeeBumpTransaction` which makes it easy to work with fee bump transactions ([#328](https://github.com/stellar/js-stellar-base/pull/328)).
+- Add `TransactionBuilder.fromXDR` which receives an xdr envelope and return a `Transaction` or `FeeBumpTransaction` ([#328](https://github.com/stellar/js-stellar-base/pull/328)).
+
+### Update
+- Update XDR definitions with protocol 13 ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
+- Extend `Transaction` to work with `TransactionV1Envelope` and `TransactionV0Envelope` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
+- Add backward compatibility support for [CAP0018](https://github.com/stellar/stellar-protocol/blob/f01c9354aaab1e8ca97a25cf888829749cadf36a/core/cap-0018.md) ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
+- Update operations builder to support multiplexed accounts ([#337](https://github.com/stellar/js-stellar-base/pull/337)).
+
+  This allows you to specify an `M` account as the destination or source:
+  ```
+  var destination = 'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+  var amount = '1000.0000000';
+  var asset = new StellarBase.Asset(
+    'USDUSD',
+    'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+  );
+  var source =
+    'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
+  StellarBase.Operation.payment({
+    destination,
+    asset,
+    amount,
+    source
+  });
+  ```
+
+  **To use multiplexed accounts you need an instance of Stellar running on Protocol 13 or higher**
+
+### Breaking changes
+
+- `Transaction.toEnvelope()` returns a protocol 13 `xdr.TransactionEnvelope` which is an `xdr.Union` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
+  If you have code that looks like this `transaction.toEnvelope().tx` you have two options:
+    - You can grab the value wrapped by the union, calling `value()` like `transaction.toEnvelope().value().tx`.
+    - You can check which is the discriminant by using `switch()` and then call `v0()`, `v1()`, or `feeBump()`.
+- The return value from `Transaction.fee` changed from `number` to `string`. This brings support for `Int64` values ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- The const `BASE_FEE` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- The option `fee` passed to  `new TransactionBuilder({fee: ..})` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- The following fields, which were previously an `xdr.AccountID` are now a  `xdr.MuxedAccount` ([#325](https://github.com/stellar/js-stellar-base/pull/325)):
+  - `PaymentOp.destination`
+  - `PathPaymentStrictReceiveOp.destination`
+  - `PathPaymentStrictSendOp.destination`
+  - `Operation.sourceAccount`
+  - `Operation.destination` (for `ACCOUNT_MERGE`)
+  - `Transaction.sourceAccount`
+  - `FeeBumpTransaction.feeSource`
+
+  You can get the string representation by calling `StrKey.encodeMuxedAccount` which will return a `G..` or `M..` account.
+- Remove the following deprecated functions ([#331](https://github.com/stellar/js-stellar-base/pull/331)):
+  - `Operation.manageOffer`
+  - `Operation.createPassiveOffer`
+  - `Operation.pathPayment`
+  - `Keypair.fromBase58Seed`
+- Remove the `Network` class ([#331](https://github.com/stellar/js-stellar-base/pull/331)).
+- Remove `vendor/base58.js` ([#331](https://github.com/stellar/js-stellar-base/pull/331)).
 
 ## [v3.0.0-alpha.1](https://github.com/stellar/js-stellar-base/compare/v3.0.0-alpha.0..v3.0.0-alpha.1)
 
