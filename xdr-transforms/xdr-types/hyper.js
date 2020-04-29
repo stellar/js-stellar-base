@@ -19,7 +19,7 @@ export default function hyper(ns, name) {
     ])
   );
 
-  ioMixin(hyper, hyper, true);
+  ioMixin(hyper, hyper, hyper, true);
   hyper.members.push(
     dom.create.property('MAX_VALUE', hyper, dom.DeclarationFlags.ReadOnly)
   );

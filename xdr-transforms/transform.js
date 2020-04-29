@@ -3,6 +3,7 @@ import fs from 'fs';
 import xdrInt from './xdr-types/integer';
 import hyperToTS from './xdr-types/hyper';
 import enumToTS from './xdr-types/enum';
+import xdrString from './xdr-types/string';
 
 function isXDRMemberCall(node) {
   return node.type === 'MemberExpression' && node.object.name === 'xdr';
@@ -65,11 +66,11 @@ export default function transformer(file, api) {
 
   const signedInt = xdrInt(
     ns,
-    'SignedInteger',
+    'SignedInt',
     Math.pow(2, 31) - 1,
     -Math.pow(2, 31)
   );
-  const unsignedInt = xdrInt(ns, 'UnsignedInteger', Math.pow(2, 32) - 1, 0);
+  const unsignedInt = xdrInt(ns, 'UnsignedInt', Math.pow(2, 32) - 1, 0);
   ns.members.push(signedInt);
   ns.members.push(unsignedInt);
 
@@ -77,6 +78,9 @@ export default function transformer(file, api) {
   ns.members.push(hyper);
   const uhyper = hyperToTS(ns, 'UnsignedHyper');
   ns.members.push(uhyper);
+
+  const xString = xdrString(ns);
+  ns.members.push(xString);
 
   const xdrTypes = {
     INT: signedInt,

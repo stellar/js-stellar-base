@@ -2,7 +2,7 @@
 
 exports[`.transform(type definitions) 1`] = `
 "declare namespace xdr {
-    interface SignedInteger {
+    interface SignedInt {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
         read(io: Buffer): number;
@@ -13,7 +13,7 @@ exports[`.transform(type definitions) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    interface UnsignedInteger {
+    interface UnsignedInt {
         readonly MAX_VALUE: 4294967295;
         readonly MIN_VALUE: 0;
         read(io: Buffer): number;
@@ -94,9 +94,28 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
-    const Uint32: UnsignedInteger;
+    class String {
+        constructor(maxLength: 4294967295);
 
-    const Int32: SignedInteger;
+        read(io: Buffer): Buffer;
+
+        readString(io: Buffer): string;
+
+        write(value: string | Buffer, io: Buffer): void;
+
+        isValid(value: string | number[] | Buffer): boolean;
+
+        toXDR(value: string | Buffer): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    const Uint32: UnsignedInt;
+
+    const Int32: SignedInt;
 
     class Uint64 extends UnsignedHyper {
     }
@@ -109,7 +128,7 @@ exports[`.transform(type definitions) 1`] = `
 
 exports[`.transform(xdr enum) 1`] = `
 "declare namespace xdr {
-    interface SignedInteger {
+    interface SignedInt {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
         read(io: Buffer): number;
@@ -120,7 +139,7 @@ exports[`.transform(xdr enum) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    interface UnsignedInteger {
+    interface UnsignedInt {
         readonly MAX_VALUE: 4294967295;
         readonly MIN_VALUE: 0;
         read(io: Buffer): number;
@@ -198,6 +217,25 @@ exports[`.transform(xdr enum) 1`] = `
         static fromBytes(low: number, high: number): UnsignedHyper;
 
         static isValid(value: UnsignedHyper): boolean;
+
+    }
+
+    class String {
+        constructor(maxLength: 4294967295);
+
+        read(io: Buffer): Buffer;
+
+        readString(io: Buffer): string;
+
+        write(value: string | Buffer, io: Buffer): void;
+
+        isValid(value: string | number[] | Buffer): boolean;
+
+        toXDR(value: string | Buffer): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
 
     }
 

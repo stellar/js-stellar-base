@@ -1,6 +1,11 @@
 import * as dom from 'dts-dom';
 
-export default function ioMixin(node, toXDRParam, includeInstanceMethods) {
+export default function ioMixin(
+  node,
+  fromXDRReturn,
+  toXDRParam,
+  includeInstanceMethods
+) {
   const buffer = dom.create.interface('Buffer');
   if (includeInstanceMethods) {
     node.members.push(
@@ -51,7 +56,7 @@ export default function ioMixin(node, toXDRParam, includeInstanceMethods) {
           dom.ParameterFlags.Optional
         )
       ],
-      node,
+      fromXDRReturn,
       dom.DeclarationFlags.Static
     )
   );
@@ -68,7 +73,7 @@ export default function ioMixin(node, toXDRParam, includeInstanceMethods) {
           ])
         )
       ],
-      node,
+      fromXDRReturn,
       dom.DeclarationFlags.Static
     )
   );
