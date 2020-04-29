@@ -1,5 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`.transform(type definitions) 1`] = `
+"declare namespace xdr {
+    interface INT {
+        readonly MAX_VALUE: 2147483647;
+        readonly MIN_VALUE: -2147483648;
+        read(io: Buffer): number;
+        write(value: number, io: Buffer): void;
+        isValid(value: number): boolean;
+        toXDR(value: number): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): number;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
+    }
+
+    interface UINT {
+        readonly MAX_VALUE: 4294967295;
+        readonly MIN_VALUE: 0;
+        read(io: Buffer): number;
+        write(value: number, io: Buffer): void;
+        isValid(value: number): boolean;
+        toXDR(value: number): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): number;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
+    }
+
+    const Uint32: UINT;
+
+    const Int32: INT;
+
+}"
+`;
+
 exports[`.transform(xdr enum) 1`] = `
 "declare namespace xdr {
     interface INT {

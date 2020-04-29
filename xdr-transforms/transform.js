@@ -1,7 +1,49 @@
 import * as dom from 'dts-dom';
-import { Property } from 'jscodeshift';
 import fs from 'fs';
 import xdrInt from './unsigned-integer';
+import enumToTS from './enum';
+
+function isXDRMemberCall(node) {
+  return node.type === 'MemberExpression' && node.object.name === 'xdr';
+}
+
+function isXDRIntOrUint(node) {
+  return (
+    node.type === 'Identifier' && (node.name === 'uint' || node.name === 'int')
+  );
+}
+
+function typeDef(api, node, ns, xdrTypes) {
+  const [literal, exp] = node.arguments;
+  const name = literal.value;
+
+  if (exp.type === 'CallExpression') {
+    if (isXDRMemberCall(exp.callee)) {
+      if (isXDRIntOrUint(exp.callee.property)) {
+        switch (exp.callee.property.name) {
+          case 'int':
+            ns.members.push(
+              dom.create.const(
+                name,
+                xdrTypes.INT,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
+          case 'uint':
+            ns.members.push(
+              dom.create.const(
+                name,
+                xdrTypes.UINT,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
+        }
+      }
+    }
+  }
+}
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
@@ -16,6 +58,11 @@ export default function transformer(file, api) {
   ns.members.push(signedInt);
   ns.members.push(unsignedInt);
 
+  const xdrTypes = {
+    INT: signedInt,
+    UINT: unsignedInt
+  };
+
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
     const node = p.value;
     const callee = node.callee;
@@ -25,69 +72,20 @@ export default function transformer(file, api) {
 
       switch (xdrType) {
         case 'enum':
-          enumToTS(node.arguments, ns, types);
+          enumToTS(api, node.arguments, ns, types);
         case 'typedef':
-        // console.log(node);
+          typeDef(api, node, ns, xdrTypes);
         default:
           break;
       }
     }
   });
 
+  // Use this to output to a file instead of overriding source
   if (process.env.OUT) {
     console.log('writing to: ' + process.env.OUT);
     fs.writeFileSync(process.env.OUT, dom.emit(ns));
   } else {
     return dom.emit(ns);
-  }
-
-  function enumToTS(node, ns) {
-    const [literal, objExp] = node;
-    const union = dom.create.class(literal.value);
-    const identifiers = [];
-    const values = [];
-
-    api
-      .jscodeshift(objExp)
-      .find(Property)
-      .forEach((p) => {
-        identifiers.push(dom.type.stringLiteral(p.value.key.name));
-        if (p.value.value.type === 'Literal') {
-          values.push(dom.type.numberLiteral(p.value.value.value));
-        } else if (p.value.value.type === 'UnaryExpression') {
-          if (p.value.value.prefix && p.value.value.operator === '-') {
-            values.push(dom.type.numberLiteral(-p.value.value.argument.value));
-          } else {
-            throw new Error(
-              'Uknown UnaryExpression: ' + p.value.value.operator
-            );
-          }
-        } else {
-          throw new Error('Uknown type: ' + p.value.value.type);
-        }
-      });
-
-    union.members.push(
-      dom.create.property(
-        'name',
-        dom.create.union(identifiers),
-        dom.DeclarationFlags.ReadOnly
-      )
-    );
-    union.members.push(
-      dom.create.property(
-        'value',
-        dom.create.union(values),
-        dom.DeclarationFlags.ReadOnly
-      )
-    );
-
-    identifiers.forEach((i) => {
-      union.members.push(
-        dom.create.method(i.value, [], union, dom.DeclarationFlags.Static)
-      );
-    });
-
-    ns.members.push(union);
   }
 }

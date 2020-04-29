@@ -5,14 +5,14 @@ import fs from 'fs';
 
 jest.autoMockOff();
 
-test.each([['xdr enum', 'enum.js', {}]])(
-  '.transform(%s)',
-  (desc, source, opts) => {
-    const fixtures = path.join(__dirname, '..', '__testfixtures__');
-    const content = fs.readFileSync(path.join(fixtures, source)).toString();
+test.each([
+  ['xdr enum', 'enum.js', {}],
+  ['type definitions', 'typedef.js', {}]
+])('.transform(%s)', (desc, source, opts) => {
+  const fixtures = path.join(__dirname, '..', '__testfixtures__');
+  const content = fs.readFileSync(path.join(fixtures, source)).toString();
 
-    runSnapshotTest(transform, opts, {
-      source: content
-    });
-  }
-);
+  runSnapshotTest(transform, opts, {
+    source: content
+  });
+});

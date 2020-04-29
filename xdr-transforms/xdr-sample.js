@@ -5,5 +5,8 @@ var types = XDR.config((xdr) => {
     changeTrustMalformed: -1,
     foo: 1
   });
+
+  xdr.typedef('Uint32', xdr.uint());
+  xdr.typedef('Int32', xdr.int());
 });
 export default bar;
