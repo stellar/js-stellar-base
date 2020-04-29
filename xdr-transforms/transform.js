@@ -2,12 +2,99 @@ import * as dom from 'dts-dom';
 import { Property } from 'jscodeshift';
 import fs from 'fs';
 
+function xdrUINT(ns) {
+  const buffer = dom.create.interface('Buffer');
+  const uintInterface = dom.create.interface('UINT');
+
+  uintInterface.members.push(
+    dom.create.property(
+      'MAX_VALUE',
+      dom.type.numberLiteral(4294967295),
+      dom.DeclarationFlags.ReadOnly
+    )
+  );
+  uintInterface.members.push(
+    dom.create.property(
+      'MIN_VALUE',
+      dom.type.numberLiteral(0),
+      dom.DeclarationFlags.ReadOnly
+    )
+  );
+  uintInterface.members.push(
+    dom.create.method(
+      'read',
+      [dom.create.parameter('io', buffer)],
+      dom.type.number
+    )
+  );
+  uintInterface.members.push(
+    dom.create.method(
+      'write',
+      [
+        dom.create.parameter('value', dom.type.number),
+        dom.create.parameter('io', buffer)
+      ],
+      dom.type.void
+    )
+  );
+
+  uintInterface.members.push(
+    dom.create.method(
+      'isValid',
+      [dom.create.parameter('value', dom.type.number)],
+      dom.type.boolean
+    )
+  );
+  uintInterface.members.push(
+    dom.create.method(
+      'toXDR',
+      [dom.create.parameter('value', dom.type.number)],
+      buffer
+    )
+  );
+  uintInterface.members.push(
+    dom.create.method(
+      'fromXDR',
+      [
+        dom.create.parameter('input', buffer),
+        dom.create.parameter(
+          'format',
+          dom.type.stringLiteral('raw'),
+          dom.ParameterFlags.Optional
+        )
+      ],
+      dom.type.number
+    )
+  );
+  uintInterface.members.push(
+    dom.create.method(
+      'fromXDR',
+      [
+        dom.create.parameter('input', dom.type.string),
+        dom.create.parameter(
+          'format',
+          dom.create.union([
+            dom.type.stringLiteral('hex'),
+            dom.type.stringLiteral('base64')
+          ])
+        )
+      ],
+      dom.type.number
+    )
+  );
+
+  return uintInterface;
+}
+
 export default function transformer(file, api) {
   const j = api.jscodeshift;
   const types = j.types;
   const xdrDefs = j(file.source).findVariableDeclarators('types');
 
   const ns = dom.create.namespace('xdr');
+
+  const uintInterface = xdrUINT(ns);
+  ns.members.push(uintInterface);
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
     const node = p.value;
@@ -16,13 +103,19 @@ export default function transformer(file, api) {
     if (callee.type === 'MemberExpression' && callee.object.name === 'xdr') {
       const xdrType = callee.property.name;
 
-      if (xdrType === 'enum') {
-        enumToTS(node.arguments, ns, types);
+      switch (xdrType) {
+        case 'enum':
+          enumToTS(node.arguments, ns, types);
+        case 'typedef':
+        // console.log(node);
+        default:
+          break;
       }
     }
   });
 
-  fs.writeFileSync('./out.ts', dom.emit(ns));
+  const source = dom.emit(ns);
+  fs.writeFileSync('./out.d.ts', source);
 
   function enumToTS(node, ns) {
     const [literal, objExp] = node;
