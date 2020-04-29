@@ -9,7 +9,6 @@ import ioMixin from './io-mixin';
 export default function hyper(ns, name) {
   const buffer = dom.create.interface('Buffer');
   const hyper = dom.create.class(name);
-
   hyper.members.push(
     dom.create.constructor([
       dom.create.parameter('low', dom.type.number),

@@ -55,6 +55,35 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
+    class UnsignedHyper extends Long {
+        constructor(low: number, high: number);
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static toXDR(value: UnsignedHyper): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): UnsignedHyper;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): UnsignedHyper;
+
+        readonly MAX_VALUE: UnsignedHyper;
+
+        readonly MIN_VALUE: UnsignedHyper;
+
+        static read(io: Buffer): UnsignedHyper;
+
+        static write(value: UnsignedHyper, io: Buffer): void;
+
+        static fromString(input: string): UnsignedHyper;
+
+        static fromBytes(low: number, high: number): UnsignedHyper;
+
+        static isValid(value: UnsignedHyper): boolean;
+
+    }
+
     const Uint32: UnsignedInteger;
 
     const Int32: SignedInteger;
@@ -114,6 +143,35 @@ exports[`.transform(xdr enum) 1`] = `
         static fromBytes(low: number, high: number): Hyper;
 
         static isValid(value: Hyper): boolean;
+
+    }
+
+    class UnsignedHyper extends Long {
+        constructor(low: number, high: number);
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static toXDR(value: UnsignedHyper): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): UnsignedHyper;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): UnsignedHyper;
+
+        readonly MAX_VALUE: UnsignedHyper;
+
+        readonly MIN_VALUE: UnsignedHyper;
+
+        static read(io: Buffer): UnsignedHyper;
+
+        static write(value: UnsignedHyper, io: Buffer): void;
+
+        static fromString(input: string): UnsignedHyper;
+
+        static fromBytes(low: number, high: number): UnsignedHyper;
+
+        static isValid(value: UnsignedHyper): boolean;
 
     }
 

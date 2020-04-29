@@ -68,11 +68,14 @@ export default function transformer(file, api) {
 
   const hyper = hyperToTS(ns, 'Hyper');
   ns.members.push(hyper);
+  const uhyper = hyperToTS(ns, 'UnsignedHyper');
+  ns.members.push(uhyper);
 
   const xdrTypes = {
     INT: signedInt,
     UINT: unsignedInt,
-    HYPER: hyper
+    HYPER: hyper,
+    UHYPER: hyper
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
