@@ -34,8 +34,12 @@ export default function transformer(file, api) {
     }
   });
 
-  const source = dom.emit(ns);
-  fs.writeFileSync('./out.d.ts', source);
+  if (process.env.OUT) {
+    console.log('writing to: ' + process.env.OUT);
+    fs.writeFileSync(process.env.OUT, dom.emit(ns));
+  } else {
+    return dom.emit(ns);
+  }
 
   function enumToTS(node, ns) {
     const [literal, objExp] = node;
