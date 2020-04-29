@@ -25,6 +25,12 @@ exports[`.transform(type definitions) 1`] = `
     }
 
     class Hyper {
+        low: number;
+
+        high: number;
+
+        unsigned: boolean;
+
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
@@ -54,6 +60,12 @@ exports[`.transform(type definitions) 1`] = `
     }
 
     class UnsignedHyper {
+        low: number;
+
+        high: number;
+
+        unsigned: boolean;
+
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
@@ -120,6 +132,12 @@ exports[`.transform(xdr enum) 1`] = `
     }
 
     class Hyper {
+        low: number;
+
+        high: number;
+
+        unsigned: boolean;
+
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
@@ -149,6 +167,12 @@ exports[`.transform(xdr enum) 1`] = `
     }
 
     class UnsignedHyper {
+        low: number;
+
+        high: number;
+
+        unsigned: boolean;
+
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
