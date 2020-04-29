@@ -63,9 +63,6 @@ export default function transformer(file, api) {
 
   const ns = dom.create.namespace('xdr');
 
-  const long = dom.create.importAll('Long', 'long');
-  ns.members.push(long);
-
   const signedInt = xdrInt(
     ns,
     'SignedInteger',

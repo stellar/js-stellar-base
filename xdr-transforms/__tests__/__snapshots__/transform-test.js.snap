@@ -2,8 +2,6 @@
 
 exports[`.transform(type definitions) 1`] = `
 "declare namespace xdr {
-    import * as Long from 'long';
-
     interface SignedInteger {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
@@ -26,7 +24,7 @@ exports[`.transform(type definitions) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    class Hyper extends Long {
+    class Hyper {
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
@@ -55,7 +53,7 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
-    class UnsignedHyper extends Long {
+    class UnsignedHyper {
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
@@ -99,8 +97,6 @@ exports[`.transform(type definitions) 1`] = `
 
 exports[`.transform(xdr enum) 1`] = `
 "declare namespace xdr {
-    import * as Long from 'long';
-
     interface SignedInteger {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
@@ -123,7 +119,7 @@ exports[`.transform(xdr enum) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    class Hyper extends Long {
+    class Hyper {
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;
@@ -152,7 +148,7 @@ exports[`.transform(xdr enum) 1`] = `
 
     }
 
-    class UnsignedHyper extends Long {
+    class UnsignedHyper {
         constructor(low: number, high: number);
 
         toXDR(format?: \\"raw\\"): Buffer;

@@ -69,7 +69,6 @@ export default function hyper(ns, name) {
       dom.DeclarationFlags.Static
     )
   );
-  hyper.baseType = dom.create.class('Long');
 
   return hyper;
 }
