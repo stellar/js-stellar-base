@@ -2,6 +2,8 @@
 
 exports[`.transform(type definitions) 1`] = `
 "declare namespace xdr {
+    import * as Long from 'long';
+
     interface SignedInteger {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
@@ -22,6 +24,35 @@ exports[`.transform(type definitions) 1`] = `
         toXDR(value: number): Buffer;
         fromXDR(input: Buffer, format?: \\"raw\\"): number;
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
+    }
+
+    class Hyper extends Long {
+        constructor(low: number, high: number);
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static toXDR(value: Hyper): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): Hyper;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Hyper;
+
+        readonly MAX_VALUE: Hyper;
+
+        readonly MIN_VALUE: Hyper;
+
+        static read(io: Buffer): Hyper;
+
+        static write(value: Hyper, io: Buffer): void;
+
+        static fromString(input: string): Hyper;
+
+        static fromBytes(low: number, high: number): Hyper;
+
+        static isValid(value: Hyper): boolean;
+
     }
 
     const Uint32: UnsignedInteger;
@@ -33,6 +64,8 @@ exports[`.transform(type definitions) 1`] = `
 
 exports[`.transform(xdr enum) 1`] = `
 "declare namespace xdr {
+    import * as Long from 'long';
+
     interface SignedInteger {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
@@ -53,6 +86,35 @@ exports[`.transform(xdr enum) 1`] = `
         toXDR(value: number): Buffer;
         fromXDR(input: Buffer, format?: \\"raw\\"): number;
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
+    }
+
+    class Hyper extends Long {
+        constructor(low: number, high: number);
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static toXDR(value: Hyper): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): Hyper;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Hyper;
+
+        readonly MAX_VALUE: Hyper;
+
+        readonly MIN_VALUE: Hyper;
+
+        static read(io: Buffer): Hyper;
+
+        static write(value: Hyper, io: Buffer): void;
+
+        static fromString(input: string): Hyper;
+
+        static fromBytes(low: number, high: number): Hyper;
+
+        static isValid(value: Hyper): boolean;
+
     }
 
     class ChangeTrustResultCode {

@@ -2,6 +2,7 @@ import * as dom from 'dts-dom';
 import fs from 'fs';
 import xdrInt from './integer';
 import enumToTS from './enum';
+import hyperToTS from './hyper';
 
 function isXDRMemberCall(node) {
   return node.type === 'MemberExpression' && node.object.name === 'xdr';
@@ -52,6 +53,9 @@ export default function transformer(file, api) {
 
   const ns = dom.create.namespace('xdr');
 
+  const long = dom.create.importAll('Long', 'long');
+  ns.members.push(long);
+
   const signedInt = xdrInt(
     ns,
     'SignedInteger',
@@ -59,13 +63,16 @@ export default function transformer(file, api) {
     -Math.pow(2, 31)
   );
   const unsignedInt = xdrInt(ns, 'UnsignedInteger', Math.pow(2, 32) - 1, 0);
-
   ns.members.push(signedInt);
   ns.members.push(unsignedInt);
 
+  const hyper = hyperToTS(ns, 'Hyper');
+  ns.members.push(hyper);
+
   const xdrTypes = {
     INT: signedInt,
-    UINT: unsignedInt
+    UINT: unsignedInt,
+    HYPER: hyper
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
