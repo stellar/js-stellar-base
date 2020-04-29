@@ -1,6 +1,6 @@
 import * as dom from 'dts-dom';
 import fs from 'fs';
-import xdrInt from './unsigned-integer';
+import xdrInt from './integer';
 import enumToTS from './enum';
 
 function isXDRMemberCall(node) {
@@ -52,8 +52,13 @@ export default function transformer(file, api) {
 
   const ns = dom.create.namespace('xdr');
 
-  const signedInt = xdrInt(ns, 'INT', Math.pow(2, 31) - 1, -Math.pow(2, 31));
-  const unsignedInt = xdrInt(ns, 'UINT', Math.pow(2, 32) - 1, 0);
+  const signedInt = xdrInt(
+    ns,
+    'SignedInteger',
+    Math.pow(2, 31) - 1,
+    -Math.pow(2, 31)
+  );
+  const unsignedInt = xdrInt(ns, 'UnsignedInteger', Math.pow(2, 32) - 1, 0);
 
   ns.members.push(signedInt);
   ns.members.push(unsignedInt);

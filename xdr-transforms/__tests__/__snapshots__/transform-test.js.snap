@@ -2,7 +2,7 @@
 
 exports[`.transform(type definitions) 1`] = `
 "declare namespace xdr {
-    interface INT {
+    interface SignedInteger {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
         read(io: Buffer): number;
@@ -13,7 +13,7 @@ exports[`.transform(type definitions) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    interface UINT {
+    interface UnsignedInteger {
         readonly MAX_VALUE: 4294967295;
         readonly MIN_VALUE: 0;
         read(io: Buffer): number;
@@ -24,16 +24,16 @@ exports[`.transform(type definitions) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    const Uint32: UINT;
+    const Uint32: UnsignedInteger;
 
-    const Int32: INT;
+    const Int32: SignedInteger;
 
 }"
 `;
 
 exports[`.transform(xdr enum) 1`] = `
 "declare namespace xdr {
-    interface INT {
+    interface SignedInteger {
         readonly MAX_VALUE: 2147483647;
         readonly MIN_VALUE: -2147483648;
         read(io: Buffer): number;
@@ -44,7 +44,7 @@ exports[`.transform(xdr enum) 1`] = `
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
     }
 
-    interface UINT {
+    interface UnsignedInteger {
         readonly MAX_VALUE: 4294967295;
         readonly MIN_VALUE: 0;
         read(io: Buffer): number;
