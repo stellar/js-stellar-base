@@ -35,7 +35,19 @@ export default function transformer(file, api) {
       .find(Property)
       .forEach((p) => {
         identifiers.push(dom.type.stringLiteral(p.value.key.name));
-        values.push(dom.type.numberLiteral(p.value.value.value));
+        if (p.value.value.type === 'Literal') {
+          values.push(dom.type.numberLiteral(p.value.value.value));
+        } else if (p.value.value.type === 'UnaryExpression') {
+          if (p.value.value.prefix && p.value.value.operator === '-') {
+            values.push(dom.type.numberLiteral(-p.value.value.argument.value));
+          } else {
+            throw new Error(
+              'Uknown UnaryExpression: ' + p.value.value.operator
+            );
+          }
+        } else {
+          throw new Error('Uknown type: ' + p.value.value.type);
+        }
       });
 
     union.members.push(
