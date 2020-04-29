@@ -1,8 +1,8 @@
 import * as dom from 'dts-dom';
 import fs from 'fs';
-import xdrInt from './integer';
-import enumToTS from './enum';
-import hyperToTS from './hyper';
+import xdrInt from './xdr-types/integer';
+import hyperToTS from './xdr-types/hyper';
+import enumToTS from './xdr-types/enum';
 
 function isXDRMemberCall(node) {
   return node.type === 'MemberExpression' && node.object.name === 'xdr';
