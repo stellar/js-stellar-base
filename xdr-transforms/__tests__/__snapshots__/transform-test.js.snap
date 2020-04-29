@@ -86,7 +86,7 @@ exports[`.transform(type definitions) 1`] = `
 
     const Int32: SignedInteger;
 
-    class Uint64 extends Hyper {
+    class Uint64 extends UnsignedHyper {
     }
 
     class Int64 extends Hyper {

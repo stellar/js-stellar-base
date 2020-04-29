@@ -82,7 +82,7 @@ export default function transformer(file, api) {
     INT: signedInt,
     UINT: unsignedInt,
     HYPER: hyper,
-    UHYPER: hyper
+    UHYPER: uhyper
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
