@@ -94,7 +94,7 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
-    class String {
+    class XDRString {
         constructor(maxLength: 4294967295);
 
         read(io: Buffer): Buffer;
@@ -122,6 +122,10 @@ exports[`.transform(type definitions) 1`] = `
 
     class Int64 extends Hyper {
     }
+
+    const String32: XDRString;
+
+    const String64: XDRString;
 
 }"
 `;
@@ -220,7 +224,7 @@ exports[`.transform(xdr enum) 1`] = `
 
     }
 
-    class String {
+    class XDRString {
         constructor(maxLength: 4294967295);
 
         read(io: Buffer): Buffer;
