@@ -3,13 +3,12 @@ import * as XDR from 'js-xdr';
 var types = XDR.config((xdr) => {
   xdr.typedef('Uint32', xdr.uint());
   xdr.typedef('Int32', xdr.int());
-
+  xdr.typedef('Uint64', xdr.uhyper());
+  xdr.typedef('Int64', xdr.hyper());
   // xdr.typedef("EncryptedBody", xdr.varOpaque(64000));
   // xdr.typedef("PeerStatList", xdr.varArray(xdr.lookup("PeerStats"), 25));
   // xdr.typedef("Hash", xdr.opaque(32));
   // xdr.typedef("Uint256", xdr.opaque(32));
-  // xdr.typedef("Uint64", xdr.uhyper());
-  // xdr.typedef("Int64", xdr.hyper());
   // xdr.typedef("Signature", xdr.varOpaque(64));
   // xdr.typedef("SignatureHint", xdr.opaque(4));
   // xdr.typedef("NodeId", xdr.lookup("PublicKey"));

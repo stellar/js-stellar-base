@@ -8,10 +8,10 @@ function isXDRMemberCall(node) {
   return node.type === 'MemberExpression' && node.object.name === 'xdr';
 }
 
-function isXDRIntOrUint(node) {
-  return (
-    node.type === 'Identifier' && (node.name === 'uint' || node.name === 'int')
-  );
+function isNativeXDRType(node) {
+  const nativeTypes = ['int', 'uint', 'hyper', 'uhyper'];
+
+  return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
 }
 
 function typeDef(api, node, ns, xdrTypes) {
@@ -20,7 +20,7 @@ function typeDef(api, node, ns, xdrTypes) {
 
   if (exp.type === 'CallExpression') {
     if (isXDRMemberCall(exp.callee)) {
-      if (isXDRIntOrUint(exp.callee.property)) {
+      if (isNativeXDRType(exp.callee.property)) {
         switch (exp.callee.property.name) {
           case 'int':
             ns.members.push(
@@ -39,6 +39,16 @@ function typeDef(api, node, ns, xdrTypes) {
                 dom.DeclarationFlags.ReadOnly
               )
             );
+            break;
+          case 'hyper':
+            const hyper = dom.create.class(name);
+            hyper.baseType = xdrTypes.HYPER;
+            ns.members.push(hyper);
+            break;
+          case 'uhyper':
+            const uhyper = dom.create.class(name);
+            uhyper.baseType = xdrTypes.UHYPER;
+            ns.members.push(uhyper);
             break;
         }
       }
