@@ -113,6 +113,30 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
+    class XDRArray {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        }, length: number);
+
+        read(io: Buffer): Buffer;
+
+        write(value: any[], io: Buffer): void;
+
+        isValid(value: any[]): boolean;
+
+        toXDR(value: any[]): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class VarArray extends XDRArray {
+    }
+
     class Opaque {
         constructor(length: number);
 
@@ -152,6 +176,12 @@ exports[`.transform(type definitions) 1`] = `
     const EncryptedBody: VarOpaque;
 
     const Value: VarOpaque;
+
+    const LedgerEntryChanges: VarArray;
+
+    const PeerStatList: VarArray;
+
+    const List: XDRArray;
 
 }"
 `;
@@ -267,6 +297,30 @@ exports[`.transform(xdr enum) 1`] = `
 
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
 
+    }
+
+    class XDRArray {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        }, length: number);
+
+        read(io: Buffer): Buffer;
+
+        write(value: any[], io: Buffer): void;
+
+        isValid(value: any[]): boolean;
+
+        toXDR(value: any[]): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class VarArray extends XDRArray {
     }
 
     class Opaque {

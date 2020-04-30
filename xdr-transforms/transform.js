@@ -5,6 +5,7 @@ import hyperToTS from './xdr-types/hyper';
 import enumToTS from './xdr-types/enum';
 import xdrString from './xdr-types/string';
 import xdrOpaque from './xdr-types/opaque';
+import xdrArray from './xdr-types/array';
 
 function isXDRMemberCall(node) {
   return node.type === 'MemberExpression' && node.object.name === 'xdr';
@@ -18,7 +19,9 @@ function isNativeXDRType(node) {
     'uhyper',
     'string',
     'opaque',
-    'varOpaque'
+    'varOpaque',
+    'array',
+    'varArray'
   ];
 
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
@@ -87,6 +90,24 @@ function typeDef(api, node, ns, xdrTypes) {
               )
             );
             break;
+          case 'array':
+            ns.members.push(
+              dom.create.const(
+                name,
+                xdrTypes.ARRAY,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
+          case 'varArray':
+            ns.members.push(
+              dom.create.const(
+                name,
+                xdrTypes.VARARRAY,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
         }
       }
     }
@@ -118,6 +139,13 @@ export default function transformer(file, api) {
   const xString = xdrString(ns);
   ns.members.push(xString);
 
+  const array = xdrArray(ns);
+  ns.members.push(array);
+
+  const varArray = dom.create.class('VarArray');
+  varArray.baseType = array;
+  ns.members.push(varArray);
+
   const opaque = xdrOpaque(ns);
   ns.members.push(opaque);
 
@@ -132,7 +160,9 @@ export default function transformer(file, api) {
     UHYPER: uhyper,
     STRING: xString,
     OPAQUE: opaque,
-    VAROPAQUE: varOpaque
+    VAROPAQUE: varOpaque,
+    ARRAY: array,
+    VARARRAY: varArray
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
