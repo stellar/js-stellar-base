@@ -21,10 +21,18 @@ export default function hyper(ns, name) {
 
   ioMixin(hyper, hyper, hyper, true);
   hyper.members.push(
-    dom.create.property('MAX_VALUE', hyper, dom.DeclarationFlags.ReadOnly)
+    dom.create.property(
+      'MAX_VALUE',
+      hyper,
+      dom.DeclarationFlags.ReadOnly | dom.DeclarationFlags.Static
+    )
   );
   hyper.members.push(
-    dom.create.property('MIN_VALUE', hyper, dom.DeclarationFlags.ReadOnly)
+    dom.create.property(
+      'MIN_VALUE',
+      hyper,
+      dom.DeclarationFlags.ReadOnly | dom.DeclarationFlags.Static
+    )
   );
   hyper.members.push(
     dom.create.method(

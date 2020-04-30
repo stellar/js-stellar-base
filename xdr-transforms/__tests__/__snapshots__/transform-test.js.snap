@@ -43,9 +43,9 @@ exports[`.transform(type definitions) 1`] = `
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Hyper;
 
-        readonly MAX_VALUE: Hyper;
+        static readonly MAX_VALUE: Hyper;
 
-        readonly MIN_VALUE: Hyper;
+        static readonly MIN_VALUE: Hyper;
 
         static read(io: Buffer): Hyper;
 
@@ -78,9 +78,9 @@ exports[`.transform(type definitions) 1`] = `
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): UnsignedHyper;
 
-        readonly MAX_VALUE: UnsignedHyper;
+        static readonly MAX_VALUE: UnsignedHyper;
 
-        readonly MIN_VALUE: UnsignedHyper;
+        static readonly MIN_VALUE: UnsignedHyper;
 
         static read(io: Buffer): UnsignedHyper;
 
@@ -231,9 +231,9 @@ exports[`.transform(xdr enum) 1`] = `
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Hyper;
 
-        readonly MAX_VALUE: Hyper;
+        static readonly MAX_VALUE: Hyper;
 
-        readonly MIN_VALUE: Hyper;
+        static readonly MIN_VALUE: Hyper;
 
         static read(io: Buffer): Hyper;
 
@@ -266,9 +266,9 @@ exports[`.transform(xdr enum) 1`] = `
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): UnsignedHyper;
 
-        readonly MAX_VALUE: UnsignedHyper;
+        static readonly MAX_VALUE: UnsignedHyper;
 
-        readonly MIN_VALUE: UnsignedHyper;
+        static readonly MIN_VALUE: UnsignedHyper;
 
         static read(io: Buffer): UnsignedHyper;
 
