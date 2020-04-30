@@ -147,6 +147,12 @@ exports[`.transform(type definitions) 1`] = `
 
     const String64: XDRString;
 
+    const Hash: Opaque;
+
+    const EncryptedBody: VarOpaque;
+
+    const Value: VarOpaque;
+
 }"
 `;
 

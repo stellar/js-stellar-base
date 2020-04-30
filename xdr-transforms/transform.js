@@ -11,7 +11,15 @@ function isXDRMemberCall(node) {
 }
 
 function isNativeXDRType(node) {
-  const nativeTypes = ['int', 'uint', 'hyper', 'uhyper', 'string'];
+  const nativeTypes = [
+    'int',
+    'uint',
+    'hyper',
+    'uhyper',
+    'string',
+    'opaque',
+    'varOpaque'
+  ];
 
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
 }
@@ -61,6 +69,24 @@ function typeDef(api, node, ns, xdrTypes) {
               )
             );
             break;
+          case 'opaque':
+            ns.members.push(
+              dom.create.const(
+                name,
+                xdrTypes.OPAQUE,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
+          case 'varOpaque':
+            ns.members.push(
+              dom.create.const(
+                name,
+                xdrTypes.VAROPAQUE,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
         }
       }
     }
@@ -106,7 +132,7 @@ export default function transformer(file, api) {
     UHYPER: uhyper,
     STRING: xString,
     OPAQUE: opaque,
-    VAPOPAQUE: varOpaque
+    VAROPAQUE: varOpaque
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
