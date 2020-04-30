@@ -604,8 +604,8 @@ exports[`.transform(xdr structs) 1`] = `
 
     class Error {
         constructor(attributes: {
-            code: ErrorCode;
-            msg: ErrorMsg;
+            code: typeof ErrorCode;
+            msg: typeof ErrorMsg;
             extra: string | Buffer;
             int32: SignedInt;
             uint32: UnsignedInt;
@@ -619,9 +619,9 @@ exports[`.transform(xdr structs) 1`] = `
             ClearFlags: Option;
         });
 
-        code(value?: ErrorCode): ErrorCode;
+        code(value?: typeof ErrorCode): typeof ErrorCode;
 
-        msg(value?: ErrorMsg): ErrorMsg;
+        msg(value?: typeof ErrorMsg): typeof ErrorMsg;
 
         extra(value?: string | Buffer): string | Buffer;
 
@@ -863,11 +863,11 @@ exports[`.transform(xdr unions) 1`] = `
 
     class Error {
         constructor(attributes: {
-            code: ErrorCode;
+            code: typeof ErrorCode;
             msg: string | Buffer;
         });
 
-        code(value?: ErrorCode): ErrorCode;
+        code(value?: typeof ErrorCode): typeof ErrorCode;
 
         msg(value?: string | Buffer): string | Buffer;
 
@@ -890,13 +890,13 @@ exports[`.transform(xdr unions) 1`] = `
     }
 
     class StellarMessage {
-        switch(): MessageType;
+        switch(): typeof MessageType;
 
-        error(value?: Error): Error;
+        error(value?: typeof Error): typeof Error;
 
-        value(): Error;
+        value(): typeof Error;
 
-        static errorMsg(value: Error): StellarMessage;
+        static errorMsg(value: typeof Error): StellarMessage;
 
         toXDR(format?: \\"raw\\"): Buffer;
 
@@ -913,6 +913,27 @@ exports[`.transform(xdr unions) 1`] = `
         static fromXDR(input: Buffer, format?: \\"raw\\"): StellarMessage;
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): StellarMessage;
+
+    }
+
+    class PaymentResult {
+        switch(): typeof PaymentResultCode;
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static read(io: Buffer): PaymentResult;
+
+        static write(value: PaymentResult, io: Buffer): void;
+
+        static isValid(value: PaymentResult): boolean;
+
+        static toXDR(value: PaymentResult): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): PaymentResult;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): PaymentResult;
 
     }
 
