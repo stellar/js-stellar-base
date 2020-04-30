@@ -14,11 +14,9 @@ var types = XDR.config((xdr) => {
     'LedgerEntryChanges',
     xdr.varArray(xdr.lookup('LedgerEntryChange'), 2147483647)
   );
-  xdr.typedef('PeerStatList', xdr.varArray(xdr.lookup('PeerStats'), 25));
-  xdr.typedef('List', xdr.array(xdr.lookup('Hash'), 4));
-  // xdr.typedef("NodeId", xdr.lookup("PublicKey"));
-  // xdr.typedef("AccountId", xdr.lookup("PublicKey"));
-  // xdr.typedef("SequenceNumber", xdr.lookup("Int64"));
+  xdr.typedef('SequenceNumber', xdr.lookup('Int64'));
+  xdr.typedef('NodeId', xdr.lookup('PublicKey'));
+  xdr.typedef('AccountId', xdr.lookup('PublicKey'));
 });
 
 export default types;

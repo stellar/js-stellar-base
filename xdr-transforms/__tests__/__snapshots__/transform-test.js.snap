@@ -179,9 +179,11 @@ exports[`.transform(type definitions) 1`] = `
 
     const LedgerEntryChanges: VarArray;
 
-    const PeerStatList: VarArray;
+    const SequenceNumber: typeof Int64;
 
-    const List: XDRArray;
+    const NodeId: typeof PublicKey;
+
+    const AccountId: typeof PublicKey;
 
 }"
 `;

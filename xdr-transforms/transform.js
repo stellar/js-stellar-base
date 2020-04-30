@@ -21,7 +21,8 @@ function isNativeXDRType(node) {
     'opaque',
     'varOpaque',
     'array',
-    'varArray'
+    'varArray',
+    'lookup'
   ];
 
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
@@ -104,6 +105,22 @@ function typeDef(api, node, ns, xdrTypes) {
               dom.create.const(
                 name,
                 xdrTypes.VARARRAY,
+                dom.DeclarationFlags.ReadOnly
+              )
+            );
+            break;
+          case 'lookup':
+            if (exp.arguments[0].type !== 'Literal') {
+              throw new Error(
+                'Invalid argument pass to lookup, expected a Literal'
+              );
+            }
+            ns.members.push(
+              dom.create.const(
+                name,
+                dom.create.typeof(
+                  dom.create.namedTypeReference(exp.arguments[0].value)
+                ),
                 dom.DeclarationFlags.ReadOnly
               )
             );
