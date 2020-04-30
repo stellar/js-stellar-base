@@ -113,6 +113,26 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
+    class Opaque {
+        constructor(length: number);
+
+        read(io: Buffer): Buffer;
+
+        write(value: Buffer, io: Buffer): void;
+
+        isValid(value: Buffer): boolean;
+
+        toXDR(value: Buffer): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class VarOpaque extends Opaque {
+    }
+
     const Uint32: UnsignedInt;
 
     const Int32: SignedInt;
@@ -241,6 +261,26 @@ exports[`.transform(xdr enum) 1`] = `
 
         fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
 
+    }
+
+    class Opaque {
+        constructor(length: number);
+
+        read(io: Buffer): Buffer;
+
+        write(value: Buffer, io: Buffer): void;
+
+        isValid(value: Buffer): boolean;
+
+        toXDR(value: Buffer): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class VarOpaque extends Opaque {
     }
 
     class ChangeTrustResultCode {

@@ -4,6 +4,7 @@ import xdrInt from './xdr-types/integer';
 import hyperToTS from './xdr-types/hyper';
 import enumToTS from './xdr-types/enum';
 import xdrString from './xdr-types/string';
+import xdrOpaque from './xdr-types/opaque';
 
 function isXDRMemberCall(node) {
   return node.type === 'MemberExpression' && node.object.name === 'xdr';
@@ -91,12 +92,21 @@ export default function transformer(file, api) {
   const xString = xdrString(ns);
   ns.members.push(xString);
 
+  const opaque = xdrOpaque(ns);
+  ns.members.push(opaque);
+
+  const varOpaque = dom.create.class('VarOpaque');
+  varOpaque.baseType = opaque;
+  ns.members.push(varOpaque);
+
   const xdrTypes = {
     INT: signedInt,
     UINT: unsignedInt,
     HYPER: hyper,
     UHYPER: uhyper,
-    STRING: xString
+    STRING: xString,
+    OPAQUE: opaque,
+    VAPOPAQUE: varOpaque
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
