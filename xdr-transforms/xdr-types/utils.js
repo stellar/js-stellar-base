@@ -28,6 +28,7 @@ export function resolveType(api, node, xdrTypes) {
       `Invalid type, expected a CallExpression but received a ${node.type}`
     );
   }
+  const buffer = dom.create.interface('Buffer');
 
   if (isNativeXDRType(node.callee.property)) {
     switch (node.callee.property.name) {
@@ -44,7 +45,7 @@ export function resolveType(api, node, xdrTypes) {
         return xdrTypes.UHYPER;
         break;
       case 'string':
-        return xdrTypes.STRING;
+        return dom.create.union([dom.type.string, buffer]);
         break;
       case 'opaque':
         return xdrTypes.OPAQUE;
@@ -64,9 +65,7 @@ export function resolveType(api, node, xdrTypes) {
             'Invalid argument pass to lookup, expected a Literal'
           );
         }
-        return dom.create.typeof(
-          dom.create.namedTypeReference(node.arguments[0].value)
-        );
+        return dom.create.namedTypeReference(node.arguments[0].value);
         break;
       case 'option':
         return xdrTypes.OPTION;

@@ -604,14 +604,14 @@ exports[`.transform(xdr structs) 1`] = `
 
     class Error {
         constructor(attributes: {
-            code: typeof ErrorCode;
-            msg: typeof ErrorMsg;
-            extra: XDRString;
+            code: ErrorCode;
+            msg: ErrorMsg;
+            extra: string | Buffer;
             int32: SignedInt;
             uint32: UnsignedInt;
             int64: UnsignedHyper;
             int64: Hyper;
-            string32: XDRString;
+            string32: string | Buffer;
             hash: Opaque;
             encryptedBody: VarOpaque;
             value: VarOpaque;
@@ -619,11 +619,11 @@ exports[`.transform(xdr structs) 1`] = `
             ClearFlags: Option;
         });
 
-        code(value?: typeof ErrorCode): typeof ErrorCode;
+        code(value?: ErrorCode): ErrorCode;
 
-        msg(value?: typeof ErrorMsg): typeof ErrorMsg;
+        msg(value?: ErrorMsg): ErrorMsg;
 
-        extra(value?: XDRString): XDRString;
+        extra(value?: string | Buffer): string | Buffer;
 
         int32(value?: SignedInt): SignedInt;
 
@@ -633,7 +633,7 @@ exports[`.transform(xdr structs) 1`] = `
 
         int64(value?: Hyper): Hyper;
 
-        string32(value?: XDRString): XDRString;
+        string32(value?: string | Buffer): string | Buffer;
 
         hash(value?: Opaque): Opaque;
 
@@ -660,6 +660,259 @@ exports[`.transform(xdr structs) 1`] = `
         static fromXDR(input: Buffer, format?: \\"raw\\"): Error;
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Error;
+
+    }
+
+}"
+`;
+
+exports[`.transform(xdr unions) 1`] = `
+"declare namespace xdr {
+    interface SignedInt {
+        readonly MAX_VALUE: 2147483647;
+        readonly MIN_VALUE: -2147483648;
+        read(io: Buffer): number;
+        write(value: number, io: Buffer): void;
+        isValid(value: number): boolean;
+        toXDR(value: number): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): number;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
+    }
+
+    interface UnsignedInt {
+        readonly MAX_VALUE: 4294967295;
+        readonly MIN_VALUE: 0;
+        read(io: Buffer): number;
+        write(value: number, io: Buffer): void;
+        isValid(value: number): boolean;
+        toXDR(value: number): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): number;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): number;
+    }
+
+    class Hyper {
+        low: number;
+
+        high: number;
+
+        unsigned: boolean;
+
+        constructor(low: number, high: number);
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static toXDR(value: Hyper): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): Hyper;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Hyper;
+
+        static readonly MAX_VALUE: Hyper;
+
+        static readonly MIN_VALUE: Hyper;
+
+        static read(io: Buffer): Hyper;
+
+        static write(value: Hyper, io: Buffer): void;
+
+        static fromString(input: string): Hyper;
+
+        static fromBytes(low: number, high: number): Hyper;
+
+        static isValid(value: Hyper): boolean;
+
+    }
+
+    class UnsignedHyper {
+        low: number;
+
+        high: number;
+
+        unsigned: boolean;
+
+        constructor(low: number, high: number);
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static toXDR(value: UnsignedHyper): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): UnsignedHyper;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): UnsignedHyper;
+
+        static readonly MAX_VALUE: UnsignedHyper;
+
+        static readonly MIN_VALUE: UnsignedHyper;
+
+        static read(io: Buffer): UnsignedHyper;
+
+        static write(value: UnsignedHyper, io: Buffer): void;
+
+        static fromString(input: string): UnsignedHyper;
+
+        static fromBytes(low: number, high: number): UnsignedHyper;
+
+        static isValid(value: UnsignedHyper): boolean;
+
+    }
+
+    class XDRString {
+        constructor(maxLength: 4294967295);
+
+        read(io: Buffer): Buffer;
+
+        readString(io: Buffer): string;
+
+        write(value: string | Buffer, io: Buffer): void;
+
+        isValid(value: string | number[] | Buffer): boolean;
+
+        toXDR(value: string | Buffer): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class XDRArray {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        }, length: number);
+
+        read(io: Buffer): Buffer;
+
+        write(value: any[], io: Buffer): void;
+
+        isValid(value: any[]): boolean;
+
+        toXDR(value: any[]): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class VarArray extends XDRArray {
+    }
+
+    class Opaque {
+        constructor(length: number);
+
+        read(io: Buffer): Buffer;
+
+        write(value: Buffer, io: Buffer): void;
+
+        isValid(value: Buffer): boolean;
+
+        toXDR(value: Buffer): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+
+    }
+
+    class VarOpaque extends Opaque {
+    }
+
+    class Option {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        });
+
+        read(io: Buffer): any;
+
+        write(value: any, io: Buffer): void;
+
+        isValid(value: any): boolean;
+
+        toXDR(value: any): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): any;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): any;
+
+    }
+
+    class ErrorCode {
+        readonly name: \\"errMisc\\" | \\"errDatum\\" | \\"errConf\\" | \\"errAuth\\" | \\"errLoad\\";
+
+        readonly value: 0 | 1 | 2 | 3 | 4;
+
+        static errMisc(): ErrorCode;
+
+        static errDatum(): ErrorCode;
+
+        static errConf(): ErrorCode;
+
+        static errAuth(): ErrorCode;
+
+        static errLoad(): ErrorCode;
+
+    }
+
+    class Error {
+        constructor(attributes: {
+            code: ErrorCode;
+            msg: string | Buffer;
+        });
+
+        code(value?: ErrorCode): ErrorCode;
+
+        msg(value?: string | Buffer): string | Buffer;
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static read(io: Buffer): Error;
+
+        static write(value: Error, io: Buffer): void;
+
+        static isValid(value: Error): boolean;
+
+        static toXDR(value: Error): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): Error;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Error;
+
+    }
+
+    class StellarMessage {
+        switch(): MessageType;
+
+        error(value?: Error): Error;
+
+        value(): Error;
+
+        static errorMsg(value: Error): StellarMessage;
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static read(io: Buffer): StellarMessage;
+
+        static write(value: StellarMessage, io: Buffer): void;
+
+        static isValid(value: StellarMessage): boolean;
+
+        static toXDR(value: StellarMessage): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): StellarMessage;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): StellarMessage;
 
     }
 
