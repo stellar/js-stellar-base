@@ -16,7 +16,8 @@ export function isNativeXDRType(node) {
     'array',
     'varArray',
     'lookup',
-    'option'
+    'option',
+    'void'
   ];
 
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
@@ -69,6 +70,9 @@ export function resolveType(api, node, xdrTypes) {
         break;
       case 'option':
         return xdrTypes.OPTION;
+        break;
+      case 'void':
+        return dom.type.void;
         break;
       default:
         throw new Error(`Unknown type: ${node.callee.property.name}`);

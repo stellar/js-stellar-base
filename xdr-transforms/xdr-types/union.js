@@ -37,9 +37,14 @@ export default function union(api, node, ns, xdrTypes) {
           );
           arms[p.key.name] = xdrType;
         });
-        union.members.push(
-          dom.create.method('value', [], dom.create.union(types))
-        );
+        if (types.length > 0) {
+          // skip if there are no values, void union
+          // TODO: how is this handled in js-xdr?
+          union.members.push(
+            dom.create.method('value', [], dom.create.union(types))
+          );
+        }
+
         break;
       case 'switches':
         switches = property;
@@ -48,14 +53,18 @@ export default function union(api, node, ns, xdrTypes) {
   });
 
   switches.value.elements.forEach((p) => {
-    union.members.push(
-      dom.create.method(
-        p.elements[0].value,
-        [dom.create.parameter('value', arms[p.elements[1].value])],
-        union,
-        dom.DeclarationFlags.Static
-      )
-    );
+    // Only define the method if the type exist
+    // TODO: figure how to handle void
+    if (arms[p.elements[1].value]) {
+      union.members.push(
+        dom.create.method(
+          p.elements[0].value,
+          [dom.create.parameter('value', arms[p.elements[1].value])],
+          union,
+          dom.DeclarationFlags.Static
+        )
+      );
+    }
   });
 
   union.members.push(

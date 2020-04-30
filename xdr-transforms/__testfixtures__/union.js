@@ -20,4 +20,12 @@ var types = XDR.config((xdr) => {
       error: xdr.lookup('Error')
     }
   });
+
+  xdr.union('PaymentResult', {
+    switchOn: xdr.lookup('PaymentResultCode'),
+    switchName: 'code',
+    switches: [['paymentSuccess', xdr.void()]],
+    arms: {},
+    defaultArm: xdr.void()
+  });
 });
