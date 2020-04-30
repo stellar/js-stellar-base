@@ -7,6 +7,7 @@ import xdrString from './xdr-types/string';
 import xdrOpaque from './xdr-types/opaque';
 import xdrArray from './xdr-types/array';
 import typeDef from './xdr-types/type-def';
+import structDef from './xdr-types/struct';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
@@ -71,6 +72,10 @@ export default function transformer(file, api) {
           enumToTS(api, node.arguments, ns, types);
         case 'typedef':
           typeDef(api, node, ns, xdrTypes);
+          break;
+        case 'struct':
+          structDef(api, node, ns, xdrTypes);
+          break;
         default:
           break;
       }

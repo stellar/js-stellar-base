@@ -7,7 +7,8 @@ jest.autoMockOff();
 
 test.each([
   ['xdr enum', 'enum.js', {}],
-  ['type definitions', 'typedef.js', {}]
+  ['type definitions', 'typedef.js', {}],
+  ['xdr structs', 'struct.js', {}]
 ])('.transform(%s)', (desc, source, opts) => {
   const fixtures = path.join(__dirname, '..', '__testfixtures__');
   const content = fs.readFileSync(path.join(fixtures, source)).toString();
