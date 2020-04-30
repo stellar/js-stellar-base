@@ -95,3 +95,8 @@ StellarSdk.xdr.Int64.fromXDR(Buffer.alloc(8)); // $ExpectType Hyper
 StellarSdk.xdr.SequenceNumber.fromXDR(Buffer.alloc(8)); // $ExpectType Hyper
 StellarSdk.xdr.Int64.MIN_VALUE; // $ExpectType Hyper
 StellarSdk.xdr.SequenceNumber.MIN_VALUE; // $ExpectType Hyper
+
+const envelope = feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
+envelope.v0(); // $ExpectType TransactionV0Envelope
+envelope.v1(); // $ExpectType TransactionV1Envelope
+envelope.feeBump(); // $ExpectType FeeBumpTransactionEnvelope
