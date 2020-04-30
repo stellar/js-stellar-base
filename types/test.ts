@@ -73,3 +73,25 @@ const newSignerXDR3 = StellarSdk.Operation.setOptions({
 StellarSdk.Operation.fromXDRObject(newSignerXDR3).signer; // $ExpectType PreAuthTx
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
+
+const buffer = Buffer.alloc(4);
+StellarSdk.xdr.Uint32.write(4, buffer); //  $ExpectType void
+StellarSdk.xdr.Uint32.fromXDR(buffer); //  $ExpectType number
+StellarSdk.xdr.Uint32.fromXDR(buffer.toString('base64'), 'base64'); //  $ExpectType number
+StellarSdk.xdr.Uint32.read(buffer); //  $ExpectType number
+StellarSdk.xdr.Uint32.toXDR(4); //  $ExpectType Buffer
+StellarSdk.xdr.Uint32.isValid(4); //  $ExpectType number
+
+StellarSdk.xdr.Uint64.fromString("1234").high; //  $ExpectType number
+StellarSdk.xdr.Int64.fromString("1234").high; //  $ExpectType number
+
+StellarSdk.xdr.String32.toXDR("hola"); // $ExpectType Buffer
+StellarSdk.xdr.String64.toXDR("hola"); // $ExpectType Buffer
+
+StellarSdk.xdr.Hash.isValid(Buffer.alloc(32)); // $ExpectType boolean
+StellarSdk.xdr.Hash.isValid(Buffer.alloc(32)); // $ExpectType boolean
+
+StellarSdk.xdr.Int64.fromXDR(Buffer.alloc(8)); // $ExpectType Hyper
+StellarSdk.xdr.SequenceNumber.fromXDR(Buffer.alloc(8)); // $ExpectType Hyper
+StellarSdk.xdr.Int64.MIN_VALUE; // $ExpectType Hyper
+StellarSdk.xdr.SequenceNumber.MIN_VALUE; // $ExpectType Hyper

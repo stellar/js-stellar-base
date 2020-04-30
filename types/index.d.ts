@@ -626,6 +626,176 @@ export namespace xdr {
     static fromXDR(xdr: Buffer, format?: 'raw'): TransactionResult;
     static fromXDR(xdr: string, format: 'hex'): TransactionResult;
   }
+    interface SignedInt {
+    readonly MAX_VALUE: 2147483647;
+    readonly MIN_VALUE: -2147483648;
+    read(io: Buffer): number;
+    write(value: number, io: Buffer): void;
+    isValid(value: number): boolean;
+    toXDR(value: number): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): number;
+    fromXDR(input: string, format: 'hex' | 'base64'): number;
+  }
+
+  interface UnsignedInt {
+    readonly MAX_VALUE: 4294967295;
+    readonly MIN_VALUE: 0;
+    read(io: Buffer): number;
+    write(value: number, io: Buffer): void;
+    isValid(value: number): boolean;
+    toXDR(value: number): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): number;
+    fromXDR(input: string, format: 'hex' | 'base64'): number;
+  }
+
+  class Hyper {
+    low: number;
+
+    high: number;
+
+    unsigned: boolean;
+
+    constructor(low: number, high: number);
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static toXDR(value: Hyper): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Hyper;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Hyper;
+
+    static readonly MAX_VALUE: Hyper;
+
+    static readonly MIN_VALUE: Hyper;
+
+    static read(io: Buffer): Hyper;
+
+    static write(value: Hyper, io: Buffer): void;
+
+    static fromString(input: string): Hyper;
+
+    static fromBytes(low: number, high: number): Hyper;
+
+    static isValid(value: Hyper): boolean;
+  }
+
+  class UnsignedHyper {
+    low: number;
+
+    high: number;
+
+    unsigned: boolean;
+
+    constructor(low: number, high: number);
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static toXDR(value: UnsignedHyper): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): UnsignedHyper;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): UnsignedHyper;
+
+    static readonly MAX_VALUE: UnsignedHyper;
+
+    static readonly MIN_VALUE: UnsignedHyper;
+
+    static read(io: Buffer): UnsignedHyper;
+
+    static write(value: UnsignedHyper, io: Buffer): void;
+
+    static fromString(input: string): UnsignedHyper;
+
+    static fromBytes(low: number, high: number): UnsignedHyper;
+
+    static isValid(value: UnsignedHyper): boolean;
+  }
+
+  class XDRString {
+    constructor(maxLength: 4294967295);
+
+    read(io: Buffer): Buffer;
+
+    readString(io: Buffer): string;
+
+    write(value: string | Buffer, io: Buffer): void;
+
+    isValid(value: string | number[] | Buffer): boolean;
+
+    toXDR(value: string | Buffer): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+  }
+
+  class XDRArray {
+    constructor(
+      childType: {
+        read(io: any): any;
+        write(value: any, io: Buffer): void;
+        isValid(value: any): boolean;
+      },
+      length: number
+    );
+
+    read(io: Buffer): Buffer;
+
+    write(value: any[], io: Buffer): void;
+
+    isValid(value: any[]): boolean;
+
+    toXDR(value: any[]): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+  }
+
+  class VarArray extends XDRArray {}
+
+  class Opaque {
+    constructor(length: number);
+
+    read(io: Buffer): Buffer;
+
+    write(value: Buffer, io: Buffer): void;
+
+    isValid(value: Buffer): boolean;
+
+    toXDR(value: Buffer): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+  }
+
+  class VarOpaque extends Opaque {}
+
+  const Uint32: UnsignedInt;
+
+  const Int32: SignedInt;
+
+  class Uint64 extends UnsignedHyper {}
+
+  class Int64 extends Hyper {}
+
+  const String32: XDRString;
+
+  const String64: XDRString;
+
+  const Hash: Opaque;
+
+  const EncryptedBody: VarOpaque;
+
+  const Value: VarOpaque;
+
+  const SequenceNumber: typeof Int64;
 }
 
 export function hash(data: Buffer): Buffer;
