@@ -17,6 +17,7 @@ var types = XDR.config((xdr) => {
   xdr.typedef('SequenceNumber', xdr.lookup('Int64'));
   xdr.typedef('NodeId', xdr.lookup('PublicKey'));
   xdr.typedef('AccountId', xdr.lookup('PublicKey'));
+  xdr.typedef('ClearFlags', xdr.option(xdr.lookup('Uint32')));
 });
 
 export default types;

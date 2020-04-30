@@ -157,6 +157,27 @@ exports[`.transform(type definitions) 1`] = `
     class VarOpaque extends Opaque {
     }
 
+    class Option {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        });
+
+        read(io: Buffer): any;
+
+        write(value: any, io: Buffer): void;
+
+        isValid(value: any): boolean;
+
+        toXDR(value: any): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): any;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): any;
+
+    }
+
     const Uint32: UnsignedInt;
 
     const Int32: SignedInt;
@@ -184,6 +205,8 @@ exports[`.transform(type definitions) 1`] = `
     const NodeId: typeof PublicKey;
 
     const AccountId: typeof PublicKey;
+
+    const ClearFlags: Option;
 
 }"
 `;
@@ -343,6 +366,27 @@ exports[`.transform(xdr enum) 1`] = `
     }
 
     class VarOpaque extends Opaque {
+    }
+
+    class Option {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        });
+
+        read(io: Buffer): any;
+
+        write(value: any, io: Buffer): void;
+
+        isValid(value: any): boolean;
+
+        toXDR(value: any): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): any;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): any;
+
     }
 
     class ChangeTrustResultCode {
@@ -516,6 +560,29 @@ exports[`.transform(xdr structs) 1`] = `
     class VarOpaque extends Opaque {
     }
 
+    class Option {
+        constructor(childType: {
+            read(io: any): any;
+            write(value: any, io: Buffer): void;
+            isValid(value: any): boolean;
+        });
+
+        read(io: Buffer): any;
+
+        write(value: any, io: Buffer): void;
+
+        isValid(value: any): boolean;
+
+        toXDR(value: any): Buffer;
+
+        fromXDR(input: Buffer, format?: \\"raw\\"): any;
+
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): any;
+
+    }
+
+    const Uint32: UnsignedInt;
+
     class ErrorCode {
         readonly name: \\"errMisc\\" | \\"errDatum\\" | \\"errConf\\" | \\"errAuth\\" | \\"errLoad\\";
 
@@ -549,6 +616,7 @@ exports[`.transform(xdr structs) 1`] = `
             encryptedBody: VarOpaque;
             value: VarOpaque;
             ledgerEntryChanges: VarArray;
+            ClearFlags: Option;
         });
 
         code(value?: typeof ErrorCode): typeof ErrorCode;
@@ -574,6 +642,8 @@ exports[`.transform(xdr structs) 1`] = `
         value(value?: VarOpaque): VarOpaque;
 
         ledgerEntryChanges(value?: VarArray): VarArray;
+
+        ClearFlags(value?: Option): Option;
 
         toXDR(format?: \\"raw\\"): Buffer;
 

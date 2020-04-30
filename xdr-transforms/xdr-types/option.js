@@ -1,14 +1,14 @@
 import * as dom from 'dts-dom';
 
 /**
- * Builds a valid dts-dom node representing a XDR Array.
+ * Builds a valid dts-dom node representing a XDR Option.
  *
  */
-export default function array(ns) {
+export default function option(ns) {
   const buffer = dom.create.interface('Buffer');
-  const array = dom.create.class('XDRArray');
+  const option = dom.create.class('Option');
 
-  array.members.push(
+  option.members.push(
     dom.create.constructor([
       dom.create.parameter(
         'childType',
@@ -32,40 +32,42 @@ export default function array(ns) {
             dom.type.boolean
           )
         ])
-      ),
-      dom.create.parameter('length', dom.type.number)
+      )
     ])
   );
-
-  array.members.push(
-    dom.create.method('read', [dom.create.parameter('io', buffer)], buffer)
+  option.members.push(
+    dom.create.method(
+      'read',
+      [dom.create.parameter('io', buffer)],
+      dom.type.any
+    )
   );
-  array.members.push(
+  option.members.push(
     dom.create.method(
       'write',
       [
-        dom.create.parameter('value', dom.create.array(dom.type.any)),
+        dom.create.parameter('value', dom.type.any),
         dom.create.parameter('io', buffer)
       ],
       dom.type.void
     )
   );
-  array.members.push(
+  option.members.push(
     dom.create.method(
       'isValid',
-      [dom.create.parameter('value', dom.create.array(dom.type.any))],
+      [dom.create.parameter('value', dom.type.any)],
       dom.type.boolean
     )
   );
   // toXDR value is the same time as write value
-  array.members.push(
+  option.members.push(
     dom.create.method(
       'toXDR',
-      [dom.create.parameter('value', dom.create.array(dom.type.any))],
+      [dom.create.parameter('value', dom.type.any)],
       buffer
     )
   );
-  array.members.push(
+  option.members.push(
     dom.create.method(
       'fromXDR',
       [
@@ -76,10 +78,10 @@ export default function array(ns) {
           dom.ParameterFlags.Optional
         )
       ],
-      buffer
+      dom.type.any
     )
   );
-  array.members.push(
+  option.members.push(
     dom.create.method(
       'fromXDR',
       [
@@ -92,9 +94,9 @@ export default function array(ns) {
           ])
         )
       ],
-      buffer
+      dom.type.any
     )
   );
 
-  return array;
+  return option;
 }

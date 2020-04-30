@@ -15,7 +15,8 @@ export function isNativeXDRType(node) {
     'varOpaque',
     'array',
     'varArray',
-    'lookup'
+    'lookup',
+    'option'
   ];
 
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
@@ -28,47 +29,51 @@ export function resolveType(api, node, xdrTypes) {
     );
   }
 
-  if (isXDRMemberCall(node.callee)) {
-    if (isNativeXDRType(node.callee.property)) {
-      switch (node.callee.property.name) {
-        case 'int':
-          return xdrTypes.INT;
-          break;
-        case 'uint':
-          return xdrTypes.UINT;
-          break;
-        case 'hyper':
-          return xdrTypes.HYPER;
-          break;
-        case 'uhyper':
-          return xdrTypes.UHYPER;
-          break;
-        case 'string':
-          return xdrTypes.STRING;
-          break;
-        case 'opaque':
-          return xdrTypes.OPAQUE;
-          break;
-        case 'varOpaque':
-          return xdrTypes.VAROPAQUE;
-          break;
-        case 'array':
-          return xdrTypes.ARRAY;
-          break;
-        case 'varArray':
-          return xdrTypes.VARARRAY;
-          break;
-        case 'lookup':
-          if (node.arguments[0].type !== 'Literal') {
-            throw new Error(
-              'Invalid argument pass to lookup, expected a Literal'
-            );
-          }
-          return dom.create.typeof(
-            dom.create.namedTypeReference(node.arguments[0].value)
+  if (isNativeXDRType(node.callee.property)) {
+    switch (node.callee.property.name) {
+      case 'int':
+        return xdrTypes.INT;
+        break;
+      case 'uint':
+        return xdrTypes.UINT;
+        break;
+      case 'hyper':
+        return xdrTypes.HYPER;
+        break;
+      case 'uhyper':
+        return xdrTypes.UHYPER;
+        break;
+      case 'string':
+        return xdrTypes.STRING;
+        break;
+      case 'opaque':
+        return xdrTypes.OPAQUE;
+        break;
+      case 'varOpaque':
+        return xdrTypes.VAROPAQUE;
+        break;
+      case 'array':
+        return xdrTypes.ARRAY;
+        break;
+      case 'varArray':
+        return xdrTypes.VARARRAY;
+        break;
+      case 'lookup':
+        if (node.arguments[0].type !== 'Literal') {
+          throw new Error(
+            'Invalid argument pass to lookup, expected a Literal'
           );
-          break;
-      }
+        }
+        return dom.create.typeof(
+          dom.create.namedTypeReference(node.arguments[0].value)
+        );
+        break;
+      case 'option':
+        return xdrTypes.OPTION;
+        break;
+      default:
+        throw new Error(`Unknown type: ${node.callee.property.name}`);
+        break;
     }
   }
 }

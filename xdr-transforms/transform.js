@@ -6,8 +6,10 @@ import enumToTS from './xdr-types/enum';
 import xdrString from './xdr-types/string';
 import xdrOpaque from './xdr-types/opaque';
 import xdrArray from './xdr-types/array';
+import xdrOption from './xdr-types/option';
 import typeDef from './xdr-types/type-def';
 import structDef from './xdr-types/struct';
+import unionDef from './xdr-types/union';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
@@ -48,6 +50,9 @@ export default function transformer(file, api) {
   varOpaque.baseType = opaque;
   ns.members.push(varOpaque);
 
+  const option = xdrOption(ns);
+  ns.members.push(option);
+
   const xdrTypes = {
     INT: signedInt,
     UINT: unsignedInt,
@@ -57,7 +62,8 @@ export default function transformer(file, api) {
     OPAQUE: opaque,
     VAROPAQUE: varOpaque,
     ARRAY: array,
-    VARARRAY: varArray
+    VARARRAY: varArray,
+    OPTION: option
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
@@ -75,6 +81,9 @@ export default function transformer(file, api) {
           break;
         case 'struct':
           structDef(api, node, ns, xdrTypes);
+          break;
+        case 'union':
+          unionDef(api, node, ns, xdrTypes);
           break;
         default:
           break;

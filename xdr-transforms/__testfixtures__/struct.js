@@ -1,6 +1,7 @@
 import * as XDR from 'js-xdr';
 
 var types = XDR.config((xdr) => {
+  xdr.typedef('Uint32', xdr.uint());
   xdr.enum('ErrorCode', {
     errMisc: 0,
     errDatum: 1,
@@ -24,7 +25,8 @@ var types = XDR.config((xdr) => {
     [
       'ledgerEntryChanges',
       xdr.varArray(xdr.lookup('LedgerEntryChange'), 2147483647)
-    ]
+    ],
+    ['ClearFlags', xdr.option(xdr.lookup('Uint32'))]
   ]);
 });
 
