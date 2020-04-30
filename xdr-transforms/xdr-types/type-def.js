@@ -1,25 +1,5 @@
 import * as dom from 'dts-dom';
-
-function isXDRMemberCall(node) {
-  return node.type === 'MemberExpression' && node.object.name === 'xdr';
-}
-
-function isNativeXDRType(node) {
-  const nativeTypes = [
-    'int',
-    'uint',
-    'hyper',
-    'uhyper',
-    'string',
-    'opaque',
-    'varOpaque',
-    'array',
-    'varArray',
-    'lookup'
-  ];
-
-  return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
-}
+import { isXDRMemberCall, isNativeXDRType } from './utils';
 
 export default function typeDef(api, node, ns, xdrTypes) {
   const [literal, exp] = node.arguments;
