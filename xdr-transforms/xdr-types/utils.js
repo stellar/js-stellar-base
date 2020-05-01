@@ -69,7 +69,10 @@ export function resolveType(api, node, xdrTypes) {
         return dom.create.namedTypeReference(node.arguments[0].value);
         break;
       case 'option':
-        return xdrTypes.OPTION;
+        return dom.create.union([
+          dom.type.void,
+          resolveType(api, node.arguments[0], xdrTypes)
+        ]);
         break;
       case 'void':
         return dom.type.void;

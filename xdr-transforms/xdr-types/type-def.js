@@ -66,7 +66,13 @@ export default function typeDef(api, node, ns, xdrTypes) {
         break;
       case 'option':
         ns.members.push(
-          dom.create.const(name, xdrTypes.OPTION, dom.DeclarationFlags.ReadOnly)
+          dom.create.alias(
+            name,
+            dom.create.union([
+              dom.type.void,
+              resolveType(api, exp.arguments[0], xdrTypes)
+            ])
+          )
         );
         break;
       default:
