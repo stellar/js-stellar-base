@@ -119,3 +119,12 @@ StellarSdk.xdr.Uint32.toXDR(1); // $ExpectType Buffer
 StellarSdk.xdr.String32.toXDR("hellow world"); // $ExpectedType Buffer
 StellarSdk.xdr.Hash.toXDR(Buffer.alloc(32)); // $ExpectedType Buffer
 StellarSdk.xdr.Signature.toXDR(Buffer.alloc(9, 'a')); // $ExpectedType Buffer
+
+const change = StellarSdk.xdr.LedgerEntryChange.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAwHBW0UAAAAAAAAAADwkQ23EX6ohsRsGoCynHl5R8D7RXcgVD4Y92uUigLooAAAAAIitVMABlM5gABTlLwAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA',
+  'base64'
+);
+change; // $ExpectType LedgerEntryChange
+const raw = StellarSdk.xdr.LedgerEntryChanges.toXDR([change]); // $ExpectType Buffer
+StellarSdk.xdr.LedgerEntryChanges.fromXDR(raw); // $ExpectType LedgerEntryChange[]

@@ -586,7 +586,6 @@ declare namespace xdrHidden {
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-
     interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -695,30 +694,19 @@ export namespace xdr {
     fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
   }
 
-  class XDRArray {
-    constructor(
-      childType: {
-        read(io: any): any;
-        write(value: any, io: Buffer): void;
-        isValid(value: any): boolean;
-      },
-      length: number
-    );
-
+  class XDRArray<T> {
     read(io: Buffer): Buffer;
 
-    write(value: any[], io: Buffer): void;
+    write(value: T[], io: Buffer): void;
 
-    isValid(value: any[]): boolean;
+    isValid(value: T[]): boolean;
 
-    toXDR(value: any[]): Buffer;
+    toXDR(value: T[]): Buffer;
 
-    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): T[];
 
-    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+    fromXDR(input: string, format: 'hex' | 'base64'): T[];
   }
-
-  class VarArray extends XDRArray {}
 
   class Opaque {
     constructor(length: number);
@@ -1698,7 +1686,7 @@ export namespace xdr {
 
   const EncryptedBody: VarOpaque;
 
-  type PeerStatList = PeerStats[];
+  const PeerStatList: XDRArray<PeerStats>;
 
   const Hash: Opaque;
 
@@ -1740,7 +1728,7 @@ export namespace xdr {
 
   const UpgradeType: VarOpaque;
 
-  type LedgerEntryChanges = LedgerEntryChange[];
+  const LedgerEntryChanges: XDRArray<LedgerEntryChange>;
 
   class Error {
     constructor(attributes: { code: ErrorCode; msg: string | Buffer });
@@ -2126,15 +2114,15 @@ export namespace xdr {
 
   class TopologyResponseBody {
     constructor(attributes: {
-      inboundPeers: PeerStatList;
-      outboundPeers: PeerStatList;
+      inboundPeers: PeerStats[];
+      outboundPeers: PeerStats[];
       totalInboundPeerCount: number;
       totalOutboundPeerCount: number;
     });
 
-    inboundPeers(value?: PeerStatList): PeerStatList;
+    inboundPeers(value?: PeerStats[]): PeerStats[];
 
-    outboundPeers(value?: PeerStatList): PeerStatList;
+    outboundPeers(value?: PeerStats[]): PeerStats[];
 
     totalInboundPeerCount(value?: number): number;
 
@@ -4389,9 +4377,9 @@ export namespace xdr {
   }
 
   class OperationMeta {
-    constructor(attributes: { changes: LedgerEntryChanges });
+    constructor(attributes: { changes: LedgerEntryChange[] });
 
-    changes(value?: LedgerEntryChanges): LedgerEntryChanges;
+    changes(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4412,11 +4400,11 @@ export namespace xdr {
 
   class TransactionMetaV1 {
     constructor(attributes: {
-      txChanges: LedgerEntryChanges;
+      txChanges: LedgerEntryChange[];
       operations: OperationMeta[];
     });
 
-    txChanges(value?: LedgerEntryChanges): LedgerEntryChanges;
+    txChanges(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     operations(value?: OperationMeta[]): OperationMeta[];
 
@@ -4439,16 +4427,16 @@ export namespace xdr {
 
   class TransactionMetaV2 {
     constructor(attributes: {
-      txChangesBefore: LedgerEntryChanges;
+      txChangesBefore: LedgerEntryChange[];
       operations: OperationMeta[];
-      txChangesAfter: LedgerEntryChanges;
+      txChangesAfter: LedgerEntryChange[];
     });
 
-    txChangesBefore(value?: LedgerEntryChanges): LedgerEntryChanges;
+    txChangesBefore(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     operations(value?: OperationMeta[]): OperationMeta[];
 
-    txChangesAfter(value?: LedgerEntryChanges): LedgerEntryChanges;
+    txChangesAfter(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4470,13 +4458,13 @@ export namespace xdr {
   class TransactionResultMeta {
     constructor(attributes: {
       result: TransactionResultPair;
-      feeProcessing: LedgerEntryChanges;
+      feeProcessing: LedgerEntryChange[];
       txApplyProcessing: TransactionMeta;
     });
 
     result(value?: TransactionResultPair): TransactionResultPair;
 
-    feeProcessing(value?: LedgerEntryChanges): LedgerEntryChanges;
+    feeProcessing(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     txApplyProcessing(value?: TransactionMeta): TransactionMeta;
 
@@ -4503,12 +4491,12 @@ export namespace xdr {
   class UpgradeEntryMeta {
     constructor(attributes: {
       upgrade: LedgerUpgrade;
-      changes: LedgerEntryChanges;
+      changes: LedgerEntryChange[];
     });
 
     upgrade(value?: LedgerUpgrade): LedgerUpgrade;
 
-    changes(value?: LedgerEntryChanges): LedgerEntryChanges;
+    changes(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     toXDR(format?: 'raw'): Buffer;
 
