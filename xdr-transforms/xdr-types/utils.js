@@ -70,7 +70,7 @@ export function resolveType(api, node, xdrTypes) {
         break;
       case 'option':
         return dom.create.union([
-          dom.type.void,
+          dom.type.null,
           resolveType(api, node.arguments[0], xdrTypes)
         ]);
         break;

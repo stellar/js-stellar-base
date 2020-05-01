@@ -69,7 +69,7 @@ export default function typeDef(api, node, ns, xdrTypes) {
           dom.create.alias(
             name,
             dom.create.union([
-              dom.type.void,
+              dom.type.undefined,
               resolveType(api, exp.arguments[0], xdrTypes)
             ])
           )

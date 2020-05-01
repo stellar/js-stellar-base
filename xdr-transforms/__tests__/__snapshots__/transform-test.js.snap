@@ -208,7 +208,7 @@ exports[`.transform(type definitions) 1`] = `
 
     type AccountId = PublicKey;
 
-    type ClearFlags = void | Uint32;
+    type ClearFlags = undefined | Uint32;
 
 }"
 `;
@@ -618,7 +618,7 @@ exports[`.transform(xdr structs) 1`] = `
             encryptedBody: VarOpaque;
             value: VarOpaque;
             ledgerEntryChanges: VarArray;
-            ClearFlags: void | Uint32;
+            ClearFlags: null | Uint32;
         });
 
         code(value?: ErrorCode): ErrorCode;
@@ -645,7 +645,7 @@ exports[`.transform(xdr structs) 1`] = `
 
         ledgerEntryChanges(value?: VarArray): VarArray;
 
-        ClearFlags(value?: void | Uint32): void | Uint32;
+        ClearFlags(value?: null | Uint32): null | Uint32;
 
         toXDR(format?: \\"raw\\"): Buffer;
 
