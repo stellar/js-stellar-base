@@ -188,9 +188,9 @@ exports[`.transform(type definitions) 1`] = `
     class Int64 extends Hyper {
     }
 
-    const String32: XDRString;
+    type String32 = string | Buffer;
 
-    const String64: XDRString;
+    type String64 = string | Buffer;
 
     type Hash = Buffer;
 
@@ -602,7 +602,7 @@ exports[`.transform(xdr structs) 1`] = `
 
     }
 
-    const ErrorMsg: XDRString;
+    type ErrorMsg = string | Buffer;
 
     class Error {
         constructor(attributes: {

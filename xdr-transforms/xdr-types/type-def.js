@@ -26,7 +26,7 @@ export default function typeDef(api, node, ns, xdrTypes) {
         break;
       case 'string':
         ns.members.push(
-          dom.create.const(name, xdrTypes.STRING, dom.DeclarationFlags.ReadOnly)
+          dom.create.alias(name, dom.create.union([dom.type.string, buffer]))
         );
         break;
       case 'opaque':
