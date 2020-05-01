@@ -74,9 +74,6 @@ StellarSdk.Operation.fromXDRObject(newSignerXDR3).signer; // $ExpectType PreAuth
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
 
-StellarSdk.xdr.Uint64.fromString("1234").high; //  $ExpectType number
-StellarSdk.xdr.Int64.fromString("1234").high; //  $ExpectType number
-
 const envelope = feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
 envelope.v0(); // $ExpectType TransactionV0Envelope
 envelope.v1(); // $ExpectType TransactionV1Envelope
