@@ -76,9 +76,11 @@ exports[`.transform(type definitions) 1`] = `
 
     type Int32 = number;
 
-    type Uint64 = UnsignedHyper;
+    class Uint64 extends UnsignedHyper {
+    }
 
-    type Int64 = Hyper;
+    class Int64 extends Hyper {
+    }
 
     type String32 = string | Buffer;
 

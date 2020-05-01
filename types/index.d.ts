@@ -586,7 +586,6 @@ declare namespace xdrHidden {
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-  
   class Hyper {
     low: number;
 
@@ -1399,9 +1398,11 @@ export namespace xdr {
 
   type Int32 = number;
 
-  type Uint64 = UnsignedHyper;
+  class Uint64 extends UnsignedHyper {
+  }
 
-  type Int64 = Hyper;
+  class Int64 extends Hyper {
+  }
 
   class CryptoKeyType {
     readonly name:

@@ -15,14 +15,14 @@ export default function typeDef(api, node, ns) {
         ns.members.push(dom.create.alias(name, dom.type.number));
         break;
       case 'hyper':
-        ns.members.push(
-          dom.create.alias(name, dom.create.namedTypeReference('Hyper'))
-        );
+        const hyper = dom.create.class(name);
+        hyper.baseType = dom.create.namedTypeReference('Hyper');
+        ns.members.push(hyper);
         break;
       case 'uhyper':
-        ns.members.push(
-          dom.create.alias(name, dom.create.namedTypeReference('UnsignedHyper'))
-        );
+        const uhyper = dom.create.class(name);
+        uhyper.baseType = dom.create.namedTypeReference('UnsignedHyper');
+        ns.members.push(uhyper);
         break;
       case 'string':
         ns.members.push(
