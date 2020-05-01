@@ -129,3 +129,7 @@ const change = StellarSdk.xdr.LedgerEntryChange.fromXDR(
 change; // $ExpectType LedgerEntryChange
 const raw = StellarSdk.xdr.LedgerEntryChanges.toXDR([change]); // $ExpectType Buffer
 StellarSdk.xdr.LedgerEntryChanges.fromXDR(raw); // $ExpectType LedgerEntryChange[]
+
+StellarSdk.xdr.Asset.assetTypeNative(); // $ExpectType Asset
+StellarSdk.xdr.InnerTransactionResultResult.txInternalError(); // $ExpectType InnerTransactionResultResult
+StellarSdk.xdr.TransactionV0Ext[0](); // $ExpectedType TransactionV0Ext

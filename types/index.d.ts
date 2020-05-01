@@ -4558,11 +4558,11 @@ export namespace xdr {
 
     ipv6(value?: Buffer): Buffer;
 
-    value(): Buffer | Buffer;
-
     static iPv4(value: Buffer): PeerAddressIp;
 
     static iPv6(value: Buffer): PeerAddressIp;
+
+    value(): Buffer | Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4586,9 +4586,9 @@ export namespace xdr {
 
     topologyResponseBody(value?: TopologyResponseBody): TopologyResponseBody;
 
-    value(): TopologyResponseBody;
-
     static surveyTopology(value: TopologyResponseBody): SurveyResponseBody;
+
+    value(): TopologyResponseBody;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4642,22 +4642,6 @@ export namespace xdr {
 
     getScpLedgerSeq(value?: number): number;
 
-    value():
-      | Error
-      | Hello
-      | Auth
-      | DontHave
-      | PeerAddress[]
-      | Buffer
-      | TransactionSet
-      | TransactionEnvelope
-      | SignedSurveyRequestMessage
-      | SignedSurveyResponseMessage
-      | Buffer
-      | ScpQuorumSet
-      | ScpEnvelope
-      | number;
-
     static errorMsg(value: Error): StellarMessage;
 
     static hello(value: Hello): StellarMessage;
@@ -4665,6 +4649,8 @@ export namespace xdr {
     static auth(value: Auth): StellarMessage;
 
     static dontHave(value: DontHave): StellarMessage;
+
+    static getPeer(): StellarMessage;
 
     static peer(value: PeerAddress[]): StellarMessage;
 
@@ -4685,6 +4671,23 @@ export namespace xdr {
     static scpMessage(value: ScpEnvelope): StellarMessage;
 
     static getScpState(value: number): StellarMessage;
+
+    value():
+      | Error
+      | Hello
+      | Auth
+      | DontHave
+      | PeerAddress[]
+      | Buffer
+      | TransactionSet
+      | TransactionEnvelope
+      | SignedSurveyRequestMessage
+      | SignedSurveyResponseMessage
+      | Buffer
+      | ScpQuorumSet
+      | ScpEnvelope
+      | number
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4708,9 +4711,9 @@ export namespace xdr {
 
     v0(value?: AuthenticatedMessageV0): AuthenticatedMessageV0;
 
-    value(): AuthenticatedMessageV0;
-
     static 0(value: AuthenticatedMessageV0): AuthenticatedMessage;
+
+    value(): AuthenticatedMessageV0;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4737,9 +4740,9 @@ export namespace xdr {
 
     ed25519(value?: Buffer): Buffer;
 
-    value(): Buffer;
-
     static publicKeyTypeEd25519(value: Buffer): PublicKey;
+
+    value(): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4767,13 +4770,13 @@ export namespace xdr {
 
     hashX(value?: Buffer): Buffer;
 
-    value(): Buffer | Buffer | Buffer;
-
     static signerKeyTypeEd25519(value: Buffer): SignerKey;
 
     static signerKeyTypePreAuthTx(value: Buffer): SignerKey;
 
     static signerKeyTypeHashX(value: Buffer): SignerKey;
+
+    value(): Buffer | Buffer | Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4799,11 +4802,11 @@ export namespace xdr {
 
     med25519(value?: MuxedAccountMed25519): MuxedAccountMed25519;
 
-    value(): Buffer | MuxedAccountMed25519;
-
     static keyTypeEd25519(value: Buffer): MuxedAccount;
 
     static keyTypeMuxedEd25519(value: MuxedAccountMed25519): MuxedAccount;
+
+    value(): Buffer | MuxedAccountMed25519;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4829,11 +4832,11 @@ export namespace xdr {
 
     assetCode12(value?: Buffer): Buffer;
 
-    value(): Buffer | Buffer;
-
     static assetTypeCreditAlphanum4(value: Buffer): AllowTrustOpAsset;
 
     static assetTypeCreditAlphanum12(value: Buffer): AllowTrustOpAsset;
+
+    value(): Buffer | Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4887,21 +4890,6 @@ export namespace xdr {
       value?: PathPaymentStrictSendOp
     ): PathPaymentStrictSendOp;
 
-    value():
-      | CreateAccountOp
-      | PaymentOp
-      | PathPaymentStrictReceiveOp
-      | ManageSellOfferOp
-      | CreatePassiveSellOfferOp
-      | SetOptionsOp
-      | ChangeTrustOp
-      | AllowTrustOp
-      | MuxedAccount
-      | ManageDataOp
-      | BumpSequenceOp
-      | ManageBuyOfferOp
-      | PathPaymentStrictSendOp;
-
     static createAccount(value: CreateAccountOp): OperationBody;
 
     static payment(value: PaymentOp): OperationBody;
@@ -4924,6 +4912,8 @@ export namespace xdr {
 
     static accountMerge(value: MuxedAccount): OperationBody;
 
+    static inflation(): OperationBody;
+
     static manageDatum(value: ManageDataOp): OperationBody;
 
     static bumpSequence(value: BumpSequenceOp): OperationBody;
@@ -4931,6 +4921,22 @@ export namespace xdr {
     static manageBuyOffer(value: ManageBuyOfferOp): OperationBody;
 
     static pathPaymentStrictSend(value: PathPaymentStrictSendOp): OperationBody;
+
+    value():
+      | CreateAccountOp
+      | PaymentOp
+      | PathPaymentStrictReceiveOp
+      | ManageSellOfferOp
+      | CreatePassiveSellOfferOp
+      | SetOptionsOp
+      | ChangeTrustOp
+      | AllowTrustOp
+      | MuxedAccount
+      | ManageDataOp
+      | BumpSequenceOp
+      | ManageBuyOfferOp
+      | PathPaymentStrictSendOp
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4960,7 +4966,7 @@ export namespace xdr {
 
     retHash(value?: Buffer): Buffer;
 
-    value(): string | Buffer | Uint64 | Buffer | Buffer;
+    static memoNone(): Memo;
 
     static memoText(value: string | Buffer): Memo;
 
@@ -4969,6 +4975,8 @@ export namespace xdr {
     static memoHash(value: Buffer): Memo;
 
     static memoReturn(value: Buffer): Memo;
+
+    value(): string | Buffer | Uint64 | Buffer | Buffer | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4990,6 +4998,10 @@ export namespace xdr {
   class TransactionV0Ext {
     switch(): number;
 
+    static 0(): TransactionV0Ext;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5009,6 +5021,10 @@ export namespace xdr {
 
   class TransactionExt {
     switch(): number;
+
+    static 0(): TransactionExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5032,11 +5048,11 @@ export namespace xdr {
 
     v1(value?: TransactionV1Envelope): TransactionV1Envelope;
 
-    value(): TransactionV1Envelope;
-
     static envelopeTypeTx(
       value: TransactionV1Envelope
     ): FeeBumpTransactionInnerTx;
+
+    value(): TransactionV1Envelope;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5060,6 +5076,10 @@ export namespace xdr {
 
   class FeeBumpTransactionExt {
     switch(): number;
+
+    static 0(): FeeBumpTransactionExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5090,11 +5110,6 @@ export namespace xdr {
 
     feeBump(value?: FeeBumpTransactionEnvelope): FeeBumpTransactionEnvelope;
 
-    value():
-      | TransactionV0Envelope
-      | TransactionV1Envelope
-      | FeeBumpTransactionEnvelope;
-
     static envelopeTypeTxV0(value: TransactionV0Envelope): TransactionEnvelope;
 
     static envelopeTypeTx(value: TransactionV1Envelope): TransactionEnvelope;
@@ -5102,6 +5117,11 @@ export namespace xdr {
     static envelopeTypeTxFeeBump(
       value: FeeBumpTransactionEnvelope
     ): TransactionEnvelope;
+
+    value():
+      | TransactionV0Envelope
+      | TransactionV1Envelope
+      | FeeBumpTransactionEnvelope;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5130,8 +5150,6 @@ export namespace xdr {
 
     feeBump(value?: FeeBumpTransaction): FeeBumpTransaction;
 
-    value(): Transaction | FeeBumpTransaction;
-
     static envelopeTypeTx(
       value: Transaction
     ): TransactionSignaturePayloadTaggedTransaction;
@@ -5139,6 +5157,8 @@ export namespace xdr {
     static envelopeTypeTxFeeBump(
       value: FeeBumpTransaction
     ): TransactionSignaturePayloadTaggedTransaction;
+
+    value(): Transaction | FeeBumpTransaction;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5171,6 +5191,10 @@ export namespace xdr {
   class CreateAccountResult {
     switch(): CreateAccountResultCode;
 
+    static createAccountSuccess(): CreateAccountResult;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5193,6 +5217,10 @@ export namespace xdr {
 
   class PaymentResult {
     switch(): PaymentResultCode;
+
+    static paymentSuccess(): PaymentResult;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5220,8 +5248,6 @@ export namespace xdr {
 
     noIssuer(value?: Asset): Asset;
 
-    value(): PathPaymentStrictReceiveResultSuccess | Asset;
-
     static pathPaymentStrictReceiveSuccess(
       value: PathPaymentStrictReceiveResultSuccess
     ): PathPaymentStrictReceiveResult;
@@ -5229,6 +5255,8 @@ export namespace xdr {
     static pathPaymentStrictReceiveNoIssuer(
       value: Asset
     ): PathPaymentStrictReceiveResult;
+
+    value(): PathPaymentStrictReceiveResultSuccess | Asset;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5262,8 +5290,6 @@ export namespace xdr {
 
     noIssuer(value?: Asset): Asset;
 
-    value(): PathPaymentStrictSendResultSuccess | Asset;
-
     static pathPaymentStrictSendSuccess(
       value: PathPaymentStrictSendResultSuccess
     ): PathPaymentStrictSendResult;
@@ -5271,6 +5297,8 @@ export namespace xdr {
     static pathPaymentStrictSendNoIssuer(
       value: Asset
     ): PathPaymentStrictSendResult;
+
+    value(): PathPaymentStrictSendResultSuccess | Asset;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5297,11 +5325,11 @@ export namespace xdr {
 
     offer(value?: OfferEntry): OfferEntry;
 
-    value(): OfferEntry;
-
     static manageOfferCreated(value: OfferEntry): ManageOfferSuccessResultOffer;
 
     static manageOfferUpdated(value: OfferEntry): ManageOfferSuccessResultOffer;
+
+    value(): OfferEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5331,11 +5359,11 @@ export namespace xdr {
 
     success(value?: ManageOfferSuccessResult): ManageOfferSuccessResult;
 
-    value(): ManageOfferSuccessResult;
-
     static manageSellOfferSuccess(
       value: ManageOfferSuccessResult
     ): ManageSellOfferResult;
+
+    value(): ManageOfferSuccessResult;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5362,11 +5390,11 @@ export namespace xdr {
 
     success(value?: ManageOfferSuccessResult): ManageOfferSuccessResult;
 
-    value(): ManageOfferSuccessResult;
-
     static manageBuyOfferSuccess(
       value: ManageOfferSuccessResult
     ): ManageBuyOfferResult;
+
+    value(): ManageOfferSuccessResult;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5391,6 +5419,10 @@ export namespace xdr {
   class SetOptionsResult {
     switch(): SetOptionsResultCode;
 
+    static setOptionsSuccess(): SetOptionsResult;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5411,6 +5443,10 @@ export namespace xdr {
   class ChangeTrustResult {
     switch(): ChangeTrustResultCode;
 
+    static changeTrustSuccess(): ChangeTrustResult;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5430,6 +5466,10 @@ export namespace xdr {
 
   class AllowTrustResult {
     switch(): AllowTrustResultCode;
+
+    static allowTrustSuccess(): AllowTrustResult;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5453,9 +5493,9 @@ export namespace xdr {
 
     sourceAccountBalance(value?: Int64): Int64;
 
-    value(): Int64;
-
     static accountMergeSuccess(value: Int64): AccountMergeResult;
+
+    value(): Int64;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5479,9 +5519,9 @@ export namespace xdr {
 
     payouts(value?: InflationPayout[]): InflationPayout[];
 
-    value(): InflationPayout[];
-
     static inflationSuccess(value: InflationPayout[]): InflationResult;
+
+    value(): InflationPayout[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5503,6 +5543,10 @@ export namespace xdr {
   class ManageDataResult {
     switch(): ManageDataResultCode;
 
+    static manageDataSuccess(): ManageDataResult;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5522,6 +5566,10 @@ export namespace xdr {
 
   class BumpSequenceResult {
     switch(): BumpSequenceResultCode;
+
+    static bumpSequenceSuccess(): BumpSequenceResult;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5577,22 +5625,6 @@ export namespace xdr {
       value?: PathPaymentStrictSendResult
     ): PathPaymentStrictSendResult;
 
-    value():
-      | CreateAccountResult
-      | PaymentResult
-      | PathPaymentStrictReceiveResult
-      | ManageSellOfferResult
-      | ManageSellOfferResult
-      | SetOptionsResult
-      | ChangeTrustResult
-      | AllowTrustResult
-      | AccountMergeResult
-      | InflationResult
-      | ManageDataResult
-      | BumpSequenceResult
-      | ManageBuyOfferResult
-      | PathPaymentStrictSendResult;
-
     static createAccount(value: CreateAccountResult): OperationResultTr;
 
     static payment(value: PaymentResult): OperationResultTr;
@@ -5627,6 +5659,22 @@ export namespace xdr {
       value: PathPaymentStrictSendResult
     ): OperationResultTr;
 
+    value():
+      | CreateAccountResult
+      | PaymentResult
+      | PathPaymentStrictReceiveResult
+      | ManageSellOfferResult
+      | ManageSellOfferResult
+      | SetOptionsResult
+      | ChangeTrustResult
+      | AllowTrustResult
+      | AccountMergeResult
+      | InflationResult
+      | ManageDataResult
+      | BumpSequenceResult
+      | ManageBuyOfferResult
+      | PathPaymentStrictSendResult;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5649,9 +5697,9 @@ export namespace xdr {
 
     tr(value?: OperationResultTr): OperationResultTr;
 
-    value(): OperationResultTr;
-
     static opInner(value: OperationResultTr): OperationResult;
+
+    value(): OperationResultTr;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5675,11 +5723,33 @@ export namespace xdr {
 
     results(value?: OperationResult[]): OperationResult[];
 
-    value(): OperationResult[];
-
     static txSuccess(value: OperationResult[]): InnerTransactionResultResult;
 
     static txFailed(value: OperationResult[]): InnerTransactionResultResult;
+
+    static txTooEarly(): InnerTransactionResultResult;
+
+    static txTooLate(): InnerTransactionResultResult;
+
+    static txMissingOperation(): InnerTransactionResultResult;
+
+    static txBadSeq(): InnerTransactionResultResult;
+
+    static txBadAuth(): InnerTransactionResultResult;
+
+    static txInsufficientBalance(): InnerTransactionResultResult;
+
+    static txNoAccount(): InnerTransactionResultResult;
+
+    static txInsufficientFee(): InnerTransactionResultResult;
+
+    static txBadAuthExtra(): InnerTransactionResultResult;
+
+    static txInternalError(): InnerTransactionResultResult;
+
+    static txNotSupported(): InnerTransactionResultResult;
+
+    value(): OperationResult[] | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5703,6 +5773,10 @@ export namespace xdr {
 
   class InnerTransactionResultExt {
     switch(): number;
+
+    static 0(): InnerTransactionResultExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5733,8 +5807,6 @@ export namespace xdr {
 
     results(value?: OperationResult[]): OperationResult[];
 
-    value(): InnerTransactionResultPair | OperationResult[];
-
     static txFeeBumpInnerSuccess(
       value: InnerTransactionResultPair
     ): TransactionResultResult;
@@ -5746,6 +5818,8 @@ export namespace xdr {
     static txSuccess(value: OperationResult[]): TransactionResultResult;
 
     static txFailed(value: OperationResult[]): TransactionResultResult;
+
+    value(): InnerTransactionResultPair | OperationResult[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5769,6 +5843,10 @@ export namespace xdr {
 
   class TransactionResultExt {
     switch(): number;
+
+    static 0(): TransactionResultExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5801,12 +5879,6 @@ export namespace xdr {
 
     nominate(value?: ScpNomination): ScpNomination;
 
-    value():
-      | ScpStatementPrepare
-      | ScpStatementConfirm
-      | ScpStatementExternalize
-      | ScpNomination;
-
     static scpStPrepare(value: ScpStatementPrepare): ScpStatementPledges;
 
     static scpStConfirm(value: ScpStatementConfirm): ScpStatementPledges;
@@ -5816,6 +5888,12 @@ export namespace xdr {
     ): ScpStatementPledges;
 
     static scpStNominate(value: ScpNomination): ScpStatementPledges;
+
+    value():
+      | ScpStatementPrepare
+      | ScpStatementConfirm
+      | ScpStatementExternalize
+      | ScpNomination;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5844,11 +5922,13 @@ export namespace xdr {
 
     alphaNum12(value?: AssetAlphaNum12): AssetAlphaNum12;
 
-    value(): AssetAlphaNum4 | AssetAlphaNum12;
+    static assetTypeNative(): Asset;
 
     static assetTypeCreditAlphanum4(value: AssetAlphaNum4): Asset;
 
     static assetTypeCreditAlphanum12(value: AssetAlphaNum12): Asset;
+
+    value(): AssetAlphaNum4 | AssetAlphaNum12 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5869,6 +5949,10 @@ export namespace xdr {
 
   class AccountEntryV1Ext {
     switch(): number;
+
+    static 0(): AccountEntryV1Ext;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5892,9 +5976,11 @@ export namespace xdr {
 
     v1(value?: AccountEntryV1): AccountEntryV1;
 
-    value(): AccountEntryV1;
+    static 0(): AccountEntryExt;
 
     static 1(value: AccountEntryV1): AccountEntryExt;
+
+    value(): AccountEntryV1 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5915,6 +6001,10 @@ export namespace xdr {
 
   class TrustLineEntryV1Ext {
     switch(): number;
+
+    static 0(): TrustLineEntryV1Ext;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5941,9 +6031,11 @@ export namespace xdr {
 
     v1(value?: TrustLineEntryV1): TrustLineEntryV1;
 
-    value(): TrustLineEntryV1;
+    static 0(): TrustLineEntryExt;
 
     static 1(value: TrustLineEntryV1): TrustLineEntryExt;
+
+    value(): TrustLineEntryV1 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5965,6 +6057,10 @@ export namespace xdr {
   class OfferEntryExt {
     switch(): number;
 
+    static 0(): OfferEntryExt;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -5984,6 +6080,10 @@ export namespace xdr {
 
   class DataEntryExt {
     switch(): number;
+
+    static 0(): DataEntryExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6013,8 +6113,6 @@ export namespace xdr {
 
     data(value?: DataEntry): DataEntry;
 
-    value(): AccountEntry | TrustLineEntry | OfferEntry | DataEntry;
-
     static account(value: AccountEntry): LedgerEntryData;
 
     static trustline(value: TrustLineEntry): LedgerEntryData;
@@ -6022,6 +6120,8 @@ export namespace xdr {
     static offer(value: OfferEntry): LedgerEntryData;
 
     static datum(value: DataEntry): LedgerEntryData;
+
+    value(): AccountEntry | TrustLineEntry | OfferEntry | DataEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6042,6 +6142,10 @@ export namespace xdr {
 
   class LedgerEntryExt {
     switch(): number;
+
+    static 0(): LedgerEntryExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6067,11 +6171,13 @@ export namespace xdr {
       value?: LedgerCloseValueSignature
     ): LedgerCloseValueSignature;
 
-    value(): LedgerCloseValueSignature;
+    static stellarValueBasic(): StellarValueExt;
 
     static stellarValueSigned(
       value: LedgerCloseValueSignature
     ): StellarValueExt;
+
+    value(): LedgerCloseValueSignature | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6092,6 +6198,10 @@ export namespace xdr {
 
   class LedgerHeaderExt {
     switch(): number;
+
+    static 0(): LedgerHeaderExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6121,8 +6231,6 @@ export namespace xdr {
 
     newBaseReserve(value?: number): number;
 
-    value(): number | number | number | number;
-
     static ledgerUpgradeVersion(value: number): LedgerUpgrade;
 
     static ledgerUpgradeBaseFee(value: number): LedgerUpgrade;
@@ -6130,6 +6238,8 @@ export namespace xdr {
     static ledgerUpgradeMaxTxSetSize(value: number): LedgerUpgrade;
 
     static ledgerUpgradeBaseReserve(value: number): LedgerUpgrade;
+
+    value(): number | number | number | number;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6159,12 +6269,6 @@ export namespace xdr {
 
     data(value?: LedgerKeyData): LedgerKeyData;
 
-    value():
-      | LedgerKeyAccount
-      | LedgerKeyTrustLine
-      | LedgerKeyOffer
-      | LedgerKeyData;
-
     static account(value: LedgerKeyAccount): LedgerKey;
 
     static trustline(value: LedgerKeyTrustLine): LedgerKey;
@@ -6172,6 +6276,12 @@ export namespace xdr {
     static offer(value: LedgerKeyOffer): LedgerKey;
 
     static datum(value: LedgerKeyData): LedgerKey;
+
+    value():
+      | LedgerKeyAccount
+      | LedgerKeyTrustLine
+      | LedgerKeyOffer
+      | LedgerKeyData;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6192,6 +6302,10 @@ export namespace xdr {
 
   class BucketMetadataExt {
     switch(): number;
+
+    static 0(): BucketMetadataExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6219,8 +6333,6 @@ export namespace xdr {
 
     metaEntry(value?: BucketMetadata): BucketMetadata;
 
-    value(): LedgerEntry | LedgerKey | BucketMetadata;
-
     static liveentry(value: LedgerEntry): BucketEntry;
 
     static initentry(value: LedgerEntry): BucketEntry;
@@ -6228,6 +6340,8 @@ export namespace xdr {
     static deadentry(value: LedgerKey): BucketEntry;
 
     static metaentry(value: BucketMetadata): BucketEntry;
+
+    value(): LedgerEntry | LedgerKey | BucketMetadata;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6248,6 +6362,10 @@ export namespace xdr {
 
   class TransactionHistoryEntryExt {
     switch(): number;
+
+    static 0(): TransactionHistoryEntryExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6271,6 +6389,10 @@ export namespace xdr {
 
   class TransactionHistoryResultEntryExt {
     switch(): number;
+
+    static 0(): TransactionHistoryResultEntryExt;
+
+    value(): void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6298,6 +6420,10 @@ export namespace xdr {
   class LedgerHeaderHistoryEntryExt {
     switch(): number;
 
+    static 0(): LedgerHeaderHistoryEntryExt;
+
+    value(): void;
+
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
@@ -6323,9 +6449,9 @@ export namespace xdr {
 
     v0(value?: ScpHistoryEntryV0): ScpHistoryEntryV0;
 
-    value(): ScpHistoryEntryV0;
-
     static 0(value: ScpHistoryEntryV0): ScpHistoryEntry;
+
+    value(): ScpHistoryEntryV0;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6355,8 +6481,6 @@ export namespace xdr {
 
     state(value?: LedgerEntry): LedgerEntry;
 
-    value(): LedgerEntry | LedgerEntry | LedgerKey | LedgerEntry;
-
     static ledgerEntryCreated(value: LedgerEntry): LedgerEntryChange;
 
     static ledgerEntryUpdated(value: LedgerEntry): LedgerEntryChange;
@@ -6364,6 +6488,8 @@ export namespace xdr {
     static ledgerEntryRemoved(value: LedgerKey): LedgerEntryChange;
 
     static ledgerEntryState(value: LedgerEntry): LedgerEntryChange;
+
+    value(): LedgerEntry | LedgerEntry | LedgerKey | LedgerEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6391,13 +6517,13 @@ export namespace xdr {
 
     v2(value?: TransactionMetaV2): TransactionMetaV2;
 
-    value(): OperationMeta[] | TransactionMetaV1 | TransactionMetaV2;
-
     static 0(value: OperationMeta[]): TransactionMeta;
 
     static 1(value: TransactionMetaV1): TransactionMeta;
 
     static 2(value: TransactionMetaV2): TransactionMeta;
+
+    value(): OperationMeta[] | TransactionMetaV1 | TransactionMetaV2;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6421,9 +6547,9 @@ export namespace xdr {
 
     v0(value?: LedgerCloseMetaV0): LedgerCloseMetaV0;
 
-    value(): LedgerCloseMetaV0;
-
     static 0(value: LedgerCloseMetaV0): LedgerCloseMeta;
+
+    value(): LedgerCloseMetaV0;
 
     toXDR(format?: 'raw'): Buffer;
 
