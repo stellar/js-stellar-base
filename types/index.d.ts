@@ -578,14 +578,36 @@ declare namespace xdrHidden {
 
     static toXDR(value: Operation2): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): Operation2;
+    static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): Operation2;
+    static fromXDR(input: string, format: 'hex' | 'base64'): xdr.Operation;
   }
 }
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+  interface SignedInt {
+    readonly MAX_VALUE: 2147483647;
+    readonly MIN_VALUE: -2147483648;
+    read(io: Buffer): number;
+    write(value: number, io: Buffer): void;
+    isValid(value: number): boolean;
+    toXDR(value: number): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): number;
+    fromXDR(input: string, format: 'hex' | 'base64'): number;
+  }
+
+  interface UnsignedInt {
+    readonly MAX_VALUE: 4294967295;
+    readonly MIN_VALUE: 0;
+    read(io: Buffer): number;
+    write(value: number, io: Buffer): void;
+    isValid(value: number): boolean;
+    toXDR(value: number): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): number;
+    fromXDR(input: string, format: 'hex' | 'base64'): number;
+  }
+
   class Hyper {
     low: number;
 
@@ -652,6 +674,87 @@ export namespace xdr {
     static fromBytes(low: number, high: number): UnsignedHyper;
 
     static isValid(value: UnsignedHyper): boolean;
+  }
+
+  class XDRString {
+    constructor(maxLength: 4294967295);
+
+    read(io: Buffer): Buffer;
+
+    readString(io: Buffer): string;
+
+    write(value: string | Buffer, io: Buffer): void;
+
+    isValid(value: string | number[] | Buffer): boolean;
+
+    toXDR(value: string | Buffer): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+  }
+
+  class XDRArray {
+    constructor(
+      childType: {
+        read(io: any): any;
+        write(value: any, io: Buffer): void;
+        isValid(value: any): boolean;
+      },
+      length: number
+    );
+
+    read(io: Buffer): Buffer;
+
+    write(value: any[], io: Buffer): void;
+
+    isValid(value: any[]): boolean;
+
+    toXDR(value: any[]): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+  }
+
+  class VarArray extends XDRArray {}
+
+  class Opaque {
+    constructor(length: number);
+
+    read(io: Buffer): Buffer;
+
+    write(value: Buffer, io: Buffer): void;
+
+    isValid(value: Buffer): boolean;
+
+    toXDR(value: Buffer): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
+  }
+
+  class VarOpaque extends Opaque {}
+
+  class Option {
+    constructor(childType: {
+      read(io: any): any;
+      write(value: any, io: Buffer): void;
+      isValid(value: any): boolean;
+    });
+
+    read(io: Buffer): any;
+
+    write(value: any, io: Buffer): void;
+
+    isValid(value: any): boolean;
+
+    toXDR(value: any): Buffer;
+
+    fromXDR(input: Buffer, format?: 'raw'): any;
+
+    fromXDR(input: string, format: 'hex' | 'base64'): any;
   }
 
   class ErrorCode {
@@ -1396,13 +1499,11 @@ export namespace xdr {
 
   type Uint32 = number;
 
-  type Int32 = number;
+  const Int32: SignedInt;
 
-  class Uint64 extends UnsignedHyper {
-  }
+  class Uint64 extends UnsignedHyper {}
 
-  class Int64 extends Hyper {
-  }
+  class Int64 extends Hyper {}
 
   class CryptoKeyType {
     readonly name:
@@ -4642,11 +4743,11 @@ export namespace xdr {
   }
 
   class Price {
-    constructor(attributes: { n: Int32; d: Int32 });
+    constructor(attributes: { n: number; d: number });
 
-    n(value?: Int32): Int32;
+    n(value?: number): number;
 
-    d(value?: Int32): Int32;
+    d(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
