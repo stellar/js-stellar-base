@@ -14,6 +14,7 @@ var types = XDR.config((xdr) => {
     'LedgerEntryChanges',
     xdr.varArray(xdr.lookup('LedgerEntryChange'), 2147483647)
   );
+  xdr.typedef('SkipList', xdr.array(xdr.lookup('Hash'), 4));
   xdr.typedef('SequenceNumber', xdr.lookup('Int64'));
   xdr.typedef('NodeId', xdr.lookup('PublicKey'));
   xdr.typedef('AccountId', xdr.lookup('PublicKey'));

@@ -1,5 +1,5 @@
 import * as dom from 'dts-dom';
-import { isXDRMemberCall, isNativeXDRType } from './utils';
+import { isXDRMemberCall, isNativeXDRType, resolveType } from './utils';
 
 export default function typeDef(api, node, ns, xdrTypes) {
   const [literal, exp] = node.arguments;
@@ -41,15 +41,17 @@ export default function typeDef(api, node, ns, xdrTypes) {
         break;
       case 'array':
         ns.members.push(
-          dom.create.const(name, xdrTypes.ARRAY, dom.DeclarationFlags.ReadOnly)
+          dom.create.alias(
+            name,
+            dom.create.array(resolveType(api, exp.arguments[0], xdrTypes))
+          )
         );
         break;
       case 'varArray':
         ns.members.push(
-          dom.create.const(
+          dom.create.alias(
             name,
-            xdrTypes.VARARRAY,
-            dom.DeclarationFlags.ReadOnly
+            dom.create.array(resolveType(api, exp.arguments[0], xdrTypes))
           )
         );
         break;

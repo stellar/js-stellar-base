@@ -198,7 +198,9 @@ exports[`.transform(type definitions) 1`] = `
 
     type Value = Buffer;
 
-    const LedgerEntryChanges: VarArray;
+    type LedgerEntryChanges = LedgerEntryChange[];
+
+    type SkipList = Hash[];
 
     const SequenceNumber: Int64;
 
