@@ -117,3 +117,5 @@ StellarSdk.xdr.Uint64.fromString("12"); // $ExpectType UnsignedHyper
 StellarSdk.xdr.Int32.toXDR(-1); // $ExpectType Buffer
 StellarSdk.xdr.Uint32.toXDR(1); // $ExpectType Buffer
 StellarSdk.xdr.String32.toXDR("hellow world"); // $ExpectedType Buffer
+StellarSdk.xdr.Hash.toXDR(Buffer.alloc(32)); // $ExpectedType Buffer
+StellarSdk.xdr.Signature.toXDR(Buffer.alloc(9, 'a')); // $ExpectedType Buffer

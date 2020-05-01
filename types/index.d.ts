@@ -60,10 +60,10 @@ export class Keypair {
   rawPublicKey(): Buffer;
   rawSecretKey(): Buffer;
   canSign(): boolean;
-  sign(data: Buffer): xdr.Signature;
+  sign(data: Buffer): Buffer;
   signDecorated(data: Buffer): xdr.DecoratedSignature;
-  signatureHint(): xdr.SignatureHint;
-  verify(data: Buffer, signature: xdr.Signature): boolean;
+  signatureHint(): Buffer;
+  verify(data: Buffer, signature: Buffer): boolean;
   xdrAccountId(): xdr.AccountId;
 }
 
@@ -586,6 +586,7 @@ declare namespace xdrHidden {
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+
     interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -1695,13 +1696,13 @@ export namespace xdr {
     static ledgerEntryState(): LedgerEntryChangeType;
   }
 
-  type EncryptedBody = Buffer;
+  const EncryptedBody: VarOpaque;
 
   type PeerStatList = PeerStats[];
 
-  type Hash = Buffer;
+  const Hash: Opaque;
 
-  type Uint256 = Buffer;
+  const Uint256: Opaque;
 
   const Uint32: UnsignedInt;
 
@@ -1711,17 +1712,17 @@ export namespace xdr {
 
   class Int64 extends Hyper {}
 
-  type Signature = Buffer;
+  const Signature: VarOpaque;
 
-  type SignatureHint = Buffer;
+  const SignatureHint: Opaque;
 
   type NodeId = PublicKey;
 
-  type Value = Buffer;
+  const Value: VarOpaque;
 
   type AccountId = PublicKey;
 
-  type Thresholds = Buffer;
+  const Thresholds: Opaque;
 
   const String32: XDRString;
 
@@ -1731,13 +1732,13 @@ export namespace xdr {
 
   type TimePoint = Uint64;
 
-  type DataValue = Buffer;
+  const DataValue: VarOpaque;
 
-  type AssetCode4 = Buffer;
+  const AssetCode4: Opaque;
 
-  type AssetCode12 = Buffer;
+  const AssetCode12: Opaque;
 
-  type UpgradeType = Buffer;
+  const UpgradeType: VarOpaque;
 
   type LedgerEntryChanges = LedgerEntryChange[];
 
@@ -1769,14 +1770,14 @@ export namespace xdr {
     constructor(attributes: {
       pubkey: Curve25519Public;
       expiration: Uint64;
-      sig: Signature;
+      sig: Buffer;
     });
 
     pubkey(value?: Curve25519Public): Curve25519Public;
 
     expiration(value?: Uint64): Uint64;
 
-    sig(value?: Signature): Signature;
+    sig(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -1800,12 +1801,12 @@ export namespace xdr {
       ledgerVersion: number;
       overlayVersion: number;
       overlayMinVersion: number;
-      networkId: Hash;
+      networkId: Buffer;
       versionStr: string | Buffer;
       listeningPort: number;
       peerId: NodeId;
       cert: AuthCert;
-      nonce: Uint256;
+      nonce: Buffer;
     });
 
     ledgerVersion(value?: number): number;
@@ -1814,7 +1815,7 @@ export namespace xdr {
 
     overlayMinVersion(value?: number): number;
 
-    networkId(value?: Hash): Hash;
+    networkId(value?: Buffer): Buffer;
 
     versionStr(value?: string | Buffer): string | Buffer;
 
@@ -1824,7 +1825,7 @@ export namespace xdr {
 
     cert(value?: AuthCert): AuthCert;
 
-    nonce(value?: Uint256): Uint256;
+    nonce(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -1896,11 +1897,11 @@ export namespace xdr {
   }
 
   class DontHave {
-    constructor(attributes: { type: MessageType; reqHash: Uint256 });
+    constructor(attributes: { type: MessageType; reqHash: Buffer });
 
     type(value?: MessageType): MessageType;
 
-    reqHash(value?: Uint256): Uint256;
+    reqHash(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -1960,11 +1961,11 @@ export namespace xdr {
 
   class SignedSurveyRequestMessage {
     constructor(attributes: {
-      requestSignature: Signature;
+      requestSignature: Buffer;
       request: SurveyRequestMessage;
     });
 
-    requestSignature(value?: Signature): Signature;
+    requestSignature(value?: Buffer): Buffer;
 
     request(value?: SurveyRequestMessage): SurveyRequestMessage;
 
@@ -1994,7 +1995,7 @@ export namespace xdr {
       surveyedPeerId: NodeId;
       ledgerNum: number;
       commandType: SurveyMessageCommandType;
-      encryptedBody: EncryptedBody;
+      encryptedBody: Buffer;
     });
 
     surveyorPeerId(value?: NodeId): NodeId;
@@ -2005,7 +2006,7 @@ export namespace xdr {
 
     commandType(value?: SurveyMessageCommandType): SurveyMessageCommandType;
 
-    encryptedBody(value?: EncryptedBody): EncryptedBody;
+    encryptedBody(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -2029,11 +2030,11 @@ export namespace xdr {
 
   class SignedSurveyResponseMessage {
     constructor(attributes: {
-      responseSignature: Signature;
+      responseSignature: Buffer;
       response: SurveyResponseMessage;
     });
 
-    responseSignature(value?: Signature): Signature;
+    responseSignature(value?: Buffer): Buffer;
 
     response(value?: SurveyResponseMessage): SurveyResponseMessage;
 
@@ -2281,11 +2282,11 @@ export namespace xdr {
   }
 
   class MuxedAccountMed25519 {
-    constructor(attributes: { id: Uint64; ed25519: Uint256 });
+    constructor(attributes: { id: Uint64; ed25519: Buffer });
 
     id(value?: Uint64): Uint64;
 
-    ed25519(value?: Uint256): Uint256;
+    ed25519(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -2308,11 +2309,11 @@ export namespace xdr {
   }
 
   class DecoratedSignature {
-    constructor(attributes: { hint: SignatureHint; signature: Signature });
+    constructor(attributes: { hint: Buffer; signature: Buffer });
 
-    hint(value?: SignatureHint): SignatureHint;
+    hint(value?: Buffer): Buffer;
 
-    signature(value?: Signature): Signature;
+    signature(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -2682,12 +2683,12 @@ export namespace xdr {
   class ManageDataOp {
     constructor(attributes: {
       dataName: string | Buffer;
-      dataValue: null | DataValue;
+      dataValue: null | Buffer;
     });
 
     dataName(value?: string | Buffer): string | Buffer;
 
-    dataValue(value?: null | DataValue): null | DataValue;
+    dataValue(value?: null | Buffer): null | Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -2754,7 +2755,7 @@ export namespace xdr {
 
   class TransactionV0 {
     constructor(attributes: {
-      sourceAccountEd25519: Uint256;
+      sourceAccountEd25519: Buffer;
       fee: number;
       seqNum: SequenceNumber;
       timeBounds: null | TimeBounds;
@@ -2763,7 +2764,7 @@ export namespace xdr {
       ext: TransactionV0Ext;
     });
 
-    sourceAccountEd25519(value?: Uint256): Uint256;
+    sourceAccountEd25519(value?: Buffer): Buffer;
 
     fee(value?: number): number;
 
@@ -2961,11 +2962,11 @@ export namespace xdr {
 
   class TransactionSignaturePayload {
     constructor(attributes: {
-      networkId: Hash;
+      networkId: Buffer;
       taggedTransaction: TransactionSignaturePayloadTaggedTransaction;
     });
 
-    networkId(value?: Hash): Hash;
+    networkId(value?: Buffer): Buffer;
 
     taggedTransaction(
       value?: TransactionSignaturePayloadTaggedTransaction
@@ -3221,11 +3222,11 @@ export namespace xdr {
 
   class InnerTransactionResultPair {
     constructor(attributes: {
-      transactionHash: Hash;
+      transactionHash: Buffer;
       result: InnerTransactionResult;
     });
 
-    transactionHash(value?: Hash): Hash;
+    transactionHash(value?: Buffer): Buffer;
 
     result(value?: InnerTransactionResult): InnerTransactionResult;
 
@@ -3280,11 +3281,11 @@ export namespace xdr {
   }
 
   class ScpBallot {
-    constructor(attributes: { counter: number; value: Value });
+    constructor(attributes: { counter: number; value: Buffer });
 
     counter(value?: number): number;
 
-    value(value?: Value): Value;
+    value(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3305,16 +3306,16 @@ export namespace xdr {
 
   class ScpNomination {
     constructor(attributes: {
-      quorumSetHash: Hash;
-      votes: Value[];
-      accepted: Value[];
+      quorumSetHash: Buffer;
+      votes: Buffer[];
+      accepted: Buffer[];
     });
 
-    quorumSetHash(value?: Hash): Hash;
+    quorumSetHash(value?: Buffer): Buffer;
 
-    votes(value?: Value[]): Value[];
+    votes(value?: Buffer[]): Buffer[];
 
-    accepted(value?: Value[]): Value[];
+    accepted(value?: Buffer[]): Buffer[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3335,7 +3336,7 @@ export namespace xdr {
 
   class ScpStatementPrepare {
     constructor(attributes: {
-      quorumSetHash: Hash;
+      quorumSetHash: Buffer;
       ballot: ScpBallot;
       prepared: null | ScpBallot;
       preparedPrime: null | ScpBallot;
@@ -3343,7 +3344,7 @@ export namespace xdr {
       nH: number;
     });
 
-    quorumSetHash(value?: Hash): Hash;
+    quorumSetHash(value?: Buffer): Buffer;
 
     ballot(value?: ScpBallot): ScpBallot;
 
@@ -3381,7 +3382,7 @@ export namespace xdr {
       nPrepared: number;
       nCommit: number;
       nH: number;
-      quorumSetHash: Hash;
+      quorumSetHash: Buffer;
     });
 
     ballot(value?: ScpBallot): ScpBallot;
@@ -3392,7 +3393,7 @@ export namespace xdr {
 
     nH(value?: number): number;
 
-    quorumSetHash(value?: Hash): Hash;
+    quorumSetHash(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3418,14 +3419,14 @@ export namespace xdr {
     constructor(attributes: {
       commit: ScpBallot;
       nH: number;
-      commitQuorumSetHash: Hash;
+      commitQuorumSetHash: Buffer;
     });
 
     commit(value?: ScpBallot): ScpBallot;
 
     nH(value?: number): number;
 
-    commitQuorumSetHash(value?: Hash): Hash;
+    commitQuorumSetHash(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3478,11 +3479,11 @@ export namespace xdr {
   }
 
   class ScpEnvelope {
-    constructor(attributes: { statement: ScpStatement; signature: Signature });
+    constructor(attributes: { statement: ScpStatement; signature: Buffer });
 
     statement(value?: ScpStatement): ScpStatement;
 
-    signature(value?: Signature): Signature;
+    signature(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3532,9 +3533,9 @@ export namespace xdr {
   }
 
   class AssetAlphaNum4 {
-    constructor(attributes: { assetCode: AssetCode4; issuer: AccountId });
+    constructor(attributes: { assetCode: Buffer; issuer: AccountId });
 
-    assetCode(value?: AssetCode4): AssetCode4;
+    assetCode(value?: Buffer): Buffer;
 
     issuer(value?: AccountId): AccountId;
 
@@ -3556,9 +3557,9 @@ export namespace xdr {
   }
 
   class AssetAlphaNum12 {
-    constructor(attributes: { assetCode: AssetCode12; issuer: AccountId });
+    constructor(attributes: { assetCode: Buffer; issuer: AccountId });
 
-    assetCode(value?: AssetCode12): AssetCode12;
+    assetCode(value?: Buffer): Buffer;
 
     issuer(value?: AccountId): AccountId;
 
@@ -3687,7 +3688,7 @@ export namespace xdr {
       inflationDest: null | AccountId;
       flags: number;
       homeDomain: string | Buffer;
-      thresholds: Thresholds;
+      thresholds: Buffer;
       signers: Signer[];
       ext: AccountEntryExt;
     });
@@ -3706,7 +3707,7 @@ export namespace xdr {
 
     homeDomain(value?: string | Buffer): string | Buffer;
 
-    thresholds(value?: Thresholds): Thresholds;
+    thresholds(value?: Buffer): Buffer;
 
     signers(value?: Signer[]): Signer[];
 
@@ -3844,7 +3845,7 @@ export namespace xdr {
     constructor(attributes: {
       accountId: AccountId;
       dataName: string | Buffer;
-      dataValue: DataValue;
+      dataValue: Buffer;
       ext: DataEntryExt;
     });
 
@@ -3852,7 +3853,7 @@ export namespace xdr {
 
     dataName(value?: string | Buffer): string | Buffer;
 
-    dataValue(value?: DataValue): DataValue;
+    dataValue(value?: Buffer): Buffer;
 
     ext(value?: DataEntryExt): DataEntryExt;
 
@@ -3904,11 +3905,11 @@ export namespace xdr {
   }
 
   class LedgerCloseValueSignature {
-    constructor(attributes: { nodeId: NodeId; signature: Signature });
+    constructor(attributes: { nodeId: NodeId; signature: Buffer });
 
     nodeId(value?: NodeId): NodeId;
 
-    signature(value?: Signature): Signature;
+    signature(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3932,17 +3933,17 @@ export namespace xdr {
 
   class StellarValue {
     constructor(attributes: {
-      txSetHash: Hash;
+      txSetHash: Buffer;
       closeTime: TimePoint;
-      upgrades: UpgradeType[];
+      upgrades: Buffer[];
       ext: StellarValueExt;
     });
 
-    txSetHash(value?: Hash): Hash;
+    txSetHash(value?: Buffer): Buffer;
 
     closeTime(value?: TimePoint): TimePoint;
 
-    upgrades(value?: UpgradeType[]): UpgradeType[];
+    upgrades(value?: Buffer[]): Buffer[];
 
     ext(value?: StellarValueExt): StellarValueExt;
 
@@ -3966,10 +3967,10 @@ export namespace xdr {
   class LedgerHeader {
     constructor(attributes: {
       ledgerVersion: number;
-      previousLedgerHash: Hash;
+      previousLedgerHash: Buffer;
       scpValue: StellarValue;
-      txSetResultHash: Hash;
-      bucketListHash: Hash;
+      txSetResultHash: Buffer;
+      bucketListHash: Buffer;
       ledgerSeq: number;
       totalCoins: Int64;
       feePool: Int64;
@@ -3978,19 +3979,19 @@ export namespace xdr {
       baseFee: number;
       baseReserve: number;
       maxTxSetSize: number;
-      skipList: Hash[];
+      skipList: Buffer[];
       ext: LedgerHeaderExt;
     });
 
     ledgerVersion(value?: number): number;
 
-    previousLedgerHash(value?: Hash): Hash;
+    previousLedgerHash(value?: Buffer): Buffer;
 
     scpValue(value?: StellarValue): StellarValue;
 
-    txSetResultHash(value?: Hash): Hash;
+    txSetResultHash(value?: Buffer): Buffer;
 
-    bucketListHash(value?: Hash): Hash;
+    bucketListHash(value?: Buffer): Buffer;
 
     ledgerSeq(value?: number): number;
 
@@ -4008,7 +4009,7 @@ export namespace xdr {
 
     maxTxSetSize(value?: number): number;
 
-    skipList(value?: Hash[]): Hash[];
+    skipList(value?: Buffer[]): Buffer[];
 
     ext(value?: LedgerHeaderExt): LedgerHeaderExt;
 
@@ -4152,11 +4153,11 @@ export namespace xdr {
 
   class TransactionSet {
     constructor(attributes: {
-      previousLedgerHash: Hash;
+      previousLedgerHash: Buffer;
       txes: TransactionEnvelope[];
     });
 
-    previousLedgerHash(value?: Hash): Hash;
+    previousLedgerHash(value?: Buffer): Buffer;
 
     txes(value?: TransactionEnvelope[]): TransactionEnvelope[];
 
@@ -4179,11 +4180,11 @@ export namespace xdr {
 
   class TransactionResultPair {
     constructor(attributes: {
-      transactionHash: Hash;
+      transactionHash: Buffer;
       result: TransactionResult;
     });
 
-    transactionHash(value?: Hash): Hash;
+    transactionHash(value?: Buffer): Buffer;
 
     result(value?: TransactionResult): TransactionResult;
 
@@ -4305,12 +4306,12 @@ export namespace xdr {
 
   class LedgerHeaderHistoryEntry {
     constructor(attributes: {
-      hash: Hash;
+      hash: Buffer;
       header: LedgerHeader;
       ext: LedgerHeaderHistoryEntryExt;
     });
 
-    hash(value?: Hash): Hash;
+    hash(value?: Buffer): Buffer;
 
     header(value?: LedgerHeader): LedgerHeader;
 
@@ -4631,7 +4632,7 @@ export namespace xdr {
 
     peers(value?: PeerAddress[]): PeerAddress[];
 
-    txSetHash(value?: Uint256): Uint256;
+    txSetHash(value?: Buffer): Buffer;
 
     txSet(value?: TransactionSet): TransactionSet;
 
@@ -4645,7 +4646,7 @@ export namespace xdr {
       value?: SignedSurveyResponseMessage
     ): SignedSurveyResponseMessage;
 
-    qSetHash(value?: Uint256): Uint256;
+    qSetHash(value?: Buffer): Buffer;
 
     qSet(value?: ScpQuorumSet): ScpQuorumSet;
 
@@ -4659,12 +4660,12 @@ export namespace xdr {
       | Auth
       | DontHave
       | PeerAddress[]
-      | Uint256
+      | Buffer
       | TransactionSet
       | TransactionEnvelope
       | SignedSurveyRequestMessage
       | SignedSurveyResponseMessage
-      | Uint256
+      | Buffer
       | ScpQuorumSet
       | ScpEnvelope
       | number;
@@ -4679,7 +4680,7 @@ export namespace xdr {
 
     static peer(value: PeerAddress[]): StellarMessage;
 
-    static getTxSet(value: Uint256): StellarMessage;
+    static getTxSet(value: Buffer): StellarMessage;
 
     static txSet(value: TransactionSet): StellarMessage;
 
@@ -4689,7 +4690,7 @@ export namespace xdr {
 
     static surveyResponse(value: SignedSurveyResponseMessage): StellarMessage;
 
-    static getScpQuorumset(value: Uint256): StellarMessage;
+    static getScpQuorumset(value: Buffer): StellarMessage;
 
     static scpQuorumset(value: ScpQuorumSet): StellarMessage;
 
@@ -4746,11 +4747,11 @@ export namespace xdr {
   class PublicKey {
     switch(): PublicKeyType;
 
-    ed25519(value?: Uint256): Uint256;
+    ed25519(value?: Buffer): Buffer;
 
-    value(): Uint256;
+    value(): Buffer;
 
-    static publicKeyTypeEd25519(value: Uint256): PublicKey;
+    static publicKeyTypeEd25519(value: Buffer): PublicKey;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4772,19 +4773,19 @@ export namespace xdr {
   class SignerKey {
     switch(): SignerKeyType;
 
-    ed25519(value?: Uint256): Uint256;
+    ed25519(value?: Buffer): Buffer;
 
-    preAuthTx(value?: Uint256): Uint256;
+    preAuthTx(value?: Buffer): Buffer;
 
-    hashX(value?: Uint256): Uint256;
+    hashX(value?: Buffer): Buffer;
 
-    value(): Uint256 | Uint256 | Uint256;
+    value(): Buffer | Buffer | Buffer;
 
-    static signerKeyTypeEd25519(value: Uint256): SignerKey;
+    static signerKeyTypeEd25519(value: Buffer): SignerKey;
 
-    static signerKeyTypePreAuthTx(value: Uint256): SignerKey;
+    static signerKeyTypePreAuthTx(value: Buffer): SignerKey;
 
-    static signerKeyTypeHashX(value: Uint256): SignerKey;
+    static signerKeyTypeHashX(value: Buffer): SignerKey;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4806,13 +4807,13 @@ export namespace xdr {
   class MuxedAccount {
     switch(): CryptoKeyType;
 
-    ed25519(value?: Uint256): Uint256;
+    ed25519(value?: Buffer): Buffer;
 
     med25519(value?: MuxedAccountMed25519): MuxedAccountMed25519;
 
-    value(): Uint256 | MuxedAccountMed25519;
+    value(): Buffer | MuxedAccountMed25519;
 
-    static keyTypeEd25519(value: Uint256): MuxedAccount;
+    static keyTypeEd25519(value: Buffer): MuxedAccount;
 
     static keyTypeMuxedEd25519(value: MuxedAccountMed25519): MuxedAccount;
 
@@ -4836,15 +4837,15 @@ export namespace xdr {
   class AllowTrustOpAsset {
     switch(): AssetType;
 
-    assetCode4(value?: AssetCode4): AssetCode4;
+    assetCode4(value?: Buffer): Buffer;
 
-    assetCode12(value?: AssetCode12): AssetCode12;
+    assetCode12(value?: Buffer): Buffer;
 
-    value(): AssetCode4 | AssetCode12;
+    value(): Buffer | Buffer;
 
-    static assetTypeCreditAlphanum4(value: AssetCode4): AllowTrustOpAsset;
+    static assetTypeCreditAlphanum4(value: Buffer): AllowTrustOpAsset;
 
-    static assetTypeCreditAlphanum12(value: AssetCode12): AllowTrustOpAsset;
+    static assetTypeCreditAlphanum12(value: Buffer): AllowTrustOpAsset;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4967,19 +4968,19 @@ export namespace xdr {
 
     id(value?: Uint64): Uint64;
 
-    hash(value?: Hash): Hash;
+    hash(value?: Buffer): Buffer;
 
-    retHash(value?: Hash): Hash;
+    retHash(value?: Buffer): Buffer;
 
-    value(): string | Buffer | Uint64 | Hash | Hash;
+    value(): string | Buffer | Uint64 | Buffer | Buffer;
 
     static memoText(value: string | Buffer): Memo;
 
     static memoId(value: Uint64): Memo;
 
-    static memoHash(value: Hash): Memo;
+    static memoHash(value: Buffer): Memo;
 
-    static memoReturn(value: Hash): Memo;
+    static memoReturn(value: Buffer): Memo;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6455,9 +6456,9 @@ export namespace xdr {
 }
 
 export function hash(data: Buffer): Buffer;
-export function sign(data: Buffer, rawSecret: Buffer): xdr.Signature;
+export function sign(data: Buffer, rawSecret: Buffer): Buffer;
 export function verify(
   data: Buffer,
-  signature: xdr.Signature,
+  signature: Buffer,
   rawPublicKey: Buffer
 ): boolean;
