@@ -39,10 +39,6 @@ export default function transformer(file, api) {
   const array = xdrArray(ns);
   ns.members.push(array);
 
-  const varArray = dom.create.class('VarArray');
-  varArray.baseType = array;
-  ns.members.push(varArray);
-
   const opaque = xdrOpaque(ns);
   ns.members.push(opaque);
 
@@ -62,7 +58,6 @@ export default function transformer(file, api) {
     OPAQUE: opaque,
     VAROPAQUE: varOpaque,
     ARRAY: array,
-    VARARRAY: varArray,
     OPTION: option,
     ns: ns
   };

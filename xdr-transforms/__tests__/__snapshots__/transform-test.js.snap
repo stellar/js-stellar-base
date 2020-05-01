@@ -113,28 +113,19 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
-    class XDRArray {
-        constructor(childType: {
-            read(io: any): any;
-            write(value: any, io: Buffer): void;
-            isValid(value: any): boolean;
-        }, length: number);
-
+    class XDRArray<T> {
         read(io: Buffer): Buffer;
 
-        write(value: any[], io: Buffer): void;
+        write(value: T[], io: Buffer): void;
 
-        isValid(value: any[]): boolean;
+        isValid(value: T[]): boolean;
 
-        toXDR(value: any[]): Buffer;
+        toXDR(value: T[]): Buffer;
 
-        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): T[];
 
-        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): T[];
 
-    }
-
-    class VarArray extends XDRArray {
     }
 
     class Opaque {
@@ -198,7 +189,7 @@ exports[`.transform(type definitions) 1`] = `
 
     const Value: VarOpaque;
 
-    const LedgerEntryChanges: VarArray;
+    const LedgerEntryChanges: XDRArray<LedgerEntryChange>;
 
     type SequenceNumber = Int64;
 
@@ -324,28 +315,19 @@ exports[`.transform(xdr enum) 1`] = `
 
     }
 
-    class XDRArray {
-        constructor(childType: {
-            read(io: any): any;
-            write(value: any, io: Buffer): void;
-            isValid(value: any): boolean;
-        }, length: number);
-
+    class XDRArray<T> {
         read(io: Buffer): Buffer;
 
-        write(value: any[], io: Buffer): void;
+        write(value: T[], io: Buffer): void;
 
-        isValid(value: any[]): boolean;
+        isValid(value: T[]): boolean;
 
-        toXDR(value: any[]): Buffer;
+        toXDR(value: T[]): Buffer;
 
-        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): T[];
 
-        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): T[];
 
-    }
-
-    class VarArray extends XDRArray {
     }
 
     class Opaque {
@@ -516,28 +498,19 @@ exports[`.transform(xdr structs) 1`] = `
 
     }
 
-    class XDRArray {
-        constructor(childType: {
-            read(io: any): any;
-            write(value: any, io: Buffer): void;
-            isValid(value: any): boolean;
-        }, length: number);
-
+    class XDRArray<T> {
         read(io: Buffer): Buffer;
 
-        write(value: any[], io: Buffer): void;
+        write(value: T[], io: Buffer): void;
 
-        isValid(value: any[]): boolean;
+        isValid(value: T[]): boolean;
 
-        toXDR(value: any[]): Buffer;
+        toXDR(value: T[]): Buffer;
 
-        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): T[];
 
-        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): T[];
 
-    }
-
-    class VarArray extends XDRArray {
     }
 
     class Opaque {
@@ -606,9 +579,9 @@ exports[`.transform(xdr structs) 1`] = `
 
     const Uint32: UnsignedInt;
 
-    const LedgerEntryChanges: VarArray;
+    const LedgerEntryChanges: XDRArray<LedgerEntryChange>;
 
-    const Participants: XDRArray;
+    const Participants: XDRArray<Buffer>;
 
     class Error {
         constructor(attributes: {
@@ -833,28 +806,19 @@ exports[`.transform(xdr unions) 1`] = `
 
     }
 
-    class XDRArray {
-        constructor(childType: {
-            read(io: any): any;
-            write(value: any, io: Buffer): void;
-            isValid(value: any): boolean;
-        }, length: number);
-
+    class XDRArray<T> {
         read(io: Buffer): Buffer;
 
-        write(value: any[], io: Buffer): void;
+        write(value: T[], io: Buffer): void;
 
-        isValid(value: any[]): boolean;
+        isValid(value: T[]): boolean;
 
-        toXDR(value: any[]): Buffer;
+        toXDR(value: T[]): Buffer;
 
-        fromXDR(input: Buffer, format?: \\"raw\\"): Buffer;
+        fromXDR(input: Buffer, format?: \\"raw\\"): T[];
 
-        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Buffer;
+        fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): T[];
 
-    }
-
-    class VarArray extends XDRArray {
     }
 
     class Opaque {

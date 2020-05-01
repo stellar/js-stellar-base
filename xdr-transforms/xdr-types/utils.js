@@ -42,7 +42,6 @@ function resolve(api, value, definitions) {
         return buffer;
         break;
       case 'XDRArray':
-      case 'VarArray':
         return dom.create.array(member._childType);
         break;
     }

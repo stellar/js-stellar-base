@@ -61,24 +61,19 @@ export default function typeDef(api, node, definitions) {
         );
         break;
       case 'array':
+      case 'varArray':
+        const childType = resolveType(api, exp.arguments[0], definitions);
+        const array = dom.create.namedTypeReference('XDRArray');
+        array.typeArguments.push(childType);
+
         const xdrArray = dom.create.const(
           name,
-          definitions.ARRAY,
+          array,
           dom.DeclarationFlags.ReadOnly
         );
-        // this is hack to resolve the final value when using this type as an argument
-        xdrArray._childType = resolveType(api, exp.arguments[0], definitions);
+
+        xdrArray._childType = childType;
         ns.members.push(xdrArray);
-        break;
-      case 'varArray':
-        const varArray = dom.create.const(
-          name,
-          definitions.VARARRAY,
-          dom.DeclarationFlags.ReadOnly
-        );
-        // this is hack to resolve the final value when using this type as an argument
-        varArray._childType = resolveType(api, exp.arguments[0], definitions);
-        ns.members.push(varArray);
         break;
       case 'lookup':
         if (exp.arguments[0].type !== 'Literal') {
