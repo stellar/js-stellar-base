@@ -66,9 +66,7 @@ export function resolveType(api, node, xdrTypes) {
             'Invalid argument pass to lookup, expected a Literal'
           );
         }
-        return dom.create.typeof(
-          dom.create.namedTypeReference(node.arguments[0].value)
-        );
+        return dom.create.namedTypeReference(node.arguments[0].value);
         break;
       case 'option':
         return xdrTypes.OPTION;

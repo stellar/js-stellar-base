@@ -200,11 +200,11 @@ exports[`.transform(type definitions) 1`] = `
 
     const LedgerEntryChanges: VarArray;
 
-    const SequenceNumber: typeof Int64;
+    const SequenceNumber: Int64;
 
-    const NodeId: typeof PublicKey;
+    const NodeId: PublicKey;
 
-    const AccountId: typeof PublicKey;
+    const AccountId: PublicKey;
 
     const ClearFlags: Option;
 
@@ -604,8 +604,8 @@ exports[`.transform(xdr structs) 1`] = `
 
     class Error {
         constructor(attributes: {
-            code: typeof ErrorCode;
-            msg: typeof ErrorMsg;
+            code: ErrorCode;
+            msg: ErrorMsg;
             extra: string | Buffer;
             int32: SignedInt;
             uint32: UnsignedInt;
@@ -619,9 +619,9 @@ exports[`.transform(xdr structs) 1`] = `
             ClearFlags: Option;
         });
 
-        code(value?: typeof ErrorCode): typeof ErrorCode;
+        code(value?: ErrorCode): ErrorCode;
 
-        msg(value?: typeof ErrorMsg): typeof ErrorMsg;
+        msg(value?: ErrorMsg): ErrorMsg;
 
         extra(value?: string | Buffer): string | Buffer;
 
@@ -863,11 +863,11 @@ exports[`.transform(xdr unions) 1`] = `
 
     class Error {
         constructor(attributes: {
-            code: typeof ErrorCode;
+            code: ErrorCode;
             msg: string | Buffer;
         });
 
-        code(value?: typeof ErrorCode): typeof ErrorCode;
+        code(value?: ErrorCode): ErrorCode;
 
         msg(value?: string | Buffer): string | Buffer;
 
@@ -890,13 +890,13 @@ exports[`.transform(xdr unions) 1`] = `
     }
 
     class StellarMessage {
-        switch(): typeof MessageType;
+        switch(): MessageType;
 
-        error(value?: typeof Error): typeof Error;
+        error(value?: Error): Error;
 
-        value(): typeof Error;
+        value(): Error;
 
-        static errorMsg(value: typeof Error): StellarMessage;
+        static errorMsg(value: Error): StellarMessage;
 
         toXDR(format?: \\"raw\\"): Buffer;
 
@@ -917,7 +917,7 @@ exports[`.transform(xdr unions) 1`] = `
     }
 
     class PaymentResult {
-        switch(): typeof PaymentResultCode;
+        switch(): PaymentResultCode;
 
         toXDR(format?: \\"raw\\"): Buffer;
 
