@@ -192,11 +192,11 @@ exports[`.transform(type definitions) 1`] = `
 
     const String64: XDRString;
 
-    const Hash: Opaque;
+    type Hash = Buffer;
 
-    const EncryptedBody: VarOpaque;
+    type EncryptedBody = Buffer;
 
-    const Value: VarOpaque;
+    type Value = Buffer;
 
     const LedgerEntryChanges: VarArray;
 

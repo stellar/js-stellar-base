@@ -4,6 +4,7 @@ import { isXDRMemberCall, isNativeXDRType } from './utils';
 export default function typeDef(api, node, ns, xdrTypes) {
   const [literal, exp] = node.arguments;
   const name = literal.value;
+  const buffer = dom.create.interface('Buffer');
 
   if (exp.type === 'CallExpression') {
     switch (exp.callee.property.name) {
@@ -33,18 +34,10 @@ export default function typeDef(api, node, ns, xdrTypes) {
         );
         break;
       case 'opaque':
-        ns.members.push(
-          dom.create.const(name, xdrTypes.OPAQUE, dom.DeclarationFlags.ReadOnly)
-        );
+        ns.members.push(dom.create.alias(name, buffer));
         break;
       case 'varOpaque':
-        ns.members.push(
-          dom.create.const(
-            name,
-            xdrTypes.VAROPAQUE,
-            dom.DeclarationFlags.ReadOnly
-          )
-        );
+        ns.members.push(dom.create.alias(name, buffer));
         break;
       case 'array':
         ns.members.push(
