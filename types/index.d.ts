@@ -572,15 +572,15 @@ declare namespace xdrHidden {
 
     static read(io: Buffer): Operation;
 
-    static write(value: Operation, io: Buffer): void;
+    static write(value: Operation2, io: Buffer): void;
 
-    static isValid(value: Operation): boolean;
+    static isValid(value: Operation2): boolean;
 
-    static toXDR(value: Operation): Buffer;
+    static toXDR(value: Operation2): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): Operation;
+    static fromXDR(input: Buffer, format?: 'raw'): Operation2;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): Operation;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Operation2;
   }
 }
 
