@@ -178,7 +178,7 @@ exports[`.transform(type definitions) 1`] = `
 
     }
 
-    type Uint32 = number;
+    const Uint32: UnsignedInt;
 
     const Int32: SignedInt;
 
@@ -208,7 +208,7 @@ exports[`.transform(type definitions) 1`] = `
 
     type AccountId = PublicKey;
 
-    type ClearFlags = undefined | Uint32;
+    type ClearFlags = undefined | number;
 
 }"
 `;
@@ -583,7 +583,7 @@ exports[`.transform(xdr structs) 1`] = `
 
     }
 
-    type Uint32 = number;
+    const Uint32: UnsignedInt;
 
     type UUint32 = Int32;
 
@@ -624,7 +624,7 @@ exports[`.transform(xdr structs) 1`] = `
             value: Buffer;
             ledgerEntryChanges: LedgerEntryChange[];
             accountEntries: LedgerEntryChange[];
-            ClearFlags: null | Uint32;
+            ClearFlags: null | number;
         });
 
         code(value?: ErrorCode): ErrorCode;
@@ -655,7 +655,7 @@ exports[`.transform(xdr structs) 1`] = `
 
         accountEntries(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
-        ClearFlags(value?: null | Uint32): null | Uint32;
+        ClearFlags(value?: null | number): null | number;
 
         toXDR(format?: \\"raw\\"): Buffer;
 

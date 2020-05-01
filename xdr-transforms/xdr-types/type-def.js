@@ -15,7 +15,13 @@ export default function typeDef(api, node, definitions) {
         );
         break;
       case 'uint':
-        ns.members.push(dom.create.alias(name, dom.type.number));
+        ns.members.push(
+          dom.create.const(
+            name,
+            definitions.UINT,
+            dom.DeclarationFlags.ReadOnly
+          )
+        );
         break;
       case 'hyper':
         const hyper = dom.create.class(name);
