@@ -198,7 +198,7 @@ exports[`.transform(type definitions) 1`] = `
 
     const Value: VarOpaque;
 
-    type LedgerEntryChanges = LedgerEntryChange[];
+    const LedgerEntryChanges: VarArray;
 
     type SequenceNumber = Int64;
 
@@ -606,6 +606,10 @@ exports[`.transform(xdr structs) 1`] = `
 
     const Uint32: UnsignedInt;
 
+    const LedgerEntryChanges: VarArray;
+
+    const Participants: XDRArray;
+
     class Error {
         constructor(attributes: {
             code: ErrorCode;
@@ -624,6 +628,8 @@ exports[`.transform(xdr structs) 1`] = `
             ledgerEntryChanges: LedgerEntryChange[];
             accountEntries: LedgerEntryChange[];
             ClearFlags: null | number;
+            changes: LedgerEntryChange[];
+            participants: (Buffer)[];
         });
 
         code(value?: ErrorCode): ErrorCode;
@@ -658,6 +664,10 @@ exports[`.transform(xdr structs) 1`] = `
 
         ClearFlags(value?: null | number): null | number;
 
+        changes(value?: LedgerEntryChange[]): LedgerEntryChange[];
+
+        participants(value?: (Buffer)[]): (Buffer)[];
+
         toXDR(format?: \\"raw\\"): Buffer;
 
         toXDR(format: \\"hex\\" | \\"base64\\"): string;
@@ -673,6 +683,37 @@ exports[`.transform(xdr structs) 1`] = `
         static fromXDR(input: Buffer, format?: \\"raw\\"): Error;
 
         static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): Error;
+
+    }
+
+    class LedgerEntryChange {
+        switch(): ErrorCode;
+
+        created(value?: string | Buffer): string | Buffer;
+
+        updated(value?: number): number;
+
+        value(): string | Buffer | number;
+
+        static ledgerEntryCreated(value: string | Buffer): LedgerEntryChange;
+
+        static ledgerEntryUpdated(value: number): LedgerEntryChange;
+
+        toXDR(format?: \\"raw\\"): Buffer;
+
+        toXDR(format: \\"hex\\" | \\"base64\\"): string;
+
+        static read(io: Buffer): LedgerEntryChange;
+
+        static write(value: LedgerEntryChange, io: Buffer): void;
+
+        static isValid(value: LedgerEntryChange): boolean;
+
+        static toXDR(value: LedgerEntryChange): Buffer;
+
+        static fromXDR(input: Buffer, format?: \\"raw\\"): LedgerEntryChange;
+
+        static fromXDR(input: string, format: \\"hex\\" | \\"base64\\"): LedgerEntryChange;
 
     }
 

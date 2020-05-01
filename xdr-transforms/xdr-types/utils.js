@@ -23,7 +23,7 @@ export function isNativeXDRType(node) {
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
 }
 
-function resolve(value, definitions) {
+function resolve(api, value, definitions) {
   const ns = definitions.ns;
   const member = ns.members.find((m) => m.name === value);
   const buffer = dom.create.interface('Buffer');
@@ -40,6 +40,10 @@ function resolve(value, definitions) {
       case 'Opaque':
       case 'VarOpaque':
         return buffer;
+        break;
+      case 'XDRArray':
+      case 'VarArray':
+        return dom.create.array(member._childType);
         break;
     }
   }
@@ -75,16 +79,10 @@ export function resolveType(api, node, definitions) {
         return dom.create.union([dom.type.string, buffer]);
         break;
       case 'opaque':
-        return buffer;
-        break;
       case 'varOpaque':
         return buffer;
         break;
       case 'array':
-        return dom.create.array(
-          resolveType(api, node.arguments[0], definitions)
-        );
-        break;
       case 'varArray':
         return dom.create.array(
           resolveType(api, node.arguments[0], definitions)
@@ -96,7 +94,7 @@ export function resolveType(api, node, definitions) {
             'Invalid argument pass to lookup, expected a Literal'
           );
         }
-        return resolve(node.arguments[0].value, definitions);
+        return resolve(api, node.arguments[0].value, definitions);
         break;
       case 'option':
         return dom.create.union([
