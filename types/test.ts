@@ -74,29 +74,44 @@ StellarSdk.Operation.fromXDRObject(newSignerXDR3).signer; // $ExpectType PreAuth
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
 
-const buffer = Buffer.alloc(4);
-StellarSdk.xdr.Uint32.write(4, buffer); //  $ExpectType void
-StellarSdk.xdr.Uint32.fromXDR(buffer); //  $ExpectType number
-StellarSdk.xdr.Uint32.fromXDR(buffer.toString('base64'), 'base64'); //  $ExpectType number
-StellarSdk.xdr.Uint32.read(buffer); //  $ExpectType number
-StellarSdk.xdr.Uint32.toXDR(4); //  $ExpectType Buffer
-StellarSdk.xdr.Uint32.isValid(4); //  $ExpectType number
-
 StellarSdk.xdr.Uint64.fromString("1234").high; //  $ExpectType number
 StellarSdk.xdr.Int64.fromString("1234").high; //  $ExpectType number
-
-StellarSdk.xdr.String32.toXDR("hola"); // $ExpectType Buffer
-StellarSdk.xdr.String64.toXDR("hola"); // $ExpectType Buffer
-
-StellarSdk.xdr.Hash.isValid(Buffer.alloc(32)); // $ExpectType boolean
-StellarSdk.xdr.Hash.isValid(Buffer.alloc(32)); // $ExpectType boolean
-
-StellarSdk.xdr.Int64.fromXDR(Buffer.alloc(8)); // $ExpectType Hyper
-StellarSdk.xdr.SequenceNumber.fromXDR(Buffer.alloc(8)); // $ExpectType Hyper
-StellarSdk.xdr.Int64.MIN_VALUE; // $ExpectType Hyper
-StellarSdk.xdr.SequenceNumber.MIN_VALUE; // $ExpectType Hyper
 
 const envelope = feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
 envelope.v0(); // $ExpectType TransactionV0Envelope
 envelope.v1(); // $ExpectType TransactionV1Envelope
 envelope.feeBump(); // $ExpectType FeeBumpTransactionEnvelope
+
+const meta = StellarSdk.xdr.TransactionMeta.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAQAAAAIAAAADAcEsRAAAAAAAAAAArZu2SrdQ9krkyj7RBqTx1txDNZBfcS+wGjuEUizV9hkAAAAAAKXgdAGig34AADuDAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAcEsRAAAAAAAAAAArZu2SrdQ9krkyj7RBqTx1txDNZBfcS+wGjuEUizV9hkAAAAAAKXgdAGig34AADuEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA==',
+  'base64'
+);
+meta; // $ExpectType TransactionMeta
+meta.v1().txChanges(); // $ExpectType LedgerEntryChange[]
+const op = StellarSdk.xdr.AllowTrustOp.fromXDR(
+  'AAAAAMNQvnFVCnBnEVzd8ZaKUvsI/mECPGV8cnBszuftCmWYAAAAAUNPUAAAAAAC',
+  'base64'
+);
+op; // $ExpectType AllowTrustOp
+op.authorize(); // $ExpectType number
+op.trustor().ed25519(); // $ExpectType Buffer
+const e = StellarSdk.xdr.LedgerEntry.fromXDR(
+  "AAAAAAAAAAC2LgFRDBZ3J52nLm30kq2iMgrO7dYzYAN3hvjtf1IHWg==",
+  'base64'
+);
+e; // $ExpectType LedgerEntry
+const a = StellarSdk.xdr.AccountEntry.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAALYuAVEMFncnnacubfSSraIyCs7t1jNgA3eG+O1/UgdaAAAAAAAAA+gAAAAAGc1zDAAAAAIAAAABAAAAAEB9GCtIe8SCLk7LV3MzmlKN3U4M2JdktE7ofCKtTNaaAAAABAAAAAtzdGVsbGFyLm9yZwABAQEBAAAAAQAAAACEKm+WHjUQThNzoKx6WbU8no3NxzUrGtoSLmtxaBAM2AAAAAEAAAABAAAAAAAAAAoAAAAAAAAAFAAAAAA=',
+  'base64'
+);
+a; // $ExpectType AccountEntry
+a.homeDomain(); // $ExpectType string | Buffer
+const t = StellarSdk.xdr.TransactionV0.fromXDR(
+    // tslint:disable:max-line-length
+    '1bzMAeuKubyXUug/Xnyj1KYkv+cSUtCSvAczI2b459kAAABkAS/5cwAAABMAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAsBL/lzAAAAFAAAAAA=',
+    'base64'
+);
+t; // $ExpectType TransactionV0
+t.timeBounds(); // $ExpectType TimeBounds | null
