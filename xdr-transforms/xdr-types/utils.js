@@ -26,13 +26,16 @@ export function isNativeXDRType(node) {
 function resolve(value, definitions) {
   const ns = definitions.ns;
   const member = ns.members.find((m) => m.name === value);
+  const buffer = dom.create.interface('Buffer');
 
   if (member && member.type) {
-    const type = member.type;
-    switch (type.name) {
+    switch (member.type.name) {
       case 'SignedInt':
       case 'UnsignedInt':
         return dom.type.number;
+        break;
+      case 'XDRString':
+        return dom.create.union([dom.type.string, buffer]);
         break;
     }
   }

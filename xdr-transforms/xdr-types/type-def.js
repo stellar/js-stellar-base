@@ -35,7 +35,11 @@ export default function typeDef(api, node, definitions) {
         break;
       case 'string':
         ns.members.push(
-          dom.create.alias(name, dom.create.union([dom.type.string, buffer]))
+          dom.create.const(
+            name,
+            definitions.STRING,
+            dom.DeclarationFlags.ReadOnly
+          )
         );
         break;
       case 'opaque':

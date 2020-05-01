@@ -9,7 +9,6 @@ var types = XDR.config((xdr) => {
     errAuth: 3,
     errLoad: 4
   });
-  xdr.typedef('ErrorMsg', xdr.string(100));
   xdr.struct('Error', [
     ['code', xdr.lookup('ErrorCode')],
     ['msg', xdr.lookup('ErrorMsg')],
@@ -30,6 +29,7 @@ var types = XDR.config((xdr) => {
     ['accountEntries', xdr.array(xdr.lookup('LedgerEntryChange'), 4)],
     ['ClearFlags', xdr.option(xdr.lookup('Uint32'))]
   ]);
+  xdr.typedef('ErrorMsg', xdr.string(100));
   xdr.typedef('Uint32', xdr.uint());
 });
 
