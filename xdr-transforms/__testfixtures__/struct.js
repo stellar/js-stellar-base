@@ -2,6 +2,8 @@ import * as XDR from 'js-xdr';
 
 var types = XDR.config((xdr) => {
   xdr.typedef('Uint32', xdr.uint());
+  xdr.typedef('UUint32', xdr.lookup('Int32'));
+  xdr.typedef('Int32', xdr.int());
   xdr.enum('ErrorCode', {
     errMisc: 0,
     errDatum: 1,
@@ -14,6 +16,7 @@ var types = XDR.config((xdr) => {
     ['code', xdr.lookup('ErrorCode')],
     ['msg', xdr.lookup('ErrorMsg')],
     ['extra', xdr.string(100)],
+    ['age', xdr.lookup('Int32')],
     ['int32', xdr.int()],
     ['uint32', xdr.uint()],
     ['int64', xdr.uhyper()],

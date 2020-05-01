@@ -53,7 +53,7 @@ export default function transformer(file, api) {
   const option = xdrOption(ns);
   ns.members.push(option);
 
-  const xdrTypes = {
+  const definitions = {
     INT: signedInt,
     UINT: unsignedInt,
     HYPER: hyper,
@@ -63,7 +63,8 @@ export default function transformer(file, api) {
     VAROPAQUE: varOpaque,
     ARRAY: array,
     VARARRAY: varArray,
-    OPTION: option
+    OPTION: option,
+    ns: ns
   };
 
   xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
@@ -77,13 +78,13 @@ export default function transformer(file, api) {
         case 'enum':
           enumToTS(api, node.arguments, ns, types);
         case 'typedef':
-          typeDef(api, node, ns);
+          typeDef(api, node, definitions);
           break;
         case 'struct':
-          structDef(api, node, ns);
+          structDef(api, node, definitions);
           break;
         case 'union':
-          unionDef(api, node, ns);
+          unionDef(api, node, definitions);
           break;
         default:
           break;

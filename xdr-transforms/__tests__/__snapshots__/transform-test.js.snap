@@ -180,7 +180,7 @@ exports[`.transform(type definitions) 1`] = `
 
     type Uint32 = number;
 
-    type Int32 = number;
+    const Int32: SignedInt;
 
     class Uint64 extends UnsignedHyper {
     }
@@ -585,6 +585,10 @@ exports[`.transform(xdr structs) 1`] = `
 
     type Uint32 = number;
 
+    type UUint32 = Int32;
+
+    const Int32: SignedInt;
+
     class ErrorCode {
         readonly name: \\"errMisc\\" | \\"errDatum\\" | \\"errConf\\" | \\"errAuth\\" | \\"errLoad\\";
 
@@ -609,6 +613,7 @@ exports[`.transform(xdr structs) 1`] = `
             code: ErrorCode;
             msg: ErrorMsg;
             extra: string | Buffer;
+            age: number;
             int32: number;
             uint32: number;
             int64: UnsignedHyper;
@@ -627,6 +632,8 @@ exports[`.transform(xdr structs) 1`] = `
         msg(value?: ErrorMsg): ErrorMsg;
 
         extra(value?: string | Buffer): string | Buffer;
+
+        age(value?: number): number;
 
         int32(value?: number): number;
 

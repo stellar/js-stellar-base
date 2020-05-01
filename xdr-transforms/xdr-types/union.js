@@ -1,7 +1,8 @@
 import { resolveType } from './utils';
 import * as dom from 'dts-dom';
 
-export default function union(api, node, ns) {
+export default function union(api, node, typeDefs) {
+  const ns = typeDefs.ns;
   const [literal, objExp] = node.arguments;
   const name = literal.value;
   const union = dom.create.class(name);
@@ -15,12 +16,12 @@ export default function union(api, node, ns) {
     let types = [];
     switch (property.key.name) {
       case 'switchOn':
-        xdrType = resolveType(api, property.value);
+        xdrType = resolveType(api, property.value, typeDefs);
         union.members.push(dom.create.method('switch', [], xdrType));
         break;
       case 'arms':
         property.value.properties.forEach((p) => {
-          xdrType = resolveType(api, p.value);
+          xdrType = resolveType(api, p.value, typeDefs);
           types.push(xdrType);
           union.members.push(
             dom.create.method(

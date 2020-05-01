@@ -1,7 +1,8 @@
 import * as dom from 'dts-dom';
 import { isXDRMemberCall, isNativeXDRType, resolveType } from './utils';
 
-export default function typeDef(api, node, ns) {
+export default function typeDef(api, node, definitions) {
+  const ns = definitions.ns;
   const [literal, exp] = node.arguments;
   const name = literal.value;
   const buffer = dom.create.interface('Buffer');
@@ -9,7 +10,9 @@ export default function typeDef(api, node, ns) {
   if (exp.type === 'CallExpression') {
     switch (exp.callee.property.name) {
       case 'int':
-        ns.members.push(dom.create.alias(name, dom.type.number));
+        ns.members.push(
+          dom.create.const(name, definitions.INT, dom.DeclarationFlags.ReadOnly)
+        );
         break;
       case 'uint':
         ns.members.push(dom.create.alias(name, dom.type.number));
@@ -39,7 +42,7 @@ export default function typeDef(api, node, ns) {
         ns.members.push(
           dom.create.alias(
             name,
-            dom.create.array(resolveType(api, exp.arguments[0]))
+            dom.create.array(resolveType(api, exp.arguments[0], definitions))
           )
         );
         break;
@@ -47,7 +50,7 @@ export default function typeDef(api, node, ns) {
         ns.members.push(
           dom.create.alias(
             name,
-            dom.create.array(resolveType(api, exp.arguments[0]))
+            dom.create.array(resolveType(api, exp.arguments[0], definitions))
           )
         );
         break;
@@ -70,7 +73,7 @@ export default function typeDef(api, node, ns) {
             name,
             dom.create.union([
               dom.type.undefined,
-              resolveType(api, exp.arguments[0])
+              resolveType(api, exp.arguments[0], definitions)
             ])
           )
         );

@@ -23,7 +23,26 @@ export function isNativeXDRType(node) {
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
 }
 
-export function resolveType(api, node) {
+function resolve(value, definitions) {
+  const ns = definitions.ns;
+  const member = ns.members.find((m) => m.name === value);
+
+  if (member && member.type) {
+    const type = member.type;
+    switch (type.name) {
+      case 'SignedInt':
+      case 'UnsignedInt':
+        return dom.type.number;
+        break;
+    }
+  }
+
+  return dom.create.namedTypeReference(value);
+}
+
+export function resolveType(api, node, definitions) {
+  const ns = definitions.ns;
+
   if (node.type !== 'CallExpression') {
     throw New(
       `Invalid type, expected a CallExpression but received a ${node.type}`
@@ -55,10 +74,14 @@ export function resolveType(api, node) {
         return buffer;
         break;
       case 'array':
-        return dom.create.array(resolveType(api, node.arguments[0]));
+        return dom.create.array(
+          resolveType(api, node.arguments[0], definitions)
+        );
         break;
       case 'varArray':
-        return dom.create.array(resolveType(api, node.arguments[0]));
+        return dom.create.array(
+          resolveType(api, node.arguments[0], definitions)
+        );
         break;
       case 'lookup':
         if (node.arguments[0].type !== 'Literal') {
@@ -66,12 +89,12 @@ export function resolveType(api, node) {
             'Invalid argument pass to lookup, expected a Literal'
           );
         }
-        return dom.create.namedTypeReference(node.arguments[0].value);
+        return resolve(node.arguments[0].value, definitions);
         break;
       case 'option':
         return dom.create.union([
           dom.type.null,
-          resolveType(api, node.arguments[0])
+          resolveType(api, node.arguments[0], definitions)
         ]);
         break;
       case 'void':
