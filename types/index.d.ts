@@ -586,7 +586,8 @@ declare namespace xdrHidden {
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-  interface SignedInt {
+
+    interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
     read(io: Buffer): number;
@@ -773,130 +774,6 @@ export namespace xdr {
     static errLoad(): ErrorCode;
   }
 
-  class Error {
-    constructor(attributes: { code: ErrorCode; msg: string | Buffer });
-
-    code(value?: ErrorCode): ErrorCode;
-
-    msg(value?: string | Buffer): string | Buffer;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Error;
-
-    static write(value: Error, io: Buffer): void;
-
-    static isValid(value: Error): boolean;
-
-    static toXDR(value: Error): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Error;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Error;
-  }
-
-  class AuthCert {
-    constructor(attributes: {
-      pubkey: Curve25519Public;
-      expiration: Uint64;
-      sig: Signature;
-    });
-
-    pubkey(value?: Curve25519Public): Curve25519Public;
-
-    expiration(value?: Uint64): Uint64;
-
-    sig(value?: Signature): Signature;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AuthCert;
-
-    static write(value: AuthCert, io: Buffer): void;
-
-    static isValid(value: AuthCert): boolean;
-
-    static toXDR(value: AuthCert): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AuthCert;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): AuthCert;
-  }
-
-  class Hello {
-    constructor(attributes: {
-      ledgerVersion: Uint32;
-      overlayVersion: Uint32;
-      overlayMinVersion: Uint32;
-      networkId: Hash;
-      versionStr: string | Buffer;
-      listeningPort: number;
-      peerId: NodeId;
-      cert: AuthCert;
-      nonce: Uint256;
-    });
-
-    ledgerVersion(value?: Uint32): Uint32;
-
-    overlayVersion(value?: Uint32): Uint32;
-
-    overlayMinVersion(value?: Uint32): Uint32;
-
-    networkId(value?: Hash): Hash;
-
-    versionStr(value?: string | Buffer): string | Buffer;
-
-    listeningPort(value?: number): number;
-
-    peerId(value?: NodeId): NodeId;
-
-    cert(value?: AuthCert): AuthCert;
-
-    nonce(value?: Uint256): Uint256;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Hello;
-
-    static write(value: Hello, io: Buffer): void;
-
-    static isValid(value: Hello): boolean;
-
-    static toXDR(value: Hello): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Hello;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Hello;
-  }
-
-  class Auth {
-    constructor(attributes: { unused: number });
-
-    unused(value?: number): number;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Auth;
-
-    static write(value: Auth, io: Buffer): void;
-
-    static isValid(value: Auth): boolean;
-
-    static toXDR(value: Auth): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Auth;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Auth;
-  }
-
   class IpAddrType {
     readonly name: 'iPv4' | 'iPv6';
 
@@ -905,66 +782,6 @@ export namespace xdr {
     static iPv4(): IpAddrType;
 
     static iPv6(): IpAddrType;
-  }
-
-  class PeerAddressIp {
-    switch(): IpAddrType;
-
-    ipv4(value?: Buffer): Buffer;
-
-    ipv6(value?: Buffer): Buffer;
-
-    value(): Buffer | Buffer;
-
-    static iPv4(value: Buffer): PeerAddressIp;
-
-    static iPv6(value: Buffer): PeerAddressIp;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): PeerAddressIp;
-
-    static write(value: PeerAddressIp, io: Buffer): void;
-
-    static isValid(value: PeerAddressIp): boolean;
-
-    static toXDR(value: PeerAddressIp): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): PeerAddressIp;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): PeerAddressIp;
-  }
-
-  class PeerAddress {
-    constructor(attributes: {
-      ip: PeerAddressIp;
-      port: Uint32;
-      numFailures: Uint32;
-    });
-
-    ip(value?: PeerAddressIp): PeerAddressIp;
-
-    port(value?: Uint32): Uint32;
-
-    numFailures(value?: Uint32): Uint32;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): PeerAddress;
-
-    static write(value: PeerAddress, io: Buffer): void;
-
-    static isValid(value: PeerAddress): boolean;
-
-    static toXDR(value: PeerAddress): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): PeerAddress;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): PeerAddress;
   }
 
   class MessageType {
@@ -1033,6 +850,1052 @@ export namespace xdr {
     static surveyResponse(): MessageType;
   }
 
+  class SurveyMessageCommandType {
+    readonly name: 'surveyTopology';
+
+    readonly value: 0;
+
+    static surveyTopology(): SurveyMessageCommandType;
+  }
+
+  class CryptoKeyType {
+    readonly name:
+      | 'keyTypeEd25519'
+      | 'keyTypePreAuthTx'
+      | 'keyTypeHashX'
+      | 'keyTypeMuxedEd25519';
+
+    readonly value: 0 | 1 | 2 | 256;
+
+    static keyTypeEd25519(): CryptoKeyType;
+
+    static keyTypePreAuthTx(): CryptoKeyType;
+
+    static keyTypeHashX(): CryptoKeyType;
+
+    static keyTypeMuxedEd25519(): CryptoKeyType;
+  }
+
+  class PublicKeyType {
+    readonly name: 'publicKeyTypeEd25519';
+
+    readonly value: 0;
+
+    static publicKeyTypeEd25519(): PublicKeyType;
+  }
+
+  class SignerKeyType {
+    readonly name:
+      | 'signerKeyTypeEd25519'
+      | 'signerKeyTypePreAuthTx'
+      | 'signerKeyTypeHashX';
+
+    readonly value: 0 | 1 | 2;
+
+    static signerKeyTypeEd25519(): SignerKeyType;
+
+    static signerKeyTypePreAuthTx(): SignerKeyType;
+
+    static signerKeyTypeHashX(): SignerKeyType;
+  }
+
+  class OperationType {
+    readonly name:
+      | 'createAccount'
+      | 'payment'
+      | 'pathPaymentStrictReceive'
+      | 'manageSellOffer'
+      | 'createPassiveSellOffer'
+      | 'setOption'
+      | 'changeTrust'
+      | 'allowTrust'
+      | 'accountMerge'
+      | 'inflation'
+      | 'manageDatum'
+      | 'bumpSequence'
+      | 'manageBuyOffer'
+      | 'pathPaymentStrictSend';
+
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+
+    static createAccount(): OperationType;
+
+    static payment(): OperationType;
+
+    static pathPaymentStrictReceive(): OperationType;
+
+    static manageSellOffer(): OperationType;
+
+    static createPassiveSellOffer(): OperationType;
+
+    static setOption(): OperationType;
+
+    static changeTrust(): OperationType;
+
+    static allowTrust(): OperationType;
+
+    static accountMerge(): OperationType;
+
+    static inflation(): OperationType;
+
+    static manageDatum(): OperationType;
+
+    static bumpSequence(): OperationType;
+
+    static manageBuyOffer(): OperationType;
+
+    static pathPaymentStrictSend(): OperationType;
+  }
+
+  class MemoType {
+    readonly name:
+      | 'memoNone'
+      | 'memoText'
+      | 'memoId'
+      | 'memoHash'
+      | 'memoReturn';
+
+    readonly value: 0 | 1 | 2 | 3 | 4;
+
+    static memoNone(): MemoType;
+
+    static memoText(): MemoType;
+
+    static memoId(): MemoType;
+
+    static memoHash(): MemoType;
+
+    static memoReturn(): MemoType;
+  }
+
+  class CreateAccountResultCode {
+    readonly name:
+      | 'createAccountSuccess'
+      | 'createAccountMalformed'
+      | 'createAccountUnderfunded'
+      | 'createAccountLowReserve'
+      | 'createAccountAlreadyExist';
+
+    readonly value: 0 | -1 | -2 | -3 | -4;
+
+    static createAccountSuccess(): CreateAccountResultCode;
+
+    static createAccountMalformed(): CreateAccountResultCode;
+
+    static createAccountUnderfunded(): CreateAccountResultCode;
+
+    static createAccountLowReserve(): CreateAccountResultCode;
+
+    static createAccountAlreadyExist(): CreateAccountResultCode;
+  }
+
+  class PaymentResultCode {
+    readonly name:
+      | 'paymentSuccess'
+      | 'paymentMalformed'
+      | 'paymentUnderfunded'
+      | 'paymentSrcNoTrust'
+      | 'paymentSrcNotAuthorized'
+      | 'paymentNoDestination'
+      | 'paymentNoTrust'
+      | 'paymentNotAuthorized'
+      | 'paymentLineFull'
+      | 'paymentNoIssuer';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9;
+
+    static paymentSuccess(): PaymentResultCode;
+
+    static paymentMalformed(): PaymentResultCode;
+
+    static paymentUnderfunded(): PaymentResultCode;
+
+    static paymentSrcNoTrust(): PaymentResultCode;
+
+    static paymentSrcNotAuthorized(): PaymentResultCode;
+
+    static paymentNoDestination(): PaymentResultCode;
+
+    static paymentNoTrust(): PaymentResultCode;
+
+    static paymentNotAuthorized(): PaymentResultCode;
+
+    static paymentLineFull(): PaymentResultCode;
+
+    static paymentNoIssuer(): PaymentResultCode;
+  }
+
+  class PathPaymentStrictReceiveResultCode {
+    readonly name:
+      | 'pathPaymentStrictReceiveSuccess'
+      | 'pathPaymentStrictReceiveMalformed'
+      | 'pathPaymentStrictReceiveUnderfunded'
+      | 'pathPaymentStrictReceiveSrcNoTrust'
+      | 'pathPaymentStrictReceiveSrcNotAuthorized'
+      | 'pathPaymentStrictReceiveNoDestination'
+      | 'pathPaymentStrictReceiveNoTrust'
+      | 'pathPaymentStrictReceiveNotAuthorized'
+      | 'pathPaymentStrictReceiveLineFull'
+      | 'pathPaymentStrictReceiveNoIssuer'
+      | 'pathPaymentStrictReceiveTooFewOffer'
+      | 'pathPaymentStrictReceiveOfferCrossSelf'
+      | 'pathPaymentStrictReceiveOverSendmax';
+
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
+
+    static pathPaymentStrictReceiveSuccess(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveMalformed(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveUnderfunded(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveSrcNoTrust(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveSrcNotAuthorized(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveNoDestination(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveNoTrust(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveNotAuthorized(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveLineFull(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveNoIssuer(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveTooFewOffer(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveOfferCrossSelf(): PathPaymentStrictReceiveResultCode;
+
+    static pathPaymentStrictReceiveOverSendmax(): PathPaymentStrictReceiveResultCode;
+  }
+
+  class PathPaymentStrictSendResultCode {
+    readonly name:
+      | 'pathPaymentStrictSendSuccess'
+      | 'pathPaymentStrictSendMalformed'
+      | 'pathPaymentStrictSendUnderfunded'
+      | 'pathPaymentStrictSendSrcNoTrust'
+      | 'pathPaymentStrictSendSrcNotAuthorized'
+      | 'pathPaymentStrictSendNoDestination'
+      | 'pathPaymentStrictSendNoTrust'
+      | 'pathPaymentStrictSendNotAuthorized'
+      | 'pathPaymentStrictSendLineFull'
+      | 'pathPaymentStrictSendNoIssuer'
+      | 'pathPaymentStrictSendTooFewOffer'
+      | 'pathPaymentStrictSendOfferCrossSelf'
+      | 'pathPaymentStrictSendUnderDestmin';
+
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
+
+    static pathPaymentStrictSendSuccess(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendMalformed(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendUnderfunded(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendSrcNoTrust(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendSrcNotAuthorized(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendNoDestination(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendNoTrust(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendNotAuthorized(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendLineFull(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendNoIssuer(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendTooFewOffer(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendOfferCrossSelf(): PathPaymentStrictSendResultCode;
+
+    static pathPaymentStrictSendUnderDestmin(): PathPaymentStrictSendResultCode;
+  }
+
+  class ManageSellOfferResultCode {
+    readonly name:
+      | 'manageSellOfferSuccess'
+      | 'manageSellOfferMalformed'
+      | 'manageSellOfferSellNoTrust'
+      | 'manageSellOfferBuyNoTrust'
+      | 'manageSellOfferSellNotAuthorized'
+      | 'manageSellOfferBuyNotAuthorized'
+      | 'manageSellOfferLineFull'
+      | 'manageSellOfferUnderfunded'
+      | 'manageSellOfferCrossSelf'
+      | 'manageSellOfferSellNoIssuer'
+      | 'manageSellOfferBuyNoIssuer'
+      | 'manageSellOfferNotFound'
+      | 'manageSellOfferLowReserve';
+
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
+
+    static manageSellOfferSuccess(): ManageSellOfferResultCode;
+
+    static manageSellOfferMalformed(): ManageSellOfferResultCode;
+
+    static manageSellOfferSellNoTrust(): ManageSellOfferResultCode;
+
+    static manageSellOfferBuyNoTrust(): ManageSellOfferResultCode;
+
+    static manageSellOfferSellNotAuthorized(): ManageSellOfferResultCode;
+
+    static manageSellOfferBuyNotAuthorized(): ManageSellOfferResultCode;
+
+    static manageSellOfferLineFull(): ManageSellOfferResultCode;
+
+    static manageSellOfferUnderfunded(): ManageSellOfferResultCode;
+
+    static manageSellOfferCrossSelf(): ManageSellOfferResultCode;
+
+    static manageSellOfferSellNoIssuer(): ManageSellOfferResultCode;
+
+    static manageSellOfferBuyNoIssuer(): ManageSellOfferResultCode;
+
+    static manageSellOfferNotFound(): ManageSellOfferResultCode;
+
+    static manageSellOfferLowReserve(): ManageSellOfferResultCode;
+  }
+
+  class ManageOfferEffect {
+    readonly name:
+      | 'manageOfferCreated'
+      | 'manageOfferUpdated'
+      | 'manageOfferDeleted';
+
+    readonly value: 0 | 1 | 2;
+
+    static manageOfferCreated(): ManageOfferEffect;
+
+    static manageOfferUpdated(): ManageOfferEffect;
+
+    static manageOfferDeleted(): ManageOfferEffect;
+  }
+
+  class ManageBuyOfferResultCode {
+    readonly name:
+      | 'manageBuyOfferSuccess'
+      | 'manageBuyOfferMalformed'
+      | 'manageBuyOfferSellNoTrust'
+      | 'manageBuyOfferBuyNoTrust'
+      | 'manageBuyOfferSellNotAuthorized'
+      | 'manageBuyOfferBuyNotAuthorized'
+      | 'manageBuyOfferLineFull'
+      | 'manageBuyOfferUnderfunded'
+      | 'manageBuyOfferCrossSelf'
+      | 'manageBuyOfferSellNoIssuer'
+      | 'manageBuyOfferBuyNoIssuer'
+      | 'manageBuyOfferNotFound'
+      | 'manageBuyOfferLowReserve';
+
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
+
+    static manageBuyOfferSuccess(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferMalformed(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferSellNoTrust(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferBuyNoTrust(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferSellNotAuthorized(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferBuyNotAuthorized(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferLineFull(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferUnderfunded(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferCrossSelf(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferSellNoIssuer(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferBuyNoIssuer(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferNotFound(): ManageBuyOfferResultCode;
+
+    static manageBuyOfferLowReserve(): ManageBuyOfferResultCode;
+  }
+
+  class SetOptionsResultCode {
+    readonly name:
+      | 'setOptionsSuccess'
+      | 'setOptionsLowReserve'
+      | 'setOptionsTooManySigner'
+      | 'setOptionsBadFlag'
+      | 'setOptionsInvalidInflation'
+      | 'setOptionsCantChange'
+      | 'setOptionsUnknownFlag'
+      | 'setOptionsThresholdOutOfRange'
+      | 'setOptionsBadSigner'
+      | 'setOptionsInvalidHomeDomain';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9;
+
+    static setOptionsSuccess(): SetOptionsResultCode;
+
+    static setOptionsLowReserve(): SetOptionsResultCode;
+
+    static setOptionsTooManySigner(): SetOptionsResultCode;
+
+    static setOptionsBadFlag(): SetOptionsResultCode;
+
+    static setOptionsInvalidInflation(): SetOptionsResultCode;
+
+    static setOptionsCantChange(): SetOptionsResultCode;
+
+    static setOptionsUnknownFlag(): SetOptionsResultCode;
+
+    static setOptionsThresholdOutOfRange(): SetOptionsResultCode;
+
+    static setOptionsBadSigner(): SetOptionsResultCode;
+
+    static setOptionsInvalidHomeDomain(): SetOptionsResultCode;
+  }
+
+  class ChangeTrustResultCode {
+    readonly name:
+      | 'changeTrustSuccess'
+      | 'changeTrustMalformed'
+      | 'changeTrustNoIssuer'
+      | 'changeTrustInvalidLimit'
+      | 'changeTrustLowReserve'
+      | 'changeTrustSelfNotAllowed';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
+
+    static changeTrustSuccess(): ChangeTrustResultCode;
+
+    static changeTrustMalformed(): ChangeTrustResultCode;
+
+    static changeTrustNoIssuer(): ChangeTrustResultCode;
+
+    static changeTrustInvalidLimit(): ChangeTrustResultCode;
+
+    static changeTrustLowReserve(): ChangeTrustResultCode;
+
+    static changeTrustSelfNotAllowed(): ChangeTrustResultCode;
+  }
+
+  class AllowTrustResultCode {
+    readonly name:
+      | 'allowTrustSuccess'
+      | 'allowTrustMalformed'
+      | 'allowTrustNoTrustLine'
+      | 'allowTrustTrustNotRequired'
+      | 'allowTrustCantRevoke'
+      | 'allowTrustSelfNotAllowed';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
+
+    static allowTrustSuccess(): AllowTrustResultCode;
+
+    static allowTrustMalformed(): AllowTrustResultCode;
+
+    static allowTrustNoTrustLine(): AllowTrustResultCode;
+
+    static allowTrustTrustNotRequired(): AllowTrustResultCode;
+
+    static allowTrustCantRevoke(): AllowTrustResultCode;
+
+    static allowTrustSelfNotAllowed(): AllowTrustResultCode;
+  }
+
+  class AccountMergeResultCode {
+    readonly name:
+      | 'accountMergeSuccess'
+      | 'accountMergeMalformed'
+      | 'accountMergeNoAccount'
+      | 'accountMergeImmutableSet'
+      | 'accountMergeHasSubEntry'
+      | 'accountMergeSeqnumTooFar'
+      | 'accountMergeDestFull';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
+
+    static accountMergeSuccess(): AccountMergeResultCode;
+
+    static accountMergeMalformed(): AccountMergeResultCode;
+
+    static accountMergeNoAccount(): AccountMergeResultCode;
+
+    static accountMergeImmutableSet(): AccountMergeResultCode;
+
+    static accountMergeHasSubEntry(): AccountMergeResultCode;
+
+    static accountMergeSeqnumTooFar(): AccountMergeResultCode;
+
+    static accountMergeDestFull(): AccountMergeResultCode;
+  }
+
+  class InflationResultCode {
+    readonly name: 'inflationSuccess' | 'inflationNotTime';
+
+    readonly value: 0 | -1;
+
+    static inflationSuccess(): InflationResultCode;
+
+    static inflationNotTime(): InflationResultCode;
+  }
+
+  class ManageDataResultCode {
+    readonly name:
+      | 'manageDataSuccess'
+      | 'manageDataNotSupportedYet'
+      | 'manageDataNameNotFound'
+      | 'manageDataLowReserve'
+      | 'manageDataInvalidName';
+
+    readonly value: 0 | -1 | -2 | -3 | -4;
+
+    static manageDataSuccess(): ManageDataResultCode;
+
+    static manageDataNotSupportedYet(): ManageDataResultCode;
+
+    static manageDataNameNotFound(): ManageDataResultCode;
+
+    static manageDataLowReserve(): ManageDataResultCode;
+
+    static manageDataInvalidName(): ManageDataResultCode;
+  }
+
+  class BumpSequenceResultCode {
+    readonly name: 'bumpSequenceSuccess' | 'bumpSequenceBadSeq';
+
+    readonly value: 0 | -1;
+
+    static bumpSequenceSuccess(): BumpSequenceResultCode;
+
+    static bumpSequenceBadSeq(): BumpSequenceResultCode;
+  }
+
+  class OperationResultCode {
+    readonly name:
+      | 'opInner'
+      | 'opBadAuth'
+      | 'opNoAccount'
+      | 'opNotSupported'
+      | 'opTooManySubentry'
+      | 'opExceededWorkLimit';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
+
+    static opInner(): OperationResultCode;
+
+    static opBadAuth(): OperationResultCode;
+
+    static opNoAccount(): OperationResultCode;
+
+    static opNotSupported(): OperationResultCode;
+
+    static opTooManySubentry(): OperationResultCode;
+
+    static opExceededWorkLimit(): OperationResultCode;
+  }
+
+  class TransactionResultCode {
+    readonly name:
+      | 'txFeeBumpInnerSuccess'
+      | 'txSuccess'
+      | 'txFailed'
+      | 'txTooEarly'
+      | 'txTooLate'
+      | 'txMissingOperation'
+      | 'txBadSeq'
+      | 'txBadAuth'
+      | 'txInsufficientBalance'
+      | 'txNoAccount'
+      | 'txInsufficientFee'
+      | 'txBadAuthExtra'
+      | 'txInternalError'
+      | 'txNotSupported'
+      | 'txFeeBumpInnerFailed';
+
+    readonly value:
+      | 1
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12
+      | -13;
+
+    static txFeeBumpInnerSuccess(): TransactionResultCode;
+
+    static txSuccess(): TransactionResultCode;
+
+    static txFailed(): TransactionResultCode;
+
+    static txTooEarly(): TransactionResultCode;
+
+    static txTooLate(): TransactionResultCode;
+
+    static txMissingOperation(): TransactionResultCode;
+
+    static txBadSeq(): TransactionResultCode;
+
+    static txBadAuth(): TransactionResultCode;
+
+    static txInsufficientBalance(): TransactionResultCode;
+
+    static txNoAccount(): TransactionResultCode;
+
+    static txInsufficientFee(): TransactionResultCode;
+
+    static txBadAuthExtra(): TransactionResultCode;
+
+    static txInternalError(): TransactionResultCode;
+
+    static txNotSupported(): TransactionResultCode;
+
+    static txFeeBumpInnerFailed(): TransactionResultCode;
+  }
+
+  class ScpStatementType {
+    readonly name:
+      | 'scpStPrepare'
+      | 'scpStConfirm'
+      | 'scpStExternalize'
+      | 'scpStNominate';
+
+    readonly value: 0 | 1 | 2 | 3;
+
+    static scpStPrepare(): ScpStatementType;
+
+    static scpStConfirm(): ScpStatementType;
+
+    static scpStExternalize(): ScpStatementType;
+
+    static scpStNominate(): ScpStatementType;
+  }
+
+  class AssetType {
+    readonly name:
+      | 'assetTypeNative'
+      | 'assetTypeCreditAlphanum4'
+      | 'assetTypeCreditAlphanum12';
+
+    readonly value: 0 | 1 | 2;
+
+    static assetTypeNative(): AssetType;
+
+    static assetTypeCreditAlphanum4(): AssetType;
+
+    static assetTypeCreditAlphanum12(): AssetType;
+  }
+
+  class ThresholdIndices {
+    readonly name:
+      | 'thresholdMasterWeight'
+      | 'thresholdLow'
+      | 'thresholdMed'
+      | 'thresholdHigh';
+
+    readonly value: 0 | 1 | 2 | 3;
+
+    static thresholdMasterWeight(): ThresholdIndices;
+
+    static thresholdLow(): ThresholdIndices;
+
+    static thresholdMed(): ThresholdIndices;
+
+    static thresholdHigh(): ThresholdIndices;
+  }
+
+  class LedgerEntryType {
+    readonly name: 'account' | 'trustline' | 'offer' | 'datum';
+
+    readonly value: 0 | 1 | 2 | 3;
+
+    static account(): LedgerEntryType;
+
+    static trustline(): LedgerEntryType;
+
+    static offer(): LedgerEntryType;
+
+    static datum(): LedgerEntryType;
+  }
+
+  class AccountFlags {
+    readonly name:
+      | 'authRequiredFlag'
+      | 'authRevocableFlag'
+      | 'authImmutableFlag';
+
+    readonly value: 1 | 2 | 4;
+
+    static authRequiredFlag(): AccountFlags;
+
+    static authRevocableFlag(): AccountFlags;
+
+    static authImmutableFlag(): AccountFlags;
+  }
+
+  class TrustLineFlags {
+    readonly name: 'authorizedFlag' | 'authorizedToMaintainLiabilitiesFlag';
+
+    readonly value: 1 | 2;
+
+    static authorizedFlag(): TrustLineFlags;
+
+    static authorizedToMaintainLiabilitiesFlag(): TrustLineFlags;
+  }
+
+  class OfferEntryFlags {
+    readonly name: 'passiveFlag';
+
+    readonly value: 1;
+
+    static passiveFlag(): OfferEntryFlags;
+  }
+
+  class EnvelopeType {
+    readonly name:
+      | 'envelopeTypeTxV0'
+      | 'envelopeTypeScp'
+      | 'envelopeTypeTx'
+      | 'envelopeTypeAuth'
+      | 'envelopeTypeScpvalue'
+      | 'envelopeTypeTxFeeBump';
+
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5;
+
+    static envelopeTypeTxV0(): EnvelopeType;
+
+    static envelopeTypeScp(): EnvelopeType;
+
+    static envelopeTypeTx(): EnvelopeType;
+
+    static envelopeTypeAuth(): EnvelopeType;
+
+    static envelopeTypeScpvalue(): EnvelopeType;
+
+    static envelopeTypeTxFeeBump(): EnvelopeType;
+  }
+
+  class StellarValueType {
+    readonly name: 'stellarValueBasic' | 'stellarValueSigned';
+
+    readonly value: 0 | 1;
+
+    static stellarValueBasic(): StellarValueType;
+
+    static stellarValueSigned(): StellarValueType;
+  }
+
+  class LedgerUpgradeType {
+    readonly name:
+      | 'ledgerUpgradeVersion'
+      | 'ledgerUpgradeBaseFee'
+      | 'ledgerUpgradeMaxTxSetSize'
+      | 'ledgerUpgradeBaseReserve';
+
+    readonly value: 1 | 2 | 3 | 4;
+
+    static ledgerUpgradeVersion(): LedgerUpgradeType;
+
+    static ledgerUpgradeBaseFee(): LedgerUpgradeType;
+
+    static ledgerUpgradeMaxTxSetSize(): LedgerUpgradeType;
+
+    static ledgerUpgradeBaseReserve(): LedgerUpgradeType;
+  }
+
+  class BucketEntryType {
+    readonly name: 'metaentry' | 'liveentry' | 'deadentry' | 'initentry';
+
+    readonly value: -1 | 0 | 1 | 2;
+
+    static metaentry(): BucketEntryType;
+
+    static liveentry(): BucketEntryType;
+
+    static deadentry(): BucketEntryType;
+
+    static initentry(): BucketEntryType;
+  }
+
+  class LedgerEntryChangeType {
+    readonly name:
+      | 'ledgerEntryCreated'
+      | 'ledgerEntryUpdated'
+      | 'ledgerEntryRemoved'
+      | 'ledgerEntryState';
+
+    readonly value: 0 | 1 | 2 | 3;
+
+    static ledgerEntryCreated(): LedgerEntryChangeType;
+
+    static ledgerEntryUpdated(): LedgerEntryChangeType;
+
+    static ledgerEntryRemoved(): LedgerEntryChangeType;
+
+    static ledgerEntryState(): LedgerEntryChangeType;
+  }
+
+  type EncryptedBody = Buffer;
+
+  type PeerStatList = PeerStats[];
+
+  type Hash = Buffer;
+
+  type Uint256 = Buffer;
+
+  const Uint32: UnsignedInt;
+
+  const Int32: SignedInt;
+
+  class Uint64 extends UnsignedHyper {}
+
+  class Int64 extends Hyper {}
+
+  type Signature = Buffer;
+
+  type SignatureHint = Buffer;
+
+  type NodeId = PublicKey;
+
+  type Value = Buffer;
+
+  type AccountId = PublicKey;
+
+  type Thresholds = Buffer;
+
+  type String32 = string | Buffer;
+
+  type String64 = string | Buffer;
+
+  type SequenceNumber = Int64;
+
+  type TimePoint = Uint64;
+
+  type DataValue = Buffer;
+
+  type AssetCode4 = Buffer;
+
+  type AssetCode12 = Buffer;
+
+  type UpgradeType = Buffer;
+
+  type LedgerEntryChanges = LedgerEntryChange[];
+
+  class Error {
+    constructor(attributes: { code: ErrorCode; msg: string | Buffer });
+
+    code(value?: ErrorCode): ErrorCode;
+
+    msg(value?: string | Buffer): string | Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Error;
+
+    static write(value: Error, io: Buffer): void;
+
+    static isValid(value: Error): boolean;
+
+    static toXDR(value: Error): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Error;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Error;
+  }
+
+  class AuthCert {
+    constructor(attributes: {
+      pubkey: Curve25519Public;
+      expiration: Uint64;
+      sig: Signature;
+    });
+
+    pubkey(value?: Curve25519Public): Curve25519Public;
+
+    expiration(value?: Uint64): Uint64;
+
+    sig(value?: Signature): Signature;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AuthCert;
+
+    static write(value: AuthCert, io: Buffer): void;
+
+    static isValid(value: AuthCert): boolean;
+
+    static toXDR(value: AuthCert): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AuthCert;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AuthCert;
+  }
+
+  class Hello {
+    constructor(attributes: {
+      ledgerVersion: number;
+      overlayVersion: number;
+      overlayMinVersion: number;
+      networkId: Hash;
+      versionStr: string | Buffer;
+      listeningPort: number;
+      peerId: NodeId;
+      cert: AuthCert;
+      nonce: Uint256;
+    });
+
+    ledgerVersion(value?: number): number;
+
+    overlayVersion(value?: number): number;
+
+    overlayMinVersion(value?: number): number;
+
+    networkId(value?: Hash): Hash;
+
+    versionStr(value?: string | Buffer): string | Buffer;
+
+    listeningPort(value?: number): number;
+
+    peerId(value?: NodeId): NodeId;
+
+    cert(value?: AuthCert): AuthCert;
+
+    nonce(value?: Uint256): Uint256;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Hello;
+
+    static write(value: Hello, io: Buffer): void;
+
+    static isValid(value: Hello): boolean;
+
+    static toXDR(value: Hello): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Hello;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Hello;
+  }
+
+  class Auth {
+    constructor(attributes: { unused: number });
+
+    unused(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Auth;
+
+    static write(value: Auth, io: Buffer): void;
+
+    static isValid(value: Auth): boolean;
+
+    static toXDR(value: Auth): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Auth;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Auth;
+  }
+
+  class PeerAddress {
+    constructor(attributes: {
+      ip: PeerAddressIp;
+      port: number;
+      numFailures: number;
+    });
+
+    ip(value?: PeerAddressIp): PeerAddressIp;
+
+    port(value?: number): number;
+
+    numFailures(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): PeerAddress;
+
+    static write(value: PeerAddress, io: Buffer): void;
+
+    static isValid(value: PeerAddress): boolean;
+
+    static toXDR(value: PeerAddress): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): PeerAddress;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): PeerAddress;
+  }
+
   class DontHave {
     constructor(attributes: { type: MessageType; reqHash: Uint256 });
 
@@ -1057,19 +1920,11 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): DontHave;
   }
 
-  class SurveyMessageCommandType {
-    readonly name: 'surveyTopology';
-
-    readonly value: 0;
-
-    static surveyTopology(): SurveyMessageCommandType;
-  }
-
   class SurveyRequestMessage {
     constructor(attributes: {
       surveyorPeerId: NodeId;
       surveyedPeerId: NodeId;
-      ledgerNum: Uint32;
+      ledgerNum: number;
       encryptionKey: Curve25519Public;
       commandType: SurveyMessageCommandType;
     });
@@ -1078,7 +1933,7 @@ export namespace xdr {
 
     surveyedPeerId(value?: NodeId): NodeId;
 
-    ledgerNum(value?: Uint32): Uint32;
+    ledgerNum(value?: number): number;
 
     encryptionKey(value?: Curve25519Public): Curve25519Public;
 
@@ -1134,13 +1989,11 @@ export namespace xdr {
     ): SignedSurveyRequestMessage;
   }
 
-  type EncryptedBody = Buffer;
-
   class SurveyResponseMessage {
     constructor(attributes: {
       surveyorPeerId: NodeId;
       surveyedPeerId: NodeId;
-      ledgerNum: Uint32;
+      ledgerNum: number;
       commandType: SurveyMessageCommandType;
       encryptedBody: EncryptedBody;
     });
@@ -1149,7 +2002,7 @@ export namespace xdr {
 
     surveyedPeerId(value?: NodeId): NodeId;
 
-    ledgerNum(value?: Uint32): Uint32;
+    ledgerNum(value?: number): number;
 
     commandType(value?: SurveyMessageCommandType): SurveyMessageCommandType;
 
@@ -1271,23 +2124,21 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): PeerStats;
   }
 
-  type PeerStatList = PeerStats[];
-
   class TopologyResponseBody {
     constructor(attributes: {
       inboundPeers: PeerStatList;
       outboundPeers: PeerStatList;
-      totalInboundPeerCount: Uint32;
-      totalOutboundPeerCount: Uint32;
+      totalInboundPeerCount: number;
+      totalOutboundPeerCount: number;
     });
 
     inboundPeers(value?: PeerStatList): PeerStatList;
 
     outboundPeers(value?: PeerStatList): PeerStatList;
 
-    totalInboundPeerCount(value?: Uint32): Uint32;
+    totalInboundPeerCount(value?: number): number;
 
-    totalOutboundPeerCount(value?: Uint32): Uint32;
+    totalOutboundPeerCount(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -1307,128 +2158,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): TopologyResponseBody;
-  }
-
-  class SurveyResponseBody {
-    switch(): SurveyMessageCommandType;
-
-    topologyResponseBody(value?: TopologyResponseBody): TopologyResponseBody;
-
-    value(): TopologyResponseBody;
-
-    static surveyTopology(value: TopologyResponseBody): SurveyResponseBody;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): SurveyResponseBody;
-
-    static write(value: SurveyResponseBody, io: Buffer): void;
-
-    static isValid(value: SurveyResponseBody): boolean;
-
-    static toXDR(value: SurveyResponseBody): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): SurveyResponseBody;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): SurveyResponseBody;
-  }
-
-  class StellarMessage {
-    switch(): MessageType;
-
-    error(value?: Error): Error;
-
-    hello(value?: Hello): Hello;
-
-    auth(value?: Auth): Auth;
-
-    dontHave(value?: DontHave): DontHave;
-
-    peers(value?: PeerAddress[]): PeerAddress[];
-
-    txSetHash(value?: Uint256): Uint256;
-
-    txSet(value?: TransactionSet): TransactionSet;
-
-    transaction(value?: TransactionEnvelope): TransactionEnvelope;
-
-    signedSurveyRequestMessage(
-      value?: SignedSurveyRequestMessage
-    ): SignedSurveyRequestMessage;
-
-    signedSurveyResponseMessage(
-      value?: SignedSurveyResponseMessage
-    ): SignedSurveyResponseMessage;
-
-    qSetHash(value?: Uint256): Uint256;
-
-    qSet(value?: ScpQuorumSet): ScpQuorumSet;
-
-    envelope(value?: ScpEnvelope): ScpEnvelope;
-
-    getScpLedgerSeq(value?: Uint32): Uint32;
-
-    value():
-      | Error
-      | Hello
-      | Auth
-      | DontHave
-      | PeerAddress[]
-      | Uint256
-      | TransactionSet
-      | TransactionEnvelope
-      | SignedSurveyRequestMessage
-      | SignedSurveyResponseMessage
-      | Uint256
-      | ScpQuorumSet
-      | ScpEnvelope
-      | Uint32;
-
-    static errorMsg(value: Error): StellarMessage;
-
-    static hello(value: Hello): StellarMessage;
-
-    static auth(value: Auth): StellarMessage;
-
-    static dontHave(value: DontHave): StellarMessage;
-
-    static peer(value: PeerAddress[]): StellarMessage;
-
-    static getTxSet(value: Uint256): StellarMessage;
-
-    static txSet(value: TransactionSet): StellarMessage;
-
-    static transaction(value: TransactionEnvelope): StellarMessage;
-
-    static surveyRequest(value: SignedSurveyRequestMessage): StellarMessage;
-
-    static surveyResponse(value: SignedSurveyResponseMessage): StellarMessage;
-
-    static getScpQuorumset(value: Uint256): StellarMessage;
-
-    static scpQuorumset(value: ScpQuorumSet): StellarMessage;
-
-    static scpMessage(value: ScpEnvelope): StellarMessage;
-
-    static getScpState(value: Uint32): StellarMessage;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): StellarMessage;
-
-    static write(value: StellarMessage, io: Buffer): void;
-
-    static isValid(value: StellarMessage): boolean;
-
-    static toXDR(value: StellarMessage): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): StellarMessage;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): StellarMessage;
   }
 
   class AuthenticatedMessageV0 {
@@ -1463,154 +2192,6 @@ export namespace xdr {
       format: 'hex' | 'base64'
     ): AuthenticatedMessageV0;
   }
-
-  class AuthenticatedMessage {
-    switch(): Uint32;
-
-    v0(value?: AuthenticatedMessageV0): AuthenticatedMessageV0;
-
-    value(): AuthenticatedMessageV0;
-
-    static 0(value: AuthenticatedMessageV0): AuthenticatedMessage;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AuthenticatedMessage;
-
-    static write(value: AuthenticatedMessage, io: Buffer): void;
-
-    static isValid(value: AuthenticatedMessage): boolean;
-
-    static toXDR(value: AuthenticatedMessage): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AuthenticatedMessage;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): AuthenticatedMessage;
-  }
-
-  type Hash = Buffer;
-
-  type Uint256 = Buffer;
-
-  type Uint32 = number;
-
-  const Int32: SignedInt;
-
-  class Uint64 extends UnsignedHyper {}
-
-  class Int64 extends Hyper {}
-
-  class CryptoKeyType {
-    readonly name:
-      | 'keyTypeEd25519'
-      | 'keyTypePreAuthTx'
-      | 'keyTypeHashX'
-      | 'keyTypeMuxedEd25519';
-
-    readonly value: 0 | 1 | 2 | 256;
-
-    static keyTypeEd25519(): CryptoKeyType;
-
-    static keyTypePreAuthTx(): CryptoKeyType;
-
-    static keyTypeHashX(): CryptoKeyType;
-
-    static keyTypeMuxedEd25519(): CryptoKeyType;
-  }
-
-  class PublicKeyType {
-    readonly name: 'publicKeyTypeEd25519';
-
-    readonly value: 0;
-
-    static publicKeyTypeEd25519(): PublicKeyType;
-  }
-
-  class SignerKeyType {
-    readonly name:
-      | 'signerKeyTypeEd25519'
-      | 'signerKeyTypePreAuthTx'
-      | 'signerKeyTypeHashX';
-
-    readonly value: 0 | 1 | 2;
-
-    static signerKeyTypeEd25519(): SignerKeyType;
-
-    static signerKeyTypePreAuthTx(): SignerKeyType;
-
-    static signerKeyTypeHashX(): SignerKeyType;
-  }
-
-  class PublicKey {
-    switch(): PublicKeyType;
-
-    ed25519(value?: Uint256): Uint256;
-
-    value(): Uint256;
-
-    static publicKeyTypeEd25519(value: Uint256): PublicKey;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): PublicKey;
-
-    static write(value: PublicKey, io: Buffer): void;
-
-    static isValid(value: PublicKey): boolean;
-
-    static toXDR(value: PublicKey): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): PublicKey;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): PublicKey;
-  }
-
-  class SignerKey {
-    switch(): SignerKeyType;
-
-    ed25519(value?: Uint256): Uint256;
-
-    preAuthTx(value?: Uint256): Uint256;
-
-    hashX(value?: Uint256): Uint256;
-
-    value(): Uint256 | Uint256 | Uint256;
-
-    static signerKeyTypeEd25519(value: Uint256): SignerKey;
-
-    static signerKeyTypePreAuthTx(value: Uint256): SignerKey;
-
-    static signerKeyTypeHashX(value: Uint256): SignerKey;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): SignerKey;
-
-    static write(value: SignerKey, io: Buffer): void;
-
-    static isValid(value: SignerKey): boolean;
-
-    static toXDR(value: SignerKey): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): SignerKey;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): SignerKey;
-  }
-
-  type Signature = Buffer;
-
-  type SignatureHint = Buffer;
-
-  type NodeId = PublicKey;
 
   class Curve25519Secret {
     constructor(attributes: { key: Buffer });
@@ -1727,36 +2308,6 @@ export namespace xdr {
     ): MuxedAccountMed25519;
   }
 
-  class MuxedAccount {
-    switch(): CryptoKeyType;
-
-    ed25519(value?: Uint256): Uint256;
-
-    med25519(value?: MuxedAccountMed25519): MuxedAccountMed25519;
-
-    value(): Uint256 | MuxedAccountMed25519;
-
-    static keyTypeEd25519(value: Uint256): MuxedAccount;
-
-    static keyTypeMuxedEd25519(value: MuxedAccountMed25519): MuxedAccount;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): MuxedAccount;
-
-    static write(value: MuxedAccount, io: Buffer): void;
-
-    static isValid(value: MuxedAccount): boolean;
-
-    static toXDR(value: MuxedAccount): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): MuxedAccount;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): MuxedAccount;
-  }
-
   class DecoratedSignature {
     constructor(attributes: { hint: SignatureHint; signature: Signature });
 
@@ -1779,54 +2330,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): DecoratedSignature;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): DecoratedSignature;
-  }
-
-  class OperationType {
-    readonly name:
-      | 'createAccount'
-      | 'payment'
-      | 'pathPaymentStrictReceive'
-      | 'manageSellOffer'
-      | 'createPassiveSellOffer'
-      | 'setOption'
-      | 'changeTrust'
-      | 'allowTrust'
-      | 'accountMerge'
-      | 'inflation'
-      | 'manageDatum'
-      | 'bumpSequence'
-      | 'manageBuyOffer'
-      | 'pathPaymentStrictSend';
-
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
-
-    static createAccount(): OperationType;
-
-    static payment(): OperationType;
-
-    static pathPaymentStrictReceive(): OperationType;
-
-    static manageSellOffer(): OperationType;
-
-    static createPassiveSellOffer(): OperationType;
-
-    static setOption(): OperationType;
-
-    static changeTrust(): OperationType;
-
-    static allowTrust(): OperationType;
-
-    static accountMerge(): OperationType;
-
-    static inflation(): OperationType;
-
-    static manageDatum(): OperationType;
-
-    static bumpSequence(): OperationType;
-
-    static manageBuyOffer(): OperationType;
-
-    static pathPaymentStrictSend(): OperationType;
   }
 
   class CreateAccountOp {
@@ -2078,29 +2581,29 @@ export namespace xdr {
   class SetOptionsOp {
     constructor(attributes: {
       inflationDest: null | AccountId;
-      clearFlags: null | Uint32;
-      setFlags: null | Uint32;
-      masterWeight: null | Uint32;
-      lowThreshold: null | Uint32;
-      medThreshold: null | Uint32;
-      highThreshold: null | Uint32;
+      clearFlags: null | number;
+      setFlags: null | number;
+      masterWeight: null | number;
+      lowThreshold: null | number;
+      medThreshold: null | number;
+      highThreshold: null | number;
       homeDomain: null | String32;
       signer: null | Signer;
     });
 
     inflationDest(value?: null | AccountId): null | AccountId;
 
-    clearFlags(value?: null | Uint32): null | Uint32;
+    clearFlags(value?: null | number): null | number;
 
-    setFlags(value?: null | Uint32): null | Uint32;
+    setFlags(value?: null | number): null | number;
 
-    masterWeight(value?: null | Uint32): null | Uint32;
+    masterWeight(value?: null | number): null | number;
 
-    lowThreshold(value?: null | Uint32): null | Uint32;
+    lowThreshold(value?: null | number): null | number;
 
-    medThreshold(value?: null | Uint32): null | Uint32;
+    medThreshold(value?: null | number): null | number;
 
-    highThreshold(value?: null | Uint32): null | Uint32;
+    highThreshold(value?: null | number): null | number;
 
     homeDomain(value?: null | String32): null | String32;
 
@@ -2147,48 +2650,18 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): ChangeTrustOp;
   }
 
-  class AllowTrustOpAsset {
-    switch(): AssetType;
-
-    assetCode4(value?: AssetCode4): AssetCode4;
-
-    assetCode12(value?: AssetCode12): AssetCode12;
-
-    value(): AssetCode4 | AssetCode12;
-
-    static assetTypeCreditAlphanum4(value: AssetCode4): AllowTrustOpAsset;
-
-    static assetTypeCreditAlphanum12(value: AssetCode12): AllowTrustOpAsset;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AllowTrustOpAsset;
-
-    static write(value: AllowTrustOpAsset, io: Buffer): void;
-
-    static isValid(value: AllowTrustOpAsset): boolean;
-
-    static toXDR(value: AllowTrustOpAsset): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AllowTrustOpAsset;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): AllowTrustOpAsset;
-  }
-
   class AllowTrustOp {
     constructor(attributes: {
       trustor: AccountId;
       asset: AllowTrustOpAsset;
-      authorize: Uint32;
+      authorize: number;
     });
 
     trustor(value?: AccountId): AccountId;
 
     asset(value?: AllowTrustOpAsset): AllowTrustOpAsset;
 
-    authorize(value?: Uint32): Uint32;
+    authorize(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -2254,6 +2727,2138 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): BumpSequenceOp;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): BumpSequenceOp;
+  }
+
+  class TimeBounds {
+    constructor(attributes: { minTime: TimePoint; maxTime: TimePoint });
+
+    minTime(value?: TimePoint): TimePoint;
+
+    maxTime(value?: TimePoint): TimePoint;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TimeBounds;
+
+    static write(value: TimeBounds, io: Buffer): void;
+
+    static isValid(value: TimeBounds): boolean;
+
+    static toXDR(value: TimeBounds): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TimeBounds;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TimeBounds;
+  }
+
+  class TransactionV0 {
+    constructor(attributes: {
+      sourceAccountEd25519: Uint256;
+      fee: number;
+      seqNum: SequenceNumber;
+      timeBounds: null | TimeBounds;
+      memo: Memo;
+      operations: Operation[];
+      ext: TransactionV0Ext;
+    });
+
+    sourceAccountEd25519(value?: Uint256): Uint256;
+
+    fee(value?: number): number;
+
+    seqNum(value?: SequenceNumber): SequenceNumber;
+
+    timeBounds(value?: null | TimeBounds): null | TimeBounds;
+
+    memo(value?: Memo): Memo;
+
+    operations(value?: Operation[]): Operation[];
+
+    ext(value?: TransactionV0Ext): TransactionV0Ext;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionV0;
+
+    static write(value: TransactionV0, io: Buffer): void;
+
+    static isValid(value: TransactionV0): boolean;
+
+    static toXDR(value: TransactionV0): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV0;
+  }
+
+  class TransactionV0Envelope {
+    constructor(attributes: {
+      tx: TransactionV0;
+      signatures: DecoratedSignature[];
+    });
+
+    tx(value?: TransactionV0): TransactionV0;
+
+    signatures(value?: DecoratedSignature[]): DecoratedSignature[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionV0Envelope;
+
+    static write(value: TransactionV0Envelope, io: Buffer): void;
+
+    static isValid(value: TransactionV0Envelope): boolean;
+
+    static toXDR(value: TransactionV0Envelope): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0Envelope;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionV0Envelope;
+  }
+
+  class Transaction {
+    constructor(attributes: {
+      sourceAccount: MuxedAccount;
+      fee: number;
+      seqNum: SequenceNumber;
+      timeBounds: null | TimeBounds;
+      memo: Memo;
+      operations: Operation[];
+      ext: TransactionExt;
+    });
+
+    sourceAccount(value?: MuxedAccount): MuxedAccount;
+
+    fee(value?: number): number;
+
+    seqNum(value?: SequenceNumber): SequenceNumber;
+
+    timeBounds(value?: null | TimeBounds): null | TimeBounds;
+
+    memo(value?: Memo): Memo;
+
+    operations(value?: Operation[]): Operation[];
+
+    ext(value?: TransactionExt): TransactionExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Transaction;
+
+    static write(value: Transaction, io: Buffer): void;
+
+    static isValid(value: Transaction): boolean;
+
+    static toXDR(value: Transaction): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Transaction;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Transaction;
+  }
+
+  class TransactionV1Envelope {
+    constructor(attributes: {
+      tx: Transaction;
+      signatures: DecoratedSignature[];
+    });
+
+    tx(value?: Transaction): Transaction;
+
+    signatures(value?: DecoratedSignature[]): DecoratedSignature[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionV1Envelope;
+
+    static write(value: TransactionV1Envelope, io: Buffer): void;
+
+    static isValid(value: TransactionV1Envelope): boolean;
+
+    static toXDR(value: TransactionV1Envelope): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV1Envelope;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionV1Envelope;
+  }
+
+  class FeeBumpTransaction {
+    constructor(attributes: {
+      feeSource: MuxedAccount;
+      fee: Int64;
+      innerTx: FeeBumpTransactionInnerTx;
+      ext: FeeBumpTransactionExt;
+    });
+
+    feeSource(value?: MuxedAccount): MuxedAccount;
+
+    fee(value?: Int64): Int64;
+
+    innerTx(value?: FeeBumpTransactionInnerTx): FeeBumpTransactionInnerTx;
+
+    ext(value?: FeeBumpTransactionExt): FeeBumpTransactionExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): FeeBumpTransaction;
+
+    static write(value: FeeBumpTransaction, io: Buffer): void;
+
+    static isValid(value: FeeBumpTransaction): boolean;
+
+    static toXDR(value: FeeBumpTransaction): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransaction;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): FeeBumpTransaction;
+  }
+
+  class FeeBumpTransactionEnvelope {
+    constructor(attributes: {
+      tx: FeeBumpTransaction;
+      signatures: DecoratedSignature[];
+    });
+
+    tx(value?: FeeBumpTransaction): FeeBumpTransaction;
+
+    signatures(value?: DecoratedSignature[]): DecoratedSignature[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): FeeBumpTransactionEnvelope;
+
+    static write(value: FeeBumpTransactionEnvelope, io: Buffer): void;
+
+    static isValid(value: FeeBumpTransactionEnvelope): boolean;
+
+    static toXDR(value: FeeBumpTransactionEnvelope): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): FeeBumpTransactionEnvelope;
+  }
+
+  class TransactionSignaturePayload {
+    constructor(attributes: {
+      networkId: Hash;
+      taggedTransaction: TransactionSignaturePayloadTaggedTransaction;
+    });
+
+    networkId(value?: Hash): Hash;
+
+    taggedTransaction(
+      value?: TransactionSignaturePayloadTaggedTransaction
+    ): TransactionSignaturePayloadTaggedTransaction;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionSignaturePayload;
+
+    static write(value: TransactionSignaturePayload, io: Buffer): void;
+
+    static isValid(value: TransactionSignaturePayload): boolean;
+
+    static toXDR(value: TransactionSignaturePayload): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionSignaturePayload;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionSignaturePayload;
+  }
+
+  class ClaimOfferAtom {
+    constructor(attributes: {
+      sellerId: AccountId;
+      offerId: Int64;
+      assetSold: Asset;
+      amountSold: Int64;
+      assetBought: Asset;
+      amountBought: Int64;
+    });
+
+    sellerId(value?: AccountId): AccountId;
+
+    offerId(value?: Int64): Int64;
+
+    assetSold(value?: Asset): Asset;
+
+    amountSold(value?: Int64): Int64;
+
+    assetBought(value?: Asset): Asset;
+
+    amountBought(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimOfferAtom;
+
+    static write(value: ClaimOfferAtom, io: Buffer): void;
+
+    static isValid(value: ClaimOfferAtom): boolean;
+
+    static toXDR(value: ClaimOfferAtom): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimOfferAtom;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimOfferAtom;
+  }
+
+  class SimplePaymentResult {
+    constructor(attributes: {
+      destination: AccountId;
+      asset: Asset;
+      amount: Int64;
+    });
+
+    destination(value?: AccountId): AccountId;
+
+    asset(value?: Asset): Asset;
+
+    amount(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SimplePaymentResult;
+
+    static write(value: SimplePaymentResult, io: Buffer): void;
+
+    static isValid(value: SimplePaymentResult): boolean;
+
+    static toXDR(value: SimplePaymentResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): SimplePaymentResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SimplePaymentResult;
+  }
+
+  class PathPaymentStrictReceiveResultSuccess {
+    constructor(attributes: {
+      offers: ClaimOfferAtom[];
+      last: SimplePaymentResult;
+    });
+
+    offers(value?: ClaimOfferAtom[]): ClaimOfferAtom[];
+
+    last(value?: SimplePaymentResult): SimplePaymentResult;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): PathPaymentStrictReceiveResultSuccess;
+
+    static write(
+      value: PathPaymentStrictReceiveResultSuccess,
+      io: Buffer
+    ): void;
+
+    static isValid(value: PathPaymentStrictReceiveResultSuccess): boolean;
+
+    static toXDR(value: PathPaymentStrictReceiveResultSuccess): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): PathPaymentStrictReceiveResultSuccess;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictReceiveResultSuccess;
+  }
+
+  class PathPaymentStrictSendResultSuccess {
+    constructor(attributes: {
+      offers: ClaimOfferAtom[];
+      last: SimplePaymentResult;
+    });
+
+    offers(value?: ClaimOfferAtom[]): ClaimOfferAtom[];
+
+    last(value?: SimplePaymentResult): SimplePaymentResult;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): PathPaymentStrictSendResultSuccess;
+
+    static write(value: PathPaymentStrictSendResultSuccess, io: Buffer): void;
+
+    static isValid(value: PathPaymentStrictSendResultSuccess): boolean;
+
+    static toXDR(value: PathPaymentStrictSendResultSuccess): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): PathPaymentStrictSendResultSuccess;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictSendResultSuccess;
+  }
+
+  class ManageOfferSuccessResult {
+    constructor(attributes: {
+      offersClaimed: ClaimOfferAtom[];
+      offer: ManageOfferSuccessResultOffer;
+    });
+
+    offersClaimed(value?: ClaimOfferAtom[]): ClaimOfferAtom[];
+
+    offer(value?: ManageOfferSuccessResultOffer): ManageOfferSuccessResultOffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ManageOfferSuccessResult;
+
+    static write(value: ManageOfferSuccessResult, io: Buffer): void;
+
+    static isValid(value: ManageOfferSuccessResult): boolean;
+
+    static toXDR(value: ManageOfferSuccessResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ManageOfferSuccessResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ManageOfferSuccessResult;
+  }
+
+  class InflationPayout {
+    constructor(attributes: { destination: AccountId; amount: Int64 });
+
+    destination(value?: AccountId): AccountId;
+
+    amount(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): InflationPayout;
+
+    static write(value: InflationPayout, io: Buffer): void;
+
+    static isValid(value: InflationPayout): boolean;
+
+    static toXDR(value: InflationPayout): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): InflationPayout;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): InflationPayout;
+  }
+
+  class InnerTransactionResult {
+    constructor(attributes: {
+      feeCharged: Int64;
+      result: InnerTransactionResultResult;
+      ext: InnerTransactionResultExt;
+    });
+
+    feeCharged(value?: Int64): Int64;
+
+    result(value?: InnerTransactionResultResult): InnerTransactionResultResult;
+
+    ext(value?: InnerTransactionResultExt): InnerTransactionResultExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): InnerTransactionResult;
+
+    static write(value: InnerTransactionResult, io: Buffer): void;
+
+    static isValid(value: InnerTransactionResult): boolean;
+
+    static toXDR(value: InnerTransactionResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): InnerTransactionResult;
+  }
+
+  class InnerTransactionResultPair {
+    constructor(attributes: {
+      transactionHash: Hash;
+      result: InnerTransactionResult;
+    });
+
+    transactionHash(value?: Hash): Hash;
+
+    result(value?: InnerTransactionResult): InnerTransactionResult;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): InnerTransactionResultPair;
+
+    static write(value: InnerTransactionResultPair, io: Buffer): void;
+
+    static isValid(value: InnerTransactionResultPair): boolean;
+
+    static toXDR(value: InnerTransactionResultPair): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultPair;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): InnerTransactionResultPair;
+  }
+
+  class TransactionResult {
+    constructor(attributes: {
+      feeCharged: Int64;
+      result: TransactionResultResult;
+      ext: TransactionResultExt;
+    });
+
+    feeCharged(value?: Int64): Int64;
+
+    result(value?: TransactionResultResult): TransactionResultResult;
+
+    ext(value?: TransactionResultExt): TransactionResultExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResult;
+
+    static write(value: TransactionResult, io: Buffer): void;
+
+    static isValid(value: TransactionResult): boolean;
+
+    static toXDR(value: TransactionResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResult;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult;
+  }
+
+  class ScpBallot {
+    constructor(attributes: { counter: number; value: Value });
+
+    counter(value?: number): number;
+
+    value(value?: Value): Value;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpBallot;
+
+    static write(value: ScpBallot, io: Buffer): void;
+
+    static isValid(value: ScpBallot): boolean;
+
+    static toXDR(value: ScpBallot): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpBallot;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpBallot;
+  }
+
+  class ScpNomination {
+    constructor(attributes: {
+      quorumSetHash: Hash;
+      votes: Value[];
+      accepted: Value[];
+    });
+
+    quorumSetHash(value?: Hash): Hash;
+
+    votes(value?: Value[]): Value[];
+
+    accepted(value?: Value[]): Value[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpNomination;
+
+    static write(value: ScpNomination, io: Buffer): void;
+
+    static isValid(value: ScpNomination): boolean;
+
+    static toXDR(value: ScpNomination): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpNomination;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpNomination;
+  }
+
+  class ScpStatementPrepare {
+    constructor(attributes: {
+      quorumSetHash: Hash;
+      ballot: ScpBallot;
+      prepared: null | ScpBallot;
+      preparedPrime: null | ScpBallot;
+      nC: number;
+      nH: number;
+    });
+
+    quorumSetHash(value?: Hash): Hash;
+
+    ballot(value?: ScpBallot): ScpBallot;
+
+    prepared(value?: null | ScpBallot): null | ScpBallot;
+
+    preparedPrime(value?: null | ScpBallot): null | ScpBallot;
+
+    nC(value?: number): number;
+
+    nH(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpStatementPrepare;
+
+    static write(value: ScpStatementPrepare, io: Buffer): void;
+
+    static isValid(value: ScpStatementPrepare): boolean;
+
+    static toXDR(value: ScpStatementPrepare): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementPrepare;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementPrepare;
+  }
+
+  class ScpStatementConfirm {
+    constructor(attributes: {
+      ballot: ScpBallot;
+      nPrepared: number;
+      nCommit: number;
+      nH: number;
+      quorumSetHash: Hash;
+    });
+
+    ballot(value?: ScpBallot): ScpBallot;
+
+    nPrepared(value?: number): number;
+
+    nCommit(value?: number): number;
+
+    nH(value?: number): number;
+
+    quorumSetHash(value?: Hash): Hash;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpStatementConfirm;
+
+    static write(value: ScpStatementConfirm, io: Buffer): void;
+
+    static isValid(value: ScpStatementConfirm): boolean;
+
+    static toXDR(value: ScpStatementConfirm): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementConfirm;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementConfirm;
+  }
+
+  class ScpStatementExternalize {
+    constructor(attributes: {
+      commit: ScpBallot;
+      nH: number;
+      commitQuorumSetHash: Hash;
+    });
+
+    commit(value?: ScpBallot): ScpBallot;
+
+    nH(value?: number): number;
+
+    commitQuorumSetHash(value?: Hash): Hash;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpStatementExternalize;
+
+    static write(value: ScpStatementExternalize, io: Buffer): void;
+
+    static isValid(value: ScpStatementExternalize): boolean;
+
+    static toXDR(value: ScpStatementExternalize): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementExternalize;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementExternalize;
+  }
+
+  class ScpStatement {
+    constructor(attributes: {
+      nodeId: NodeId;
+      slotIndex: Uint64;
+      pledges: ScpStatementPledges;
+    });
+
+    nodeId(value?: NodeId): NodeId;
+
+    slotIndex(value?: Uint64): Uint64;
+
+    pledges(value?: ScpStatementPledges): ScpStatementPledges;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpStatement;
+
+    static write(value: ScpStatement, io: Buffer): void;
+
+    static isValid(value: ScpStatement): boolean;
+
+    static toXDR(value: ScpStatement): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatement;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatement;
+  }
+
+  class ScpEnvelope {
+    constructor(attributes: { statement: ScpStatement; signature: Signature });
+
+    statement(value?: ScpStatement): ScpStatement;
+
+    signature(value?: Signature): Signature;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpEnvelope;
+
+    static write(value: ScpEnvelope, io: Buffer): void;
+
+    static isValid(value: ScpEnvelope): boolean;
+
+    static toXDR(value: ScpEnvelope): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpEnvelope;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpEnvelope;
+  }
+
+  class ScpQuorumSet {
+    constructor(attributes: {
+      threshold: number;
+      validators: PublicKey[];
+      innerSets: ScpQuorumSet[];
+    });
+
+    threshold(value?: number): number;
+
+    validators(value?: PublicKey[]): PublicKey[];
+
+    innerSets(value?: ScpQuorumSet[]): ScpQuorumSet[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpQuorumSet;
+
+    static write(value: ScpQuorumSet, io: Buffer): void;
+
+    static isValid(value: ScpQuorumSet): boolean;
+
+    static toXDR(value: ScpQuorumSet): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpQuorumSet;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpQuorumSet;
+  }
+
+  class AssetAlphaNum4 {
+    constructor(attributes: { assetCode: AssetCode4; issuer: AccountId });
+
+    assetCode(value?: AssetCode4): AssetCode4;
+
+    issuer(value?: AccountId): AccountId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AssetAlphaNum4;
+
+    static write(value: AssetAlphaNum4, io: Buffer): void;
+
+    static isValid(value: AssetAlphaNum4): boolean;
+
+    static toXDR(value: AssetAlphaNum4): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AssetAlphaNum4;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AssetAlphaNum4;
+  }
+
+  class AssetAlphaNum12 {
+    constructor(attributes: { assetCode: AssetCode12; issuer: AccountId });
+
+    assetCode(value?: AssetCode12): AssetCode12;
+
+    issuer(value?: AccountId): AccountId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AssetAlphaNum12;
+
+    static write(value: AssetAlphaNum12, io: Buffer): void;
+
+    static isValid(value: AssetAlphaNum12): boolean;
+
+    static toXDR(value: AssetAlphaNum12): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AssetAlphaNum12;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AssetAlphaNum12;
+  }
+
+  class Price {
+    constructor(attributes: { n: number; d: number });
+
+    n(value?: number): number;
+
+    d(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Price;
+
+    static write(value: Price, io: Buffer): void;
+
+    static isValid(value: Price): boolean;
+
+    static toXDR(value: Price): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Price;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Price;
+  }
+
+  class Liabilities {
+    constructor(attributes: { buying: Int64; selling: Int64 });
+
+    buying(value?: Int64): Int64;
+
+    selling(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Liabilities;
+
+    static write(value: Liabilities, io: Buffer): void;
+
+    static isValid(value: Liabilities): boolean;
+
+    static toXDR(value: Liabilities): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Liabilities;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Liabilities;
+  }
+
+  class Signer {
+    constructor(attributes: { key: SignerKey; weight: number });
+
+    key(value?: SignerKey): SignerKey;
+
+    weight(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Signer;
+
+    static write(value: Signer, io: Buffer): void;
+
+    static isValid(value: Signer): boolean;
+
+    static toXDR(value: Signer): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Signer;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Signer;
+  }
+
+  class AccountEntryV1 {
+    constructor(attributes: {
+      liabilities: Liabilities;
+      ext: AccountEntryV1Ext;
+    });
+
+    liabilities(value?: Liabilities): Liabilities;
+
+    ext(value?: AccountEntryV1Ext): AccountEntryV1Ext;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AccountEntryV1;
+
+    static write(value: AccountEntryV1, io: Buffer): void;
+
+    static isValid(value: AccountEntryV1): boolean;
+
+    static toXDR(value: AccountEntryV1): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryV1;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryV1;
+  }
+
+  class AccountEntry {
+    constructor(attributes: {
+      accountId: AccountId;
+      balance: Int64;
+      seqNum: SequenceNumber;
+      numSubEntries: number;
+      inflationDest: null | AccountId;
+      flags: number;
+      homeDomain: String32;
+      thresholds: Thresholds;
+      signers: Signer[];
+      ext: AccountEntryExt;
+    });
+
+    accountId(value?: AccountId): AccountId;
+
+    balance(value?: Int64): Int64;
+
+    seqNum(value?: SequenceNumber): SequenceNumber;
+
+    numSubEntries(value?: number): number;
+
+    inflationDest(value?: null | AccountId): null | AccountId;
+
+    flags(value?: number): number;
+
+    homeDomain(value?: String32): String32;
+
+    thresholds(value?: Thresholds): Thresholds;
+
+    signers(value?: Signer[]): Signer[];
+
+    ext(value?: AccountEntryExt): AccountEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AccountEntry;
+
+    static write(value: AccountEntry, io: Buffer): void;
+
+    static isValid(value: AccountEntry): boolean;
+
+    static toXDR(value: AccountEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntry;
+  }
+
+  class TrustLineEntryV1 {
+    constructor(attributes: {
+      liabilities: Liabilities;
+      ext: TrustLineEntryV1Ext;
+    });
+
+    liabilities(value?: Liabilities): Liabilities;
+
+    ext(value?: TrustLineEntryV1Ext): TrustLineEntryV1Ext;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TrustLineEntryV1;
+
+    static write(value: TrustLineEntryV1, io: Buffer): void;
+
+    static isValid(value: TrustLineEntryV1): boolean;
+
+    static toXDR(value: TrustLineEntryV1): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryV1;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntryV1;
+  }
+
+  class TrustLineEntry {
+    constructor(attributes: {
+      accountId: AccountId;
+      asset: Asset;
+      balance: Int64;
+      limit: Int64;
+      flags: number;
+      ext: TrustLineEntryExt;
+    });
+
+    accountId(value?: AccountId): AccountId;
+
+    asset(value?: Asset): Asset;
+
+    balance(value?: Int64): Int64;
+
+    limit(value?: Int64): Int64;
+
+    flags(value?: number): number;
+
+    ext(value?: TrustLineEntryExt): TrustLineEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TrustLineEntry;
+
+    static write(value: TrustLineEntry, io: Buffer): void;
+
+    static isValid(value: TrustLineEntry): boolean;
+
+    static toXDR(value: TrustLineEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntry;
+  }
+
+  class OfferEntry {
+    constructor(attributes: {
+      sellerId: AccountId;
+      offerId: Int64;
+      selling: Asset;
+      buying: Asset;
+      amount: Int64;
+      price: Price;
+      flags: number;
+      ext: OfferEntryExt;
+    });
+
+    sellerId(value?: AccountId): AccountId;
+
+    offerId(value?: Int64): Int64;
+
+    selling(value?: Asset): Asset;
+
+    buying(value?: Asset): Asset;
+
+    amount(value?: Int64): Int64;
+
+    price(value?: Price): Price;
+
+    flags(value?: number): number;
+
+    ext(value?: OfferEntryExt): OfferEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OfferEntry;
+
+    static write(value: OfferEntry, io: Buffer): void;
+
+    static isValid(value: OfferEntry): boolean;
+
+    static toXDR(value: OfferEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OfferEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): OfferEntry;
+  }
+
+  class DataEntry {
+    constructor(attributes: {
+      accountId: AccountId;
+      dataName: String64;
+      dataValue: DataValue;
+      ext: DataEntryExt;
+    });
+
+    accountId(value?: AccountId): AccountId;
+
+    dataName(value?: String64): String64;
+
+    dataValue(value?: DataValue): DataValue;
+
+    ext(value?: DataEntryExt): DataEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): DataEntry;
+
+    static write(value: DataEntry, io: Buffer): void;
+
+    static isValid(value: DataEntry): boolean;
+
+    static toXDR(value: DataEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): DataEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): DataEntry;
+  }
+
+  class LedgerEntry {
+    constructor(attributes: {
+      lastModifiedLedgerSeq: number;
+      data: LedgerEntryData;
+      ext: LedgerEntryExt;
+    });
+
+    lastModifiedLedgerSeq(value?: number): number;
+
+    data(value?: LedgerEntryData): LedgerEntryData;
+
+    ext(value?: LedgerEntryExt): LedgerEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerEntry;
+
+    static write(value: LedgerEntry, io: Buffer): void;
+
+    static isValid(value: LedgerEntry): boolean;
+
+    static toXDR(value: LedgerEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntry;
+  }
+
+  class LedgerCloseValueSignature {
+    constructor(attributes: { nodeId: NodeId; signature: Signature });
+
+    nodeId(value?: NodeId): NodeId;
+
+    signature(value?: Signature): Signature;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerCloseValueSignature;
+
+    static write(value: LedgerCloseValueSignature, io: Buffer): void;
+
+    static isValid(value: LedgerCloseValueSignature): boolean;
+
+    static toXDR(value: LedgerCloseValueSignature): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseValueSignature;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerCloseValueSignature;
+  }
+
+  class StellarValue {
+    constructor(attributes: {
+      txSetHash: Hash;
+      closeTime: TimePoint;
+      upgrades: UpgradeType[];
+      ext: StellarValueExt;
+    });
+
+    txSetHash(value?: Hash): Hash;
+
+    closeTime(value?: TimePoint): TimePoint;
+
+    upgrades(value?: UpgradeType[]): UpgradeType[];
+
+    ext(value?: StellarValueExt): StellarValueExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): StellarValue;
+
+    static write(value: StellarValue, io: Buffer): void;
+
+    static isValid(value: StellarValue): boolean;
+
+    static toXDR(value: StellarValue): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): StellarValue;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): StellarValue;
+  }
+
+  class LedgerHeader {
+    constructor(attributes: {
+      ledgerVersion: number;
+      previousLedgerHash: Hash;
+      scpValue: StellarValue;
+      txSetResultHash: Hash;
+      bucketListHash: Hash;
+      ledgerSeq: number;
+      totalCoins: Int64;
+      feePool: Int64;
+      inflationSeq: number;
+      idPool: Uint64;
+      baseFee: number;
+      baseReserve: number;
+      maxTxSetSize: number;
+      skipList: Hash[];
+      ext: LedgerHeaderExt;
+    });
+
+    ledgerVersion(value?: number): number;
+
+    previousLedgerHash(value?: Hash): Hash;
+
+    scpValue(value?: StellarValue): StellarValue;
+
+    txSetResultHash(value?: Hash): Hash;
+
+    bucketListHash(value?: Hash): Hash;
+
+    ledgerSeq(value?: number): number;
+
+    totalCoins(value?: Int64): Int64;
+
+    feePool(value?: Int64): Int64;
+
+    inflationSeq(value?: number): number;
+
+    idPool(value?: Uint64): Uint64;
+
+    baseFee(value?: number): number;
+
+    baseReserve(value?: number): number;
+
+    maxTxSetSize(value?: number): number;
+
+    skipList(value?: Hash[]): Hash[];
+
+    ext(value?: LedgerHeaderExt): LedgerHeaderExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerHeader;
+
+    static write(value: LedgerHeader, io: Buffer): void;
+
+    static isValid(value: LedgerHeader): boolean;
+
+    static toXDR(value: LedgerHeader): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeader;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeader;
+  }
+
+  class LedgerKeyAccount {
+    constructor(attributes: { accountId: AccountId });
+
+    accountId(value?: AccountId): AccountId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyAccount;
+
+    static write(value: LedgerKeyAccount, io: Buffer): void;
+
+    static isValid(value: LedgerKeyAccount): boolean;
+
+    static toXDR(value: LedgerKeyAccount): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyAccount;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyAccount;
+  }
+
+  class LedgerKeyTrustLine {
+    constructor(attributes: { accountId: AccountId; asset: Asset });
+
+    accountId(value?: AccountId): AccountId;
+
+    asset(value?: Asset): Asset;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyTrustLine;
+
+    static write(value: LedgerKeyTrustLine, io: Buffer): void;
+
+    static isValid(value: LedgerKeyTrustLine): boolean;
+
+    static toXDR(value: LedgerKeyTrustLine): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyTrustLine;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyTrustLine;
+  }
+
+  class LedgerKeyOffer {
+    constructor(attributes: { sellerId: AccountId; offerId: Int64 });
+
+    sellerId(value?: AccountId): AccountId;
+
+    offerId(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyOffer;
+
+    static write(value: LedgerKeyOffer, io: Buffer): void;
+
+    static isValid(value: LedgerKeyOffer): boolean;
+
+    static toXDR(value: LedgerKeyOffer): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyOffer;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyOffer;
+  }
+
+  class LedgerKeyData {
+    constructor(attributes: { accountId: AccountId; dataName: String64 });
+
+    accountId(value?: AccountId): AccountId;
+
+    dataName(value?: String64): String64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyData;
+
+    static write(value: LedgerKeyData, io: Buffer): void;
+
+    static isValid(value: LedgerKeyData): boolean;
+
+    static toXDR(value: LedgerKeyData): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyData;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyData;
+  }
+
+  class BucketMetadata {
+    constructor(attributes: { ledgerVersion: number; ext: BucketMetadataExt });
+
+    ledgerVersion(value?: number): number;
+
+    ext(value?: BucketMetadataExt): BucketMetadataExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): BucketMetadata;
+
+    static write(value: BucketMetadata, io: Buffer): void;
+
+    static isValid(value: BucketMetadata): boolean;
+
+    static toXDR(value: BucketMetadata): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): BucketMetadata;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): BucketMetadata;
+  }
+
+  class TransactionSet {
+    constructor(attributes: {
+      previousLedgerHash: Hash;
+      txes: TransactionEnvelope[];
+    });
+
+    previousLedgerHash(value?: Hash): Hash;
+
+    txes(value?: TransactionEnvelope[]): TransactionEnvelope[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionSet;
+
+    static write(value: TransactionSet, io: Buffer): void;
+
+    static isValid(value: TransactionSet): boolean;
+
+    static toXDR(value: TransactionSet): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionSet;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionSet;
+  }
+
+  class TransactionResultPair {
+    constructor(attributes: {
+      transactionHash: Hash;
+      result: TransactionResult;
+    });
+
+    transactionHash(value?: Hash): Hash;
+
+    result(value?: TransactionResult): TransactionResult;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResultPair;
+
+    static write(value: TransactionResultPair, io: Buffer): void;
+
+    static isValid(value: TransactionResultPair): boolean;
+
+    static toXDR(value: TransactionResultPair): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultPair;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultPair;
+  }
+
+  class TransactionResultSet {
+    constructor(attributes: { results: TransactionResultPair[] });
+
+    results(value?: TransactionResultPair[]): TransactionResultPair[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResultSet;
+
+    static write(value: TransactionResultSet, io: Buffer): void;
+
+    static isValid(value: TransactionResultSet): boolean;
+
+    static toXDR(value: TransactionResultSet): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultSet;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultSet;
+  }
+
+  class TransactionHistoryEntry {
+    constructor(attributes: {
+      ledgerSeq: number;
+      txSet: TransactionSet;
+      ext: TransactionHistoryEntryExt;
+    });
+
+    ledgerSeq(value?: number): number;
+
+    txSet(value?: TransactionSet): TransactionSet;
+
+    ext(value?: TransactionHistoryEntryExt): TransactionHistoryEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionHistoryEntry;
+
+    static write(value: TransactionHistoryEntry, io: Buffer): void;
+
+    static isValid(value: TransactionHistoryEntry): boolean;
+
+    static toXDR(value: TransactionHistoryEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryEntry;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryEntry;
+  }
+
+  class TransactionHistoryResultEntry {
+    constructor(attributes: {
+      ledgerSeq: number;
+      txResultSet: TransactionResultSet;
+      ext: TransactionHistoryResultEntryExt;
+    });
+
+    ledgerSeq(value?: number): number;
+
+    txResultSet(value?: TransactionResultSet): TransactionResultSet;
+
+    ext(
+      value?: TransactionHistoryResultEntryExt
+    ): TransactionHistoryResultEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionHistoryResultEntry;
+
+    static write(value: TransactionHistoryResultEntry, io: Buffer): void;
+
+    static isValid(value: TransactionHistoryResultEntry): boolean;
+
+    static toXDR(value: TransactionHistoryResultEntry): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): TransactionHistoryResultEntry;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryResultEntry;
+  }
+
+  class LedgerHeaderHistoryEntry {
+    constructor(attributes: {
+      hash: Hash;
+      header: LedgerHeader;
+      ext: LedgerHeaderHistoryEntryExt;
+    });
+
+    hash(value?: Hash): Hash;
+
+    header(value?: LedgerHeader): LedgerHeader;
+
+    ext(value?: LedgerHeaderHistoryEntryExt): LedgerHeaderHistoryEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerHeaderHistoryEntry;
+
+    static write(value: LedgerHeaderHistoryEntry, io: Buffer): void;
+
+    static isValid(value: LedgerHeaderHistoryEntry): boolean;
+
+    static toXDR(value: LedgerHeaderHistoryEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderHistoryEntry;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerHeaderHistoryEntry;
+  }
+
+  class LedgerScpMessages {
+    constructor(attributes: { ledgerSeq: number; messages: ScpEnvelope[] });
+
+    ledgerSeq(value?: number): number;
+
+    messages(value?: ScpEnvelope[]): ScpEnvelope[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerScpMessages;
+
+    static write(value: LedgerScpMessages, io: Buffer): void;
+
+    static isValid(value: LedgerScpMessages): boolean;
+
+    static toXDR(value: LedgerScpMessages): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerScpMessages;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerScpMessages;
+  }
+
+  class ScpHistoryEntryV0 {
+    constructor(attributes: {
+      quorumSets: ScpQuorumSet[];
+      ledgerMessages: LedgerScpMessages;
+    });
+
+    quorumSets(value?: ScpQuorumSet[]): ScpQuorumSet[];
+
+    ledgerMessages(value?: LedgerScpMessages): LedgerScpMessages;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScpHistoryEntryV0;
+
+    static write(value: ScpHistoryEntryV0, io: Buffer): void;
+
+    static isValid(value: ScpHistoryEntryV0): boolean;
+
+    static toXDR(value: ScpHistoryEntryV0): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScpHistoryEntryV0;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpHistoryEntryV0;
+  }
+
+  class OperationMeta {
+    constructor(attributes: { changes: LedgerEntryChanges });
+
+    changes(value?: LedgerEntryChanges): LedgerEntryChanges;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OperationMeta;
+
+    static write(value: OperationMeta, io: Buffer): void;
+
+    static isValid(value: OperationMeta): boolean;
+
+    static toXDR(value: OperationMeta): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OperationMeta;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationMeta;
+  }
+
+  class TransactionMetaV1 {
+    constructor(attributes: {
+      txChanges: LedgerEntryChanges;
+      operations: OperationMeta[];
+    });
+
+    txChanges(value?: LedgerEntryChanges): LedgerEntryChanges;
+
+    operations(value?: OperationMeta[]): OperationMeta[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionMetaV1;
+
+    static write(value: TransactionMetaV1, io: Buffer): void;
+
+    static isValid(value: TransactionMetaV1): boolean;
+
+    static toXDR(value: TransactionMetaV1): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV1;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV1;
+  }
+
+  class TransactionMetaV2 {
+    constructor(attributes: {
+      txChangesBefore: LedgerEntryChanges;
+      operations: OperationMeta[];
+      txChangesAfter: LedgerEntryChanges;
+    });
+
+    txChangesBefore(value?: LedgerEntryChanges): LedgerEntryChanges;
+
+    operations(value?: OperationMeta[]): OperationMeta[];
+
+    txChangesAfter(value?: LedgerEntryChanges): LedgerEntryChanges;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionMetaV2;
+
+    static write(value: TransactionMetaV2, io: Buffer): void;
+
+    static isValid(value: TransactionMetaV2): boolean;
+
+    static toXDR(value: TransactionMetaV2): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV2;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV2;
+  }
+
+  class TransactionResultMeta {
+    constructor(attributes: {
+      result: TransactionResultPair;
+      feeProcessing: LedgerEntryChanges;
+      txApplyProcessing: TransactionMeta;
+    });
+
+    result(value?: TransactionResultPair): TransactionResultPair;
+
+    feeProcessing(value?: LedgerEntryChanges): LedgerEntryChanges;
+
+    txApplyProcessing(value?: TransactionMeta): TransactionMeta;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResultMeta;
+
+    static write(value: TransactionResultMeta, io: Buffer): void;
+
+    static isValid(value: TransactionResultMeta): boolean;
+
+    static toXDR(value: TransactionResultMeta): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultMeta;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultMeta;
+  }
+
+  class UpgradeEntryMeta {
+    constructor(attributes: {
+      upgrade: LedgerUpgrade;
+      changes: LedgerEntryChanges;
+    });
+
+    upgrade(value?: LedgerUpgrade): LedgerUpgrade;
+
+    changes(value?: LedgerEntryChanges): LedgerEntryChanges;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): UpgradeEntryMeta;
+
+    static write(value: UpgradeEntryMeta, io: Buffer): void;
+
+    static isValid(value: UpgradeEntryMeta): boolean;
+
+    static toXDR(value: UpgradeEntryMeta): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): UpgradeEntryMeta;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): UpgradeEntryMeta;
+  }
+
+  class LedgerCloseMetaV0 {
+    constructor(attributes: {
+      ledgerHeader: LedgerHeaderHistoryEntry;
+      txSet: TransactionSet;
+      txProcessing: TransactionResultMeta[];
+      upgradesProcessing: UpgradeEntryMeta[];
+      scpInfo: ScpHistoryEntry[];
+    });
+
+    ledgerHeader(value?: LedgerHeaderHistoryEntry): LedgerHeaderHistoryEntry;
+
+    txSet(value?: TransactionSet): TransactionSet;
+
+    txProcessing(value?: TransactionResultMeta[]): TransactionResultMeta[];
+
+    upgradesProcessing(value?: UpgradeEntryMeta[]): UpgradeEntryMeta[];
+
+    scpInfo(value?: ScpHistoryEntry[]): ScpHistoryEntry[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerCloseMetaV0;
+
+    static write(value: LedgerCloseMetaV0, io: Buffer): void;
+
+    static isValid(value: LedgerCloseMetaV0): boolean;
+
+    static toXDR(value: LedgerCloseMetaV0): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV0;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV0;
+  }
+
+  class PeerAddressIp {
+    switch(): IpAddrType;
+
+    ipv4(value?: Buffer): Buffer;
+
+    ipv6(value?: Buffer): Buffer;
+
+    value(): Buffer | Buffer;
+
+    static iPv4(value: Buffer): PeerAddressIp;
+
+    static iPv6(value: Buffer): PeerAddressIp;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): PeerAddressIp;
+
+    static write(value: PeerAddressIp, io: Buffer): void;
+
+    static isValid(value: PeerAddressIp): boolean;
+
+    static toXDR(value: PeerAddressIp): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): PeerAddressIp;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): PeerAddressIp;
+  }
+
+  class SurveyResponseBody {
+    switch(): SurveyMessageCommandType;
+
+    topologyResponseBody(value?: TopologyResponseBody): TopologyResponseBody;
+
+    value(): TopologyResponseBody;
+
+    static surveyTopology(value: TopologyResponseBody): SurveyResponseBody;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SurveyResponseBody;
+
+    static write(value: SurveyResponseBody, io: Buffer): void;
+
+    static isValid(value: SurveyResponseBody): boolean;
+
+    static toXDR(value: SurveyResponseBody): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): SurveyResponseBody;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): SurveyResponseBody;
+  }
+
+  class StellarMessage {
+    switch(): MessageType;
+
+    error(value?: Error): Error;
+
+    hello(value?: Hello): Hello;
+
+    auth(value?: Auth): Auth;
+
+    dontHave(value?: DontHave): DontHave;
+
+    peers(value?: PeerAddress[]): PeerAddress[];
+
+    txSetHash(value?: Uint256): Uint256;
+
+    txSet(value?: TransactionSet): TransactionSet;
+
+    transaction(value?: TransactionEnvelope): TransactionEnvelope;
+
+    signedSurveyRequestMessage(
+      value?: SignedSurveyRequestMessage
+    ): SignedSurveyRequestMessage;
+
+    signedSurveyResponseMessage(
+      value?: SignedSurveyResponseMessage
+    ): SignedSurveyResponseMessage;
+
+    qSetHash(value?: Uint256): Uint256;
+
+    qSet(value?: ScpQuorumSet): ScpQuorumSet;
+
+    envelope(value?: ScpEnvelope): ScpEnvelope;
+
+    getScpLedgerSeq(value?: number): number;
+
+    value():
+      | Error
+      | Hello
+      | Auth
+      | DontHave
+      | PeerAddress[]
+      | Uint256
+      | TransactionSet
+      | TransactionEnvelope
+      | SignedSurveyRequestMessage
+      | SignedSurveyResponseMessage
+      | Uint256
+      | ScpQuorumSet
+      | ScpEnvelope
+      | number;
+
+    static errorMsg(value: Error): StellarMessage;
+
+    static hello(value: Hello): StellarMessage;
+
+    static auth(value: Auth): StellarMessage;
+
+    static dontHave(value: DontHave): StellarMessage;
+
+    static peer(value: PeerAddress[]): StellarMessage;
+
+    static getTxSet(value: Uint256): StellarMessage;
+
+    static txSet(value: TransactionSet): StellarMessage;
+
+    static transaction(value: TransactionEnvelope): StellarMessage;
+
+    static surveyRequest(value: SignedSurveyRequestMessage): StellarMessage;
+
+    static surveyResponse(value: SignedSurveyResponseMessage): StellarMessage;
+
+    static getScpQuorumset(value: Uint256): StellarMessage;
+
+    static scpQuorumset(value: ScpQuorumSet): StellarMessage;
+
+    static scpMessage(value: ScpEnvelope): StellarMessage;
+
+    static getScpState(value: number): StellarMessage;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): StellarMessage;
+
+    static write(value: StellarMessage, io: Buffer): void;
+
+    static isValid(value: StellarMessage): boolean;
+
+    static toXDR(value: StellarMessage): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): StellarMessage;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): StellarMessage;
+  }
+
+  class AuthenticatedMessage {
+    switch(): number;
+
+    v0(value?: AuthenticatedMessageV0): AuthenticatedMessageV0;
+
+    value(): AuthenticatedMessageV0;
+
+    static 0(value: AuthenticatedMessageV0): AuthenticatedMessage;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AuthenticatedMessage;
+
+    static write(value: AuthenticatedMessage, io: Buffer): void;
+
+    static isValid(value: AuthenticatedMessage): boolean;
+
+    static toXDR(value: AuthenticatedMessage): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AuthenticatedMessage;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AuthenticatedMessage;
+  }
+
+  class PublicKey {
+    switch(): PublicKeyType;
+
+    ed25519(value?: Uint256): Uint256;
+
+    value(): Uint256;
+
+    static publicKeyTypeEd25519(value: Uint256): PublicKey;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): PublicKey;
+
+    static write(value: PublicKey, io: Buffer): void;
+
+    static isValid(value: PublicKey): boolean;
+
+    static toXDR(value: PublicKey): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): PublicKey;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): PublicKey;
+  }
+
+  class SignerKey {
+    switch(): SignerKeyType;
+
+    ed25519(value?: Uint256): Uint256;
+
+    preAuthTx(value?: Uint256): Uint256;
+
+    hashX(value?: Uint256): Uint256;
+
+    value(): Uint256 | Uint256 | Uint256;
+
+    static signerKeyTypeEd25519(value: Uint256): SignerKey;
+
+    static signerKeyTypePreAuthTx(value: Uint256): SignerKey;
+
+    static signerKeyTypeHashX(value: Uint256): SignerKey;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SignerKey;
+
+    static write(value: SignerKey, io: Buffer): void;
+
+    static isValid(value: SignerKey): boolean;
+
+    static toXDR(value: SignerKey): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): SignerKey;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): SignerKey;
+  }
+
+  class MuxedAccount {
+    switch(): CryptoKeyType;
+
+    ed25519(value?: Uint256): Uint256;
+
+    med25519(value?: MuxedAccountMed25519): MuxedAccountMed25519;
+
+    value(): Uint256 | MuxedAccountMed25519;
+
+    static keyTypeEd25519(value: Uint256): MuxedAccount;
+
+    static keyTypeMuxedEd25519(value: MuxedAccountMed25519): MuxedAccount;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): MuxedAccount;
+
+    static write(value: MuxedAccount, io: Buffer): void;
+
+    static isValid(value: MuxedAccount): boolean;
+
+    static toXDR(value: MuxedAccount): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): MuxedAccount;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): MuxedAccount;
+  }
+
+  class AllowTrustOpAsset {
+    switch(): AssetType;
+
+    assetCode4(value?: AssetCode4): AssetCode4;
+
+    assetCode12(value?: AssetCode12): AssetCode12;
+
+    value(): AssetCode4 | AssetCode12;
+
+    static assetTypeCreditAlphanum4(value: AssetCode4): AllowTrustOpAsset;
+
+    static assetTypeCreditAlphanum12(value: AssetCode12): AllowTrustOpAsset;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AllowTrustOpAsset;
+
+    static write(value: AllowTrustOpAsset, io: Buffer): void;
+
+    static isValid(value: AllowTrustOpAsset): boolean;
+
+    static toXDR(value: AllowTrustOpAsset): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AllowTrustOpAsset;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AllowTrustOpAsset;
   }
 
   class OperationBody {
@@ -2353,27 +4958,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): OperationBody;
   }
 
-  class MemoType {
-    readonly name:
-      | 'memoNone'
-      | 'memoText'
-      | 'memoId'
-      | 'memoHash'
-      | 'memoReturn';
-
-    readonly value: 0 | 1 | 2 | 3 | 4;
-
-    static memoNone(): MemoType;
-
-    static memoText(): MemoType;
-
-    static memoId(): MemoType;
-
-    static memoHash(): MemoType;
-
-    static memoReturn(): MemoType;
-  }
-
   class Memo {
     switch(): MemoType;
 
@@ -2412,30 +4996,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): Memo;
   }
 
-  class TimeBounds {
-    constructor(attributes: { minTime: TimePoint; maxTime: TimePoint });
-
-    minTime(value?: TimePoint): TimePoint;
-
-    maxTime(value?: TimePoint): TimePoint;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TimeBounds;
-
-    static write(value: TimeBounds, io: Buffer): void;
-
-    static isValid(value: TimeBounds): boolean;
-
-    static toXDR(value: TimeBounds): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TimeBounds;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TimeBounds;
-  }
-
   class TransactionV0Ext {
     switch(): number;
 
@@ -2456,78 +5016,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV0Ext;
   }
 
-  class TransactionV0 {
-    constructor(attributes: {
-      sourceAccountEd25519: Uint256;
-      fee: Uint32;
-      seqNum: SequenceNumber;
-      timeBounds: null | TimeBounds;
-      memo: Memo;
-      operations: Operation[];
-      ext: TransactionV0Ext;
-    });
-
-    sourceAccountEd25519(value?: Uint256): Uint256;
-
-    fee(value?: Uint32): Uint32;
-
-    seqNum(value?: SequenceNumber): SequenceNumber;
-
-    timeBounds(value?: null | TimeBounds): null | TimeBounds;
-
-    memo(value?: Memo): Memo;
-
-    operations(value?: Operation[]): Operation[];
-
-    ext(value?: TransactionV0Ext): TransactionV0Ext;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionV0;
-
-    static write(value: TransactionV0, io: Buffer): void;
-
-    static isValid(value: TransactionV0): boolean;
-
-    static toXDR(value: TransactionV0): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV0;
-  }
-
-  class TransactionV0Envelope {
-    constructor(attributes: {
-      tx: TransactionV0;
-      signatures: DecoratedSignature[];
-    });
-
-    tx(value?: TransactionV0): TransactionV0;
-
-    signatures(value?: DecoratedSignature[]): DecoratedSignature[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionV0Envelope;
-
-    static write(value: TransactionV0Envelope, io: Buffer): void;
-
-    static isValid(value: TransactionV0Envelope): boolean;
-
-    static toXDR(value: TransactionV0Envelope): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0Envelope;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionV0Envelope;
-  }
-
   class TransactionExt {
     switch(): number;
 
@@ -2546,78 +5034,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionExt;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionExt;
-  }
-
-  class Transaction {
-    constructor(attributes: {
-      sourceAccount: MuxedAccount;
-      fee: Uint32;
-      seqNum: SequenceNumber;
-      timeBounds: null | TimeBounds;
-      memo: Memo;
-      operations: Operation[];
-      ext: TransactionExt;
-    });
-
-    sourceAccount(value?: MuxedAccount): MuxedAccount;
-
-    fee(value?: Uint32): Uint32;
-
-    seqNum(value?: SequenceNumber): SequenceNumber;
-
-    timeBounds(value?: null | TimeBounds): null | TimeBounds;
-
-    memo(value?: Memo): Memo;
-
-    operations(value?: Operation[]): Operation[];
-
-    ext(value?: TransactionExt): TransactionExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Transaction;
-
-    static write(value: Transaction, io: Buffer): void;
-
-    static isValid(value: Transaction): boolean;
-
-    static toXDR(value: Transaction): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Transaction;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Transaction;
-  }
-
-  class TransactionV1Envelope {
-    constructor(attributes: {
-      tx: Transaction;
-      signatures: DecoratedSignature[];
-    });
-
-    tx(value?: Transaction): Transaction;
-
-    signatures(value?: DecoratedSignature[]): DecoratedSignature[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionV1Envelope;
-
-    static write(value: TransactionV1Envelope, io: Buffer): void;
-
-    static isValid(value: TransactionV1Envelope): boolean;
-
-    static toXDR(value: TransactionV1Envelope): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionV1Envelope;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionV1Envelope;
   }
 
   class FeeBumpTransactionInnerTx {
@@ -2672,69 +5088,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): FeeBumpTransactionExt;
-  }
-
-  class FeeBumpTransaction {
-    constructor(attributes: {
-      feeSource: MuxedAccount;
-      fee: Int64;
-      innerTx: FeeBumpTransactionInnerTx;
-      ext: FeeBumpTransactionExt;
-    });
-
-    feeSource(value?: MuxedAccount): MuxedAccount;
-
-    fee(value?: Int64): Int64;
-
-    innerTx(value?: FeeBumpTransactionInnerTx): FeeBumpTransactionInnerTx;
-
-    ext(value?: FeeBumpTransactionExt): FeeBumpTransactionExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): FeeBumpTransaction;
-
-    static write(value: FeeBumpTransaction, io: Buffer): void;
-
-    static isValid(value: FeeBumpTransaction): boolean;
-
-    static toXDR(value: FeeBumpTransaction): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransaction;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): FeeBumpTransaction;
-  }
-
-  class FeeBumpTransactionEnvelope {
-    constructor(attributes: {
-      tx: FeeBumpTransaction;
-      signatures: DecoratedSignature[];
-    });
-
-    tx(value?: FeeBumpTransaction): FeeBumpTransaction;
-
-    signatures(value?: DecoratedSignature[]): DecoratedSignature[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): FeeBumpTransactionEnvelope;
-
-    static write(value: FeeBumpTransactionEnvelope, io: Buffer): void;
-
-    static isValid(value: FeeBumpTransactionEnvelope): boolean;
-
-    static toXDR(value: FeeBumpTransactionEnvelope): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): FeeBumpTransactionEnvelope;
   }
 
   class TransactionEnvelope {
@@ -2824,98 +5177,6 @@ export namespace xdr {
     ): TransactionSignaturePayloadTaggedTransaction;
   }
 
-  class TransactionSignaturePayload {
-    constructor(attributes: {
-      networkId: Hash;
-      taggedTransaction: TransactionSignaturePayloadTaggedTransaction;
-    });
-
-    networkId(value?: Hash): Hash;
-
-    taggedTransaction(
-      value?: TransactionSignaturePayloadTaggedTransaction
-    ): TransactionSignaturePayloadTaggedTransaction;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionSignaturePayload;
-
-    static write(value: TransactionSignaturePayload, io: Buffer): void;
-
-    static isValid(value: TransactionSignaturePayload): boolean;
-
-    static toXDR(value: TransactionSignaturePayload): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionSignaturePayload;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionSignaturePayload;
-  }
-
-  class ClaimOfferAtom {
-    constructor(attributes: {
-      sellerId: AccountId;
-      offerId: Int64;
-      assetSold: Asset;
-      amountSold: Int64;
-      assetBought: Asset;
-      amountBought: Int64;
-    });
-
-    sellerId(value?: AccountId): AccountId;
-
-    offerId(value?: Int64): Int64;
-
-    assetSold(value?: Asset): Asset;
-
-    amountSold(value?: Int64): Int64;
-
-    assetBought(value?: Asset): Asset;
-
-    amountBought(value?: Int64): Int64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ClaimOfferAtom;
-
-    static write(value: ClaimOfferAtom, io: Buffer): void;
-
-    static isValid(value: ClaimOfferAtom): boolean;
-
-    static toXDR(value: ClaimOfferAtom): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ClaimOfferAtom;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimOfferAtom;
-  }
-
-  class CreateAccountResultCode {
-    readonly name:
-      | 'createAccountSuccess'
-      | 'createAccountMalformed'
-      | 'createAccountUnderfunded'
-      | 'createAccountLowReserve'
-      | 'createAccountAlreadyExist';
-
-    readonly value: 0 | -1 | -2 | -3 | -4;
-
-    static createAccountSuccess(): CreateAccountResultCode;
-
-    static createAccountMalformed(): CreateAccountResultCode;
-
-    static createAccountUnderfunded(): CreateAccountResultCode;
-
-    static createAccountLowReserve(): CreateAccountResultCode;
-
-    static createAccountAlreadyExist(): CreateAccountResultCode;
-  }
-
   class CreateAccountResult {
     switch(): CreateAccountResultCode;
 
@@ -2939,42 +5200,6 @@ export namespace xdr {
     ): CreateAccountResult;
   }
 
-  class PaymentResultCode {
-    readonly name:
-      | 'paymentSuccess'
-      | 'paymentMalformed'
-      | 'paymentUnderfunded'
-      | 'paymentSrcNoTrust'
-      | 'paymentSrcNotAuthorized'
-      | 'paymentNoDestination'
-      | 'paymentNoTrust'
-      | 'paymentNotAuthorized'
-      | 'paymentLineFull'
-      | 'paymentNoIssuer';
-
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9;
-
-    static paymentSuccess(): PaymentResultCode;
-
-    static paymentMalformed(): PaymentResultCode;
-
-    static paymentUnderfunded(): PaymentResultCode;
-
-    static paymentSrcNoTrust(): PaymentResultCode;
-
-    static paymentSrcNotAuthorized(): PaymentResultCode;
-
-    static paymentNoDestination(): PaymentResultCode;
-
-    static paymentNoTrust(): PaymentResultCode;
-
-    static paymentNotAuthorized(): PaymentResultCode;
-
-    static paymentLineFull(): PaymentResultCode;
-
-    static paymentNoIssuer(): PaymentResultCode;
-  }
-
   class PaymentResult {
     switch(): PaymentResultCode;
 
@@ -2993,133 +5218,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): PaymentResult;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): PaymentResult;
-  }
-
-  class PathPaymentStrictReceiveResultCode {
-    readonly name:
-      | 'pathPaymentStrictReceiveSuccess'
-      | 'pathPaymentStrictReceiveMalformed'
-      | 'pathPaymentStrictReceiveUnderfunded'
-      | 'pathPaymentStrictReceiveSrcNoTrust'
-      | 'pathPaymentStrictReceiveSrcNotAuthorized'
-      | 'pathPaymentStrictReceiveNoDestination'
-      | 'pathPaymentStrictReceiveNoTrust'
-      | 'pathPaymentStrictReceiveNotAuthorized'
-      | 'pathPaymentStrictReceiveLineFull'
-      | 'pathPaymentStrictReceiveNoIssuer'
-      | 'pathPaymentStrictReceiveTooFewOffer'
-      | 'pathPaymentStrictReceiveOfferCrossSelf'
-      | 'pathPaymentStrictReceiveOverSendmax';
-
-    readonly value:
-      | 0
-      | -1
-      | -2
-      | -3
-      | -4
-      | -5
-      | -6
-      | -7
-      | -8
-      | -9
-      | -10
-      | -11
-      | -12;
-
-    static pathPaymentStrictReceiveSuccess(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveMalformed(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveUnderfunded(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveSrcNoTrust(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveSrcNotAuthorized(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveNoDestination(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveNoTrust(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveNotAuthorized(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveLineFull(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveNoIssuer(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveTooFewOffer(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveOfferCrossSelf(): PathPaymentStrictReceiveResultCode;
-
-    static pathPaymentStrictReceiveOverSendmax(): PathPaymentStrictReceiveResultCode;
-  }
-
-  class SimplePaymentResult {
-    constructor(attributes: {
-      destination: AccountId;
-      asset: Asset;
-      amount: Int64;
-    });
-
-    destination(value?: AccountId): AccountId;
-
-    asset(value?: Asset): Asset;
-
-    amount(value?: Int64): Int64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): SimplePaymentResult;
-
-    static write(value: SimplePaymentResult, io: Buffer): void;
-
-    static isValid(value: SimplePaymentResult): boolean;
-
-    static toXDR(value: SimplePaymentResult): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): SimplePaymentResult;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): SimplePaymentResult;
-  }
-
-  class PathPaymentStrictReceiveResultSuccess {
-    constructor(attributes: {
-      offers: ClaimOfferAtom[];
-      last: SimplePaymentResult;
-    });
-
-    offers(value?: ClaimOfferAtom[]): ClaimOfferAtom[];
-
-    last(value?: SimplePaymentResult): SimplePaymentResult;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): PathPaymentStrictReceiveResultSuccess;
-
-    static write(
-      value: PathPaymentStrictReceiveResultSuccess,
-      io: Buffer
-    ): void;
-
-    static isValid(value: PathPaymentStrictReceiveResultSuccess): boolean;
-
-    static toXDR(value: PathPaymentStrictReceiveResultSuccess): Buffer;
-
-    static fromXDR(
-      input: Buffer,
-      format?: 'raw'
-    ): PathPaymentStrictReceiveResultSuccess;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): PathPaymentStrictReceiveResultSuccess;
   }
 
   class PathPaymentStrictReceiveResult {
@@ -3164,97 +5262,6 @@ export namespace xdr {
     ): PathPaymentStrictReceiveResult;
   }
 
-  class PathPaymentStrictSendResultCode {
-    readonly name:
-      | 'pathPaymentStrictSendSuccess'
-      | 'pathPaymentStrictSendMalformed'
-      | 'pathPaymentStrictSendUnderfunded'
-      | 'pathPaymentStrictSendSrcNoTrust'
-      | 'pathPaymentStrictSendSrcNotAuthorized'
-      | 'pathPaymentStrictSendNoDestination'
-      | 'pathPaymentStrictSendNoTrust'
-      | 'pathPaymentStrictSendNotAuthorized'
-      | 'pathPaymentStrictSendLineFull'
-      | 'pathPaymentStrictSendNoIssuer'
-      | 'pathPaymentStrictSendTooFewOffer'
-      | 'pathPaymentStrictSendOfferCrossSelf'
-      | 'pathPaymentStrictSendUnderDestmin';
-
-    readonly value:
-      | 0
-      | -1
-      | -2
-      | -3
-      | -4
-      | -5
-      | -6
-      | -7
-      | -8
-      | -9
-      | -10
-      | -11
-      | -12;
-
-    static pathPaymentStrictSendSuccess(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendMalformed(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendUnderfunded(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendSrcNoTrust(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendSrcNotAuthorized(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendNoDestination(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendNoTrust(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendNotAuthorized(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendLineFull(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendNoIssuer(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendTooFewOffer(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendOfferCrossSelf(): PathPaymentStrictSendResultCode;
-
-    static pathPaymentStrictSendUnderDestmin(): PathPaymentStrictSendResultCode;
-  }
-
-  class PathPaymentStrictSendResultSuccess {
-    constructor(attributes: {
-      offers: ClaimOfferAtom[];
-      last: SimplePaymentResult;
-    });
-
-    offers(value?: ClaimOfferAtom[]): ClaimOfferAtom[];
-
-    last(value?: SimplePaymentResult): SimplePaymentResult;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): PathPaymentStrictSendResultSuccess;
-
-    static write(value: PathPaymentStrictSendResultSuccess, io: Buffer): void;
-
-    static isValid(value: PathPaymentStrictSendResultSuccess): boolean;
-
-    static toXDR(value: PathPaymentStrictSendResultSuccess): Buffer;
-
-    static fromXDR(
-      input: Buffer,
-      format?: 'raw'
-    ): PathPaymentStrictSendResultSuccess;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): PathPaymentStrictSendResultSuccess;
-  }
-
   class PathPaymentStrictSendResult {
     switch(): PathPaymentStrictSendResultCode;
 
@@ -3294,79 +5301,6 @@ export namespace xdr {
     ): PathPaymentStrictSendResult;
   }
 
-  class ManageSellOfferResultCode {
-    readonly name:
-      | 'manageSellOfferSuccess'
-      | 'manageSellOfferMalformed'
-      | 'manageSellOfferSellNoTrust'
-      | 'manageSellOfferBuyNoTrust'
-      | 'manageSellOfferSellNotAuthorized'
-      | 'manageSellOfferBuyNotAuthorized'
-      | 'manageSellOfferLineFull'
-      | 'manageSellOfferUnderfunded'
-      | 'manageSellOfferCrossSelf'
-      | 'manageSellOfferSellNoIssuer'
-      | 'manageSellOfferBuyNoIssuer'
-      | 'manageSellOfferNotFound'
-      | 'manageSellOfferLowReserve';
-
-    readonly value:
-      | 0
-      | -1
-      | -2
-      | -3
-      | -4
-      | -5
-      | -6
-      | -7
-      | -8
-      | -9
-      | -10
-      | -11
-      | -12;
-
-    static manageSellOfferSuccess(): ManageSellOfferResultCode;
-
-    static manageSellOfferMalformed(): ManageSellOfferResultCode;
-
-    static manageSellOfferSellNoTrust(): ManageSellOfferResultCode;
-
-    static manageSellOfferBuyNoTrust(): ManageSellOfferResultCode;
-
-    static manageSellOfferSellNotAuthorized(): ManageSellOfferResultCode;
-
-    static manageSellOfferBuyNotAuthorized(): ManageSellOfferResultCode;
-
-    static manageSellOfferLineFull(): ManageSellOfferResultCode;
-
-    static manageSellOfferUnderfunded(): ManageSellOfferResultCode;
-
-    static manageSellOfferCrossSelf(): ManageSellOfferResultCode;
-
-    static manageSellOfferSellNoIssuer(): ManageSellOfferResultCode;
-
-    static manageSellOfferBuyNoIssuer(): ManageSellOfferResultCode;
-
-    static manageSellOfferNotFound(): ManageSellOfferResultCode;
-
-    static manageSellOfferLowReserve(): ManageSellOfferResultCode;
-  }
-
-  class ManageOfferEffect {
-    readonly name:
-      | 'manageOfferCreated'
-      | 'manageOfferUpdated'
-      | 'manageOfferDeleted';
-
-    readonly value: 0 | 1 | 2;
-
-    static manageOfferCreated(): ManageOfferEffect;
-
-    static manageOfferUpdated(): ManageOfferEffect;
-
-    static manageOfferDeleted(): ManageOfferEffect;
-  }
-
   class ManageOfferSuccessResultOffer {
     switch(): ManageOfferEffect;
 
@@ -3401,36 +5335,6 @@ export namespace xdr {
     ): ManageOfferSuccessResultOffer;
   }
 
-  class ManageOfferSuccessResult {
-    constructor(attributes: {
-      offersClaimed: ClaimOfferAtom[];
-      offer: ManageOfferSuccessResultOffer;
-    });
-
-    offersClaimed(value?: ClaimOfferAtom[]): ClaimOfferAtom[];
-
-    offer(value?: ManageOfferSuccessResultOffer): ManageOfferSuccessResultOffer;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ManageOfferSuccessResult;
-
-    static write(value: ManageOfferSuccessResult, io: Buffer): void;
-
-    static isValid(value: ManageOfferSuccessResult): boolean;
-
-    static toXDR(value: ManageOfferSuccessResult): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ManageOfferSuccessResult;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): ManageOfferSuccessResult;
-  }
-
   class ManageSellOfferResult {
     switch(): ManageSellOfferResultCode;
 
@@ -3460,64 +5364,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): ManageSellOfferResult;
-  }
-
-  class ManageBuyOfferResultCode {
-    readonly name:
-      | 'manageBuyOfferSuccess'
-      | 'manageBuyOfferMalformed'
-      | 'manageBuyOfferSellNoTrust'
-      | 'manageBuyOfferBuyNoTrust'
-      | 'manageBuyOfferSellNotAuthorized'
-      | 'manageBuyOfferBuyNotAuthorized'
-      | 'manageBuyOfferLineFull'
-      | 'manageBuyOfferUnderfunded'
-      | 'manageBuyOfferCrossSelf'
-      | 'manageBuyOfferSellNoIssuer'
-      | 'manageBuyOfferBuyNoIssuer'
-      | 'manageBuyOfferNotFound'
-      | 'manageBuyOfferLowReserve';
-
-    readonly value:
-      | 0
-      | -1
-      | -2
-      | -3
-      | -4
-      | -5
-      | -6
-      | -7
-      | -8
-      | -9
-      | -10
-      | -11
-      | -12;
-
-    static manageBuyOfferSuccess(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferMalformed(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferSellNoTrust(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferBuyNoTrust(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferSellNotAuthorized(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferBuyNotAuthorized(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferLineFull(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferUnderfunded(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferCrossSelf(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferSellNoIssuer(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferBuyNoIssuer(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferNotFound(): ManageBuyOfferResultCode;
-
-    static manageBuyOfferLowReserve(): ManageBuyOfferResultCode;
   }
 
   class ManageBuyOfferResult {
@@ -3551,42 +5397,6 @@ export namespace xdr {
     ): ManageBuyOfferResult;
   }
 
-  class SetOptionsResultCode {
-    readonly name:
-      | 'setOptionsSuccess'
-      | 'setOptionsLowReserve'
-      | 'setOptionsTooManySigner'
-      | 'setOptionsBadFlag'
-      | 'setOptionsInvalidInflation'
-      | 'setOptionsCantChange'
-      | 'setOptionsUnknownFlag'
-      | 'setOptionsThresholdOutOfRange'
-      | 'setOptionsBadSigner'
-      | 'setOptionsInvalidHomeDomain';
-
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9;
-
-    static setOptionsSuccess(): SetOptionsResultCode;
-
-    static setOptionsLowReserve(): SetOptionsResultCode;
-
-    static setOptionsTooManySigner(): SetOptionsResultCode;
-
-    static setOptionsBadFlag(): SetOptionsResultCode;
-
-    static setOptionsInvalidInflation(): SetOptionsResultCode;
-
-    static setOptionsCantChange(): SetOptionsResultCode;
-
-    static setOptionsUnknownFlag(): SetOptionsResultCode;
-
-    static setOptionsThresholdOutOfRange(): SetOptionsResultCode;
-
-    static setOptionsBadSigner(): SetOptionsResultCode;
-
-    static setOptionsInvalidHomeDomain(): SetOptionsResultCode;
-  }
-
   class SetOptionsResult {
     switch(): SetOptionsResultCode;
 
@@ -3605,30 +5415,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): SetOptionsResult;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): SetOptionsResult;
-  }
-
-  class ChangeTrustResultCode {
-    readonly name:
-      | 'changeTrustSuccess'
-      | 'changeTrustMalformed'
-      | 'changeTrustNoIssuer'
-      | 'changeTrustInvalidLimit'
-      | 'changeTrustLowReserve'
-      | 'changeTrustSelfNotAllowed';
-
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
-
-    static changeTrustSuccess(): ChangeTrustResultCode;
-
-    static changeTrustMalformed(): ChangeTrustResultCode;
-
-    static changeTrustNoIssuer(): ChangeTrustResultCode;
-
-    static changeTrustInvalidLimit(): ChangeTrustResultCode;
-
-    static changeTrustLowReserve(): ChangeTrustResultCode;
-
-    static changeTrustSelfNotAllowed(): ChangeTrustResultCode;
   }
 
   class ChangeTrustResult {
@@ -3651,30 +5437,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): ChangeTrustResult;
   }
 
-  class AllowTrustResultCode {
-    readonly name:
-      | 'allowTrustSuccess'
-      | 'allowTrustMalformed'
-      | 'allowTrustNoTrustLine'
-      | 'allowTrustTrustNotRequired'
-      | 'allowTrustCantRevoke'
-      | 'allowTrustSelfNotAllowed';
-
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
-
-    static allowTrustSuccess(): AllowTrustResultCode;
-
-    static allowTrustMalformed(): AllowTrustResultCode;
-
-    static allowTrustNoTrustLine(): AllowTrustResultCode;
-
-    static allowTrustTrustNotRequired(): AllowTrustResultCode;
-
-    static allowTrustCantRevoke(): AllowTrustResultCode;
-
-    static allowTrustSelfNotAllowed(): AllowTrustResultCode;
-  }
-
   class AllowTrustResult {
     switch(): AllowTrustResultCode;
 
@@ -3693,33 +5455,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): AllowTrustResult;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): AllowTrustResult;
-  }
-
-  class AccountMergeResultCode {
-    readonly name:
-      | 'accountMergeSuccess'
-      | 'accountMergeMalformed'
-      | 'accountMergeNoAccount'
-      | 'accountMergeImmutableSet'
-      | 'accountMergeHasSubEntry'
-      | 'accountMergeSeqnumTooFar'
-      | 'accountMergeDestFull';
-
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
-
-    static accountMergeSuccess(): AccountMergeResultCode;
-
-    static accountMergeMalformed(): AccountMergeResultCode;
-
-    static accountMergeNoAccount(): AccountMergeResultCode;
-
-    static accountMergeImmutableSet(): AccountMergeResultCode;
-
-    static accountMergeHasSubEntry(): AccountMergeResultCode;
-
-    static accountMergeSeqnumTooFar(): AccountMergeResultCode;
-
-    static accountMergeDestFull(): AccountMergeResultCode;
   }
 
   class AccountMergeResult {
@@ -3748,40 +5483,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): AccountMergeResult;
   }
 
-  class InflationResultCode {
-    readonly name: 'inflationSuccess' | 'inflationNotTime';
-
-    readonly value: 0 | -1;
-
-    static inflationSuccess(): InflationResultCode;
-
-    static inflationNotTime(): InflationResultCode;
-  }
-
-  class InflationPayout {
-    constructor(attributes: { destination: AccountId; amount: Int64 });
-
-    destination(value?: AccountId): AccountId;
-
-    amount(value?: Int64): Int64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): InflationPayout;
-
-    static write(value: InflationPayout, io: Buffer): void;
-
-    static isValid(value: InflationPayout): boolean;
-
-    static toXDR(value: InflationPayout): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): InflationPayout;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): InflationPayout;
-  }
-
   class InflationResult {
     switch(): InflationResultCode;
 
@@ -3808,27 +5509,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): InflationResult;
   }
 
-  class ManageDataResultCode {
-    readonly name:
-      | 'manageDataSuccess'
-      | 'manageDataNotSupportedYet'
-      | 'manageDataNameNotFound'
-      | 'manageDataLowReserve'
-      | 'manageDataInvalidName';
-
-    readonly value: 0 | -1 | -2 | -3 | -4;
-
-    static manageDataSuccess(): ManageDataResultCode;
-
-    static manageDataNotSupportedYet(): ManageDataResultCode;
-
-    static manageDataNameNotFound(): ManageDataResultCode;
-
-    static manageDataLowReserve(): ManageDataResultCode;
-
-    static manageDataInvalidName(): ManageDataResultCode;
-  }
-
   class ManageDataResult {
     switch(): ManageDataResultCode;
 
@@ -3849,16 +5529,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): ManageDataResult;
   }
 
-  class BumpSequenceResultCode {
-    readonly name: 'bumpSequenceSuccess' | 'bumpSequenceBadSeq';
-
-    readonly value: 0 | -1;
-
-    static bumpSequenceSuccess(): BumpSequenceResultCode;
-
-    static bumpSequenceBadSeq(): BumpSequenceResultCode;
-  }
-
   class BumpSequenceResult {
     switch(): BumpSequenceResultCode;
 
@@ -3877,30 +5547,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): BumpSequenceResult;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): BumpSequenceResult;
-  }
-
-  class OperationResultCode {
-    readonly name:
-      | 'opInner'
-      | 'opBadAuth'
-      | 'opNoAccount'
-      | 'opNotSupported'
-      | 'opTooManySubentry'
-      | 'opExceededWorkLimit';
-
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
-
-    static opInner(): OperationResultCode;
-
-    static opBadAuth(): OperationResultCode;
-
-    static opNoAccount(): OperationResultCode;
-
-    static opNotSupported(): OperationResultCode;
-
-    static opTooManySubentry(): OperationResultCode;
-
-    static opExceededWorkLimit(): OperationResultCode;
   }
 
   class OperationResultTr {
@@ -4033,72 +5679,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): OperationResult;
   }
 
-  class TransactionResultCode {
-    readonly name:
-      | 'txFeeBumpInnerSuccess'
-      | 'txSuccess'
-      | 'txFailed'
-      | 'txTooEarly'
-      | 'txTooLate'
-      | 'txMissingOperation'
-      | 'txBadSeq'
-      | 'txBadAuth'
-      | 'txInsufficientBalance'
-      | 'txNoAccount'
-      | 'txInsufficientFee'
-      | 'txBadAuthExtra'
-      | 'txInternalError'
-      | 'txNotSupported'
-      | 'txFeeBumpInnerFailed';
-
-    readonly value:
-      | 1
-      | 0
-      | -1
-      | -2
-      | -3
-      | -4
-      | -5
-      | -6
-      | -7
-      | -8
-      | -9
-      | -10
-      | -11
-      | -12
-      | -13;
-
-    static txFeeBumpInnerSuccess(): TransactionResultCode;
-
-    static txSuccess(): TransactionResultCode;
-
-    static txFailed(): TransactionResultCode;
-
-    static txTooEarly(): TransactionResultCode;
-
-    static txTooLate(): TransactionResultCode;
-
-    static txMissingOperation(): TransactionResultCode;
-
-    static txBadSeq(): TransactionResultCode;
-
-    static txBadAuth(): TransactionResultCode;
-
-    static txInsufficientBalance(): TransactionResultCode;
-
-    static txNoAccount(): TransactionResultCode;
-
-    static txInsufficientFee(): TransactionResultCode;
-
-    static txBadAuthExtra(): TransactionResultCode;
-
-    static txInternalError(): TransactionResultCode;
-
-    static txNotSupported(): TransactionResultCode;
-
-    static txFeeBumpInnerFailed(): TransactionResultCode;
-  }
-
   class InnerTransactionResultResult {
     switch(): TransactionResultCode;
 
@@ -4151,69 +5731,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): InnerTransactionResultExt;
-  }
-
-  class InnerTransactionResult {
-    constructor(attributes: {
-      feeCharged: Int64;
-      result: InnerTransactionResultResult;
-      ext: InnerTransactionResultExt;
-    });
-
-    feeCharged(value?: Int64): Int64;
-
-    result(value?: InnerTransactionResultResult): InnerTransactionResultResult;
-
-    ext(value?: InnerTransactionResultExt): InnerTransactionResultExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): InnerTransactionResult;
-
-    static write(value: InnerTransactionResult, io: Buffer): void;
-
-    static isValid(value: InnerTransactionResult): boolean;
-
-    static toXDR(value: InnerTransactionResult): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResult;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): InnerTransactionResult;
-  }
-
-  class InnerTransactionResultPair {
-    constructor(attributes: {
-      transactionHash: Hash;
-      result: InnerTransactionResult;
-    });
-
-    transactionHash(value?: Hash): Hash;
-
-    result(value?: InnerTransactionResult): InnerTransactionResult;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): InnerTransactionResultPair;
-
-    static write(value: InnerTransactionResultPair, io: Buffer): void;
-
-    static isValid(value: InnerTransactionResultPair): boolean;
-
-    static toXDR(value: InnerTransactionResultPair): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultPair;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): InnerTransactionResultPair;
   }
 
   class TransactionResultResult {
@@ -4282,224 +5799,6 @@ export namespace xdr {
     ): TransactionResultExt;
   }
 
-  class TransactionResult {
-    constructor(attributes: {
-      feeCharged: Int64;
-      result: TransactionResultResult;
-      ext: TransactionResultExt;
-    });
-
-    feeCharged(value?: Int64): Int64;
-
-    result(value?: TransactionResultResult): TransactionResultResult;
-
-    ext(value?: TransactionResultExt): TransactionResultExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionResult;
-
-    static write(value: TransactionResult, io: Buffer): void;
-
-    static isValid(value: TransactionResult): boolean;
-
-    static toXDR(value: TransactionResult): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionResult;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult;
-  }
-
-  type Value = Buffer;
-
-  class ScpBallot {
-    constructor(attributes: { counter: Uint32; value: Value });
-
-    counter(value?: Uint32): Uint32;
-
-    value(value?: Value): Value;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpBallot;
-
-    static write(value: ScpBallot, io: Buffer): void;
-
-    static isValid(value: ScpBallot): boolean;
-
-    static toXDR(value: ScpBallot): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpBallot;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpBallot;
-  }
-
-  class ScpStatementType {
-    readonly name:
-      | 'scpStPrepare'
-      | 'scpStConfirm'
-      | 'scpStExternalize'
-      | 'scpStNominate';
-
-    readonly value: 0 | 1 | 2 | 3;
-
-    static scpStPrepare(): ScpStatementType;
-
-    static scpStConfirm(): ScpStatementType;
-
-    static scpStExternalize(): ScpStatementType;
-
-    static scpStNominate(): ScpStatementType;
-  }
-
-  class ScpNomination {
-    constructor(attributes: {
-      quorumSetHash: Hash;
-      votes: Value[];
-      accepted: Value[];
-    });
-
-    quorumSetHash(value?: Hash): Hash;
-
-    votes(value?: Value[]): Value[];
-
-    accepted(value?: Value[]): Value[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpNomination;
-
-    static write(value: ScpNomination, io: Buffer): void;
-
-    static isValid(value: ScpNomination): boolean;
-
-    static toXDR(value: ScpNomination): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpNomination;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpNomination;
-  }
-
-  class ScpStatementPrepare {
-    constructor(attributes: {
-      quorumSetHash: Hash;
-      ballot: ScpBallot;
-      prepared: null | ScpBallot;
-      preparedPrime: null | ScpBallot;
-      nC: Uint32;
-      nH: Uint32;
-    });
-
-    quorumSetHash(value?: Hash): Hash;
-
-    ballot(value?: ScpBallot): ScpBallot;
-
-    prepared(value?: null | ScpBallot): null | ScpBallot;
-
-    preparedPrime(value?: null | ScpBallot): null | ScpBallot;
-
-    nC(value?: Uint32): Uint32;
-
-    nH(value?: Uint32): Uint32;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpStatementPrepare;
-
-    static write(value: ScpStatementPrepare, io: Buffer): void;
-
-    static isValid(value: ScpStatementPrepare): boolean;
-
-    static toXDR(value: ScpStatementPrepare): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementPrepare;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): ScpStatementPrepare;
-  }
-
-  class ScpStatementConfirm {
-    constructor(attributes: {
-      ballot: ScpBallot;
-      nPrepared: Uint32;
-      nCommit: Uint32;
-      nH: Uint32;
-      quorumSetHash: Hash;
-    });
-
-    ballot(value?: ScpBallot): ScpBallot;
-
-    nPrepared(value?: Uint32): Uint32;
-
-    nCommit(value?: Uint32): Uint32;
-
-    nH(value?: Uint32): Uint32;
-
-    quorumSetHash(value?: Hash): Hash;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpStatementConfirm;
-
-    static write(value: ScpStatementConfirm, io: Buffer): void;
-
-    static isValid(value: ScpStatementConfirm): boolean;
-
-    static toXDR(value: ScpStatementConfirm): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementConfirm;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): ScpStatementConfirm;
-  }
-
-  class ScpStatementExternalize {
-    constructor(attributes: {
-      commit: ScpBallot;
-      nH: Uint32;
-      commitQuorumSetHash: Hash;
-    });
-
-    commit(value?: ScpBallot): ScpBallot;
-
-    nH(value?: Uint32): Uint32;
-
-    commitQuorumSetHash(value?: Hash): Hash;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpStatementExternalize;
-
-    static write(value: ScpStatementExternalize, io: Buffer): void;
-
-    static isValid(value: ScpStatementExternalize): boolean;
-
-    static toXDR(value: ScpStatementExternalize): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementExternalize;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): ScpStatementExternalize;
-  }
-
   class ScpStatementPledges {
     switch(): ScpStatementType;
 
@@ -4547,171 +5846,6 @@ export namespace xdr {
     ): ScpStatementPledges;
   }
 
-  class ScpStatement {
-    constructor(attributes: {
-      nodeId: NodeId;
-      slotIndex: Uint64;
-      pledges: ScpStatementPledges;
-    });
-
-    nodeId(value?: NodeId): NodeId;
-
-    slotIndex(value?: Uint64): Uint64;
-
-    pledges(value?: ScpStatementPledges): ScpStatementPledges;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpStatement;
-
-    static write(value: ScpStatement, io: Buffer): void;
-
-    static isValid(value: ScpStatement): boolean;
-
-    static toXDR(value: ScpStatement): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpStatement;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatement;
-  }
-
-  class ScpEnvelope {
-    constructor(attributes: { statement: ScpStatement; signature: Signature });
-
-    statement(value?: ScpStatement): ScpStatement;
-
-    signature(value?: Signature): Signature;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpEnvelope;
-
-    static write(value: ScpEnvelope, io: Buffer): void;
-
-    static isValid(value: ScpEnvelope): boolean;
-
-    static toXDR(value: ScpEnvelope): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpEnvelope;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpEnvelope;
-  }
-
-  class ScpQuorumSet {
-    constructor(attributes: {
-      threshold: Uint32;
-      validators: PublicKey[];
-      innerSets: ScpQuorumSet[];
-    });
-
-    threshold(value?: Uint32): Uint32;
-
-    validators(value?: PublicKey[]): PublicKey[];
-
-    innerSets(value?: ScpQuorumSet[]): ScpQuorumSet[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpQuorumSet;
-
-    static write(value: ScpQuorumSet, io: Buffer): void;
-
-    static isValid(value: ScpQuorumSet): boolean;
-
-    static toXDR(value: ScpQuorumSet): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpQuorumSet;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpQuorumSet;
-  }
-
-  type AccountId = PublicKey;
-
-  type Thresholds = Buffer;
-
-  type String32 = string | Buffer;
-
-  type String64 = string | Buffer;
-
-  type SequenceNumber = Int64;
-
-  type TimePoint = Uint64;
-
-  type DataValue = Buffer;
-
-  type AssetCode4 = Buffer;
-
-  type AssetCode12 = Buffer;
-
-  class AssetType {
-    readonly name:
-      | 'assetTypeNative'
-      | 'assetTypeCreditAlphanum4'
-      | 'assetTypeCreditAlphanum12';
-
-    readonly value: 0 | 1 | 2;
-
-    static assetTypeNative(): AssetType;
-
-    static assetTypeCreditAlphanum4(): AssetType;
-
-    static assetTypeCreditAlphanum12(): AssetType;
-  }
-
-  class AssetAlphaNum4 {
-    constructor(attributes: { assetCode: AssetCode4; issuer: AccountId });
-
-    assetCode(value?: AssetCode4): AssetCode4;
-
-    issuer(value?: AccountId): AccountId;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AssetAlphaNum4;
-
-    static write(value: AssetAlphaNum4, io: Buffer): void;
-
-    static isValid(value: AssetAlphaNum4): boolean;
-
-    static toXDR(value: AssetAlphaNum4): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AssetAlphaNum4;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): AssetAlphaNum4;
-  }
-
-  class AssetAlphaNum12 {
-    constructor(attributes: { assetCode: AssetCode12; issuer: AccountId });
-
-    assetCode(value?: AssetCode12): AssetCode12;
-
-    issuer(value?: AccountId): AccountId;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AssetAlphaNum12;
-
-    static write(value: AssetAlphaNum12, io: Buffer): void;
-
-    static isValid(value: AssetAlphaNum12): boolean;
-
-    static toXDR(value: AssetAlphaNum12): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AssetAlphaNum12;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): AssetAlphaNum12;
-  }
-
   class Asset {
     switch(): AssetType;
 
@@ -4742,125 +5876,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): Asset;
   }
 
-  class Price {
-    constructor(attributes: { n: number; d: number });
-
-    n(value?: number): number;
-
-    d(value?: number): number;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Price;
-
-    static write(value: Price, io: Buffer): void;
-
-    static isValid(value: Price): boolean;
-
-    static toXDR(value: Price): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Price;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Price;
-  }
-
-  class Liabilities {
-    constructor(attributes: { buying: Int64; selling: Int64 });
-
-    buying(value?: Int64): Int64;
-
-    selling(value?: Int64): Int64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Liabilities;
-
-    static write(value: Liabilities, io: Buffer): void;
-
-    static isValid(value: Liabilities): boolean;
-
-    static toXDR(value: Liabilities): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Liabilities;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Liabilities;
-  }
-
-  class ThresholdIndices {
-    readonly name:
-      | 'thresholdMasterWeight'
-      | 'thresholdLow'
-      | 'thresholdMed'
-      | 'thresholdHigh';
-
-    readonly value: 0 | 1 | 2 | 3;
-
-    static thresholdMasterWeight(): ThresholdIndices;
-
-    static thresholdLow(): ThresholdIndices;
-
-    static thresholdMed(): ThresholdIndices;
-
-    static thresholdHigh(): ThresholdIndices;
-  }
-
-  class LedgerEntryType {
-    readonly name: 'account' | 'trustline' | 'offer' | 'datum';
-
-    readonly value: 0 | 1 | 2 | 3;
-
-    static account(): LedgerEntryType;
-
-    static trustline(): LedgerEntryType;
-
-    static offer(): LedgerEntryType;
-
-    static datum(): LedgerEntryType;
-  }
-
-  class Signer {
-    constructor(attributes: { key: SignerKey; weight: Uint32 });
-
-    key(value?: SignerKey): SignerKey;
-
-    weight(value?: Uint32): Uint32;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Signer;
-
-    static write(value: Signer, io: Buffer): void;
-
-    static isValid(value: Signer): boolean;
-
-    static toXDR(value: Signer): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Signer;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Signer;
-  }
-
-  class AccountFlags {
-    readonly name:
-      | 'authRequiredFlag'
-      | 'authRevocableFlag'
-      | 'authImmutableFlag';
-
-    readonly value: 1 | 2 | 4;
-
-    static authRequiredFlag(): AccountFlags;
-
-    static authRevocableFlag(): AccountFlags;
-
-    static authImmutableFlag(): AccountFlags;
-  }
-
   class AccountEntryV1Ext {
     switch(): number;
 
@@ -4879,33 +5894,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): AccountEntryV1Ext;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryV1Ext;
-  }
-
-  class AccountEntryV1 {
-    constructor(attributes: {
-      liabilities: Liabilities;
-      ext: AccountEntryV1Ext;
-    });
-
-    liabilities(value?: Liabilities): Liabilities;
-
-    ext(value?: AccountEntryV1Ext): AccountEntryV1Ext;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AccountEntryV1;
-
-    static write(value: AccountEntryV1, io: Buffer): void;
-
-    static isValid(value: AccountEntryV1): boolean;
-
-    static toXDR(value: AccountEntryV1): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryV1;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryV1;
   }
 
   class AccountEntryExt {
@@ -4934,67 +5922,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryExt;
   }
 
-  class AccountEntry {
-    constructor(attributes: {
-      accountId: AccountId;
-      balance: Int64;
-      seqNum: SequenceNumber;
-      numSubEntries: Uint32;
-      inflationDest: null | AccountId;
-      flags: Uint32;
-      homeDomain: String32;
-      thresholds: Thresholds;
-      signers: Signer[];
-      ext: AccountEntryExt;
-    });
-
-    accountId(value?: AccountId): AccountId;
-
-    balance(value?: Int64): Int64;
-
-    seqNum(value?: SequenceNumber): SequenceNumber;
-
-    numSubEntries(value?: Uint32): Uint32;
-
-    inflationDest(value?: null | AccountId): null | AccountId;
-
-    flags(value?: Uint32): Uint32;
-
-    homeDomain(value?: String32): String32;
-
-    thresholds(value?: Thresholds): Thresholds;
-
-    signers(value?: Signer[]): Signer[];
-
-    ext(value?: AccountEntryExt): AccountEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): AccountEntry;
-
-    static write(value: AccountEntry, io: Buffer): void;
-
-    static isValid(value: AccountEntry): boolean;
-
-    static toXDR(value: AccountEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): AccountEntry;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntry;
-  }
-
-  class TrustLineFlags {
-    readonly name: 'authorizedFlag' | 'authorizedToMaintainLiabilitiesFlag';
-
-    readonly value: 1 | 2;
-
-    static authorizedFlag(): TrustLineFlags;
-
-    static authorizedToMaintainLiabilitiesFlag(): TrustLineFlags;
-  }
-
   class TrustLineEntryV1Ext {
     switch(): number;
 
@@ -5016,33 +5943,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): TrustLineEntryV1Ext;
-  }
-
-  class TrustLineEntryV1 {
-    constructor(attributes: {
-      liabilities: Liabilities;
-      ext: TrustLineEntryV1Ext;
-    });
-
-    liabilities(value?: Liabilities): Liabilities;
-
-    ext(value?: TrustLineEntryV1Ext): TrustLineEntryV1Ext;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TrustLineEntryV1;
-
-    static write(value: TrustLineEntryV1, io: Buffer): void;
-
-    static isValid(value: TrustLineEntryV1): boolean;
-
-    static toXDR(value: TrustLineEntryV1): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryV1;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntryV1;
   }
 
   class TrustLineEntryExt {
@@ -5071,53 +5971,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntryExt;
   }
 
-  class TrustLineEntry {
-    constructor(attributes: {
-      accountId: AccountId;
-      asset: Asset;
-      balance: Int64;
-      limit: Int64;
-      flags: Uint32;
-      ext: TrustLineEntryExt;
-    });
-
-    accountId(value?: AccountId): AccountId;
-
-    asset(value?: Asset): Asset;
-
-    balance(value?: Int64): Int64;
-
-    limit(value?: Int64): Int64;
-
-    flags(value?: Uint32): Uint32;
-
-    ext(value?: TrustLineEntryExt): TrustLineEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TrustLineEntry;
-
-    static write(value: TrustLineEntry, io: Buffer): void;
-
-    static isValid(value: TrustLineEntry): boolean;
-
-    static toXDR(value: TrustLineEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntry;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntry;
-  }
-
-  class OfferEntryFlags {
-    readonly name: 'passiveFlag';
-
-    readonly value: 1;
-
-    static passiveFlag(): OfferEntryFlags;
-  }
-
   class OfferEntryExt {
     switch(): number;
 
@@ -5138,51 +5991,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): OfferEntryExt;
   }
 
-  class OfferEntry {
-    constructor(attributes: {
-      sellerId: AccountId;
-      offerId: Int64;
-      selling: Asset;
-      buying: Asset;
-      amount: Int64;
-      price: Price;
-      flags: Uint32;
-      ext: OfferEntryExt;
-    });
-
-    sellerId(value?: AccountId): AccountId;
-
-    offerId(value?: Int64): Int64;
-
-    selling(value?: Asset): Asset;
-
-    buying(value?: Asset): Asset;
-
-    amount(value?: Int64): Int64;
-
-    price(value?: Price): Price;
-
-    flags(value?: Uint32): Uint32;
-
-    ext(value?: OfferEntryExt): OfferEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): OfferEntry;
-
-    static write(value: OfferEntry, io: Buffer): void;
-
-    static isValid(value: OfferEntry): boolean;
-
-    static toXDR(value: OfferEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): OfferEntry;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): OfferEntry;
-  }
-
   class DataEntryExt {
     switch(): number;
 
@@ -5201,39 +6009,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): DataEntryExt;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): DataEntryExt;
-  }
-
-  class DataEntry {
-    constructor(attributes: {
-      accountId: AccountId;
-      dataName: String64;
-      dataValue: DataValue;
-      ext: DataEntryExt;
-    });
-
-    accountId(value?: AccountId): AccountId;
-
-    dataName(value?: String64): String64;
-
-    dataValue(value?: DataValue): DataValue;
-
-    ext(value?: DataEntryExt): DataEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): DataEntry;
-
-    static write(value: DataEntry, io: Buffer): void;
-
-    static isValid(value: DataEntry): boolean;
-
-    static toXDR(value: DataEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): DataEntry;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): DataEntry;
   }
 
   class LedgerEntryData {
@@ -5294,99 +6069,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryExt;
   }
 
-  class LedgerEntry {
-    constructor(attributes: {
-      lastModifiedLedgerSeq: Uint32;
-      data: LedgerEntryData;
-      ext: LedgerEntryExt;
-    });
-
-    lastModifiedLedgerSeq(value?: Uint32): Uint32;
-
-    data(value?: LedgerEntryData): LedgerEntryData;
-
-    ext(value?: LedgerEntryExt): LedgerEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerEntry;
-
-    static write(value: LedgerEntry, io: Buffer): void;
-
-    static isValid(value: LedgerEntry): boolean;
-
-    static toXDR(value: LedgerEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntry;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntry;
-  }
-
-  class EnvelopeType {
-    readonly name:
-      | 'envelopeTypeTxV0'
-      | 'envelopeTypeScp'
-      | 'envelopeTypeTx'
-      | 'envelopeTypeAuth'
-      | 'envelopeTypeScpvalue'
-      | 'envelopeTypeTxFeeBump';
-
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5;
-
-    static envelopeTypeTxV0(): EnvelopeType;
-
-    static envelopeTypeScp(): EnvelopeType;
-
-    static envelopeTypeTx(): EnvelopeType;
-
-    static envelopeTypeAuth(): EnvelopeType;
-
-    static envelopeTypeScpvalue(): EnvelopeType;
-
-    static envelopeTypeTxFeeBump(): EnvelopeType;
-  }
-
-  type UpgradeType = Buffer;
-
-  class StellarValueType {
-    readonly name: 'stellarValueBasic' | 'stellarValueSigned';
-
-    readonly value: 0 | 1;
-
-    static stellarValueBasic(): StellarValueType;
-
-    static stellarValueSigned(): StellarValueType;
-  }
-
-  class LedgerCloseValueSignature {
-    constructor(attributes: { nodeId: NodeId; signature: Signature });
-
-    nodeId(value?: NodeId): NodeId;
-
-    signature(value?: Signature): Signature;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerCloseValueSignature;
-
-    static write(value: LedgerCloseValueSignature, io: Buffer): void;
-
-    static isValid(value: LedgerCloseValueSignature): boolean;
-
-    static toXDR(value: LedgerCloseValueSignature): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseValueSignature;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): LedgerCloseValueSignature;
-  }
-
   class StellarValueExt {
     switch(): StellarValueType;
 
@@ -5417,39 +6099,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): StellarValueExt;
   }
 
-  class StellarValue {
-    constructor(attributes: {
-      txSetHash: Hash;
-      closeTime: TimePoint;
-      upgrades: UpgradeType[];
-      ext: StellarValueExt;
-    });
-
-    txSetHash(value?: Hash): Hash;
-
-    closeTime(value?: TimePoint): TimePoint;
-
-    upgrades(value?: UpgradeType[]): UpgradeType[];
-
-    ext(value?: StellarValueExt): StellarValueExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): StellarValue;
-
-    static write(value: StellarValue, io: Buffer): void;
-
-    static isValid(value: StellarValue): boolean;
-
-    static toXDR(value: StellarValue): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): StellarValue;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): StellarValue;
-  }
-
   class LedgerHeaderExt {
     switch(): number;
 
@@ -5470,110 +6119,26 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeaderExt;
   }
 
-  class LedgerHeader {
-    constructor(attributes: {
-      ledgerVersion: Uint32;
-      previousLedgerHash: Hash;
-      scpValue: StellarValue;
-      txSetResultHash: Hash;
-      bucketListHash: Hash;
-      ledgerSeq: Uint32;
-      totalCoins: Int64;
-      feePool: Int64;
-      inflationSeq: Uint32;
-      idPool: Uint64;
-      baseFee: Uint32;
-      baseReserve: Uint32;
-      maxTxSetSize: Uint32;
-      skipList: Hash[];
-      ext: LedgerHeaderExt;
-    });
-
-    ledgerVersion(value?: Uint32): Uint32;
-
-    previousLedgerHash(value?: Hash): Hash;
-
-    scpValue(value?: StellarValue): StellarValue;
-
-    txSetResultHash(value?: Hash): Hash;
-
-    bucketListHash(value?: Hash): Hash;
-
-    ledgerSeq(value?: Uint32): Uint32;
-
-    totalCoins(value?: Int64): Int64;
-
-    feePool(value?: Int64): Int64;
-
-    inflationSeq(value?: Uint32): Uint32;
-
-    idPool(value?: Uint64): Uint64;
-
-    baseFee(value?: Uint32): Uint32;
-
-    baseReserve(value?: Uint32): Uint32;
-
-    maxTxSetSize(value?: Uint32): Uint32;
-
-    skipList(value?: Hash[]): Hash[];
-
-    ext(value?: LedgerHeaderExt): LedgerHeaderExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerHeader;
-
-    static write(value: LedgerHeader, io: Buffer): void;
-
-    static isValid(value: LedgerHeader): boolean;
-
-    static toXDR(value: LedgerHeader): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeader;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeader;
-  }
-
-  class LedgerUpgradeType {
-    readonly name:
-      | 'ledgerUpgradeVersion'
-      | 'ledgerUpgradeBaseFee'
-      | 'ledgerUpgradeMaxTxSetSize'
-      | 'ledgerUpgradeBaseReserve';
-
-    readonly value: 1 | 2 | 3 | 4;
-
-    static ledgerUpgradeVersion(): LedgerUpgradeType;
-
-    static ledgerUpgradeBaseFee(): LedgerUpgradeType;
-
-    static ledgerUpgradeMaxTxSetSize(): LedgerUpgradeType;
-
-    static ledgerUpgradeBaseReserve(): LedgerUpgradeType;
-  }
-
   class LedgerUpgrade {
     switch(): LedgerUpgradeType;
 
-    newLedgerVersion(value?: Uint32): Uint32;
+    newLedgerVersion(value?: number): number;
 
-    newBaseFee(value?: Uint32): Uint32;
+    newBaseFee(value?: number): number;
 
-    newMaxTxSetSize(value?: Uint32): Uint32;
+    newMaxTxSetSize(value?: number): number;
 
-    newBaseReserve(value?: Uint32): Uint32;
+    newBaseReserve(value?: number): number;
 
-    value(): Uint32 | Uint32 | Uint32 | Uint32;
+    value(): number | number | number | number;
 
-    static ledgerUpgradeVersion(value: Uint32): LedgerUpgrade;
+    static ledgerUpgradeVersion(value: number): LedgerUpgrade;
 
-    static ledgerUpgradeBaseFee(value: Uint32): LedgerUpgrade;
+    static ledgerUpgradeBaseFee(value: number): LedgerUpgrade;
 
-    static ledgerUpgradeMaxTxSetSize(value: Uint32): LedgerUpgrade;
+    static ledgerUpgradeMaxTxSetSize(value: number): LedgerUpgrade;
 
-    static ledgerUpgradeBaseReserve(value: Uint32): LedgerUpgrade;
+    static ledgerUpgradeBaseReserve(value: number): LedgerUpgrade;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5590,100 +6155,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerUpgrade;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerUpgrade;
-  }
-
-  class LedgerKeyAccount {
-    constructor(attributes: { accountId: AccountId });
-
-    accountId(value?: AccountId): AccountId;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyAccount;
-
-    static write(value: LedgerKeyAccount, io: Buffer): void;
-
-    static isValid(value: LedgerKeyAccount): boolean;
-
-    static toXDR(value: LedgerKeyAccount): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyAccount;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyAccount;
-  }
-
-  class LedgerKeyTrustLine {
-    constructor(attributes: { accountId: AccountId; asset: Asset });
-
-    accountId(value?: AccountId): AccountId;
-
-    asset(value?: Asset): Asset;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyTrustLine;
-
-    static write(value: LedgerKeyTrustLine, io: Buffer): void;
-
-    static isValid(value: LedgerKeyTrustLine): boolean;
-
-    static toXDR(value: LedgerKeyTrustLine): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyTrustLine;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyTrustLine;
-  }
-
-  class LedgerKeyOffer {
-    constructor(attributes: { sellerId: AccountId; offerId: Int64 });
-
-    sellerId(value?: AccountId): AccountId;
-
-    offerId(value?: Int64): Int64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyOffer;
-
-    static write(value: LedgerKeyOffer, io: Buffer): void;
-
-    static isValid(value: LedgerKeyOffer): boolean;
-
-    static toXDR(value: LedgerKeyOffer): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyOffer;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyOffer;
-  }
-
-  class LedgerKeyData {
-    constructor(attributes: { accountId: AccountId; dataName: String64 });
-
-    accountId(value?: AccountId): AccountId;
-
-    dataName(value?: String64): String64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyData;
-
-    static write(value: LedgerKeyData, io: Buffer): void;
-
-    static isValid(value: LedgerKeyData): boolean;
-
-    static toXDR(value: LedgerKeyData): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyData;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyData;
   }
 
   class LedgerKey {
@@ -5728,20 +6199,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKey;
   }
 
-  class BucketEntryType {
-    readonly name: 'metaentry' | 'liveentry' | 'deadentry' | 'initentry';
-
-    readonly value: -1 | 0 | 1 | 2;
-
-    static metaentry(): BucketEntryType;
-
-    static liveentry(): BucketEntryType;
-
-    static deadentry(): BucketEntryType;
-
-    static initentry(): BucketEntryType;
-  }
-
   class BucketMetadataExt {
     switch(): number;
 
@@ -5760,30 +6217,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): BucketMetadataExt;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): BucketMetadataExt;
-  }
-
-  class BucketMetadata {
-    constructor(attributes: { ledgerVersion: Uint32; ext: BucketMetadataExt });
-
-    ledgerVersion(value?: Uint32): Uint32;
-
-    ext(value?: BucketMetadataExt): BucketMetadataExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): BucketMetadata;
-
-    static write(value: BucketMetadata, io: Buffer): void;
-
-    static isValid(value: BucketMetadata): boolean;
-
-    static toXDR(value: BucketMetadata): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): BucketMetadata;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): BucketMetadata;
   }
 
   class BucketEntry {
@@ -5822,88 +6255,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): BucketEntry;
   }
 
-  class TransactionSet {
-    constructor(attributes: {
-      previousLedgerHash: Hash;
-      txes: TransactionEnvelope[];
-    });
-
-    previousLedgerHash(value?: Hash): Hash;
-
-    txes(value?: TransactionEnvelope[]): TransactionEnvelope[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionSet;
-
-    static write(value: TransactionSet, io: Buffer): void;
-
-    static isValid(value: TransactionSet): boolean;
-
-    static toXDR(value: TransactionSet): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionSet;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionSet;
-  }
-
-  class TransactionResultPair {
-    constructor(attributes: {
-      transactionHash: Hash;
-      result: TransactionResult;
-    });
-
-    transactionHash(value?: Hash): Hash;
-
-    result(value?: TransactionResult): TransactionResult;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionResultPair;
-
-    static write(value: TransactionResultPair, io: Buffer): void;
-
-    static isValid(value: TransactionResultPair): boolean;
-
-    static toXDR(value: TransactionResultPair): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultPair;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionResultPair;
-  }
-
-  class TransactionResultSet {
-    constructor(attributes: { results: TransactionResultPair[] });
-
-    results(value?: TransactionResultPair[]): TransactionResultPair[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionResultSet;
-
-    static write(value: TransactionResultSet, io: Buffer): void;
-
-    static isValid(value: TransactionResultSet): boolean;
-
-    static toXDR(value: TransactionResultSet): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultSet;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionResultSet;
-  }
-
   class TransactionHistoryEntryExt {
     switch(): number;
 
@@ -5925,39 +6276,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): TransactionHistoryEntryExt;
-  }
-
-  class TransactionHistoryEntry {
-    constructor(attributes: {
-      ledgerSeq: Uint32;
-      txSet: TransactionSet;
-      ext: TransactionHistoryEntryExt;
-    });
-
-    ledgerSeq(value?: Uint32): Uint32;
-
-    txSet(value?: TransactionSet): TransactionSet;
-
-    ext(value?: TransactionHistoryEntryExt): TransactionHistoryEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionHistoryEntry;
-
-    static write(value: TransactionHistoryEntry, io: Buffer): void;
-
-    static isValid(value: TransactionHistoryEntry): boolean;
-
-    static toXDR(value: TransactionHistoryEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryEntry;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionHistoryEntry;
   }
 
   class TransactionHistoryResultEntryExt {
@@ -5986,44 +6304,6 @@ export namespace xdr {
     ): TransactionHistoryResultEntryExt;
   }
 
-  class TransactionHistoryResultEntry {
-    constructor(attributes: {
-      ledgerSeq: Uint32;
-      txResultSet: TransactionResultSet;
-      ext: TransactionHistoryResultEntryExt;
-    });
-
-    ledgerSeq(value?: Uint32): Uint32;
-
-    txResultSet(value?: TransactionResultSet): TransactionResultSet;
-
-    ext(
-      value?: TransactionHistoryResultEntryExt
-    ): TransactionHistoryResultEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionHistoryResultEntry;
-
-    static write(value: TransactionHistoryResultEntry, io: Buffer): void;
-
-    static isValid(value: TransactionHistoryResultEntry): boolean;
-
-    static toXDR(value: TransactionHistoryResultEntry): Buffer;
-
-    static fromXDR(
-      input: Buffer,
-      format?: 'raw'
-    ): TransactionHistoryResultEntry;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionHistoryResultEntry;
-  }
-
   class LedgerHeaderHistoryEntryExt {
     switch(): number;
 
@@ -6045,90 +6325,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): LedgerHeaderHistoryEntryExt;
-  }
-
-  class LedgerHeaderHistoryEntry {
-    constructor(attributes: {
-      hash: Hash;
-      header: LedgerHeader;
-      ext: LedgerHeaderHistoryEntryExt;
-    });
-
-    hash(value?: Hash): Hash;
-
-    header(value?: LedgerHeader): LedgerHeader;
-
-    ext(value?: LedgerHeaderHistoryEntryExt): LedgerHeaderHistoryEntryExt;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerHeaderHistoryEntry;
-
-    static write(value: LedgerHeaderHistoryEntry, io: Buffer): void;
-
-    static isValid(value: LedgerHeaderHistoryEntry): boolean;
-
-    static toXDR(value: LedgerHeaderHistoryEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderHistoryEntry;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): LedgerHeaderHistoryEntry;
-  }
-
-  class LedgerScpMessages {
-    constructor(attributes: { ledgerSeq: Uint32; messages: ScpEnvelope[] });
-
-    ledgerSeq(value?: Uint32): Uint32;
-
-    messages(value?: ScpEnvelope[]): ScpEnvelope[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerScpMessages;
-
-    static write(value: LedgerScpMessages, io: Buffer): void;
-
-    static isValid(value: LedgerScpMessages): boolean;
-
-    static toXDR(value: LedgerScpMessages): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerScpMessages;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerScpMessages;
-  }
-
-  class ScpHistoryEntryV0 {
-    constructor(attributes: {
-      quorumSets: ScpQuorumSet[];
-      ledgerMessages: LedgerScpMessages;
-    });
-
-    quorumSets(value?: ScpQuorumSet[]): ScpQuorumSet[];
-
-    ledgerMessages(value?: LedgerScpMessages): LedgerScpMessages;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScpHistoryEntryV0;
-
-    static write(value: ScpHistoryEntryV0, io: Buffer): void;
-
-    static isValid(value: ScpHistoryEntryV0): boolean;
-
-    static toXDR(value: ScpHistoryEntryV0): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScpHistoryEntryV0;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpHistoryEntryV0;
   }
 
   class ScpHistoryEntry {
@@ -6155,24 +6351,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): ScpHistoryEntry;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): ScpHistoryEntry;
-  }
-
-  class LedgerEntryChangeType {
-    readonly name:
-      | 'ledgerEntryCreated'
-      | 'ledgerEntryUpdated'
-      | 'ledgerEntryRemoved'
-      | 'ledgerEntryState';
-
-    readonly value: 0 | 1 | 2 | 3;
-
-    static ledgerEntryCreated(): LedgerEntryChangeType;
-
-    static ledgerEntryUpdated(): LedgerEntryChangeType;
-
-    static ledgerEntryRemoved(): LedgerEntryChangeType;
-
-    static ledgerEntryState(): LedgerEntryChangeType;
   }
 
   class LedgerEntryChange {
@@ -6213,87 +6391,6 @@ export namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryChange;
   }
 
-  type LedgerEntryChanges = LedgerEntryChange[];
-
-  class OperationMeta {
-    constructor(attributes: { changes: LedgerEntryChanges });
-
-    changes(value?: LedgerEntryChanges): LedgerEntryChanges;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): OperationMeta;
-
-    static write(value: OperationMeta, io: Buffer): void;
-
-    static isValid(value: OperationMeta): boolean;
-
-    static toXDR(value: OperationMeta): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): OperationMeta;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): OperationMeta;
-  }
-
-  class TransactionMetaV1 {
-    constructor(attributes: {
-      txChanges: LedgerEntryChanges;
-      operations: OperationMeta[];
-    });
-
-    txChanges(value?: LedgerEntryChanges): LedgerEntryChanges;
-
-    operations(value?: OperationMeta[]): OperationMeta[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionMetaV1;
-
-    static write(value: TransactionMetaV1, io: Buffer): void;
-
-    static isValid(value: TransactionMetaV1): boolean;
-
-    static toXDR(value: TransactionMetaV1): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV1;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV1;
-  }
-
-  class TransactionMetaV2 {
-    constructor(attributes: {
-      txChangesBefore: LedgerEntryChanges;
-      operations: OperationMeta[];
-      txChangesAfter: LedgerEntryChanges;
-    });
-
-    txChangesBefore(value?: LedgerEntryChanges): LedgerEntryChanges;
-
-    operations(value?: OperationMeta[]): OperationMeta[];
-
-    txChangesAfter(value?: LedgerEntryChanges): LedgerEntryChanges;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionMetaV2;
-
-    static write(value: TransactionMetaV2, io: Buffer): void;
-
-    static isValid(value: TransactionMetaV2): boolean;
-
-    static toXDR(value: TransactionMetaV2): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV2;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV2;
-  }
-
   class TransactionMeta {
     switch(): number;
 
@@ -6326,102 +6423,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionMeta;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMeta;
-  }
-
-  class TransactionResultMeta {
-    constructor(attributes: {
-      result: TransactionResultPair;
-      feeProcessing: LedgerEntryChanges;
-      txApplyProcessing: TransactionMeta;
-    });
-
-    result(value?: TransactionResultPair): TransactionResultPair;
-
-    feeProcessing(value?: LedgerEntryChanges): LedgerEntryChanges;
-
-    txApplyProcessing(value?: TransactionMeta): TransactionMeta;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): TransactionResultMeta;
-
-    static write(value: TransactionResultMeta, io: Buffer): void;
-
-    static isValid(value: TransactionResultMeta): boolean;
-
-    static toXDR(value: TransactionResultMeta): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultMeta;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): TransactionResultMeta;
-  }
-
-  class UpgradeEntryMeta {
-    constructor(attributes: {
-      upgrade: LedgerUpgrade;
-      changes: LedgerEntryChanges;
-    });
-
-    upgrade(value?: LedgerUpgrade): LedgerUpgrade;
-
-    changes(value?: LedgerEntryChanges): LedgerEntryChanges;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): UpgradeEntryMeta;
-
-    static write(value: UpgradeEntryMeta, io: Buffer): void;
-
-    static isValid(value: UpgradeEntryMeta): boolean;
-
-    static toXDR(value: UpgradeEntryMeta): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): UpgradeEntryMeta;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): UpgradeEntryMeta;
-  }
-
-  class LedgerCloseMetaV0 {
-    constructor(attributes: {
-      ledgerHeader: LedgerHeaderHistoryEntry;
-      txSet: TransactionSet;
-      txProcessing: TransactionResultMeta[];
-      upgradesProcessing: UpgradeEntryMeta[];
-      scpInfo: ScpHistoryEntry[];
-    });
-
-    ledgerHeader(value?: LedgerHeaderHistoryEntry): LedgerHeaderHistoryEntry;
-
-    txSet(value?: TransactionSet): TransactionSet;
-
-    txProcessing(value?: TransactionResultMeta[]): TransactionResultMeta[];
-
-    upgradesProcessing(value?: UpgradeEntryMeta[]): UpgradeEntryMeta[];
-
-    scpInfo(value?: ScpHistoryEntry[]): ScpHistoryEntry[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerCloseMetaV0;
-
-    static write(value: LedgerCloseMetaV0, io: Buffer): void;
-
-    static isValid(value: LedgerCloseMetaV0): boolean;
-
-    static toXDR(value: LedgerCloseMetaV0): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV0;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV0;
   }
 
   class LedgerCloseMeta {
