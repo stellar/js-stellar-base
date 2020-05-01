@@ -14,6 +14,7 @@ var types = XDR.config((xdr) => {
     ['msg', xdr.lookup('ErrorMsg')],
     ['extra', xdr.string(100)],
     ['age', xdr.lookup('Int32')],
+    ['hash', xdr.lookup('Hash')],
     ['int32', xdr.int()],
     ['uint32', xdr.uint()],
     ['int64', xdr.uhyper()],
@@ -29,6 +30,7 @@ var types = XDR.config((xdr) => {
     ['accountEntries', xdr.array(xdr.lookup('LedgerEntryChange'), 4)],
     ['ClearFlags', xdr.option(xdr.lookup('Uint32'))]
   ]);
+  xdr.typedef('Hash', xdr.opaque(32));
   xdr.typedef('ErrorMsg', xdr.string(100));
   xdr.typedef('Uint32', xdr.uint());
 });

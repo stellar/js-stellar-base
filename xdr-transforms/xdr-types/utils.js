@@ -37,6 +37,10 @@ function resolve(value, definitions) {
       case 'XDRString':
         return dom.create.union([dom.type.string, buffer]);
         break;
+      case 'Opaque':
+      case 'VarOpaque':
+        return buffer;
+        break;
     }
   }
 

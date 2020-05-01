@@ -43,10 +43,22 @@ export default function typeDef(api, node, definitions) {
         );
         break;
       case 'opaque':
-        ns.members.push(dom.create.alias(name, buffer));
+        ns.members.push(
+          dom.create.const(
+            name,
+            definitions.OPAQUE,
+            dom.DeclarationFlags.ReadOnly
+          )
+        );
         break;
       case 'varOpaque':
-        ns.members.push(dom.create.alias(name, buffer));
+        ns.members.push(
+          dom.create.const(
+            name,
+            definitions.VAROPAQUE,
+            dom.DeclarationFlags.ReadOnly
+          )
+        );
         break;
       case 'array':
         ns.members.push(

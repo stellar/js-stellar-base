@@ -192,15 +192,13 @@ exports[`.transform(type definitions) 1`] = `
 
     const String64: XDRString;
 
-    type Hash = Buffer;
+    const Hash: Opaque;
 
-    type EncryptedBody = Buffer;
+    const EncryptedBody: VarOpaque;
 
-    type Value = Buffer;
+    const Value: VarOpaque;
 
     type LedgerEntryChanges = LedgerEntryChange[];
-
-    type SkipList = Hash[];
 
     type SequenceNumber = Int64;
 
@@ -602,6 +600,8 @@ exports[`.transform(xdr structs) 1`] = `
 
     const Int32: SignedInt;
 
+    const Hash: Opaque;
+
     const ErrorMsg: XDRString;
 
     const Uint32: UnsignedInt;
@@ -612,6 +612,7 @@ exports[`.transform(xdr structs) 1`] = `
             msg: string | Buffer;
             extra: string | Buffer;
             age: number;
+            hash: Buffer;
             int32: number;
             uint32: number;
             int64: UnsignedHyper;
@@ -632,6 +633,8 @@ exports[`.transform(xdr structs) 1`] = `
         extra(value?: string | Buffer): string | Buffer;
 
         age(value?: number): number;
+
+        hash(value?: Buffer): Buffer;
 
         int32(value?: number): number;
 

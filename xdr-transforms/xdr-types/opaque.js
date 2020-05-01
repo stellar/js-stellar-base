@@ -4,7 +4,7 @@ import * as dom from 'dts-dom';
  * Builds a valid dts-dom node representing a XDR Opaque.
  *
  */
-export default function string(ns) {
+export default function opaque(ns) {
   const buffer = dom.create.interface('Buffer');
   const opaque = dom.create.class('Opaque');
 
