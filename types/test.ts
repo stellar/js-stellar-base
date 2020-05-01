@@ -93,6 +93,7 @@ const op = StellarSdk.xdr.AllowTrustOp.fromXDR(
 op; // $ExpectType AllowTrustOp
 op.authorize(); // $ExpectType number
 op.trustor().ed25519(); // $ExpectType Buffer
+op.trustor(); // $ExpectedType AccountId
 const e = StellarSdk.xdr.LedgerEntry.fromXDR(
   "AAAAAAAAAAC2LgFRDBZ3J52nLm30kq2iMgrO7dYzYAN3hvjtf1IHWg==",
   'base64'
