@@ -34,10 +34,10 @@ export function resolveType(api, node, xdrTypes) {
   if (isNativeXDRType(node.callee.property)) {
     switch (node.callee.property.name) {
       case 'int':
-        return xdrTypes.INT;
+        return dom.type.number;
         break;
       case 'uint':
-        return xdrTypes.UINT;
+        return dom.type.number;
         break;
       case 'hyper':
         return xdrTypes.HYPER;

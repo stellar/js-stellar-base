@@ -9,14 +9,10 @@ export default function typeDef(api, node, ns, xdrTypes) {
   if (exp.type === 'CallExpression') {
     switch (exp.callee.property.name) {
       case 'int':
-        ns.members.push(
-          dom.create.const(name, xdrTypes.INT, dom.DeclarationFlags.ReadOnly)
-        );
+        ns.members.push(dom.create.alias(name, dom.type.number));
         break;
       case 'uint':
-        ns.members.push(
-          dom.create.const(name, xdrTypes.UINT, dom.DeclarationFlags.ReadOnly)
-        );
+        ns.members.push(dom.create.alias(name, dom.type.number));
         break;
       case 'hyper':
         const hyper = dom.create.class(name);
