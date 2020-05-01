@@ -58,10 +58,9 @@ export default function typeDef(api, node, ns, xdrTypes) {
           );
         }
         ns.members.push(
-          dom.create.const(
+          dom.create.alias(
             name,
-            dom.create.namedTypeReference(exp.arguments[0].value),
-            dom.DeclarationFlags.ReadOnly
+            dom.create.namedTypeReference(exp.arguments[0].value)
           )
         );
         break;

@@ -202,11 +202,11 @@ exports[`.transform(type definitions) 1`] = `
 
     type SkipList = Hash[];
 
-    const SequenceNumber: Int64;
+    type SequenceNumber = Int64;
 
-    const NodeId: PublicKey;
+    type NodeId = PublicKey;
 
-    const AccountId: PublicKey;
+    type AccountId = PublicKey;
 
     const ClearFlags: Option;
 
