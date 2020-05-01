@@ -49,16 +49,16 @@ export function resolveType(api, node, xdrTypes) {
         return dom.create.union([dom.type.string, buffer]);
         break;
       case 'opaque':
-        return xdrTypes.OPAQUE;
+        return buffer;
         break;
       case 'varOpaque':
-        return xdrTypes.VAROPAQUE;
+        return buffer;
         break;
       case 'array':
-        return xdrTypes.ARRAY;
+        return dom.create.array(resolveType(api, node.arguments[0], xdrTypes));
         break;
       case 'varArray':
-        return xdrTypes.VARARRAY;
+        return dom.create.array(resolveType(api, node.arguments[0], xdrTypes));
         break;
       case 'lookup':
         if (node.arguments[0].type !== 'Literal') {

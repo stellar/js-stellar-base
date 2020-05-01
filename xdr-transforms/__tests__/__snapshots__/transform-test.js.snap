@@ -614,10 +614,11 @@ exports[`.transform(xdr structs) 1`] = `
             int64: UnsignedHyper;
             int64: Hyper;
             string32: string | Buffer;
-            hash: Opaque;
-            encryptedBody: VarOpaque;
-            value: VarOpaque;
-            ledgerEntryChanges: VarArray;
+            hash: Buffer;
+            encryptedBody: Buffer;
+            value: Buffer;
+            ledgerEntryChanges: LedgerEntryChange[];
+            accountEntries: LedgerEntryChange[];
             ClearFlags: null | Uint32;
         });
 
@@ -637,13 +638,15 @@ exports[`.transform(xdr structs) 1`] = `
 
         string32(value?: string | Buffer): string | Buffer;
 
-        hash(value?: Opaque): Opaque;
+        hash(value?: Buffer): Buffer;
 
-        encryptedBody(value?: VarOpaque): VarOpaque;
+        encryptedBody(value?: Buffer): Buffer;
 
-        value(value?: VarOpaque): VarOpaque;
+        value(value?: Buffer): Buffer;
 
-        ledgerEntryChanges(value?: VarArray): VarArray;
+        ledgerEntryChanges(value?: LedgerEntryChange[]): LedgerEntryChange[];
+
+        accountEntries(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
         ClearFlags(value?: null | Uint32): null | Uint32;
 

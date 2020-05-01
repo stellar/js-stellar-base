@@ -26,6 +26,7 @@ var types = XDR.config((xdr) => {
       'ledgerEntryChanges',
       xdr.varArray(xdr.lookup('LedgerEntryChange'), 2147483647)
     ],
+    ['accountEntries', xdr.array(xdr.lookup('LedgerEntryChange'), 4)],
     ['ClearFlags', xdr.option(xdr.lookup('Uint32'))]
   ]);
 });
