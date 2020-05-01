@@ -13,8 +13,7 @@
     "preversion": "gulp test",
     "version": "gulp build",
     "postversion": "git push && git push --tags",
-    "prettier-all": "prettier --write **/*.js",
-    "xdr-test": "jest --bail"
+    "prettier-all": "prettier --write **/*.js"
   },
   "files": [
     "/lib",
@@ -62,7 +61,6 @@
     "clear": "^0.1.0",
     "coveralls": "^3.0.2",
     "del": "^5.1.0",
-    "dts-dom": "^3.6.0",
     "dtslint": "^0.6.0",
     "eslint": "^5.12.1",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -84,8 +82,6 @@
     "husky": "^1.3.1",
     "isparta": "^4.1.1",
     "istanbul": "^0.4.5",
-    "jest": "^25.5.1",
-    "jscodeshift": "^0.7.0",
     "jsdoc": "3.5.5",
     "karma": "^5.0.2",
     "karma-chrome-launcher": "^3.1.0",
@@ -116,10 +112,5 @@
   },
   "optionalDependencies": {
     "sodium-native": "^2.3.0"
-  },
-  "jest": {
-    "roots": [
-      "xdr-transforms"
-    ]
   }
 }
