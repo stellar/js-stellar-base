@@ -1,8 +1,6 @@
 import * as XDR from 'js-xdr';
 
 var types = XDR.config((xdr) => {
-  xdr.typedef('Uint32', xdr.uint());
-  xdr.typedef('UUint32', xdr.lookup('Int32'));
   xdr.typedef('Int32', xdr.int());
   xdr.enum('ErrorCode', {
     errMisc: 0,
@@ -32,6 +30,7 @@ var types = XDR.config((xdr) => {
     ['accountEntries', xdr.array(xdr.lookup('LedgerEntryChange'), 4)],
     ['ClearFlags', xdr.option(xdr.lookup('Uint32'))]
   ]);
+  xdr.typedef('Uint32', xdr.uint());
 });
 
 export default types;

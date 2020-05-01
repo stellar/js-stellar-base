@@ -67,32 +67,85 @@ export default function transformer(file, api) {
     ns: ns
   };
 
-  xdrDefs.find(types.namedTypes.CallExpression).forEach((p) => {
+  let logged = false;
+
+  let config;
+
+  xdrDefs.find(types.namedTypes.CallExpression).some((p) => {
     const node = p.value;
     const callee = node.callee;
 
-    if (callee.type === 'MemberExpression' && callee.object.name === 'xdr') {
-      const xdrType = callee.property.name;
-
-      switch (xdrType) {
-        case 'enum':
-          enumToTS(api, node.arguments, ns, types);
-        case 'typedef':
-          typeDef(api, node, definitions);
-          break;
-        case 'struct':
-          structDef(api, node, definitions);
-          break;
-        case 'union':
-          unionDef(api, node, definitions);
-          break;
-        default:
-          break;
+    if (callee.type === 'MemberExpression') {
+      if (
+        callee.object.type === 'Identifier' &&
+        callee.object.name === 'XDR' &&
+        callee.property.name === 'config'
+      ) {
+        config = node.arguments[0].body.body; // extract all calls to xdr.
+        return true;
       }
+    }
+
+    return false;
+  });
+
+  config.forEach(function(statement) {
+    const node = statement.expression;
+    const callee = node.callee;
+
+    if (
+      callee.type === 'MemberExpression' &&
+      callee.object.name === 'xdr' &&
+      callee.property.name === 'enum'
+    ) {
+      enumToTS(api, node.arguments, ns, types);
     }
   });
 
-  // Use this to output to a file instead of overriding source
+  // process typedefs first
+  config.forEach(function(statement) {
+    const node = statement.expression;
+    const callee = node.callee;
+
+    if (
+      callee.type === 'MemberExpression' &&
+      callee.object.name === 'xdr' &&
+      callee.property.name === 'typedef'
+    ) {
+      typeDef(api, node, definitions);
+    }
+  });
+
+  // process structs first
+  config.forEach(function(statement) {
+    const node = statement.expression;
+    const callee = node.callee;
+
+    if (
+      callee.type === 'MemberExpression' &&
+      callee.object.name === 'xdr' &&
+      callee.property.name === 'struct'
+    ) {
+      structDef(api, node, definitions);
+      typeDef(api, node, definitions);
+    }
+  });
+
+  // process unions first
+  config.forEach(function(statement) {
+    const node = statement.expression;
+    const callee = node.callee;
+
+    if (
+      callee.type === 'MemberExpression' &&
+      callee.object.name === 'xdr' &&
+      callee.property.name === 'union'
+    ) {
+      unionDef(api, node, definitions);
+    }
+  });
+
+  // use this to output to a file instead of overriding source
   if (process.env.OUT) {
     console.log('writing to: ' + process.env.OUT);
     fs.writeFileSync(process.env.OUT, dom.emit(ns));
