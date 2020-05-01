@@ -586,7 +586,6 @@ declare namespace xdrHidden {
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-
     interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -1724,9 +1723,9 @@ export namespace xdr {
 
   type Thresholds = Buffer;
 
-  type String32 = string | Buffer;
+  const String32: XDRString;
 
-  type String64 = string | Buffer;
+  const String64: XDRString;
 
   type SequenceNumber = Int64;
 
@@ -2587,7 +2586,7 @@ export namespace xdr {
       lowThreshold: null | number;
       medThreshold: null | number;
       highThreshold: null | number;
-      homeDomain: null | String32;
+      homeDomain: null | string | Buffer;
       signer: null | Signer;
     });
 
@@ -2605,7 +2604,7 @@ export namespace xdr {
 
     highThreshold(value?: null | number): null | number;
 
-    homeDomain(value?: null | String32): null | String32;
+    homeDomain(value?: null | string | Buffer): null | string | Buffer;
 
     signer(value?: null | Signer): null | Signer;
 
@@ -2682,11 +2681,11 @@ export namespace xdr {
 
   class ManageDataOp {
     constructor(attributes: {
-      dataName: String64;
+      dataName: string | Buffer;
       dataValue: null | DataValue;
     });
 
-    dataName(value?: String64): String64;
+    dataName(value?: string | Buffer): string | Buffer;
 
     dataValue(value?: null | DataValue): null | DataValue;
 
@@ -3687,7 +3686,7 @@ export namespace xdr {
       numSubEntries: number;
       inflationDest: null | AccountId;
       flags: number;
-      homeDomain: String32;
+      homeDomain: string | Buffer;
       thresholds: Thresholds;
       signers: Signer[];
       ext: AccountEntryExt;
@@ -3705,7 +3704,7 @@ export namespace xdr {
 
     flags(value?: number): number;
 
-    homeDomain(value?: String32): String32;
+    homeDomain(value?: string | Buffer): string | Buffer;
 
     thresholds(value?: Thresholds): Thresholds;
 
@@ -3844,14 +3843,14 @@ export namespace xdr {
   class DataEntry {
     constructor(attributes: {
       accountId: AccountId;
-      dataName: String64;
+      dataName: string | Buffer;
       dataValue: DataValue;
       ext: DataEntryExt;
     });
 
     accountId(value?: AccountId): AccountId;
 
-    dataName(value?: String64): String64;
+    dataName(value?: string | Buffer): string | Buffer;
 
     dataValue(value?: DataValue): DataValue;
 
@@ -4101,11 +4100,14 @@ export namespace xdr {
   }
 
   class LedgerKeyData {
-    constructor(attributes: { accountId: AccountId; dataName: String64 });
+    constructor(attributes: {
+      accountId: AccountId;
+      dataName: string | Buffer;
+    });
 
     accountId(value?: AccountId): AccountId;
 
-    dataName(value?: String64): String64;
+    dataName(value?: string | Buffer): string | Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 

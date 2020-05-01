@@ -116,3 +116,4 @@ t.timeBounds(); // $ExpectType TimeBounds | null
 StellarSdk.xdr.Uint64.fromString("12"); // $ExpectType UnsignedHyper
 StellarSdk.xdr.Int32.toXDR(-1); // $ExpectType Buffer
 StellarSdk.xdr.Uint32.toXDR(1); // $ExpectType Buffer
+StellarSdk.xdr.String32.toXDR("hellow world"); // $ExpectedType Buffer
