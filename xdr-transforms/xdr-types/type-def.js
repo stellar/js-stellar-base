@@ -1,7 +1,7 @@
 import * as dom from 'dts-dom';
 import { isXDRMemberCall, isNativeXDRType, resolveType } from './utils';
 
-export default function typeDef(api, node, ns, xdrTypes) {
+export default function typeDef(api, node, ns) {
   const [literal, exp] = node.arguments;
   const name = literal.value;
   const buffer = dom.create.interface('Buffer');
@@ -15,14 +15,14 @@ export default function typeDef(api, node, ns, xdrTypes) {
         ns.members.push(dom.create.alias(name, dom.type.number));
         break;
       case 'hyper':
-        const hyper = dom.create.class(name);
-        hyper.baseType = xdrTypes.HYPER;
-        ns.members.push(hyper);
+        ns.members.push(
+          dom.create.alias(name, dom.create.namedTypeReference('Hyper'))
+        );
         break;
       case 'uhyper':
-        const uhyper = dom.create.class(name);
-        uhyper.baseType = xdrTypes.UHYPER;
-        ns.members.push(uhyper);
+        ns.members.push(
+          dom.create.alias(name, dom.create.namedTypeReference('UnsignedHyper'))
+        );
         break;
       case 'string':
         ns.members.push(
@@ -39,7 +39,7 @@ export default function typeDef(api, node, ns, xdrTypes) {
         ns.members.push(
           dom.create.alias(
             name,
-            dom.create.array(resolveType(api, exp.arguments[0], xdrTypes))
+            dom.create.array(resolveType(api, exp.arguments[0]))
           )
         );
         break;
@@ -47,7 +47,7 @@ export default function typeDef(api, node, ns, xdrTypes) {
         ns.members.push(
           dom.create.alias(
             name,
-            dom.create.array(resolveType(api, exp.arguments[0], xdrTypes))
+            dom.create.array(resolveType(api, exp.arguments[0]))
           )
         );
         break;
@@ -70,7 +70,7 @@ export default function typeDef(api, node, ns, xdrTypes) {
             name,
             dom.create.union([
               dom.type.undefined,
-              resolveType(api, exp.arguments[0], xdrTypes)
+              resolveType(api, exp.arguments[0])
             ])
           )
         );

@@ -23,7 +23,7 @@ export function isNativeXDRType(node) {
   return node.type === 'Identifier' && nativeTypes.indexOf(node.name) >= 0;
 }
 
-export function resolveType(api, node, xdrTypes) {
+export function resolveType(api, node) {
   if (node.type !== 'CallExpression') {
     throw New(
       `Invalid type, expected a CallExpression but received a ${node.type}`
@@ -40,10 +40,10 @@ export function resolveType(api, node, xdrTypes) {
         return dom.type.number;
         break;
       case 'hyper':
-        return xdrTypes.HYPER;
+        return dom.create.namedTypeReference('Hyper');
         break;
       case 'uhyper':
-        return xdrTypes.UHYPER;
+        return dom.create.namedTypeReference('UnsignedHyper');
         break;
       case 'string':
         return dom.create.union([dom.type.string, buffer]);
@@ -55,10 +55,10 @@ export function resolveType(api, node, xdrTypes) {
         return buffer;
         break;
       case 'array':
-        return dom.create.array(resolveType(api, node.arguments[0], xdrTypes));
+        return dom.create.array(resolveType(api, node.arguments[0]));
         break;
       case 'varArray':
-        return dom.create.array(resolveType(api, node.arguments[0], xdrTypes));
+        return dom.create.array(resolveType(api, node.arguments[0]));
         break;
       case 'lookup':
         if (node.arguments[0].type !== 'Literal') {
@@ -71,7 +71,7 @@ export function resolveType(api, node, xdrTypes) {
       case 'option':
         return dom.create.union([
           dom.type.null,
-          resolveType(api, node.arguments[0], xdrTypes)
+          resolveType(api, node.arguments[0])
         ]);
         break;
       case 'void':

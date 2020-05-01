@@ -77,13 +77,13 @@ export default function transformer(file, api) {
         case 'enum':
           enumToTS(api, node.arguments, ns, types);
         case 'typedef':
-          typeDef(api, node, ns, xdrTypes);
+          typeDef(api, node, ns);
           break;
         case 'struct':
-          structDef(api, node, ns, xdrTypes);
+          structDef(api, node, ns);
           break;
         case 'union':
-          unionDef(api, node, ns, xdrTypes);
+          unionDef(api, node, ns);
           break;
         default:
           break;

@@ -1,7 +1,7 @@
 import { resolveType } from './utils';
 import * as dom from 'dts-dom';
 
-export default function structDef(api, node, ns, xdrTypes) {
+export default function structDef(api, node, ns) {
   const [literal, arrayExp] = node.arguments;
   const name = literal.value;
   const struct = dom.create.class(name);
@@ -9,7 +9,7 @@ export default function structDef(api, node, ns, xdrTypes) {
   const buffer = dom.create.interface('Buffer');
 
   arrayExp.elements.forEach(({ elements: [attr, type] }) => {
-    const xdrType = resolveType(api, type, xdrTypes);
+    const xdrType = resolveType(api, type);
     attributes.push(dom.create.property(attr.value, xdrType));
     struct.members.push(
       dom.create.method(
