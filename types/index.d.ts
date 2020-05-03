@@ -1,7 +1,11 @@
 // TypeScript Version: 2.9
 
 /// <reference types="node" />
-export {};
+import xdr from './xdr';
+
+export {
+  xdr
+};
 
 export class Account {
   constructor(accountId: string, sequence: string);
@@ -60,10 +64,10 @@ export class Keypair {
   rawPublicKey(): Buffer;
   rawSecretKey(): Buffer;
   canSign(): boolean;
-  sign(data: Buffer): xdr.Signature;
+  sign(data: Buffer): Buffer;
   signDecorated(data: Buffer): xdr.DecoratedSignature;
-  signatureHint(): xdr.SignatureHint;
-  verify(data: Buffer, signature: xdr.Signature): boolean;
+  signatureHint(): Buffer;
+  verify(data: Buffer, signature: Buffer): boolean;
   xdrAccountId(): xdr.AccountId;
 }
 
@@ -553,85 +557,10 @@ export namespace TransactionBuilder {
   }
 }
 
-// Hidden namespace as hack to work around name collision.
-declare namespace xdrHidden {
-  // tslint:disable-line:strict-export-declare-modifiers
-  class Operation2<T extends Operation = Operation> extends xdr.XDRStruct {
-    static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
-    static fromXDR(input: string, format: 'hex' | 'base64'): xdr.Operation;
-  }
-}
-
-export namespace xdr {
-  class XDRStruct {
-    static fromXDR(input: Buffer, format?: 'raw'): XDRStruct;
-    static fromXDR(input: string, format: 'hex' | 'base64'): XDRStruct;
-
-    toXDR(base?: string): Buffer;
-    toXDR(encoding: string): string;
-  }
-  export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-  class AccountId extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): AccountId;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): AccountId;
-  }
-  class Asset extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): Asset;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): Asset;
-  }
-  class Memo extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
-  }
-  class EnvelopeType extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): Memo;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): Memo;
-    name: string;
-    value: number;
-  }
-  class TransactionEnvelope extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionEnvelope;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionEnvelope;
-    switch(): EnvelopeType;
-    v0(): TransactionV0Envelope;
-    v1(): TransactionV1Envelope;
-    feeBump(): FeeBumpTransactionEnvelope;
-    value(): TransactionV0Envelope | TransactionV1Envelope | FeeBumpTransactionEnvelope;
-  }
-  class FeeBumpTransactionEnvelope extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): FeeBumpTransactionEnvelope;
-  }
-  class TransactionV0Envelope extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV0Envelope;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV0Envelope;
-  }
-  class TransactionV1Envelope extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionV1Envelope;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): TransactionV1Envelope;
-  }
-  class DecoratedSignature extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): DecoratedSignature;
-    static fromXDR(xdr: string, format: 'hex' | 'base64'): DecoratedSignature;
-
-    constructor(keys: { hint: SignatureHint; signature: Signature });
-
-    hint(): SignatureHint;
-    signature(): Buffer;
-  }
-  type SignatureHint = Buffer;
-  type Signature = Buffer;
-
-  class TransactionResult extends XDRStruct {
-    static fromXDR(xdr: Buffer, format?: 'raw'): TransactionResult;
-    static fromXDR(xdr: string, format: 'hex'): TransactionResult;
-  }
-}
-
 export function hash(data: Buffer): Buffer;
-export function sign(data: Buffer, rawSecret: Buffer): xdr.Signature;
+export function sign(data: Buffer, rawSecret: Buffer): Buffer;
 export function verify(
   data: Buffer,
-  signature: xdr.Signature,
+  signature: Buffer,
   rawPublicKey: Buffer
 ): boolean;

@@ -73,3 +73,63 @@ const newSignerXDR3 = StellarSdk.Operation.setOptions({
 StellarSdk.Operation.fromXDRObject(newSignerXDR3).signer; // $ExpectType PreAuthTx
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
+
+const envelope = feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
+envelope.v0(); // $ExpectType TransactionV0Envelope
+envelope.v1(); // $ExpectType TransactionV1Envelope
+envelope.feeBump(); // $ExpectType FeeBumpTransactionEnvelope
+
+const meta = StellarSdk.xdr.TransactionMeta.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAQAAAAIAAAADAcEsRAAAAAAAAAAArZu2SrdQ9krkyj7RBqTx1txDNZBfcS+wGjuEUizV9hkAAAAAAKXgdAGig34AADuDAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAcEsRAAAAAAAAAAArZu2SrdQ9krkyj7RBqTx1txDNZBfcS+wGjuEUizV9hkAAAAAAKXgdAGig34AADuEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA==',
+  'base64'
+);
+meta; // $ExpectType TransactionMeta
+meta.v1().txChanges(); // $ExpectType LedgerEntryChange[]
+const op = StellarSdk.xdr.AllowTrustOp.fromXDR(
+  'AAAAAMNQvnFVCnBnEVzd8ZaKUvsI/mECPGV8cnBszuftCmWYAAAAAUNPUAAAAAAC',
+  'base64'
+);
+op; // $ExpectType AllowTrustOp
+op.authorize(); // $ExpectType number
+op.trustor().ed25519(); // $ExpectType Buffer
+op.trustor(); // $ExpectedType AccountId
+const e = StellarSdk.xdr.LedgerEntry.fromXDR(
+  "AAAAAAAAAAC2LgFRDBZ3J52nLm30kq2iMgrO7dYzYAN3hvjtf1IHWg==",
+  'base64'
+);
+e; // $ExpectType LedgerEntry
+const a = StellarSdk.xdr.AccountEntry.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAALYuAVEMFncnnacubfSSraIyCs7t1jNgA3eG+O1/UgdaAAAAAAAAA+gAAAAAGc1zDAAAAAIAAAABAAAAAEB9GCtIe8SCLk7LV3MzmlKN3U4M2JdktE7ofCKtTNaaAAAABAAAAAtzdGVsbGFyLm9yZwABAQEBAAAAAQAAAACEKm+WHjUQThNzoKx6WbU8no3NxzUrGtoSLmtxaBAM2AAAAAEAAAABAAAAAAAAAAoAAAAAAAAAFAAAAAA=',
+  'base64'
+);
+a; // $ExpectType AccountEntry
+a.homeDomain(); // $ExpectType string | Buffer
+const t = StellarSdk.xdr.TransactionV0.fromXDR(
+    // tslint:disable:max-line-length
+    '1bzMAeuKubyXUug/Xnyj1KYkv+cSUtCSvAczI2b459kAAABkAS/5cwAAABMAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAsBL/lzAAAAFAAAAAA=',
+    'base64'
+);
+t; // $ExpectType TransactionV0
+t.timeBounds(); // $ExpectType TimeBounds | null
+
+StellarSdk.xdr.Uint64.fromString("12"); // $ExpectType UnsignedHyper
+StellarSdk.xdr.Int32.toXDR(-1); // $ExpectType Buffer
+StellarSdk.xdr.Uint32.toXDR(1); // $ExpectType Buffer
+StellarSdk.xdr.String32.toXDR("hellow world"); // $ExpectedType Buffer
+StellarSdk.xdr.Hash.toXDR(Buffer.alloc(32)); // $ExpectedType Buffer
+StellarSdk.xdr.Signature.toXDR(Buffer.alloc(9, 'a')); // $ExpectedType Buffer
+
+const change = StellarSdk.xdr.LedgerEntryChange.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAwHBW0UAAAAAAAAAADwkQ23EX6ohsRsGoCynHl5R8D7RXcgVD4Y92uUigLooAAAAAIitVMABlM5gABTlLwAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA',
+  'base64'
+);
+change; // $ExpectType LedgerEntryChange
+const raw = StellarSdk.xdr.LedgerEntryChanges.toXDR([change]); // $ExpectType Buffer
+StellarSdk.xdr.LedgerEntryChanges.fromXDR(raw); // $ExpectType LedgerEntryChange[]
+
+StellarSdk.xdr.Asset.assetTypeNative(); // $ExpectType Asset
+StellarSdk.xdr.InnerTransactionResultResult.txInternalError(); // $ExpectType InnerTransactionResultResult
+StellarSdk.xdr.TransactionV0Ext[0](); // $ExpectedType TransactionV0Ext
