@@ -2,10 +2,15 @@
 
 ## Unreleased
 
+## [v3.0.2](https://github.com/stellar/js-stellar-base/compare/v3.0.1..v3.0.2)
+
+### Fix
+- Extend `files` in npm package to include XDR type definitions ([#345](https://github.com/stellar/js-stellar-base/pull/345)).
+
 ## [v3.0.1](https://github.com/stellar/js-stellar-base/compare/v3.0.0..v3.0.1)
 
 ### Add
-- Add TypeScript definitions for auto-generated XDR code ((#342)[https://github.com/stellar/js-stellar-base/pull/342]).
+- Add TypeScript definitions for auto-generated XDR code ([#342](https://github.com/stellar/js-stellar-base/pull/342)).
 
 ## [v3.0.0](https://github.com/stellar/js-stellar-base/compare/v2.1.9..v3.0.0)
 
