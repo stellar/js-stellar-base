@@ -1,6 +1,6 @@
 {
   "name": "stellar-base",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Low level stellar support library",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
@@ -18,7 +18,8 @@
   "files": [
     "/lib",
     "/dist",
-    "/types/index.d.ts"
+    "/types/index.d.ts",
+    "/types/xdr.d.ts"
   ],
   "husky": {
     "hooks": {
