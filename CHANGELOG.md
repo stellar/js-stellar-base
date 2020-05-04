@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [v3.0.1](https://github.com/stellar/js-stellar-base/compare/v3.0.0..v3.0.1)
+
+### Add
+- Add TypeScript definitions for auto-generated XDR code ((#342)[https://github.com/stellar/js-stellar-base/pull/342]).
+
 ## [v3.0.0](https://github.com/stellar/js-stellar-base/compare/v2.1.9..v3.0.0)
 
 This version brings protocol 13 support with backwards compatibility support for protocol 12.
