@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>network.js - Documentation</title>
+    <title>util/decode_encode_muxed_account.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">network.js</h1>
+    <h1 class="page-title">util/decode_encode_muxed_account.js</h1>
     
 
     
@@ -39,16 +39,37 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Contains passphrases for common networks:
- * * `Networks.PUBLIC`: `Public Global Stellar Network ; September 2015`
- * * `Networks.TESTNET`: `Test SDF Network ; September 2015`
- * @type {{PUBLIC: string, TESTNET: string}}
+            <pre class="prettyprint source linenums"><code>import xdr from '../generated/stellar-xdr_generated';
+import { StrKey } from '../strkey';
+
+/**
+ * Returns a XDR.MuxedAccount forcing the ed25519 discriminant.
+ * @function
+ * @param {string} address address to encode to XDR.
+ * @returns {xdr.MuxedAccount} MuxedAccount with ed25519 discriminant.
  */
-export const Networks = {
-  PUBLIC: 'Public Global Stellar Network ; September 2015',
-  TESTNET: 'Test SDF Network ; September 2015'
-};
+export function decodeAddressToMuxedAccount(address) {
+  return xdr.MuxedAccount.keyTypeEd25519(
+    StrKey.decodeEd25519PublicKey(address)
+  );
+}
+
+/**
+ * Converts an xdr.MuxedAccount to its string representation, forcing the ed25519 representation.
+ * @function
+ * @param {xdr.MuxedAccount} muxedAccount .
+ * @returns {string} address
+ */
+export function encodeMuxedAccountToAddress(muxedAccount) {
+  let ed25519;
+  if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
+    ed25519 = muxedAccount.ed25519();
+  } else {
+    ed25519 = muxedAccount.med25519().ed25519();
+  }
+
+  return StrKey.encodeEd25519PublicKey(ed25519);
+}
 </code></pre>
         </article>
     </section>
