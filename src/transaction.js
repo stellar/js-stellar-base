@@ -6,6 +6,7 @@ import { StrKey } from './strkey';
 import { Operation } from './operation';
 import { Memo } from './memo';
 import { TransactionBase } from './transaction_base';
+import { encodeMuxedAccountToAddress } from './util/decode_encode_muxed_account';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object. If you have
@@ -56,9 +57,7 @@ export class Transaction extends TransactionBase {
         );
         break;
       default:
-        this._source = StrKey.encodeMuxedAccount(
-          this.tx.sourceAccount().toXDR()
-        );
+        this._source = encodeMuxedAccountToAddress(this.tx.sourceAccount());
         break;
     }
 

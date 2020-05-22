@@ -565,9 +565,7 @@ describe('Transaction', function() {
         envelope,
         networkPassphrase
       );
-      expect(txWithMuxedAccount.source).to.equal(
-        StellarBase.StrKey.encodeMuxedAccount(muxedAccount.toXDR())
-      );
+      expect(txWithMuxedAccount.source).to.equal(source.publicKey());
       expect(tx.source).to.equal(source.publicKey());
       var operation = txWithMuxedAccount.operations[0];
       expect(operation.destination).to.be.equal(destination);
