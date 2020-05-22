@@ -545,6 +545,23 @@ describe('Transaction', function() {
         .v1()
         .tx()
         .sourceAccount(muxedAccount);
+
+      let destMed25519 = new StellarBase.xdr.MuxedAccountMed25519({
+        id: StellarBase.xdr.Uint64.fromString('0'),
+        ed25519: StellarBase.StrKey.decodeEd25519PublicKey(destination)
+      });
+      let destMuxedAccount = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
+        destMed25519
+      );
+      envelope
+        .v1()
+        .tx()
+        .operations()[0]
+        .body()
+        .value()
+        .destination(destMuxedAccount);
+
+      console.log(envelope.toXDR('base64'));
       const txWithMuxedAccount = new StellarBase.Transaction(
         envelope,
         networkPassphrase
@@ -553,6 +570,8 @@ describe('Transaction', function() {
         StellarBase.StrKey.encodeMuxedAccount(muxedAccount.toXDR())
       );
       expect(tx.source).to.equal(source.publicKey());
+      var operation = txWithMuxedAccount.operations[0];
+      expect(operation.destination).to.be.equal(destination);
     });
   });
 });
