@@ -80,7 +80,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('payment');
       expect(obj.destination).to.be.equal(destination);
     });
-    it('supports muxed accounts', function() {
+    it('does not support muxed accounts', function() {
       var destination =
         'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
       var amount = '1000.0000000';
@@ -90,20 +90,15 @@ describe('Operation', function() {
       );
       var source =
         'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      let op = StellarBase.Operation.payment({
-        destination,
-        asset,
-        amount,
-        source
-      });
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('payment');
-      expect(obj.destination).to.be.equal(destination);
-      expect(obj.source).to.be.equal(source);
+
+      expect(() => {
+        StellarBase.Operation.payment({
+          destination,
+          asset,
+          amount,
+          source
+        });
+      }).to.throw(/destination is invalid/);
     });
 
     it('fails to create payment operation with an invalid destination address', function() {
@@ -195,7 +190,7 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-    it('supports muxed accounts', function() {
+    it('does not support muxed accounts', function() {
       var sendAsset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -220,22 +215,17 @@ describe('Operation', function() {
           'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
         )
       ];
-      let op = StellarBase.Operation.pathPaymentStrictReceive({
-        sendAsset,
-        sendMax,
-        destination,
-        destAsset,
-        destAmount,
-        path,
-        source
-      });
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.destination).to.be.equal(destination);
-      expect(obj.source).to.be.equal(destination);
+      expect(() => {
+        StellarBase.Operation.pathPaymentStrictReceive({
+          sendAsset,
+          sendMax,
+          destination,
+          destAsset,
+          destAmount,
+          path,
+          source
+        });
+      }).to.throw(/destination is invalid/);
     });
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
@@ -352,7 +342,7 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-    it('supports muxed accounts', function() {
+    it('does not support muxed accounts', function() {
       var sendAsset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -373,23 +363,17 @@ describe('Operation', function() {
           'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
         )
       ];
-      let op = StellarBase.Operation.pathPaymentStrictSend({
-        sendAsset,
-        sendAmount,
-        destination,
-        destAsset,
-        destMin,
-        path,
-        source
-      });
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('pathPaymentStrictSend');
-      expect(obj.destination).to.be.equal(destination);
-      expect(obj.source).to.be.equal(source);
+      expect(() => {
+        StellarBase.Operation.pathPaymentStrictSend({
+          sendAsset,
+          sendAmount,
+          destination,
+          destAsset,
+          destMin,
+          path,
+          source
+        });
+      }).to.throw(/destination is invalid/);
     });
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
@@ -1537,21 +1521,15 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('accountMerge');
       expect(obj.destination).to.be.equal(opts.destination);
     });
-    it('supports muxed accounts', function() {
+    it('does not support muxed accounts', function() {
       var opts = {};
       opts.destination =
         'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
       opts.source =
         'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      let op = StellarBase.Operation.accountMerge(opts);
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('accountMerge');
-      expect(obj.destination).to.be.equal(opts.destination);
-      expect(obj.source).to.be.equal(opts.source);
+      expect(() => {
+        StellarBase.Operation.accountMerge(opts);
+      }).to.throw(/destination is invalid/);
     });
     it('fails to create accountMerge operation with an invalid destination address', function() {
       let opts = {

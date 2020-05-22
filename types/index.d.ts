@@ -487,9 +487,6 @@ export namespace StrKey {
 
   function encodeSha256Hash(data: Buffer): string;
   function decodeSha256Hash(data: string): Buffer;
-
-  function encodeMuxedAccount(data: Buffer): string;
-  function decodeMuxedAccount(data: string): Buffer;
 }
 
 export class TransactionI {

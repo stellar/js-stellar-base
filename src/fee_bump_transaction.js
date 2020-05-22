@@ -1,9 +1,9 @@
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
 
-import { StrKey } from './strkey';
 import { Transaction } from './transaction';
 import { TransactionBase } from './transaction_base';
+import { encodeMuxedAccountToAddress } from './util/decode_encode_muxed_account';
 
 /**
  * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a
@@ -42,7 +42,7 @@ export class FeeBumpTransaction extends TransactionBase {
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
       tx.innerTx().v1()
     );
-    this._feeSource = StrKey.encodeMuxedAccount(this.tx.feeSource().toXDR());
+    this._feeSource = encodeMuxedAccountToAddress(this.tx.feeSource());
     this._innerTransaction = new Transaction(
       innerTxEnvelope,
       networkPassphrase

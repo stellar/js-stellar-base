@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Remove
+
+- Rollback support for SEP23 (Muxed Account StrKey) ([#349](https://github.com/stellar/js-stellar-base/pull/349)).
+
 ## [v3.0.2](https://github.com/stellar/js-stellar-base/compare/v3.0.1..v3.0.2)
 
 ### Fix
@@ -20,7 +24,7 @@ This version brings protocol 13 support with backwards compatibility support for
 - Add `TransactionBuilder.buildFeeBumpTransaction` which makes it easy to create `FeeBumpTransaction` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - Adds a feature flag which allow consumers of this library to create V1 (protocol 13) transactions using the `TransactionBuilder` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - Add support for [CAP0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md): First-class multiplexed accounts ([#325](https://github.com/stellar/js-stellar-base/pull/325)).
-- Add `Keypair.xdrMuxedAccount` which creates a new `xdr.MuxedAccount`([#325](https://github.com/stellar/js-stellar-base/pull/325)).
+- ~Add `Keypair.xdrMuxedAccount` which creates a new `xdr.MuxedAccount`([#325](https://github.com/stellar/js-stellar-base/pull/325)).~
 - Add `FeeBumpTransaction` which makes it easy to work with fee bump transactions ([#328](https://github.com/stellar/js-stellar-base/pull/328)).
 - Add `TransactionBuilder.fromXDR` which receives an xdr envelope and return a `Transaction` or `FeeBumpTransaction` ([#328](https://github.com/stellar/js-stellar-base/pull/328)).
 
@@ -28,27 +32,7 @@ This version brings protocol 13 support with backwards compatibility support for
 - Update XDR definitions with protocol 13 ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Extend `Transaction` to work with `TransactionV1Envelope` and `TransactionV0Envelope` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Add backward compatibility support for [CAP0018](https://github.com/stellar/stellar-protocol/blob/f01c9354aaab1e8ca97a25cf888829749cadf36a/core/cap-0018.md) ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
-- Update operations builder to support multiplexed accounts ([#337](https://github.com/stellar/js-stellar-base/pull/337)).
-
-  This allows you to specify an `M` account as the destination or source:
-  ```
-  var destination = 'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-  var amount = '1000.0000000';
-  var asset = new StellarBase.Asset(
-    'USDUSD',
-    'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-  );
-  var source =
-    'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-  StellarBase.Operation.payment({
-    destination,
-    asset,
-    amount,
-    source
-  });
-  ```
-
-  **To use multiplexed accounts you need a Stellar network instance running Protocol 13 or higher**
+- ~Update operations builder to support multiplexed accounts ([#337](https://github.com/stellar/js-stellar-base/pull/337)).~
 
 ### Breaking changes
 
