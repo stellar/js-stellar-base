@@ -13,9 +13,9 @@ import { StrKey } from './strkey';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 import {
-  decodeAddress,
+  decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress
-} from './util/decode_encode_address';
+} from './util/decode_encode_muxed_account';
 
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
@@ -66,7 +66,7 @@ export class Operation {
   static setSourceAccount(opAttributes, opts) {
     if (opts.source) {
       try {
-        opAttributes.sourceAccount = decodeAddress(opts.source);
+        opAttributes.sourceAccount = decodeAddressToMuxedAccount(opts.source);
       } catch (e) {
         throw new Error('Source address is invalid');
       }

@@ -561,7 +561,6 @@ describe('Transaction', function() {
         .value()
         .destination(destMuxedAccount);
 
-      console.log(envelope.toXDR('base64'));
       const txWithMuxedAccount = new StellarBase.Transaction(
         envelope,
         networkPassphrase

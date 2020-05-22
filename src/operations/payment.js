@@ -1,5 +1,5 @@
 import xdr from '../generated/stellar-xdr_generated';
-import { decodeAddress } from '../util/decode_encode_address';
+import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
 
 /**
  * Create a payment operation.
@@ -22,7 +22,7 @@ export function payment(opts) {
 
   const attributes = {};
   try {
-    attributes.destination = decodeAddress(opts.destination);
+    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
     throw new Error('destination is invalid');
   }

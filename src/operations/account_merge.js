@@ -1,5 +1,5 @@
 import xdr from '../generated/stellar-xdr_generated';
-import { decodeAddress } from '../util/decode_encode_address';
+import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
 
 /**
  * Transfers native balance to destination account.
@@ -14,7 +14,7 @@ export function accountMerge(opts) {
   const opAttributes = {};
   try {
     opAttributes.body = xdr.OperationBody.accountMerge(
-      decodeAddress(opts.destination)
+      decodeAddressToMuxedAccount(opts.destination)
     );
   } catch (e) {
     throw new Error('destination is invalid');

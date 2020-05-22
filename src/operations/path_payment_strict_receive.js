@@ -1,5 +1,5 @@
 import xdr from '../generated/stellar-xdr_generated';
-import { decodeAddress } from '../util/decode_encode_address';
+import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
 
 /**
  * Returns a XDR PathPaymentStrictReceiveOp. A `PathPaymentStrictReceive` operation send the specified amount to the
@@ -36,7 +36,7 @@ export function pathPaymentStrictReceive(opts) {
   attributes.sendMax = this._toXDRAmount(opts.sendMax);
 
   try {
-    attributes.destination = decodeAddress(opts.destination);
+    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
     throw new Error('destination is invalid');
   }
