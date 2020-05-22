@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [v3.0.3](https://github.com/stellar/js-stellar-base/compare/v3.0.2..v3.0.3)
+
 ### Remove
 
 - Rollback support for SEP23 (Muxed Account StrKey) ([#349](https://github.com/stellar/js-stellar-base/pull/349)).
