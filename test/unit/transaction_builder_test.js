@@ -1,4 +1,8 @@
 import { isValidDate } from '../../src/transaction_builder.js';
+import { Transaction } from '../../src/transaction.js';
+import xdr from '../../src/generated/stellar-xdr_generated';
+import { StrKey } from '../../src/strkey';
+import { Keypair } from '../../src/keypair';
 
 describe('TransactionBuilder', function() {
   describe('constructs a native payment transaction with one operation', function() {
@@ -496,8 +500,7 @@ describe('TransactionBuilder', function() {
         timebounds: {
           minTime: 0,
           maxTime: 0
-        },
-        v1: true
+        }
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -536,8 +539,7 @@ describe('TransactionBuilder', function() {
         timebounds: {
           minTime: 0,
           maxTime: 0
-        },
-        v1: true
+        }
       })
         .addOperation(
           StellarBase.Operation.payment({
@@ -576,16 +578,53 @@ describe('TransactionBuilder', function() {
         )
         .build();
 
-      expect(() => {
-        StellarBase.TransactionBuilder.buildFeeBumpTransaction(
-          feeSource,
-          '200',
-          innerTx,
-          networkPassphrase
-        );
-      }).to.throw(
-        /Invalid innerTransaction type, it should be a envelopeTypeTx but received a envelopeTypeTxV0./
+      const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
+      innerTx.sign(signer);
+
+      const feeBumpTx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        feeSource,
+        '200',
+        innerTx,
+        networkPassphrase
       );
+
+      const innerTxEnvelope = innerTx.toEnvelope();
+      expect(innerTxEnvelope.switch()).to.equal(
+        xdr.EnvelopeType.envelopeTypeTx()
+      );
+      expect(innerTxEnvelope.v1().signatures()).to.have.length(1);
+
+      const v1Tx = innerTxEnvelope.v1().tx();
+      const sourceAccountEd25519 = Keypair.fromPublicKey(
+        StrKey.encodeEd25519PublicKey(v1Tx.sourceAccount().ed25519())
+      )
+        .xdrAccountId()
+        .value();
+      const v0Tx = new xdr.TransactionV0({
+        sourceAccountEd25519: sourceAccountEd25519,
+        fee: v1Tx.fee(),
+        seqNum: v1Tx.seqNum(),
+        timeBounds: v1Tx.timeBounds(),
+        memo: v1Tx.memo(),
+        operations: v1Tx.operations(),
+        ext: new xdr.TransactionV0Ext(0)
+      });
+      const innerV0TxEnvelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
+        new xdr.TransactionV0Envelope({
+          tx: v0Tx,
+          signatures: innerTxEnvelope.v1().signatures()
+        })
+      );
+      expect(innerV0TxEnvelope.v0().signatures()).to.have.length(1);
+
+      const feeBumpV0Tx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        feeSource,
+        '200',
+        new Transaction(innerV0TxEnvelope, networkPassphrase),
+        networkPassphrase
+      );
+
+      expect(feeBumpTx.toXDR()).to.equal(feeBumpV0Tx.toXDR());
 
       done();
     });
