@@ -1,8 +1,4 @@
 import { isValidDate } from '../../src/transaction_builder.js';
-import { Transaction } from '../../src/transaction.js';
-import xdr from '../../src/generated/stellar-xdr_generated';
-import { StrKey } from '../../src/strkey';
-import { Keypair } from '../../src/keypair';
 
 describe('TransactionBuilder', function() {
   describe('constructs a native payment transaction with one operation', function() {
@@ -593,22 +589,24 @@ describe('TransactionBuilder', function() {
       expect(innerTxEnvelope.v1().signatures()).to.have.length(1);
 
       const v1Tx = innerTxEnvelope.v1().tx();
-      const sourceAccountEd25519 = Keypair.fromPublicKey(
-        StrKey.encodeEd25519PublicKey(v1Tx.sourceAccount().ed25519())
+      const sourceAccountEd25519 = StellarBase.Keypair.fromPublicKey(
+        StellarBase.StrKey.encodeEd25519PublicKey(
+          v1Tx.sourceAccount().ed25519()
+        )
       )
         .xdrAccountId()
         .value();
-      const v0Tx = new xdr.TransactionV0({
+      const v0Tx = new StellarBase.xdr.TransactionV0({
         sourceAccountEd25519: sourceAccountEd25519,
         fee: v1Tx.fee(),
         seqNum: v1Tx.seqNum(),
         timeBounds: v1Tx.timeBounds(),
         memo: v1Tx.memo(),
         operations: v1Tx.operations(),
-        ext: new xdr.TransactionV0Ext(0)
+        ext: new StellarBase.xdr.TransactionV0Ext(0)
       });
-      const innerV0TxEnvelope = new xdr.TransactionEnvelope.envelopeTypeTxV0(
-        new xdr.TransactionV0Envelope({
+      const innerV0TxEnvelope = new StellarBase.xdr.TransactionEnvelope.envelopeTypeTxV0(
+        new StellarBase.xdr.TransactionV0Envelope({
           tx: v0Tx,
           signatures: innerTxEnvelope.v1().signatures()
         })
@@ -618,7 +616,7 @@ describe('TransactionBuilder', function() {
       const feeBumpV0Tx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         feeSource,
         '200',
-        new Transaction(innerV0TxEnvelope, networkPassphrase),
+        new StellarBase.Transaction(innerV0TxEnvelope, networkPassphrase),
         networkPassphrase
       );
 
