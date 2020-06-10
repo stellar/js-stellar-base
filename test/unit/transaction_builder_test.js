@@ -589,9 +589,7 @@ describe('TransactionBuilder', function() {
       );
 
       const innerTxEnvelope = innerTx.toEnvelope();
-      expect(innerTxEnvelope.switch()).to.equal(
-        xdr.EnvelopeType.envelopeTypeTx()
-      );
+      expect(innerTxEnvelope.arm()).to.equal('v1');
       expect(innerTxEnvelope.v1().signatures()).to.have.length(1);
 
       const v1Tx = innerTxEnvelope.v1().tx();
