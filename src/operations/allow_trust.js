@@ -11,7 +11,7 @@ import { StrKey } from '../strkey';
  * @param {object} opts Options object
  * @param {string} opts.trustor - The trusting account (the one being authorized)
  * @param {string} opts.assetCode - The asset code being authorized.
- * @param {boolean|number} opts.authorize - True to authorize the line, false to deauthorize.
+ * @param {(0|1|2)} opts.authorize - `1` to authorize, `2` to authorize to maintain liabilities, and `0` to deauthorize.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  * @returns {xdr.AllowTrustOp} Allow Trust operation
  */
