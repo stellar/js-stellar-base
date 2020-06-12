@@ -3,9 +3,7 @@
 /// <reference types="node" />
 import xdr from './xdr';
 
-export {
-  xdr
-};
+export { xdr };
 
 export class Account {
   constructor(accountId: string, sequence: string);
@@ -141,6 +139,16 @@ export type AuthFlag =
   | AuthFlag.required
   | AuthFlag.revocable;
 
+export namespace TrustLineFlag {
+  type deauthorize = 0;
+  type authorize = 1;
+  type authorizeToMaintainLiabilities = 2;
+}
+export type TrustLineFlag =
+  | TrustLineFlag.deauthorize
+  | TrustLineFlag.authorize
+  | TrustLineFlag.authorizeToMaintainLiabilities;
+
 export namespace Signer {
   interface Ed25519PublicKey {
     ed25519PublicKey: string;
@@ -221,7 +229,7 @@ export namespace OperationOptions {
   interface AllowTrust extends BaseOptions {
     trustor: string;
     assetCode: string;
-    authorize?: boolean | number;
+    authorize?: boolean | TrustLineFlag;
   }
   interface ChangeTrust extends BaseOptions {
     asset: Asset;
@@ -324,7 +332,7 @@ export namespace Operation {
     trustor: string;
     assetCode: string;
     // this is a boolean or a number so that it can support protocol 12 or 13
-    authorize: boolean | number | undefined;
+    authorize: boolean | TrustLineFlag | undefined;
   }
   function allowTrust(
     options: OperationOptions.AllowTrust
@@ -393,7 +401,8 @@ export namespace Operation {
     options: OperationOptions.ManageBuyOffer
   ): xdr.Operation<ManageBuyOffer>;
 
-  interface PathPaymentStrictReceive extends BaseOperation<OperationType.PathPaymentStrictReceive> {
+  interface PathPaymentStrictReceive
+    extends BaseOperation<OperationType.PathPaymentStrictReceive> {
     sendAsset: Asset;
     sendMax: string;
     destination: string;
@@ -405,7 +414,8 @@ export namespace Operation {
     options: OperationOptions.PathPaymentStrictReceive
   ): xdr.Operation<PathPaymentStrictReceive>;
 
-  interface PathPaymentStrictSend extends BaseOperation<OperationType.PathPaymentStrictSend> {
+  interface PathPaymentStrictSend
+    extends BaseOperation<OperationType.PathPaymentStrictSend> {
     sendAsset: Asset;
     sendAmount: string;
     destination: string;
@@ -504,7 +514,10 @@ export class TransactionI {
 }
 
 export class FeeBumpTransaction extends TransactionI {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+  constructor(
+    envelope: string | xdr.TransactionEnvelope,
+    networkPassphrase: string
+  );
   feeSource: string;
   innerTransaction: Transaction;
 }
@@ -513,7 +526,10 @@ export class Transaction<
   TMemo extends Memo = Memo,
   TOps extends Operation[] = Operation[]
 > extends TransactionI {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+  constructor(
+    envelope: string | xdr.TransactionEnvelope,
+    networkPassphrase: string
+  );
   memo: TMemo;
   operations: TOps;
   sequence: string;
@@ -524,7 +540,7 @@ export class Transaction<
   };
 }
 
-export const BASE_FEE = "100";
+export const BASE_FEE = '100';
 export const TimeoutInfinite = 0;
 
 export class TransactionBuilder {
@@ -537,8 +553,16 @@ export class TransactionBuilder {
   setTimeout(timeoutInSeconds: number): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
-  static buildFeeBumpTransaction(feeSource: Keypair, baseFee: string, innerTx: Transaction, networkPassphrase: string): FeeBumpTransaction;
-  static fromXDR(envelope: string|xdr.TransactionEnvelope, networkPassphrase: string): Transaction|FeeBumpTransaction;
+  static buildFeeBumpTransaction(
+    feeSource: Keypair,
+    baseFee: string,
+    innerTx: Transaction,
+    networkPassphrase: string
+  ): FeeBumpTransaction;
+  static fromXDR(
+    envelope: string | xdr.TransactionEnvelope,
+    networkPassphrase: string
+  ): Transaction | FeeBumpTransaction;
 }
 
 export namespace TransactionBuilder {
