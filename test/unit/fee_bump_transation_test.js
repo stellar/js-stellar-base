@@ -20,8 +20,7 @@ describe('FeeBumpTransaction', function() {
       timebounds: {
         minTime: 0,
         maxTime: 0
-      },
-      v1: true
+      }
     })
       .addOperation(
         StellarBase.Operation.payment({
