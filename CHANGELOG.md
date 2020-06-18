@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [v3.0.4](https://github.com/stellar/js-stellar-base/compare/v3.0.3..v3.0.4)
+
+### Update
+
+- Generate V1 transactions by default and allow V0 transactions to be fee bumped ([#355](https://github.com/stellar/js-stellar-base/pull/355)).
+
 ## [v3.0.3](https://github.com/stellar/js-stellar-base/compare/v3.0.2..v3.0.3)
 
 ### Remove
@@ -33,7 +39,7 @@ This version brings protocol 13 support with backwards compatibility support for
 ### Update
 - Update XDR definitions with protocol 13 ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Extend `Transaction` to work with `TransactionV1Envelope` and `TransactionV0Envelope` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
-- Add backward compatibility support for [CAP0018](https://github.com/stellar/stellar-protocol/blob/f01c9354aaab1e8ca97a25cf888829749cadf36a/core/cap-0018.md) ([#317](https://github.com/stellar/js-stellar-base/pull/317)).     
+- Add backward compatibility support for [CAP0018](https://github.com/stellar/stellar-protocol/blob/f01c9354aaab1e8ca97a25cf888829749cadf36a/core/cap-0018.md) ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
   CAP0018 provides issuers with a new level of authorization between unauthorized and fully authorized, called "authorized to maintain liabilities". The changes in this release allow you to use the new authorization level and provides backward compatible support for Protocol 12.
 
   Before Protocol 13, the argument `authorize` in the `AllowTrust` operation was of type `boolean` where `true` was authorize and `false` deauthorize. Starting in Protocol 13, this value is now a `number` where `0` is deauthorize, `1` is authorize, and `2` is authorize to maintain liabilities.
