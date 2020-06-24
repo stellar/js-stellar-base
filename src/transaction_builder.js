@@ -238,7 +238,7 @@ export class TransactionBuilder {
 
   /**
    * Builds a {@link FeeBumpTransaction}
-   * @param {StrKey} feeSource - The account paying for the transaction.
+   * @param {Keypair} feeSource - The account paying for the transaction.
    * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
    * @param {Transaction} innerTx - The Transaction to be bumped by the fee bump transaction.
    * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
