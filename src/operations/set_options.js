@@ -160,7 +160,7 @@ export function setOptions(opts) {
   const setOptionsOp = new xdr.SetOptionsOp(attributes);
 
   const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.setOption(setOptionsOp);
+  opAttributes.body = xdr.OperationBody.setOptions(setOptionsOp);
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
