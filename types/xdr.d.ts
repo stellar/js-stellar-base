@@ -37,7 +37,7 @@ declare namespace xdrHidden {
 
 declare namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-    interface SignedInt {
+  interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
     read(io: Buffer): number;
