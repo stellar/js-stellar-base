@@ -2,7 +2,7 @@
 // using https://github.com/stellar/dts-xdr.
 // DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
 
-import { Operation } from "./index";
+import { Operation } from './index';
 
 // Hidden namespace as hack to work around name collision.
 declare namespace xdrHidden {
@@ -7022,7 +7022,7 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMeta;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMeta;
-  }  
+  }
 }
 
 export default xdr;
