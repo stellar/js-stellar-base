@@ -11,7 +11,7 @@ The following functions were renamed:
 - `xdr.OperationBody.setOption()` -> `xdr.OperationBody.setOptions()`
 - `xdr.OperationBody.manageDatum()` -> `xdr.OperationBody.manageData()`
 - `xdr.OperationType.setOption()` -> `xdr.OperationType.setOptions()`
-- `xdr.OperationType.manageDatum()` -> xdr.OperationType.manageData()
+- `xdr.OperationType.manageDatum()` -> `xdr.OperationType.manageData()`
 
 The following enum values were rename in `OperationType`:
 
