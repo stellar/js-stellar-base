@@ -353,9 +353,33 @@ declare namespace xdr {
       | 'manageDatum'
       | 'bumpSequence'
       | 'manageBuyOffer'
-      | 'pathPaymentStrictSend';
+      | 'pathPaymentStrictSend'
+      | 'createClaimableBalance'
+      | 'claimClaimableBalance'
+      | 'beginSponsoringFutureReserf'
+      | 'endSponsoringFutureReserf'
+      | 'revokeSponsorship';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+    readonly value:
+      | 0
+      | 1
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7
+      | 8
+      | 9
+      | 10
+      | 11
+      | 12
+      | 13
+      | 14
+      | 15
+      | 16
+      | 17
+      | 18;
 
     static createAccount(): OperationType;
 
@@ -384,6 +408,26 @@ declare namespace xdr {
     static manageBuyOffer(): OperationType;
 
     static pathPaymentStrictSend(): OperationType;
+
+    static createClaimableBalance(): OperationType;
+
+    static claimClaimableBalance(): OperationType;
+
+    static beginSponsoringFutureReserf(): OperationType;
+
+    static endSponsoringFutureReserf(): OperationType;
+
+    static revokeSponsorship(): OperationType;
+  }
+
+  class RevokeSponsorshipType {
+    readonly name: 'revokeSponsorshipLedgerEntry' | 'revokeSponsorshipSigner';
+
+    readonly value: 0 | 1;
+
+    static revokeSponsorshipLedgerEntry(): RevokeSponsorshipType;
+
+    static revokeSponsorshipSigner(): RevokeSponsorshipType;
   }
 
   class MemoType {
@@ -803,9 +847,10 @@ declare namespace xdr {
       | 'accountMergeImmutableSet'
       | 'accountMergeHasSubEntry'
       | 'accountMergeSeqnumTooFar'
-      | 'accountMergeDestFull';
+      | 'accountMergeDestFull'
+      | 'accountMergeIsSponsor';
 
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7;
 
     static accountMergeSuccess(): AccountMergeResultCode;
 
@@ -820,6 +865,8 @@ declare namespace xdr {
     static accountMergeSeqnumTooFar(): AccountMergeResultCode;
 
     static accountMergeDestFull(): AccountMergeResultCode;
+
+    static accountMergeIsSponsor(): AccountMergeResultCode;
   }
 
   class InflationResultCode {
@@ -863,6 +910,105 @@ declare namespace xdr {
     static bumpSequenceBadSeq(): BumpSequenceResultCode;
   }
 
+  class CreateClaimableBalanceResultCode {
+    readonly name:
+      | 'createClaimableBalanceSuccess'
+      | 'createClaimableBalanceMalformed'
+      | 'createClaimableBalanceLowReserve'
+      | 'createClaimableBalanceNoTrust'
+      | 'createClaimableBalanceNotAuthorized'
+      | 'createClaimableBalanceUnderfunded';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
+
+    static createClaimableBalanceSuccess(): CreateClaimableBalanceResultCode;
+
+    static createClaimableBalanceMalformed(): CreateClaimableBalanceResultCode;
+
+    static createClaimableBalanceLowReserve(): CreateClaimableBalanceResultCode;
+
+    static createClaimableBalanceNoTrust(): CreateClaimableBalanceResultCode;
+
+    static createClaimableBalanceNotAuthorized(): CreateClaimableBalanceResultCode;
+
+    static createClaimableBalanceUnderfunded(): CreateClaimableBalanceResultCode;
+  }
+
+  class ClaimClaimableBalanceResultCode {
+    readonly name:
+      | 'claimClaimableBalanceSuccess'
+      | 'claimClaimableBalanceDoesNotExist'
+      | 'claimClaimableBalanceCannotClaim'
+      | 'claimClaimableBalanceLineFull'
+      | 'claimClaimableBalanceNoTrust'
+      | 'claimClaimableBalanceNotAuthorized';
+
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
+
+    static claimClaimableBalanceSuccess(): ClaimClaimableBalanceResultCode;
+
+    static claimClaimableBalanceDoesNotExist(): ClaimClaimableBalanceResultCode;
+
+    static claimClaimableBalanceCannotClaim(): ClaimClaimableBalanceResultCode;
+
+    static claimClaimableBalanceLineFull(): ClaimClaimableBalanceResultCode;
+
+    static claimClaimableBalanceNoTrust(): ClaimClaimableBalanceResultCode;
+
+    static claimClaimableBalanceNotAuthorized(): ClaimClaimableBalanceResultCode;
+  }
+
+  class BeginSponsoringFutureReservesResultCode {
+    readonly name:
+      | 'beginSponsoringFutureReservesSuccess'
+      | 'beginSponsoringFutureReservesMalformed'
+      | 'beginSponsoringFutureReservesAlreadySponsored'
+      | 'beginSponsoringFutureReservesRecursive';
+
+    readonly value: 0 | -1 | -2 | -3;
+
+    static beginSponsoringFutureReservesSuccess(): BeginSponsoringFutureReservesResultCode;
+
+    static beginSponsoringFutureReservesMalformed(): BeginSponsoringFutureReservesResultCode;
+
+    static beginSponsoringFutureReservesAlreadySponsored(): BeginSponsoringFutureReservesResultCode;
+
+    static beginSponsoringFutureReservesRecursive(): BeginSponsoringFutureReservesResultCode;
+  }
+
+  class EndSponsoringFutureReservesResultCode {
+    readonly name:
+      | 'endSponsoringFutureReservesSuccess'
+      | 'endSponsoringFutureReservesNotSponsored';
+
+    readonly value: 0 | -1;
+
+    static endSponsoringFutureReservesSuccess(): EndSponsoringFutureReservesResultCode;
+
+    static endSponsoringFutureReservesNotSponsored(): EndSponsoringFutureReservesResultCode;
+  }
+
+  class RevokeSponsorshipResultCode {
+    readonly name:
+      | 'revokeSponsorshipSuccess'
+      | 'revokeSponsorshipDoesNotExist'
+      | 'revokeSponsorshipNotSponsor'
+      | 'revokeSponsorshipLowReserve'
+      | 'revokeSponsorshipOnlyTransferable';
+
+    readonly value: 0 | -1 | -2 | -3 | -4;
+
+    static revokeSponsorshipSuccess(): RevokeSponsorshipResultCode;
+
+    static revokeSponsorshipDoesNotExist(): RevokeSponsorshipResultCode;
+
+    static revokeSponsorshipNotSponsor(): RevokeSponsorshipResultCode;
+
+    static revokeSponsorshipLowReserve(): RevokeSponsorshipResultCode;
+
+    static revokeSponsorshipOnlyTransferable(): RevokeSponsorshipResultCode;
+  }
+
   class OperationResultCode {
     readonly name:
       | 'opInner'
@@ -870,9 +1016,10 @@ declare namespace xdr {
       | 'opNoAccount'
       | 'opNotSupported'
       | 'opTooManySubentry'
-      | 'opExceededWorkLimit';
+      | 'opExceededWorkLimit'
+      | 'opTooManySponsoring';
 
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
 
     static opInner(): OperationResultCode;
 
@@ -885,6 +1032,8 @@ declare namespace xdr {
     static opTooManySubentry(): OperationResultCode;
 
     static opExceededWorkLimit(): OperationResultCode;
+
+    static opTooManySponsoring(): OperationResultCode;
   }
 
   class TransactionResultCode {
@@ -903,7 +1052,8 @@ declare namespace xdr {
       | 'txBadAuthExtra'
       | 'txInternalError'
       | 'txNotSupported'
-      | 'txFeeBumpInnerFailed';
+      | 'txFeeBumpInnerFailed'
+      | 'txBadSponsorship';
 
     readonly value:
       | 1
@@ -920,7 +1070,8 @@ declare namespace xdr {
       | -10
       | -11
       | -12
-      | -13;
+      | -13
+      | -14;
 
     static txFeeBumpInnerSuccess(): TransactionResultCode;
 
@@ -951,6 +1102,8 @@ declare namespace xdr {
     static txNotSupported(): TransactionResultCode;
 
     static txFeeBumpInnerFailed(): TransactionResultCode;
+
+    static txBadSponsorship(): TransactionResultCode;
   }
 
   class ScpStatementType {
@@ -1005,9 +1158,14 @@ declare namespace xdr {
   }
 
   class LedgerEntryType {
-    readonly name: 'account' | 'trustline' | 'offer' | 'datum';
+    readonly name:
+      | 'account'
+      | 'trustline'
+      | 'offer'
+      | 'datum'
+      | 'claimableBalance';
 
-    readonly value: 0 | 1 | 2 | 3;
+    readonly value: 0 | 1 | 2 | 3 | 4;
 
     static account(): LedgerEntryType;
 
@@ -1016,6 +1174,8 @@ declare namespace xdr {
     static offer(): LedgerEntryType;
 
     static datum(): LedgerEntryType;
+
+    static claimableBalance(): LedgerEntryType;
   }
 
   class AccountFlags {
@@ -1051,6 +1211,46 @@ declare namespace xdr {
     static passiveFlag(): OfferEntryFlags;
   }
 
+  class ClaimPredicateType {
+    readonly name:
+      | 'claimPredicateUnconditional'
+      | 'claimPredicateAnd'
+      | 'claimPredicateOr'
+      | 'claimPredicateNot'
+      | 'claimPredicateBeforeAbsoluteTime'
+      | 'claimPredicateBeforeRelativeTime';
+
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5;
+
+    static claimPredicateUnconditional(): ClaimPredicateType;
+
+    static claimPredicateAnd(): ClaimPredicateType;
+
+    static claimPredicateOr(): ClaimPredicateType;
+
+    static claimPredicateNot(): ClaimPredicateType;
+
+    static claimPredicateBeforeAbsoluteTime(): ClaimPredicateType;
+
+    static claimPredicateBeforeRelativeTime(): ClaimPredicateType;
+  }
+
+  class ClaimantType {
+    readonly name: 'claimantTypeV0';
+
+    readonly value: 0;
+
+    static claimantTypeV0(): ClaimantType;
+  }
+
+  class ClaimableBalanceIdType {
+    readonly name: 'claimableBalanceIdTypeV0';
+
+    readonly value: 0;
+
+    static claimableBalanceIdTypeV0(): ClaimableBalanceIdType;
+  }
+
   class EnvelopeType {
     readonly name:
       | 'envelopeTypeTxV0'
@@ -1058,9 +1258,10 @@ declare namespace xdr {
       | 'envelopeTypeTx'
       | 'envelopeTypeAuth'
       | 'envelopeTypeScpvalue'
-      | 'envelopeTypeTxFeeBump';
+      | 'envelopeTypeTxFeeBump'
+      | 'envelopeTypeOpId';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5;
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
     static envelopeTypeTxV0(): EnvelopeType;
 
@@ -1073,6 +1274,8 @@ declare namespace xdr {
     static envelopeTypeScpvalue(): EnvelopeType;
 
     static envelopeTypeTxFeeBump(): EnvelopeType;
+
+    static envelopeTypeOpId(): EnvelopeType;
   }
 
   class StellarValueType {
@@ -1176,6 +1379,8 @@ declare namespace xdr {
   const AssetCode4: Opaque;
 
   const AssetCode12: Opaque;
+
+  type SponsorshipDescriptor = undefined | AccountId;
 
   const UpgradeType: VarOpaque;
 
@@ -2168,6 +2373,149 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): BumpSequenceOp;
   }
 
+  class CreateClaimableBalanceOp {
+    constructor(attributes: {
+      asset: Asset;
+      amount: Int64;
+      claimants: Claimant[];
+    });
+
+    asset(value?: Asset): Asset;
+
+    amount(value?: Int64): Int64;
+
+    claimants(value?: Claimant[]): Claimant[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): CreateClaimableBalanceOp;
+
+    static write(value: CreateClaimableBalanceOp, io: Buffer): void;
+
+    static isValid(value: CreateClaimableBalanceOp): boolean;
+
+    static toXDR(value: CreateClaimableBalanceOp): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): CreateClaimableBalanceOp;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): CreateClaimableBalanceOp;
+  }
+
+  class ClaimClaimableBalanceOp {
+    constructor(attributes: { balanceId: ClaimableBalanceId });
+
+    balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimClaimableBalanceOp;
+
+    static write(value: ClaimClaimableBalanceOp, io: Buffer): void;
+
+    static isValid(value: ClaimClaimableBalanceOp): boolean;
+
+    static toXDR(value: ClaimClaimableBalanceOp): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimClaimableBalanceOp;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimClaimableBalanceOp;
+  }
+
+  class BeginSponsoringFutureReservesOp {
+    constructor(attributes: { sponsoredId: AccountId });
+
+    sponsoredId(value?: AccountId): AccountId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): BeginSponsoringFutureReservesOp;
+
+    static write(value: BeginSponsoringFutureReservesOp, io: Buffer): void;
+
+    static isValid(value: BeginSponsoringFutureReservesOp): boolean;
+
+    static toXDR(value: BeginSponsoringFutureReservesOp): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): BeginSponsoringFutureReservesOp;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): BeginSponsoringFutureReservesOp;
+  }
+
+  class RevokeSponsorshipOpSigner {
+    constructor(attributes: { accountId: AccountId; signerKey: SignerKey });
+
+    accountId(value?: AccountId): AccountId;
+
+    signerKey(value?: SignerKey): SignerKey;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): RevokeSponsorshipOpSigner;
+
+    static write(value: RevokeSponsorshipOpSigner, io: Buffer): void;
+
+    static isValid(value: RevokeSponsorshipOpSigner): boolean;
+
+    static toXDR(value: RevokeSponsorshipOpSigner): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipOpSigner;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): RevokeSponsorshipOpSigner;
+  }
+
+  class OperationIdId {
+    constructor(attributes: {
+      sourceAccount: MuxedAccount;
+      seqNum: SequenceNumber;
+      opNum: number;
+    });
+
+    sourceAccount(value?: MuxedAccount): MuxedAccount;
+
+    seqNum(value?: SequenceNumber): SequenceNumber;
+
+    opNum(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OperationIdId;
+
+    static write(value: OperationIdId, io: Buffer): void;
+
+    static isValid(value: OperationIdId): boolean;
+
+    static toXDR(value: OperationIdId): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OperationIdId;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationIdId;
+  }
+
   class TimeBounds {
     constructor(attributes: { minTime: TimePoint; maxTime: TimePoint });
 
@@ -3091,31 +3439,72 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): Signer;
   }
 
-  class AccountEntryV1 {
+  class AccountEntryExtensionV2 {
     constructor(attributes: {
-      liabilities: Liabilities;
-      ext: AccountEntryV1Ext;
+      numSponsored: number;
+      numSponsoring: number;
+      signerSponsoringIDs: SponsorshipDescriptor[];
+      ext: AccountEntryExtensionV2Ext;
     });
 
-    liabilities(value?: Liabilities): Liabilities;
+    numSponsored(value?: number): number;
 
-    ext(value?: AccountEntryV1Ext): AccountEntryV1Ext;
+    numSponsoring(value?: number): number;
+
+    signerSponsoringIDs(
+      value?: SponsorshipDescriptor[]
+    ): SponsorshipDescriptor[];
+
+    ext(value?: AccountEntryExtensionV2Ext): AccountEntryExtensionV2Ext;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): AccountEntryV1;
+    static read(io: Buffer): AccountEntryExtensionV2;
 
-    static write(value: AccountEntryV1, io: Buffer): void;
+    static write(value: AccountEntryExtensionV2, io: Buffer): void;
 
-    static isValid(value: AccountEntryV1): boolean;
+    static isValid(value: AccountEntryExtensionV2): boolean;
 
-    static toXDR(value: AccountEntryV1): Buffer;
+    static toXDR(value: AccountEntryExtensionV2): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryV1;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV2;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryV1;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV2;
+  }
+
+  class AccountEntryExtensionV1 {
+    constructor(attributes: {
+      liabilities: Liabilities;
+      ext: AccountEntryExtensionV1Ext;
+    });
+
+    liabilities(value?: Liabilities): Liabilities;
+
+    ext(value?: AccountEntryExtensionV1Ext): AccountEntryExtensionV1Ext;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AccountEntryExtensionV1;
+
+    static write(value: AccountEntryExtensionV1, io: Buffer): void;
+
+    static isValid(value: AccountEntryExtensionV1): boolean;
+
+    static toXDR(value: AccountEntryExtensionV1): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV1;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV1;
   }
 
   class AccountEntry {
@@ -3313,6 +3702,102 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): DataEntry;
   }
 
+  class ClaimantV0 {
+    constructor(attributes: {
+      destination: AccountId;
+      predicate: ClaimPredicate;
+    });
+
+    destination(value?: AccountId): AccountId;
+
+    predicate(value?: ClaimPredicate): ClaimPredicate;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimantV0;
+
+    static write(value: ClaimantV0, io: Buffer): void;
+
+    static isValid(value: ClaimantV0): boolean;
+
+    static toXDR(value: ClaimantV0): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimantV0;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimantV0;
+  }
+
+  class ClaimableBalanceEntry {
+    constructor(attributes: {
+      balanceId: ClaimableBalanceId;
+      claimants: Claimant[];
+      asset: Asset;
+      amount: Int64;
+      ext: ClaimableBalanceEntryExt;
+    });
+
+    balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
+
+    claimants(value?: Claimant[]): Claimant[];
+
+    asset(value?: Asset): Asset;
+
+    amount(value?: Int64): Int64;
+
+    ext(value?: ClaimableBalanceEntryExt): ClaimableBalanceEntryExt;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimableBalanceEntry;
+
+    static write(value: ClaimableBalanceEntry, io: Buffer): void;
+
+    static isValid(value: ClaimableBalanceEntry): boolean;
+
+    static toXDR(value: ClaimableBalanceEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntry;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimableBalanceEntry;
+  }
+
+  class LedgerEntryExtensionV1 {
+    constructor(attributes: {
+      sponsoringId: SponsorshipDescriptor;
+      ext: LedgerEntryExtensionV1Ext;
+    });
+
+    sponsoringId(value?: SponsorshipDescriptor): SponsorshipDescriptor;
+
+    ext(value?: LedgerEntryExtensionV1Ext): LedgerEntryExtensionV1Ext;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerEntryExtensionV1;
+
+    static write(value: LedgerEntryExtensionV1, io: Buffer): void;
+
+    static isValid(value: LedgerEntryExtensionV1): boolean;
+
+    static toXDR(value: LedgerEntryExtensionV1): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExtensionV1;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerEntryExtensionV1;
+  }
+
   class LedgerEntry {
     constructor(attributes: {
       lastModifiedLedgerSeq: number;
@@ -3341,6 +3826,128 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerEntry;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntry;
+  }
+
+  class LedgerKeyAccount {
+    constructor(attributes: { accountId: AccountId });
+
+    accountId(value?: AccountId): AccountId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyAccount;
+
+    static write(value: LedgerKeyAccount, io: Buffer): void;
+
+    static isValid(value: LedgerKeyAccount): boolean;
+
+    static toXDR(value: LedgerKeyAccount): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyAccount;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyAccount;
+  }
+
+  class LedgerKeyTrustLine {
+    constructor(attributes: { accountId: AccountId; asset: Asset });
+
+    accountId(value?: AccountId): AccountId;
+
+    asset(value?: Asset): Asset;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyTrustLine;
+
+    static write(value: LedgerKeyTrustLine, io: Buffer): void;
+
+    static isValid(value: LedgerKeyTrustLine): boolean;
+
+    static toXDR(value: LedgerKeyTrustLine): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyTrustLine;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyTrustLine;
+  }
+
+  class LedgerKeyOffer {
+    constructor(attributes: { sellerId: AccountId; offerId: Int64 });
+
+    sellerId(value?: AccountId): AccountId;
+
+    offerId(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyOffer;
+
+    static write(value: LedgerKeyOffer, io: Buffer): void;
+
+    static isValid(value: LedgerKeyOffer): boolean;
+
+    static toXDR(value: LedgerKeyOffer): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyOffer;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyOffer;
+  }
+
+  class LedgerKeyData {
+    constructor(attributes: {
+      accountId: AccountId;
+      dataName: string | Buffer;
+    });
+
+    accountId(value?: AccountId): AccountId;
+
+    dataName(value?: string | Buffer): string | Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyData;
+
+    static write(value: LedgerKeyData, io: Buffer): void;
+
+    static isValid(value: LedgerKeyData): boolean;
+
+    static toXDR(value: LedgerKeyData): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyData;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyData;
+  }
+
+  class LedgerKeyClaimableBalance {
+    constructor(attributes: { balanceId: ClaimableBalanceId });
+
+    balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyClaimableBalance;
+
+    static write(value: LedgerKeyClaimableBalance, io: Buffer): void;
+
+    static isValid(value: LedgerKeyClaimableBalance): boolean;
+
+    static toXDR(value: LedgerKeyClaimableBalance): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyClaimableBalance;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerKeyClaimableBalance;
   }
 
   class LedgerCloseValueSignature {
@@ -3467,103 +4074,6 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerHeader;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeader;
-  }
-
-  class LedgerKeyAccount {
-    constructor(attributes: { accountId: AccountId });
-
-    accountId(value?: AccountId): AccountId;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyAccount;
-
-    static write(value: LedgerKeyAccount, io: Buffer): void;
-
-    static isValid(value: LedgerKeyAccount): boolean;
-
-    static toXDR(value: LedgerKeyAccount): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyAccount;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyAccount;
-  }
-
-  class LedgerKeyTrustLine {
-    constructor(attributes: { accountId: AccountId; asset: Asset });
-
-    accountId(value?: AccountId): AccountId;
-
-    asset(value?: Asset): Asset;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyTrustLine;
-
-    static write(value: LedgerKeyTrustLine, io: Buffer): void;
-
-    static isValid(value: LedgerKeyTrustLine): boolean;
-
-    static toXDR(value: LedgerKeyTrustLine): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyTrustLine;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyTrustLine;
-  }
-
-  class LedgerKeyOffer {
-    constructor(attributes: { sellerId: AccountId; offerId: Int64 });
-
-    sellerId(value?: AccountId): AccountId;
-
-    offerId(value?: Int64): Int64;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyOffer;
-
-    static write(value: LedgerKeyOffer, io: Buffer): void;
-
-    static isValid(value: LedgerKeyOffer): boolean;
-
-    static toXDR(value: LedgerKeyOffer): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyOffer;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyOffer;
-  }
-
-  class LedgerKeyData {
-    constructor(attributes: {
-      accountId: AccountId;
-      dataName: string | Buffer;
-    });
-
-    accountId(value?: AccountId): AccountId;
-
-    dataName(value?: string | Buffer): string | Buffer;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKeyData;
-
-    static write(value: LedgerKeyData, io: Buffer): void;
-
-    static isValid(value: LedgerKeyData): boolean;
-
-    static toXDR(value: LedgerKeyData): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyData;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyData;
   }
 
   class BucketMetadata {
@@ -4306,6 +4816,41 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): AllowTrustOpAsset;
   }
 
+  class RevokeSponsorshipOp {
+    switch(): RevokeSponsorshipType;
+
+    ledgerKey(value?: LedgerKey): LedgerKey;
+
+    signer(value?: RevokeSponsorshipOpSigner): RevokeSponsorshipOpSigner;
+
+    static revokeSponsorshipLedgerEntry(value: LedgerKey): RevokeSponsorshipOp;
+
+    static revokeSponsorshipSigner(
+      value: RevokeSponsorshipOpSigner
+    ): RevokeSponsorshipOp;
+
+    value(): LedgerKey | RevokeSponsorshipOpSigner;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): RevokeSponsorshipOp;
+
+    static write(value: RevokeSponsorshipOp, io: Buffer): void;
+
+    static isValid(value: RevokeSponsorshipOp): boolean;
+
+    static toXDR(value: RevokeSponsorshipOp): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipOp;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): RevokeSponsorshipOp;
+  }
+
   class OperationBody {
     switch(): OperationType;
 
@@ -4341,6 +4886,20 @@ declare namespace xdr {
       value?: PathPaymentStrictSendOp
     ): PathPaymentStrictSendOp;
 
+    createClaimableBalanceOp(
+      value?: CreateClaimableBalanceOp
+    ): CreateClaimableBalanceOp;
+
+    claimClaimableBalanceOp(
+      value?: ClaimClaimableBalanceOp
+    ): ClaimClaimableBalanceOp;
+
+    beginSponsoringFutureReservesOp(
+      value?: BeginSponsoringFutureReservesOp
+    ): BeginSponsoringFutureReservesOp;
+
+    revokeSponsorshipOp(value?: RevokeSponsorshipOp): RevokeSponsorshipOp;
+
     static createAccount(value: CreateAccountOp): OperationBody;
 
     static payment(value: PaymentOp): OperationBody;
@@ -4373,6 +4932,20 @@ declare namespace xdr {
 
     static pathPaymentStrictSend(value: PathPaymentStrictSendOp): OperationBody;
 
+    static createClaimableBalance(
+      value: CreateClaimableBalanceOp
+    ): OperationBody;
+
+    static claimClaimableBalance(value: ClaimClaimableBalanceOp): OperationBody;
+
+    static beginSponsoringFutureReserf(
+      value: BeginSponsoringFutureReservesOp
+    ): OperationBody;
+
+    static endSponsoringFutureReserf(): OperationBody;
+
+    static revokeSponsorship(value: RevokeSponsorshipOp): OperationBody;
+
     value():
       | CreateAccountOp
       | PaymentOp
@@ -4387,6 +4960,10 @@ declare namespace xdr {
       | BumpSequenceOp
       | ManageBuyOfferOp
       | PathPaymentStrictSendOp
+      | CreateClaimableBalanceOp
+      | ClaimClaimableBalanceOp
+      | BeginSponsoringFutureReservesOp
+      | RevokeSponsorshipOp
       | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -4404,6 +4981,32 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): OperationBody;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): OperationBody;
+  }
+
+  class OperationId {
+    switch(): EnvelopeType;
+
+    id(value?: OperationIdId): OperationIdId;
+
+    static envelopeTypeOpId(value: OperationIdId): OperationId;
+
+    value(): OperationIdId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OperationId;
+
+    static write(value: OperationId, io: Buffer): void;
+
+    static isValid(value: OperationId): boolean;
+
+    static toXDR(value: OperationId): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OperationId;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationId;
   }
 
   class Memo {
@@ -5039,6 +5642,151 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): BumpSequenceResult;
   }
 
+  class CreateClaimableBalanceResult {
+    switch(): CreateClaimableBalanceResultCode;
+
+    balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
+
+    static createClaimableBalanceSuccess(
+      value: ClaimableBalanceId
+    ): CreateClaimableBalanceResult;
+
+    value(): ClaimableBalanceId;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): CreateClaimableBalanceResult;
+
+    static write(value: CreateClaimableBalanceResult, io: Buffer): void;
+
+    static isValid(value: CreateClaimableBalanceResult): boolean;
+
+    static toXDR(value: CreateClaimableBalanceResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): CreateClaimableBalanceResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): CreateClaimableBalanceResult;
+  }
+
+  class ClaimClaimableBalanceResult {
+    switch(): ClaimClaimableBalanceResultCode;
+
+    static claimClaimableBalanceSuccess(): ClaimClaimableBalanceResult;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimClaimableBalanceResult;
+
+    static write(value: ClaimClaimableBalanceResult, io: Buffer): void;
+
+    static isValid(value: ClaimClaimableBalanceResult): boolean;
+
+    static toXDR(value: ClaimClaimableBalanceResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimClaimableBalanceResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimClaimableBalanceResult;
+  }
+
+  class BeginSponsoringFutureReservesResult {
+    switch(): BeginSponsoringFutureReservesResultCode;
+
+    static beginSponsoringFutureReservesSuccess(): BeginSponsoringFutureReservesResult;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): BeginSponsoringFutureReservesResult;
+
+    static write(value: BeginSponsoringFutureReservesResult, io: Buffer): void;
+
+    static isValid(value: BeginSponsoringFutureReservesResult): boolean;
+
+    static toXDR(value: BeginSponsoringFutureReservesResult): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): BeginSponsoringFutureReservesResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): BeginSponsoringFutureReservesResult;
+  }
+
+  class EndSponsoringFutureReservesResult {
+    switch(): EndSponsoringFutureReservesResultCode;
+
+    static endSponsoringFutureReservesSuccess(): EndSponsoringFutureReservesResult;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): EndSponsoringFutureReservesResult;
+
+    static write(value: EndSponsoringFutureReservesResult, io: Buffer): void;
+
+    static isValid(value: EndSponsoringFutureReservesResult): boolean;
+
+    static toXDR(value: EndSponsoringFutureReservesResult): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): EndSponsoringFutureReservesResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): EndSponsoringFutureReservesResult;
+  }
+
+  class RevokeSponsorshipResult {
+    switch(): RevokeSponsorshipResultCode;
+
+    static revokeSponsorshipSuccess(): RevokeSponsorshipResult;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): RevokeSponsorshipResult;
+
+    static write(value: RevokeSponsorshipResult, io: Buffer): void;
+
+    static isValid(value: RevokeSponsorshipResult): boolean;
+
+    static toXDR(value: RevokeSponsorshipResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): RevokeSponsorshipResult;
+  }
+
   class OperationResultTr {
     switch(): OperationType;
 
@@ -5076,6 +5824,26 @@ declare namespace xdr {
       value?: PathPaymentStrictSendResult
     ): PathPaymentStrictSendResult;
 
+    createClaimableBalanceResult(
+      value?: CreateClaimableBalanceResult
+    ): CreateClaimableBalanceResult;
+
+    claimClaimableBalanceResult(
+      value?: ClaimClaimableBalanceResult
+    ): ClaimClaimableBalanceResult;
+
+    beginSponsoringFutureReservesResult(
+      value?: BeginSponsoringFutureReservesResult
+    ): BeginSponsoringFutureReservesResult;
+
+    endSponsoringFutureReservesResult(
+      value?: EndSponsoringFutureReservesResult
+    ): EndSponsoringFutureReservesResult;
+
+    revokeSponsorshipResult(
+      value?: RevokeSponsorshipResult
+    ): RevokeSponsorshipResult;
+
     static createAccount(value: CreateAccountResult): OperationResultTr;
 
     static payment(value: PaymentResult): OperationResultTr;
@@ -5110,6 +5878,24 @@ declare namespace xdr {
       value: PathPaymentStrictSendResult
     ): OperationResultTr;
 
+    static createClaimableBalance(
+      value: CreateClaimableBalanceResult
+    ): OperationResultTr;
+
+    static claimClaimableBalance(
+      value: ClaimClaimableBalanceResult
+    ): OperationResultTr;
+
+    static beginSponsoringFutureReserf(
+      value: BeginSponsoringFutureReservesResult
+    ): OperationResultTr;
+
+    static endSponsoringFutureReserf(
+      value: EndSponsoringFutureReservesResult
+    ): OperationResultTr;
+
+    static revokeSponsorship(value: RevokeSponsorshipResult): OperationResultTr;
+
     value():
       | CreateAccountResult
       | PaymentResult
@@ -5124,7 +5910,12 @@ declare namespace xdr {
       | ManageDataResult
       | BumpSequenceResult
       | ManageBuyOfferResult
-      | PathPaymentStrictSendResult;
+      | PathPaymentStrictSendResult
+      | CreateClaimableBalanceResult
+      | ClaimClaimableBalanceResult
+      | BeginSponsoringFutureReservesResult
+      | EndSponsoringFutureReservesResult
+      | RevokeSponsorshipResult;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5199,6 +5990,8 @@ declare namespace xdr {
     static txInternalError(): InnerTransactionResultResult;
 
     static txNotSupported(): InnerTransactionResultResult;
+
+    static txBadSponsorship(): InnerTransactionResultResult;
 
     value(): OperationResult[] | void;
 
@@ -5398,10 +6191,10 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): Asset;
   }
 
-  class AccountEntryV1Ext {
+  class AccountEntryExtensionV2Ext {
     switch(): number;
 
-    static 0(): AccountEntryV1Ext;
+    static 0(): AccountEntryExtensionV2Ext;
 
     value(): void;
 
@@ -5409,29 +6202,63 @@ declare namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): AccountEntryV1Ext;
+    static read(io: Buffer): AccountEntryExtensionV2Ext;
 
-    static write(value: AccountEntryV1Ext, io: Buffer): void;
+    static write(value: AccountEntryExtensionV2Ext, io: Buffer): void;
 
-    static isValid(value: AccountEntryV1Ext): boolean;
+    static isValid(value: AccountEntryExtensionV2Ext): boolean;
 
-    static toXDR(value: AccountEntryV1Ext): Buffer;
+    static toXDR(value: AccountEntryExtensionV2Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryV1Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV2Ext;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryV1Ext;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV2Ext;
+  }
+
+  class AccountEntryExtensionV1Ext {
+    switch(): number;
+
+    v2(value?: AccountEntryExtensionV2): AccountEntryExtensionV2;
+
+    static 0(): AccountEntryExtensionV1Ext;
+
+    static 2(value: AccountEntryExtensionV2): AccountEntryExtensionV1Ext;
+
+    value(): AccountEntryExtensionV2 | void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AccountEntryExtensionV1Ext;
+
+    static write(value: AccountEntryExtensionV1Ext, io: Buffer): void;
+
+    static isValid(value: AccountEntryExtensionV1Ext): boolean;
+
+    static toXDR(value: AccountEntryExtensionV1Ext): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV1Ext;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV1Ext;
   }
 
   class AccountEntryExt {
     switch(): number;
 
-    v1(value?: AccountEntryV1): AccountEntryV1;
+    v1(value?: AccountEntryExtensionV1): AccountEntryExtensionV1;
 
     static 0(): AccountEntryExt;
 
-    static 1(value: AccountEntryV1): AccountEntryExt;
+    static 1(value: AccountEntryExtensionV1): AccountEntryExt;
 
-    value(): AccountEntryV1 | void;
+    value(): AccountEntryExtensionV1 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5553,6 +6380,163 @@ declare namespace xdr {
     static fromXDR(input: string, format: 'hex' | 'base64'): DataEntryExt;
   }
 
+  class ClaimPredicate {
+    switch(): ClaimPredicateType;
+
+    andPredicates(value?: ClaimPredicate[]): ClaimPredicate[];
+
+    orPredicates(value?: ClaimPredicate[]): ClaimPredicate[];
+
+    notPredicate(value?: null | ClaimPredicate): null | ClaimPredicate;
+
+    absBefore(value?: Int64): Int64;
+
+    relBefore(value?: Int64): Int64;
+
+    static claimPredicateUnconditional(): ClaimPredicate;
+
+    static claimPredicateAnd(value: ClaimPredicate[]): ClaimPredicate;
+
+    static claimPredicateOr(value: ClaimPredicate[]): ClaimPredicate;
+
+    static claimPredicateNot(value: null | ClaimPredicate): ClaimPredicate;
+
+    static claimPredicateBeforeAbsoluteTime(value: Int64): ClaimPredicate;
+
+    static claimPredicateBeforeRelativeTime(value: Int64): ClaimPredicate;
+
+    value():
+      | ClaimPredicate[]
+      | ClaimPredicate[]
+      | null
+      | ClaimPredicate
+      | Int64
+      | Int64
+      | void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimPredicate;
+
+    static write(value: ClaimPredicate, io: Buffer): void;
+
+    static isValid(value: ClaimPredicate): boolean;
+
+    static toXDR(value: ClaimPredicate): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimPredicate;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimPredicate;
+  }
+
+  class Claimant {
+    switch(): ClaimantType;
+
+    v0(value?: ClaimantV0): ClaimantV0;
+
+    static claimantTypeV0(value: ClaimantV0): Claimant;
+
+    value(): ClaimantV0;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Claimant;
+
+    static write(value: Claimant, io: Buffer): void;
+
+    static isValid(value: Claimant): boolean;
+
+    static toXDR(value: Claimant): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Claimant;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Claimant;
+  }
+
+  class ClaimableBalanceId {
+    switch(): ClaimableBalanceIdType;
+
+    v0(value?: Buffer): Buffer;
+
+    static claimableBalanceIdTypeV0(value: Buffer): ClaimableBalanceId;
+
+    value(): Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimableBalanceId;
+
+    static write(value: ClaimableBalanceId, io: Buffer): void;
+
+    static isValid(value: ClaimableBalanceId): boolean;
+
+    static toXDR(value: ClaimableBalanceId): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceId;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimableBalanceId;
+  }
+
+  class ClaimableBalanceEntryExt {
+    switch(): number;
+
+    static 0(): ClaimableBalanceEntryExt;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ClaimableBalanceEntryExt;
+
+    static write(value: ClaimableBalanceEntryExt, io: Buffer): void;
+
+    static isValid(value: ClaimableBalanceEntryExt): boolean;
+
+    static toXDR(value: ClaimableBalanceEntryExt): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntryExt;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimableBalanceEntryExt;
+  }
+
+  class LedgerEntryExtensionV1Ext {
+    switch(): number;
+
+    static 0(): LedgerEntryExtensionV1Ext;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerEntryExtensionV1Ext;
+
+    static write(value: LedgerEntryExtensionV1Ext, io: Buffer): void;
+
+    static isValid(value: LedgerEntryExtensionV1Ext): boolean;
+
+    static toXDR(value: LedgerEntryExtensionV1Ext): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExtensionV1Ext;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerEntryExtensionV1Ext;
+  }
+
   class LedgerEntryData {
     switch(): LedgerEntryType;
 
@@ -5564,6 +6548,8 @@ declare namespace xdr {
 
     data(value?: DataEntry): DataEntry;
 
+    claimableBalance(value?: ClaimableBalanceEntry): ClaimableBalanceEntry;
+
     static account(value: AccountEntry): LedgerEntryData;
 
     static trustline(value: TrustLineEntry): LedgerEntryData;
@@ -5572,7 +6558,14 @@ declare namespace xdr {
 
     static datum(value: DataEntry): LedgerEntryData;
 
-    value(): AccountEntry | TrustLineEntry | OfferEntry | DataEntry;
+    static claimableBalance(value: ClaimableBalanceEntry): LedgerEntryData;
+
+    value():
+      | AccountEntry
+      | TrustLineEntry
+      | OfferEntry
+      | DataEntry
+      | ClaimableBalanceEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5594,9 +6587,13 @@ declare namespace xdr {
   class LedgerEntryExt {
     switch(): number;
 
+    v1(value?: LedgerEntryExtensionV1): LedgerEntryExtensionV1;
+
     static 0(): LedgerEntryExt;
 
-    value(): void;
+    static 1(value: LedgerEntryExtensionV1): LedgerEntryExt;
+
+    value(): LedgerEntryExtensionV1 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5613,6 +6610,55 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExt;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryExt;
+  }
+
+  class LedgerKey {
+    switch(): LedgerEntryType;
+
+    account(value?: LedgerKeyAccount): LedgerKeyAccount;
+
+    trustLine(value?: LedgerKeyTrustLine): LedgerKeyTrustLine;
+
+    offer(value?: LedgerKeyOffer): LedgerKeyOffer;
+
+    data(value?: LedgerKeyData): LedgerKeyData;
+
+    claimableBalance(
+      value?: LedgerKeyClaimableBalance
+    ): LedgerKeyClaimableBalance;
+
+    static account(value: LedgerKeyAccount): LedgerKey;
+
+    static trustline(value: LedgerKeyTrustLine): LedgerKey;
+
+    static offer(value: LedgerKeyOffer): LedgerKey;
+
+    static datum(value: LedgerKeyData): LedgerKey;
+
+    static claimableBalance(value: LedgerKeyClaimableBalance): LedgerKey;
+
+    value():
+      | LedgerKeyAccount
+      | LedgerKeyTrustLine
+      | LedgerKeyOffer
+      | LedgerKeyData
+      | LedgerKeyClaimableBalance;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKey;
+
+    static write(value: LedgerKey, io: Buffer): void;
+
+    static isValid(value: LedgerKey): boolean;
+
+    static toXDR(value: LedgerKey): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKey;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKey;
   }
 
   class StellarValueExt {
@@ -5707,48 +6753,6 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerUpgrade;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerUpgrade;
-  }
-
-  class LedgerKey {
-    switch(): LedgerEntryType;
-
-    account(value?: LedgerKeyAccount): LedgerKeyAccount;
-
-    trustLine(value?: LedgerKeyTrustLine): LedgerKeyTrustLine;
-
-    offer(value?: LedgerKeyOffer): LedgerKeyOffer;
-
-    data(value?: LedgerKeyData): LedgerKeyData;
-
-    static account(value: LedgerKeyAccount): LedgerKey;
-
-    static trustline(value: LedgerKeyTrustLine): LedgerKey;
-
-    static offer(value: LedgerKeyOffer): LedgerKey;
-
-    static datum(value: LedgerKeyData): LedgerKey;
-
-    value():
-      | LedgerKeyAccount
-      | LedgerKeyTrustLine
-      | LedgerKeyOffer
-      | LedgerKeyData;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerKey;
-
-    static write(value: LedgerKey, io: Buffer): void;
-
-    static isValid(value: LedgerKey): boolean;
-
-    static toXDR(value: LedgerKey): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKey;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKey;
   }
 
   class BucketMetadataExt {
@@ -6017,7 +7021,7 @@ declare namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMeta;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMeta;
-  }
+  }  
 }
 
 export default xdr;
