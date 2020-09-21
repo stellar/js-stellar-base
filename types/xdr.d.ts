@@ -1,4 +1,4 @@
-// The type definitions inside the namespace xdr were automatically generated on 2020-05-02T06:13:25Z
+// The type definitions inside the namespace xdr were automatically generated on 2020-09-21T06:31:15Z
 // using https://github.com/stellar/dts-xdr.
 // DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
 
@@ -37,6 +37,7 @@ declare namespace xdrHidden {
 
 declare namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -198,13 +199,13 @@ declare namespace xdr {
   }
 
   class ErrorCode {
-    readonly name: 'errMisc' | 'errDatum' | 'errConf' | 'errAuth' | 'errLoad';
+    readonly name: 'errMisc' | 'errData' | 'errConf' | 'errAuth' | 'errLoad';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
 
     static errMisc(): ErrorCode;
 
-    static errDatum(): ErrorCode;
+    static errData(): ErrorCode;
 
     static errConf(): ErrorCode;
 
@@ -228,8 +229,8 @@ declare namespace xdr {
       | 'errorMsg'
       | 'auth'
       | 'dontHave'
-      | 'getPeer'
-      | 'peer'
+      | 'getPeers'
+      | 'peers'
       | 'getTxSet'
       | 'txSet'
       | 'transaction'
@@ -264,9 +265,9 @@ declare namespace xdr {
 
     static dontHave(): MessageType;
 
-    static getPeer(): MessageType;
+    static getPeers(): MessageType;
 
-    static peer(): MessageType;
+    static peers(): MessageType;
 
     static getTxSet(): MessageType;
 
@@ -345,19 +346,19 @@ declare namespace xdr {
       | 'pathPaymentStrictReceive'
       | 'manageSellOffer'
       | 'createPassiveSellOffer'
-      | 'setOption'
+      | 'setOptions'
       | 'changeTrust'
       | 'allowTrust'
       | 'accountMerge'
       | 'inflation'
-      | 'manageDatum'
+      | 'manageData'
       | 'bumpSequence'
       | 'manageBuyOffer'
       | 'pathPaymentStrictSend'
       | 'createClaimableBalance'
       | 'claimClaimableBalance'
-      | 'beginSponsoringFutureReserf'
-      | 'endSponsoringFutureReserf'
+      | 'beginSponsoringFutureReserves'
+      | 'endSponsoringFutureReserves'
       | 'revokeSponsorship';
 
     readonly value:
@@ -391,7 +392,7 @@ declare namespace xdr {
 
     static createPassiveSellOffer(): OperationType;
 
-    static setOption(): OperationType;
+    static setOptions(): OperationType;
 
     static changeTrust(): OperationType;
 
@@ -401,7 +402,7 @@ declare namespace xdr {
 
     static inflation(): OperationType;
 
-    static manageDatum(): OperationType;
+    static manageData(): OperationType;
 
     static bumpSequence(): OperationType;
 
@@ -413,9 +414,9 @@ declare namespace xdr {
 
     static claimClaimableBalance(): OperationType;
 
-    static beginSponsoringFutureReserf(): OperationType;
+    static beginSponsoringFutureReserves(): OperationType;
 
-    static endSponsoringFutureReserf(): OperationType;
+    static endSponsoringFutureReserves(): OperationType;
 
     static revokeSponsorship(): OperationType;
   }
@@ -520,7 +521,7 @@ declare namespace xdr {
       | 'pathPaymentStrictReceiveNotAuthorized'
       | 'pathPaymentStrictReceiveLineFull'
       | 'pathPaymentStrictReceiveNoIssuer'
-      | 'pathPaymentStrictReceiveTooFewOffer'
+      | 'pathPaymentStrictReceiveTooFewOffers'
       | 'pathPaymentStrictReceiveOfferCrossSelf'
       | 'pathPaymentStrictReceiveOverSendmax';
 
@@ -559,7 +560,7 @@ declare namespace xdr {
 
     static pathPaymentStrictReceiveNoIssuer(): PathPaymentStrictReceiveResultCode;
 
-    static pathPaymentStrictReceiveTooFewOffer(): PathPaymentStrictReceiveResultCode;
+    static pathPaymentStrictReceiveTooFewOffers(): PathPaymentStrictReceiveResultCode;
 
     static pathPaymentStrictReceiveOfferCrossSelf(): PathPaymentStrictReceiveResultCode;
 
@@ -578,7 +579,7 @@ declare namespace xdr {
       | 'pathPaymentStrictSendNotAuthorized'
       | 'pathPaymentStrictSendLineFull'
       | 'pathPaymentStrictSendNoIssuer'
-      | 'pathPaymentStrictSendTooFewOffer'
+      | 'pathPaymentStrictSendTooFewOffers'
       | 'pathPaymentStrictSendOfferCrossSelf'
       | 'pathPaymentStrictSendUnderDestmin';
 
@@ -617,7 +618,7 @@ declare namespace xdr {
 
     static pathPaymentStrictSendNoIssuer(): PathPaymentStrictSendResultCode;
 
-    static pathPaymentStrictSendTooFewOffer(): PathPaymentStrictSendResultCode;
+    static pathPaymentStrictSendTooFewOffers(): PathPaymentStrictSendResultCode;
 
     static pathPaymentStrictSendOfferCrossSelf(): PathPaymentStrictSendResultCode;
 
@@ -759,8 +760,8 @@ declare namespace xdr {
     readonly name:
       | 'setOptionsSuccess'
       | 'setOptionsLowReserve'
-      | 'setOptionsTooManySigner'
-      | 'setOptionsBadFlag'
+      | 'setOptionsTooManySigners'
+      | 'setOptionsBadFlags'
       | 'setOptionsInvalidInflation'
       | 'setOptionsCantChange'
       | 'setOptionsUnknownFlag'
@@ -774,9 +775,9 @@ declare namespace xdr {
 
     static setOptionsLowReserve(): SetOptionsResultCode;
 
-    static setOptionsTooManySigner(): SetOptionsResultCode;
+    static setOptionsTooManySigners(): SetOptionsResultCode;
 
-    static setOptionsBadFlag(): SetOptionsResultCode;
+    static setOptionsBadFlags(): SetOptionsResultCode;
 
     static setOptionsInvalidInflation(): SetOptionsResultCode;
 
@@ -845,7 +846,7 @@ declare namespace xdr {
       | 'accountMergeMalformed'
       | 'accountMergeNoAccount'
       | 'accountMergeImmutableSet'
-      | 'accountMergeHasSubEntry'
+      | 'accountMergeHasSubEntries'
       | 'accountMergeSeqnumTooFar'
       | 'accountMergeDestFull'
       | 'accountMergeIsSponsor';
@@ -860,7 +861,7 @@ declare namespace xdr {
 
     static accountMergeImmutableSet(): AccountMergeResultCode;
 
-    static accountMergeHasSubEntry(): AccountMergeResultCode;
+    static accountMergeHasSubEntries(): AccountMergeResultCode;
 
     static accountMergeSeqnumTooFar(): AccountMergeResultCode;
 
@@ -1015,7 +1016,7 @@ declare namespace xdr {
       | 'opBadAuth'
       | 'opNoAccount'
       | 'opNotSupported'
-      | 'opTooManySubentry'
+      | 'opTooManySubentries'
       | 'opExceededWorkLimit'
       | 'opTooManySponsoring';
 
@@ -1029,7 +1030,7 @@ declare namespace xdr {
 
     static opNotSupported(): OperationResultCode;
 
-    static opTooManySubentry(): OperationResultCode;
+    static opTooManySubentries(): OperationResultCode;
 
     static opExceededWorkLimit(): OperationResultCode;
 
@@ -1162,7 +1163,7 @@ declare namespace xdr {
       | 'account'
       | 'trustline'
       | 'offer'
-      | 'datum'
+      | 'data'
       | 'claimableBalance';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
@@ -1173,7 +1174,7 @@ declare namespace xdr {
 
     static offer(): LedgerEntryType;
 
-    static datum(): LedgerEntryType;
+    static data(): LedgerEntryType;
 
     static claimableBalance(): LedgerEntryType;
   }
@@ -4611,9 +4612,9 @@ declare namespace xdr {
 
     static dontHave(value: DontHave): StellarMessage;
 
-    static getPeer(): StellarMessage;
+    static getPeers(): StellarMessage;
 
-    static peer(value: PeerAddress[]): StellarMessage;
+    static peers(value: PeerAddress[]): StellarMessage;
 
     static getTxSet(value: Buffer): StellarMessage;
 
@@ -4914,7 +4915,7 @@ declare namespace xdr {
       value: CreatePassiveSellOfferOp
     ): OperationBody;
 
-    static setOption(value: SetOptionsOp): OperationBody;
+    static setOptions(value: SetOptionsOp): OperationBody;
 
     static changeTrust(value: ChangeTrustOp): OperationBody;
 
@@ -4924,7 +4925,7 @@ declare namespace xdr {
 
     static inflation(): OperationBody;
 
-    static manageDatum(value: ManageDataOp): OperationBody;
+    static manageData(value: ManageDataOp): OperationBody;
 
     static bumpSequence(value: BumpSequenceOp): OperationBody;
 
@@ -4938,11 +4939,11 @@ declare namespace xdr {
 
     static claimClaimableBalance(value: ClaimClaimableBalanceOp): OperationBody;
 
-    static beginSponsoringFutureReserf(
+    static beginSponsoringFutureReserves(
       value: BeginSponsoringFutureReservesOp
     ): OperationBody;
 
-    static endSponsoringFutureReserf(): OperationBody;
+    static endSponsoringFutureReserves(): OperationBody;
 
     static revokeSponsorship(value: RevokeSponsorshipOp): OperationBody;
 
@@ -5858,7 +5859,7 @@ declare namespace xdr {
       value: ManageSellOfferResult
     ): OperationResultTr;
 
-    static setOption(value: SetOptionsResult): OperationResultTr;
+    static setOptions(value: SetOptionsResult): OperationResultTr;
 
     static changeTrust(value: ChangeTrustResult): OperationResultTr;
 
@@ -5868,7 +5869,7 @@ declare namespace xdr {
 
     static inflation(value: InflationResult): OperationResultTr;
 
-    static manageDatum(value: ManageDataResult): OperationResultTr;
+    static manageData(value: ManageDataResult): OperationResultTr;
 
     static bumpSequence(value: BumpSequenceResult): OperationResultTr;
 
@@ -5886,11 +5887,11 @@ declare namespace xdr {
       value: ClaimClaimableBalanceResult
     ): OperationResultTr;
 
-    static beginSponsoringFutureReserf(
+    static beginSponsoringFutureReserves(
       value: BeginSponsoringFutureReservesResult
     ): OperationResultTr;
 
-    static endSponsoringFutureReserf(
+    static endSponsoringFutureReserves(
       value: EndSponsoringFutureReservesResult
     ): OperationResultTr;
 
@@ -6556,7 +6557,7 @@ declare namespace xdr {
 
     static offer(value: OfferEntry): LedgerEntryData;
 
-    static datum(value: DataEntry): LedgerEntryData;
+    static data(value: DataEntry): LedgerEntryData;
 
     static claimableBalance(value: ClaimableBalanceEntry): LedgerEntryData;
 
@@ -6633,7 +6634,7 @@ declare namespace xdr {
 
     static offer(value: LedgerKeyOffer): LedgerKey;
 
-    static datum(value: LedgerKeyData): LedgerKey;
+    static data(value: LedgerKeyData): LedgerKey;
 
     static claimableBalance(value: LedgerKeyClaimableBalance): LedgerKey;
 
