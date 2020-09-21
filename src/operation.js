@@ -157,7 +157,7 @@ export class Operation {
         result.authorize = attrs.authorize();
         break;
       }
-      case 'setOption': {
+      case 'setOptions': {
         result.type = 'setOptions';
         if (attrs.inflationDest()) {
           result.inflationDest = accountIdtoAddress(attrs.inflationDest());
@@ -235,7 +235,7 @@ export class Operation {
         result.destination = encodeMuxedAccountToAddress(attrs);
         break;
       }
-      case 'manageDatum': {
+      case 'manageData': {
         result.type = 'manageData';
         // manage_data.name is checked by iscntrl in stellar-core
         result.name = attrs.dataName().toString('ascii');

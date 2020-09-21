@@ -40,7 +40,7 @@ export function manageData(opts) {
   const manageDataOp = new xdr.ManageDataOp(attributes);
 
   const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.manageDatum(manageDataOp);
+  opAttributes.body = xdr.OperationBody.manageData(manageDataOp);
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
