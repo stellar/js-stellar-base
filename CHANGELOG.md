@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Breaking
+
+- The XDR generated in this code includes breaking changes on the internal XDR library since a bug was fixed which was causing incorrect code to be generated (see https://github.com/stellar/xdrgen/pull/52).
+
+The following functions were renamed:
+
+- `xdr.OperationBody.setOption()` -> `xdr.OperationBody.setOptions()`
+- `xdr.OperationBody.manageDatum()` -> `xdr.OperationBody.manageData()`
+- `xdr.OperationType.setOption()` -> `xdr.OperationType.setOptions()`
+- `xdr.OperationType.manageDatum()` -> xdr.OperationType.manageData()
+
+The following enum values were rename in `OperationType`:
+
+- `setOption` -> `setOptions`
+- `manageDatum` -> `manageData`
+
 ## [v3.0.4](https://github.com/stellar/js-stellar-base/compare/v3.0.3..v3.0.4)
 
 ### Update
