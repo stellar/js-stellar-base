@@ -3,7 +3,7 @@
 ## Unreleased
 
 ## Add
-- Add the `Claimant` class which helps the creation of claimable balances. ((#367)[https://github.com/stellar/js-stellar-base/pull/367]).
+- Add the `Claimant` class which helps the creation of claimable balances. ([#367](https://github.com/stellar/js-stellar-base/pull/367)).
 The default behavior of this class it to create claimants with an unconditional predicate if none is passed:
 
 ```
@@ -35,6 +35,38 @@ const claimant = new StellarBase.Claimant(
   'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
   predicate
 );
+```
+
+- Add `Operation.createClaimableBalance` ([#368](https://github.com/stellar/js-stellar-base/pull/368))
+Extend the operation class with a new helper to create claimable balance operations.
+
+```js
+const asset = new Asset(
+  'USD',
+  'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+);
+const amount = '100.0000000';
+const claimants = [
+  new Claimant(
+    'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+     Claimant.predicateBeforeAbsoluteTime("4102444800000")
+  )
+];
+
+const op = Operation.createClaimableBalance({
+  asset,
+  amount,
+  claimants
+});
+```
+
+- Add `Operation.claimClaimableBalance` ([#368](https://github.com/stellar/js-stellar-base/pull/368))
+Extend the operation class with a new helper to create claim claimable balance operations. It receives the `balanceId` as exposed by Horizon in the `/claimable_balances` end-point.
+
+```js
+const op = Operation.createClaimableBalance({
+  balanceId: '0da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
+});
 ```
 
 ### Breaking
