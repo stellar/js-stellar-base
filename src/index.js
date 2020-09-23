@@ -22,6 +22,7 @@ export {
 } from './operation';
 export * from './memo';
 export { Account } from './account';
+export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
 
