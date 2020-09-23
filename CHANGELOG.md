@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+## Add
+- Add the `Claimant` class which helps the creation of claimable balances. ((#367)[https://github.com/stellar/js-stellar-base/pull/367]).
+The default behavior of this class it to create claimants with an unconditional predicate if none is passed:
+
+```
+const claimant = new StellarBase.Claimant(
+  'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+);
+```
+
+However, you can use any of the following helpers to create a predicate:
+
+```
+StellarBase.Claimant.predicateUnconditional();
+StellarBase.Claimant.predicateAnd(left, right);
+StellarBase.Claimant.predicateOr(left, right);
+StellarBase.Claimant.predicateNot(predicate);
+StellarBase.Claimant.predicateBeforeAbsoluteTime(unixEpoch);
+StellarBase.Claimant.predicateBeforeRelativeTime(seconds);
+```
+
+And then pass the predicate in the constructor:
+
+```
+const left = StellarBase.Claimant.predicateBeforeRelativeTime('800');
+const right = StellarBase.Claimant.predicateBeforeRelativeTime(
+  '1200'
+);
+const predicate = StellarBase.Claimant.predicateOr(left, right);
+const claimant = new StellarBase.Claimant(
+  'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+  predicate
+);
+```
+
 ### Breaking
 
 - The XDR generated in this code includes breaking changes on the internal XDR library since a bug was fixed which was causing incorrect code to be generated (see https://github.com/stellar/xdrgen/pull/52).
