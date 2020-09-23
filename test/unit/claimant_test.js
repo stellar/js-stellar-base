@@ -25,20 +25,18 @@ describe('Claimant', function() {
       ).to.throw(/Predicate should be an xdr.ClaimPredicate/);
     });
   });
-  describe('claimPredicateUnconditional()', function() {
+  describe('predicateUnconditional()', function() {
     it('returns an `unconditional` claim predicate', function() {
-      const predicate = StellarBase.Claimant.claimPredicateUnconditional();
+      const predicate = StellarBase.Claimant.predicateUnconditional();
       expect(predicate.switch()).to.equal(
         StellarBase.xdr.ClaimPredicateType.claimPredicateUnconditional()
       );
     });
   });
-  describe('claimPredicateBeforeAbsoluteTime()', function() {
+  describe('predicateBeforeAbsoluteTime()', function() {
     it('returns a `beforeAbsoluteTime` claim predicate', function() {
       const time = '4102444800000';
-      const predicate = StellarBase.Claimant.claimPredicateBeforeAbsoluteTime(
-        time
-      );
+      const predicate = StellarBase.Claimant.predicateBeforeAbsoluteTime(time);
       expect(predicate.switch()).to.equal(
         StellarBase.xdr.ClaimPredicateType.claimPredicateBeforeAbsoluteTime()
       );
@@ -46,12 +44,10 @@ describe('Claimant', function() {
       expect(value.toString()).to.equal(time);
     });
   });
-  describe('claimPredicateBeforeRelativeTime()', function() {
+  describe('predicateBeforeRelativeTime()', function() {
     it('returns a `beforeRelativeTime` claim predicate', function() {
       const time = '86400';
-      const predicate = StellarBase.Claimant.claimPredicateBeforeRelativeTime(
-        time
-      );
+      const predicate = StellarBase.Claimant.predicateBeforeRelativeTime(time);
       expect(predicate.switch()).to.equal(
         StellarBase.xdr.ClaimPredicateType.claimPredicateBeforeRelativeTime()
       );
@@ -59,13 +55,11 @@ describe('Claimant', function() {
       expect(value.toString()).to.equal(time);
     });
   });
-  describe('claimPredicateNot()', function() {
+  describe('predicateNot()', function() {
     it('returns a `not` claim predicate', function() {
       const time = '86400';
-      const beforeRel = StellarBase.Claimant.claimPredicateBeforeRelativeTime(
-        time
-      );
-      const predicate = StellarBase.Claimant.claimPredicateNot(beforeRel);
+      const beforeRel = StellarBase.Claimant.predicateBeforeRelativeTime(time);
+      const predicate = StellarBase.Claimant.predicateNot(beforeRel);
       expect(predicate.switch()).to.equal(
         StellarBase.xdr.ClaimPredicateType.claimPredicateNot()
       );
@@ -74,13 +68,11 @@ describe('Claimant', function() {
       expect(value.toString()).to.equal(time);
     });
   });
-  describe('claimPredicateOr()', function() {
+  describe('predicateOr()', function() {
     it('returns an `or` claim predicate', function() {
-      const left = StellarBase.Claimant.claimPredicateBeforeRelativeTime('800');
-      const right = StellarBase.Claimant.claimPredicateBeforeRelativeTime(
-        '1200'
-      );
-      const predicate = StellarBase.Claimant.claimPredicateOr(left, right);
+      const left = StellarBase.Claimant.predicateBeforeRelativeTime('800');
+      const right = StellarBase.Claimant.predicateBeforeRelativeTime('1200');
+      const predicate = StellarBase.Claimant.predicateOr(left, right);
       expect(predicate.switch()).to.equal(
         StellarBase.xdr.ClaimPredicateType.claimPredicateOr()
       );
@@ -89,13 +81,11 @@ describe('Claimant', function() {
       expect(predicates[1].value().toString()).to.equal('1200');
     });
   });
-  describe('claimPredicateAnd()', function() {
+  describe('predicateAnd()', function() {
     it('returns an `and` predicate claim predicate', function() {
-      const left = StellarBase.Claimant.claimPredicateBeforeRelativeTime('800');
-      const right = StellarBase.Claimant.claimPredicateBeforeRelativeTime(
-        '1200'
-      );
-      const predicate = StellarBase.Claimant.claimPredicateAnd(left, right);
+      const left = StellarBase.Claimant.predicateBeforeRelativeTime('800');
+      const right = StellarBase.Claimant.predicateBeforeRelativeTime('1200');
+      const predicate = StellarBase.Claimant.predicateAnd(left, right);
       expect(predicate.switch()).to.equal(
         StellarBase.xdr.ClaimPredicateType.claimPredicateAnd()
       );
@@ -126,7 +116,7 @@ describe('Claimant', function() {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
       expect(claimant.predicate.switch()).to.equal(
-        StellarBase.Claimant.claimPredicateUnconditional().switch()
+        StellarBase.Claimant.predicateUnconditional().switch()
       );
     });
     it('does not allow changes in predicate', function() {
@@ -153,7 +143,7 @@ describe('Claimant', function() {
         StellarBase.StrKey.encodeEd25519PublicKey(value.destination().ed25519())
       ).to.equal(destination);
       expect(value.predicate().switch()).to.equal(
-        StellarBase.Claimant.claimPredicateUnconditional().switch()
+        StellarBase.Claimant.predicateUnconditional().switch()
       );
 
       expect(() => xdrClaimant.toXDR()).to.not.throw();
@@ -169,7 +159,7 @@ describe('Claimant', function() {
       const fromXDR = StellarBase.Claimant.fromXDR(xdrClaimant);
       expect(fromXDR.destination).to.equal(destination);
       expect(fromXDR.predicate.switch()).to.equal(
-        StellarBase.Claimant.claimPredicateUnconditional().switch()
+        StellarBase.Claimant.predicateUnconditional().switch()
       );
     });
   });

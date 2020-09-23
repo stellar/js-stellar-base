@@ -31,7 +31,7 @@ export class Claimant {
    * Returns an unconditional claim predicate
    * @Return {xdr.ClaimPredicate}
    */
-  static claimPredicateUnconditional() {
+  static predicateUnconditional() {
     return xdr.ClaimPredicate.claimPredicateUnconditional();
   }
 
@@ -41,7 +41,7 @@ export class Claimant {
    * @param {xdr.ClaimPredicate} right an xdr.ClaimPredicate
    * @Return {xdr.ClaimPredicate}
    */
-  static claimPredicateAnd(left, right) {
+  static predicateAnd(left, right) {
     if (!(left instanceof xdr.ClaimPredicate)) {
       throw new Error('left Predicate should be an xdr.ClaimPredicate');
     }
@@ -58,7 +58,7 @@ export class Claimant {
    * @param {xdr.ClaimPredicate} right an xdr.ClaimPredicate
    * @Return {xdr.ClaimPredicate}
    */
-  static claimPredicateOr(left, right) {
+  static predicateOr(left, right) {
     if (!(left instanceof xdr.ClaimPredicate)) {
       throw new Error('left Predicate should be an xdr.ClaimPredicate');
     }
@@ -74,7 +74,7 @@ export class Claimant {
    * @param {xdr.ClaimPredicate} predicate an xdr.ClaimPredicate
    * @Return {xdr.ClaimPredicate}
    */
-  static claimPredicateNot(predicate) {
+  static predicateNot(predicate) {
     if (!(predicate instanceof xdr.ClaimPredicate)) {
       throw new Error('right Predicate should be an xdr.ClaimPredicate');
     }
@@ -91,7 +91,7 @@ export class Claimant {
    * @param {string} absBefore Unix epoch as a string
    * @Return {xdr.ClaimPredicate}
    */
-  static claimPredicateBeforeAbsoluteTime(absBefore) {
+  static predicateBeforeAbsoluteTime(absBefore) {
     return xdr.ClaimPredicate.claimPredicateBeforeAbsoluteTime(
       xdr.Int64.fromString(absBefore)
     );
@@ -107,7 +107,7 @@ export class Claimant {
    * @param {strings} seconds seconds since closeTime of the ledger in which the ClaimableBalanceEntry was created (as string)
    * @Return {xdr.ClaimPredicate}
    */
-  static claimPredicateBeforeRelativeTime(seconds) {
+  static predicateBeforeRelativeTime(seconds) {
     return xdr.ClaimPredicate.claimPredicateBeforeRelativeTime(
       xdr.Int64.fromString(seconds)
     );
