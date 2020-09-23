@@ -1730,6 +1730,101 @@ describe('Operation', function() {
     });
   });
 
+  describe('createClaimableBalance()', function() {
+    it('creates a CreateClaimableBalanceOp', function() {
+      const asset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const amount = '100.0000000';
+      const claimants = [
+        new StellarBase.Claimant(
+          'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        )
+      ];
+
+      const op = StellarBase.Operation.createClaimableBalance({
+        asset,
+        amount,
+        claimants
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('createClaimableBalance');
+      expect(obj.asset.toString()).to.equal(asset.toString());
+      expect(obj.amount).to.be.equal(amount);
+      expect(obj.claimants).to.have.lengthOf(1);
+      expect(obj.claimants[0].toXDRObject().toXDR('hex')).to.equal(
+        claimants[0].toXDRObject().toXDR('hex')
+      );
+    });
+    it('throws an error when asset is not present', function() {
+      const amount = '100.0000000';
+      const claimants = [
+        new StellarBase.Claimant(
+          'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        )
+      ];
+
+      const attrs = {
+        amount,
+        claimants
+      };
+
+      expect(() =>
+        StellarBase.Operation.createClaimableBalance(attrs)
+      ).to.throw(
+        /must provide an asset for create claimable balance operation/
+      );
+    });
+    it('throws an error when amount is not present', function() {
+      const asset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const claimants = [
+        new StellarBase.Claimant(
+          'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+        )
+      ];
+
+      const attrs = {
+        asset,
+        claimants
+      };
+
+      expect(() =>
+        StellarBase.Operation.createClaimableBalance(attrs)
+      ).to.throw(
+        /amount argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
+      );
+    });
+    it('throws an error when claimants is empty or not present', function() {
+      const asset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const amount = '100.0000';
+
+      const attrs = {
+        asset,
+        amount
+      };
+
+      expect(() =>
+        StellarBase.Operation.createClaimableBalance(attrs)
+      ).to.throw(/must provide at least one claimant/);
+
+      attrs.claimants = [];
+      expect(() =>
+        StellarBase.Operation.createClaimableBalance(attrs)
+      ).to.throw(/must provide at least one claimant/);
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [
