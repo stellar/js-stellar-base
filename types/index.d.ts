@@ -39,6 +39,22 @@ export class Asset {
   issuer: string;
 }
 
+export class Claimant {
+  readonly destination: string;
+  readonly predicate: xdr.ClaimPredicate;
+  constructor(destination: string, predicate?: xdr.ClaimPredicate);
+
+  toXDRObject(): xdr.Claimant;
+
+  static fromXDR(claimantXdr: xdr.Claimant): Claimant;
+  static predicateUnconditional(): xdr.ClaimPredicate;
+  static predicateAnd(left: xdr.ClaimPredicate, right: xdr.ClaimPredicate): xdr.ClaimPredicate;
+  static predicateOr(left: xdr.ClaimPredicate, right: xdr.ClaimPredicate): xdr.ClaimPredicate;
+  static predicateNot(predicate: xdr.ClaimPredicate): xdr.ClaimPredicate;
+  static predicateBeforeAbsoluteTime(absBefore: string): xdr.ClaimPredicate;
+  static predicateBeforeRelativeTime(seconds: string): xdr.ClaimPredicate;
+}
+
 export const FastSigning: boolean;
 
 export type KeypairType = 'ed25519';

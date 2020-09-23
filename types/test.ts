@@ -133,3 +133,9 @@ StellarSdk.xdr.LedgerEntryChanges.fromXDR(raw); // $ExpectType LedgerEntryChange
 StellarSdk.xdr.Asset.assetTypeNative(); // $ExpectType Asset
 StellarSdk.xdr.InnerTransactionResultResult.txInternalError(); // $ExpectType InnerTransactionResultResult
 StellarSdk.xdr.TransactionV0Ext[0](); // $ExpectedType TransactionV0Ext
+
+StellarSdk.Claimant.predicateUnconditional(); // $ExpectType ClaimPredicate
+const claimant = new StellarSdk.Claimant(sourceKey.publicKey()); // $ExpectType Claimant
+claimant.toXDRObject(); // $ExpectType Claimant
+claimant.destination; // $ExpectType string
+claimant.predicate; // $ExpectType ClaimPredicate
