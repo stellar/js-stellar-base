@@ -61,6 +61,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.manageData}`
  * * `{@link Operation.bumpSequence}`
  * * `{@link Operation.createClaimableBalance}`
+ * * `{@link Operation.claimClaimableBalance}`
  *
  * @class Operation
  */
@@ -263,6 +264,21 @@ export class Operation {
         });
         break;
       }
+      case 'claimClaimableBalance': {
+        result.type = 'claimClaimableBalance';
+        // the first character of the balanceId represents xdr type discriminant and the rest is the body value in hex.
+        // Use toString(16) since value is a number
+        result.balanceId = attrs
+          .balanceId()
+          .switch()
+          .value.toString(16);
+        // Use toString('hex') because value is a buffer
+        result.balanceId += attrs
+          .balanceId()
+          .value()
+          .toString('hex');
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -402,6 +418,7 @@ Operation.bumpSequence = ops.bumpSequence;
 Operation.changeTrust = ops.changeTrust;
 Operation.createAccount = ops.createAccount;
 Operation.createClaimableBalance = ops.createClaimableBalance;
+Operation.claimClaimableBalance = ops.claimClaimableBalance;
 Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;

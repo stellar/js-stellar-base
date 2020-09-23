@@ -1825,6 +1825,46 @@ describe('Operation', function() {
     });
   });
 
+  describe('claimClaimableBalance()', function() {
+    it('creates a claimClaimableBalanceOp', function() {
+      const balanceId =
+        '0da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
+
+      const op = StellarBase.Operation.claimClaimableBalance({
+        balanceId
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('claimClaimableBalance');
+      expect(obj.balanceId).to.equal(balanceId);
+    });
+    it('throws an error when balanceId is not present or length higher than 2', function() {
+      expect(() => StellarBase.Operation.claimClaimableBalance({})).to.throw(
+        /must provide a valid claimable balance Id/
+      );
+      expect(() =>
+        StellarBase.Operation.claimClaimableBalance({
+          balanceId: ''
+        })
+      ).to.throw(/must provide a valid claimable balance Id/);
+      expect(() =>
+        StellarBase.Operation.claimClaimableBalance({
+          balanceId: '0'
+        })
+      ).to.throw(/must provide a valid claimable balance Id/);
+    });
+    it('throws an error when balanceId does not start with 0', function() {
+      expect(() =>
+        StellarBase.Operation.claimClaimableBalance({
+          balanceId: '10'
+        })
+      ).to.throw(/invalid claimable balance Id: 1 is not a valid type/);
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [

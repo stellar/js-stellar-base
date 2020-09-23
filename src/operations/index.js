@@ -6,6 +6,7 @@ export { bumpSequence } from './bump_sequence';
 export { changeTrust } from './change_trust';
 export { createAccount } from './create_account';
 export { createClaimableBalance } from './create_claimable_balance';
+export { claimClaimableBalance } from './claim_claimable_balance';
 export { inflation } from './inflation';
 export { manageData } from './manage_data';
 export { manageBuyOffer } from './manage_buy_offer';
