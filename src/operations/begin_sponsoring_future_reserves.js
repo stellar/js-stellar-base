@@ -17,7 +17,7 @@ import { Keypair } from '../keypair';
  * });
  *
  */
-export function beginSponsoringFutureReserves(opts) {
+export function beginSponsoringFutureReserves(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.sponsoredId)) {
     throw new Error('sponsoredId is invalid');
   }
