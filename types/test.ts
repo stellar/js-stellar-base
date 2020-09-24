@@ -22,6 +22,10 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     StellarSdk.Operation.claimClaimableBalance({
       balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
     }),
+  ).addOperation(
+    StellarSdk.Operation.beginSponsoringFutureReserves({
+      sponsoredId: account.accountId()
+    })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>

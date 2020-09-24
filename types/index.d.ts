@@ -220,6 +220,7 @@ export namespace OperationType {
   type BumpSequence = 'bumpSequence';
   type CreateClaimableBalance = 'createClaimableBalance';
   type ClaimClaimableBalance = 'claimClaimableBalance';
+  type BeginSponsoringFutureReserves = 'beginSponsoringFutureReserves';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -237,7 +238,8 @@ export type OperationType =
   | OperationType.ManageData
   | OperationType.BumpSequence
   | OperationType.CreateClaimableBalance
-  | OperationType.ClaimClaimableBalance;
+  | OperationType.ClaimClaimableBalance
+  | OperationType.BeginSponsoringFutureReserves;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -326,6 +328,9 @@ export namespace OperationOptions {
   interface ClaimClaimableBalance extends BaseOptions {
     balanceId: string;
   }
+  interface BeginSponsoringFutureReserves extends BaseOptions {
+    sponsoredId: string;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -343,7 +348,8 @@ export type OperationOptions =
   | OperationOptions.ManageData
   | OperationOptions.BumpSequence
   | OperationOptions.CreateClaimableBalance
-  | OperationOptions.ClaimClaimableBalance;
+  | OperationOptions.ClaimClaimableBalance
+  | OperationOptions.BeginSponsoringFutureReserves;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -509,6 +515,13 @@ export namespace Operation {
     options: OperationOptions.ClaimClaimableBalance
   ): xdr.Operation<ClaimClaimableBalance>;
 
+  interface BeginSponsoringFutureReserves extends BaseOperation<OperationType.BeginSponsoringFutureReserves> {
+    sponsoredId: string;
+  }
+  function beginSponsoringFutureReserves(
+    options: OperationOptions.BeginSponsoringFutureReserves
+  ): xdr.Operation<BeginSponsoringFutureReserves>;
+
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
@@ -529,7 +542,8 @@ export type Operation =
   | Operation.ManageData
   | Operation.BumpSequence
   | Operation.CreateClaimableBalance
-  | Operation.ClaimClaimableBalance;
+  | Operation.ClaimClaimableBalance
+  | Operation.BeginSponsoringFutureReserves;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

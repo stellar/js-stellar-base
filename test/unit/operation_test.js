@@ -1848,6 +1848,36 @@ describe('Operation', function() {
     });
   });
 
+  describe('beginSponsoringFutureReserves()', function() {
+    it('creates a beginSponsoringFutureReservesOp', function() {
+      const sponsoredId =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+
+      const op = StellarBase.Operation.beginSponsoringFutureReserves({
+        sponsoredId
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal(
+        'beginSponsoringFutureReserves'
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('beginSponsoringFutureReserves');
+      expect(obj.sponsoredId).to.equal(sponsoredId);
+    });
+    it('throws an error when sponsoredId is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.beginSponsoringFutureReserves({})
+      ).to.throw(/sponsoredId is invalid/);
+      expect(() =>
+        StellarBase.Operation.beginSponsoringFutureReserves({
+          sponsoredId: 'GBAD'
+        })
+      ).to.throw(/sponsoredId is invalid/);
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [

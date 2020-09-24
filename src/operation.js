@@ -62,6 +62,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.bumpSequence}`
  * * `{@link Operation.createClaimableBalance}`
  * * `{@link Operation.claimClaimableBalance}`
+ * * `{@link Operation.beginSponsoringFutureReserves}`
  *
  * @class Operation
  */
@@ -269,6 +270,11 @@ export class Operation {
         result.balanceId = attrs.toXDR('hex');
         break;
       }
+      case 'beginSponsoringFutureReserves': {
+        result.type = 'beginSponsoringFutureReserves';
+        result.sponsoredId = accountIdtoAddress(attrs.sponsoredId());
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -418,3 +424,4 @@ Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
 Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
+Operation.beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
