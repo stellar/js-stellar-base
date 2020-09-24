@@ -9,9 +9,20 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   networkPassphrase: StellarSdk.Networks.TESTNET
 })
   .addOperation(
-    StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() })
-  )
-  .addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
+    StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() }),
+  ).addOperation(
+    StellarSdk.Operation.createClaimableBalance({
+      amount: "10",
+      asset: StellarSdk.Asset.native(),
+      claimants: [
+        new StellarSdk.Claimant(account.accountId())
+      ]
+    }),
+  ).addOperation(
+    StellarSdk.Operation.claimClaimableBalance({
+      balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+    }),
+  ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
 

@@ -218,6 +218,8 @@ export namespace OperationType {
   type Inflation = 'inflation';
   type ManageData = 'manageData';
   type BumpSequence = 'bumpSequence';
+  type CreateClaimableBalance = 'createClaimableBalance';
+  type ClaimClaimableBalance = 'claimClaimableBalance';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -233,7 +235,9 @@ export type OperationType =
   | OperationType.AccountMerge
   | OperationType.Inflation
   | OperationType.ManageData
-  | OperationType.BumpSequence;
+  | OperationType.BumpSequence
+  | OperationType.CreateClaimableBalance
+  | OperationType.ClaimClaimableBalance;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -314,6 +318,14 @@ export namespace OperationOptions {
   interface BumpSequence extends BaseOptions {
     bumpTo: string;
   }
+  interface CreateClaimableBalance extends BaseOptions {
+    asset: Asset;
+    amount: string;
+    claimants: Claimant[];
+  }
+  interface ClaimClaimableBalance extends BaseOptions {
+    balanceId: string;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -329,7 +341,9 @@ export type OperationOptions =
   | OperationOptions.AccountMerge
   | OperationOptions.Inflation
   | OperationOptions.ManageData
-  | OperationOptions.BumpSequence;
+  | OperationOptions.BumpSequence
+  | OperationOptions.CreateClaimableBalance
+  | OperationOptions.ClaimClaimableBalance;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -479,6 +493,22 @@ export namespace Operation {
     options: OperationOptions.BumpSequence
   ): xdr.Operation<BumpSequence>;
 
+  interface CreateClaimableBalance extends BaseOperation<OperationType.CreateClaimableBalance> {
+    amount: string;
+    asset: Asset;
+    claimants: Claimant[];
+  }
+  function createClaimableBalance(
+    options: OperationOptions.CreateClaimableBalance
+  ): xdr.Operation<CreateClaimableBalance>;
+
+  interface ClaimClaimableBalance extends BaseOperation<OperationType.ClaimClaimableBalance> {
+    balanceId: string;
+  }
+  function claimClaimableBalance(
+    options: OperationOptions.ClaimClaimableBalance
+  ): xdr.Operation<ClaimClaimableBalance>;
+
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
@@ -497,7 +527,9 @@ export type Operation =
   | Operation.AccountMerge
   | Operation.Inflation
   | Operation.ManageData
-  | Operation.BumpSequence;
+  | Operation.BumpSequence
+  | Operation.CreateClaimableBalance
+  | Operation.ClaimClaimableBalance;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

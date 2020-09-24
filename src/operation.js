@@ -9,6 +9,7 @@ import isNumber from 'lodash/isNumber';
 import isFinite from 'lodash/isFinite';
 import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
+import { Claimant } from './claimant';
 import { StrKey } from './strkey';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
@@ -59,6 +60,8 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.inflation}`
  * * `{@link Operation.manageData}`
  * * `{@link Operation.bumpSequence}`
+ * * `{@link Operation.createClaimableBalance}`
+ * * `{@link Operation.claimClaimableBalance}`
  *
  * @class Operation
  */
@@ -251,6 +254,21 @@ export class Operation {
         result.bumpTo = attrs.bumpTo().toString();
         break;
       }
+      case 'createClaimableBalance': {
+        result.type = 'createClaimableBalance';
+        result.asset = Asset.fromOperation(attrs.asset());
+        result.amount = this._fromXDRAmount(attrs.amount());
+        result.claimants = [];
+        attrs.claimants().forEach((claimant) => {
+          result.claimants.push(Claimant.fromXDR(claimant));
+        });
+        break;
+      }
+      case 'claimClaimableBalance': {
+        result.type = 'claimClaimableBalance';
+        result.balanceId = attrs.toXDR('hex');
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -389,6 +407,8 @@ Operation.allowTrust = ops.allowTrust;
 Operation.bumpSequence = ops.bumpSequence;
 Operation.changeTrust = ops.changeTrust;
 Operation.createAccount = ops.createAccount;
+Operation.createClaimableBalance = ops.createClaimableBalance;
+Operation.claimClaimableBalance = ops.claimClaimableBalance;
 Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
