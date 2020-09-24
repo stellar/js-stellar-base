@@ -423,6 +423,10 @@ function extractRevokeSponshipDetails(attrs, result) {
         }
         case xdr.LedgerEntryType.trustline().name: {
           result.type = 'revokeTrustlineSponsorship';
+          result.account = accountIdtoAddress(
+            ledgerKey.trustLine().accountId()
+          );
+          result.asset = Asset.fromOperation(ledgerKey.trustLine().asset());
           break;
         }
         case xdr.LedgerEntryType.offer().name: {
@@ -477,3 +481,4 @@ Operation.setOptions = ops.setOptions;
 Operation.beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
 Operation.endSponsoringFutureReserves = ops.endSponsoringFutureReserves;
 Operation.revokeAccountSponsorship = ops.revokeAccountSponsorship;
+Operation.revokeTrustlineSponsorship = ops.revokeTrustlineSponsorship;
