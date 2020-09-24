@@ -189,3 +189,80 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
 
   return new xdr.Operation(opAttributes);
 }
+
+/**
+ * Create a revoke sponsorship operation for a signer.
+ *
+ * @function
+ * @param {object} opts Options object
+ * @param {string} opts.account - The account ID where the signer sponsorship is being removed from.
+ * @param {object} opts.signer - The signer whose sponsorship is being removed.
+ * @param {string} [opts.signer.ed25519PublicKey] - The ed25519 public key of the signer.
+ * @param {Buffer|string} [opts.signer.sha256Hash] - sha256 hash (Buffer or hex string).
+ * @param {Buffer|string} [opts.signer.preAuthTx] - Hash (Buffer or hex string) of transaction.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ * @returns {xdr.Operation} xdr operation
+ *
+ * @example
+ * const op = Operation.revokeSignerSponsorship({
+ *   account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7
+ *   signer: {
+ *     ed25519PublicKey: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+ *   }
+ * })
+ *
+ */
+export function revokeSignerSponsorship(opts = {}) {
+  if (!StrKey.isValidEd25519PublicKey(opts.account)) {
+    throw new Error('account is invalid');
+  }
+  let key;
+  if (opts.signer.ed25519PublicKey) {
+    if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
+      throw new Error('signer.ed25519PublicKey is invalid.');
+    }
+    const rawKey = StrKey.decodeEd25519PublicKey(opts.signer.ed25519PublicKey);
+
+    key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
+  } else if (opts.signer.preAuthTx) {
+    let buffer;
+    if (isString(opts.signer.preAuthTx)) {
+      buffer = Buffer.from(opts.signer.preAuthTx, 'hex');
+    } else {
+      buffer = opts.signer.preAuthTx;
+    }
+
+    if (!(Buffer.isBuffer(buffer) && buffer.length === 32)) {
+      throw new Error('signer.preAuthTx must be 32 bytes Buffer.');
+    }
+
+    key = new xdr.SignerKey.signerKeyTypePreAuthTx(buffer);
+  } else if (opts.signer.sha256Hash) {
+    let buffer;
+    if (isString(opts.signer.sha256Hash)) {
+      buffer = Buffer.from(opts.signer.sha256Hash, 'hex');
+    } else {
+      buffer = opts.signer.sha256Hash;
+    }
+
+    if (!(Buffer.isBuffer(buffer) && buffer.length === 32)) {
+      throw new Error('signer.sha256Hash must be 32 bytes Buffer.');
+    }
+
+    key = new xdr.SignerKey.signerKeyTypeHashX(buffer);
+  } else {
+    throw new Error('signer is invalid');
+  }
+
+  const signer = new xdr.RevokeSponsorshipOpSigner({
+    accountId: Keypair.fromPublicKey(opts.account).xdrAccountId(),
+    signerKey: key
+  });
+
+  const op = xdr.RevokeSponsorshipOp.revokeSponsorshipSigner(signer);
+  const opAttributes = {};
+  opAttributes.body = xdr.OperationBody.revokeSponsorship(op);
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}

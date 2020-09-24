@@ -463,12 +463,39 @@ function extractRevokeSponshipDetails(attrs, result) {
     }
     case 'revokeSponsorshipSigner': {
       result.type = 'revokeSignerSponsorship';
+      result.account = accountIdtoAddress(attrs.signer().accountId());
+      result.signer = convertXDRSignerKeyToObject(attrs.signer().signerKey());
       break;
     }
     default: {
       throw new Error(`Unknown revokeSponsorship: ${attrs.switch().name}`);
     }
   }
+}
+
+function convertXDRSignerKeyToObject(signerKey) {
+  const attrs = {};
+  switch (signerKey.switch().name) {
+    case xdr.SignerKeyType.signerKeyTypeEd25519().name: {
+      attrs.ed25519PublicKey = StrKey.encodeEd25519PublicKey(
+        signerKey.ed25519()
+      );
+      break;
+    }
+    case xdr.SignerKeyType.signerKeyTypePreAuthTx().name: {
+      attrs.preAuthTx = signerKey.preAuthTx().toString('hex');
+      break;
+    }
+    case xdr.SignerKeyType.signerKeyTypeHashX().name: {
+      attrs.sha256Hash = signerKey.hashX().toString('hex');
+      break;
+    }
+    default: {
+      throw new Error(`Unknown signerKey: ${signerKey.switch().name}`);
+    }
+  }
+
+  return attrs;
 }
 
 function accountIdtoAddress(accountId) {
@@ -500,3 +527,4 @@ Operation.revokeOfferSponsorship = ops.revokeOfferSponsorship;
 Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
 Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
+Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;

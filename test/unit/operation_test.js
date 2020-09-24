@@ -2052,6 +2052,68 @@ describe('Operation', function() {
     });
   });
 
+  describe('revokeSignerSponsorship()', function() {
+    it('creates a revokeSignerSponsorship', function() {
+      const account =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let signer = {
+        ed25519PublicKey:
+          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      };
+      let op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      let xdr = op.toXDR('hex');
+
+      let operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      let obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.ed25519PublicKey).to.be.equal(signer.ed25519PublicKey);
+
+      // preAuthTx signer
+      signer = {
+        preAuthTx: StellarBase.hash('Tx hash').toString('hex')
+      };
+      op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      operation = StellarBase.xdr.Operation.fromXDR(op.toXDR('hex'), 'hex');
+      obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.preAuthTx).to.be.equal(signer.preAuthTx);
+
+      // sha256Hash signer
+      signer = {
+        sha256Hash: StellarBase.hash('Hash Preimage').toString('hex')
+      };
+      op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      operation = StellarBase.xdr.Operation.fromXDR(op.toXDR('hex'), 'hex');
+      obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.sha256Hash).to.be.equal(signer.sha256Hash);
+    });
+    it('throws an error when account is invalid', function() {
+      const signer = {
+        ed25519PublicKey:
+          'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+      };
+      expect(() =>
+        StellarBase.Operation.revokeSignerSponsorship({
+          signer
+        })
+      ).to.throw(/account is invalid/);
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [
