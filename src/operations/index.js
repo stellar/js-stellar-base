@@ -20,5 +20,6 @@ export {
   revokeAccountSponsorship,
   revokeTrustlineSponsorship,
   revokeOfferSponsorship,
-  revokeDataSponsorship
+  revokeDataSponsorship,
+  revokeClaimableBalanceSponsorship
 } from './revoke_sponsorship';

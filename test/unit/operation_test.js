@@ -2030,6 +2030,28 @@ describe('Operation', function() {
     });
   });
 
+  describe('revokeClaimableBalanceSponsorship()', function() {
+    it('creates a revokeClaimableBalanceSponsorship', function() {
+      const balanceId =
+        '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
+      const op = StellarBase.Operation.revokeClaimableBalanceSponsorship({
+        balanceId
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeClaimableBalanceSponsorship');
+      expect(obj.balanceId).to.be.equal(balanceId);
+    });
+    it('throws an error when balanceId is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.revokeClaimableBalanceSponsorship({})
+      ).to.throw(/balanceId is invalid/);
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [

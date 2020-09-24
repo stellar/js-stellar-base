@@ -156,3 +156,36 @@ export function revokeDataSponsorship(opts = {}) {
 
   return new xdr.Operation(opAttributes);
 }
+
+/**
+ * Create a revoke sponsorship operation for a claimable balance.
+ *
+ * @function
+ * @param {object} opts Options object
+ * @param {string} opts.balanceId - The sponsored claimable balance ID.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ * @returns {xdr.Operation} xdr operation
+ *
+ * @example
+ * const op = Operation.revokeClaimableBalanceSponsorship({
+ *   balanceId: '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
+ * });
+ *
+ */
+export function revokeClaimableBalanceSponsorship(opts = {}) {
+  if (!isString(opts.balanceId)) {
+    throw new Error('balanceId is invalid');
+  }
+
+  const ledgerKey = xdr.LedgerKey.claimableBalance(
+    new xdr.LedgerKeyClaimableBalance({
+      balanceId: xdr.ClaimableBalanceId.fromXDR(opts.balanceId, 'hex')
+    })
+  );
+  const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
+  const opAttributes = {};
+  opAttributes.body = xdr.OperationBody.revokeSponsorship(op);
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}

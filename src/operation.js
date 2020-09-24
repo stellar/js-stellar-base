@@ -449,6 +449,10 @@ function extractRevokeSponshipDetails(attrs, result) {
         }
         case xdr.LedgerEntryType.claimableBalance().name: {
           result.type = 'revokeClaimableBalanceSponsorship';
+          result.balanceId = ledgerKey
+            .claimableBalance()
+            .balanceId()
+            .toXDR('hex');
           break;
         }
         default: {
@@ -494,3 +498,5 @@ Operation.revokeAccountSponsorship = ops.revokeAccountSponsorship;
 Operation.revokeTrustlineSponsorship = ops.revokeTrustlineSponsorship;
 Operation.revokeOfferSponsorship = ops.revokeOfferSponsorship;
 Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
+Operation.revokeClaimableBalanceSponsorship =
+  ops.revokeClaimableBalanceSponsorship;
