@@ -1828,7 +1828,7 @@ describe('Operation', function() {
   describe('claimClaimableBalance()', function() {
     it('creates a claimClaimableBalanceOp', function() {
       const balanceId =
-        '0da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
+        '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
 
       const op = StellarBase.Operation.claimClaimableBalance({
         balanceId
@@ -1841,7 +1841,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('claimClaimableBalance');
       expect(obj.balanceId).to.equal(balanceId);
     });
-    it('throws an error when balanceId is not present or length higher than 2', function() {
+    it('throws an error when balanceId is invalid', function() {
       expect(() => StellarBase.Operation.claimClaimableBalance({})).to.throw(
         /must provide a valid claimable balance Id/
       );
@@ -1855,13 +1855,6 @@ describe('Operation', function() {
           balanceId: '0'
         })
       ).to.throw(/must provide a valid claimable balance Id/);
-    });
-    it('throws an error when balanceId does not start with 0', function() {
-      expect(() =>
-        StellarBase.Operation.claimClaimableBalance({
-          balanceId: '10'
-        })
-      ).to.throw(/invalid claimable balance Id: 1 is not a valid type/);
     });
   });
 

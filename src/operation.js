@@ -266,17 +266,7 @@ export class Operation {
       }
       case 'claimClaimableBalance': {
         result.type = 'claimClaimableBalance';
-        // the first character of the balanceId represents xdr type discriminant and the rest is the body value in hex.
-        // Use toString(16) since value is a number
-        result.balanceId = attrs
-          .balanceId()
-          .switch()
-          .value.toString(16);
-        // Use toString('hex') because value is a buffer
-        result.balanceId += attrs
-          .balanceId()
-          .value()
-          .toString('hex');
+        result.balanceId = attrs.toXDR('hex');
         break;
       }
       default: {
