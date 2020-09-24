@@ -1878,6 +1878,20 @@ describe('Operation', function() {
     });
   });
 
+  describe('endSponsoringFutureReserves()', function() {
+    it('creates a endSponsoringFutureReservesOp', function() {
+      const op = StellarBase.Operation.endSponsoringFutureReserves();
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal(
+        'endSponsoringFutureReserves'
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('endSponsoringFutureReserves');
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [

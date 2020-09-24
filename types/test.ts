@@ -26,6 +26,8 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     StellarSdk.Operation.beginSponsoringFutureReserves({
       sponsoredId: account.accountId()
     })
+  ).addOperation(
+    StellarSdk.Operation.endSponsoringFutureReserves({})
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>

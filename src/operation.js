@@ -275,6 +275,10 @@ export class Operation {
         result.sponsoredId = accountIdtoAddress(attrs.sponsoredId());
         break;
       }
+      case 'endSponsoringFutureReserves': {
+        result.type = 'endSponsoringFutureReserves';
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -425,3 +429,4 @@ Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
 Operation.beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
+Operation.endSponsoringFutureReserves = ops.endSponsoringFutureReserves;

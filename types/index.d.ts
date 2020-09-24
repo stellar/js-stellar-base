@@ -221,6 +221,7 @@ export namespace OperationType {
   type CreateClaimableBalance = 'createClaimableBalance';
   type ClaimClaimableBalance = 'claimClaimableBalance';
   type BeginSponsoringFutureReserves = 'beginSponsoringFutureReserves';
+  type EndSponsoringFutureReserves = 'endSponsoringFutureReserves';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -239,7 +240,8 @@ export type OperationType =
   | OperationType.BumpSequence
   | OperationType.CreateClaimableBalance
   | OperationType.ClaimClaimableBalance
-  | OperationType.BeginSponsoringFutureReserves;
+  | OperationType.BeginSponsoringFutureReserves
+  | OperationType.EndSponsoringFutureReserves;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -522,6 +524,12 @@ export namespace Operation {
     options: OperationOptions.BeginSponsoringFutureReserves
   ): xdr.Operation<BeginSponsoringFutureReserves>;
 
+  interface EndSponsoringFutureReserves extends BaseOperation<OperationType.EndSponsoringFutureReserves> {
+  }
+  function endSponsoringFutureReserves(
+    options: OperationOptions.BaseOptions
+  ): xdr.Operation<EndSponsoringFutureReserves>;
+
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
@@ -543,7 +551,8 @@ export type Operation =
   | Operation.BumpSequence
   | Operation.CreateClaimableBalance
   | Operation.ClaimClaimableBalance
-  | Operation.BeginSponsoringFutureReserves;
+  | Operation.BeginSponsoringFutureReserves
+  | Operation.EndSponsoringFutureReserves;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
