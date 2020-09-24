@@ -79,3 +79,43 @@ export function revokeTrustlineSponsorship(opts = {}) {
 
   return new xdr.Operation(opAttributes);
 }
+
+/**
+ * Create a revoke sponsorship operation for an offer
+ * 
+  * @function
+ 
+ * @param {object} opts Options object
+ * @param {string} opts.seller - The account ID which created the offer.
+ * @param {string} opts.offerId - The offer ID.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ * @returns {xdr.Operation} xdr operation
+ *
+ * @example
+ * const op = Operation.revokeOfferSponsorship({
+ *   seller: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7
+ *   offerId: '1234'
+ * });
+ *
+ */
+export function revokeOfferSponsorship(opts = {}) {
+  if (!StrKey.isValidEd25519PublicKey(opts.seller)) {
+    throw new Error('seller is invalid');
+  }
+  if (typeof opts.offerId !== 'string') {
+    throw new Error('offerId is invalid');
+  }
+
+  const ledgerKey = xdr.LedgerKey.offer(
+    new xdr.LedgerKeyOffer({
+      sellerId: Keypair.fromPublicKey(opts.seller).xdrAccountId(),
+      offerId: xdr.Int64.fromString(opts.offerId)
+    })
+  );
+  const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
+  const opAttributes = {};
+  opAttributes.body = xdr.OperationBody.revokeSponsorship(op);
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}
