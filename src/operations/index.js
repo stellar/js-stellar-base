@@ -16,3 +16,4 @@ export { payment } from './payment';
 export { setOptions } from './set_options';
 export { beginSponsoringFutureReserves } from './begin_sponsoring_future_reserves';
 export { endSponsoringFutureReserves } from './end_sponsoring_future_reserves';
+export { revokeAccountSponsorship } from './revoke_sponsorship';

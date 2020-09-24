@@ -84,10 +84,6 @@ export class Operation {
    * @return {Operation}
    */
   static fromXDRObject(operation) {
-    function accountIdtoAddress(accountId) {
-      return StrKey.encodeEd25519PublicKey(accountId.ed25519());
-    }
-
     const result = {};
     if (operation.sourceAccount()) {
       result.source = encodeMuxedAccountToAddress(operation.sourceAccount());
@@ -279,6 +275,10 @@ export class Operation {
         result.type = 'endSponsoringFutureReserves';
         break;
       }
+      case 'revokeSponsorship': {
+        extractRevokeSponshipDetails(attrs, result);
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -411,6 +411,52 @@ export class Operation {
   }
 }
 
+function extractRevokeSponshipDetails(attrs, result) {
+  switch (attrs.switch().name) {
+    case 'revokeSponsorshipLedgerEntry': {
+      const ledgerKey = attrs.ledgerKey();
+      switch (ledgerKey.switch().name) {
+        case xdr.LedgerEntryType.account().name: {
+          result.type = 'revokeAccountSponsorship';
+          result.account = accountIdtoAddress(ledgerKey.account().accountId());
+          break;
+        }
+        case xdr.LedgerEntryType.trustline().name: {
+          result.type = 'revokeTrustlineSponsorship';
+          break;
+        }
+        case xdr.LedgerEntryType.offer().name: {
+          result.type = 'revokeOfferSponsorship';
+          break;
+        }
+        case xdr.LedgerEntryType.data().name: {
+          result.type = 'revokeDataSponsorship';
+          break;
+        }
+        case xdr.LedgerEntryType.claimableBalance().name: {
+          result.type = 'revokeClaimableBalanceSponsorship';
+          break;
+        }
+        default: {
+          throw new Error(`Unknown ledgerKey: ${attrs.switch().name}`);
+        }
+      }
+      break;
+    }
+    case 'revokeSponsorshipSigner': {
+      result.type = 'revokeSignerSponsorship';
+      break;
+    }
+    default: {
+      throw new Error(`Unknown revokeSponsorship: ${attrs.switch().name}`);
+    }
+  }
+}
+
+function accountIdtoAddress(accountId) {
+  return StrKey.encodeEd25519PublicKey(accountId.ed25519());
+}
+
 // Attach all imported operations as static methods on the Operation class
 Operation.accountMerge = ops.accountMerge;
 Operation.allowTrust = ops.allowTrust;
@@ -430,3 +476,4 @@ Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
 Operation.beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
 Operation.endSponsoringFutureReserves = ops.endSponsoringFutureReserves;
+Operation.revokeAccountSponsorship = ops.revokeAccountSponsorship;
