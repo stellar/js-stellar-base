@@ -9,6 +9,7 @@ import { Asset } from '../asset';
  * @param {Asset} opts.asset - The asset for the claimable balance.
  * @param {string} opts.amount - Amount.
  * @param {Claimant[]} opts.claimants - An array of Claimants
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.CreateClaimableBalanceOp} Create claimable balance operation
  *
  * @example

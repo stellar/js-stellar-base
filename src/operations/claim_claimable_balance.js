@@ -6,6 +6,7 @@ import xdr from '../generated/stellar-xdr_generated';
  * @alias Operation.claimClaimableBalance
  * @param {object} opts Options object
  * @param {string} opts.claimableBalanceId - The claimable balance id to be claimed.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.ClaimClaimableBalanceOp} Claim claimable balance operation
  *
  * @example
