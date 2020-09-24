@@ -19,5 +19,6 @@ export { endSponsoringFutureReserves } from './end_sponsoring_future_reserves';
 export {
   revokeAccountSponsorship,
   revokeTrustlineSponsorship,
-  revokeOfferSponsorship
+  revokeOfferSponsorship,
+  revokeDataSponsorship
 } from './revoke_sponsorship';
