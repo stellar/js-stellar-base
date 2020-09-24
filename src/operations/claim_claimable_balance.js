@@ -5,7 +5,7 @@ import xdr from '../generated/stellar-xdr_generated';
  * @function
  * @alias Operation.claimClaimableBalance
  * @param {object} opts Options object
- * @param {string} opts.claimableBalanceId - The claimable balance id to be claimed.
+ * @param {string} opts.balanceId - The claimable balance id to be claimed.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.Operation} Claim claimable balance operation
  *
@@ -15,8 +15,8 @@ import xdr from '../generated/stellar-xdr_generated';
  * });
  *
  */
-export function claimClaimableBalance(opts) {
-  if (typeof opts.balanceId !== 'string' || opts.balanceId.length < 2) {
+export function claimClaimableBalance(opts = {}) {
+  if (typeof opts.balanceId !== 'string') {
     throw new Error('must provide a valid claimable balance Id');
   }
   const attributes = {};

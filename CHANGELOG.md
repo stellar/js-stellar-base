@@ -65,7 +65,7 @@ Extend the operation class with a new helper to create claim claimable balance o
 
 ```js
 const op = Operation.createClaimableBalance({
-  balanceId: '0da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
+  balanceId: '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
 });
 ```
 

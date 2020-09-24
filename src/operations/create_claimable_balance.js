@@ -43,7 +43,7 @@ export function createClaimableBalance(opts) {
     throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
 
-  if (!opts.claimants || (opts.claimants && opts.claimants.length === 0)) {
+  if (!Array.isArray(opts.claimants) || opts.claimants.length === 0) {
     throw new Error('must provide at least one claimant');
   }
 

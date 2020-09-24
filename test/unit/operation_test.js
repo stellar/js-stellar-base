@@ -1841,20 +1841,10 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('claimClaimableBalance');
       expect(obj.balanceId).to.equal(balanceId);
     });
-    it('throws an error when balanceId is invalid', function() {
+    it('throws an error when balanceId is not present', function() {
       expect(() => StellarBase.Operation.claimClaimableBalance({})).to.throw(
         /must provide a valid claimable balance Id/
       );
-      expect(() =>
-        StellarBase.Operation.claimClaimableBalance({
-          balanceId: ''
-        })
-      ).to.throw(/must provide a valid claimable balance Id/);
-      expect(() =>
-        StellarBase.Operation.claimClaimableBalance({
-          balanceId: '0'
-        })
-      ).to.throw(/must provide a valid claimable balance Id/);
     });
   });
 
