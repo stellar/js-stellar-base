@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>operations/change_trust.js - Documentation</title>
+    <title>operations/end_sponsoring_future_reserves.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">operations/change_trust.js</h1>
+    <h1 class="page-title">operations/end_sponsoring_future_reserves.js</h1>
     
 
     
@@ -39,46 +39,23 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import isUndefined from 'lodash/isUndefined';
-import { Hyper } from 'js-xdr';
-import BigNumber from 'bignumber.js';
-import xdr from '../generated/stellar-xdr_generated';
-
-const MAX_INT64 = '9223372036854775807';
+            <pre class="prettyprint source linenums"><code>import xdr from '../generated/stellar-xdr_generated';
 
 /**
- * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
- * trust line for a given asset from the source account to another. The issuer being
- * trusted and the asset code are in the given Asset object.
+ * Create an "end sponsoring future reserves" operation.
  * @function
- * @alias Operation.changeTrust
+ * @alias Operation.endSponsoringFutureReserves
  * @param {object} opts Options object
- * @param {Asset} opts.asset - The asset for the trust line.
- * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
- *                                If the limit is set to "0" it deletes the trustline.
- * @param {string} [opts.source] - The source account (defaults to transaction source).
- * @returns {xdr.ChangeTrustOp} Change Trust operation
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ * @returns {xdr.Operation} xdr operation
+ *
+ * @example
+ * const op = Operation.endSponsoringFutureReserves();
+ *
  */
-export function changeTrust(opts) {
-  const attributes = {};
-  attributes.line = opts.asset.toXDRObject();
-  if (!isUndefined(opts.limit) &amp;&amp; !this.isValidAmount(opts.limit, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('limit'));
-  }
-
-  if (opts.limit) {
-    attributes.limit = this._toXDRAmount(opts.limit);
-  } else {
-    attributes.limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
-  }
-
-  if (opts.source) {
-    attributes.source = opts.source.masterKeypair;
-  }
-  const changeTrustOP = new xdr.ChangeTrustOp(attributes);
-
+export function endSponsoringFutureReserves(opts = {}) {
   const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.changeTrust(changeTrustOP);
+  opAttributes.body = xdr.OperationBody.endSponsoringFutureReserves();
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
