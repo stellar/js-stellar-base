@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [v4.0.0](https://github.com/stellar/js-stellar-base/compare/v3.0.4..v4.0.0)
+
 ## Add
 - Add the `Claimant` class which helps the creation of claimable balances. ([#367](https://github.com/stellar/js-stellar-base/pull/367)).
 The default behavior of this class it to create claimants with an unconditional predicate if none is passed:
