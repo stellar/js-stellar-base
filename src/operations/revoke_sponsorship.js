@@ -8,6 +8,7 @@ import { Asset } from '../asset';
  * Create a revoke sponsorship operation for an account.
  *
  * @function
+ * @alias Operation.revokeAccountSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The sponsored account ID.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
@@ -41,6 +42,7 @@ export function revokeAccountSponsorship(opts = {}) {
  * Create a revoke sponsorship operation for a trustline.
  *
  * @function
+ * @alias Operation.revokeTrustlineSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the trustline.
  * @param {Asset} opts.asset - The asset in the trustline.
@@ -83,6 +85,7 @@ export function revokeTrustlineSponsorship(opts = {}) {
  * Create a revoke sponsorship operation for an offer
  *
  * @function
+ * @alias Operation.revokeOfferSponsorship
  * @param {object} opts Options object
  * @param {string} opts.seller - The account ID which created the offer.
  * @param {string} opts.offerId - The offer ID.
@@ -122,6 +125,7 @@ export function revokeOfferSponsorship(opts = {}) {
  * Create a revoke sponsorship operation for a data entry.
  *
  * @function
+ * @alias Operation.revokeDataSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the data entry.
  * @param {string} opts.name - The name of the data entry
@@ -161,6 +165,7 @@ export function revokeDataSponsorship(opts = {}) {
  * Create a revoke sponsorship operation for a claimable balance.
  *
  * @function
+ * @alias Operation.revokeClaimableBalanceSponsorship
  * @param {object} opts Options object
  * @param {string} opts.balanceId - The sponsored claimable balance ID.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
@@ -194,6 +199,7 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
  * Create a revoke sponsorship operation for a signer.
  *
  * @function
+ * @alias Operation.revokeSignerSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID where the signer sponsorship is being removed from.
  * @param {object} opts.signer - The signer whose sponsorship is being removed.
