@@ -21,13 +21,13 @@ declare namespace xdrHidden {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): Operation;
+    static read(io: Buffer): xdr.Operation;
 
-    static write(value: Operation2, io: Buffer): void;
+    static write(value: xdr.Operation, io: Buffer): void;
 
-    static isValid(value: Operation2): boolean;
+    static isValid(value: xdr.Operation): boolean;
 
-    static toXDR(value: Operation2): Buffer;
+    static toXDR(value: xdr.Operation): Buffer;
 
     static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
 
