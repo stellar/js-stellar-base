@@ -179,10 +179,26 @@ export namespace Signer {
     weight: number | undefined;
   }
 }
+export namespace SignerKeyOptions {
+  interface Ed25519PublicKey {
+    ed25519PublicKey: string;
+  }
+  interface Sha256Hash {
+    sha256Hash: Buffer | string;
+  }
+  interface PreAuthTx {
+    preAuthTx: Buffer | string;
+  }
+}
 export type Signer =
   | Signer.Ed25519PublicKey
   | Signer.Sha256Hash
   | Signer.PreAuthTx;
+
+export type SignerKeyOptions =
+  | SignerKeyOptions.Ed25519PublicKey
+  | SignerKeyOptions.Sha256Hash
+  | SignerKeyOptions.PreAuthTx;
 
 export namespace SignerOptions {
   interface Ed25519PublicKey {
@@ -220,6 +236,9 @@ export namespace OperationType {
   type BumpSequence = 'bumpSequence';
   type CreateClaimableBalance = 'createClaimableBalance';
   type ClaimClaimableBalance = 'claimClaimableBalance';
+  type BeginSponsoringFutureReserves = 'beginSponsoringFutureReserves';
+  type EndSponsoringFutureReserves = 'endSponsoringFutureReserves';
+  type RevokeSponsorship = 'revokeSponsorship';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -237,7 +256,10 @@ export type OperationType =
   | OperationType.ManageData
   | OperationType.BumpSequence
   | OperationType.CreateClaimableBalance
-  | OperationType.ClaimClaimableBalance;
+  | OperationType.ClaimClaimableBalance
+  | OperationType.BeginSponsoringFutureReserves
+  | OperationType.EndSponsoringFutureReserves
+  | OperationType.RevokeSponsorship;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -326,6 +348,31 @@ export namespace OperationOptions {
   interface ClaimClaimableBalance extends BaseOptions {
     balanceId: string;
   }
+  interface BeginSponsoringFutureReserves extends BaseOptions {
+    sponsoredId: string;
+  }
+  interface RevokeAccountSponsorship extends BaseOptions {
+    account: string;
+  }
+  interface RevokeTrustlineSponsorship extends BaseOptions {
+    account: string;
+    asset: Asset;
+  }
+  interface RevokeOfferSponsorship extends BaseOptions {
+    seller: string;
+    offerId: string;
+  }
+  interface RevokeDataSponsorship extends BaseOptions {
+    account: string;
+    name: string;
+  }
+  interface RevokeClaimableBalanceSponsorship extends BaseOptions {
+    balanceId: string;
+  }
+  interface RevokeSignerSponsorship extends BaseOptions {
+    account: string;
+    signer: SignerKeyOptions;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -343,7 +390,14 @@ export type OperationOptions =
   | OperationOptions.ManageData
   | OperationOptions.BumpSequence
   | OperationOptions.CreateClaimableBalance
-  | OperationOptions.ClaimClaimableBalance;
+  | OperationOptions.ClaimClaimableBalance
+  | OperationOptions.BeginSponsoringFutureReserves
+  | OperationOptions.RevokeAccountSponsorship
+  | OperationOptions.RevokeTrustlineSponsorship
+  | OperationOptions.RevokeOfferSponsorship
+  | OperationOptions.RevokeDataSponsorship
+  | OperationOptions.RevokeClaimableBalanceSponsorship
+  | OperationOptions.RevokeSignerSponsorship;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -509,6 +563,65 @@ export namespace Operation {
     options: OperationOptions.ClaimClaimableBalance
   ): xdr.Operation<ClaimClaimableBalance>;
 
+  interface BeginSponsoringFutureReserves extends BaseOperation<OperationType.BeginSponsoringFutureReserves> {
+    sponsoredId: string;
+  }
+  function beginSponsoringFutureReserves(
+    options: OperationOptions.BeginSponsoringFutureReserves
+  ): xdr.Operation<BeginSponsoringFutureReserves>;
+
+  interface EndSponsoringFutureReserves extends BaseOperation<OperationType.EndSponsoringFutureReserves> {
+  }
+  function endSponsoringFutureReserves(
+    options: OperationOptions.BaseOptions
+  ): xdr.Operation<EndSponsoringFutureReserves>;
+
+  interface RevokeAccountSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    account: string;
+  }
+  function revokeAccountSponsorship(
+    options: OperationOptions.RevokeAccountSponsorship
+  ): xdr.Operation<RevokeAccountSponsorship>;
+
+  interface RevokeTrustlineSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    account: string;
+    asset: Asset;
+  }
+  function revokeTrustlineSponsorship(
+    options: OperationOptions.RevokeTrustlineSponsorship
+  ): xdr.Operation<RevokeTrustlineSponsorship>;
+
+  interface RevokeOfferSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    seller: string;
+    offerId: string;
+  }
+  function revokeOfferSponsorship(
+    options: OperationOptions.RevokeOfferSponsorship
+  ): xdr.Operation<RevokeOfferSponsorship>;
+
+  interface RevokeDataSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    account: string;
+    name: string;
+  }
+  function revokeDataSponsorship(
+    options: OperationOptions.RevokeDataSponsorship
+  ): xdr.Operation<RevokeDataSponsorship>;
+
+  interface RevokeClaimableBalanceSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    balanceId: string;
+  }
+  function revokeClaimableBalanceSponsorship(
+    options: OperationOptions.RevokeClaimableBalanceSponsorship
+  ): xdr.Operation<RevokeClaimableBalanceSponsorship>;
+
+  interface RevokeSignerSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    account: string;
+    signer: SignerKeyOptions;
+  }
+  function revokeSignerSponsorship(
+    options: OperationOptions.RevokeSignerSponsorship
+  ): xdr.Operation<RevokeSignerSponsorship>;
+
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
@@ -529,7 +642,15 @@ export type Operation =
   | Operation.ManageData
   | Operation.BumpSequence
   | Operation.CreateClaimableBalance
-  | Operation.ClaimClaimableBalance;
+  | Operation.ClaimClaimableBalance
+  | Operation.BeginSponsoringFutureReserves
+  | Operation.EndSponsoringFutureReserves
+  | Operation.RevokeAccountSponsorship
+  | Operation.RevokeTrustlineSponsorship
+  | Operation.RevokeOfferSponsorship
+  | Operation.RevokeDataSponsorship
+  | Operation.RevokeClaimableBalanceSponsorship
+  | Operation.RevokeSignerSponsorship;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

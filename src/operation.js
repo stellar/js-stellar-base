@@ -62,6 +62,14 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.bumpSequence}`
  * * `{@link Operation.createClaimableBalance}`
  * * `{@link Operation.claimClaimableBalance}`
+ * * `{@link Operation.beginSponsoringFutureReserves}`
+ * * `{@link Operation.endSponsoringFutureReserves}`
+ * * `{@link Operation.revokeAccountSponsorship}`
+ * * `{@link Operation.revokeTrustlineSponsorship}`
+ * * `{@link Operation.revokeOfferSponsorship}`
+ * * `{@link Operation.revokeDataSponsorship}`
+ * * `{@link Operation.revokeClaimableBalanceSponsorship}`
+ * * `{@link Operation.revokeSignerSponsorship}`
  *
  * @class Operation
  */
@@ -83,10 +91,6 @@ export class Operation {
    * @return {Operation}
    */
   static fromXDRObject(operation) {
-    function accountIdtoAddress(accountId) {
-      return StrKey.encodeEd25519PublicKey(accountId.ed25519());
-    }
-
     const result = {};
     if (operation.sourceAccount()) {
       result.source = encodeMuxedAccountToAddress(operation.sourceAccount());
@@ -269,6 +273,19 @@ export class Operation {
         result.balanceId = attrs.toXDR('hex');
         break;
       }
+      case 'beginSponsoringFutureReserves': {
+        result.type = 'beginSponsoringFutureReserves';
+        result.sponsoredId = accountIdtoAddress(attrs.sponsoredId());
+        break;
+      }
+      case 'endSponsoringFutureReserves': {
+        result.type = 'endSponsoringFutureReserves';
+        break;
+      }
+      case 'revokeSponsorship': {
+        extractRevokeSponshipDetails(attrs, result);
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -401,6 +418,97 @@ export class Operation {
   }
 }
 
+function extractRevokeSponshipDetails(attrs, result) {
+  switch (attrs.switch().name) {
+    case 'revokeSponsorshipLedgerEntry': {
+      const ledgerKey = attrs.ledgerKey();
+      switch (ledgerKey.switch().name) {
+        case xdr.LedgerEntryType.account().name: {
+          result.type = 'revokeAccountSponsorship';
+          result.account = accountIdtoAddress(ledgerKey.account().accountId());
+          break;
+        }
+        case xdr.LedgerEntryType.trustline().name: {
+          result.type = 'revokeTrustlineSponsorship';
+          result.account = accountIdtoAddress(
+            ledgerKey.trustLine().accountId()
+          );
+          result.asset = Asset.fromOperation(ledgerKey.trustLine().asset());
+          break;
+        }
+        case xdr.LedgerEntryType.offer().name: {
+          result.type = 'revokeOfferSponsorship';
+          result.seller = accountIdtoAddress(ledgerKey.offer().sellerId());
+          result.offerId = ledgerKey
+            .offer()
+            .offerId()
+            .toString();
+          break;
+        }
+        case xdr.LedgerEntryType.data().name: {
+          result.type = 'revokeDataSponsorship';
+          result.account = accountIdtoAddress(ledgerKey.data().accountId());
+          result.name = ledgerKey
+            .data()
+            .dataName()
+            .toString('ascii');
+          break;
+        }
+        case xdr.LedgerEntryType.claimableBalance().name: {
+          result.type = 'revokeClaimableBalanceSponsorship';
+          result.balanceId = ledgerKey
+            .claimableBalance()
+            .balanceId()
+            .toXDR('hex');
+          break;
+        }
+        default: {
+          throw new Error(`Unknown ledgerKey: ${attrs.switch().name}`);
+        }
+      }
+      break;
+    }
+    case 'revokeSponsorshipSigner': {
+      result.type = 'revokeSignerSponsorship';
+      result.account = accountIdtoAddress(attrs.signer().accountId());
+      result.signer = convertXDRSignerKeyToObject(attrs.signer().signerKey());
+      break;
+    }
+    default: {
+      throw new Error(`Unknown revokeSponsorship: ${attrs.switch().name}`);
+    }
+  }
+}
+
+function convertXDRSignerKeyToObject(signerKey) {
+  const attrs = {};
+  switch (signerKey.switch().name) {
+    case xdr.SignerKeyType.signerKeyTypeEd25519().name: {
+      attrs.ed25519PublicKey = StrKey.encodeEd25519PublicKey(
+        signerKey.ed25519()
+      );
+      break;
+    }
+    case xdr.SignerKeyType.signerKeyTypePreAuthTx().name: {
+      attrs.preAuthTx = signerKey.preAuthTx().toString('hex');
+      break;
+    }
+    case xdr.SignerKeyType.signerKeyTypeHashX().name: {
+      attrs.sha256Hash = signerKey.hashX().toString('hex');
+      break;
+    }
+    default: {
+      throw new Error(`Unknown signerKey: ${signerKey.switch().name}`);
+    }
+  }
+
+  return attrs;
+}
+
+function accountIdtoAddress(accountId) {
+  return StrKey.encodeEd25519PublicKey(accountId.ed25519());
+}
+
 // Attach all imported operations as static methods on the Operation class
 Operation.accountMerge = ops.accountMerge;
 Operation.allowTrust = ops.allowTrust;
@@ -418,3 +526,12 @@ Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
 Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
 Operation.payment = ops.payment;
 Operation.setOptions = ops.setOptions;
+Operation.beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
+Operation.endSponsoringFutureReserves = ops.endSponsoringFutureReserves;
+Operation.revokeAccountSponsorship = ops.revokeAccountSponsorship;
+Operation.revokeTrustlineSponsorship = ops.revokeTrustlineSponsorship;
+Operation.revokeOfferSponsorship = ops.revokeOfferSponsorship;
+Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
+Operation.revokeClaimableBalanceSponsorship =
+  ops.revokeClaimableBalanceSponsorship;
+Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;

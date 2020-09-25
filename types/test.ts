@@ -3,11 +3,18 @@ import * as StellarSdk from 'stellar-base';
 const masterKey = StellarSdk.Keypair.master(StellarSdk.Networks.TESTNET); // $ExpectType Keypair
 const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
 const destKey = StellarSdk.Keypair.random();
+const usd = new StellarSdk.Asset('USD', 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'); // $ExpectType Asset
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1');
 const transaction = new StellarSdk.TransactionBuilder(account, {
   fee: "100",
   networkPassphrase: StellarSdk.Networks.TESTNET
 })
+  .addOperation(
+    StellarSdk.Operation.beginSponsoringFutureReserves({
+      sponsoredId: account.accountId(),
+      source: masterKey.publicKey()
+    })
+  )
   .addOperation(
     StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() }),
   ).addOperation(
@@ -22,6 +29,55 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     StellarSdk.Operation.claimClaimableBalance({
       balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
     }),
+  ).addOperation(
+    StellarSdk.Operation.endSponsoringFutureReserves({
+    })
+  ).addOperation(
+    StellarSdk.Operation.endSponsoringFutureReserves({})
+  ).addOperation(
+    StellarSdk.Operation.revokeAccountSponsorship({
+      account: account.accountId(),
+    })
+  ).addOperation(
+      StellarSdk.Operation.revokeTrustlineSponsorship({
+        account: account.accountId(),
+        asset: usd,
+      })
+  ).addOperation(
+    StellarSdk.Operation.revokeOfferSponsorship({
+      seller: account.accountId(),
+      offerId: '12345'
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeDataSponsorship({
+      account: account.accountId(),
+      name: 'foo'
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeClaimableBalanceSponsorship({
+      balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        ed25519PublicKey: sourceKey.publicKey()
+      }
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        sha256Hash: "da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
+      }
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        preAuthTx: "da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
+      }
+    })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>

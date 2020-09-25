@@ -68,6 +68,99 @@ const op = Operation.createClaimableBalance({
   balanceId: '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
 });
 ```
+- Add support for Sponsored Reserves (CAP33)([#369](https://github.com/stellar/js-stellar-base/pull/369/))
+
+Extend the operation class with helpers that allow sponsoring reserves and also revoke sponsorships.
+
+To start sponsoring reserves for an account use:
+- `Operation.beginSponsoringFutureReserves`
+- `Operation.endSponsoringFutureReserves`
+
+To revoke a sponsorship after it has been created use any of the following helpers:
+
+- `Operation.revokeAccountSponsorship`
+- `Operation.revokeTrustlineSponsorship`
+- `Operation.revokeOfferSponsorship`
+- `Operation.revokeDataSponsorship`
+- `Operation.revokeClaimableBalanceSponsorship`
+- `Operation.revokeSignerSponsorship`
+
+The following example contains a transaction which sponsors operations for an account and then revoke some sponsorships.
+
+```
+const transaction = new StellarSdk.TransactionBuilder(account, {
+  fee: "100",
+  networkPassphrase: StellarSdk.Networks.TESTNET
+})
+  .addOperation(
+    StellarSdk.Operation.beginSponsoringFutureReserves({
+      sponsoredId: account.accountId(),
+      source: masterKey.publicKey()
+    })
+  )
+  .addOperation(
+    StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() }),
+  ).addOperation(
+    StellarSdk.Operation.createClaimableBalance({
+      amount: "10",
+      asset: StellarSdk.Asset.native(),
+      claimants: [
+        new StellarSdk.Claimant(account.accountId())
+      ]
+    }),
+  ).addOperation(
+    StellarSdk.Operation.claimClaimableBalance({
+      balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+    }),
+  ).addOperation(
+    StellarSdk.Operation.endSponsoringFutureReserves({
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeAccountSponsorship({
+      account: account.accountId(),
+    })
+  ).addOperation(
+      StellarSdk.Operation.revokeTrustlineSponsorship({
+        account: account.accountId(),
+        asset: usd,
+      })
+  ).addOperation(
+    StellarSdk.Operation.revokeOfferSponsorship({
+      seller: account.accountId(),
+      offerId: '12345'
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeDataSponsorship({
+      account: account.accountId(),
+      name: 'foo'
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeClaimableBalanceSponsorship({
+      balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        ed25519PublicKey: sourceKey.publicKey()
+      }
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        sha256Hash: "da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
+      }
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        preAuthTx: "da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
+      }
+    })
+  ).build();
+```
 
 ### Breaking
 

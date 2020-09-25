@@ -1848,6 +1848,272 @@ describe('Operation', function() {
     });
   });
 
+  describe('beginSponsoringFutureReserves()', function() {
+    it('creates a beginSponsoringFutureReservesOp', function() {
+      const sponsoredId =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+
+      const op = StellarBase.Operation.beginSponsoringFutureReserves({
+        sponsoredId
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal(
+        'beginSponsoringFutureReserves'
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('beginSponsoringFutureReserves');
+      expect(obj.sponsoredId).to.equal(sponsoredId);
+    });
+    it('throws an error when sponsoredId is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.beginSponsoringFutureReserves({})
+      ).to.throw(/sponsoredId is invalid/);
+      expect(() =>
+        StellarBase.Operation.beginSponsoringFutureReserves({
+          sponsoredId: 'GBAD'
+        })
+      ).to.throw(/sponsoredId is invalid/);
+    });
+  });
+
+  describe('endSponsoringFutureReserves()', function() {
+    it('creates a endSponsoringFutureReservesOp', function() {
+      const op = StellarBase.Operation.endSponsoringFutureReserves();
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal(
+        'endSponsoringFutureReserves'
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('endSponsoringFutureReserves');
+    });
+  });
+
+  describe('revokeAccountSponsorship()', function() {
+    it('creates a revokeAccountSponsorshipOp', function() {
+      const account =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      const op = StellarBase.Operation.revokeAccountSponsorship({
+        account
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeAccountSponsorship');
+      expect(obj.account).to.be.equal(account);
+    });
+    it('throws an error when account is invalid', function() {
+      expect(() => StellarBase.Operation.revokeAccountSponsorship({})).to.throw(
+        /account is invalid/
+      );
+      expect(() =>
+        StellarBase.Operation.revokeAccountSponsorship({
+          account: 'GBAD'
+        })
+      ).to.throw(/account is invalid/);
+    });
+  });
+
+  describe('revokeTrustlineSponsorship()', function() {
+    it('creates a revokeTrustlineSponsorship', function() {
+      const account =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      var asset = new StellarBase.Asset(
+        'USDUSD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const op = StellarBase.Operation.revokeTrustlineSponsorship({
+        account,
+        asset
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeTrustlineSponsorship');
+    });
+    it('throws an error when account is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.revokeTrustlineSponsorship({})
+      ).to.throw(/account is invalid/);
+      expect(() =>
+        StellarBase.Operation.revokeTrustlineSponsorship({
+          account: 'GBAD'
+        })
+      ).to.throw(/account is invalid/);
+    });
+    it('throws an error when asset is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.revokeTrustlineSponsorship({
+          account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        })
+      ).to.throw(/asset is invalid/);
+    });
+  });
+
+  describe('revokeOfferSponsorship()', function() {
+    it('creates a revokeOfferSponsorship', function() {
+      const seller = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      var offerId = '1234';
+      const op = StellarBase.Operation.revokeOfferSponsorship({
+        seller,
+        offerId
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeOfferSponsorship');
+      expect(obj.seller).to.be.equal(seller);
+      expect(obj.offerId).to.be.equal(offerId);
+    });
+    it('throws an error when seller is invalid', function() {
+      expect(() => StellarBase.Operation.revokeOfferSponsorship({})).to.throw(
+        /seller is invalid/
+      );
+      expect(() =>
+        StellarBase.Operation.revokeOfferSponsorship({
+          seller: 'GBAD'
+        })
+      ).to.throw(/seller is invalid/);
+    });
+    it('throws an error when asset offerId is not included', function() {
+      expect(() =>
+        StellarBase.Operation.revokeOfferSponsorship({
+          seller: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        })
+      ).to.throw(/offerId is invalid/);
+    });
+  });
+
+  describe('revokeDataSponsorship()', function() {
+    it('creates a revokeDataSponsorship', function() {
+      const account =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      var name = 'foo';
+      const op = StellarBase.Operation.revokeDataSponsorship({
+        account,
+        name
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeDataSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.name).to.be.equal(name);
+    });
+    it('throws an error when account is invalid', function() {
+      expect(() => StellarBase.Operation.revokeDataSponsorship({})).to.throw(
+        /account is invalid/
+      );
+      expect(() =>
+        StellarBase.Operation.revokeDataSponsorship({
+          account: 'GBAD'
+        })
+      ).to.throw(/account is invalid/);
+    });
+    it('throws an error when data name is not included', function() {
+      expect(() =>
+        StellarBase.Operation.revokeDataSponsorship({
+          account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        })
+      ).to.throw(/name must be a string, up to 64 characters/);
+    });
+  });
+
+  describe('revokeClaimableBalanceSponsorship()', function() {
+    it('creates a revokeClaimableBalanceSponsorship', function() {
+      const balanceId =
+        '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
+      const op = StellarBase.Operation.revokeClaimableBalanceSponsorship({
+        balanceId
+      });
+      var xdr = op.toXDR('hex');
+
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeClaimableBalanceSponsorship');
+      expect(obj.balanceId).to.be.equal(balanceId);
+    });
+    it('throws an error when balanceId is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.revokeClaimableBalanceSponsorship({})
+      ).to.throw(/balanceId is invalid/);
+    });
+  });
+
+  describe('revokeSignerSponsorship()', function() {
+    it('creates a revokeSignerSponsorship', function() {
+      const account =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let signer = {
+        ed25519PublicKey:
+          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      };
+      let op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      let xdr = op.toXDR('hex');
+
+      let operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      let obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.ed25519PublicKey).to.be.equal(signer.ed25519PublicKey);
+
+      // preAuthTx signer
+      signer = {
+        preAuthTx: StellarBase.hash('Tx hash').toString('hex')
+      };
+      op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      operation = StellarBase.xdr.Operation.fromXDR(op.toXDR('hex'), 'hex');
+      obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.preAuthTx).to.be.equal(signer.preAuthTx);
+
+      // sha256Hash signer
+      signer = {
+        sha256Hash: StellarBase.hash('Hash Preimage').toString('hex')
+      };
+      op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      operation = StellarBase.xdr.Operation.fromXDR(op.toXDR('hex'), 'hex');
+      obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.sha256Hash).to.be.equal(signer.sha256Hash);
+    });
+    it('throws an error when account is invalid', function() {
+      const signer = {
+        ed25519PublicKey:
+          'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+      };
+      expect(() =>
+        StellarBase.Operation.revokeSignerSponsorship({
+          signer
+        })
+      ).to.throw(/account is invalid/);
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [

@@ -14,3 +14,13 @@ export { pathPaymentStrictReceive } from './path_payment_strict_receive';
 export { pathPaymentStrictSend } from './path_payment_strict_send';
 export { payment } from './payment';
 export { setOptions } from './set_options';
+export { beginSponsoringFutureReserves } from './begin_sponsoring_future_reserves';
+export { endSponsoringFutureReserves } from './end_sponsoring_future_reserves';
+export {
+  revokeAccountSponsorship,
+  revokeTrustlineSponsorship,
+  revokeOfferSponsorship,
+  revokeDataSponsorship,
+  revokeClaimableBalanceSponsorship,
+  revokeSignerSponsorship
+} from './revoke_sponsorship';
