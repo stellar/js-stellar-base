@@ -63,6 +63,13 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.createClaimableBalance}`
  * * `{@link Operation.claimClaimableBalance}`
  * * `{@link Operation.beginSponsoringFutureReserves}`
+ * * `{@link Operation.endSponsoringFutureReserves}`
+ * * `{@link Operation.revokeAccountSponsorship}`
+ * * `{@link Operation.revokeTrustlineSponsorship}`
+ * * `{@link Operation.revokeOfferSponsorship}`
+ * * `{@link Operation.revokeDataSponsorship}`
+ * * `{@link Operation.revokeClaimableBalanceSponsorship}`
+ * * `{@link Operation.revokeSignerSponsorship}`
  *
  * @class Operation
  */
