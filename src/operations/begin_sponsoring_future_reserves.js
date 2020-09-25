@@ -3,7 +3,7 @@ import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
 
 /**
- * Create a begin sponsoring future reserves operation.
+ * Create a "begin sponsoring future reserves" operation.
  * @function
  * @alias Operation.beginSponsoringFutureReserves
  * @param {object} opts Options object

@@ -5,7 +5,7 @@ import { Keypair } from '../keypair';
 import { Asset } from '../asset';
 
 /**
- * Create a revoke sponsorship operation for an account.
+ * Create a "revoke sponsorship" operation for an account.
  *
  * @function
  * @alias Operation.revokeAccountSponsorship
@@ -39,7 +39,7 @@ export function revokeAccountSponsorship(opts = {}) {
 }
 
 /**
- * Create a revoke sponsorship operation for a trustline.
+ * Create a "revoke sponsorship" operation for a trustline.
  *
  * @function
  * @alias Operation.revokeTrustlineSponsorship
@@ -82,7 +82,7 @@ export function revokeTrustlineSponsorship(opts = {}) {
 }
 
 /**
- * Create a revoke sponsorship operation for an offer
+ * Create a "revoke sponsorship" operation for an offer.
  *
  * @function
  * @alias Operation.revokeOfferSponsorship
@@ -122,7 +122,7 @@ export function revokeOfferSponsorship(opts = {}) {
 }
 
 /**
- * Create a revoke sponsorship operation for a data entry.
+ * Create a "revoke sponsorship" operation for a data entry.
  *
  * @function
  * @alias Operation.revokeDataSponsorship
@@ -162,7 +162,7 @@ export function revokeDataSponsorship(opts = {}) {
 }
 
 /**
- * Create a revoke sponsorship operation for a claimable balance.
+ * Create a "revoke sponsorship" operation for a claimable balance.
  *
  * @function
  * @alias Operation.revokeClaimableBalanceSponsorship
@@ -196,7 +196,7 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
 }
 
 /**
- * Create a revoke sponsorship operation for a signer.
+ * Create a "revoke sponsorship" operation for a signer.
  *
  * @function
  * @alias Operation.revokeSignerSponsorship

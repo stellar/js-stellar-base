@@ -1,7 +1,7 @@
 import xdr from '../generated/stellar-xdr_generated';
 
 /**
- * Create a end sponsoring future reserves operation.
+ * Create an "end sponsoring future reserves" operation.
  * @function
  * @alias Operation.endSponsoringFutureReserves
  * @param {object} opts Options object
