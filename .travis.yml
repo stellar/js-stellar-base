@@ -2,11 +2,11 @@ language: node_js
 version: 1.0
 matrix:
   include:
-    - node_js: 10.16.3
-    - node_js: 11
     - node_js: 12
+    - node_js: 13
+    - node_js: 14
       env: TYPE_TEST=true
-    - node_js: 12
+    - node_js: 14
       env: SAUCE=true
 cache:
   directories:
