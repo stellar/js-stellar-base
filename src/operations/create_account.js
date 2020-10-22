@@ -17,7 +17,7 @@ export function createAccount(opts) {
   if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
     throw new Error('destination is invalid');
   }
-  if (!this.isValidAmount(opts.startingBalance)) {
+  if (!this.isValidAmount(opts.startingBalance, true)) {
     throw new TypeError(
       this.constructAmountRequirementsError('startingBalance')
     );
