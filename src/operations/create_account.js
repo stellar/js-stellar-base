@@ -19,7 +19,7 @@ export function createAccount(opts) {
   }
   if (!this.isValidAmount(opts.startingBalance, true)) {
     throw new TypeError(
-      this.constructAmountRequirementsError('startingBalance')
+      'startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal'
     );
   }
   const attributes = {};

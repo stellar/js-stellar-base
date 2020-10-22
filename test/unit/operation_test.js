@@ -46,7 +46,7 @@ describe('Operation', function() {
         source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       };
       expect(() => StellarBase.Operation.createAccount(opts)).not.to.throw(
-        /startingBalance argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
+        /startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal/
       );
     });
 
@@ -57,7 +57,7 @@ describe('Operation', function() {
         source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       };
       expect(() => StellarBase.Operation.createAccount(opts)).to.throw(
-        /startingBalance argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
+        /startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal/
       );
     });
 
