@@ -55,11 +55,11 @@ deploy:
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: 10.16.3
+      node: 12
   - provider: script
     script: './bower_publish.sh'
     skip_cleanup: true
     on:
       tags: true
       repo: stellar/js-stellar-base
-      node: 10.16.3
+      node: 12

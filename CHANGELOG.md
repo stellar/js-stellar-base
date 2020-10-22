@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [v4.0.2](https://github.com/stellar/js-stellar-base/compare/v4.0.1..v4.0.2)
+
+## Update
+
+- Fix deployment script.
+
+
 ## [v4.0.1](https://github.com/stellar/js-stellar-base/compare/v4.0.0..v4.0.1)
 
 ## Update
