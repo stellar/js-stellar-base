@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [v4.0.1](https://github.com/stellar/js-stellar-base/compare/v4.0.0..v4.0.1)
+
+## Update
+
+- Update `createAccount` operation to accept `0` as the starting balance ([#375](https://github.com/stellar/js-stellar-base/pull/375)).
+
 ## [v4.0.0](https://github.com/stellar/js-stellar-base/compare/v3.0.4..v4.0.0)
 
 ## Add
