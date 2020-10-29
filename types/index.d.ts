@@ -456,7 +456,7 @@ export namespace Operation {
 
   interface ManageData extends BaseOperation<OperationType.ManageData> {
     name: string;
-    value: Buffer;
+    value?: Buffer;
   }
   function manageData(
     options: OperationOptions.ManageData
