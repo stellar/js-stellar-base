@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## [v4.0.3](https://github.com/stellar/js-stellar-base/compare/v4.0.2..v4.0.3)
+
+## Update
+
+- Update TS definitions for XDRs ([#381](https://github.com/stellar/js-stellar-base/pull/381))
+- Fix typing for ManageData.value ([#379](https://github.com/stellar/js-stellar-base/pull/379))
+
+
 ## [v4.0.2](https://github.com/stellar/js-stellar-base/compare/v4.0.1..v4.0.2)
 
 ## Update
