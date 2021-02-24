@@ -86,9 +86,10 @@ export class Claimant {
    * Returns a `BeforeAbsoluteTime` claim predicate
    *
    * This predicate will be fulfilled if the closing time of the ledger that
-   * includes the CreateClaimableBalance operation is less than this (absolute) Unix timestamp.
+   * includes the CreateClaimableBalance operation is less than this (absolute)
+   * Unix timestamp (expressed in seconds).
    *
-   * @param {string} absBefore Unix epoch as a string
+   * @param {string} absBefore Unix epoch (in seconds) as a string
    * @Return {xdr.ClaimPredicate}
    */
   static predicateBeforeAbsoluteTime(absBefore) {
