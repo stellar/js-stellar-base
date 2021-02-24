@@ -1857,6 +1857,13 @@ describe('Operation', function() {
         /must provide a valid claimable balance Id/
       );
     });
+    it('throws an error for invalid balanceIds', function() {
+      expect(() =>
+        StellarBase.Operation.claimClaimableBalance({
+          balanceId: 'badc0ffee'
+        })
+      ).to.throw(/must provide a valid claimable balance Id/);
+    });
   });
 
   describe('beginSponsoringFutureReserves()', function() {
