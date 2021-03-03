@@ -110,8 +110,5 @@
     "lodash": "^4.17.11",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.0"
-  },
-  "optionalDependencies": {
-    "sodium-native": "^2.3.0"
   }
 }
