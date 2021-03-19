@@ -9,7 +9,7 @@ import xdr from '../generated/stellar-xdr_generated';
  * @param {string} opts.balanceId - The claimable balance ID to be clawed back.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  *
- * @return {xdr.Operation} Clawback claimable balance operation
+ * @return {xdr.ClawbackClaimableBalanceOp}
  *
  * @example
  * const op = Operation.clawbackClaimableBalance({

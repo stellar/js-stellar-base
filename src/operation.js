@@ -71,6 +71,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.revokeDataSponsorship}`
  * * `{@link Operation.revokeClaimableBalanceSponsorship}`
  * * `{@link Operation.revokeSignerSponsorship}`
+ * * `{@link Operation.clawback}`
  *
  * @class Operation
  */
@@ -290,6 +291,13 @@ export class Operation {
       }
       case 'revokeSponsorship': {
         extractRevokeSponshipDetails(attrs, result);
+        break;
+      }
+      case 'clawback': {
+        result.type = 'clawback';
+        result.amount = this._fromXDRAmount(attrs.amount());
+        result.from = encodeMuxedAccountToAddress(attrs.from());
+        result.asset = Asset.fromOperation(attrs.asset());
         break;
       }
       default: {
@@ -542,3 +550,4 @@ Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
 Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
 Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
+Operation.clawback = ops.clawback;

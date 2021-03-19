@@ -2160,6 +2160,50 @@ describe('Operation', function() {
     });
   });
 
+  describe('clawback()', function() {
+    it('requires asset, amount, account', function() {
+      let asset = new StellarBase.Asset(
+        'GCOIN',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const amount = '100.0000000';
+
+      expect(() => {
+        StellarBase.Operation.clawback({
+          from: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        });
+      }).to.throw();
+      expect(() => {
+        StellarBase.Operation.clawback({ amount });
+      }).to.throw();
+      expect(() => {
+        StellarBase.Operation.clawback({ asset });
+      }).to.throw();
+      expect(() => {
+        StellarBase.Operation.clawback({});
+      }).to.throw();
+    });
+    it('returns a clawback()', function() {
+      let asset = new StellarBase.Asset(
+        'GCOIN',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const amount = '100.0000000';
+      const op = StellarBase.Operation.clawback({
+        from: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7',
+        amount: amount,
+        asset: asset
+      });
+
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('clawback');
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [

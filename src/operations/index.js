@@ -25,3 +25,4 @@ export {
   revokeClaimableBalanceSponsorship,
   revokeSignerSponsorship
 } from './revoke_sponsorship';
+export { clawback } from './clawback';
