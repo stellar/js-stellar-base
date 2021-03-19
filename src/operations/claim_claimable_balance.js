@@ -20,8 +20,9 @@ export function claimClaimableBalance(opts = {}) {
     typeof opts.balanceId !== 'string' ||
     opts.balanceId.length !== 8 + 64 /* 8b discriminant + 64b string */
   ) {
-    throw new Error('must provide a valid claimable balance Id');
+    throw new Error('must provide a valid claimable balance id');
   }
+
   const attributes = {};
   attributes.balanceId = xdr.ClaimableBalanceId.fromXDR(opts.balanceId, 'hex');
   const claimClaimableBalanceOp = new xdr.ClaimClaimableBalanceOp(attributes);

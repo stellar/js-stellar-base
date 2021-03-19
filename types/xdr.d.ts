@@ -40,7 +40,7 @@ declare namespace xdrHidden {
 }
 
 declare namespace xdr {
-  export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+    export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
 
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;

@@ -62,6 +62,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.bumpSequence}`
  * * `{@link Operation.createClaimableBalance}`
  * * `{@link Operation.claimClaimableBalance}`
+ * * `{@link Operation.clawbackClaimableBalance}`
  * * `{@link Operation.beginSponsoringFutureReserves}`
  * * `{@link Operation.endSponsoringFutureReserves}`
  * * `{@link Operation.revokeAccountSponsorship}`
@@ -270,6 +271,11 @@ export class Operation {
       }
       case 'claimClaimableBalance': {
         result.type = 'claimClaimableBalance';
+        result.balanceId = attrs.toXDR('hex');
+        break;
+      }
+      case 'clawbackClaimableBalance': {
+        result.type = 'clawbackClaimableBalance';
         result.balanceId = attrs.toXDR('hex');
         break;
       }
@@ -517,6 +523,7 @@ Operation.changeTrust = ops.changeTrust;
 Operation.createAccount = ops.createAccount;
 Operation.createClaimableBalance = ops.createClaimableBalance;
 Operation.claimClaimableBalance = ops.claimClaimableBalance;
+Operation.clawbackClaimableBalance = ops.clawbackClaimableBalance;
 Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;

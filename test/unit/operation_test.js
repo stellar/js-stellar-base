@@ -1841,9 +1841,7 @@ describe('Operation', function() {
       const balanceId =
         '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
 
-      const op = StellarBase.Operation.claimClaimableBalance({
-        balanceId
-      });
+      const op = StellarBase.Operation.claimClaimableBalance({ balanceId });
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
         Buffer.from(xdr, 'hex')
@@ -1854,7 +1852,7 @@ describe('Operation', function() {
     });
     it('throws an error when balanceId is not present', function() {
       expect(() => StellarBase.Operation.claimClaimableBalance({})).to.throw(
-        /must provide a valid claimable balance Id/
+        /must provide a valid claimable balance id/
       );
     });
     it('throws an error for invalid balanceIds', function() {
@@ -1862,7 +1860,37 @@ describe('Operation', function() {
         StellarBase.Operation.claimClaimableBalance({
           balanceId: 'badc0ffee'
         })
-      ).to.throw(/must provide a valid claimable balance Id/);
+      ).to.throw(/must provide a valid claimable balance id/);
+    });
+  });
+
+  describe('clawbackClaimableBalance()', function() {
+    it('creates a clawbackClaimableBalanceOp', function() {
+      const balanceId =
+        '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
+
+      const op = StellarBase.Operation.clawbackClaimableBalance({
+        balanceId: balanceId
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('clawbackClaimableBalance');
+      expect(obj.balanceId).to.equal(balanceId);
+    });
+    it('throws an error when balanceId is not present', function() {
+      expect(() => StellarBase.Operation.clawbackClaimableBalance({})).to.throw(
+        /must provide a valid claimable balance id/
+      );
+    });
+    it('throws an error for invalid balanceIds', function() {
+      expect(() =>
+        StellarBase.Operation.clawbackClaimableBalance({
+          balanceId: 'badc0ffee'
+        })
+      ).to.throw(/must provide a valid claimable balance id/);
     });
   });
 
