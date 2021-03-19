@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 
 function expectBuffersToBeEqual(left, right) {
-  let leftHex = left.toString('hex');
-  let rightHex = right.toString('hex');
+  const leftHex = left.toString('hex');
+  const rightHex = right.toString('hex');
   expect(leftHex).to.eql(rightHex);
 }
 

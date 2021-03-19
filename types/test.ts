@@ -117,9 +117,16 @@ feeBumptransaction.hash(); // $ExpectType Buffer
 StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
 StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction
 
-// P.S. don't use Memo constructor
-new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf').value; // $ExpectType MemoValue
-// (new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf')).type; // $ExpectType MemoType  // TODO: Inspect what's wrong with linter.
+// P.S. You shouldn't be using the Memo constructor
+//
+// Unfortunately, it appears that type aliases aren't unwrapped by the linter,
+// causing the following lines to fail unnecessarily:
+//
+// new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf').value; // $ExpectType MemoValue
+// new StellarSdk.Memo(StellarSdk.MemoHash, 'asdf').type; // $ExpectType MemoType
+//
+// This is because the linter just does a raw string comparison on type names:
+// https://github.com/Microsoft/dtslint/issues/57#issuecomment-451666294
 
 const noSignerXDR = StellarSdk.Operation.setOptions({ lowThreshold: 1 });
 StellarSdk.Operation.fromXDRObject(noSignerXDR).signer; // $ExpectType never
