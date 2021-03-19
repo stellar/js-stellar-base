@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## Update
+
+- Add an additional parameter check to `claimClaimableBalance` to fail faster ([#390](https://github.com/stellar/js-stellar-base/pull/390)).
+
 ## [v4.0.3](https://github.com/stellar/js-stellar-base/compare/v4.0.2..v4.0.3)
 
 ## Update

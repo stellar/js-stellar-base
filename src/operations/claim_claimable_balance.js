@@ -16,7 +16,10 @@ import xdr from '../generated/stellar-xdr_generated';
  *
  */
 export function claimClaimableBalance(opts = {}) {
-  if (typeof opts.balanceId !== 'string') {
+  if (
+    typeof opts.balanceId !== 'string' ||
+    opts.balanceId.length !== 8 + 64 /* 8b discriminant + 64b string */
+  ) {
     throw new Error('must provide a valid claimable balance Id');
   }
   const attributes = {};
