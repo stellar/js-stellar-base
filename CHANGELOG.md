@@ -2,9 +2,14 @@
 
 ## Unreleased
 
-## Update
+### Update
 
 - Add an additional parameter check to `claimClaimableBalance` to fail faster ([#390](https://github.com/stellar/js-stellar-base/pull/390)).
+
+- The XDR & TS definitions have been updated to support CAP-35 ([#394](https://github.com/stellar/js-stellar-base/pull/394))
+
+### Breaking
+- `AllowTrustOpAsset` has been renamed to `AssetCode` ([#394](https://github.com/stellar/js-stellar-base/pull/394))
 
 ## [v4.0.3](https://github.com/stellar/js-stellar-base/compare/v4.0.2..v4.0.3)
 

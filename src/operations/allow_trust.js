@@ -23,10 +23,10 @@ export function allowTrust(opts) {
   attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
   if (opts.assetCode.length <= 4) {
     const code = padEnd(opts.assetCode, 4, '\0');
-    attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum4(code);
+    attributes.asset = xdr.AssetCode.assetTypeCreditAlphanum4(code);
   } else if (opts.assetCode.length <= 12) {
     const code = padEnd(opts.assetCode, 12, '\0');
-    attributes.asset = xdr.AllowTrustOpAsset.assetTypeCreditAlphanum12(code);
+    attributes.asset = xdr.AssetCode.assetTypeCreditAlphanum12(code);
   } else {
     throw new Error('Asset code must be 12 characters at max.');
   }

@@ -516,7 +516,7 @@ describe('Operation', function() {
   });
 
   describe('.allowTrust()', function() {
-    it('creates a allowTrustOp', function() {
+    it('creates an allowTrustOp', function() {
       let trustor = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let assetCode = 'USD';
       let authorize = true;
