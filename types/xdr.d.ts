@@ -204,8 +204,7 @@ declare namespace xdr {
     validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class VarOpaque extends Opaque {
-  }
+  class VarOpaque extends Opaque {}
 
   class Option {
     constructor(childType: {
@@ -232,7 +231,10 @@ declare namespace xdr {
   }
 
   class AssetType {
-    readonly name: 'assetTypeNative' | 'assetTypeCreditAlphanum4' | 'assetTypeCreditAlphanum12';
+    readonly name:
+      | 'assetTypeNative'
+      | 'assetTypeCreditAlphanum4'
+      | 'assetTypeCreditAlphanum12';
 
     readonly value: 0 | 1 | 2;
 
@@ -244,7 +246,11 @@ declare namespace xdr {
   }
 
   class ThresholdIndices {
-    readonly name: 'thresholdMasterWeight' | 'thresholdLow' | 'thresholdMed' | 'thresholdHigh';
+    readonly name:
+      | 'thresholdMasterWeight'
+      | 'thresholdLow'
+      | 'thresholdMed'
+      | 'thresholdHigh';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -258,7 +264,12 @@ declare namespace xdr {
   }
 
   class LedgerEntryType {
-    readonly name: 'account' | 'trustline' | 'offer' | 'data' | 'claimableBalance';
+    readonly name:
+      | 'account'
+      | 'trustline'
+      | 'offer'
+      | 'data'
+      | 'claimableBalance';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
 
@@ -274,10 +285,11 @@ declare namespace xdr {
   }
 
   class AccountFlags {
-    readonly name: 'authRequiredFlag' |
-      'authRevocableFlag' |
-      'authImmutableFlag' |
-      'authClawbackEnabledFlag';
+    readonly name:
+      | 'authRequiredFlag'
+      | 'authRevocableFlag'
+      | 'authImmutableFlag'
+      | 'authClawbackEnabledFlag';
 
     readonly value: 1 | 2 | 4 | 8;
 
@@ -291,7 +303,10 @@ declare namespace xdr {
   }
 
   class TrustLineFlags {
-    readonly name: 'authorizedFlag' | 'authorizedToMaintainLiabilitiesFlag' | 'trustlineClawbackEnabledFlag';
+    readonly name:
+      | 'authorizedFlag'
+      | 'authorizedToMaintainLiabilitiesFlag'
+      | 'trustlineClawbackEnabledFlag';
 
     readonly value: 1 | 2 | 4;
 
@@ -311,7 +326,13 @@ declare namespace xdr {
   }
 
   class ClaimPredicateType {
-    readonly name: 'claimPredicateUnconditional' | 'claimPredicateAnd' | 'claimPredicateOr' | 'claimPredicateNot' | 'claimPredicateBeforeAbsoluteTime' | 'claimPredicateBeforeRelativeTime';
+    readonly name:
+      | 'claimPredicateUnconditional'
+      | 'claimPredicateAnd'
+      | 'claimPredicateOr'
+      | 'claimPredicateNot'
+      | 'claimPredicateBeforeAbsoluteTime'
+      | 'claimPredicateBeforeRelativeTime';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5;
 
@@ -353,7 +374,14 @@ declare namespace xdr {
   }
 
   class EnvelopeType {
-    readonly name: 'envelopeTypeTxV0' | 'envelopeTypeScp' | 'envelopeTypeTx' | 'envelopeTypeAuth' | 'envelopeTypeScpvalue' | 'envelopeTypeTxFeeBump' | 'envelopeTypeOpId';
+    readonly name:
+      | 'envelopeTypeTxV0'
+      | 'envelopeTypeScp'
+      | 'envelopeTypeTx'
+      | 'envelopeTypeAuth'
+      | 'envelopeTypeScpvalue'
+      | 'envelopeTypeTxFeeBump'
+      | 'envelopeTypeOpId';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -383,7 +411,11 @@ declare namespace xdr {
   }
 
   class LedgerUpgradeType {
-    readonly name: 'ledgerUpgradeVersion' | 'ledgerUpgradeBaseFee' | 'ledgerUpgradeMaxTxSetSize' | 'ledgerUpgradeBaseReserve';
+    readonly name:
+      | 'ledgerUpgradeVersion'
+      | 'ledgerUpgradeBaseFee'
+      | 'ledgerUpgradeMaxTxSetSize'
+      | 'ledgerUpgradeBaseReserve';
 
     readonly value: 1 | 2 | 3 | 4;
 
@@ -411,7 +443,11 @@ declare namespace xdr {
   }
 
   class LedgerEntryChangeType {
-    readonly name: 'ledgerEntryCreated' | 'ledgerEntryUpdated' | 'ledgerEntryRemoved' | 'ledgerEntryState';
+    readonly name:
+      | 'ledgerEntryCreated'
+      | 'ledgerEntryUpdated'
+      | 'ledgerEntryRemoved'
+      | 'ledgerEntryState';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -451,9 +487,39 @@ declare namespace xdr {
   }
 
   class MessageType {
-    readonly name: 'errorMsg' | 'auth' | 'dontHave' | 'getPeers' | 'peers' | 'getTxSet' | 'txSet' | 'transaction' | 'getScpQuorumset' | 'scpQuorumset' | 'scpMessage' | 'getScpState' | 'hello' | 'surveyRequest' | 'surveyResponse';
+    readonly name:
+      | 'errorMsg'
+      | 'auth'
+      | 'dontHave'
+      | 'getPeers'
+      | 'peers'
+      | 'getTxSet'
+      | 'txSet'
+      | 'transaction'
+      | 'getScpQuorumset'
+      | 'scpQuorumset'
+      | 'scpMessage'
+      | 'getScpState'
+      | 'hello'
+      | 'surveyRequest'
+      | 'surveyResponse';
 
-    readonly value: 0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+    readonly value:
+      | 0
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7
+      | 8
+      | 9
+      | 10
+      | 11
+      | 12
+      | 13
+      | 14
+      | 15;
 
     static errorMsg(): MessageType;
 
@@ -495,7 +561,11 @@ declare namespace xdr {
   }
 
   class ScpStatementType {
-    readonly name: 'scpStPrepare' | 'scpStConfirm' | 'scpStExternalize' | 'scpStNominate';
+    readonly name:
+      | 'scpStPrepare'
+      | 'scpStConfirm'
+      | 'scpStExternalize'
+      | 'scpStNominate';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -509,9 +579,51 @@ declare namespace xdr {
   }
 
   class OperationType {
-    readonly name: 'createAccount' | 'payment' | 'pathPaymentStrictReceive' | 'manageSellOffer' | 'createPassiveSellOffer' | 'setOptions' | 'changeTrust' | 'allowTrust' | 'accountMerge' | 'inflation' | 'manageData' | 'bumpSequence' | 'manageBuyOffer' | 'pathPaymentStrictSend' | 'createClaimableBalance' | 'claimClaimableBalance' | 'beginSponsoringFutureReserves' | 'endSponsoringFutureReserves' | 'revokeSponsorship' | 'clawback' | 'clawbackClaimableBalance';
+    readonly name:
+      | 'createAccount'
+      | 'payment'
+      | 'pathPaymentStrictReceive'
+      | 'manageSellOffer'
+      | 'createPassiveSellOffer'
+      | 'setOptions'
+      | 'changeTrust'
+      | 'allowTrust'
+      | 'accountMerge'
+      | 'inflation'
+      | 'manageData'
+      | 'bumpSequence'
+      | 'manageBuyOffer'
+      | 'pathPaymentStrictSend'
+      | 'createClaimableBalance'
+      | 'claimClaimableBalance'
+      | 'beginSponsoringFutureReserves'
+      | 'endSponsoringFutureReserves'
+      | 'revokeSponsorship'
+      | 'clawback'
+      | 'clawbackClaimableBalance';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20;
+    readonly value:
+      | 0
+      | 1
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7
+      | 8
+      | 9
+      | 10
+      | 11
+      | 12
+      | 13
+      | 14
+      | 15
+      | 16
+      | 17
+      | 18
+      | 19
+      | 20;
 
     static createAccount(): OperationType;
 
@@ -567,7 +679,12 @@ declare namespace xdr {
   }
 
   class MemoType {
-    readonly name: 'memoNone' | 'memoText' | 'memoId' | 'memoHash' | 'memoReturn';
+    readonly name:
+      | 'memoNone'
+      | 'memoText'
+      | 'memoId'
+      | 'memoHash'
+      | 'memoReturn';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
 
@@ -583,7 +700,12 @@ declare namespace xdr {
   }
 
   class CreateAccountResultCode {
-    readonly name: 'createAccountSuccess' | 'createAccountMalformed' | 'createAccountUnderfunded' | 'createAccountLowReserve' | 'createAccountAlreadyExist';
+    readonly name:
+      | 'createAccountSuccess'
+      | 'createAccountMalformed'
+      | 'createAccountUnderfunded'
+      | 'createAccountLowReserve'
+      | 'createAccountAlreadyExist';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -599,7 +721,17 @@ declare namespace xdr {
   }
 
   class PaymentResultCode {
-    readonly name: 'paymentSuccess' | 'paymentMalformed' | 'paymentUnderfunded' | 'paymentSrcNoTrust' | 'paymentSrcNotAuthorized' | 'paymentNoDestination' | 'paymentNoTrust' | 'paymentNotAuthorized' | 'paymentLineFull' | 'paymentNoIssuer';
+    readonly name:
+      | 'paymentSuccess'
+      | 'paymentMalformed'
+      | 'paymentUnderfunded'
+      | 'paymentSrcNoTrust'
+      | 'paymentSrcNotAuthorized'
+      | 'paymentNoDestination'
+      | 'paymentNoTrust'
+      | 'paymentNotAuthorized'
+      | 'paymentLineFull'
+      | 'paymentNoIssuer';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9;
 
@@ -625,9 +757,35 @@ declare namespace xdr {
   }
 
   class PathPaymentStrictReceiveResultCode {
-    readonly name: 'pathPaymentStrictReceiveSuccess' | 'pathPaymentStrictReceiveMalformed' | 'pathPaymentStrictReceiveUnderfunded' | 'pathPaymentStrictReceiveSrcNoTrust' | 'pathPaymentStrictReceiveSrcNotAuthorized' | 'pathPaymentStrictReceiveNoDestination' | 'pathPaymentStrictReceiveNoTrust' | 'pathPaymentStrictReceiveNotAuthorized' | 'pathPaymentStrictReceiveLineFull' | 'pathPaymentStrictReceiveNoIssuer' | 'pathPaymentStrictReceiveTooFewOffers' | 'pathPaymentStrictReceiveOfferCrossSelf' | 'pathPaymentStrictReceiveOverSendmax';
+    readonly name:
+      | 'pathPaymentStrictReceiveSuccess'
+      | 'pathPaymentStrictReceiveMalformed'
+      | 'pathPaymentStrictReceiveUnderfunded'
+      | 'pathPaymentStrictReceiveSrcNoTrust'
+      | 'pathPaymentStrictReceiveSrcNotAuthorized'
+      | 'pathPaymentStrictReceiveNoDestination'
+      | 'pathPaymentStrictReceiveNoTrust'
+      | 'pathPaymentStrictReceiveNotAuthorized'
+      | 'pathPaymentStrictReceiveLineFull'
+      | 'pathPaymentStrictReceiveNoIssuer'
+      | 'pathPaymentStrictReceiveTooFewOffers'
+      | 'pathPaymentStrictReceiveOfferCrossSelf'
+      | 'pathPaymentStrictReceiveOverSendmax';
 
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10 | -11 | -12;
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
 
     static pathPaymentStrictReceiveSuccess(): PathPaymentStrictReceiveResultCode;
 
@@ -657,9 +815,35 @@ declare namespace xdr {
   }
 
   class PathPaymentStrictSendResultCode {
-    readonly name: 'pathPaymentStrictSendSuccess' | 'pathPaymentStrictSendMalformed' | 'pathPaymentStrictSendUnderfunded' | 'pathPaymentStrictSendSrcNoTrust' | 'pathPaymentStrictSendSrcNotAuthorized' | 'pathPaymentStrictSendNoDestination' | 'pathPaymentStrictSendNoTrust' | 'pathPaymentStrictSendNotAuthorized' | 'pathPaymentStrictSendLineFull' | 'pathPaymentStrictSendNoIssuer' | 'pathPaymentStrictSendTooFewOffers' | 'pathPaymentStrictSendOfferCrossSelf' | 'pathPaymentStrictSendUnderDestmin';
+    readonly name:
+      | 'pathPaymentStrictSendSuccess'
+      | 'pathPaymentStrictSendMalformed'
+      | 'pathPaymentStrictSendUnderfunded'
+      | 'pathPaymentStrictSendSrcNoTrust'
+      | 'pathPaymentStrictSendSrcNotAuthorized'
+      | 'pathPaymentStrictSendNoDestination'
+      | 'pathPaymentStrictSendNoTrust'
+      | 'pathPaymentStrictSendNotAuthorized'
+      | 'pathPaymentStrictSendLineFull'
+      | 'pathPaymentStrictSendNoIssuer'
+      | 'pathPaymentStrictSendTooFewOffers'
+      | 'pathPaymentStrictSendOfferCrossSelf'
+      | 'pathPaymentStrictSendUnderDestmin';
 
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10 | -11 | -12;
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
 
     static pathPaymentStrictSendSuccess(): PathPaymentStrictSendResultCode;
 
@@ -689,9 +873,35 @@ declare namespace xdr {
   }
 
   class ManageSellOfferResultCode {
-    readonly name: 'manageSellOfferSuccess' | 'manageSellOfferMalformed' | 'manageSellOfferSellNoTrust' | 'manageSellOfferBuyNoTrust' | 'manageSellOfferSellNotAuthorized' | 'manageSellOfferBuyNotAuthorized' | 'manageSellOfferLineFull' | 'manageSellOfferUnderfunded' | 'manageSellOfferCrossSelf' | 'manageSellOfferSellNoIssuer' | 'manageSellOfferBuyNoIssuer' | 'manageSellOfferNotFound' | 'manageSellOfferLowReserve';
+    readonly name:
+      | 'manageSellOfferSuccess'
+      | 'manageSellOfferMalformed'
+      | 'manageSellOfferSellNoTrust'
+      | 'manageSellOfferBuyNoTrust'
+      | 'manageSellOfferSellNotAuthorized'
+      | 'manageSellOfferBuyNotAuthorized'
+      | 'manageSellOfferLineFull'
+      | 'manageSellOfferUnderfunded'
+      | 'manageSellOfferCrossSelf'
+      | 'manageSellOfferSellNoIssuer'
+      | 'manageSellOfferBuyNoIssuer'
+      | 'manageSellOfferNotFound'
+      | 'manageSellOfferLowReserve';
 
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10 | -11 | -12;
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
 
     static manageSellOfferSuccess(): ManageSellOfferResultCode;
 
@@ -721,7 +931,10 @@ declare namespace xdr {
   }
 
   class ManageOfferEffect {
-    readonly name: 'manageOfferCreated' | 'manageOfferUpdated' | 'manageOfferDeleted';
+    readonly name:
+      | 'manageOfferCreated'
+      | 'manageOfferUpdated'
+      | 'manageOfferDeleted';
 
     readonly value: 0 | 1 | 2;
 
@@ -733,9 +946,35 @@ declare namespace xdr {
   }
 
   class ManageBuyOfferResultCode {
-    readonly name: 'manageBuyOfferSuccess' | 'manageBuyOfferMalformed' | 'manageBuyOfferSellNoTrust' | 'manageBuyOfferBuyNoTrust' | 'manageBuyOfferSellNotAuthorized' | 'manageBuyOfferBuyNotAuthorized' | 'manageBuyOfferLineFull' | 'manageBuyOfferUnderfunded' | 'manageBuyOfferCrossSelf' | 'manageBuyOfferSellNoIssuer' | 'manageBuyOfferBuyNoIssuer' | 'manageBuyOfferNotFound' | 'manageBuyOfferLowReserve';
+    readonly name:
+      | 'manageBuyOfferSuccess'
+      | 'manageBuyOfferMalformed'
+      | 'manageBuyOfferSellNoTrust'
+      | 'manageBuyOfferBuyNoTrust'
+      | 'manageBuyOfferSellNotAuthorized'
+      | 'manageBuyOfferBuyNotAuthorized'
+      | 'manageBuyOfferLineFull'
+      | 'manageBuyOfferUnderfunded'
+      | 'manageBuyOfferCrossSelf'
+      | 'manageBuyOfferSellNoIssuer'
+      | 'manageBuyOfferBuyNoIssuer'
+      | 'manageBuyOfferNotFound'
+      | 'manageBuyOfferLowReserve';
 
-    readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10 | -11 | -12;
+    readonly value:
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12;
 
     static manageBuyOfferSuccess(): ManageBuyOfferResultCode;
 
@@ -765,7 +1004,18 @@ declare namespace xdr {
   }
 
   class SetOptionsResultCode {
-    readonly name: 'setOptionsSuccess' | 'setOptionsLowReserve' | 'setOptionsTooManySigners' | 'setOptionsBadFlags' | 'setOptionsInvalidInflation' | 'setOptionsCantChange' | 'setOptionsUnknownFlag' | 'setOptionsThresholdOutOfRange' | 'setOptionsBadSigner' | 'setOptionsInvalidHomeDomain' | 'setOptionsAuthRevocableRequired';
+    readonly name:
+      | 'setOptionsSuccess'
+      | 'setOptionsLowReserve'
+      | 'setOptionsTooManySigners'
+      | 'setOptionsBadFlags'
+      | 'setOptionsInvalidInflation'
+      | 'setOptionsCantChange'
+      | 'setOptionsUnknownFlag'
+      | 'setOptionsThresholdOutOfRange'
+      | 'setOptionsBadSigner'
+      | 'setOptionsInvalidHomeDomain'
+      | 'setOptionsAuthRevocableRequired';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10;
 
@@ -793,7 +1043,13 @@ declare namespace xdr {
   }
 
   class ChangeTrustResultCode {
-    readonly name: 'changeTrustSuccess' | 'changeTrustMalformed' | 'changeTrustNoIssuer' | 'changeTrustInvalidLimit' | 'changeTrustLowReserve' | 'changeTrustSelfNotAllowed';
+    readonly name:
+      | 'changeTrustSuccess'
+      | 'changeTrustMalformed'
+      | 'changeTrustNoIssuer'
+      | 'changeTrustInvalidLimit'
+      | 'changeTrustLowReserve'
+      | 'changeTrustSelfNotAllowed';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -811,7 +1067,13 @@ declare namespace xdr {
   }
 
   class AllowTrustResultCode {
-    readonly name: 'allowTrustSuccess' | 'allowTrustMalformed' | 'allowTrustNoTrustLine' | 'allowTrustTrustNotRequired' | 'allowTrustCantRevoke' | 'allowTrustSelfNotAllowed';
+    readonly name:
+      | 'allowTrustSuccess'
+      | 'allowTrustMalformed'
+      | 'allowTrustNoTrustLine'
+      | 'allowTrustTrustNotRequired'
+      | 'allowTrustCantRevoke'
+      | 'allowTrustSelfNotAllowed';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -829,7 +1091,15 @@ declare namespace xdr {
   }
 
   class AccountMergeResultCode {
-    readonly name: 'accountMergeSuccess' | 'accountMergeMalformed' | 'accountMergeNoAccount' | 'accountMergeImmutableSet' | 'accountMergeHasSubEntries' | 'accountMergeSeqnumTooFar' | 'accountMergeDestFull' | 'accountMergeIsSponsor';
+    readonly name:
+      | 'accountMergeSuccess'
+      | 'accountMergeMalformed'
+      | 'accountMergeNoAccount'
+      | 'accountMergeImmutableSet'
+      | 'accountMergeHasSubEntries'
+      | 'accountMergeSeqnumTooFar'
+      | 'accountMergeDestFull'
+      | 'accountMergeIsSponsor';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7;
 
@@ -861,7 +1131,12 @@ declare namespace xdr {
   }
 
   class ManageDataResultCode {
-    readonly name: 'manageDataSuccess' | 'manageDataNotSupportedYet' | 'manageDataNameNotFound' | 'manageDataLowReserve' | 'manageDataInvalidName';
+    readonly name:
+      | 'manageDataSuccess'
+      | 'manageDataNotSupportedYet'
+      | 'manageDataNameNotFound'
+      | 'manageDataLowReserve'
+      | 'manageDataInvalidName';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -887,7 +1162,13 @@ declare namespace xdr {
   }
 
   class CreateClaimableBalanceResultCode {
-    readonly name: 'createClaimableBalanceSuccess' | 'createClaimableBalanceMalformed' | 'createClaimableBalanceLowReserve' | 'createClaimableBalanceNoTrust' | 'createClaimableBalanceNotAuthorized' | 'createClaimableBalanceUnderfunded';
+    readonly name:
+      | 'createClaimableBalanceSuccess'
+      | 'createClaimableBalanceMalformed'
+      | 'createClaimableBalanceLowReserve'
+      | 'createClaimableBalanceNoTrust'
+      | 'createClaimableBalanceNotAuthorized'
+      | 'createClaimableBalanceUnderfunded';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -905,7 +1186,13 @@ declare namespace xdr {
   }
 
   class ClaimClaimableBalanceResultCode {
-    readonly name: 'claimClaimableBalanceSuccess' | 'claimClaimableBalanceDoesNotExist' | 'claimClaimableBalanceCannotClaim' | 'claimClaimableBalanceLineFull' | 'claimClaimableBalanceNoTrust' | 'claimClaimableBalanceNotAuthorized';
+    readonly name:
+      | 'claimClaimableBalanceSuccess'
+      | 'claimClaimableBalanceDoesNotExist'
+      | 'claimClaimableBalanceCannotClaim'
+      | 'claimClaimableBalanceLineFull'
+      | 'claimClaimableBalanceNoTrust'
+      | 'claimClaimableBalanceNotAuthorized';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -923,7 +1210,11 @@ declare namespace xdr {
   }
 
   class BeginSponsoringFutureReservesResultCode {
-    readonly name: 'beginSponsoringFutureReservesSuccess' | 'beginSponsoringFutureReservesMalformed' | 'beginSponsoringFutureReservesAlreadySponsored' | 'beginSponsoringFutureReservesRecursive';
+    readonly name:
+      | 'beginSponsoringFutureReservesSuccess'
+      | 'beginSponsoringFutureReservesMalformed'
+      | 'beginSponsoringFutureReservesAlreadySponsored'
+      | 'beginSponsoringFutureReservesRecursive';
 
     readonly value: 0 | -1 | -2 | -3;
 
@@ -937,7 +1228,9 @@ declare namespace xdr {
   }
 
   class EndSponsoringFutureReservesResultCode {
-    readonly name: 'endSponsoringFutureReservesSuccess' | 'endSponsoringFutureReservesNotSponsored';
+    readonly name:
+      | 'endSponsoringFutureReservesSuccess'
+      | 'endSponsoringFutureReservesNotSponsored';
 
     readonly value: 0 | -1;
 
@@ -947,7 +1240,12 @@ declare namespace xdr {
   }
 
   class RevokeSponsorshipResultCode {
-    readonly name: 'revokeSponsorshipSuccess' | 'revokeSponsorshipDoesNotExist' | 'revokeSponsorshipNotSponsor' | 'revokeSponsorshipLowReserve' | 'revokeSponsorshipOnlyTransferable';
+    readonly name:
+      | 'revokeSponsorshipSuccess'
+      | 'revokeSponsorshipDoesNotExist'
+      | 'revokeSponsorshipNotSponsor'
+      | 'revokeSponsorshipLowReserve'
+      | 'revokeSponsorshipOnlyTransferable';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -963,7 +1261,12 @@ declare namespace xdr {
   }
 
   class ClawbackResultCode {
-    readonly name: 'clawbackSuccess' | 'clawbackMalformed' | 'clawbackNotClawbackEnabled' | 'clawbackNoTrust' | 'clawbackUnderfunded';
+    readonly name:
+      | 'clawbackSuccess'
+      | 'clawbackMalformed'
+      | 'clawbackNotClawbackEnabled'
+      | 'clawbackNoTrust'
+      | 'clawbackUnderfunded';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -979,7 +1282,11 @@ declare namespace xdr {
   }
 
   class ClawbackClaimableBalanceResultCode {
-    readonly name: 'clawbackClaimableBalanceSuccess' | 'clawbackClaimableBalanceDoesNotExist' | 'clawbackClaimableBalanceNotIssuer' | 'clawbackClaimableBalanceNotClawbackEnabled';
+    readonly name:
+      | 'clawbackClaimableBalanceSuccess'
+      | 'clawbackClaimableBalanceDoesNotExist'
+      | 'clawbackClaimableBalanceNotIssuer'
+      | 'clawbackClaimableBalanceNotClawbackEnabled';
 
     readonly value: 0 | -1 | -2 | -3;
 
@@ -993,7 +1300,14 @@ declare namespace xdr {
   }
 
   class OperationResultCode {
-    readonly name: 'opInner' | 'opBadAuth' | 'opNoAccount' | 'opNotSupported' | 'opTooManySubentries' | 'opExceededWorkLimit' | 'opTooManySponsoring';
+    readonly name:
+      | 'opInner'
+      | 'opBadAuth'
+      | 'opNoAccount'
+      | 'opNotSupported'
+      | 'opTooManySubentries'
+      | 'opExceededWorkLimit'
+      | 'opTooManySponsoring';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
 
@@ -1013,9 +1327,41 @@ declare namespace xdr {
   }
 
   class TransactionResultCode {
-    readonly name: 'txFeeBumpInnerSuccess' | 'txSuccess' | 'txFailed' | 'txTooEarly' | 'txTooLate' | 'txMissingOperation' | 'txBadSeq' | 'txBadAuth' | 'txInsufficientBalance' | 'txNoAccount' | 'txInsufficientFee' | 'txBadAuthExtra' | 'txInternalError' | 'txNotSupported' | 'txFeeBumpInnerFailed' | 'txBadSponsorship';
+    readonly name:
+      | 'txFeeBumpInnerSuccess'
+      | 'txSuccess'
+      | 'txFailed'
+      | 'txTooEarly'
+      | 'txTooLate'
+      | 'txMissingOperation'
+      | 'txBadSeq'
+      | 'txBadAuth'
+      | 'txInsufficientBalance'
+      | 'txNoAccount'
+      | 'txInsufficientFee'
+      | 'txBadAuthExtra'
+      | 'txInternalError'
+      | 'txNotSupported'
+      | 'txFeeBumpInnerFailed'
+      | 'txBadSponsorship';
 
-    readonly value: 1 | 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10 | -11 | -12 | -13 | -14;
+    readonly value:
+      | 1
+      | 0
+      | -1
+      | -2
+      | -3
+      | -4
+      | -5
+      | -6
+      | -7
+      | -8
+      | -9
+      | -10
+      | -11
+      | -12
+      | -13
+      | -14;
 
     static txFeeBumpInnerSuccess(): TransactionResultCode;
 
@@ -1051,7 +1397,11 @@ declare namespace xdr {
   }
 
   class CryptoKeyType {
-    readonly name: 'keyTypeEd25519' | 'keyTypePreAuthTx' | 'keyTypeHashX' | 'keyTypeMuxedEd25519';
+    readonly name:
+      | 'keyTypeEd25519'
+      | 'keyTypePreAuthTx'
+      | 'keyTypeHashX'
+      | 'keyTypeMuxedEd25519';
 
     readonly value: 0 | 1 | 2 | 256;
 
@@ -1073,7 +1423,10 @@ declare namespace xdr {
   }
 
   class SignerKeyType {
-    readonly name: 'signerKeyTypeEd25519' | 'signerKeyTypePreAuthTx' | 'signerKeyTypeHashX';
+    readonly name:
+      | 'signerKeyTypeEd25519'
+      | 'signerKeyTypePreAuthTx'
+      | 'signerKeyTypeHashX';
 
     readonly value: 0 | 1 | 2;
 
@@ -1122,11 +1475,9 @@ declare namespace xdr {
 
   const Int32: SignedInt;
 
-  class Uint64 extends UnsignedHyper {
-  }
+  class Uint64 extends UnsignedHyper {}
 
-  class Int64 extends Hyper {
-  }
+  class Int64 extends Hyper {}
 
   const Signature: VarOpaque;
 
@@ -1135,10 +1486,7 @@ declare namespace xdr {
   type NodeId = PublicKey;
 
   class AssetAlphaNum4 {
-    constructor(attributes: {
-      assetCode: Buffer;
-      issuer: AccountId;
-    });
+    constructor(attributes: { assetCode: Buffer; issuer: AccountId });
 
     assetCode(value?: Buffer): Buffer;
 
@@ -1166,10 +1514,7 @@ declare namespace xdr {
   }
 
   class AssetAlphaNum12 {
-    constructor(attributes: {
-      assetCode: Buffer;
-      issuer: AccountId;
-    });
+    constructor(attributes: { assetCode: Buffer; issuer: AccountId });
 
     assetCode(value?: Buffer): Buffer;
 
@@ -1197,10 +1542,7 @@ declare namespace xdr {
   }
 
   class Price {
-    constructor(attributes: {
-      n: number;
-      d: number;
-    });
+    constructor(attributes: { n: number; d: number });
 
     n(value?: number): number;
 
@@ -1228,10 +1570,7 @@ declare namespace xdr {
   }
 
   class Liabilities {
-    constructor(attributes: {
-      buying: Int64;
-      selling: Int64;
-    });
+    constructor(attributes: { buying: Int64; selling: Int64 });
 
     buying(value?: Int64): Int64;
 
@@ -1259,10 +1598,7 @@ declare namespace xdr {
   }
 
   class Signer {
-    constructor(attributes: {
-      key: SignerKey;
-      weight: number;
-    });
+    constructor(attributes: { key: SignerKey; weight: number });
 
     key(value?: SignerKey): SignerKey;
 
@@ -1301,7 +1637,9 @@ declare namespace xdr {
 
     numSponsoring(value?: number): number;
 
-    signerSponsoringIDs(value?: SponsorshipDescriptor[]): SponsorshipDescriptor[];
+    signerSponsoringIDs(
+      value?: SponsorshipDescriptor[]
+    ): SponsorshipDescriptor[];
 
     ext(value?: AccountEntryExtensionV2Ext): AccountEntryExtensionV2Ext;
 
@@ -1319,7 +1657,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV2;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryExtensionV2;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV2;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -1350,7 +1691,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV1;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryExtensionV1;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -1609,7 +1953,9 @@ declare namespace xdr {
       flags: number;
     });
 
-    ext(value?: ClaimableBalanceEntryExtensionV1Ext): ClaimableBalanceEntryExtensionV1Ext;
+    ext(
+      value?: ClaimableBalanceEntryExtensionV1Ext
+    ): ClaimableBalanceEntryExtensionV1Ext;
 
     flags(value?: number): number;
 
@@ -1625,9 +1971,15 @@ declare namespace xdr {
 
     static toXDR(value: ClaimableBalanceEntryExtensionV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntryExtensionV1;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ClaimableBalanceEntryExtensionV1;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimableBalanceEntryExtensionV1;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimableBalanceEntryExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -1667,7 +2019,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntry;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimableBalanceEntry;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimableBalanceEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -1698,7 +2053,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExtensionV1;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryExtensionV1;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerEntryExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -1740,9 +2098,7 @@ declare namespace xdr {
   }
 
   class LedgerKeyAccount {
-    constructor(attributes: {
-      accountId: AccountId;
-    });
+    constructor(attributes: { accountId: AccountId });
 
     accountId(value?: AccountId): AccountId;
 
@@ -1768,10 +2124,7 @@ declare namespace xdr {
   }
 
   class LedgerKeyTrustLine {
-    constructor(attributes: {
-      accountId: AccountId;
-      asset: Asset;
-    });
+    constructor(attributes: { accountId: AccountId; asset: Asset });
 
     accountId(value?: AccountId): AccountId;
 
@@ -1799,10 +2152,7 @@ declare namespace xdr {
   }
 
   class LedgerKeyOffer {
-    constructor(attributes: {
-      sellerId: AccountId;
-      offerId: Int64;
-    });
+    constructor(attributes: { sellerId: AccountId; offerId: Int64 });
 
     sellerId(value?: AccountId): AccountId;
 
@@ -1861,9 +2211,7 @@ declare namespace xdr {
   }
 
   class LedgerKeyClaimableBalance {
-    constructor(attributes: {
-      balanceId: ClaimableBalanceId;
-    });
+    constructor(attributes: { balanceId: ClaimableBalanceId });
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
@@ -1881,7 +2229,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyClaimableBalance;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyClaimableBalance;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerKeyClaimableBalance;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -1889,10 +2240,7 @@ declare namespace xdr {
   }
 
   class LedgerCloseValueSignature {
-    constructor(attributes: {
-      nodeId: NodeId;
-      signature: Buffer;
-    });
+    constructor(attributes: { nodeId: NodeId; signature: Buffer });
 
     nodeId(value?: NodeId): NodeId;
 
@@ -1912,7 +2260,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseValueSignature;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseValueSignature;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerCloseValueSignature;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2027,10 +2378,7 @@ declare namespace xdr {
   }
 
   class BucketMetadata {
-    constructor(attributes: {
-      ledgerVersion: number;
-      ext: BucketMetadataExt;
-    });
+    constructor(attributes: { ledgerVersion: number; ext: BucketMetadataExt });
 
     ledgerVersion(value?: number): number;
 
@@ -2112,7 +2460,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResultPair;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResultPair;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultPair;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2120,9 +2471,7 @@ declare namespace xdr {
   }
 
   class TransactionResultSet {
-    constructor(attributes: {
-      results: TransactionResultPair[];
-    });
+    constructor(attributes: { results: TransactionResultPair[] });
 
     results(value?: TransactionResultPair[]): TransactionResultPair[];
 
@@ -2140,7 +2489,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResultSet;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResultSet;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultSet;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2174,7 +2526,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryEntry;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionHistoryEntry;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2192,7 +2547,9 @@ declare namespace xdr {
 
     txResultSet(value?: TransactionResultSet): TransactionResultSet;
 
-    ext(value?: TransactionHistoryResultEntryExt): TransactionHistoryResultEntryExt;
+    ext(
+      value?: TransactionHistoryResultEntryExt
+    ): TransactionHistoryResultEntryExt;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -2206,9 +2563,15 @@ declare namespace xdr {
 
     static toXDR(value: TransactionHistoryResultEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryResultEntry;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): TransactionHistoryResultEntry;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionHistoryResultEntry;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryResultEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2242,7 +2605,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderHistoryEntry;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeaderHistoryEntry;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerHeaderHistoryEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2250,10 +2616,7 @@ declare namespace xdr {
   }
 
   class LedgerScpMessages {
-    constructor(attributes: {
-      ledgerSeq: number;
-      messages: ScpEnvelope[];
-    });
+    constructor(attributes: { ledgerSeq: number; messages: ScpEnvelope[] });
 
     ledgerSeq(value?: number): number;
 
@@ -2312,9 +2675,7 @@ declare namespace xdr {
   }
 
   class OperationMeta {
-    constructor(attributes: {
-      changes: LedgerEntryChange[];
-    });
+    constructor(attributes: { changes: LedgerEntryChange[] });
 
     changes(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
@@ -2431,7 +2792,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResultMeta;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResultMeta;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultMeta;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2510,10 +2874,7 @@ declare namespace xdr {
   }
 
   class Error {
-    constructor(attributes: {
-      code: ErrorCode;
-      msg: string | Buffer;
-    });
+    constructor(attributes: { code: ErrorCode; msg: string | Buffer });
 
     code(value?: ErrorCode): ErrorCode;
 
@@ -2627,9 +2988,7 @@ declare namespace xdr {
   }
 
   class Auth {
-    constructor(attributes: {
-      unused: number;
-    });
+    constructor(attributes: { unused: number });
 
     unused(value?: number): number;
 
@@ -2689,10 +3048,7 @@ declare namespace xdr {
   }
 
   class DontHave {
-    constructor(attributes: {
-      type: MessageType;
-      reqHash: Buffer;
-    });
+    constructor(attributes: { type: MessageType; reqHash: Buffer });
 
     type(value?: MessageType): MessageType;
 
@@ -2752,7 +3108,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): SurveyRequestMessage;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): SurveyRequestMessage;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SurveyRequestMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2783,7 +3142,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): SignedSurveyRequestMessage;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): SignedSurveyRequestMessage;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SignedSurveyRequestMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2823,7 +3185,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): SurveyResponseMessage;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): SurveyResponseMessage;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SurveyResponseMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2854,7 +3219,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): SignedSurveyResponseMessage;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): SignedSurveyResponseMessage;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SignedSurveyResponseMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2961,7 +3329,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TopologyResponseBody;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TopologyResponseBody;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TopologyResponseBody;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -2995,7 +3366,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): AuthenticatedMessageV0;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AuthenticatedMessageV0;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AuthenticatedMessageV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3003,10 +3377,7 @@ declare namespace xdr {
   }
 
   class ScpBallot {
-    constructor(attributes: {
-      counter: number;
-      value: Buffer;
-    });
+    constructor(attributes: { counter: number; value: Buffer });
 
     counter(value?: number): number;
 
@@ -3103,7 +3474,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ScpStatementPrepare;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatementPrepare;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementPrepare;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3143,7 +3517,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ScpStatementConfirm;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatementConfirm;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementConfirm;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3177,7 +3554,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ScpStatementExternalize;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatementExternalize;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementExternalize;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3219,10 +3599,7 @@ declare namespace xdr {
   }
 
   class ScpEnvelope {
-    constructor(attributes: {
-      statement: ScpStatement;
-      signature: Buffer;
-    });
+    constructor(attributes: { statement: ScpStatement; signature: Buffer });
 
     statement(value?: ScpStatement): ScpStatement;
 
@@ -3284,10 +3661,7 @@ declare namespace xdr {
   }
 
   class MuxedAccountMed25519 {
-    constructor(attributes: {
-      id: Uint64;
-      ed25519: Buffer;
-    });
+    constructor(attributes: { id: Uint64; ed25519: Buffer });
 
     id(value?: Uint64): Uint64;
 
@@ -3307,7 +3681,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): MuxedAccountMed25519;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): MuxedAccountMed25519;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): MuxedAccountMed25519;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3315,10 +3692,7 @@ declare namespace xdr {
   }
 
   class DecoratedSignature {
-    constructor(attributes: {
-      hint: Buffer;
-      signature: Buffer;
-    });
+    constructor(attributes: { hint: Buffer; signature: Buffer });
 
     hint(value?: Buffer): Buffer;
 
@@ -3346,10 +3720,7 @@ declare namespace xdr {
   }
 
   class CreateAccountOp {
-    constructor(attributes: {
-      destination: AccountId;
-      startingBalance: Int64;
-    });
+    constructor(attributes: { destination: AccountId; startingBalance: Int64 });
 
     destination(value?: AccountId): AccountId;
 
@@ -3446,7 +3817,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictReceiveOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): PathPaymentStrictReceiveOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictReceiveOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3489,7 +3863,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictSendOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): PathPaymentStrictSendOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictSendOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3606,7 +3983,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): CreatePassiveSellOfferOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): CreatePassiveSellOfferOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): CreatePassiveSellOfferOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3666,10 +4046,7 @@ declare namespace xdr {
   }
 
   class ChangeTrustOp {
-    constructor(attributes: {
-      line: Asset;
-      limit: Int64;
-    });
+    constructor(attributes: { line: Asset; limit: Int64 });
 
     line(value?: Asset): Asset;
 
@@ -3762,9 +4139,7 @@ declare namespace xdr {
   }
 
   class BumpSequenceOp {
-    constructor(attributes: {
-      bumpTo: SequenceNumber;
-    });
+    constructor(attributes: { bumpTo: SequenceNumber });
 
     bumpTo(value?: SequenceNumber): SequenceNumber;
 
@@ -3816,7 +4191,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): CreateClaimableBalanceOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): CreateClaimableBalanceOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): CreateClaimableBalanceOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3824,9 +4202,7 @@ declare namespace xdr {
   }
 
   class ClaimClaimableBalanceOp {
-    constructor(attributes: {
-      balanceId: ClaimableBalanceId;
-    });
+    constructor(attributes: { balanceId: ClaimableBalanceId });
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
@@ -3844,7 +4220,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ClaimClaimableBalanceOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimClaimableBalanceOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimClaimableBalanceOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3852,9 +4231,7 @@ declare namespace xdr {
   }
 
   class BeginSponsoringFutureReservesOp {
-    constructor(attributes: {
-      sponsoredId: AccountId;
-    });
+    constructor(attributes: { sponsoredId: AccountId });
 
     sponsoredId(value?: AccountId): AccountId;
 
@@ -3870,9 +4247,15 @@ declare namespace xdr {
 
     static toXDR(value: BeginSponsoringFutureReservesOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): BeginSponsoringFutureReservesOp;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): BeginSponsoringFutureReservesOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): BeginSponsoringFutureReservesOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): BeginSponsoringFutureReservesOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3880,10 +4263,7 @@ declare namespace xdr {
   }
 
   class RevokeSponsorshipOpSigner {
-    constructor(attributes: {
-      accountId: AccountId;
-      signerKey: SignerKey;
-    });
+    constructor(attributes: { accountId: AccountId; signerKey: SignerKey });
 
     accountId(value?: AccountId): AccountId;
 
@@ -3903,7 +4283,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipOpSigner;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): RevokeSponsorshipOpSigner;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): RevokeSponsorshipOpSigner;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3945,9 +4328,7 @@ declare namespace xdr {
   }
 
   class ClawbackClaimableBalanceOp {
-    constructor(attributes: {
-      balanceId: ClaimableBalanceId;
-    });
+    constructor(attributes: { balanceId: ClaimableBalanceId });
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
@@ -3965,7 +4346,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ClawbackClaimableBalanceOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClawbackClaimableBalanceOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClawbackClaimableBalanceOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4007,10 +4391,7 @@ declare namespace xdr {
   }
 
   class TimeBounds {
-    constructor(attributes: {
-      minTime: TimePoint;
-      maxTime: TimePoint;
-    });
+    constructor(attributes: { minTime: TimePoint; maxTime: TimePoint });
 
     minTime(value?: TimePoint): TimePoint;
 
@@ -4107,7 +4488,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionV0Envelope;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV0Envelope;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionV0Envelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4184,7 +4568,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionV1Envelope;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV1Envelope;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionV1Envelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4252,7 +4639,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): FeeBumpTransactionEnvelope;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): FeeBumpTransactionEnvelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4267,7 +4657,9 @@ declare namespace xdr {
 
     networkId(value?: Buffer): Buffer;
 
-    taggedTransaction(value?: TransactionSignaturePayloadTaggedTransaction): TransactionSignaturePayloadTaggedTransaction;
+    taggedTransaction(
+      value?: TransactionSignaturePayloadTaggedTransaction
+    ): TransactionSignaturePayloadTaggedTransaction;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4283,7 +4675,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionSignaturePayload;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionSignaturePayload;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionSignaturePayload;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4360,7 +4755,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): SimplePaymentResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): SimplePaymentResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SimplePaymentResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4383,15 +4781,24 @@ declare namespace xdr {
 
     static read(io: Buffer): PathPaymentStrictReceiveResultSuccess;
 
-    static write(value: PathPaymentStrictReceiveResultSuccess, io: Buffer): void;
+    static write(
+      value: PathPaymentStrictReceiveResultSuccess,
+      io: Buffer
+    ): void;
 
     static isValid(value: PathPaymentStrictReceiveResultSuccess): boolean;
 
     static toXDR(value: PathPaymentStrictReceiveResultSuccess): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictReceiveResultSuccess;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): PathPaymentStrictReceiveResultSuccess;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): PathPaymentStrictReceiveResultSuccess;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictReceiveResultSuccess;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4420,9 +4827,15 @@ declare namespace xdr {
 
     static toXDR(value: PathPaymentStrictSendResultSuccess): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictSendResultSuccess;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): PathPaymentStrictSendResultSuccess;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): PathPaymentStrictSendResultSuccess;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictSendResultSuccess;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4453,7 +4866,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ManageOfferSuccessResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ManageOfferSuccessResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ManageOfferSuccessResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4461,10 +4877,7 @@ declare namespace xdr {
   }
 
   class InflationPayout {
-    constructor(attributes: {
-      destination: AccountId;
-      amount: Int64;
-    });
+    constructor(attributes: { destination: AccountId; amount: Int64 });
 
     destination(value?: AccountId): AccountId;
 
@@ -4518,7 +4931,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): InnerTransactionResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): InnerTransactionResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4549,7 +4965,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultPair;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): InnerTransactionResultPair;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): InnerTransactionResultPair;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4591,9 +5010,7 @@ declare namespace xdr {
   }
 
   class Curve25519Secret {
-    constructor(attributes: {
-      key: Buffer;
-    });
+    constructor(attributes: { key: Buffer });
 
     key(value?: Buffer): Buffer;
 
@@ -4619,9 +5036,7 @@ declare namespace xdr {
   }
 
   class Curve25519Public {
-    constructor(attributes: {
-      key: Buffer;
-    });
+    constructor(attributes: { key: Buffer });
 
     key(value?: Buffer): Buffer;
 
@@ -4647,9 +5062,7 @@ declare namespace xdr {
   }
 
   class HmacSha256Key {
-    constructor(attributes: {
-      key: Buffer;
-    });
+    constructor(attributes: { key: Buffer });
 
     key(value?: Buffer): Buffer;
 
@@ -4675,9 +5088,7 @@ declare namespace xdr {
   }
 
   class HmacSha256Mac {
-    constructor(attributes: {
-      mac: Buffer;
-    });
+    constructor(attributes: { mac: Buffer });
 
     mac(value?: Buffer): Buffer;
 
@@ -4793,7 +5204,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV2Ext;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryExtensionV2Ext;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV2Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4825,7 +5239,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV1Ext;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryExtensionV1Ext;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4885,7 +5302,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryV1Ext;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntryV1Ext;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TrustLineEntryV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5005,7 +5425,14 @@ declare namespace xdr {
 
     static claimPredicateBeforeRelativeTime(value: Int64): ClaimPredicate;
 
-    value(): ClaimPredicate[] | ClaimPredicate[] | null | ClaimPredicate | Int64 | Int64 | void;
+    value():
+      | ClaimPredicate[]
+      | ClaimPredicate[]
+      | null
+      | ClaimPredicate
+      | Int64
+      | Int64
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5107,9 +5534,15 @@ declare namespace xdr {
 
     static toXDR(value: ClaimableBalanceEntryExtensionV1Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntryExtensionV1Ext;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ClaimableBalanceEntryExtensionV1Ext;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimableBalanceEntryExtensionV1Ext;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimableBalanceEntryExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5119,7 +5552,9 @@ declare namespace xdr {
   class ClaimableBalanceEntryExt {
     switch(): number;
 
-    v1(value?: ClaimableBalanceEntryExtensionV1): ClaimableBalanceEntryExtensionV1;
+    v1(
+      value?: ClaimableBalanceEntryExtensionV1
+    ): ClaimableBalanceEntryExtensionV1;
 
     static 0(): ClaimableBalanceEntryExt;
 
@@ -5141,7 +5576,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntryExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimableBalanceEntryExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimableBalanceEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5169,7 +5607,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExtensionV1Ext;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryExtensionV1Ext;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerEntryExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5199,7 +5640,12 @@ declare namespace xdr {
 
     static claimableBalance(value: ClaimableBalanceEntry): LedgerEntryData;
 
-    value(): AccountEntry | TrustLineEntry | OfferEntry | DataEntry | ClaimableBalanceEntry;
+    value():
+      | AccountEntry
+      | TrustLineEntry
+      | OfferEntry
+      | DataEntry
+      | ClaimableBalanceEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5265,7 +5711,9 @@ declare namespace xdr {
 
     data(value?: LedgerKeyData): LedgerKeyData;
 
-    claimableBalance(value?: LedgerKeyClaimableBalance): LedgerKeyClaimableBalance;
+    claimableBalance(
+      value?: LedgerKeyClaimableBalance
+    ): LedgerKeyClaimableBalance;
 
     static account(value: LedgerKeyAccount): LedgerKey;
 
@@ -5277,7 +5725,12 @@ declare namespace xdr {
 
     static claimableBalance(value: LedgerKeyClaimableBalance): LedgerKey;
 
-    value(): LedgerKeyAccount | LedgerKeyTrustLine | LedgerKeyOffer | LedgerKeyData | LedgerKeyClaimableBalance;
+    value():
+      | LedgerKeyAccount
+      | LedgerKeyTrustLine
+      | LedgerKeyOffer
+      | LedgerKeyData
+      | LedgerKeyClaimableBalance;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5303,11 +5756,15 @@ declare namespace xdr {
   class StellarValueExt {
     switch(): StellarValueType;
 
-    lcValueSignature(value?: LedgerCloseValueSignature): LedgerCloseValueSignature;
+    lcValueSignature(
+      value?: LedgerCloseValueSignature
+    ): LedgerCloseValueSignature;
 
     static stellarValueBasic(): StellarValueExt;
 
-    static stellarValueSigned(value: LedgerCloseValueSignature): StellarValueExt;
+    static stellarValueSigned(
+      value: LedgerCloseValueSignature
+    ): StellarValueExt;
 
     value(): LedgerCloseValueSignature | void;
 
@@ -5491,7 +5948,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryEntryExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionHistoryEntryExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5517,9 +5977,15 @@ declare namespace xdr {
 
     static toXDR(value: TransactionHistoryResultEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryResultEntryExt;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): TransactionHistoryResultEntryExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionHistoryResultEntryExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryResultEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5547,7 +6013,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderHistoryEntryExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeaderHistoryEntryExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): LedgerHeaderHistoryEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5777,9 +6246,13 @@ declare namespace xdr {
 
     transaction(value?: TransactionEnvelope): TransactionEnvelope;
 
-    signedSurveyRequestMessage(value?: SignedSurveyRequestMessage): SignedSurveyRequestMessage;
+    signedSurveyRequestMessage(
+      value?: SignedSurveyRequestMessage
+    ): SignedSurveyRequestMessage;
 
-    signedSurveyResponseMessage(value?: SignedSurveyResponseMessage): SignedSurveyResponseMessage;
+    signedSurveyResponseMessage(
+      value?: SignedSurveyResponseMessage
+    ): SignedSurveyResponseMessage;
 
     qSetHash(value?: Buffer): Buffer;
 
@@ -5819,7 +6292,22 @@ declare namespace xdr {
 
     static getScpState(value: number): StellarMessage;
 
-    value(): Error | Hello | Auth | DontHave | PeerAddress[] | Buffer | TransactionSet | TransactionEnvelope | SignedSurveyRequestMessage | SignedSurveyResponseMessage | Buffer | ScpQuorumSet | ScpEnvelope | number | void;
+    value():
+      | Error
+      | Hello
+      | Auth
+      | DontHave
+      | PeerAddress[]
+      | Buffer
+      | TransactionSet
+      | TransactionEnvelope
+      | SignedSurveyRequestMessage
+      | SignedSurveyResponseMessage
+      | Buffer
+      | ScpQuorumSet
+      | ScpEnvelope
+      | number
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5865,7 +6353,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): AuthenticatedMessage;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): AuthenticatedMessage;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AuthenticatedMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5887,11 +6378,17 @@ declare namespace xdr {
 
     static scpStConfirm(value: ScpStatementConfirm): ScpStatementPledges;
 
-    static scpStExternalize(value: ScpStatementExternalize): ScpStatementPledges;
+    static scpStExternalize(
+      value: ScpStatementExternalize
+    ): ScpStatementPledges;
 
     static scpStNominate(value: ScpNomination): ScpStatementPledges;
 
-    value(): ScpStatementPrepare | ScpStatementConfirm | ScpStatementExternalize | ScpNomination;
+    value():
+      | ScpStatementPrepare
+      | ScpStatementConfirm
+      | ScpStatementExternalize
+      | ScpNomination;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5907,7 +6404,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ScpStatementPledges;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatementPledges;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScpStatementPledges;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5957,7 +6457,9 @@ declare namespace xdr {
 
     static revokeSponsorshipLedgerEntry(value: LedgerKey): RevokeSponsorshipOp;
 
-    static revokeSponsorshipSigner(value: RevokeSponsorshipOpSigner): RevokeSponsorshipOp;
+    static revokeSponsorshipSigner(
+      value: RevokeSponsorshipOpSigner
+    ): RevokeSponsorshipOp;
 
     value(): LedgerKey | RevokeSponsorshipOpSigner;
 
@@ -5975,7 +6477,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipOp;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): RevokeSponsorshipOp;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): RevokeSponsorshipOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5989,11 +6494,15 @@ declare namespace xdr {
 
     paymentOp(value?: PaymentOp): PaymentOp;
 
-    pathPaymentStrictReceiveOp(value?: PathPaymentStrictReceiveOp): PathPaymentStrictReceiveOp;
+    pathPaymentStrictReceiveOp(
+      value?: PathPaymentStrictReceiveOp
+    ): PathPaymentStrictReceiveOp;
 
     manageSellOfferOp(value?: ManageSellOfferOp): ManageSellOfferOp;
 
-    createPassiveSellOfferOp(value?: CreatePassiveSellOfferOp): CreatePassiveSellOfferOp;
+    createPassiveSellOfferOp(
+      value?: CreatePassiveSellOfferOp
+    ): CreatePassiveSellOfferOp;
 
     setOptionsOp(value?: SetOptionsOp): SetOptionsOp;
 
@@ -6009,29 +6518,43 @@ declare namespace xdr {
 
     manageBuyOfferOp(value?: ManageBuyOfferOp): ManageBuyOfferOp;
 
-    pathPaymentStrictSendOp(value?: PathPaymentStrictSendOp): PathPaymentStrictSendOp;
+    pathPaymentStrictSendOp(
+      value?: PathPaymentStrictSendOp
+    ): PathPaymentStrictSendOp;
 
-    createClaimableBalanceOp(value?: CreateClaimableBalanceOp): CreateClaimableBalanceOp;
+    createClaimableBalanceOp(
+      value?: CreateClaimableBalanceOp
+    ): CreateClaimableBalanceOp;
 
-    claimClaimableBalanceOp(value?: ClaimClaimableBalanceOp): ClaimClaimableBalanceOp;
+    claimClaimableBalanceOp(
+      value?: ClaimClaimableBalanceOp
+    ): ClaimClaimableBalanceOp;
 
-    beginSponsoringFutureReservesOp(value?: BeginSponsoringFutureReservesOp): BeginSponsoringFutureReservesOp;
+    beginSponsoringFutureReservesOp(
+      value?: BeginSponsoringFutureReservesOp
+    ): BeginSponsoringFutureReservesOp;
 
     revokeSponsorshipOp(value?: RevokeSponsorshipOp): RevokeSponsorshipOp;
 
     clawbackOp(value?: ClawbackOp): ClawbackOp;
 
-    clawbackClaimableBalanceOp(value?: ClawbackClaimableBalanceOp): ClawbackClaimableBalanceOp;
+    clawbackClaimableBalanceOp(
+      value?: ClawbackClaimableBalanceOp
+    ): ClawbackClaimableBalanceOp;
 
     static createAccount(value: CreateAccountOp): OperationBody;
 
     static payment(value: PaymentOp): OperationBody;
 
-    static pathPaymentStrictReceive(value: PathPaymentStrictReceiveOp): OperationBody;
+    static pathPaymentStrictReceive(
+      value: PathPaymentStrictReceiveOp
+    ): OperationBody;
 
     static manageSellOffer(value: ManageSellOfferOp): OperationBody;
 
-    static createPassiveSellOffer(value: CreatePassiveSellOfferOp): OperationBody;
+    static createPassiveSellOffer(
+      value: CreatePassiveSellOfferOp
+    ): OperationBody;
 
     static setOptions(value: SetOptionsOp): OperationBody;
 
@@ -6051,11 +6574,15 @@ declare namespace xdr {
 
     static pathPaymentStrictSend(value: PathPaymentStrictSendOp): OperationBody;
 
-    static createClaimableBalance(value: CreateClaimableBalanceOp): OperationBody;
+    static createClaimableBalance(
+      value: CreateClaimableBalanceOp
+    ): OperationBody;
 
     static claimClaimableBalance(value: ClaimClaimableBalanceOp): OperationBody;
 
-    static beginSponsoringFutureReserves(value: BeginSponsoringFutureReservesOp): OperationBody;
+    static beginSponsoringFutureReserves(
+      value: BeginSponsoringFutureReservesOp
+    ): OperationBody;
 
     static endSponsoringFutureReserves(): OperationBody;
 
@@ -6063,9 +6590,31 @@ declare namespace xdr {
 
     static clawback(value: ClawbackOp): OperationBody;
 
-    static clawbackClaimableBalance(value: ClawbackClaimableBalanceOp): OperationBody;
+    static clawbackClaimableBalance(
+      value: ClawbackClaimableBalanceOp
+    ): OperationBody;
 
-    value(): CreateAccountOp | PaymentOp | PathPaymentStrictReceiveOp | ManageSellOfferOp | CreatePassiveSellOfferOp | SetOptionsOp | ChangeTrustOp | AllowTrustOp | MuxedAccount | ManageDataOp | BumpSequenceOp | ManageBuyOfferOp | PathPaymentStrictSendOp | CreateClaimableBalanceOp | ClaimClaimableBalanceOp | BeginSponsoringFutureReservesOp | RevokeSponsorshipOp | ClawbackOp | ClawbackClaimableBalanceOp | void;
+    value():
+      | CreateAccountOp
+      | PaymentOp
+      | PathPaymentStrictReceiveOp
+      | ManageSellOfferOp
+      | CreatePassiveSellOfferOp
+      | SetOptionsOp
+      | ChangeTrustOp
+      | AllowTrustOp
+      | MuxedAccount
+      | ManageDataOp
+      | BumpSequenceOp
+      | ManageBuyOfferOp
+      | PathPaymentStrictSendOp
+      | CreateClaimableBalanceOp
+      | ClaimClaimableBalanceOp
+      | BeginSponsoringFutureReservesOp
+      | RevokeSponsorshipOp
+      | ClawbackOp
+      | ClawbackClaimableBalanceOp
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6223,7 +6772,9 @@ declare namespace xdr {
 
     v1(value?: TransactionV1Envelope): TransactionV1Envelope;
 
-    static envelopeTypeTx(value: TransactionV1Envelope): FeeBumpTransactionInnerTx;
+    static envelopeTypeTx(
+      value: TransactionV1Envelope
+    ): FeeBumpTransactionInnerTx;
 
     value(): TransactionV1Envelope;
 
@@ -6241,7 +6792,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionInnerTx;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): FeeBumpTransactionInnerTx;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): FeeBumpTransactionInnerTx;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6269,7 +6823,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): FeeBumpTransactionExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): FeeBumpTransactionExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6289,9 +6846,14 @@ declare namespace xdr {
 
     static envelopeTypeTx(value: TransactionV1Envelope): TransactionEnvelope;
 
-    static envelopeTypeTxFeeBump(value: FeeBumpTransactionEnvelope): TransactionEnvelope;
+    static envelopeTypeTxFeeBump(
+      value: FeeBumpTransactionEnvelope
+    ): TransactionEnvelope;
 
-    value(): TransactionV0Envelope | TransactionV1Envelope | FeeBumpTransactionEnvelope;
+    value():
+      | TransactionV0Envelope
+      | TransactionV1Envelope
+      | FeeBumpTransactionEnvelope;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6307,7 +6869,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionEnvelope;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionEnvelope;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionEnvelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6321,9 +6886,13 @@ declare namespace xdr {
 
     feeBump(value?: FeeBumpTransaction): FeeBumpTransaction;
 
-    static envelopeTypeTx(value: Transaction): TransactionSignaturePayloadTaggedTransaction;
+    static envelopeTypeTx(
+      value: Transaction
+    ): TransactionSignaturePayloadTaggedTransaction;
 
-    static envelopeTypeTxFeeBump(value: FeeBumpTransaction): TransactionSignaturePayloadTaggedTransaction;
+    static envelopeTypeTxFeeBump(
+      value: FeeBumpTransaction
+    ): TransactionSignaturePayloadTaggedTransaction;
 
     value(): Transaction | FeeBumpTransaction;
 
@@ -6333,15 +6902,26 @@ declare namespace xdr {
 
     static read(io: Buffer): TransactionSignaturePayloadTaggedTransaction;
 
-    static write(value: TransactionSignaturePayloadTaggedTransaction, io: Buffer): void;
+    static write(
+      value: TransactionSignaturePayloadTaggedTransaction,
+      io: Buffer
+    ): void;
 
-    static isValid(value: TransactionSignaturePayloadTaggedTransaction): boolean;
+    static isValid(
+      value: TransactionSignaturePayloadTaggedTransaction
+    ): boolean;
 
     static toXDR(value: TransactionSignaturePayloadTaggedTransaction): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): TransactionSignaturePayloadTaggedTransaction;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): TransactionSignaturePayloadTaggedTransaction;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionSignaturePayloadTaggedTransaction;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionSignaturePayloadTaggedTransaction;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6369,7 +6949,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): CreateAccountResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): CreateAccountResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): CreateAccountResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6407,13 +6990,19 @@ declare namespace xdr {
   class PathPaymentStrictReceiveResult {
     switch(): PathPaymentStrictReceiveResultCode;
 
-    success(value?: PathPaymentStrictReceiveResultSuccess): PathPaymentStrictReceiveResultSuccess;
+    success(
+      value?: PathPaymentStrictReceiveResultSuccess
+    ): PathPaymentStrictReceiveResultSuccess;
 
     noIssuer(value?: Asset): Asset;
 
-    static pathPaymentStrictReceiveSuccess(value: PathPaymentStrictReceiveResultSuccess): PathPaymentStrictReceiveResult;
+    static pathPaymentStrictReceiveSuccess(
+      value: PathPaymentStrictReceiveResultSuccess
+    ): PathPaymentStrictReceiveResult;
 
-    static pathPaymentStrictReceiveNoIssuer(value: Asset): PathPaymentStrictReceiveResult;
+    static pathPaymentStrictReceiveNoIssuer(
+      value: Asset
+    ): PathPaymentStrictReceiveResult;
 
     value(): PathPaymentStrictReceiveResultSuccess | Asset;
 
@@ -6429,9 +7018,15 @@ declare namespace xdr {
 
     static toXDR(value: PathPaymentStrictReceiveResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictReceiveResult;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): PathPaymentStrictReceiveResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): PathPaymentStrictReceiveResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictReceiveResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6441,13 +7036,19 @@ declare namespace xdr {
   class PathPaymentStrictSendResult {
     switch(): PathPaymentStrictSendResultCode;
 
-    success(value?: PathPaymentStrictSendResultSuccess): PathPaymentStrictSendResultSuccess;
+    success(
+      value?: PathPaymentStrictSendResultSuccess
+    ): PathPaymentStrictSendResultSuccess;
 
     noIssuer(value?: Asset): Asset;
 
-    static pathPaymentStrictSendSuccess(value: PathPaymentStrictSendResultSuccess): PathPaymentStrictSendResult;
+    static pathPaymentStrictSendSuccess(
+      value: PathPaymentStrictSendResultSuccess
+    ): PathPaymentStrictSendResult;
 
-    static pathPaymentStrictSendNoIssuer(value: Asset): PathPaymentStrictSendResult;
+    static pathPaymentStrictSendNoIssuer(
+      value: Asset
+    ): PathPaymentStrictSendResult;
 
     value(): PathPaymentStrictSendResultSuccess | Asset;
 
@@ -6465,7 +7066,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictSendResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): PathPaymentStrictSendResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): PathPaymentStrictSendResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6495,9 +7099,15 @@ declare namespace xdr {
 
     static toXDR(value: ManageOfferSuccessResultOffer): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ManageOfferSuccessResultOffer;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ManageOfferSuccessResultOffer;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ManageOfferSuccessResultOffer;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ManageOfferSuccessResultOffer;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6509,7 +7119,9 @@ declare namespace xdr {
 
     success(value?: ManageOfferSuccessResult): ManageOfferSuccessResult;
 
-    static manageSellOfferSuccess(value: ManageOfferSuccessResult): ManageSellOfferResult;
+    static manageSellOfferSuccess(
+      value: ManageOfferSuccessResult
+    ): ManageSellOfferResult;
 
     value(): ManageOfferSuccessResult;
 
@@ -6527,7 +7139,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ManageSellOfferResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ManageSellOfferResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ManageSellOfferResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6539,7 +7154,9 @@ declare namespace xdr {
 
     success(value?: ManageOfferSuccessResult): ManageOfferSuccessResult;
 
-    static manageBuyOfferSuccess(value: ManageOfferSuccessResult): ManageBuyOfferResult;
+    static manageBuyOfferSuccess(
+      value: ManageOfferSuccessResult
+    ): ManageBuyOfferResult;
 
     value(): ManageOfferSuccessResult;
 
@@ -6557,7 +7174,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ManageBuyOfferResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ManageBuyOfferResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ManageBuyOfferResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6769,7 +7389,9 @@ declare namespace xdr {
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
-    static createClaimableBalanceSuccess(value: ClaimableBalanceId): CreateClaimableBalanceResult;
+    static createClaimableBalanceSuccess(
+      value: ClaimableBalanceId
+    ): CreateClaimableBalanceResult;
 
     value(): ClaimableBalanceId;
 
@@ -6787,7 +7409,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): CreateClaimableBalanceResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): CreateClaimableBalanceResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): CreateClaimableBalanceResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6815,7 +7440,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): ClaimClaimableBalanceResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimClaimableBalanceResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClaimClaimableBalanceResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6841,9 +7469,15 @@ declare namespace xdr {
 
     static toXDR(value: BeginSponsoringFutureReservesResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): BeginSponsoringFutureReservesResult;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): BeginSponsoringFutureReservesResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): BeginSponsoringFutureReservesResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): BeginSponsoringFutureReservesResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6869,9 +7503,15 @@ declare namespace xdr {
 
     static toXDR(value: EndSponsoringFutureReservesResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): EndSponsoringFutureReservesResult;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): EndSponsoringFutureReservesResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): EndSponsoringFutureReservesResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): EndSponsoringFutureReservesResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6899,7 +7539,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): RevokeSponsorshipResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): RevokeSponsorshipResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6953,9 +7596,15 @@ declare namespace xdr {
 
     static toXDR(value: ClawbackClaimableBalanceResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ClawbackClaimableBalanceResult;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ClawbackClaimableBalanceResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ClawbackClaimableBalanceResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ClawbackClaimableBalanceResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6969,11 +7618,15 @@ declare namespace xdr {
 
     paymentResult(value?: PaymentResult): PaymentResult;
 
-    pathPaymentStrictReceiveResult(value?: PathPaymentStrictReceiveResult): PathPaymentStrictReceiveResult;
+    pathPaymentStrictReceiveResult(
+      value?: PathPaymentStrictReceiveResult
+    ): PathPaymentStrictReceiveResult;
 
     manageSellOfferResult(value?: ManageSellOfferResult): ManageSellOfferResult;
 
-    createPassiveSellOfferResult(value?: ManageSellOfferResult): ManageSellOfferResult;
+    createPassiveSellOfferResult(
+      value?: ManageSellOfferResult
+    ): ManageSellOfferResult;
 
     setOptionsResult(value?: SetOptionsResult): SetOptionsResult;
 
@@ -6991,31 +7644,49 @@ declare namespace xdr {
 
     manageBuyOfferResult(value?: ManageBuyOfferResult): ManageBuyOfferResult;
 
-    pathPaymentStrictSendResult(value?: PathPaymentStrictSendResult): PathPaymentStrictSendResult;
+    pathPaymentStrictSendResult(
+      value?: PathPaymentStrictSendResult
+    ): PathPaymentStrictSendResult;
 
-    createClaimableBalanceResult(value?: CreateClaimableBalanceResult): CreateClaimableBalanceResult;
+    createClaimableBalanceResult(
+      value?: CreateClaimableBalanceResult
+    ): CreateClaimableBalanceResult;
 
-    claimClaimableBalanceResult(value?: ClaimClaimableBalanceResult): ClaimClaimableBalanceResult;
+    claimClaimableBalanceResult(
+      value?: ClaimClaimableBalanceResult
+    ): ClaimClaimableBalanceResult;
 
-    beginSponsoringFutureReservesResult(value?: BeginSponsoringFutureReservesResult): BeginSponsoringFutureReservesResult;
+    beginSponsoringFutureReservesResult(
+      value?: BeginSponsoringFutureReservesResult
+    ): BeginSponsoringFutureReservesResult;
 
-    endSponsoringFutureReservesResult(value?: EndSponsoringFutureReservesResult): EndSponsoringFutureReservesResult;
+    endSponsoringFutureReservesResult(
+      value?: EndSponsoringFutureReservesResult
+    ): EndSponsoringFutureReservesResult;
 
-    revokeSponsorshipResult(value?: RevokeSponsorshipResult): RevokeSponsorshipResult;
+    revokeSponsorshipResult(
+      value?: RevokeSponsorshipResult
+    ): RevokeSponsorshipResult;
 
     clawbackResult(value?: ClawbackResult): ClawbackResult;
 
-    clawbackClaimableBalanceResult(value?: ClawbackClaimableBalanceResult): ClawbackClaimableBalanceResult;
+    clawbackClaimableBalanceResult(
+      value?: ClawbackClaimableBalanceResult
+    ): ClawbackClaimableBalanceResult;
 
     static createAccount(value: CreateAccountResult): OperationResultTr;
 
     static payment(value: PaymentResult): OperationResultTr;
 
-    static pathPaymentStrictReceive(value: PathPaymentStrictReceiveResult): OperationResultTr;
+    static pathPaymentStrictReceive(
+      value: PathPaymentStrictReceiveResult
+    ): OperationResultTr;
 
     static manageSellOffer(value: ManageSellOfferResult): OperationResultTr;
 
-    static createPassiveSellOffer(value: ManageSellOfferResult): OperationResultTr;
+    static createPassiveSellOffer(
+      value: ManageSellOfferResult
+    ): OperationResultTr;
 
     static setOptions(value: SetOptionsResult): OperationResultTr;
 
@@ -7033,23 +7704,56 @@ declare namespace xdr {
 
     static manageBuyOffer(value: ManageBuyOfferResult): OperationResultTr;
 
-    static pathPaymentStrictSend(value: PathPaymentStrictSendResult): OperationResultTr;
+    static pathPaymentStrictSend(
+      value: PathPaymentStrictSendResult
+    ): OperationResultTr;
 
-    static createClaimableBalance(value: CreateClaimableBalanceResult): OperationResultTr;
+    static createClaimableBalance(
+      value: CreateClaimableBalanceResult
+    ): OperationResultTr;
 
-    static claimClaimableBalance(value: ClaimClaimableBalanceResult): OperationResultTr;
+    static claimClaimableBalance(
+      value: ClaimClaimableBalanceResult
+    ): OperationResultTr;
 
-    static beginSponsoringFutureReserves(value: BeginSponsoringFutureReservesResult): OperationResultTr;
+    static beginSponsoringFutureReserves(
+      value: BeginSponsoringFutureReservesResult
+    ): OperationResultTr;
 
-    static endSponsoringFutureReserves(value: EndSponsoringFutureReservesResult): OperationResultTr;
+    static endSponsoringFutureReserves(
+      value: EndSponsoringFutureReservesResult
+    ): OperationResultTr;
 
     static revokeSponsorship(value: RevokeSponsorshipResult): OperationResultTr;
 
     static clawback(value: ClawbackResult): OperationResultTr;
 
-    static clawbackClaimableBalance(value: ClawbackClaimableBalanceResult): OperationResultTr;
+    static clawbackClaimableBalance(
+      value: ClawbackClaimableBalanceResult
+    ): OperationResultTr;
 
-    value(): CreateAccountResult | PaymentResult | PathPaymentStrictReceiveResult | ManageSellOfferResult | ManageSellOfferResult | SetOptionsResult | ChangeTrustResult | AllowTrustResult | AccountMergeResult | InflationResult | ManageDataResult | BumpSequenceResult | ManageBuyOfferResult | PathPaymentStrictSendResult | CreateClaimableBalanceResult | ClaimClaimableBalanceResult | BeginSponsoringFutureReservesResult | EndSponsoringFutureReservesResult | RevokeSponsorshipResult | ClawbackResult | ClawbackClaimableBalanceResult;
+    value():
+      | CreateAccountResult
+      | PaymentResult
+      | PathPaymentStrictReceiveResult
+      | ManageSellOfferResult
+      | ManageSellOfferResult
+      | SetOptionsResult
+      | ChangeTrustResult
+      | AllowTrustResult
+      | AccountMergeResult
+      | InflationResult
+      | ManageDataResult
+      | BumpSequenceResult
+      | ManageBuyOfferResult
+      | PathPaymentStrictSendResult
+      | CreateClaimableBalanceResult
+      | ClaimClaimableBalanceResult
+      | BeginSponsoringFutureReservesResult
+      | EndSponsoringFutureReservesResult
+      | RevokeSponsorshipResult
+      | ClawbackResult
+      | ClawbackClaimableBalanceResult;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -7151,7 +7855,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): InnerTransactionResultResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): InnerTransactionResultResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7179,7 +7886,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): InnerTransactionResultExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): InnerTransactionResultExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7189,13 +7899,19 @@ declare namespace xdr {
   class TransactionResultResult {
     switch(): TransactionResultCode;
 
-    innerResultPair(value?: InnerTransactionResultPair): InnerTransactionResultPair;
+    innerResultPair(
+      value?: InnerTransactionResultPair
+    ): InnerTransactionResultPair;
 
     results(value?: OperationResult[]): OperationResult[];
 
-    static txFeeBumpInnerSuccess(value: InnerTransactionResultPair): TransactionResultResult;
+    static txFeeBumpInnerSuccess(
+      value: InnerTransactionResultPair
+    ): TransactionResultResult;
 
-    static txFeeBumpInnerFailed(value: InnerTransactionResultPair): TransactionResultResult;
+    static txFeeBumpInnerFailed(
+      value: InnerTransactionResultPair
+    ): TransactionResultResult;
 
     static txSuccess(value: OperationResult[]): TransactionResultResult;
 
@@ -7217,7 +7933,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResultResult;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResultResult;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7245,7 +7964,10 @@ declare namespace xdr {
 
     static fromXDR(input: Buffer, format?: 'raw'): TransactionResultExt;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResultExt;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
