@@ -72,6 +72,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.revokeClaimableBalanceSponsorship}`
  * * `{@link Operation.revokeSignerSponsorship}`
  * * `{@link Operation.clawback}`
+ * * `{@link Operation.setTrustLineFlags}`
  *
  * @class Operation
  */
@@ -300,8 +301,13 @@ export class Operation {
         result.asset = Asset.fromOperation(attrs.asset());
         break;
       }
-      case 'setTrustlineFlags': {
-        result.type = 'setTrustlineFlags';
+      case 'setTrustLineFlags': {
+        result.type = 'setTrustLineFlags';
+        result.asset = Asset.fromOperation(attrs.asset());
+        result.trustor = accountIdtoAddress(attrs.trustor());
+        result.clearFlags = attrs.clearFlags();
+        result.setFlags = attrs.setFlags();
+        // TODO: Finish the flags ^
         break;
       }
       default: {
@@ -555,4 +561,4 @@ Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
 Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
 Operation.clawback = ops.clawback;
-Operation.setTrustlineFlags = ops.setTrustlineFlags;
+Operation.setTrustLineFlags = ops.setTrustLineFlags;

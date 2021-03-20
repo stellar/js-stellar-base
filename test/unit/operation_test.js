@@ -2201,14 +2201,41 @@ describe('Operation', function() {
       );
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('clawback');
+      // expect(obj.asset).to.be.equal(asset);
     });
   });
 
-  describe('setTrustlineFlags()', function() {
-    it('creates a SetTrustlineFlagOp', function() {
+  describe('setTrustLineFlags()', function() {
+    it('creates a SetTrustLineFlagsOp', function() {
       expect(() => {
-        StellarBase.Operation.setTrustlineFlags({});
+        StellarBase.Operation.setTrustLineFlags({});
       }).to.throw();
+
+      let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let asset = new StellarBase.Asset(
+        'GCOIN',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const op = StellarBase.Operation.setTrustLineFlags({
+        trustor: account,
+        asset: asset,
+        clearFlags: [StellarBase.xdr.TrustLineFlags.authorizedFlag()],
+        setFlags: [
+          StellarBase.xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+          StellarBase.xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+        ]
+      });
+
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('setTrustLineFlags');
+      expect(obj.asset.equals(asset)).to.be.true;
+      expect(obj.trustor).to.be.equal(account);
+      expect(obj.setFlags).to.be.equal(2 | 4);
+      expect(obj.clearFlags).to.be.equal(1);
     });
   });
 

@@ -26,4 +26,4 @@ export {
   revokeSignerSponsorship
 } from './revoke_sponsorship';
 export { clawback } from './clawback';
-export { setTrustlineFlags } from './set_trustline_flags';
+export { setTrustLineFlags } from './set_trustline_flags';
