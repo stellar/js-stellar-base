@@ -4,15 +4,20 @@ import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 
 /**
+ * @deprecated since v5.0
+ *
  * Returns an XDR AllowTrustOp. An "allow trust" operation authorizes another
  * account to hold your account's credit for a given asset.
+ *
  * @function
  * @alias Operation.allowTrust
+ *
  * @param {object} opts Options object
  * @param {string} opts.trustor - The trusting account (the one being authorized)
  * @param {string} opts.assetCode - The asset code being authorized.
  * @param {(0|1|2)} opts.authorize - `1` to authorize, `2` to authorize to maintain liabilities, and `0` to deauthorize.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
+ *
  * @returns {xdr.AllowTrustOp} Allow Trust operation
  */
 export function allowTrust(opts) {
