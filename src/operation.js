@@ -300,6 +300,10 @@ export class Operation {
         result.asset = Asset.fromOperation(attrs.asset());
         break;
       }
+      case 'setTrustlineFlags': {
+        result.type = 'setTrustlineFlags';
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -551,3 +555,4 @@ Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
 Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
 Operation.clawback = ops.clawback;
+Operation.setTrustlineFlags = ops.setTrustlineFlags;

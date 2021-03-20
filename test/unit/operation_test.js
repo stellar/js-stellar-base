@@ -2204,6 +2204,14 @@ describe('Operation', function() {
     });
   });
 
+  describe('setTrustlineFlags()', function() {
+    it('creates a SetTrustlineFlagOp', function() {
+      expect(() => {
+        StellarBase.Operation.setTrustlineFlags({});
+      }).to.throw();
+    });
+  });
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [
