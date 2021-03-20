@@ -1,4 +1,5 @@
 import xdr from '../generated/stellar-xdr_generated';
+import { validateClaimableBalanceId } from './claim_claimable_balance';
 
 /**
  * Creates a clawback operation for a claimable balance.
@@ -19,12 +20,7 @@ import xdr from '../generated/stellar-xdr_generated';
  * @link https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-claimable-balance-operation
  */
 export function clawbackClaimableBalance(opts = {}) {
-  if (
-    typeof opts.balanceId !== 'string' ||
-    opts.balanceId.length !== 8 + 64 /* 8b discriminant + 64b string */
-  ) {
-    throw new Error('must provide a valid claimable balance id');
-  }
+  validateClaimableBalanceId(opts.balanceId);
 
   const attributes = {
     balanceId: xdr.ClaimableBalanceId.fromXDR(opts.balanceId, 'hex')
