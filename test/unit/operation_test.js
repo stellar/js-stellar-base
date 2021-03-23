@@ -2207,24 +2207,24 @@ describe('Operation', function() {
 
   describe('setTrustLineFlags()', function() {
     it('creates a SetTrustLineFlagsOp', function() {
-      expect(() => {
-        StellarBase.Operation.setTrustLineFlags({});
-      }).to.throw();
-
       let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let asset = new StellarBase.Asset(
         'GCOIN',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
+
       const op = StellarBase.Operation.setTrustLineFlags({
         trustor: account,
         asset: asset,
-        clearFlags: [StellarBase.xdr.TrustLineFlags.authorizedFlag()],
-        setFlags: [
-          StellarBase.xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
-          StellarBase.xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
-        ]
+        flags: {
+          authorized: false,
+          maintainLiabilities: true,
+          clawbackEnabled: false
+        }
       });
+      const opBody = op.body().setTrustLineFlagsOp();
+      expect(opBody.clearFlags()).to.be.equal(1 | 4);
+      expect(opBody.setFlags()).to.be.equal(2);
 
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
@@ -2234,8 +2234,69 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('setTrustLineFlags');
       expect(obj.asset.equals(asset)).to.be.true;
       expect(obj.trustor).to.be.equal(account);
-      expect(obj.setFlags).to.be.equal(2 | 4);
-      expect(obj.clearFlags).to.be.equal(1);
+      expect(obj.flags.authorized).to.be.false;
+      expect(obj.flags.maintainLiabilities).to.be.true;
+      expect(obj.flags.clawbackEnabled).to.be.false;
+    });
+    it('leaves unmodified flags as undefined', function() {
+      let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let asset = new StellarBase.Asset(
+        'GCOIN',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+
+      expect(() =>
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: account,
+          asset: asset
+        })
+      ).to.throw();
+      expect(() =>
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: account,
+          asset: asset,
+          flags: []
+        })
+      ).to.throw();
+
+      const op = StellarBase.Operation.setTrustLineFlags({
+        trustor: account,
+        asset: asset,
+        flags: {
+          authorized: true
+        }
+      });
+      const opBody = op.body().setTrustLineFlagsOp();
+      expect(opBody.setFlags()).to.be.equal(1);
+
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('setTrustLineFlags');
+      expect(obj.asset.equals(asset)).to.be.true;
+      expect(obj.trustor).to.be.equal(account);
+      expect(obj.flags.authorized).to.be.true;
+      expect(obj.flags.maintainLiabilities).to.be.undefined;
+      expect(obj.flags.clawbackEnabled).to.be.undefined;
+    });
+    it('fails with invalid flags', function() {
+      expect(() => {
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: account,
+          asset: asset,
+          flags: {
+            authorized: false,
+            invalidFlag: true
+          }
+        });
+      }).to.throw();
+    });
+    it('should require parameters', function() {
+      expect(() => {
+        StellarBase.Operation.setTrustLineFlags({});
+      }).to.throw();
     });
   });
 

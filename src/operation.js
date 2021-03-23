@@ -305,9 +305,35 @@ export class Operation {
         result.type = 'setTrustLineFlags';
         result.asset = Asset.fromOperation(attrs.asset());
         result.trustor = accountIdtoAddress(attrs.trustor());
-        result.clearFlags = attrs.clearFlags();
-        result.setFlags = attrs.setFlags();
-        // TODO: Finish the flags ^
+
+        // Convert from the integer bitwised flag into a sensible object that
+        // indicates true/false for each flag that's on/off.
+        const clears = attrs.clearFlags();
+        const sets = attrs.setFlags();
+
+        const mapping = {
+          authorized: xdr.TrustLineFlags.authorizedFlag(),
+          maintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+          clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+        };
+
+        const getFlagValue = (key) => {
+          const bit = mapping[key].value;
+          if (sets & bit) {
+            return true;
+          }
+          if (clears & bit) {
+            return false;
+          }
+          return undefined;
+        };
+
+        result.flags = {
+          authorized: getFlagValue('authorized'),
+          maintainLiabilities: getFlagValue('maintainLiabilities'),
+          clawbackEnabled: getFlagValue('clawbackEnabled')
+        };
+
         break;
       }
       default: {
