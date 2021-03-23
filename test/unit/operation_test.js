@@ -2201,7 +2201,7 @@ describe('Operation', function() {
       );
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('clawback');
-      // expect(obj.asset).to.be.equal(asset);
+      expect(obj.asset.equals(asset)).to.be.true;
     });
   });
 
