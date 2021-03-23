@@ -12,20 +12,27 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 
 - **[API Reference](https://stellar.github.io/js-stellar-base/)**
 
-> **Warning!** Node version of this package is using [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as an [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
-> This means that if for any reason installation of this package fails, `stellar-base` will fallback to the much slower implementation contained in [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
+> **Warning!** Node version of this package is using
+> [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a
+> native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as
+> an
+> [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
+> This means that if for any reason installation of this package fails,
+> `stellar-base` will fallback to the much slower implementation contained in
+> [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
 >
-> If you are using `stellar-base` in a browser you can ignore this. However, for production backend deployments you should definitely be using `sodium-native`.
+> If you are using `stellar-base` in a browser you can ignore this. However, for
+> production backend deployments you should definitely be using `sodium-native`.
 > If `sodium-native` is successfully installed and working
 > `StellarBase.FastSigning` variable will be equal `true`. Otherwise it will be
 > `false`.
 
 ## Quick start
 
-Using yarn to include js-stellar-base in your own project:
+Using npm to include js-stellar-base in your own project:
 
 ```shell
-yarn add stellar-base
+npm install --save stellar-base
 ```
 
 For browsers, [use Bower to install it](#to-use-in-the-browser). It exports a
@@ -43,10 +50,10 @@ relative to your html file.
 
 ### To use as a module in a Node.js project
 
-1. Install it using yarn:
+1. Install it using npm:
 
 ```shell
-yarn add stellar-base
+npm install --save stellar-base
 ```
 
 2. require/import it in your JavaScript:
@@ -98,9 +105,11 @@ Make sure that you are using the latest version number. They can be found on the
 
 1. Install Node 10.16.3
 
-Because we support earlier versions of Node, please install and develop on Node 10.16.3 so you don't get surprised when your code works locally but breaks in CI.
+Because we support earlier versions of Node, please install and develop on Node
+10.16.3 so you don't get surprised when your code works locally but breaks in CI.
 
-If you work on several projects that use different Node versions, you might find helpful to install a nodejs version manager.
+If you work on several projects that use different Node versions, you might find
+helpful to install a nodejs version manager.
 
 - https://github.com/creationix/nvm
 - https://github.com/wbyoung/avn
@@ -108,7 +117,9 @@ If you work on several projects that use different Node versions, you might find
 
 2. Install Yarn
 
-This project uses [Yarn](https://yarnpkg.com/) to manages its dependencies. To install Yarn, follow the project instructions available at https://yarnpkg.com/en/docs/install.
+This project uses [Yarn](https://yarnpkg.com/) to manages its dependencies. To
+install Yarn, follow the project instructions available at
+https://yarnpkg.com/en/docs/install.
 
 3. Clone the repo
 
@@ -120,7 +131,7 @@ git clone https://github.com/stellar/js-stellar-base.git
 
 ```shell
 cd js-stellar-base
-yarn
+yarn install
 ```
 
 5. Observe the project's code style
@@ -149,27 +160,14 @@ versions.)
 
 2. Install [Bundler](https://bundler.io).
 3. Install all dependencies.
+
+```shell
+bundle install
+```
+
 4. Copy xdr files from
    https://github.com/stellar/stellar-core/tree/master/src/xdr to `./xdr`.
-5. Run `yarn xdr` from the js-stellar-base folder.
-6. Transform the newly-generated JS into TypeScript using [dts-xdr](https://github.com/stellar/dts-xdr):
-
-To "scriptify" the above instructions, here are the steps one by one:
-
-```bash
-git clone https://github.com/stellar/js-stellar-base
-cd js-stellar-base
-bundle install
-yarn
-yarn xdr
-
-# If src/generated/stellar-xdr_generated.js changed, then:
-git clone https://github.com/stellar/dts-xdr
-cd dts-xdr
-stellar-xdr_generated.d.ts npx jscodeshift -t src/transform.js ../src/generated/stellar-xdr_generated.js
-cp stellar-xdr_generated.d.ts ../types/xdr.d.ts
-cd .. && rm -rf dts-xdr
-```
+5. Run `yarn xdr` js-stellar-base folder.
 
 ## Usage
 
@@ -190,8 +188,6 @@ To run a specific set of tests:
 gulp test:node
 gulp test:browser
 ```
-
-You can also run `yarn test` for a simpler subset of the test cases.
 
 Tests are also run on the
 [Travis CI js-stellar-base project](https://travis-ci.org/stellar/js-stellar-base)
