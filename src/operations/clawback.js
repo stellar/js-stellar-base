@@ -16,11 +16,6 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  *
  * @return {xdr.ClawbackOp}
  *
- * @example
- * const op = Operation.clawback({
- *   balanceId: '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
- * });
- *
  * @link https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-operation
  */
 export function clawback(opts = {}) {
