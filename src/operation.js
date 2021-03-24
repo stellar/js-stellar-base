@@ -306,14 +306,14 @@ export class Operation {
         result.asset = Asset.fromOperation(attrs.asset());
         result.trustor = accountIdtoAddress(attrs.trustor());
 
-        // Convert from the integer bitwised flag into a sensible object that
+        // Convert from the integer-bitwised flag into a sensible object that
         // indicates true/false for each flag that's on/off.
         const clears = attrs.clearFlags();
         const sets = attrs.setFlags();
 
         const mapping = {
           authorized: xdr.TrustLineFlags.authorizedFlag(),
-          maintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+          authorizedToMaintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
           clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
         };
 
@@ -328,11 +328,10 @@ export class Operation {
           return undefined;
         };
 
-        result.flags = {
-          authorized: getFlagValue('authorized'),
-          maintainLiabilities: getFlagValue('maintainLiabilities'),
-          clawbackEnabled: getFlagValue('clawbackEnabled')
-        };
+        result.flags = {};
+        Object.keys(mapping).forEach((flagName) => {
+          result.flags[flagName] = getFlagValue(flagName);
+        });
 
         break;
       }

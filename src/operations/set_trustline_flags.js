@@ -20,8 +20,8 @@ import { Keypair } from '../keypair';
  * @param {object} opts.flags       - the set of flags to modify
  * @param {bool}   opts.flags.authorized  - authorize account to perform transactions
  *     with its credit
- * @param {bool}   opts.flags.maintainLiabilities - authorize account to
- *     maintain and reduce liabilities for its credit
+ * @param {bool}   opts.flags.authorizedToMaintainLiabilities - authorize
+ *     account to maintain and reduce liabilities for its credit
  * @param {bool}   opts.flags.clawbackEnabled - stop claimable balances on this
  *     trustlines from having clawbacks enabled (this flag can only be set to
  *     false!)
@@ -45,7 +45,7 @@ export function setTrustLineFlags(opts = {}) {
 
   const mapping = {
     authorized: xdr.TrustLineFlags.authorizedFlag(),
-    maintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+    authorizedToMaintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
     clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
   };
 

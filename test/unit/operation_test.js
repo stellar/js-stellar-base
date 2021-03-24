@@ -2218,7 +2218,7 @@ describe('Operation', function() {
         asset: asset,
         flags: {
           authorized: false,
-          maintainLiabilities: true,
+          authorizedToMaintainLiabilities: true,
           clawbackEnabled: false
         }
       });
@@ -2235,7 +2235,7 @@ describe('Operation', function() {
       expect(obj.asset.equals(asset)).to.be.true;
       expect(obj.trustor).to.be.equal(account);
       expect(obj.flags.authorized).to.be.false;
-      expect(obj.flags.maintainLiabilities).to.be.true;
+      expect(obj.flags.authorizedToMaintainLiabilities).to.be.true;
       expect(obj.flags.clawbackEnabled).to.be.false;
     });
     it('leaves unmodified flags as undefined', function() {
@@ -2278,7 +2278,7 @@ describe('Operation', function() {
       expect(obj.asset.equals(asset)).to.be.true;
       expect(obj.trustor).to.be.equal(account);
       expect(obj.flags.authorized).to.be.true;
-      expect(obj.flags.maintainLiabilities).to.be.undefined;
+      expect(obj.flags.authorizedToMaintainLiabilities).to.be.undefined;
       expect(obj.flags.clawbackEnabled).to.be.undefined;
     });
     it('fails with invalid flags', function() {
