@@ -4,6 +4,8 @@
 
 import { Operation } from './index';
 
+export {}
+
 // Hidden namespace as hack to work around name collision.
 declare namespace xdrHidden {
   // tslint:disable-line:strict-export-declare-modifiers
@@ -39,7 +41,7 @@ declare namespace xdrHidden {
   }
 }
 
-declare namespace xdr {
+export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
 
   interface SignedInt {
