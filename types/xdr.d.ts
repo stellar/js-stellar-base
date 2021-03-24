@@ -4,7 +4,7 @@
 
 import { Operation } from './index';
 
-export {}
+export {};
 
 // Hidden namespace as hack to work around name collision.
 declare namespace xdrHidden {
