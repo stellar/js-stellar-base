@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>operations/path_payment_strict_receive.js - Documentation</title>
+    <title>operations/set_trustline_flags.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">operations/path_payment_strict_receive.js</h1>
+    <h1 class="page-title">operations/set_trustline_flags.js</h1>
     
 
     
@@ -40,58 +40,84 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import xdr from '../generated/stellar-xdr_generated';
-import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
+import { Keypair } from '../keypair';
 
 /**
- * Returns a XDR PathPaymentStrictReceiveOp. A `PathPaymentStrictReceive` operation send the specified amount to the
- * destination account, optionally through a path. XLM payments create the destination
- * account if it does not exist.
+ * Creates a trustline flag configuring operation.
+ *
+ * For the flags, set them to true to enable them and false to disable them. Any
+ * unmodified operations will be marked `undefined` in the result.
+ *
+ * Note that you can only **clear** the clawbackEnabled flag set; it must be set
+ * account-wide via operations.SetOptions (setting
+ * xdr.AccountFlags.clawbackEnabled).
+ *
  * @function
- * @alias Operation.pathPaymentStrictReceive
- * @param {object} opts Options object
- * @param {Asset} opts.sendAsset - The asset to pay with.
- * @param {string} opts.sendMax - The maximum amount of sendAsset to send.
- * @param {string} opts.destination - The destination account to send to.
- * @param {Asset} opts.destAsset - The asset the destination will receive.
- * @param {string} opts.destAmount - The amount the destination receives.
- * @param {Asset[]} opts.path - An array of Asset objects to use as the path.
- * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
- * @returns {xdr.PathPaymentStrictReceiveOp} Path Payment Strict Receive operation
+ * @alias Operation.setTrustLineFlags
+ *
+ * @param {object} opts - Options object
+ * @param {string} opts.trustor     - the account whose trustline this is
+ * @param {Asset}  opts.asset       - the asset on the trustline
+ * @param {object} opts.flags       - the set of flags to modify
+ * @param {bool}   opts.flags.authorized  - authorize account to perform transactions
+ *     with its credit
+ * @param {bool}   opts.flags.authorizedToMaintainLiabilities - authorize
+ *     account to maintain and reduce liabilities for its credit
+ * @param {bool}   opts.flags.clawbackEnabled - stop claimable balances on this
+ *     trustlines from having clawbacks enabled (this flag can only be set to
+ *     false!)
+ *
+ * @param {string} [opts.source] - The source account for the operation.
+ *                                 Defaults to the transaction's source account.
+ *
+ * @return {xdr.SetTrustLineFlagsOp}
+ *
+ * @link xdr.AccountFlags
+ * @link xdr.TrustLineFlags
+ * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#set-trustline-flags-operation
+ * @see https://developers.stellar.org/docs/start/list-of-operations/#set-options
  */
-export function pathPaymentStrictReceive(opts) {
-  switch (true) {
-    case !opts.sendAsset:
-      throw new Error('Must specify a send asset');
-    case !this.isValidAmount(opts.sendMax):
-      throw new TypeError(this.constructAmountRequirementsError('sendMax'));
-    case !opts.destAsset:
-      throw new Error('Must provide a destAsset for a payment operation');
-    case !this.isValidAmount(opts.destAmount):
-      throw new TypeError(this.constructAmountRequirementsError('destAmount'));
-    default:
-      break;
-  }
-
+export function setTrustLineFlags(opts = {}) {
   const attributes = {};
-  attributes.sendAsset = opts.sendAsset.toXDRObject();
-  attributes.sendMax = this._toXDRAmount(opts.sendMax);
 
-  try {
-    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
-  } catch (e) {
-    throw new Error('destination is invalid');
+  if (typeof opts.flags !== 'object' || Object.keys(opts.flags).length === 0) {
+    throw new Error('opts.flags must be an map of boolean flags to modify');
   }
 
-  attributes.destAsset = opts.destAsset.toXDRObject();
-  attributes.destAmount = this._toXDRAmount(opts.destAmount);
+  const mapping = {
+    authorized: xdr.TrustLineFlags.authorizedFlag(),
+    authorizedToMaintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+    clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+  };
 
-  const path = opts.path ? opts.path : [];
-  attributes.path = path.map((x) => x.toXDRObject());
+  /* eslint no-bitwise: "off" */
+  let clearFlag = 0;
+  let setFlag = 0;
 
-  const payment = new xdr.PathPaymentStrictReceiveOp(attributes);
+  Object.keys(opts.flags).forEach((flagName) => {
+    if (!Object.prototype.hasOwnProperty.call(mapping, flagName)) {
+      throw new Error(`unsupported flag name specified: ${flagName}`);
+    }
 
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.pathPaymentStrictReceive(payment);
+    const flagValue = opts.flags[flagName];
+    const bit = mapping[flagName].value;
+    if (flagValue === true) {
+      setFlag |= bit;
+    } else if (flagValue === false) {
+      clearFlag |= bit;
+    }
+  });
+
+  attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
+  attributes.asset = opts.asset.toXDRObject();
+  attributes.clearFlags = clearFlag;
+  attributes.setFlags = setFlag;
+
+  const opAttributes = {
+    body: xdr.OperationBody.setTrustLineFlags(
+      new xdr.SetTrustLineFlagsOp(attributes)
+    )
+  };
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
