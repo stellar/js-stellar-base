@@ -16,12 +16,8 @@ import xdr from '../generated/stellar-xdr_generated';
  *
  */
 export function claimClaimableBalance(opts = {}) {
-  if (
-    typeof opts.balanceId !== 'string' ||
-    opts.balanceId.length !== 8 + 64 /* 8b discriminant + 64b string */
-  ) {
-    throw new Error('must provide a valid claimable balance Id');
-  }
+  validateClaimableBalanceId(opts.balanceId);
+
   const attributes = {};
   attributes.balanceId = xdr.ClaimableBalanceId.fromXDR(opts.balanceId, 'hex');
   const claimClaimableBalanceOp = new xdr.ClaimClaimableBalanceOp(attributes);
@@ -33,4 +29,13 @@ export function claimClaimableBalance(opts = {}) {
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
+}
+
+export function validateClaimableBalanceId(balanceId) {
+  if (
+    typeof balanceId !== 'string' ||
+    balanceId.length !== 8 + 64 /* 8b discriminant + 64b string */
+  ) {
+    throw new Error('must provide a valid claimable balance id');
+  }
 }

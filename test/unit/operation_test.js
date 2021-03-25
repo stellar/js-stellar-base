@@ -1841,9 +1841,7 @@ describe('Operation', function() {
       const balanceId =
         '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
 
-      const op = StellarBase.Operation.claimClaimableBalance({
-        balanceId
-      });
+      const op = StellarBase.Operation.claimClaimableBalance({ balanceId });
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
         Buffer.from(xdr, 'hex')
@@ -1854,7 +1852,7 @@ describe('Operation', function() {
     });
     it('throws an error when balanceId is not present', function() {
       expect(() => StellarBase.Operation.claimClaimableBalance({})).to.throw(
-        /must provide a valid claimable balance Id/
+        /must provide a valid claimable balance id/
       );
     });
     it('throws an error for invalid balanceIds', function() {
@@ -1862,7 +1860,37 @@ describe('Operation', function() {
         StellarBase.Operation.claimClaimableBalance({
           balanceId: 'badc0ffee'
         })
-      ).to.throw(/must provide a valid claimable balance Id/);
+      ).to.throw(/must provide a valid claimable balance id/);
+    });
+  });
+
+  describe('clawbackClaimableBalance()', function() {
+    it('creates a clawbackClaimableBalanceOp', function() {
+      const balanceId =
+        '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
+
+      const op = StellarBase.Operation.clawbackClaimableBalance({
+        balanceId: balanceId
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('clawbackClaimableBalance');
+      expect(obj.balanceId).to.equal(balanceId);
+    });
+    it('throws an error when balanceId is not present', function() {
+      expect(() => StellarBase.Operation.clawbackClaimableBalance({})).to.throw(
+        /must provide a valid claimable balance id/
+      );
+    });
+    it('throws an error for invalid balanceIds', function() {
+      expect(() =>
+        StellarBase.Operation.clawbackClaimableBalance({
+          balanceId: 'badc0ffee'
+        })
+      ).to.throw(/must provide a valid claimable balance id/);
     });
   });
 
@@ -2129,6 +2157,139 @@ describe('Operation', function() {
           signer
         })
       ).to.throw(/account is invalid/);
+    });
+  });
+
+  describe('clawback()', function() {
+    it('requires asset, amount, account', function() {
+      let asset = new StellarBase.Asset(
+        'GCOIN',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const amount = '100.0000000';
+
+      expect(() => {
+        StellarBase.Operation.clawback({
+          from: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        });
+      }).to.throw();
+      expect(() => {
+        StellarBase.Operation.clawback({ amount });
+      }).to.throw();
+      expect(() => {
+        StellarBase.Operation.clawback({ asset });
+      }).to.throw();
+      expect(() => {
+        StellarBase.Operation.clawback({});
+      }).to.throw();
+    });
+    it('returns a clawback()', function() {
+      let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let asset = new StellarBase.Asset('GCOIN', account);
+      const amount = '100.0000000';
+      const op = StellarBase.Operation.clawback({
+        from: account,
+        amount: amount,
+        asset: asset
+      });
+
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('clawback');
+      expect(obj.asset.equals(asset)).to.be.true;
+      expect(obj.from).to.be.equal(account);
+    });
+  });
+
+  describe('setTrustLineFlags()', function() {
+    it('creates a SetTrustLineFlagsOp', function() {
+      let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let asset = new StellarBase.Asset('GCOIN', account);
+
+      const op = StellarBase.Operation.setTrustLineFlags({
+        trustor: account,
+        asset: asset,
+        flags: {
+          authorized: false,
+          authorizedToMaintainLiabilities: true,
+          clawbackEnabled: false
+        }
+      });
+      const opBody = op.body().setTrustLineFlagsOp();
+      expect(opBody.clearFlags()).to.be.equal(1 | 4);
+      expect(opBody.setFlags()).to.be.equal(2);
+
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('setTrustLineFlags');
+      expect(obj.asset.equals(asset)).to.be.true;
+      expect(obj.trustor).to.be.equal(account);
+      expect(obj.flags.authorized).to.be.false;
+      expect(obj.flags.authorizedToMaintainLiabilities).to.be.true;
+      expect(obj.flags.clawbackEnabled).to.be.false;
+    });
+    it('leaves unmodified flags as undefined', function() {
+      let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let asset = new StellarBase.Asset('GCOIN', account);
+
+      expect(() =>
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: account,
+          asset: asset
+        })
+      ).to.throw();
+      expect(() =>
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: account,
+          asset: asset,
+          flags: []
+        })
+      ).to.throw();
+
+      const op = StellarBase.Operation.setTrustLineFlags({
+        trustor: account,
+        asset: asset,
+        flags: {
+          authorized: true
+        }
+      });
+      const opBody = op.body().setTrustLineFlagsOp();
+      expect(opBody.setFlags()).to.be.equal(1);
+
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('setTrustLineFlags');
+      expect(obj.asset.equals(asset)).to.be.true;
+      expect(obj.trustor).to.be.equal(account);
+      expect(obj.flags.authorized).to.be.true;
+      expect(obj.flags.authorizedToMaintainLiabilities).to.be.undefined;
+      expect(obj.flags.clawbackEnabled).to.be.undefined;
+    });
+    it('fails with invalid flags', function() {
+      expect(() => {
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: account,
+          asset: asset,
+          flags: {
+            authorized: false,
+            invalidFlag: true
+          }
+        });
+      }).to.throw();
+    });
+    it('should require parameters', function() {
+      expect(() => {
+        StellarBase.Operation.setTrustLineFlags({});
+      }).to.throw();
     });
   });
 

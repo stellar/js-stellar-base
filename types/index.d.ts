@@ -1,7 +1,7 @@
 // TypeScript Version: 2.9
 
 /// <reference types="node" />
-import xdr from './xdr';
+import { xdr } from './xdr';
 
 export { xdr };
 

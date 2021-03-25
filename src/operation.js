@@ -62,6 +62,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.bumpSequence}`
  * * `{@link Operation.createClaimableBalance}`
  * * `{@link Operation.claimClaimableBalance}`
+ * * `{@link Operation.clawbackClaimableBalance}`
  * * `{@link Operation.beginSponsoringFutureReserves}`
  * * `{@link Operation.endSponsoringFutureReserves}`
  * * `{@link Operation.revokeAccountSponsorship}`
@@ -70,6 +71,8 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.revokeDataSponsorship}`
  * * `{@link Operation.revokeClaimableBalanceSponsorship}`
  * * `{@link Operation.revokeSignerSponsorship}`
+ * * `{@link Operation.clawback}`
+ * * `{@link Operation.setTrustLineFlags}`
  *
  * @class Operation
  */
@@ -273,6 +276,11 @@ export class Operation {
         result.balanceId = attrs.toXDR('hex');
         break;
       }
+      case 'clawbackClaimableBalance': {
+        result.type = 'clawbackClaimableBalance';
+        result.balanceId = attrs.toXDR('hex');
+        break;
+      }
       case 'beginSponsoringFutureReserves': {
         result.type = 'beginSponsoringFutureReserves';
         result.sponsoredId = accountIdtoAddress(attrs.sponsoredId());
@@ -284,6 +292,47 @@ export class Operation {
       }
       case 'revokeSponsorship': {
         extractRevokeSponshipDetails(attrs, result);
+        break;
+      }
+      case 'clawback': {
+        result.type = 'clawback';
+        result.amount = this._fromXDRAmount(attrs.amount());
+        result.from = encodeMuxedAccountToAddress(attrs.from());
+        result.asset = Asset.fromOperation(attrs.asset());
+        break;
+      }
+      case 'setTrustLineFlags': {
+        result.type = 'setTrustLineFlags';
+        result.asset = Asset.fromOperation(attrs.asset());
+        result.trustor = accountIdtoAddress(attrs.trustor());
+
+        // Convert from the integer-bitwised flag into a sensible object that
+        // indicates true/false for each flag that's on/off.
+        const clears = attrs.clearFlags();
+        const sets = attrs.setFlags();
+
+        const mapping = {
+          authorized: xdr.TrustLineFlags.authorizedFlag(),
+          authorizedToMaintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+          clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+        };
+
+        const getFlagValue = (key) => {
+          const bit = mapping[key].value;
+          if (sets & bit) {
+            return true;
+          }
+          if (clears & bit) {
+            return false;
+          }
+          return undefined;
+        };
+
+        result.flags = {};
+        Object.keys(mapping).forEach((flagName) => {
+          result.flags[flagName] = getFlagValue(flagName);
+        });
+
         break;
       }
       default: {
@@ -517,6 +566,7 @@ Operation.changeTrust = ops.changeTrust;
 Operation.createAccount = ops.createAccount;
 Operation.createClaimableBalance = ops.createClaimableBalance;
 Operation.claimClaimableBalance = ops.claimClaimableBalance;
+Operation.clawbackClaimableBalance = ops.clawbackClaimableBalance;
 Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
 Operation.inflation = ops.inflation;
 Operation.manageData = ops.manageData;
@@ -535,3 +585,5 @@ Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
 Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
 Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
+Operation.clawback = ops.clawback;
+Operation.setTrustLineFlags = ops.setTrustLineFlags;

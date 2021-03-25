@@ -1,8 +1,10 @@
-// The type definitions inside the namespace xdr were automatically generated on 2020-11-13T19:52:42Z
+// The type definitions inside the namespace xdr were automatically generated on 2021-03-19T18:40:30Z
 // using https://github.com/stellar/dts-xdr.
 // DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
 
 import { Operation } from './index';
+
+export {};
 
 // Hidden namespace as hack to work around name collision.
 declare namespace xdrHidden {
@@ -39,7 +41,7 @@ declare namespace xdrHidden {
   }
 }
 
-declare namespace xdr {
+export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
 
   interface SignedInt {
@@ -600,7 +602,8 @@ declare namespace xdr {
       | 'endSponsoringFutureReserves'
       | 'revokeSponsorship'
       | 'clawback'
-      | 'clawbackClaimableBalance';
+      | 'clawbackClaimableBalance'
+      | 'setTrustLineFlags';
 
     readonly value:
       | 0
@@ -623,7 +626,8 @@ declare namespace xdr {
       | 17
       | 18
       | 19
-      | 20;
+      | 20
+      | 21;
 
     static createAccount(): OperationType;
 
@@ -666,6 +670,8 @@ declare namespace xdr {
     static clawback(): OperationType;
 
     static clawbackClaimableBalance(): OperationType;
+
+    static setTrustLineFlags(): OperationType;
   }
 
   class RevokeSponsorshipType {
@@ -1297,6 +1303,27 @@ declare namespace xdr {
     static clawbackClaimableBalanceNotIssuer(): ClawbackClaimableBalanceResultCode;
 
     static clawbackClaimableBalanceNotClawbackEnabled(): ClawbackClaimableBalanceResultCode;
+  }
+
+  class SetTrustLineFlagsResultCode {
+    readonly name:
+      | 'setTrustLineFlagsSuccess'
+      | 'setTrustLineFlagsMalformed'
+      | 'setTrustLineFlagsNoTrustLine'
+      | 'setTrustLineFlagsCantRevoke'
+      | 'setTrustLineFlagsInvalidState';
+
+    readonly value: 0 | -1 | -2 | -3 | -4;
+
+    static setTrustLineFlagsSuccess(): SetTrustLineFlagsResultCode;
+
+    static setTrustLineFlagsMalformed(): SetTrustLineFlagsResultCode;
+
+    static setTrustLineFlagsNoTrustLine(): SetTrustLineFlagsResultCode;
+
+    static setTrustLineFlagsCantRevoke(): SetTrustLineFlagsResultCode;
+
+    static setTrustLineFlagsInvalidState(): SetTrustLineFlagsResultCode;
   }
 
   class OperationResultCode {
@@ -4356,6 +4383,46 @@ declare namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class SetTrustLineFlagsOp {
+    constructor(attributes: {
+      trustor: AccountId;
+      asset: Asset;
+      clearFlags: number;
+      setFlags: number;
+    });
+
+    trustor(value?: AccountId): AccountId;
+
+    asset(value?: Asset): Asset;
+
+    clearFlags(value?: number): number;
+
+    setFlags(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SetTrustLineFlagsOp;
+
+    static write(value: SetTrustLineFlagsOp, io: Buffer): void;
+
+    static isValid(value: SetTrustLineFlagsOp): boolean;
+
+    static toXDR(value: SetTrustLineFlagsOp): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): SetTrustLineFlagsOp;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SetTrustLineFlagsOp;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class OperationIdId {
     constructor(attributes: {
       sourceAccount: MuxedAccount;
@@ -6542,6 +6609,8 @@ declare namespace xdr {
       value?: ClawbackClaimableBalanceOp
     ): ClawbackClaimableBalanceOp;
 
+    setTrustLineFlagsOp(value?: SetTrustLineFlagsOp): SetTrustLineFlagsOp;
+
     static createAccount(value: CreateAccountOp): OperationBody;
 
     static payment(value: PaymentOp): OperationBody;
@@ -6594,6 +6663,8 @@ declare namespace xdr {
       value: ClawbackClaimableBalanceOp
     ): OperationBody;
 
+    static setTrustLineFlags(value: SetTrustLineFlagsOp): OperationBody;
+
     value():
       | CreateAccountOp
       | PaymentOp
@@ -6614,6 +6685,7 @@ declare namespace xdr {
       | RevokeSponsorshipOp
       | ClawbackOp
       | ClawbackClaimableBalanceOp
+      | SetTrustLineFlagsOp
       | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -7611,6 +7683,37 @@ declare namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class SetTrustLineFlagsResult {
+    switch(): SetTrustLineFlagsResultCode;
+
+    static setTrustLineFlagsSuccess(): SetTrustLineFlagsResult;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SetTrustLineFlagsResult;
+
+    static write(value: SetTrustLineFlagsResult, io: Buffer): void;
+
+    static isValid(value: SetTrustLineFlagsResult): boolean;
+
+    static toXDR(value: SetTrustLineFlagsResult): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): SetTrustLineFlagsResult;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SetTrustLineFlagsResult;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class OperationResultTr {
     switch(): OperationType;
 
@@ -7674,6 +7777,10 @@ declare namespace xdr {
       value?: ClawbackClaimableBalanceResult
     ): ClawbackClaimableBalanceResult;
 
+    setTrustLineFlagsResult(
+      value?: SetTrustLineFlagsResult
+    ): SetTrustLineFlagsResult;
+
     static createAccount(value: CreateAccountResult): OperationResultTr;
 
     static payment(value: PaymentResult): OperationResultTr;
@@ -7732,6 +7839,8 @@ declare namespace xdr {
       value: ClawbackClaimableBalanceResult
     ): OperationResultTr;
 
+    static setTrustLineFlags(value: SetTrustLineFlagsResult): OperationResultTr;
+
     value():
       | CreateAccountResult
       | PaymentResult
@@ -7753,7 +7862,8 @@ declare namespace xdr {
       | EndSponsoringFutureReservesResult
       | RevokeSponsorshipResult
       | ClawbackResult
-      | ClawbackClaimableBalanceResult;
+      | ClawbackClaimableBalanceResult
+      | SetTrustLineFlagsResult;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -8042,5 +8152,3 @@ declare namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 }
-
-export default xdr;

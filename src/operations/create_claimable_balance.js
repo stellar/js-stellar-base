@@ -3,13 +3,16 @@ import { Asset } from '../asset';
 
 /**
  * Create a new claimable balance operation.
+ *
  * @function
  * @alias Operation.createClaimableBalance
+ *
  * @param {object} opts Options object
  * @param {Asset} opts.asset - The asset for the claimable balance.
  * @param {string} opts.amount - Amount.
  * @param {Claimant[]} opts.claimants - An array of Claimants
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ *
  * @returns {xdr.Operation} Create claimable balance operation
  *
  * @example
@@ -51,6 +54,7 @@ export function createClaimableBalance(opts) {
   attributes.asset = opts.asset.toXDRObject();
   attributes.amount = this._toXDRAmount(opts.amount);
   attributes.claimants = opts.claimants.map((c) => c.toXDRObject());
+
   const createClaimableBalanceOp = new xdr.CreateClaimableBalanceOp(attributes);
 
   const opAttributes = {};

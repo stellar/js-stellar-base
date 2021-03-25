@@ -1,4 +1,4 @@
-// Automatically generated on 2021-03-18T14:48:21-07:00
+// Automatically generated on 2021-03-19T18:40:30-07:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -2869,7 +2869,8 @@ xdr.struct("DecoratedSignature", [
 //       END_SPONSORING_FUTURE_RESERVES = 17,
 //       REVOKE_SPONSORSHIP = 18,
 //       CLAWBACK = 19,
-//       CLAWBACK_CLAIMABLE_BALANCE = 20
+//       CLAWBACK_CLAIMABLE_BALANCE = 20,
+//       SET_TRUST_LINE_FLAGS = 21
 //   };
 //
 // ===========================================================================
@@ -2895,6 +2896,7 @@ xdr.enum("OperationType", {
   revokeSponsorship: 18,
   clawback: 19,
   clawbackClaimableBalance: 20,
+  setTrustLineFlags: 21,
 });
 
 // === xdr source ============================================================
@@ -3263,6 +3265,25 @@ xdr.struct("ClawbackClaimableBalanceOp", [
 
 // === xdr source ============================================================
 //
+//   struct SetTrustLineFlagsOp
+//   {
+//       AccountID trustor;
+//       Asset asset;
+//   
+//       uint32 clearFlags; // which flags to clear
+//       uint32 setFlags;   // which flags to set
+//   };
+//
+// ===========================================================================
+xdr.struct("SetTrustLineFlagsOp", [
+  ["trustor", xdr.lookup("AccountId")],
+  ["asset", xdr.lookup("Asset")],
+  ["clearFlags", xdr.lookup("Uint32")],
+  ["setFlags", xdr.lookup("Uint32")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (OperationType type)
 //       {
 //       case CREATE_ACCOUNT:
@@ -3307,6 +3328,8 @@ xdr.struct("ClawbackClaimableBalanceOp", [
 //           ClawbackOp clawbackOp;
 //       case CLAWBACK_CLAIMABLE_BALANCE:
 //           ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
+//       case SET_TRUST_LINE_FLAGS:
+//           SetTrustLineFlagsOp setTrustLineFlagsOp;
 //       }
 //
 // ===========================================================================
@@ -3335,6 +3358,7 @@ xdr.union("OperationBody", {
     ["revokeSponsorship", "revokeSponsorshipOp"],
     ["clawback", "clawbackOp"],
     ["clawbackClaimableBalance", "clawbackClaimableBalanceOp"],
+    ["setTrustLineFlags", "setTrustLineFlagsOp"],
   ],
   arms: {
     createAccountOp: xdr.lookup("CreateAccountOp"),
@@ -3356,6 +3380,7 @@ xdr.union("OperationBody", {
     revokeSponsorshipOp: xdr.lookup("RevokeSponsorshipOp"),
     clawbackOp: xdr.lookup("ClawbackOp"),
     clawbackClaimableBalanceOp: xdr.lookup("ClawbackClaimableBalanceOp"),
+    setTrustLineFlagsOp: xdr.lookup("SetTrustLineFlagsOp"),
   },
 });
 
@@ -3412,6 +3437,8 @@ xdr.union("OperationBody", {
 //           ClawbackOp clawbackOp;
 //       case CLAWBACK_CLAIMABLE_BALANCE:
 //           ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
+//       case SET_TRUST_LINE_FLAGS:
+//           SetTrustLineFlagsOp setTrustLineFlagsOp;
 //       }
 //       body;
 //   };
@@ -5018,6 +5045,51 @@ xdr.union("ClawbackClaimableBalanceResult", {
 
 // === xdr source ============================================================
 //
+//   enum SetTrustLineFlagsResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       SET_TRUST_LINE_FLAGS_SUCCESS = 0,
+//   
+//       // codes considered as "failure" for the operation
+//       SET_TRUST_LINE_FLAGS_MALFORMED = -1,
+//       SET_TRUST_LINE_FLAGS_NO_TRUST_LINE = -2,
+//       SET_TRUST_LINE_FLAGS_CANT_REVOKE = -3,
+//       SET_TRUST_LINE_FLAGS_INVALID_STATE = -4
+//   };
+//
+// ===========================================================================
+xdr.enum("SetTrustLineFlagsResultCode", {
+  setTrustLineFlagsSuccess: 0,
+  setTrustLineFlagsMalformed: -1,
+  setTrustLineFlagsNoTrustLine: -2,
+  setTrustLineFlagsCantRevoke: -3,
+  setTrustLineFlagsInvalidState: -4,
+});
+
+// === xdr source ============================================================
+//
+//   union SetTrustLineFlagsResult switch (SetTrustLineFlagsResultCode code)
+//   {
+//   case SET_TRUST_LINE_FLAGS_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("SetTrustLineFlagsResult", {
+  switchOn: xdr.lookup("SetTrustLineFlagsResultCode"),
+  switchName: "code",
+  switches: [
+    ["setTrustLineFlagsSuccess", xdr.void()],
+  ],
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
 //   enum OperationResultCode
 //   {
 //       opINNER = 0, // inner object result is valid
@@ -5087,6 +5159,8 @@ xdr.enum("OperationResultCode", {
 //           ClawbackResult clawbackResult;
 //       case CLAWBACK_CLAIMABLE_BALANCE:
 //           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
+//       case SET_TRUST_LINE_FLAGS:
+//           SetTrustLineFlagsResult setTrustLineFlagsResult;
 //       }
 //
 // ===========================================================================
@@ -5115,6 +5189,7 @@ xdr.union("OperationResultTr", {
     ["revokeSponsorship", "revokeSponsorshipResult"],
     ["clawback", "clawbackResult"],
     ["clawbackClaimableBalance", "clawbackClaimableBalanceResult"],
+    ["setTrustLineFlags", "setTrustLineFlagsResult"],
   ],
   arms: {
     createAccountResult: xdr.lookup("CreateAccountResult"),
@@ -5138,6 +5213,7 @@ xdr.union("OperationResultTr", {
     revokeSponsorshipResult: xdr.lookup("RevokeSponsorshipResult"),
     clawbackResult: xdr.lookup("ClawbackResult"),
     clawbackClaimableBalanceResult: xdr.lookup("ClawbackClaimableBalanceResult"),
+    setTrustLineFlagsResult: xdr.lookup("SetTrustLineFlagsResult"),
   },
 });
 
@@ -5190,6 +5266,8 @@ xdr.union("OperationResultTr", {
 //           ClawbackResult clawbackResult;
 //       case CLAWBACK_CLAIMABLE_BALANCE:
 //           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
+//       case SET_TRUST_LINE_FLAGS:
+//           SetTrustLineFlagsResult setTrustLineFlagsResult;
 //       }
 //       tr;
 //   default:
