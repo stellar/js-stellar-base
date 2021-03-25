@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [v5.0.0](https://github.com/stellar/js-stellar-base/compare/v4.0.3..v5.0.0)
+
 ### Add
 - Introduced new CAP-35 operations, `ClawbackOp` and `ClawbackClaimableBalanceOp` ([#397](https://github.com/stellar/js-stellar-base/pull/397/)).
 
