@@ -2184,13 +2184,11 @@ describe('Operation', function() {
       }).to.throw();
     });
     it('returns a clawback()', function() {
-      let asset = new StellarBase.Asset(
-        'GCOIN',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
+      let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      let asset = new StellarBase.Asset('GCOIN', account);
       const amount = '100.0000000';
       const op = StellarBase.Operation.clawback({
-        from: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7',
+        from: account,
         amount: amount,
         asset: asset
       });
@@ -2202,16 +2200,14 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('clawback');
       expect(obj.asset.equals(asset)).to.be.true;
+      expect(obj.from).to.be.equal(account);
     });
   });
 
   describe('setTrustLineFlags()', function() {
     it('creates a SetTrustLineFlagsOp', function() {
       let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      let asset = new StellarBase.Asset(
-        'GCOIN',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
+      let asset = new StellarBase.Asset('GCOIN', account);
 
       const op = StellarBase.Operation.setTrustLineFlags({
         trustor: account,
@@ -2240,10 +2236,7 @@ describe('Operation', function() {
     });
     it('leaves unmodified flags as undefined', function() {
       let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      let asset = new StellarBase.Asset(
-        'GCOIN',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
+      let asset = new StellarBase.Asset('GCOIN', account);
 
       expect(() =>
         StellarBase.Operation.setTrustLineFlags({
