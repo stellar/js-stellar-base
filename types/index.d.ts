@@ -239,6 +239,9 @@ export namespace OperationType {
   type BeginSponsoringFutureReserves = 'beginSponsoringFutureReserves';
   type EndSponsoringFutureReserves = 'endSponsoringFutureReserves';
   type RevokeSponsorship = 'revokeSponsorship';
+  type Clawback = 'clawback';
+  type ClawbackClaimableBalance = 'clawbackClaimableBalance';
+  type SetTrustLineFlags = 'setTrustLineFlags';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -259,7 +262,10 @@ export type OperationType =
   | OperationType.ClaimClaimableBalance
   | OperationType.BeginSponsoringFutureReserves
   | OperationType.EndSponsoringFutureReserves
-  | OperationType.RevokeSponsorship;
+  | OperationType.RevokeSponsorship
+  | OperationType.Clawback
+  | OperationType.ClawbackClaimableBalance
+  | OperationType.SetTrustLineFlags;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -373,6 +379,23 @@ export namespace OperationOptions {
     account: string;
     signer: SignerKeyOptions;
   }
+  interface Clawback extends BaseOptions {
+    asset: Asset;
+    amount: string;
+    from: string;
+  }
+  interface ClawbackClaimableBalance extends BaseOptions {
+    balanceId: string;
+  }
+  interface SetTrustLineFlags extends BaseOptions {
+    trustor: string;
+    asset: Asset;
+    flags: {
+      authorized: boolean;
+      authorizedToMaintainLiabilities: boolean;
+      clawbackEnabled: boolean;
+    };
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -397,7 +420,10 @@ export type OperationOptions =
   | OperationOptions.RevokeOfferSponsorship
   | OperationOptions.RevokeDataSponsorship
   | OperationOptions.RevokeClaimableBalanceSponsorship
-  | OperationOptions.RevokeSignerSponsorship;
+  | OperationOptions.RevokeSignerSponsorship
+  | OperationOptions.Clawback
+  | OperationOptions.ClawbackClaimableBalance
+  | OperationOptions.SetTrustLineFlags;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -622,6 +648,35 @@ export namespace Operation {
     options: OperationOptions.RevokeSignerSponsorship
   ): xdr.Operation<RevokeSignerSponsorship>;
 
+  interface Clawback extends BaseOperation<OperationType.Clawback> {
+    asset: Asset;
+    amount: string;
+    from: string;
+  }
+  function clawback(
+    options: OperationOptions.Clawback
+  ): xdr.Operation<Clawback>;
+
+  interface ClawbackClaimableBalance extends BaseOperation<OperationType.ClawbackClaimableBalance> {
+    balanceId: string;
+  }
+  function clawbackClaimableBalance(
+    options: OperationOptions.ClawbackClaimableBalance
+  ): xdr.Operation<ClawbackClaimableBalance>;
+
+  interface SetTrustLineFlags extends BaseOperation<OperationType.SetTrustLineFlags> {
+    trustor: string;
+    asset: Asset;
+    flags: {
+      authorized: boolean;
+      authorizedToMaintainLiabilities: boolean;
+      clawbackEnabled: boolean;
+    };
+  }
+  function setTrustLineFlags(
+    options: OperationOptions.SetTrustLineFlags
+  ): xdr.Operation<SetTrustLineFlags>;
+
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
@@ -650,7 +705,10 @@ export type Operation =
   | Operation.RevokeOfferSponsorship
   | Operation.RevokeDataSponsorship
   | Operation.RevokeClaimableBalanceSponsorship
-  | Operation.RevokeSignerSponsorship;
+  | Operation.RevokeSignerSponsorship
+  | Operation.Clawback
+  | Operation.ClawbackClaimableBalance
+  | Operation.SetTrustLineFlags;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
