@@ -62,7 +62,6 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.bumpSequence}`
  * * `{@link Operation.createClaimableBalance}`
  * * `{@link Operation.claimClaimableBalance}`
- * * `{@link Operation.clawbackClaimableBalance}`
  * * `{@link Operation.beginSponsoringFutureReserves}`
  * * `{@link Operation.endSponsoringFutureReserves}`
  * * `{@link Operation.revokeAccountSponsorship}`
@@ -72,6 +71,7 @@ export const AuthImmutableFlag = 1 << 2;
  * * `{@link Operation.revokeClaimableBalanceSponsorship}`
  * * `{@link Operation.revokeSignerSponsorship}`
  * * `{@link Operation.clawback}`
+ * * `{@link Operation.clawbackClaimableBalance}`
  * * `{@link Operation.setTrustLineFlags}`
  *
  * @class Operation
@@ -276,11 +276,6 @@ export class Operation {
         result.balanceId = attrs.toXDR('hex');
         break;
       }
-      case 'clawbackClaimableBalance': {
-        result.type = 'clawbackClaimableBalance';
-        result.balanceId = attrs.toXDR('hex');
-        break;
-      }
       case 'beginSponsoringFutureReserves': {
         result.type = 'beginSponsoringFutureReserves';
         result.sponsoredId = accountIdtoAddress(attrs.sponsoredId());
@@ -299,6 +294,11 @@ export class Operation {
         result.amount = this._fromXDRAmount(attrs.amount());
         result.from = encodeMuxedAccountToAddress(attrs.from());
         result.asset = Asset.fromOperation(attrs.asset());
+        break;
+      }
+      case 'clawbackClaimableBalance': {
+        result.type = 'clawbackClaimableBalance';
+        result.balanceId = attrs.toXDR('hex');
         break;
       }
       case 'setTrustLineFlags': {
