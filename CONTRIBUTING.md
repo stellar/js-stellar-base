@@ -13,16 +13,16 @@ Use your best judgement when deciding on when to craft a release: maybe enough c
 
 As you probably already know, there are two main components to the JavaScript SDK environment: the `stellar-base` package (this repo) and the higher-level `stellar-sdk` package that relies on this one as a dependency. Care should be taken when updating either, as there are quite a few small steps that can go wrong.
 
-**Updating Base**
+### Updating Base
 Once all of the PRs for a particular release are in, it's time to actually publish & deploy a new version.
 
  - Create a new branch with the new version, e.g. `git switch -c v1.0.0`
 
- - First, look at the diff between the latest release and master: https://github.com/stellar/js-stellar-base/compare/v5.1.0...master. Replace `v5.1.0` here with the [latest release](https://github.com/stellar/js-stellar-base/releases/latest).
+ - First, look at the diff between the latest release and master: e.g. https://github.com/stellar/js-stellar-base/compare/v5.1.0...master. Replace `v5.1.0` here with the [latest release](https://github.com/stellar/js-stellar-base/releases/latest).
 
  - Ensure that all of the PRs in this delta are accurately reflected in the [CHANGELOG](./CHANGELOG.md), broken down by impact and linking to the corresponding PRs. Update the file if necessary.
 
- - Update the top-level "version" field in the [package.json](./package.json) file to reflect the new version.
+ - Update the top-level `"version"` field in the [package.json](./package.json) file to reflect the new version.
 
  - Run the final sanity check to ensure the builds pass: `yarn dtslint && yarn test && yarn preversion`.
 
@@ -36,8 +36,8 @@ Once all of the PRs for a particular release are in, it's time to actually publi
 watch 'curl -s "https://registry.npmjs.org/stellar-base" | jq ".versions | keys | last"'
 ```
 
-**Updating SDK**
-The process for the SDK is exactly the same as for base, except there's a key additional step. **If base has been updated**, you want to bump its version accordingly. This is straightforward: change the version field under the "dependencies" section in the SDK's [package.json](https://github.com/stellar/js-stellar-sdk/blob/master/package.json#L140):
+### Updating SDK
+The process for the SDK is exactly the same as for base, except there's a key additional step. **If base has been updated**, you want to bump its version accordingly. This is straightforward: change the version field of `"stellar-base"` under the `"dependencies"` section in the SDK's [package.json](https://github.com/stellar/js-stellar-sdk/blob/master/package.json#L140):
 
 ```diff
   "dependencies": {
