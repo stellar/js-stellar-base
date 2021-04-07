@@ -2,13 +2,11 @@
 
 ## Unreleased
 
-## [v6.0.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v6.0.0)
-
 ### Update
 
-- The Typescript definitions have been updated to support CAP-35 ([#TODO](https://github.com/stellar/js-stellar-base/pull/TODO)). 
+- The Typescript definitions have been updated to support CAP-35 ([#407](https://github.com/stellar/js-stellar-base/pull/407)). 
 
-- The `AllowTrust` flag type definitions (`TrustLineFlags`) have been renamed to match the XDR directly, since SetTrustLineFlags supercedes the now-deprecated `AllowTrustOp` ([#TODO](https://github.com/stellar/js-stellar-base/pull/TODO)).
+- The `AllowTrust` flag type definitions (`TrustLineFlags`) have been renamed to match the XDR directly, since SetTrustLineFlags supercedes the now-deprecated `AllowTrustOp` ([#407](https://github.com/stellar/js-stellar-base/pull/407)).
 
 
 ## [v5.0.0](https://github.com/stellar/js-stellar-base/compare/v4.0.3..v5.0.0)
