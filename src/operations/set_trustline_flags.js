@@ -18,16 +18,18 @@ import { Keypair } from '../keypair';
  * @param {string} opts.trustor     - the account whose trustline this is
  * @param {Asset}  opts.asset       - the asset on the trustline
  * @param {object} opts.flags       - the set of flags to modify
- * @param {bool}   opts.flags.authorized  - authorize account to perform transactions
- *     with its credit
- * @param {bool}   opts.flags.authorizedToMaintainLiabilities - authorize
- *     account to maintain and reduce liabilities for its credit
- * @param {bool}   opts.flags.clawbackEnabled - stop claimable balances on this
- *     trustlines from having clawbacks enabled (this flag can only be set to
- *     false!)
  *
+ * @param {bool}   [opts.flags.authorized]  - authorize account to perform
+ *     transactions with its credit
+ * @param {bool}   [opts.flags.authorizedToMaintainLiabilities] - authorize
+ *     account to maintain and reduce liabilities for its credit
+ * @param {bool}   [opts.flags.clawbackEnabled] - stop claimable balances on
+ *     this trustlines from having clawbacks enabled (this flag can only be set
+ *     to false!)
  * @param {string} [opts.source] - The source account for the operation.
  *                                 Defaults to the transaction's source account.
+ *
+ * @note You must include at least one flag.
  *
  * @return {xdr.SetTrustLineFlagsOp}
  *

@@ -391,9 +391,9 @@ export namespace OperationOptions {
     trustor: string;
     asset: Asset;
     flags: {
-      authorized?: boolean | undefined;
-      authorizedToMaintainLiabilities?: boolean | undefined;
-      clawbackEnabled?: boolean | undefined;
+      authorized?: boolean;
+      authorizedToMaintainLiabilities?: boolean;
+      clawbackEnabled?: boolean;
     };
   }
 }
@@ -668,9 +668,9 @@ export namespace Operation {
     trustor: string;
     asset: Asset;
     flags: {
-      authorized?: boolean | undefined;
-      authorizedToMaintainLiabilities?: boolean | undefined;
-      clawbackEnabled?: boolean | undefined;
+      authorized?: boolean;
+      authorizedToMaintainLiabilities?: boolean;
+      clawbackEnabled?: boolean;
     };
   }
   function setTrustLineFlags(
