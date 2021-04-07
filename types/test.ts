@@ -93,9 +93,9 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       trustor: account.accountId(),
       asset: usd,
       flags: {
-        authorize: true,
-        authorizeToMaintainLiabilities: true,
-        enableTrustlineClawback: true,
+        authorized: true,
+        authorizedToMaintainLiabilities: true,
+        clawbackEnabled: true,
       },
     })
   ).addOperation(
@@ -103,7 +103,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       trustor: account.accountId(),
       asset: usd,
       flags: {
-        authorize: true,
+        authorized: true,
       },
     })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
@@ -244,32 +244,21 @@ claimant.predicate; // $ExpectType ClaimPredicate
 
 const claw = StellarSdk.xdr.ClawbackOp.fromXDR(
   // tslint:disable:max-line-length
-  'AAAAAAAAABMAAAABUkFORAAAAABX4bxZtGki6kctorbhhcn3lD09fT42k5RcSAkTvDPgLwAAAABX4bxZtGki6kctorbhhcn3lD09fT42k5RcSAkTvDPgLwAAAAJUC+QA',
+  'AAAAAAAAABMAAAABVVNEAAAAAADNTrgPO19O0EsnYjSc333yWGLKEVxLyu1kfKjCKOz9ewAAAADFTYDKyTn2O0DVUEycHKfvsnFWj91TVl0ut1kwg5nLigAAAAJUC+QA',
   'base64'
 );
 claw; // $ExpectType ClawbackOp
 
-// .addOperation(
-//     StellarSdk.Operation.clawbackClaimableBalance({
-//       balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
-//     })
-//   ).addOperation(
-//     StellarSdk.Operation.setTrustLineFlags({
-//       trustor: account.accountId(),
-//       asset: new StellarSdk.Asset("RAND", account.accountId()),
-//       flags: {
-//         deauthorize: true,
-//         authorize: true,
-//         authorizeToMaintainLiabilities: true,
-//         enableTrustlineClawback: true,
-//       },
-//     })
-//   ).addOperation(
-//     StellarSdk.Operation.setTrustLineFlags({
-//       trustor: account.accountId(),
-//       asset: new StellarSdk.Asset("RAND", account.accountId()),
-//       flags: {
-//         deauthorize: false,
-//         authorize: true,
-//       },
-//     }))
+const clawCb = StellarSdk.xdr.ClawbackClaimableBalanceOp.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAAAAABUAAAAAxU2Aysk59jtA1VBMnByn77JxVo/dU1ZdLrdZMIOZy4oAAAABVVNEAAAAAADNTrgPO19O0EsnYjSc333yWGLKEVxLyu1kfKjCKOz9ewAAAAAAAAAH',
+  'base64'
+);
+clawCb; // $ExpectType ClawbackClaimableBalanceOp
+
+const trust = StellarSdk.xdr.SetTrustLineFlagsOp.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAAAAABUAAAAAF1frB6QZRDTYW4dheEA3ZZLCjSWs9eQgzsyvqdUy2rgAAAABVVNEAAAAAADNTrgPO19O0EsnYjSc333yWGLKEVxLyu1kfKjCKOz9ewAAAAAAAAAB',
+  'base64'
+);
+trust; // $ExpectType SetTrustLineFlagsOp
