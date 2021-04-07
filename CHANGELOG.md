@@ -2,20 +2,31 @@
 
 ## Unreleased
 
+## [v6.0.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v6.0.0)
+
+### Update
+
+- The Typescript definitions have been updated to support CAP-35 ([#TODO](https://github.com/stellar/js-stellar-base/pull/TODO)). 
+
+- The `AllowTrust` flag type definitions (`TrustLineFlags`) have been renamed to match the XDR directly, since SetTrustLineFlags supercedes the now-deprecated `AllowTrustOp` ([#TODO](https://github.com/stellar/js-stellar-base/pull/TODO)).
+
+
 ## [v5.0.0](https://github.com/stellar/js-stellar-base/compare/v4.0.3..v5.0.0)
 
 ### Add
-- Introduced new CAP-35 operations, `ClawbackOp` and `ClawbackClaimableBalanceOp` ([#397](https://github.com/stellar/js-stellar-base/pull/397/)).
+
+- Introduced new CAP-35 operations, `ClawbackOp`, `ClawbackClaimableBalanceOp`, and `SetTrustLineFlagsOp` ([#397](https://github.com/stellar/js-stellar-base/pull/397/)).
 
 ### Update
 
 - Add an additional parameter check to `claimClaimableBalance` to fail faster ([#390](https://github.com/stellar/js-stellar-base/pull/390)).
 
-- The XDR & TS definitions have been updated to support CAP-35 ([#394](https://github.com/stellar/js-stellar-base/pull/394)).
+- The XDR definitions have been updated to support CAP-35 ([#394](https://github.com/stellar/js-stellar-base/pull/394)).
 
 ### Breaking
 
 - `AllowTrustOpAsset` has been renamed to `AssetCode` ([#394](https://github.com/stellar/js-stellar-base/pull/394))
+
 
 ### Deprecated
 

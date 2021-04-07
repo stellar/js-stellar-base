@@ -78,6 +78,34 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
         preAuthTx: "da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
       }
     })
+  ).addOperation(
+    StellarSdk.Operation.clawback({
+      from: account.accountId(),
+      amount: "1000",
+      asset: usd,
+    })
+  ).addOperation(
+    StellarSdk.Operation.clawbackClaimableBalance({
+      balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+    })
+  ).addOperation(
+    StellarSdk.Operation.setTrustLineFlags({
+      trustor: account.accountId(),
+      asset: usd,
+      flags: {
+        authorize: true,
+        authorizeToMaintainLiabilities: true,
+        enableTrustlineClawback: true,
+      },
+    })
+  ).addOperation(
+    StellarSdk.Operation.setTrustLineFlags({
+      trustor: account.accountId(),
+      asset: usd,
+      flags: {
+        authorize: true,
+      },
+    })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
@@ -213,3 +241,35 @@ const claimant = new StellarSdk.Claimant(sourceKey.publicKey()); // $ExpectType 
 claimant.toXDRObject(); // $ExpectType Claimant
 claimant.destination; // $ExpectType string
 claimant.predicate; // $ExpectType ClaimPredicate
+
+const claw = StellarSdk.xdr.ClawbackOp.fromXDR(
+  // tslint:disable:max-line-length
+  'AAAAAAAAABMAAAABUkFORAAAAABX4bxZtGki6kctorbhhcn3lD09fT42k5RcSAkTvDPgLwAAAABX4bxZtGki6kctorbhhcn3lD09fT42k5RcSAkTvDPgLwAAAAJUC+QA',
+  'base64'
+);
+claw; // $ExpectType ClawbackOp
+
+// .addOperation(
+//     StellarSdk.Operation.clawbackClaimableBalance({
+//       balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+//     })
+//   ).addOperation(
+//     StellarSdk.Operation.setTrustLineFlags({
+//       trustor: account.accountId(),
+//       asset: new StellarSdk.Asset("RAND", account.accountId()),
+//       flags: {
+//         deauthorize: true,
+//         authorize: true,
+//         authorizeToMaintainLiabilities: true,
+//         enableTrustlineClawback: true,
+//       },
+//     })
+//   ).addOperation(
+//     StellarSdk.Operation.setTrustLineFlags({
+//       trustor: account.accountId(),
+//       asset: new StellarSdk.Asset("RAND", account.accountId()),
+//       flags: {
+//         deauthorize: false,
+//         authorize: true,
+//       },
+//     }))

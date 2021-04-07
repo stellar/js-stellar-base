@@ -159,11 +159,19 @@ export namespace TrustLineFlag {
   type deauthorize = 0;
   type authorize = 1;
   type authorizeToMaintainLiabilities = 2;
+  type enableTrustlineClawback = 4;
 }
 export type TrustLineFlag =
   | TrustLineFlag.deauthorize
   | TrustLineFlag.authorize
-  | TrustLineFlag.authorizeToMaintainLiabilities;
+  | TrustLineFlag.authorizeToMaintainLiabilities
+  | TrustLineFlag.enableTrustlineClawback;
+export type TrustLineFlagSet = {
+  deauthorize?: boolean | undefined;
+  authorize?: boolean | undefined;
+  authorizeToMaintainLiabilities?: boolean | undefined;
+  enableTrustlineClawback?: boolean | undefined;
+}
 
 export namespace Signer {
   interface Ed25519PublicKey {
