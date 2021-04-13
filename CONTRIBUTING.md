@@ -37,16 +37,4 @@ watch 'curl -s "https://registry.npmjs.org/stellar-base" | jq ".versions | keys 
 ```
 
 ### Updating SDK
-The process for the SDK is exactly the same as for base, except there's a key additional step sometimes.
-
- - [ ] **If base has been updated**, you want to bump its version accordingly. This is straightforward: change the version field of `"stellar-base"` under the `"dependencies"` section in the SDK's [package.json](https://github.com/stellar/js-stellar-sdk/blob/master/package.json#L140):
-
-```diff
-  "dependencies": {
-     ...
--    "stellar-base": "^1.0.0",
-+    "stellar-base": "^2.0.0",
-  }
-```
-
-  - [ ] Then, run `yarn` so that the dependency is pulled (ensuring its a valid version) and the lockfile is updated with the latest integrity details. You can now commit the change and PR accordingly.
+Refer to the SDK's [contributing guide](https://github.com/stellar/js-stellar-sdk/blob/master/CONTRIBUTING.md#Releasing) for any additional steps required there.
