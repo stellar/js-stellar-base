@@ -21,10 +21,13 @@ function weightCheckFunction(value, name) {
  *   - `{@link AuthRequiredFlag}`
  *   - `{@link AuthRevocableFlag}`
  *   - `{@link AuthImmutableFlag}`
+ *   - `{@link AuthClawbackEnabledFlag}`
  *
  * It's possible to set/clear multiple flags at once using logical or.
+ *
  * @function
  * @alias Operation.setOptions
+ *
  * @param {object} opts Options object
  * @param {string} [opts.inflationDest] - Set this account ID as the account's inflation destination.
  * @param {(number|string)} [opts.clearFlags] - Bitmap integer for which account flags to clear.
@@ -41,6 +44,7 @@ function weightCheckFunction(value, name) {
  * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
  * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
+ *
  * @returns {xdr.SetOptionsOp}  XDR operation
  * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
  */

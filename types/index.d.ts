@@ -145,15 +145,18 @@ export enum Networks {
 export const AuthRequiredFlag: 1;
 export const AuthRevocableFlag: 2;
 export const AuthImmutableFlag: 4;
+export const AuthClawbackEnabledFlag: 8;
 export namespace AuthFlag {
   type immutable = typeof AuthImmutableFlag;
   type required = typeof AuthRequiredFlag;
   type revocable = typeof AuthRevocableFlag;
+  type clawbackEnabled = typeof AuthClawbackEnabledFlag;
 }
 export type AuthFlag =
   | AuthFlag.immutable
   | AuthFlag.required
-  | AuthFlag.revocable;
+  | AuthFlag.revocable
+  | AuthFlag.clawbackEnabled;
 
 export namespace TrustLineFlag {
   type deauthorize = 0;

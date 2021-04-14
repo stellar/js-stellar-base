@@ -551,6 +551,7 @@ describe('Operation', function() {
       expect(StellarBase.AuthRequiredFlag).to.be.equal(1);
       expect(StellarBase.AuthRevocableFlag).to.be.equal(2);
       expect(StellarBase.AuthImmutableFlag).to.be.equal(4);
+      expect(StellarBase.AuthClawbackEnabledFlag).to.be.equal(8);
     });
 
     it('creates a setOptionsOp', function() {
@@ -559,7 +560,8 @@ describe('Operation', function() {
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       opts.clearFlags =
         StellarBase.AuthRevocableFlag | StellarBase.AuthImmutableFlag;
-      opts.setFlags = StellarBase.AuthRequiredFlag;
+      opts.setFlags =
+        StellarBase.AuthRequiredFlag | StellarBase.AuthClawbackEnabledFlag;
       opts.masterWeight = 0;
       opts.lowThreshold = 1;
       opts.medThreshold = 2;
@@ -581,7 +583,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('setOptions');
       expect(obj.inflationDest).to.be.equal(opts.inflationDest);
       expect(obj.clearFlags).to.be.equal(6);
-      expect(obj.setFlags).to.be.equal(1);
+      expect(obj.setFlags).to.be.equal(9);
       expect(obj.masterWeight).to.be.equal(opts.masterWeight);
       expect(obj.lowThreshold).to.be.equal(opts.lowThreshold);
       expect(obj.medThreshold).to.be.equal(opts.medThreshold);
