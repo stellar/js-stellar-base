@@ -14,8 +14,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       sponsoredId: account.accountId(),
       source: masterKey.publicKey()
     })
-  )
-  .addOperation(
+  ).addOperation(
     StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() }),
   ).addOperation(
     StellarSdk.Operation.createClaimableBalance({
@@ -105,6 +104,11 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       flags: {
         authorized: true,
       },
+    })
+  ).addOperation(
+    StellarSdk.Operation.setOptions({
+      setFlags:   StellarSdk.AuthFlag.immutable | StellarSdk.AuthFlag.required,
+      clearFlags: StellarSdk.AuthFlag.revocable | StellarSdk.AuthFlag.clawbackEnabled
     })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
