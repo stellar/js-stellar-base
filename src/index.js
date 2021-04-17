@@ -18,7 +18,8 @@ export {
   Operation,
   AuthRequiredFlag,
   AuthRevocableFlag,
-  AuthImmutableFlag
+  AuthImmutableFlag,
+  AuthClawbackEnabledFlag
 } from './operation';
 export * from './memo';
 export { Account } from './account';
