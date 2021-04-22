@@ -516,7 +516,7 @@ describe('Transaction', function() {
       const amount = '2000.0000000';
       const asset = StellarBase.Asset.native();
       let tx = new StellarBase.TransactionBuilder(account, {
-        fee: '100',
+        fee: baseFee,
         networkPassphrase: networkPassphrase,
         timebounds: {
           minTime: 0,

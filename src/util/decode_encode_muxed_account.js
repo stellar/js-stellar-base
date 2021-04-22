@@ -29,10 +29,10 @@ export function decodeAddressToProperMuxedAccount(address) {
   //    constructor(attributes: { id: Uint64; ed25519: Buffer });
   //
   // Note the ID is the first attribute. However, the ID comes *last* in the
-  // stringified address itself (it's the last 8-byte suffix). The `fromXDR()`
-  // method interprets bytes in order, so we need to parse out the raw binary
-  // into its requisite parts, i.e. use the MuxedAccountMed25519 constructor
-  // directly.
+  // stringified (base32-encoded) address itself (it's the last 8-byte suffix).
+  // The `fromXDR()` method interprets bytes in order, so we need to parse out
+  // the raw binary into its requisite parts, i.e. use the MuxedAccountMed25519
+  // constructor directly.
   //
   // Refer to https://github.com/stellar/go/blob/master/xdr/muxed_account.go#L26
   // for the Golang implementation of the M... parsing.

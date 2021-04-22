@@ -1,3 +1,5 @@
+const { ENGINE_METHOD_PKEY_METHS } = require('constants');
+
 describe('StrKey', function() {
   beforeEach(function() {
     var keypair = StellarBase.Keypair.master(
@@ -225,64 +227,72 @@ describe('StrKey', function() {
     });
   });
 
+  const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+
+  const MPUBKEY =
+    'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK';
+  const RAW_MPUBKEY = Buffer.from([
+    0x3f,
+    0x0c,
+    0x34,
+    0xbf,
+    0x93,
+    0xad,
+    0x0d,
+    0x99,
+    0x71,
+    0xd0,
+    0x4c,
+    0xcc,
+    0x90,
+    0xf7,
+    0x05,
+    0x51,
+    0x1c,
+    0x83,
+    0x8a,
+    0xad,
+    0x97,
+    0x34,
+    0xa4,
+    0xa2,
+    0xfb,
+    0x0d,
+    0x7a,
+    0x03,
+    0xfc,
+    0x7f,
+    0xe8,
+    0x9a,
+    0x80,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00
+  ]);
+
   describe('#muxedAccounts', function() {
     it('encodes & decodes M... addresses correctly', function() {
-      const BUFFER = Buffer.from([
-        0x3f,
-        0x0c,
-        0x34,
-        0xbf,
-        0x93,
-        0xad,
-        0x0d,
-        0x99,
-        0x71,
-        0xd0,
-        0x4c,
-        0xcc,
-        0x90,
-        0xf7,
-        0x05,
-        0x51,
-        0x1c,
-        0x83,
-        0x8a,
-        0xad,
-        0x97,
-        0x34,
-        0xa4,
-        0xa2,
-        0xfb,
-        0x0d,
-        0x7a,
-        0x03,
-        0xfc,
-        0x7f,
-        0xe8,
-        0x9a,
-        0x80,
-        0x00,
-        0x00,
-        0x00,
-        0x00,
-        0x00,
-        0x00,
-        0x00
-      ]);
-      const MPUBKEY =
-        'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK';
-
-      expect(StellarBase.StrKey.encodeMed25519PublicKey(BUFFER)).to.equal(
+      expect(StellarBase.StrKey.encodeMed25519PublicKey(RAW_MPUBKEY)).to.equal(
         MPUBKEY
       );
       expect(StellarBase.StrKey.decodeMed25519PublicKey(MPUBKEY)).to.eql(
-        BUFFER
+        RAW_MPUBKEY
       );
+    });
+    it('decodes underlying G... address correctly', function() {
+      expect(
+        StellarBase.encodeMuxedAccountToAddress(
+          StellarBase.decodeAddressToProperMuxedAccount(MPUBKEY)
+        )
+      ).to.equal(PUBKEY);
     });
   });
 
   describe('#muxedAccounts', function() {
-    const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
     const RAW_PUBKEY = StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY);
     const unmuxed = StellarBase.xdr.MuxedAccount.keyTypeEd25519(RAW_PUBKEY);
 
@@ -291,71 +301,45 @@ describe('StrKey', function() {
       expect(unmuxed.switch()).to.equal(
         StellarBase.xdr.CryptoKeyType.keyTypeEd25519()
       );
-      expect(
-        unmuxed
-          .ed25519()
-          .equals(
-            Buffer.from([
-              63,
-              12,
-              52,
-              191,
-              147,
-              173,
-              13,
-              153,
-              113,
-              208,
-              76,
-              204,
-              144,
-              247,
-              5,
-              81,
-              28,
-              131,
-              138,
-              173,
-              151,
-              52,
-              164,
-              162,
-              251,
-              13,
-              122,
-              3,
-              252,
-              127,
-              232,
-              154
-            ])
-          )
-      ).to.be.true;
+      expect(unmuxed.ed25519()).to.eql(RAW_PUBKEY);
 
       const pubkey = StellarBase.encodeMuxedAccountToAddress(unmuxed);
       expect(pubkey).to.equal(PUBKEY);
     });
 
-    const MPUBKEY =
-      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK';
+    const CASES = {
+      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK:
+        '9223372036854775808', // 0x8000...
+      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAFB4CJJBRKA:
+        '1357924680',
+      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAE2JUG6:
+        '1234',
+      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ: '0'
+    };
 
-    it('encodes & decodes muxed keys w/ yuge ID', function() {
-      const muxed = StellarBase.decodeAddressToProperMuxedAccount(MPUBKEY);
-      expect(StellarBase.xdr.MuxedAccount.isValid(muxed)).to.be.true;
-      expect(muxed.switch()).to.equal(
-        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
-      );
+    for (const CASE_MPUBKEY in CASES) {
+      const CASE_ID = CASES[CASE_MPUBKEY];
 
-      const innerMux = muxed.value();
-      const id = StellarBase.xdr.Uint64.fromString('9223372036854775808'); // 0x8000...
-      expect(innerMux).to.be.an.instanceof(
-        StellarBase.xdr.MuxedAccountMed25519
-      );
-      expect(innerMux.ed25519()).to.eql(unmuxed.ed25519());
-      expect(innerMux.id()).to.eql(id);
+      it(`encodes & decodes muxed key w/ ID=${CASE_ID}`, function() {
+        const muxed = StellarBase.decodeAddressToProperMuxedAccount(
+          CASE_MPUBKEY
+        );
+        expect(StellarBase.xdr.MuxedAccount.isValid(muxed)).to.be.true;
+        expect(muxed.switch()).to.equal(
+          StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
+        );
 
-      const mpubkey = StellarBase.encodeMuxedAccountToProperAddress(muxed);
-      expect(mpubkey).to.equal(MPUBKEY);
-    });
+        const innerMux = muxed.value();
+        const id = StellarBase.xdr.Uint64.fromString(CASE_ID);
+        expect(innerMux).to.be.an.instanceof(
+          StellarBase.xdr.MuxedAccountMed25519
+        );
+        expect(innerMux.ed25519()).to.eql(unmuxed.ed25519());
+        expect(innerMux.id()).to.eql(id);
+
+        const mpubkey = StellarBase.encodeMuxedAccountToProperAddress(muxed);
+        expect(mpubkey).to.equal(CASE_MPUBKEY);
+      });
+    }
   });
 });
