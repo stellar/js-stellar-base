@@ -2,20 +2,30 @@ import xdr from '../generated/stellar-xdr_generated';
 import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
 
 /**
- * Returns a XDR PathPaymentStrictReceiveOp. A `PathPaymentStrictReceive` operation send the specified amount to the
- * destination account, optionally through a path. XLM payments create the destination
- * account if it does not exist.
+ * Creates a PathPaymentStrictReceive operation.
+ *
+ * A `PathPaymentStrictReceive` operation sends the specified amount to the
+ * destination account, optionally through a path. XLM payments create the
+ * destination account if it does not exist.
+ *
  * @function
  * @alias Operation.pathPaymentStrictReceive
- * @param {object} opts Options object
- * @param {Asset} opts.sendAsset - The asset to pay with.
- * @param {string} opts.sendMax - The maximum amount of sendAsset to send.
- * @param {string} opts.destination - The destination account to send to.
- * @param {Asset} opts.destAsset - The asset the destination will receive.
- * @param {string} opts.destAmount - The amount the destination receives.
- * @param {Asset[]} opts.path - An array of Asset objects to use as the path.
- * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
- * @returns {xdr.PathPaymentStrictReceiveOp} Path Payment Strict Receive operation
+ *
+ * @param {object}  opts - Options object
+ * @param {Asset}   opts.sendAsset    - asset to pay with
+ * @param {string}  opts.sendMax      - maximum amount of sendAsset to send
+ * @param {string}  opts.destination  - destination account to send to
+ * @param {Asset}   opts.destAsset    - asset the destination will receive
+ * @param {string}  opts.destAmount   - amount the destination receives
+ * @param {Asset[]} opts.path         - array of Asset objects to use as the path
+ * @param {boolean} [opts.withMuxing] - Indicates that opts.destination is an
+ *     M... address and should be interpreted fully as a muxed account. By
+ *     default, this option is disabled until muxed accounts are mature.
+ * @param {string}  [opts.source]     - The source account for the payment.
+ *     Defaults to the transaction's source account.
+ *
+ * @returns {xdr.Operation}   the resulting path payment operation
+ *     (xdr.PathPaymentStrictReceiveOp)
  */
 export function pathPaymentStrictReceive(opts) {
   switch (true) {
@@ -36,7 +46,10 @@ export function pathPaymentStrictReceive(opts) {
   attributes.sendMax = this._toXDRAmount(opts.sendMax);
 
   try {
-    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
+    attributes.destination = decodeAddressToMuxedAccount(
+      opts.destination,
+      opts.withMuxing
+    );
   } catch (e) {
     throw new Error('destination is invalid');
   }
