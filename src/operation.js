@@ -169,7 +169,10 @@ export class Operation {
         result.type = 'pathPaymentStrictSend';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
-        result.destination = encodeMuxedAccountToAddress(attrs.destination());
+        result.destination = encodeMuxedAccountToAddress(
+          attrs.destination(),
+          withMuxing
+        );
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destMin = this._fromXDRAmount(attrs.destMin());
         result.path = [];

@@ -2,20 +2,31 @@ import xdr from '../generated/stellar-xdr_generated';
 import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
 
 /**
- * Returns a XDR PathPaymentStrictSendOp. A `PathPaymentStrictSend` operation send the specified amount to the
- * destination account crediting at least `destMin` of `destAsset`, optionally through a path. XLM payments create the destination
- * account if it does not exist.
+ * Creates a PathPaymentStrictSend operation.
+ *
+ * A `PathPaymentStrictSend` operation send the specified amount to the
+ * destination account crediting at least `destMin` of `destAsset`, optionally
+ * through a path. XLM payments create the destination account if it does not
+ * exist.
+ *
  * @function
  * @alias Operation.pathPaymentStrictSend
- * @param {object} opts Options object
- * @param {Asset} opts.sendAsset - The asset to pay with.
- * @param {string} opts.sendAmount - Amount of sendAsset to send (excluding fees).
- * @param {string} opts.destination - The destination account to send to.
- * @param {Asset} opts.destAsset - The asset the destination will receive.
- * @param {string} opts.destMin - The minimum amount of destAsset to be received
- * @param {Asset[]} opts.path - An array of Asset objects to use as the path.
- * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
- * @returns {xdr.PathPaymentStrictSendOp} Path Payment Strict Receive operation
+ *
+ * @param {object}  opts - Options object
+ * @param {Asset}   opts.sendAsset    - asset to pay with
+ * @param {string}  opts.sendAmount   - amount of sendAsset to send (excluding fees)
+ * @param {string}  opts.destination  - destination account to send to
+ * @param {Asset}   opts.destAsset    - asset the destination will receive
+ * @param {string}  opts.destMin      - minimum amount of destAsset to be receive
+ * @param {Asset[]} opts.path         - array of Asset objects to use as the path
+ * @param {boolean} [opts.withMuxing] - Indicates that opts.destination is an
+ *     M... address and should be interpreted fully as a muxed account. By
+ *     default, this option is disabled until muxed accounts are mature.
+ * @param {string}  [opts.source]     - The source account for the payment.
+ *     Defaults to the transaction's source account.
+ *
+ * @returns {xdr.Operation}   the resulting path payment operation
+ *     (xdr.PathPaymentStrictSendOp)
  */
 export function pathPaymentStrictSend(opts) {
   switch (true) {
@@ -35,7 +46,10 @@ export function pathPaymentStrictSend(opts) {
   attributes.sendAsset = opts.sendAsset.toXDRObject();
   attributes.sendAmount = this._toXDRAmount(opts.sendAmount);
   try {
-    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
+    attributes.destination = decodeAddressToMuxedAccount(
+      opts.destination,
+      opts.withMuxing
+    );
   } catch (e) {
     throw new Error('destination is invalid');
   }

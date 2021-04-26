@@ -412,39 +412,52 @@ describe('Operation', function() {
         'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
       );
     });
-    it('does not support muxed accounts', function() {
-      var sendAsset = new StellarBase.Asset(
+
+    let opts = {
+      sendAsset: new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      var sendAmount = '3.0070000';
-      var destination =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      var source =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      var destAsset = new StellarBase.Asset(
+      ),
+      sendAmount: '3.0070000',
+      destination:
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6',
+      source:
+        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6',
+      destAsset: new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      var destMin = '3.1415000';
-      var path = [
+      ),
+      destMin: '3.1415000',
+      path: [
         new StellarBase.Asset(
           'USD',
           'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
         )
-      ];
+      ]
+    };
+
+    it('does not support muxed accounts by default', function() {
       expect(() => {
-        StellarBase.Operation.pathPaymentStrictSend({
-          sendAsset,
-          sendAmount,
-          destination,
-          destAsset,
-          destMin,
-          path,
-          source
-        });
+        StellarBase.Operation.pathPaymentStrictSend(opts);
       }).to.throw(/destination is invalid/);
     });
+    it('optionally supports muxed accounts', function() {
+      opts.withMuxing = true;
+      const packed = StellarBase.Operation.pathPaymentStrictSend(opts);
+
+      // Ensure we can convert to and from the raw XDR:
+      expect(() => {
+        StellarBase.xdr.Operation.fromXDR(packed.toXDR('raw'), 'raw');
+        StellarBase.xdr.Operation.fromXDR(packed.toXDR('hex'), 'hex');
+      }).to.not.throw();
+
+      const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
+
+      expect(unpacked.type).to.equal('pathPaymentStrictSend');
+      expect(unpacked.source).to.equal(opts.source);
+      expect(unpacked.destination).to.equal(opts.destination);
+    });
+
     it('fails to create path payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',
