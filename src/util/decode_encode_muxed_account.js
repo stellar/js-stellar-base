@@ -2,19 +2,55 @@ import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 
 /**
- * Returns a XDR.MuxedAccount forcing the ed25519 discriminant.
+ * Converts a Stellar address (in G... or M... form) to an XDR MuxedAccount
+ * structure, forcing the ed25519 representation by default.
+ *
+ * This optionally (that is, opt-in only) supports proper muxed accounts, where
+ * an M... address will resolve to both its underlying G... address and an ID.
+ * Note that this behaviour will eventually be the default.
+ *
  * @function
- * @param   {string} address    address to encode to XDR.
- * @returns {xdr.MuxedAccount}  MuxedAccount with ed25519 discriminant.
+ *
+ * @param   {string}  address    a G... or M... address to encode into XDR
+ * @param   {boolean} [supportMuxxing]  allows the muxed representation of the
+ *     address, extracting the underlying ID from the M... address
+ *
+ * @returns {xdr.MuxedAccount}  a muxed account object for this address string
  */
-export function decodeAddressToMuxedAccount(address, dontForceDiscriminant) {
-  if (address[0] === 'M' && dontForceDiscriminant) {
-    return decodeAddressToProperMuxedAccount(address);
+export function decodeAddressToMuxedAccount(address, supportMuxxing) {
+  if (address[0] === 'M' && supportMuxxing) {
+    return _decodeAddressFullyToMuxedAccount(address);
   }
 
   return xdr.MuxedAccount.keyTypeEd25519(
     StrKey.decodeEd25519PublicKey(address)
   );
+}
+
+/**
+ * Converts an xdr.MuxedAccount to its string representation.
+ *
+ * By default, this returns its "G..." string representation (i.e. forcing the
+ * ed25519 representation), but can return the "M..." representation via opt-in.
+ *
+ * @function
+ *
+ * @param   {xdr.MuxedAccount} muxedAccount  account to stringify
+ * @param   {boolean} [supportMuxxing]  converts the object into its full,
+ *     proper M... address, encoding both the underlying G... address and the
+ *     muxxing ID
+ *
+ * @returns {string}  stringified G... (corresponding to the underlying pubkey)
+ *     or M... address (corresponding to both the key and the muxed ID)
+ */
+export function encodeMuxedAccountToAddress(muxedAccount, supportMuxxing) {
+  if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
+    if (supportMuxxing) {
+      return _encodeMuxedAccountFullyToAddress(muxedAccount);
+    }
+    muxedAccount = muxedAccount.med25519();
+  }
+  return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
 }
 
 /**
@@ -24,7 +60,7 @@ export function decodeAddressToMuxedAccount(address, dontForceDiscriminant) {
  * @param   {string} address    M... account ID
  * @returns {xdr.MuxedAccount}  resolved muxed account object
  */
-export function decodeAddressToProperMuxedAccount(address) {
+function _decodeAddressFullyToMuxedAccount(address) {
   const rawBytes = StrKey.decodeMed25519PublicKey(address);
 
   // Decoding M... addresses cannot be done through a simple
@@ -49,33 +85,12 @@ export function decodeAddressToProperMuxedAccount(address) {
 }
 
 /**
- * Converts an xdr.MuxedAccount to its "G..." string representation (i.e.
- * forcing the ed25519 representation).
- *
- * @function
- * @param   {xdr.MuxedAccount} muxedAccount  account to stringify
- * @returns {string}  G... address corresponding to the underlying pubkey
- */
-export function encodeMuxedAccountToAddress(
-  muxedAccount,
-  dontForceDiscriminant
-) {
-  if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
-    if (dontForceDiscriminant) {
-      return encodeMuxedAccountToProperAddress(muxedAccount);
-    }
-    muxedAccount = muxedAccount.med25519();
-  }
-  return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
-}
-
-/**
  * Converts an xdr.MuxedAccount into its *true* "M..." string representation.
  *
  * @param  {xdr.MuxedAccount} muxedAccount  account to stringify
  * @returns {string}  M... address mapping the underlying key and ID
  */
-export function encodeMuxedAccountToProperAddress(muxedAccount) {
+function _encodeMuxedAccountFullyToAddress(muxedAccount) {
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
     return encodeMuxedAccountToAddress(muxedAccount);
   }

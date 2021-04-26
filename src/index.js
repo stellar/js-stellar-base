@@ -28,9 +28,7 @@ export { Networks } from './network';
 export { StrKey } from './strkey';
 export {
   decodeAddressToMuxedAccount,
-  decodeAddressToProperMuxedAccount,
-  encodeMuxedAccountToAddress,
-  encodeMuxedAccountToProperAddress
+  encodeMuxedAccountToAddress
 } from './util/decode_encode_muxed_account';
 
 export default module.exports;
