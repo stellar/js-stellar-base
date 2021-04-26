@@ -7,15 +7,15 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @function
  * @alias Operation.payment
  *
- * @param {object}  opts Options object
+ * @param {object}  opts - Options object
  * @param {string}  opts.destination  - The destination account ID.
  * @param {Asset}   opts.asset        - The asset to send.
  * @param {string}  opts.amount       - The amount to send.
- * @param {string}  [opts.source]     - The source account for the payment.
- *     Defaults to the transaction's source account.
  * @param {boolean} [opts.withMuxing] - Indicates that opts.destination is an
  *     M... address and should be interpreted fully as a muxed account. By
  *     default, this option is disabled until muxed accounts are mature.
+ * @param {string}  [opts.source]     - The source account for the payment.
+ *     Defaults to the transaction's source account.
  *
  * @returns {xdr.Operation}   The resulting payment operation (xdr.PaymentOp)
  */
