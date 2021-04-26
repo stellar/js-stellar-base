@@ -4,13 +4,14 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
 /**
  * Creates a PathPaymentStrictSend operation.
  *
- * A `PathPaymentStrictSend` operation send the specified amount to the
+ * A `PathPaymentStrictSend` operation sends the specified amount to the
  * destination account crediting at least `destMin` of `destAsset`, optionally
  * through a path. XLM payments create the destination account if it does not
  * exist.
  *
  * @function
  * @alias Operation.pathPaymentStrictSend
+ * @link https://developers.stellar.org/docs/start/list-of-operations/#path-payment-strict-send
  *
  * @param {object}  opts - Options object
  * @param {Asset}   opts.sendAsset    - asset to pay with

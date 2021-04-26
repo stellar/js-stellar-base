@@ -6,6 +6,7 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  *
  * @function
  * @alias Operation.payment
+ * @link https://developers.stellar.org/docs/start/list-of-operations/#payment
  *
  * @param {object}  opts - Options object
  * @param {string}  opts.destination  - The destination account ID.
