@@ -11,8 +11,8 @@ import { StrKey } from '../strkey';
  *
  * @function
  *
- * @param   {string}  address    a G... or M... address to encode into XDR
- * @param   {boolean} [supportMuxing]  allows the muxed representation of the
+ * @param   {string}  address           G... or M... address to encode into XDR
+ * @param   {bool}    [supportMuxing]   allows the muxed representation of the
  *     address, extracting the underlying ID from the M... address
  *
  * @returns {xdr.MuxedAccount}  a muxed account object for this address string
@@ -35,9 +35,10 @@ export function decodeAddressToMuxedAccount(address, supportMuxing) {
  *
  * @function
  *
- * @param   {xdr.MuxedAccount} muxedAccount  account to stringify
- * @param   {boolean} [supportMuxing]  converts the object into its full, proper
- *     M... address, encoding both the underlying G... address and the Muxing ID
+ * @param   {xdr.MuxedAccount} muxedAccount   account to stringify
+ * @param   {bool}            [supportMuxing] converts the object into its full,
+ *     proper M... address, encoding both the underlying G... address and the
+ *     Muxing ID
  *
  * @returns {string}  stringified G... (corresponding to the underlying pubkey)
  *     or M... address (corresponding to both the key and the muxed ID)
