@@ -123,7 +123,7 @@ describe('Operation', function() {
         amount,
         source
       };
-      opts.withMuxedAccount = true;
+      opts.withMuxing = true;
       const packed = StellarBase.Operation.payment(opts);
 
       // Ensure we can convert to and from the raw XDR:

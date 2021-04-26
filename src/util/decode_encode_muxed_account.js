@@ -12,13 +12,13 @@ import { StrKey } from '../strkey';
  * @function
  *
  * @param   {string}  address    a G... or M... address to encode into XDR
- * @param   {boolean} [supportMuxxing]  allows the muxed representation of the
+ * @param   {boolean} [supportMuxing]  allows the muxed representation of the
  *     address, extracting the underlying ID from the M... address
  *
  * @returns {xdr.MuxedAccount}  a muxed account object for this address string
  */
-export function decodeAddressToMuxedAccount(address, supportMuxxing) {
-  if (address[0] === 'M' && supportMuxxing) {
+export function decodeAddressToMuxedAccount(address, supportMuxing) {
+  if (address[0] === 'M' && supportMuxing) {
     return _decodeAddressFullyToMuxedAccount(address);
   }
 
@@ -36,16 +36,15 @@ export function decodeAddressToMuxedAccount(address, supportMuxxing) {
  * @function
  *
  * @param   {xdr.MuxedAccount} muxedAccount  account to stringify
- * @param   {boolean} [supportMuxxing]  converts the object into its full,
- *     proper M... address, encoding both the underlying G... address and the
- *     muxxing ID
+ * @param   {boolean} [supportMuxing]  converts the object into its full, proper
+ *     M... address, encoding both the underlying G... address and the Muxing ID
  *
  * @returns {string}  stringified G... (corresponding to the underlying pubkey)
  *     or M... address (corresponding to both the key and the muxed ID)
  */
-export function encodeMuxedAccountToAddress(muxedAccount, supportMuxxing) {
+export function encodeMuxedAccountToAddress(muxedAccount, supportMuxing) {
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
-    if (supportMuxxing) {
+    if (supportMuxing) {
       return _encodeMuxedAccountFullyToAddress(muxedAccount);
     }
     muxedAccount = muxedAccount.med25519();
@@ -53,13 +52,7 @@ export function encodeMuxedAccountToAddress(muxedAccount, supportMuxxing) {
   return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
 }
 
-/**
- * Decodes an "M..." account ID into its MuxedAccount resolution, with the
- * underlying public key and the muxing ID.
- *
- * @param   {string} address    M... account ID
- * @returns {xdr.MuxedAccount}  resolved muxed account object
- */
+// Decodes an "M..." account ID into its MuxedAccount object representation.
 function _decodeAddressFullyToMuxedAccount(address) {
   const rawBytes = StrKey.decodeMed25519PublicKey(address);
 
@@ -84,12 +77,7 @@ function _decodeAddressFullyToMuxedAccount(address) {
   );
 }
 
-/**
- * Converts an xdr.MuxedAccount into its *true* "M..." string representation.
- *
- * @param  {xdr.MuxedAccount} muxedAccount  account to stringify
- * @returns {string}  M... address mapping the underlying key and ID
- */
+// Converts an xdr.MuxedAccount into its *true* "M..." string representation.
 function _encodeMuxedAccountFullyToAddress(muxedAccount) {
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
     return encodeMuxedAccountToAddress(muxedAccount);

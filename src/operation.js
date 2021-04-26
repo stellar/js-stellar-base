@@ -96,7 +96,7 @@ export class Operation {
       try {
         opAttributes.sourceAccount = decodeAddressToMuxedAccount(
           opts.source,
-          opts.withMuxedAccount
+          opts.withMuxing
         );
       } catch (e) {
         throw new Error('Source address is invalid');
@@ -109,19 +109,19 @@ export class Operation {
    * was used to create the operation (i.e. the `opts` parameter to most ops).
    *
    * @param {xdr.Operation}   operation - An XDR Operation.
-   * @param {boolean}         [withMuxedAccount] - Indicates that the operation
+   * @param {boolean}         [withMuxing] - Indicates that the operation
    *     contains M... addresses which should be interpreted fully as muxed
    *     accounts. By default, this option is disabled until muxed accounts are
    *     mature.
    *
    * @return {Operation}
    */
-  static fromXDRObject(operation, withMuxedAccount) {
+  static fromXDRObject(operation, withMuxing) {
     const result = {};
     if (operation.sourceAccount()) {
       result.source = encodeMuxedAccountToAddress(
         operation.sourceAccount(),
-        withMuxedAccount
+        withMuxing
       );
     }
 
@@ -139,7 +139,7 @@ export class Operation {
         result.type = 'payment';
         result.destination = encodeMuxedAccountToAddress(
           attrs.destination(),
-          withMuxedAccount
+          withMuxing
         );
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
@@ -149,7 +149,10 @@ export class Operation {
         result.type = 'pathPaymentStrictReceive';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
-        result.destination = encodeMuxedAccountToAddress(attrs.destination());
+        result.destination = encodeMuxedAccountToAddress(
+          attrs.destination(),
+          withMuxing
+        );
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
         result.path = [];
