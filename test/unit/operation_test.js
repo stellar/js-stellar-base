@@ -84,24 +84,29 @@ describe('Operation', function() {
       );
       let op = StellarBase.Operation.payment({ destination, asset, amount });
       var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('payment');
       expect(obj.destination).to.be.equal(destination);
     });
-    it('does not support muxed accounts', function() {
-      var destination =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      var amount = '1000.0000000';
-      var asset = new StellarBase.Asset(
-        'USDUSD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      var source =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
 
+    // Destination:
+    //  MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ
+    //  Address: GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ
+    //  ID:      1
+    //
+    // Source:
+    //  MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ
+    //  Address: GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ
+    //  ID:      2
+    const destination =
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
+    const amount = '1000.0000000';
+    const asset = StellarBase.Asset.native();
+    const source =
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ';
+
+    it('does not support muxed accounts by default', function() {
       expect(() => {
         StellarBase.Operation.payment({
           destination,
@@ -111,7 +116,29 @@ describe('Operation', function() {
         });
       }).to.throw(/destination is invalid/);
     });
+    it('optionally supports muxed accounts', function() {
+      const opts = {
+        destination,
+        asset,
+        amount,
+        source
+      };
+      opts.withMuxedAccount = true;
+      const packed = StellarBase.Operation.payment(opts);
 
+      // Ensure we can convert to and from the raw XDR:
+      expect(() => {
+        StellarBase.xdr.Operation.fromXDR(packed.toXDR('raw'), 'raw');
+        StellarBase.xdr.Operation.fromXDR(packed.toXDR('hex'), 'hex');
+      }).to.not.throw();
+
+      const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
+
+      expect(unpacked.type).to.equal('payment');
+      expect(unpacked.source).to.equal(opts.source);
+      expect(unpacked.destination).to.equal(opts.destination);
+      expect(unpacked.asset).to.eql(opts.asset);
+    });
     it('fails to create payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',

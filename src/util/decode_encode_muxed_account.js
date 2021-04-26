@@ -7,7 +7,11 @@ import { StrKey } from '../strkey';
  * @param   {string} address    address to encode to XDR.
  * @returns {xdr.MuxedAccount}  MuxedAccount with ed25519 discriminant.
  */
-export function decodeAddressToMuxedAccount(address) {
+export function decodeAddressToMuxedAccount(address, dontForceDiscriminant) {
+  if (address[0] === 'M' && dontForceDiscriminant) {
+    return decodeAddressToProperMuxedAccount(address);
+  }
+
   return xdr.MuxedAccount.keyTypeEd25519(
     StrKey.decodeEd25519PublicKey(address)
   );
@@ -52,8 +56,14 @@ export function decodeAddressToProperMuxedAccount(address) {
  * @param   {xdr.MuxedAccount} muxedAccount  account to stringify
  * @returns {string}  G... address corresponding to the underlying pubkey
  */
-export function encodeMuxedAccountToAddress(muxedAccount) {
+export function encodeMuxedAccountToAddress(
+  muxedAccount,
+  dontForceDiscriminant
+) {
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
+    if (dontForceDiscriminant) {
+      return encodeMuxedAccountToProperAddress(muxedAccount);
+    }
     muxedAccount = muxedAccount.med25519();
   }
   return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());

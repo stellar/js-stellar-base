@@ -1,16 +1,26 @@
 import xdr from '../generated/stellar-xdr_generated';
-import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
+import {
+  decodeAddressToMuxedAccount,
+  encodeMuxedAccountToAddress
+} from '../util/decode_encode_muxed_account';
 
 /**
  * Create a payment operation.
+ *
  * @function
  * @alias Operation.payment
- * @param {object} opts Options object
- * @param {string} opts.destination - The destination account ID.
- * @param {Asset} opts.asset - The asset to send.
- * @param {string} opts.amount - The amount to send.
- * @param {string} [opts.source] - The source account for the payment. Defaults to the transaction's source account.
- * @returns {xdr.PaymentOp} Payment operation
+ *
+ * @param {object}  opts Options object
+ * @param {string}  opts.destination  - The destination account ID.
+ * @param {Asset}   opts.asset        - The asset to send.
+ * @param {string}  opts.amount       - The amount to send.
+ * @param {string}  [opts.source]     - The source account for the payment.
+ *     Defaults to the transaction's source account.
+ * @param {boolean} [opts.withMuxedAccount] - Indicates that opts.destination is
+ *     an M... address and should be interpreted fully as a muxed account. By
+ *     default, this option is disabled until muxed accounts are mature.
+ *
+ * @returns {xdr.Operation}   The resulting payment operation (xdr.PaymentOp)
  */
 export function payment(opts) {
   if (!opts.asset) {
@@ -22,7 +32,10 @@ export function payment(opts) {
 
   const attributes = {};
   try {
-    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
+    attributes.destination = decodeAddressToMuxedAccount(
+      opts.destination,
+      opts.withMuxedAccount
+    );
   } catch (e) {
     throw new Error('destination is invalid');
   }
