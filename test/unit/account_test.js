@@ -40,37 +40,3 @@ describe('Account.incrementSequenceNumber', function() {
     expect(account.sequenceNumber()).to.equal('103');
   });
 });
-
-// describe('Defines the MuxedAccount abstraction', function() {
-//   let account1 = StellarBase.MuxedAccount.fromPublicKey(
-//     'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB');
-
-//   let account2 = StellarBase.MuxedAccount.fromMuxedKey(
-//     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK');
-
-//   it('IDs can be get/set properly', function() {
-//     expect(account1.getId()).to.equal(0);
-//     account1.setId(1234);
-//     expect(account1.getId()).to.equal(1234);
-//     expect(account2.getPublicKey()).to.equal(account1.getPublicKey());
-//   });
-
-//   let account3 = StellarBase.MuxedAccount.fromPublicKey(
-//     'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-//     12345678);
-
-//   it('entire address is built correctly', function() {
-//     expect(account3.getAddress()).to.equal(account2.getAddress());
-//   });
-
-//   it('subaccounts can be created', function() {
-//     let account4 = account3.withNewId(87654321);
-//     expect(account3.getId()).to.equal(12345678);
-//     expect(account4.getPublicKey()).to.equal(account3.getPublicKey());
-//     expect(account4.getId()).to.equal(87654321);
-//   });
-
-//   it('underlying XDR is valid', function() {
-
-//   })
-// });
