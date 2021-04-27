@@ -7,6 +7,7 @@ import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { FeeBumpTransaction } from './fee_bump_transaction';
 import { Memo } from './memo';
+import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -28,29 +29,35 @@ export const BASE_FEE = '100'; // Stroops
 export const TimeoutInfinite = 0;
 
 /**
- * <p>Transaction builder helps constructs a new `{@link Transaction}` using the given {@link Account}
- * as the transaction's "source account". The transaction will use the current sequence
- * number of the given account as its sequence number and increment the given account's
- * sequence number by one. The given source account must include a private key for signing
- * the transaction or an error will be thrown.</p>
+ * <p>Transaction builder helps constructs a new `{@link Transaction}` using the
+ * given {@link Account} as the transaction's "source account". The transaction
+ * will use the current sequence number of the given account as its sequence
+ * number and increment the given account's sequence number by one. The given
+ * source account must include a private key for signing the transaction or an
+ * error will be thrown.</p>
  *
- * <p>Operations can be added to the transaction via their corresponding builder methods, and
- * each returns the TransactionBuilder object so they can be chained together. After adding
- * the desired operations, call the `build()` method on the `TransactionBuilder` to return a fully
- * constructed `{@link Transaction}` that can be signed. The returned transaction will contain the
- * sequence number of the source account and include the signature from the source account.</p>
+ * <p>Operations can be added to the transaction via their corresponding builder
+ * methods, and each returns the TransactionBuilder object so they can be
+ * chained together. After adding the desired operations, call the `build()`
+ * method on the `TransactionBuilder` to return a fully constructed `{@link
+ * Transaction}` that can be signed. The returned transaction will contain the
+ * sequence number of the source account and include the signature from the
+ * source account.</p>
  *
- * <p><strong>Be careful about unsubmitted transactions!</strong> When you build a transaction, stellar-sdk
- * automatically increments the source account's sequence number. If you end up
- * not submitting this transaction and submitting another one instead, it'll fail due to
- * the sequence number being wrong. So if you decide not to use a built transaction,
- * make sure to update the source account's sequence number
- * with [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount) before creating another transaction.</p>
+ * <p><strong>Be careful about unsubmitted transactions!</strong> When you build
+ * a transaction, stellar-sdk automatically increments the source account's
+ * sequence number. If you end up not submitting this transaction and submitting
+ * another one instead, it'll fail due to the sequence number being wrong. So if
+ * you decide not to use a built transaction, make sure to update the source
+ * account's sequence number with
+ * [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount)
+ * before creating another transaction.</p>
  *
- * <p>The following code example creates a new transaction with {@link Operation.createAccount} and
- * {@link Operation.payment} operations.
- * The Transaction's source account first funds `destinationA`, then sends
- * a payment to `destinationB`. The built transaction is then signed by `sourceKeypair`.</p>
+ * <p>The following code example creates a new transaction with {@link
+ * Operation.createAccount} and {@link Operation.payment} operations. The
+ * Transaction's source account first funds `destinationA`, then sends a payment
+ * to `destinationB`. The built transaction is then signed by
+ * `sourceKeypair`.</p>
  *
  * ```
  * var transaction = new TransactionBuilder(source, { fee, networkPassphrase: Networks.TESTNET })
@@ -68,15 +75,28 @@ export const TimeoutInfinite = 0;
  *
  * transaction.sign(sourceKeypair);
  * ```
+ *
  * @constructor
- * @param {Account} sourceAccount - The source account for this transaction.
- * @param {object} opts Options object
- * @param {string} opts.fee - The max fee willing to pay per operation in this transaction (**in stroops**). Required.
- * @param {object} [opts.timebounds] - The timebounds for the validity of this transaction.
- * @param {number|string|Date} [opts.timebounds.minTime] - 64 bit unix timestamp or Date object
- * @param {number|string|Date} [opts.timebounds.maxTime] - 64 bit unix timestamp or Date object
- * @param {Memo} [opts.memo] - The memo for the transaction
- * @param {string} [opts.networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+ *
+ * @param {Account} sourceAccount - source account for this transaction
+ * @param {object}  opts          - Options object
+ * @param {string}  opts.fee      - max fee you're willing to pay per
+ *     operation in this transaction (**in stroops**)
+ *
+ * @param {object}              [opts.timebounds] - timebounds for the
+ *     validity of this transaction
+ * @param {number|string|Date}  [opts.timebounds.minTime] - 64-bit UNIX
+ *     timestamp or Date object
+ * @param {number|string|Date}  [opts.timebounds.maxTime] - 64-bit UNIX
+ *     timestamp or Date object
+ * @param {Memo}                [opts.memo] - memo for the transaction
+ * @param {string}              [opts.networkPassphrase] passphrase of the
+ *     target Stellar network (e.g. "Public Global Stellar Network ; September
+ *     2015" for the pubnet)
+ * @param {bool}    [opts.withMuxing] - Indicates that the source account of
+ *     every transaction created by this Builder can be interpreted as a proper
+ *     muxed account (i.e. coming from an M... address). By default, this option
+ *     is disabled until muxed accounts are mature.
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -95,6 +115,7 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
+    this.supportMuxedAccounts = opts.withMuxing || false;
   }
 
   /**
@@ -178,6 +199,15 @@ export class TransactionBuilder {
   }
 
   /**
+   * Enable support for muxed accounts for the Transaction that will be built.
+   * @returns {TransactionBuilder}
+   */
+  enableMuxedAccounts() {
+    this.supportMuxedAccounts = true;
+    return this;
+  }
+
+  /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
@@ -218,9 +248,10 @@ export class TransactionBuilder {
     );
 
     attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
-    attrs.sourceAccount = Keypair.fromPublicKey(
-      this.source.accountId()
-    ).xdrMuxedAccount();
+    attrs.sourceAccount = decodeAddressToMuxedAccount(
+      this.source.accountId(),
+      this.supportMuxedAccounts
+    );
     attrs.ext = new xdr.TransactionExt(0);
 
     const xtx = new xdr.Transaction(attrs);
@@ -229,7 +260,11 @@ export class TransactionBuilder {
       new xdr.TransactionV1Envelope({ tx: xtx })
     );
 
-    const tx = new Transaction(txEnvelope, this.networkPassphrase);
+    const tx = new Transaction(
+      txEnvelope,
+      this.networkPassphrase,
+      this.supportMuxedAccounts
+    );
 
     this.source.incrementSequenceNumber();
 

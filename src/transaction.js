@@ -9,19 +9,30 @@ import { TransactionBase } from './transaction_base';
 import { encodeMuxedAccountToAddress } from './util/decode_encode_muxed_account';
 
 /**
- * Use {@link TransactionBuilder} to build a transaction object. If you have
- * an object or base64-encoded string of the transaction envelope XDR use {@link TransactionBuilder.fromXDR}.
+ * Use {@link TransactionBuilder} to build a transaction object. If you have an
+ * object or base64-encoded string of the transaction envelope XDR, use {@link
+ * TransactionBuilder.fromXDR}.
  *
- * Once a Transaction has been created, its attributes and operations
- * should not be changed. You should only add signatures (using {@link Transaction#sign}) to a Transaction object before
- * submitting to the network or forwarding on to additional signers.
+ * Once a Transaction has been created, its attributes and operations should not
+ * be changed. You should only add signatures (using {@link Transaction#sign})
+ * to a Transaction object before submitting to the network or forwarding on to
+ * additional signers.
+ *
  * @constructor
- * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
- * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+ *
+ * @param {string|xdr.TransactionEnvelope} envelope - transaction envelope
+ *     object or base64 encoded string
+ * @param {string}  [networkPassphrase] - passphrase of the target stellar
+ *     network (e.g. "Public Global Stellar Network ; September 2015")
+ * @param {bool}    [opts.withMuxing] - Indicates that this.sourceAccount is a
+ *     muxed account (i.e. came from an M... address) and should be interpreted
+ *     fully as such. By default, this option is disabled until muxed accounts
+ *     are mature.
+ *
  * @extends TransactionBase
  */
 export class Transaction extends TransactionBase {
-  constructor(envelope, networkPassphrase) {
+  constructor(envelope, networkPassphrase, withMuxing) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
@@ -57,7 +68,10 @@ export class Transaction extends TransactionBase {
         );
         break;
       default:
-        this._source = encodeMuxedAccountToAddress(this.tx.sourceAccount());
+        this._source = encodeMuxedAccountToAddress(
+          this.tx.sourceAccount(),
+          withMuxing
+        );
         break;
     }
 

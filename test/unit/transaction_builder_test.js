@@ -1,4 +1,5 @@
 import { isValidDate } from '../../src/transaction_builder.js';
+import { encodeMuxedAccountToAddress } from '../../src/util/decode_encode_muxed_account.js';
 
 describe('TransactionBuilder', function() {
   describe('constructs a native payment transaction with one operation', function() {
@@ -660,6 +661,76 @@ describe('TransactionBuilder', function() {
       );
       expect(tx).to.be.an.instanceof(StellarBase.Transaction);
       expect(tx.toXDR()).to.equal(xdr);
+    });
+  });
+
+  describe('muxed account support', function() {
+    // Simultaneously, let's test some of the operations that should support
+    // muxed accounts.
+    const asset = StellarBase.Asset.native();
+    const amount = '1000.0000000';
+    const destination =
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
+    const source = new StellarBase.Account(
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ',
+      '123'
+    );
+
+    const PUBKEY_SRC = StellarBase.StrKey.decodeEd25519PublicKey(
+      'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+    );
+    const MUXED_SRC = StellarBase.StrKey.decodeMed25519PublicKey(
+      source.accountId()
+    );
+    const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString('2');
+    const networkPassphrase = 'Standalone Network ; February 2017';
+
+    const muxState = true;
+    it('works when muxed accounts are enabled', function() {
+      const operations = [
+        StellarBase.Operation.payment({
+          source: source.accountId(),
+          destination: destination,
+          amount: amount,
+          asset: asset,
+          withMuxing: true
+        })
+        // TODO: More muxed-enabled operations
+      ];
+
+      const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
+      let builder = new StellarBase.TransactionBuilder(source, {
+        fee: '100',
+        timebounds: { minTime: 0, maxTime: 0 },
+        memo: new StellarBase.Memo(
+          StellarBase.MemoText,
+          'Testing muxed accounts'
+        ),
+        withMuxing: true,
+        networkPassphrase: networkPassphrase
+      });
+
+      operations.forEach((op) => builder.addOperation(op));
+      expect(builder.supportMuxedAccounts).to.equal(true);
+
+      let tx = builder.build();
+      tx.sign(signer);
+
+      const envelope = tx.toEnvelope();
+      const xdrTx = envelope.v1().tx();
+
+      const rawMuxedSourceAccount = xdrTx.sourceAccount();
+
+      expect(rawMuxedSourceAccount.switch()).to.equal(
+        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
+      );
+
+      const innerMux = rawMuxedSourceAccount.med25519();
+      expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
+      expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
+        source.accountId()
+      );
+      expect(innerMux.id()).to.eql(MUXED_SRC_ID);
     });
   });
 });

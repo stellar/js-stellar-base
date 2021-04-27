@@ -152,14 +152,17 @@ export class StrKey {
   }
 }
 
+// Warning: This isn't a *definitive* check of validity, but rather just a
+// basic-effort check.
 function isValid(versionByteName, encoded) {
-  if (encoded && encoded.length !== 56) {
+  // it's either non-muxed && len=56, or muxed && len=69
+  if (encoded && encoded.length !== 56 && encoded.length !== 69) {
     return false;
   }
 
   try {
     const decoded = decodeCheck(versionByteName, encoded);
-    if (decoded.length !== 32) {
+    if (decoded.length !== 32 && decoded.length !== 40) {
       return false;
     }
   } catch (err) {

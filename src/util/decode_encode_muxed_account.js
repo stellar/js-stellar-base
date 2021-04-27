@@ -12,8 +12,9 @@ import { StrKey } from '../strkey';
  * @function
  *
  * @param   {string}  address           G... or M... address to encode into XDR
- * @param   {bool}    [supportMuxing]   allows the muxed representation of the
- *     address, extracting the underlying ID from the M... address
+ * @param   {bool}    [supportMuxing]   allows decoding of the muxed
+ *     representation of the address, extracting the underlying ID from the M...
+ *     address
  *
  * @returns {xdr.MuxedAccount}  a muxed account object for this address string
  */

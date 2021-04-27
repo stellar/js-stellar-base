@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import isString from 'lodash/isString';
-import { Hyper } from 'js-xdr';
 
 describe('Operation', function() {
   describe('.createAccount()', function() {

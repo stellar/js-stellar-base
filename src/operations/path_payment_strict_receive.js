@@ -12,7 +12,7 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  *
  * @function
  * @alias Operation.pathPaymentStrictReceive
- * @link https://developers.stellar.org/docs/start/list-of-operations/#path-payment-strict-receive
+ * @see https://developers.stellar.org/docs/start/list-of-operations/#path-payment-strict-receive
  *
  * @param {object}  opts - Options object
  * @param {Asset}   opts.sendAsset    - asset to pay with
