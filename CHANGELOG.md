@@ -2,11 +2,8 @@
 
 ## Unreleased
 
-### Fix 
-- Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
-
 ### Add
-- **Opt-in support for muxed accounts.** This introduces `M...` addresses from [CAP-27](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts:
+- **Opt-in support for muxed accounts.** This introduces `M...` addresses from [CAP-27](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
   * `Payment.destination`
   * `PathPaymentStrictReceive.destination`
   * `PathPaymentStrictSend.destination`
@@ -15,7 +12,28 @@
   * `Transaction.sourceAccount`
   * `FeeBumpTransaction.feeSource`
 
-- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier.
+- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
+
+```js
+  const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+
+  const mux1 = new StellarBase.MuxedAccount(PUBKEY, '1');
+  console.log(mux1.address(), mux1.accountId(), mux1.id());
+
+  const mux2 = mux1.createSubaccount('2');
+  console.log("Parent relationship preserved:", 
+              mux2.accountId() === mux1.accountId());
+  console.log(mux2.address(), mux2.id());
+
+  const mux3 = StellarBase.fromXDRObject(
+    StellarBase.encodeMuxedAccount(PUBKEY, '3')
+  );
+  console.log(mux3.address(), mux3.id());
+```
+
+### Fix
+- Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
+
 
 ## [v5.1.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v5.1.0)
 
