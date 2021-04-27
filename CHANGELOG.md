@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fix 
+- Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
+
 ## [v5.1.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v5.1.0)
 
 ### Update

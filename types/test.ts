@@ -107,8 +107,8 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     })
   ).addOperation(
     StellarSdk.Operation.setOptions({
-      setFlags:   StellarSdk.AuthFlag.immutable | StellarSdk.AuthFlag.required,
-      clearFlags: StellarSdk.AuthFlag.revocable | StellarSdk.AuthFlag.clawbackEnabled
+      setFlags:   (StellarSdk.AuthImmutableFlag | StellarSdk.AuthRequiredFlag) as StellarSdk.AuthFlag,
+      clearFlags: (StellarSdk.AuthRevocableFlag | StellarSdk.AuthClawbackEnabledFlag) as StellarSdk.AuthFlag,
     })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)

@@ -153,8 +153,8 @@ export namespace AuthFlag {
   type clawbackEnabled = typeof AuthClawbackEnabledFlag;
 }
 export type AuthFlag =
-  | AuthFlag.immutable
   | AuthFlag.required
+  | AuthFlag.immutable
   | AuthFlag.revocable
   | AuthFlag.clawbackEnabled;
 
