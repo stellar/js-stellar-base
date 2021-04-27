@@ -2,8 +2,8 @@ import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import clone from 'lodash/clone';
 import isUndefined from 'lodash/isUndefined';
+
 import xdr from './generated/stellar-xdr_generated';
-import { Keypair } from './keypair';
 import { Transaction } from './transaction';
 import { FeeBumpTransaction } from './fee_bump_transaction';
 import { Memo } from './memo';

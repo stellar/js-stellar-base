@@ -23,12 +23,14 @@ export {
 } from './operation';
 export * from './memo';
 export { Account } from './account';
+export { MuxedAccount } from './muxed_account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
 export {
   decodeAddressToMuxedAccount,
-  encodeMuxedAccountToAddress
+  encodeMuxedAccountToAddress,
+  encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
 
 export default module.exports;

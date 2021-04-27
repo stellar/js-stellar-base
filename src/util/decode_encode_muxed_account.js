@@ -30,12 +30,7 @@ export function decodeAddressToMuxedAccount(address, supportMuxing) {
     }
 
     if (StrKey.isValidEd25519PublicKey(address)) {
-      return xdr.MuxedAccount.keyTypeMuxedEd25519(
-        new xdr.MuxedAccountMed25519({
-          id: xdr.Uint64.fromString('0'),
-          ed25519: StrKey.decodeEd25519PublicKey(address)
-        })
-      );
+      return encodeMuxedAccount(address, '0');
     }
   }
 
@@ -68,6 +63,22 @@ export function encodeMuxedAccountToAddress(muxedAccount, supportMuxing) {
     muxedAccount = muxedAccount.med25519();
   }
   return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
+}
+
+export function encodeMuxedAccount(address, id) {
+  if (!StrKey.isValidEd25519PublicKey(address)) {
+    throw new Error('address should be a Stellar account ID (G...)');
+  }
+  if (typeof id !== 'string') {
+    throw new Error('id should be a string representing a number (uint64)');
+  }
+
+  return xdr.MuxedAccount.keyTypeMuxedEd25519(
+    new xdr.MuxedAccountMed25519({
+      id: xdr.Uint64.fromString(id),
+      ed25519: StrKey.decodeEd25519PublicKey(address)
+    })
+  );
 }
 
 // Decodes an "M..." account ID into its MuxedAccount object representation.

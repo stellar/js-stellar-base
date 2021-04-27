@@ -15,6 +15,8 @@
   * `Transaction.sourceAccount`
   * `FeeBumpTransaction.feeSource`
 
+- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier.
+
 ## [v5.1.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v5.1.0)
 
 ### Update
