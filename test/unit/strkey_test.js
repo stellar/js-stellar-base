@@ -282,6 +282,22 @@ describe('StrKey', function() {
         RAW_MPUBKEY
       );
     });
+    it('decodes to an empty muxed account when given a G...', function() {
+      const emptyMux = StellarBase.decodeAddressToMuxedAccount(PUBKEY, true);
+      const ZERO = StellarBase.xdr.Uint64.fromString('0');
+
+      expect(StellarBase.xdr.MuxedAccount.isValid(emptyMux)).to.be.true;
+      expect(emptyMux.switch()).to.equal(
+        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
+      );
+      expect(emptyMux.med25519().ed25519()).to.eql(
+        StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY)
+      );
+      expect(emptyMux.med25519().id()).to.eql(ZERO);
+      expect(StellarBase.encodeMuxedAccountToAddress(emptyMux)).to.equal(
+        PUBKEY
+      );
+    });
     it('decodes underlying G... address correctly', function() {
       expect(
         StellarBase.encodeMuxedAccountToAddress(
