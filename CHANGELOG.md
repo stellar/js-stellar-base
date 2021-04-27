@@ -5,6 +5,16 @@
 ### Fix 
 - Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
 
+### Add
+- **Opt-in support for muxed accounts.** This introduces `M...` addresses from [CAP-27](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts:
+  * `Payment.destination`
+  * `PathPaymentStrictReceive.destination`
+  * `PathPaymentStrictSend.destination`
+  * `Operation.sourceAccount`
+  * `Operation.destination`, for account merges
+  * `Transaction.sourceAccount`
+  * `FeeBumpTransaction.feeSource`
+
 ## [v5.1.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v5.1.0)
 
 ### Update
