@@ -1,6 +1,11 @@
-import BigNumber from 'bignumber.js';
 import isString from 'lodash/isString';
+import BigNumber from 'bignumber.js';
+
 import { StrKey } from './strkey';
+import {
+  decodeAddressToMuxedAccount,
+  encodeMuxedAccountToAddress
+} from './util/decode_encode_muxed_account';
 
 /**
  * Create a new Account object.
@@ -11,41 +16,38 @@ import { StrKey } from './strkey';
  * [Accounts](https://stellar.org/developers/learn/concepts/accounts.html) for
  * more information about how accounts work in Stellar.
  *
- * TODO: Muxed account documentation.
- *
  * @constructor
  *
- * @param {string} accountId ID of the account (ex.
+ * @param {string} accountId - ID of the account (ex.
  *     `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA` or
- *     `MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ`)
- * @param {string} sequence current sequence number of the account
+ *     `MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ`).
+ *     If you provide a muxed account address, only the underlying public key
+ *     (G... address) will be used.
+ * @param {string} sequence  - current sequence number of the account
  */
 export class Account {
   constructor(accountId, sequence) {
-    if (
-      !StrKey.isValidEd25519PublicKey(accountId) &&
-      !StrKey.isValidMed25519PublicKey(accountId)
-    ) {
+    if (StrKey.isValidMed25519PublicKey(accountId)) {
+      accountId = encodeMuxedAccountToAddress(
+        decodeAddressToMuxedAccount(accountId, true),
+        false
+      );
+    }
+
+    if (!StrKey.isValidEd25519PublicKey(accountId)) {
       throw new Error('accountId is invalid');
     }
     if (!isString(sequence)) {
       throw new Error('sequence must be of type string');
     }
+
     this._accountId = accountId;
     this.sequence = new BigNumber(sequence);
-
-    if (StrKey.isValidMed25519PublicKey(accountId)) {
-      // TODO: Extract the underlying muxed ID from the address?
-      //       We should evaluate whether or not this is necessary first.
-      // this._muxedId
-    }
   }
 
   /**
    * Returns Stellar account ID, ex.
-   * `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA` or
-   * 'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ'
-   * (provided you have opted-in to muxed account support)
+   * `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`.
    * @returns {string}
    */
   accountId() {

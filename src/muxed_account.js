@@ -1,4 +1,7 @@
+import isString from 'lodash/isString';
+
 import xdr from './generated/stellar-xdr_generated';
+import { Account } from './account';
 import { StrKey } from './strkey';
 import {
   decodeAddressToMuxedAccount,
@@ -68,8 +71,8 @@ export class MuxedAccount {
     );
   }
 
-  accountId() {
-    return this._gAddress;
+  asAccount(seqNo) {
+    return new Account(this._gAddress, seqNo || '0');
   }
 
   address() {
@@ -81,12 +84,13 @@ export class MuxedAccount {
   }
 
   setId(id) {
-    if (typeof id !== 'string') {
+    if (!isString(id)) {
       throw new Error('id should be a string representing a number (uint64)');
     }
 
     this._muxedXdr.med25519().id(xdr.Uint64.fromString(id));
     this._id = id;
+    return this;
   }
 
   asXDRObject() {

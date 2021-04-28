@@ -1,3 +1,5 @@
+import isString from 'lodash/isString';
+
 import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 
@@ -65,11 +67,18 @@ export function encodeMuxedAccountToAddress(muxedAccount, supportMuxing) {
   return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
 }
 
+/**
+ * Transform a Stellar address (G...) and an ID into its XDR representation.
+ *
+ * @param  {string} address   - a Stellar G... address
+ * @param  {string} id        - a Uint64 ID represented as a string
+ * @return {xdr.MuxedAccount} - XDR representation of the above muxed account
+ */
 export function encodeMuxedAccount(address, id) {
   if (!StrKey.isValidEd25519PublicKey(address)) {
     throw new Error('address should be a Stellar account ID (G...)');
   }
-  if (typeof id !== 'string') {
+  if (!isString(id)) {
     throw new Error('id should be a string representing a number (uint64)');
   }
 

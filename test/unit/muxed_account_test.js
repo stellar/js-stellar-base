@@ -8,7 +8,7 @@ describe('muxed account abstraction works', function() {
     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAABQHF6OU';
 
   const performBasicInvariantChecks = function(mux, id, expectedM) {
-    expect(mux.accountId()).to.equal(PUBKEY);
+    expect(mux.asAccount().accountId()).to.equal(PUBKEY);
     expect(mux.address()).to.equal(expectedM);
     expect(mux.id()).to.equal(id);
 

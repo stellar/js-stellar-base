@@ -671,16 +671,13 @@ describe('TransactionBuilder', function() {
     const amount = '1000.0000000';
     const destination =
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
-    const source = new StellarBase.Account(
+    const source = new StellarBase.MuxedAccount(
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ',
       '123'
     );
 
     const PUBKEY_SRC = StellarBase.StrKey.decodeEd25519PublicKey(
       'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
-    );
-    const MUXED_SRC = StellarBase.StrKey.decodeMed25519PublicKey(
-      source.accountId()
     );
     const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString('2');
     const networkPassphrase = 'Standalone Network ; February 2017';
@@ -689,7 +686,7 @@ describe('TransactionBuilder', function() {
     it('works when muxed accounts are enabled', function() {
       const operations = [
         StellarBase.Operation.payment({
-          source: source.accountId(),
+          source: source.asAccount().accountId(),
           destination: destination,
           amount: amount,
           asset: asset,
@@ -728,7 +725,7 @@ describe('TransactionBuilder', function() {
       const innerMux = rawMuxedSourceAccount.med25519();
       expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
       expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
-        source.accountId()
+        source.address()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
     });
