@@ -683,10 +683,19 @@ describe('TransactionBuilder', function() {
     const networkPassphrase = 'Standalone Network ; February 2017';
 
     const muxState = true;
+    it('enables muxed support after creation', function() {
+      let builder = new StellarBase.TransactionBuilder(source, {
+        fee: '100',
+        timebounds: { minTime: 0, maxTime: 0 },
+        withMuxing: false
+      });
+      expect(builder.supportMuxedAccounts).to.be.false;
+      expect(builder.enableMuxedAccounts().supportMuxedAccounts).to.be.true;
+    });
     it('works when muxed accounts are enabled', function() {
       const operations = [
         StellarBase.Operation.payment({
-          source: source.asAccount().accountId(),
+          source: source.accountId(),
           destination: destination,
           amount: amount,
           asset: asset,
@@ -708,7 +717,7 @@ describe('TransactionBuilder', function() {
       });
 
       operations.forEach((op) => builder.addOperation(op));
-      expect(builder.supportMuxedAccounts).to.equal(true);
+      expect(builder.supportMuxedAccounts).to.be.true;
 
       let tx = builder.build();
       tx.sign(signer);
@@ -725,7 +734,7 @@ describe('TransactionBuilder', function() {
       const innerMux = rawMuxedSourceAccount.med25519();
       expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
       expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
-        source.address()
+        source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
     });

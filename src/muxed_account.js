@@ -10,7 +10,7 @@ import {
 } from './util/decode_encode_muxed_account';
 
 /**
- * Enables easier management of muxed accounts.
+ * Represents a muxed account for transactions and operations.
  *
  * A muxed (or *multiplexed*) account (defined rigorously in
  * [CAP-27](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md))
@@ -30,52 +30,62 @@ import {
  * duplicate them, retrieve the underlying IDs, etc. without mucking around with
  * the raw XDR.
  *
+ * Like {@link Account}, it represents an account in the Stellar network and its
+ * sequence number, and tracks it when used with {@link TransactionBuilder}.
+ *
  * @constructor
  *
- * @param {string} address - either the G... (un-multiplexed yet) or M...
+ * @param {string} accountId  - either the G... (un-multiplexed yet) or M...
  *     address of the account. If a G address is passed, the ID is initialized
  *     to zero.
+ * @param {string} sequence   - current sequence number of the account
  */
 export class MuxedAccount {
-  constructor(address) {
-    if (StrKey.isValidEd25519PublicKey(address)) {
-      this._muxedXdr = decodeAddressToMuxedAccount(address, true);
+  constructor(accountId, sequence) {
+    let gAddress;
+    if (StrKey.isValidEd25519PublicKey(accountId)) {
+      this._muxedXdr = decodeAddressToMuxedAccount(accountId, true);
       this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr, true);
-      this._gAddress = address;
+      gAddress = accountId;
       this.setId('0');
-    } else if (StrKey.isValidMed25519PublicKey(address)) {
-      this._mAddress = address;
+    } else if (StrKey.isValidMed25519PublicKey(accountId)) {
+      this._mAddress = accountId;
       this._muxedXdr = decodeAddressToMuxedAccount(this._mAddress, true);
-      this._gAddress = encodeMuxedAccountToAddress(this._muxedXdr, false);
-      this._id = this._muxedXdr
-        .med25519()
-        .id()
-        .toString();
+      gAddress = encodeMuxedAccountToAddress(this._muxedXdr, false);
+      this.setId(
+        this._muxedXdr
+          .med25519()
+          .id()
+          .toString()
+      );
     } else {
-      throw new Error('address is invalid');
+      throw new Error('accountId is invalid');
     }
+
+    this.account = new Account(gAddress, sequence);
   }
 
-  static fromXDRObject(xdrMuxedAccount) {
+  static fromXDRObject(xdrMuxedAccount, sequence) {
     if (!(xdrMuxedAccount instanceof xdr.MuxedAccount)) {
       throw new Error('xdrMuxedAccount must be an xdr.MuxedAccount instance');
     }
 
     const address = encodeMuxedAccountToAddress(xdrMuxedAccount, true);
-    return new MuxedAccount(address);
+    return new MuxedAccount(address, sequence || '0');
   }
 
-  createSubaccount(newId) {
+  createSubaccount(newId, newSequenceNumber) {
     return MuxedAccount.fromXDRObject(
-      encodeMuxedAccount(this._gAddress, newId)
+      encodeMuxedAccount(this.account.accountId(), newId),
+      newSequenceNumber
     );
   }
 
-  asAccount(seqNo) {
-    return new Account(this._gAddress, seqNo || '0');
+  underlyingAccountId() {
+    return this.account.accountId();
   }
 
-  address() {
+  accountId() {
     return this._mAddress;
   }
 
@@ -93,11 +103,26 @@ export class MuxedAccount {
     return this;
   }
 
+  /**
+   * @returns {string}  sequence number for the account as a string
+   */
+  sequenceNumber() {
+    return this.account.sequenceNumber();
+  }
+
+  /**
+   * Increments sequence number in this object by one.
+   * @returns {void}
+   */
+  incrementSequenceNumber() {
+    this.account.incrementSequenceNumber();
+  }
+
   asXDRObject() {
     return this._muxedXdr;
   }
 
   equals(otherMuxedAccount) {
-    return this.address() === otherMuxedAccount.address();
+    return this.accountId() === otherMuxedAccount.accountId();
   }
 }

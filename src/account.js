@@ -10,7 +10,7 @@ import {
 /**
  * Create a new Account object.
  *
- * `Account` represents a single account in Stellar network and its sequence
+ * `Account` represents a single account in the Stellar network and its sequence
  * number. Account tracks the sequence number as it is used by {@link
  * TransactionBuilder}. See
  * [Accounts](https://stellar.org/developers/learn/concepts/accounts.html) for
