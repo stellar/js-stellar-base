@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Add
-- **Opt-in support for muxed accounts.** This introduces `M...` addresses from [CAP-27](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
+- **Opt-in support for muxed accounts.** This introduces `M...` addresses from [SEP-23](https://stellar.org/protocol/sep-23), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
   * `Payment.destination`
   * `PathPaymentStrictReceive.destination`
   * `PathPaymentStrictSend.destination`
@@ -12,23 +12,26 @@
   * `Transaction.sourceAccount`
   * `FeeBumpTransaction.feeSource`
 
-- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
+- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts and their corresponding sequence numbers, passing them along to the supported operations and `TransactionBuilder` ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
 
 ```js
   const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
-  const mux1 = new StellarBase.MuxedAccount(PUBKEY, '1');
-  console.log(mux1.address(), mux1.accountId(), mux1.id());
+  const mux1 = new StellarBase.MuxedAccount(PUBKEY, '1').setId('1');
+  console.log(mux1.accountId(), mux1.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ 1
 
   const mux2 = mux1.createSubaccount('2');
   console.log("Parent relationship preserved:", 
-              mux2.accountId() === mux1.accountId());
-  console.log(mux2.address(), mux2.id());
+              mux2.account.accountId() === mux1.account.accountId());
+  console.log(mux2.accountId(), mux2.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ 2
 
   const mux3 = StellarBase.fromXDRObject(
     StellarBase.encodeMuxedAccount(PUBKEY, '3')
   );
   console.log(mux3.address(), mux3.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAPYHQ 3
 ```
 
 ### Fix
