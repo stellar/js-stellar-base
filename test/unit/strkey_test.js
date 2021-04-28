@@ -357,5 +357,53 @@ describe('StrKey', function() {
         expect(mpubkey).to.equal(CASE_MPUBKEY);
       });
     }
+
+    // From https://stellar.org/protocol/sep-23#invalid-test-cases
+    const BAD_STRKEYS = [
+      // The unused trailing bit must be zero in the encoding of the last three
+      // bytes (24 bits) as five base-32 symbols (25 bits)
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUR',
+      // Invalid length (congruent to 1 mod 8)
+      'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZA',
+      // Invalid algorithm (low 3 bits of version byte are 7)
+      'G47QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVP2I',
+      // Invalid length (congruent to 6 mod 8)
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLKA',
+      // Invalid algorithm (low 3 bits of version byte are 7)
+      'M47QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ',
+      // Padding bytes are not allowed
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUK===',
+      // Invalid checksum
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUO'
+
+      //
+      // FIXME: The following test cases don't pass (i.e. don't throw).
+      //        Fixing this would require a larger refactoring to the way strkey
+      //        decoding works (strkey.js:decodeCheck), because the decoder
+      //        doesn't perform length validation.
+      //
+
+      // Invalid length (Ed25519 should be 32 bytes, not 5)
+      // "GAAAAAAAACGC6",
+      // Invalid length (base-32 decoding should yield 35 bytes, not 36)
+      // "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUACUSI",
+      // Invalid length (base-32 decoding should yield 43 bytes, not 44)
+      // "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAAV75I",
+    ];
+
+    BAD_STRKEYS.forEach((address) => {
+      it(`fails in expected case ${address}`, function() {
+        let decoder;
+        if (address.startsWith('G')) {
+          decoder = StellarBase.StrKey.decodeEd25519PublicKey;
+        } else if (address.startsWith('M')) {
+          decoder = StellarBase.StrKey.decodeMed25519PublicKey;
+        } else {
+          expect(`can't understand address`).to.be.true;
+        }
+
+        expect(() => decoder(address)).to.throw();
+      });
+    });
   });
 });
