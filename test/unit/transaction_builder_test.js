@@ -731,6 +731,7 @@ describe('TransactionBuilder', function() {
       );
 
       const innerMux = rawMuxedSourceAccount.med25519();
+      console.log('WERE DOING THE THING');
       console.log(innerMux.ed25519());
       console.log(rawMuxedSourceAccount.med25519());
       expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
@@ -738,6 +739,7 @@ describe('TransactionBuilder', function() {
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
       expect(innerMux.ed25519().equals(PUBKEY_SRC)).to.be.true;
+      console.log('THE THING IS OVER');
     });
   });
 });
