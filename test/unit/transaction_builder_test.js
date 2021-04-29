@@ -732,7 +732,8 @@ describe('TransactionBuilder', function() {
       );
 
       const innerMux = rawMuxedSourceAccount.med25519();
-      expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
+      console.log(innerMux);
+      expect(innerMux.ed25519().equals(PUBKEY_SRC)).to.be.true;
       expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
         source.accountId()
       );
