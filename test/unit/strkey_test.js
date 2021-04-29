@@ -1,5 +1,3 @@
-import startsWith from 'lodash';
-
 const { ENGINE_METHOD_PKEY_METHS } = require('constants');
 
 describe('StrKey', function() {
@@ -399,9 +397,9 @@ describe('StrKey', function() {
     BAD_STRKEYS.forEach((address) => {
       it(`fails in expected case ${address}`, function() {
         let decoder;
-        if (startsWith(address, 'G')) {
+        if (address.indexOf('G') === 0) {
           decoder = StellarBase.StrKey.decodeEd25519PublicKey;
-        } else if (startsWith(address, 'M')) {
+        } else if (address.indexOf('M') === 0) {
           decoder = StellarBase.StrKey.decodeMed25519PublicKey;
         } else {
           expect(`can't understand address`).to.be.true;
