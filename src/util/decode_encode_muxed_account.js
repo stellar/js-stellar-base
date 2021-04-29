@@ -58,6 +58,7 @@ export function decodeAddressToMuxedAccount(address, supportMuxing) {
  *     or M... address (corresponding to both the key and the muxed ID)
  */
 export function encodeMuxedAccountToAddress(muxedAccount, supportMuxing) {
+  console.log(muxedAccount, supportMuxing);
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
     if (supportMuxing) {
       return _encodeMuxedAccountFullyToAddress(muxedAccount);
