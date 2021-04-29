@@ -394,9 +394,9 @@ describe('StrKey', function() {
     BAD_STRKEYS.forEach((address) => {
       it(`fails in expected case ${address}`, function() {
         let decoder;
-        if (address.startsWith('G')) {
+        if (address.indexOf('G') === 0) {
           decoder = StellarBase.StrKey.decodeEd25519PublicKey;
-        } else if (address.startsWith('M')) {
+        } else if (address.indexOf('M') === 0) {
           decoder = StellarBase.StrKey.decodeMed25519PublicKey;
         } else {
           expect(`can't understand address`).to.be.true;
