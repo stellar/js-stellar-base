@@ -1,3 +1,5 @@
+import startsWith from 'lodash';
+
 const { ENGINE_METHOD_PKEY_METHS } = require('constants');
 
 describe('StrKey', function() {
@@ -278,9 +280,9 @@ describe('StrKey', function() {
       expect(StellarBase.StrKey.encodeMed25519PublicKey(RAW_MPUBKEY)).to.equal(
         MPUBKEY
       );
-      expect(StellarBase.StrKey.decodeMed25519PublicKey(MPUBKEY)).to.eql(
-        RAW_MPUBKEY
-      );
+      expect(
+        StellarBase.StrKey.decodeMed25519PublicKey(MPUBKEY).equals(RAW_MPUBKEY)
+      ).to.be.true;
     });
     it('decodes to an empty muxed account when given a G...', function() {
       const emptyMux = StellarBase.decodeAddressToMuxedAccount(PUBKEY, true);
@@ -397,9 +399,9 @@ describe('StrKey', function() {
     BAD_STRKEYS.forEach((address) => {
       it(`fails in expected case ${address}`, function() {
         let decoder;
-        if (address.indexOf('G') === 0) {
+        if (startsWith(address, 'G')) {
           decoder = StellarBase.StrKey.decodeEd25519PublicKey;
-        } else if (address.indexOf('M') === 0) {
+        } else if (startsWith(address, 'M')) {
           decoder = StellarBase.StrKey.decodeMed25519PublicKey;
         } else {
           expect(`can't understand address`).to.be.true;
