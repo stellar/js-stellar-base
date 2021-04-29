@@ -707,19 +707,18 @@ describe('TransactionBuilder', function() {
       const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
       let builder = new StellarBase.TransactionBuilder(source, {
         fee: '100',
-        timebounds: { minTime: 0, maxTime: 0 },
+        networkPassphrase: networkPassphrase,
         memo: new StellarBase.Memo(
           StellarBase.MemoText,
           'Testing muxed accounts'
         ),
-        withMuxing: true,
-        networkPassphrase: networkPassphrase
+        withMuxing: true
       });
 
       operations.forEach((op) => builder.addOperation(op));
       expect(builder.supportMuxedAccounts).to.be.true;
 
-      let tx = builder.build();
+      let tx = builder.setTimeout(30).build();
       tx.sign(signer);
 
       const envelope = tx.toEnvelope();
@@ -732,12 +731,12 @@ describe('TransactionBuilder', function() {
       );
 
       const innerMux = rawMuxedSourceAccount.med25519();
-      console.log(innerMux);
-      expect(innerMux.ed25519().equals(PUBKEY_SRC)).to.be.true;
+      console.log(innerMux.ed25519());
       expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
         source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
+      expect(innerMux.ed25519().equals(PUBKEY_SRC)).to.be.true;
     });
   });
 });
