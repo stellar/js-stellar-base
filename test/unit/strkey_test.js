@@ -290,9 +290,12 @@ describe('StrKey', function() {
       expect(emptyMux.switch()).to.equal(
         StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
       );
-      expect(emptyMux.med25519().ed25519()).to.eql(
-        StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY)
-      );
+      expect(
+        emptyMux
+          .med25519()
+          .ed25519()
+          .equals(StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY))
+      ).to.be.true;
       expect(emptyMux.med25519().id()).to.eql(ZERO);
       expect(StellarBase.encodeMuxedAccountToAddress(emptyMux)).to.equal(
         PUBKEY
@@ -316,7 +319,7 @@ describe('StrKey', function() {
       expect(unmuxed.switch()).to.equal(
         StellarBase.xdr.CryptoKeyType.keyTypeEd25519()
       );
-      expect(unmuxed.ed25519()).to.eql(RAW_PUBKEY);
+      expect(unmuxed.ed25519().equals(RAW_PUBKEY)).to.be.true;
 
       const pubkey = StellarBase.encodeMuxedAccountToAddress(unmuxed);
       expect(pubkey).to.equal(PUBKEY);
@@ -350,7 +353,7 @@ describe('StrKey', function() {
         expect(innerMux).to.be.an.instanceof(
           StellarBase.xdr.MuxedAccountMed25519
         );
-        expect(innerMux.ed25519()).to.eql(unmuxed.ed25519());
+        expect(innerMux.ed25519().equals(unmuxed.ed25519())).to.be.true;
         expect(innerMux.id()).to.eql(id);
 
         const mpubkey = StellarBase.encodeMuxedAccountToAddress(muxed, true);
