@@ -672,8 +672,11 @@ describe('TransactionBuilder', function() {
     const destination =
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
     const source = new StellarBase.MuxedAccount(
-      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ',
-      '123'
+      new StellarBase.Account(
+        'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
+        '1234'
+      ),
+      '2'
     );
 
     const PUBKEY_SRC = StellarBase.StrKey.decodeEd25519PublicKey(
@@ -682,7 +685,6 @@ describe('TransactionBuilder', function() {
     const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString('2');
     const networkPassphrase = 'Standalone Network ; February 2017';
 
-    const muxState = true;
     it('enables muxed support after creation', function() {
       let builder = new StellarBase.TransactionBuilder(source, {
         fee: '100',
@@ -692,6 +694,7 @@ describe('TransactionBuilder', function() {
       expect(builder.supportMuxedAccounts).to.be.false;
       expect(builder.enableMuxedAccounts().supportMuxedAccounts).to.be.true;
     });
+
     it('works when muxed accounts are enabled', function() {
       const operations = [
         StellarBase.Operation.payment({
@@ -737,6 +740,9 @@ describe('TransactionBuilder', function() {
         source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
+
+      expect(source.sequenceNumber()).to.equal('1235');
+      expect(source.baseAccount().sequenceNumber()).to.equal('1235');
     });
   });
 });
