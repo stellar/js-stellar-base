@@ -59,12 +59,21 @@ export function decodeAddressToMuxedAccount(address, supportMuxing) {
  */
 export function encodeMuxedAccountToAddress(muxedAccount, supportMuxing) {
   console.log(muxedAccount, supportMuxing);
+  console.log(muxedAccount.switch());
+  console.log(xdr.CryptoKeyType.keyTypeMuxedEd25519());
+  console.log(
+    muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()
+  );
+
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
     if (supportMuxing) {
+      console.log('Doing full encode');
       return _encodeMuxedAccountFullyToAddress(muxedAccount);
     }
+    console.log('Getting underlying med25519');
     muxedAccount = muxedAccount.med25519();
   }
+  console.log('encoding ed25519 version');
   return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
 }
 
