@@ -118,6 +118,7 @@ function _decodeAddressFullyToMuxedAccount(address) {
 
 // Converts an xdr.MuxedAccount into its *true* "M..." string representation.
 function _encodeMuxedAccountFullyToAddress(muxedAccount) {
+  console.log('Whaddup mofongo');
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
     return encodeMuxedAccountToAddress(muxedAccount);
   }
