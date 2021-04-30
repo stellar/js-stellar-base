@@ -12,26 +12,27 @@
   * `Transaction.sourceAccount`
   * `FeeBumpTransaction.feeSource`
 
-- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts and their corresponding sequence numbers, passing them along to the supported operations and `TransactionBuilder` ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
+- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts and their underlying shared `Account`, passing them along to the supported operations and `TransactionBuilder` ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
 
 ```js
   const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+  const ACC = new StellarBase.Account(PUBKEY, '1');
 
-  const mux1 = new StellarBase.MuxedAccount(PUBKEY, '1').setId('1');
+  const mux1 = new StellarBase.MuxedAccount(ACC, '1000');
   console.log(mux1.accountId(), mux1.id());
-  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ 1
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAD5DTGC 1000
 
-  const mux2 = mux1.createSubaccount('2');
+  const mux2 = mux1.createSubaccount('2000');
   console.log("Parent relationship preserved:", 
-              mux2.account.accountId() === mux1.account.accountId());
+              mux2.baseAccount().accountId() === mux1.baseAccount().accountId());
   console.log(mux2.accountId(), mux2.id());
-  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ 2
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAH2B4RU 2000
 
-  const mux3 = StellarBase.fromXDRObject(
-    StellarBase.encodeMuxedAccount(PUBKEY, '3')
-  );
-  console.log(mux3.address(), mux3.id());
-  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAPYHQ 3
+  mux1.setID('3000');
+  console.log("Underlying account unchanged:", 
+              ACC.accountId() === mux1.baseAccount().accountId());
+  console.log(mux1.accountId(), mux1.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
 ```
 
 ### Fix
