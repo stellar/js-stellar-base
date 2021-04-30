@@ -277,7 +277,7 @@ export class Operation {
       }
       case 'accountMerge': {
         result.type = 'accountMerge';
-        result.destination = encodeMuxedAccountToAddress(attrs);
+        result.destination = encodeMuxedAccountToAddress(attrs, withMuxing);
         break;
       }
       case 'manageData': {

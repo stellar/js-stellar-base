@@ -8,7 +8,7 @@
   * `PathPaymentStrictReceive.destination`
   * `PathPaymentStrictSend.destination`
   * `Operation.sourceAccount`
-  * `Operation.destination`, for account merges
+  * `AccountMerge.destination`
   * `Transaction.sourceAccount`
   * `FeeBumpTransaction.feeSource`
 
