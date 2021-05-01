@@ -10,7 +10,6 @@
   * `Operation.sourceAccount`
   * `AccountMerge.destination`
   * `Transaction.sourceAccount`
-  * `FeeBumpTransaction.feeSource`
 
 - The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts and their underlying shared `Account`, passing them along to the supported operations and `TransactionBuilder` ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
 
@@ -38,6 +37,8 @@
 ### Fix
 - Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
 
+### Update
+- Modernize the minimum-supported browser versions for the library ([#419](https://github.com/stellar/js-stellar-base/pull/419)).
 
 ## [v5.1.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v5.1.0)
 
