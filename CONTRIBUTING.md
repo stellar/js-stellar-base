@@ -16,7 +16,7 @@ As you probably already know, there are two main components to the JavaScript SD
 ### Updating Base
 Once all of the PRs for a particular release are in, it's time to actually publish & deploy a new version.
 
- - [ ] Create a new branch with the new version, e.g. `git switch -c v1.0.0`
+ - [ ] Create a new branch with the new version, e.g. `git switch -C v1.0.0`
 
  - [ ] First, look at the diff between the latest release and master: e.g. https://github.com/stellar/js-stellar-base/compare/v5.1.0...master. Replace `v5.1.0` here with the [latest release](https://github.com/stellar/js-stellar-base/releases/latest).
 
