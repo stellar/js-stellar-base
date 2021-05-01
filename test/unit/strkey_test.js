@@ -1,5 +1,3 @@
-import startsWith from 'lodash';
-
 const { ENGINE_METHOD_PKEY_METHS } = require('constants');
 
 describe('StrKey', function() {
