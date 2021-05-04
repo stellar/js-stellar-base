@@ -10,6 +10,23 @@ export class Account {
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
+  createSubaccount(id: string): MuxedAccount;
+}
+
+export class MuxedAccount {
+  constructor(account: Account, sequence: string);
+  static fromAddress(mAddress: string, sequenceNum: string) : MuxedAccount;
+
+  /* Modeled after Account, above */
+  accountId(): string;
+  sequenceNumber(): string;
+  incrementSequenceNumber(): void;
+
+  baseAccount() : Account;
+  id() : string;
+  setId(id: string) : MuxedAccount;
+  toXDRObject() : xdr.MuxedAccount;
+  equals(otherMuxedAccount: MuxedAccount) : boolean;
 }
 
 export namespace AssetType {
