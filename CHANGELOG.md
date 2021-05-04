@@ -21,7 +21,7 @@
   console.log(mux1.accountId(), mux1.id());
   // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAD5DTGC 1000
 
-  const mux2 = mux1.createSubaccount('2000');
+  const mux2 = ACC.createSubaccount('2000');
   console.log("Parent relationship preserved:", 
               mux2.baseAccount().accountId() === mux1.baseAccount().accountId());
   console.log(mux2.accountId(), mux2.id());
@@ -33,6 +33,8 @@
   console.log(mux1.accountId(), mux1.id());
   // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
 ```
+
+- You can refer to the [documentation](https://stellar.github.io/js-stellar-sdk/MuxedAccount.html) or the [test suite](../test/unit/muxed_account_test.js) for more uses of the API.
 
 ### Fix
 - Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
