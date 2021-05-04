@@ -15,7 +15,7 @@ describe('muxed account abstraction works', function() {
     expect(mux.setId('420').id()).to.equal('420');
     expect(mux.accountId()).to.equal(MPUBKEY_ID);
 
-    const muxXdr = mux.asXDRObject();
+    const muxXdr = mux.toXDRObject();
     expect(muxXdr.switch()).to.equal(
       StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
     );
@@ -27,6 +27,10 @@ describe('muxed account abstraction works', function() {
         .equals(StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY))
     ).to.be.true;
     expect(innerMux.id()).to.eql(StellarBase.xdr.Uint64.fromString('420'));
+
+    expect(StellarBase.encodeMuxedAccountToAddress(muxXdr, true)).to.equal(
+      mux.accountId()
+    );
   });
 
   it('tracks sequence numbers correctly', function() {

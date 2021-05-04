@@ -199,7 +199,7 @@ export class MuxedAccount {
    * @return {xdr.MuxedAccount} the XDR object representing this muxed account's
    *     G-address and uint64 ID
    */
-  asXDRObject() {
+  toXDRObject() {
     return this._muxedXdr;
   }
 
