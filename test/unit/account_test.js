@@ -26,10 +26,10 @@ describe('Account.constructor', function() {
     expect(account.sequenceNumber()).to.equal('100');
   });
 
-  it('creates Account objects from muxed account strings', function() {
-    let account = new StellarBase.Account(MUXED_ADDRESS, '123');
-    expect(account.accountId()).to.equal(UNDERLYING_ACCOUNT);
-    expect(account.sequenceNumber()).to.equal('123');
+  it('wont create Account objects from muxed account strings', function() {
+    expect(() => {
+      new StellarBase.Account(MUXED_ADDRESS, '123');
+    }).to.throw();
   });
 });
 

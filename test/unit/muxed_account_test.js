@@ -21,9 +21,11 @@ describe('muxed account abstraction works', function() {
     );
 
     const innerMux = muxXdr.med25519();
-    expect(innerMux.ed25519()).to.eql(
-      StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY)
-    );
+    expect(
+      innerMux
+        .ed25519()
+        .equals(StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY))
+    ).to.be.true;
     expect(innerMux.id()).to.eql(StellarBase.xdr.Uint64.fromString('420'));
   });
 
@@ -53,5 +55,29 @@ describe('muxed account abstraction works', function() {
     expect(baseAccount.sequenceNumber()).to.equal('12348');
     expect(mux1.sequenceNumber()).to.equal('12348');
     expect(mux2.sequenceNumber()).to.equal('12348');
+  });
+
+  it('lets subaccounts be created', function() {
+    let baseAccount = new StellarBase.Account(PUBKEY, '12345');
+    const mux1 = new StellarBase.MuxedAccount(baseAccount, '1');
+
+    const mux2 = mux1.baseAccount().createSubaccount('420');
+    expect(mux2.id()).to.equal('420');
+    expect(mux2.accountId()).to.equal(MPUBKEY_ID);
+    expect(mux2.sequenceNumber()).to.equal('12345');
+
+    const mux3 = new StellarBase.MuxedAccount(mux2.baseAccount(), '3');
+
+    mux2.incrementSequenceNumber();
+    expect(mux1.sequenceNumber()).to.equal('12346');
+    expect(mux2.sequenceNumber()).to.equal('12346');
+    expect(mux3.sequenceNumber()).to.equal('12346');
+  });
+
+  it('parses M-addresses', function() {
+    const mux1 = new StellarBase.MuxedAccount.fromAddress(MPUBKEY_ZERO, '123');
+    expect(mux1.id()).to.equal('0');
+    expect(mux1.accountId()).to.equal(MPUBKEY_ZERO);
+    expect(mux1.sequenceNumber()).to.equal('123');
   });
 });

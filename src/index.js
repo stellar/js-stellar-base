@@ -22,8 +22,7 @@ export {
   AuthClawbackEnabledFlag
 } from './operation';
 export * from './memo';
-export { Account } from './account';
-export { MuxedAccount } from './muxed_account';
+export { Account, MuxedAccount } from './account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
