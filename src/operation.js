@@ -94,7 +94,10 @@ export class Operation {
   static setSourceAccount(opAttributes, opts) {
     if (opts.source) {
       try {
-        opAttributes.sourceAccount = decodeAddressToMuxedAccount(opts.source);
+        opAttributes.sourceAccount = decodeAddressToMuxedAccount(
+          opts.source,
+          opts.withMuxing
+        );
       } catch (e) {
         throw new Error('Source address is invalid');
       }
@@ -102,15 +105,24 @@ export class Operation {
   }
 
   /**
-   * Converts the XDR Operation object to the opts object used to create the XDR
-   * operation.
-   * @param {xdr.Operation} operation - An XDR Operation.
+   * Deconstructs the raw XDR operation object into the structured object that
+   * was used to create the operation (i.e. the `opts` parameter to most ops).
+   *
+   * @param {xdr.Operation}   operation - An XDR Operation.
+   * @param {boolean}         [withMuxing] - Indicates that the operation
+   *     contains M... addresses which should be interpreted fully as muxed
+   *     accounts. By default, this option is disabled until muxed accounts are
+   *     mature.
+   *
    * @return {Operation}
    */
-  static fromXDRObject(operation) {
+  static fromXDRObject(operation, withMuxing) {
     const result = {};
     if (operation.sourceAccount()) {
-      result.source = encodeMuxedAccountToAddress(operation.sourceAccount());
+      result.source = encodeMuxedAccountToAddress(
+        operation.sourceAccount(),
+        withMuxing
+      );
     }
 
     const attrs = operation.body().value();
@@ -125,7 +137,10 @@ export class Operation {
       }
       case 'payment': {
         result.type = 'payment';
-        result.destination = encodeMuxedAccountToAddress(attrs.destination());
+        result.destination = encodeMuxedAccountToAddress(
+          attrs.destination(),
+          withMuxing
+        );
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
@@ -134,7 +149,10 @@ export class Operation {
         result.type = 'pathPaymentStrictReceive';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
-        result.destination = encodeMuxedAccountToAddress(attrs.destination());
+        result.destination = encodeMuxedAccountToAddress(
+          attrs.destination(),
+          withMuxing
+        );
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
         result.path = [];
@@ -151,7 +169,10 @@ export class Operation {
         result.type = 'pathPaymentStrictSend';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
-        result.destination = encodeMuxedAccountToAddress(attrs.destination());
+        result.destination = encodeMuxedAccountToAddress(
+          attrs.destination(),
+          withMuxing
+        );
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destMin = this._fromXDRAmount(attrs.destMin());
         result.path = [];
@@ -256,7 +277,7 @@ export class Operation {
       }
       case 'accountMerge': {
         result.type = 'accountMerge';
-        result.destination = encodeMuxedAccountToAddress(attrs);
+        result.destination = encodeMuxedAccountToAddress(attrs, withMuxing);
         break;
       }
       case 'manageData': {

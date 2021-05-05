@@ -8,29 +8,45 @@ import isString from 'lodash/isString';
 import { verifyChecksum } from './util/checksum';
 
 const versionBytes = {
-  ed25519PublicKey: 6 << 3, // G
+  ed25519PublicKey: 6 << 3, // G (when encoded in base32)
   ed25519SecretSeed: 18 << 3, // S
+  med25519PublicKey: 12 << 3, // M
   preAuthTx: 19 << 3, // T
   sha256Hash: 23 << 3 // X
 };
 
 /**
- * StrKey is a helper class that allows encoding and decoding strkey.
+ * StrKey is a helper class that allows encoding and decoding Stellar keys
+ * to/from strings, i.e. between their binary (Buffer, xdr.PublicKey, etc.) and
+ * string (i.e. "GABCD...", etc.) representations.
  */
 export class StrKey {
   /**
-   * Encodes data to strkey ed25519 public key.
-   * @param {Buffer} data data to encode
-   * @returns {string}
+   * Encodes `data` to strkey ed25519 public key.
+   *
+   * If the parameter is a muxed account, it will extract the underlying public
+   * key.
+   *
+   * @param   {Buffer} data   raw data to encode
+   * @returns {string}        "G..." representation of the key
    */
   static encodeEd25519PublicKey(data) {
+    if (data && data[0] === versionBytes.med25519PublicKey) {
+      const medKey = encodeCheck('med25519PublicKey', data);
+      return this.encodeEd25519PublicKey(medKey.ed25519());
+    }
+
     return encodeCheck('ed25519PublicKey', data);
   }
 
   /**
    * Decodes strkey ed25519 public key to raw data.
-   * @param {string} data data to decode
-   * @returns {Buffer}
+   *
+   * If the parameter is a muxed account key ("M..."), this will only encode it
+   * as a basic Ed25519 key (as if in "G..." format).
+   *
+   * @param   {string} data   "G..." (or "M...") key representation to decode
+   * @returns {Buffer}        raw key
    */
   static decodeEd25519PublicKey(data) {
     return decodeCheck('ed25519PublicKey', data);
@@ -73,6 +89,33 @@ export class StrKey {
   }
 
   /**
+   * Encodes data to strkey med25519 public key.
+   * @param {Buffer} data data to encode
+   * @returns {string}
+   */
+  static encodeMed25519PublicKey(data) {
+    return encodeCheck('med25519PublicKey', data);
+  }
+
+  /**
+   * Decodes strkey med25519 public key to raw data.
+   * @param {string} data data to decode
+   * @returns {Buffer}
+   */
+  static decodeMed25519PublicKey(data) {
+    return decodeCheck('med25519PublicKey', data);
+  }
+
+  /**
+   * Returns true if the given Stellar public key is a valid med25519 public key.
+   * @param {string} publicKey public key to check
+   * @returns {boolean}
+   */
+  static isValidMed25519PublicKey(publicKey) {
+    return isValid('med25519PublicKey', publicKey);
+  }
+
+  /**
    * Encodes data to strkey preAuthTx.
    * @param {Buffer} data data to encode
    * @returns {string}
@@ -109,14 +152,17 @@ export class StrKey {
   }
 }
 
+// Warning: This isn't a *definitive* check of validity, but rather just a
+// basic-effort check.
 function isValid(versionByteName, encoded) {
-  if (encoded && encoded.length !== 56) {
+  // it's either non-muxed && len=56, or muxed && len=69
+  if (encoded && encoded.length !== 56 && encoded.length !== 69) {
     return false;
   }
 
   try {
     const decoded = decodeCheck(versionByteName, encoded);
-    if (decoded.length !== 32) {
+    if (decoded.length !== 32 && decoded.length !== 40) {
       return false;
     }
   } catch (err) {
@@ -144,7 +190,8 @@ export function decodeCheck(versionByteName, encoded) {
 
   if (isUndefined(expectedVersion)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name. Expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
+      `${versionByteName} is not a valid version byte name. ` +
+        `Expected one of ${Object.keys(versionBytes).join(', ')}`
     );
   }
 
@@ -172,7 +219,8 @@ export function encodeCheck(versionByteName, data) {
 
   if (isUndefined(versionByte)) {
     throw new Error(
-      `${versionByteName} is not a valid version byte name. Expected one of "ed25519PublicKey", "ed25519SecretSeed", "preAuthTx", "sha256Hash", "muxedAccount"`
+      `${versionByteName} is not a valid version byte name. ` +
+        `Expected one of ${Object.keys(versionBytes).join(', ')}`
     );
   }
   data = Buffer.from(data);

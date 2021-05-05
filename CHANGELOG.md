@@ -2,7 +2,41 @@
 
 ## Unreleased
 
-### Fix 
+### Add
+- **Opt-in support for muxed accounts.** This introduces `M...` addresses from [SEP-23](https://stellar.org/protocol/sep-23), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
+  * `Payment.destination`
+  * `PathPaymentStrictReceive.destination`
+  * `PathPaymentStrictSend.destination`
+  * `Operation.sourceAccount`
+  * `AccountMerge.destination`
+  * `Transaction.sourceAccount`
+
+- The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts and their underlying shared `Account`, passing them along to the supported operations and `TransactionBuilder` ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
+
+```js
+  const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+  const ACC = new StellarBase.Account(PUBKEY, '1');
+
+  const mux1 = new StellarBase.MuxedAccount(ACC, '1000');
+  console.log(mux1.accountId(), mux1.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAD5DTGC 1000
+
+  const mux2 = ACC.createSubaccount('2000');
+  console.log("Parent relationship preserved:", 
+              mux2.baseAccount().accountId() === mux1.baseAccount().accountId());
+  console.log(mux2.accountId(), mux2.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAH2B4RU 2000
+
+  mux1.setID('3000');
+  console.log("Underlying account unchanged:", 
+              ACC.accountId() === mux1.baseAccount().accountId());
+  console.log(mux1.accountId(), mux1.id());
+  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
+```
+
+- You can refer to the [documentation](https://stellar.github.io/js-stellar-sdk/MuxedAccount.html) or the [test suite](../test/unit/muxed_account_test.js) for more uses of the API.
+
+### Fix
 - Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
 
 ### Update

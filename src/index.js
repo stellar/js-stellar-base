@@ -22,9 +22,14 @@ export {
   AuthClawbackEnabledFlag
 } from './operation';
 export * from './memo';
-export { Account } from './account';
+export { Account, MuxedAccount } from './account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
+export {
+  decodeAddressToMuxedAccount,
+  encodeMuxedAccountToAddress,
+  encodeMuxedAccount
+} from './util/decode_encode_muxed_account';
 
 export default module.exports;

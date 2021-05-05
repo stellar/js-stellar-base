@@ -4,7 +4,8 @@ const masterKey = StellarSdk.Keypair.master(StellarSdk.Networks.TESTNET); // $Ex
 const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
 const destKey = StellarSdk.Keypair.random();
 const usd = new StellarSdk.Asset('USD', 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'); // $ExpectType Asset
-const account = new StellarSdk.Account(sourceKey.publicKey(), '1');
+const account = new StellarSdk.Account(sourceKey.publicKey(), '1'); // $ExpectType Account
+const muxedAccount = new StellarSdk.MuxedAccount(account, '123'); // $ExpectType MuxedAccount
 const transaction = new StellarSdk.TransactionBuilder(account, {
   fee: "100",
   networkPassphrase: StellarSdk.Networks.TESTNET

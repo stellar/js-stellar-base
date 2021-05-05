@@ -11,7 +11,7 @@ SDK maintainers should follow [semantic versioning](https://semver.org/) best pr
 
 Use your best judgement when deciding on when to craft a release: maybe enough changes have accumulated to warrant a release, maybe there's a high-urgency fix that needs to be published immediately, or maybe you can put it off for a particular feature. It's all dependent on what else is going on.
 
-As you probably already know, there are two main components to the JavaScript SDK environment: the `stellar-base` package (this repo) and the higher-level `stellar-sdk` package that relies on this one as a dependency. Care should be taken when updating either, as there are quite a few small steps that can go wrong.
+As you probably already know, there are two main components to the JavaScript SDK environment: the `stellar-base` package (this repo) and the higher-level `stellar-sdk` package (from [here](https://github.com/stellar/js-stellar-sdk)) that relies on this one as a dependency. Care should be taken when updating either, as there are quite a few small steps that can get overlooked.
 
 ### Updating Base
 Once all of the PRs for a particular release are in, it's time to actually publish & deploy a new version.
