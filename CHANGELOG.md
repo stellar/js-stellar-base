@@ -42,8 +42,6 @@
 ### Update
 - Modernize the minimum-supported browser versions for the library ([#419](https://github.com/stellar/js-stellar-base/pull/419)).
 
-- Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
-
 ### Fix
 - Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
 
