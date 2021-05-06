@@ -166,7 +166,8 @@ yarn xdr
 # If src/generated/stellar-xdr_generated.js changed, then:
 git clone https://github.com/stellar/dts-xdr
 cd dts-xdr
-stellar-xdr_generated.d.ts npx jscodeshift -t src/transform.js ../src/generated/stellar-xdr_generated.js
+npm install
+OUT=stellar-xdr_generated.d.ts npx jscodeshift -t src/transform.js ../src/generated/stellar-xdr_generated.js
 cp stellar-xdr_generated.d.ts ../types/xdr.d.ts
 cd .. && rm -rf dts-xdr
 ```
