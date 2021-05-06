@@ -1,4 +1,4 @@
-// Automatically generated on 2021-03-19T18:40:30-07:00
+// Automatically generated on 2021-05-06T20:53:07+00:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -50,6 +50,13 @@ xdr.typedef("SequenceNumber", xdr.lookup("Int64"));
 //
 // ===========================================================================
 xdr.typedef("TimePoint", xdr.lookup("Uint64"));
+
+// === xdr source ============================================================
+//
+//   typedef uint64 Duration;
+//
+// ===========================================================================
+xdr.typedef("Duration", xdr.lookup("Uint64"));
 
 // === xdr source ============================================================
 //
@@ -320,10 +327,29 @@ xdr.typedef("SponsorshipDescriptor", xdr.option(xdr.lookup("AccountId")));
 
 // === xdr source ============================================================
 //
+//   struct AccountEntryExtensionV3
+//   {
+//       // Ledger number at which `seqNum` took on its present value.
+//       uint32 seqLedger;
+//   
+//       // Time at which `seqNum` took on its present value.
+//       TimePoint seqTime;
+//   };
+//
+// ===========================================================================
+xdr.struct("AccountEntryExtensionV3", [
+  ["seqLedger", xdr.lookup("Uint32")],
+  ["seqTime", xdr.lookup("TimePoint")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (int v)
 //       {
 //       case 0:
 //           void;
+//       case 3:
+//           AccountEntryExtensionV3 v3;
 //       }
 //
 // ===========================================================================
@@ -332,8 +358,10 @@ xdr.union("AccountEntryExtensionV2Ext", {
   switchName: "v",
   switches: [
     [0, xdr.void()],
+    [3, "v3"],
   ],
   arms: {
+    v3: xdr.lookup("AccountEntryExtensionV3"),
   },
 });
 
@@ -349,6 +377,8 @@ xdr.union("AccountEntryExtensionV2Ext", {
 //       {
 //       case 0:
 //           void;
+//       case 3:
+//           AccountEntryExtensionV3 v3;
 //       }
 //       ext;
 //   };
@@ -788,10 +818,10 @@ xdr.enum("ClaimPredicateType", {
 //   case CLAIM_PREDICATE_NOT:
 //       ClaimPredicate* notPredicate;
 //   case CLAIM_PREDICATE_BEFORE_ABSOLUTE_TIME:
-//       int64 absBefore; // Predicate will be true if closeTime < absBefore
+//       TimePoint absBefore; // Predicate will be true if closeTime < absBefore
 //   case CLAIM_PREDICATE_BEFORE_RELATIVE_TIME:
-//       int64 relBefore; // Seconds since closeTime of the ledger in which the
-//                        // ClaimableBalanceEntry was created
+//       Duration relBefore; // Seconds since closeTime of the ledger in which the
+//                           // ClaimableBalanceEntry was created
 //   };
 //
 // ===========================================================================
@@ -810,8 +840,8 @@ xdr.union("ClaimPredicate", {
     andPredicates: xdr.varArray(xdr.lookup("ClaimPredicate"), 2),
     orPredicates: xdr.varArray(xdr.lookup("ClaimPredicate"), 2),
     notPredicate: xdr.option(xdr.lookup("ClaimPredicate")),
-    absBefore: xdr.lookup("Int64"),
-    relBefore: xdr.lookup("Int64"),
+    absBefore: xdr.lookup("TimePoint"),
+    relBefore: xdr.lookup("Duration"),
   },
 });
 
@@ -3561,6 +3591,97 @@ xdr.struct("TimeBounds", [
 
 // === xdr source ============================================================
 //
+//   struct LedgerBounds
+//   {
+//       uint32 minLedger;
+//       uint32 maxLedger;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerBounds", [
+  ["minLedger", xdr.lookup("Uint32")],
+  ["maxLedger", xdr.lookup("Uint32")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct GeneralPreconditions {
+//       TimeBounds *timeBounds;
+//   
+//       // Transaciton only valid for ledger numbers n such that
+//       // minLedger <= n < maxLedger
+//       LedgerBounds *ledgerBounds;
+//   
+//       // If NULL, only valid when sourceAccount's sequence number
+//       // is seqNum - 1.  Otherwise, valid when sourceAccount's
+//       // sequence number n satisfies minSeqNum <= n < tx.seqNum.
+//       // Note that after execution the account's sequence number
+//       // is always raised to tx.seqNum, and a transaction is not
+//       // valid if tx.seqNum is too high to ensure replay protection.
+//       SequenceNumber *minSeqNum;
+//   
+//       // For the transaction to be valid, the current ledger time must
+//       // be at least minSeqAge greater than sourceAccount's seqTime.
+//       Duration minSeqAge;
+//   
+//       // For the transaction to be valid, the current ledger number
+//       // must be at least minSeqLedgerGap greater than sourceAccount's
+//       // seqLedger.
+//       uint32 minSeqLedgerGap;
+//   };
+//
+// ===========================================================================
+xdr.struct("GeneralPreconditions", [
+  ["timeBounds", xdr.option(xdr.lookup("TimeBounds"))],
+  ["ledgerBounds", xdr.option(xdr.lookup("LedgerBounds"))],
+  ["minSeqNum", xdr.option(xdr.lookup("SequenceNumber"))],
+  ["minSeqAge", xdr.lookup("Duration")],
+  ["minSeqLedgerGap", xdr.lookup("Uint32")],
+]);
+
+// === xdr source ============================================================
+//
+//   enum PreconditionType {
+//       PRECOND_NONE = 0,
+//       PRECOND_TIME = 1,
+//       PRECOND_GENERAL = 2
+//   };
+//
+// ===========================================================================
+xdr.enum("PreconditionType", {
+  precondNone: 0,
+  precondTime: 1,
+  precondGeneral: 2,
+});
+
+// === xdr source ============================================================
+//
+//   union Preconditions switch (PreconditionType type) {
+//       case PRECOND_NONE:
+//           void;
+//       case PRECOND_TIME:
+//           TimeBounds timeBounds;
+//       case PRECOND_GENERAL:
+//           GeneralPreconditions general;
+//   };
+//
+// ===========================================================================
+xdr.union("Preconditions", {
+  switchOn: xdr.lookup("PreconditionType"),
+  switchName: "type",
+  switches: [
+    ["precondNone", xdr.void()],
+    ["precondTime", "timeBounds"],
+    ["precondGeneral", "general"],
+  ],
+  arms: {
+    timeBounds: xdr.lookup("TimeBounds"),
+    general: xdr.lookup("GeneralPreconditions"),
+  },
+});
+
+// === xdr source ============================================================
+//
 //   const MAX_OPS_PER_TX = 100;
 //
 // ===========================================================================
@@ -3662,8 +3783,8 @@ xdr.union("TransactionExt", {
 //       // sequence number to consume in the account
 //       SequenceNumber seqNum;
 //   
-//       // validity range (inclusive) for the last ledger close time
-//       TimeBounds* timeBounds;
+//       // validity conditions
+//       Preconditions cond;
 //   
 //       Memo memo;
 //   
@@ -3683,7 +3804,7 @@ xdr.struct("Transaction", [
   ["sourceAccount", xdr.lookup("MuxedAccount")],
   ["fee", xdr.lookup("Uint32")],
   ["seqNum", xdr.lookup("SequenceNumber")],
-  ["timeBounds", xdr.option(xdr.lookup("TimeBounds"))],
+  ["cond", xdr.lookup("Preconditions")],
   ["memo", xdr.lookup("Memo")],
   ["operations", xdr.varArray(xdr.lookup("Operation"), xdr.lookup("MAX_OPS_PER_TX"))],
   ["ext", xdr.lookup("TransactionExt")],

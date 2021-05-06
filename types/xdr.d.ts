@@ -1,7 +1,3 @@
-// The type definitions inside the namespace xdr were automatically generated on 2021-03-19T18:40:30Z
-// using https://github.com/stellar/dts-xdr.
-// DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
-
 import { Operation } from './index';
 
 export {};
@@ -703,6 +699,18 @@ export namespace xdr {
     static memoHash(): MemoType;
 
     static memoReturn(): MemoType;
+  }
+
+  class PreconditionType {
+    readonly name: 'precondNone' | 'precondTime' | 'precondGeneral';
+
+    readonly value: 0 | 1 | 2;
+
+    static precondNone(): PreconditionType;
+
+    static precondTime(): PreconditionType;
+
+    static precondGeneral(): PreconditionType;
   }
 
   class CreateAccountResultCode {
@@ -1476,6 +1484,8 @@ export namespace xdr {
 
   type TimePoint = Uint64;
 
+  type Duration = Uint64;
+
   const DataValue: VarOpaque;
 
   const AssetCode4: Opaque;
@@ -1646,6 +1656,37 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Signer;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Signer;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class AccountEntryExtensionV3 {
+    constructor(attributes: { seqLedger: number; seqTime: TimePoint });
+
+    seqLedger(value?: number): number;
+
+    seqTime(value?: TimePoint): TimePoint;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AccountEntryExtensionV3;
+
+    static write(value: AccountEntryExtensionV3, io: Buffer): void;
+
+    static isValid(value: AccountEntryExtensionV3): boolean;
+
+    static toXDR(value: AccountEntryExtensionV3): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV3;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV3;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4485,6 +4526,77 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class LedgerBounds {
+    constructor(attributes: { minLedger: number; maxLedger: number });
+
+    minLedger(value?: number): number;
+
+    maxLedger(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerBounds;
+
+    static write(value: LedgerBounds, io: Buffer): void;
+
+    static isValid(value: LedgerBounds): boolean;
+
+    static toXDR(value: LedgerBounds): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerBounds;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerBounds;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class GeneralPreconditions {
+    constructor(attributes: {
+      timeBounds: null | TimeBounds;
+      ledgerBounds: null | LedgerBounds;
+      minSeqNum: null | SequenceNumber;
+      minSeqAge: Duration;
+      minSeqLedgerGap: number;
+    });
+
+    timeBounds(value?: null | TimeBounds): null | TimeBounds;
+
+    ledgerBounds(value?: null | LedgerBounds): null | LedgerBounds;
+
+    minSeqNum(value?: null | SequenceNumber): null | SequenceNumber;
+
+    minSeqAge(value?: Duration): Duration;
+
+    minSeqLedgerGap(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): GeneralPreconditions;
+
+    static write(value: GeneralPreconditions, io: Buffer): void;
+
+    static isValid(value: GeneralPreconditions): boolean;
+
+    static toXDR(value: GeneralPreconditions): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): GeneralPreconditions;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): GeneralPreconditions;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class TransactionV0 {
     constructor(attributes: {
       sourceAccountEd25519: Buffer;
@@ -4570,7 +4682,7 @@ export namespace xdr {
       sourceAccount: MuxedAccount;
       fee: number;
       seqNum: SequenceNumber;
-      timeBounds: null | TimeBounds;
+      cond: Preconditions;
       memo: Memo;
       operations: Operation[];
       ext: TransactionExt;
@@ -4582,7 +4694,7 @@ export namespace xdr {
 
     seqNum(value?: SequenceNumber): SequenceNumber;
 
-    timeBounds(value?: null | TimeBounds): null | TimeBounds;
+    cond(value?: Preconditions): Preconditions;
 
     memo(value?: Memo): Memo;
 
@@ -5253,9 +5365,13 @@ export namespace xdr {
   class AccountEntryExtensionV2Ext {
     switch(): number;
 
+    v3(value?: AccountEntryExtensionV3): AccountEntryExtensionV3;
+
     static 0(): AccountEntryExtensionV2Ext;
 
-    value(): void;
+    static 3(value: AccountEntryExtensionV3): AccountEntryExtensionV2Ext;
+
+    value(): AccountEntryExtensionV3 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5476,9 +5592,9 @@ export namespace xdr {
 
     notPredicate(value?: null | ClaimPredicate): null | ClaimPredicate;
 
-    absBefore(value?: Int64): Int64;
+    absBefore(value?: TimePoint): TimePoint;
 
-    relBefore(value?: Int64): Int64;
+    relBefore(value?: Duration): Duration;
 
     static claimPredicateUnconditional(): ClaimPredicate;
 
@@ -5488,17 +5604,17 @@ export namespace xdr {
 
     static claimPredicateNot(value: null | ClaimPredicate): ClaimPredicate;
 
-    static claimPredicateBeforeAbsoluteTime(value: Int64): ClaimPredicate;
+    static claimPredicateBeforeAbsoluteTime(value: TimePoint): ClaimPredicate;
 
-    static claimPredicateBeforeRelativeTime(value: Int64): ClaimPredicate;
+    static claimPredicateBeforeRelativeTime(value: Duration): ClaimPredicate;
 
     value():
       | ClaimPredicate[]
       | ClaimPredicate[]
       | null
       | ClaimPredicate
-      | Int64
-      | Int64
+      | TimePoint
+      | Duration
       | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -6777,6 +6893,42 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Memo;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Memo;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class Preconditions {
+    switch(): PreconditionType;
+
+    timeBounds(value?: TimeBounds): TimeBounds;
+
+    general(value?: GeneralPreconditions): GeneralPreconditions;
+
+    static precondNone(): Preconditions;
+
+    static precondTime(value: TimeBounds): Preconditions;
+
+    static precondGeneral(value: GeneralPreconditions): Preconditions;
+
+    value(): TimeBounds | GeneralPreconditions | void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Preconditions;
+
+    static write(value: Preconditions, io: Buffer): void;
+
+    static isValid(value: Preconditions): boolean;
+
+    static toXDR(value: Preconditions): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Preconditions;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Preconditions;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
