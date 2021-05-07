@@ -170,6 +170,7 @@ npm install
 OUT=stellar-xdr_generated.d.ts npx jscodeshift -t src/transform.js ../src/generated/stellar-xdr_generated.js
 cp stellar-xdr_generated.d.ts ../types/xdr.d.ts
 cd .. && rm -rf dts-xdr
+yarn run prettier --write types/xdr.d.ts
 ```
 
 ## Usage
