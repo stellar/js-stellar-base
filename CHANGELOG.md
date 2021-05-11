@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## [v5.2.1](https://github.com/stellar/js-stellar-base/compare/v5.2.0..v5.2.1)
+
+### Fix
+- Fix regression where raw account data was sometimes being incorrectly parsed ([#429](https://github.com/stellar/js-stellar-base/pull/429)).
+
+
 ## [v5.2.0](https://github.com/stellar/js-stellar-base/compare/v5.1.0..v5.2.0)
 
 ### Add
