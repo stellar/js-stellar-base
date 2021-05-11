@@ -24,18 +24,10 @@ export class StrKey {
   /**
    * Encodes `data` to strkey ed25519 public key.
    *
-   * If the parameter is a muxed account, it will extract the underlying public
-   * key.
-   *
    * @param   {Buffer} data   raw data to encode
    * @returns {string}        "G..." representation of the key
    */
   static encodeEd25519PublicKey(data) {
-    if (data && data[0] === versionBytes.med25519PublicKey) {
-      const medKey = encodeCheck('med25519PublicKey', data);
-      return this.encodeEd25519PublicKey(medKey.ed25519());
-    }
-
     return encodeCheck('ed25519PublicKey', data);
   }
 
