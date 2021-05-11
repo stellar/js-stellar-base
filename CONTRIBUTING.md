@@ -28,7 +28,7 @@ Once all of the PRs for a particular release are in, it's time to actually publi
 
  - [ ] Commit & push your branch, then [create a PR](https://github.com/stellar/js-stellar-base/compare).
 
- - [ ] Once approved, merge it and then [create a new release](https://github.com/stellar/js-stellar-base/releases/new), using the same version as you did for the branch; let GitHub create the tag for you. In the description for the release, paste in the relevant parts of the [CHANGELOG](./CHANGELOG.md).
+ - [ ] Once approved, merge it and then [create a new release](https://github.com/stellar/js-stellar-base/releases/new), using the same version as you did for the branch; **let GitHub create the tag for you**. In the description for the release, paste in the relevant parts of the [CHANGELOG](./CHANGELOG.md).
 
  - [ ] Once the release has been created and the build succeeds, the new version should be deployed to `npm` and accessible to all. You can watch this yourself, either via the [`npm` page](https://www.npmjs.com/package/stellar-base) or from the command line:
 
