@@ -6,7 +6,7 @@ const destKey = StellarSdk.Keypair.random();
 const usd = new StellarSdk.Asset('USD', 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'); // $ExpectType Asset
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1'); // $ExpectType Account
 const muxedAccount = new StellarSdk.MuxedAccount(account, '123'); // $ExpectType MuxedAccount
-const muxedConforms: StellarSdk.Account = muxedAccount; // $ExpectType Account
+const muxedConforms = muxedAccount as StellarSdk.Account; // $ExpectType Account
 
 const transaction = new StellarSdk.TransactionBuilder(account, {
   fee: "100",
