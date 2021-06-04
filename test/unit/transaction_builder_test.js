@@ -680,10 +680,11 @@ describe('TransactionBuilder', function() {
     );
 
     const PUBKEY_SRC = StellarBase.StrKey.decodeEd25519PublicKey(
-      'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+      source.baseAccount().accountId()
     );
     const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString('2');
     const networkPassphrase = 'Standalone Network ; February 2017';
+    const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     it('enables muxed support after creation', function() {
       let builder = new StellarBase.TransactionBuilder(source, {
@@ -707,7 +708,6 @@ describe('TransactionBuilder', function() {
         // TODO: More muxed-enabled operations
       ];
 
-      const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
       let builder = new StellarBase.TransactionBuilder(source, {
         fee: '100',
         timebounds: { minTime: 0, maxTime: 0 },
@@ -726,7 +726,7 @@ describe('TransactionBuilder', function() {
       tx.sign(signer);
 
       const envelope = tx.toEnvelope();
-      const xdrTx = envelope.v1().tx();
+      const xdrTx = envelope.value().tx();
 
       const rawMuxedSourceAccount = xdrTx.sourceAccount();
 
@@ -752,6 +752,55 @@ describe('TransactionBuilder', function() {
           'Public Global Stellar Network ; September 2015'
         );
       }).to.not.throw();
+    });
+
+    it('works with fee-bump transactions', function() {
+      // We create a non-muxed transaction, then fee-bump with a muxed source.
+      let builder = new StellarBase.TransactionBuilder(source.baseAccount(), {
+        fee: '100',
+        timebounds: { minTime: 0, maxTime: 0 },
+        networkPassphrase: networkPassphrase
+      });
+
+      builder.addOperation(
+        StellarBase.Operation.payment({
+          source: source.baseAccount().accountId(),
+          destination: StellarBase.MuxedAccount.parseBaseAddress(destination),
+          amount: amount,
+          asset: asset
+        })
+      );
+
+      let tx = builder.build();
+      tx.sign(signer);
+
+      const kp = StellarBase.Keypair.fromPublicKey(
+        source.baseAccount().accountId()
+      );
+      const feeTx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        kp,
+        '1000',
+        tx,
+        networkPassphrase,
+        '2'
+      );
+
+      expect(feeTx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
+      const envelope = feeTx.toEnvelope();
+      const xdrTx = envelope.value().tx();
+
+      const rawFeeSource = xdrTx.feeSource();
+
+      expect(rawFeeSource.switch()).to.equal(
+        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
+      );
+
+      const innerMux = rawFeeSource.med25519();
+      expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
+      expect(encodeMuxedAccountToAddress(rawFeeSource, true)).to.equal(
+        source.accountId()
+      );
+      expect(innerMux.id()).to.eql(MUXED_SRC_ID);
     });
   });
 });
