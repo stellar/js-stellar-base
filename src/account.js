@@ -150,6 +150,14 @@ export class MuxedAccount {
   }
 
   /**
+   * A helper method to turn an M-address into its underlying G-address.
+   */
+  static parseBaseAddress(mAddress) {
+    const muxedAccount = decodeAddressToMuxedAccount(mAddress, true);
+    return encodeMuxedAccountToAddress(muxedAccount, false);
+  }
+
+  /**
    * @return {Account} the underlying account object shared among all muxed
    *     accounts with this Stellar address
    */
@@ -193,6 +201,16 @@ export class MuxedAccount {
    */
   incrementSequenceNumber() {
     return this.account.incrementSequenceNumber();
+  }
+
+  /**
+   * Creates another muxed "sub"account from the base with a new ID set
+   *
+   * @param  {string} id - the ID of the new muxed account
+   * @return {MuxedAccount} a new instance w/ the specified parameters
+   */
+  createSubaccount(id) {
+    return new MuxedAccount(this.account, id);
   }
 
   /**

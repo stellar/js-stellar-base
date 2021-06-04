@@ -21,6 +21,7 @@ export class MuxedAccount {
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
+  createSubaccount(id: string): MuxedAccount;
 
   baseAccount(): Account;
   id(): string;
