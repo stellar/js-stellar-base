@@ -808,11 +808,11 @@ export class TransactionBuilder {
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(
-    feeSource: Keypair,
+    feeSource: Keypair | string,
     baseFee: string,
     innerTx: Transaction,
     networkPassphrase: string,
-    id?: string
+    withMuxing?: boolean
   ): FeeBumpTransaction;
   static fromXDR(
     envelope: string | xdr.TransactionEnvelope,

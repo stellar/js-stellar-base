@@ -774,15 +774,12 @@ describe('TransactionBuilder', function() {
       let tx = builder.build();
       tx.sign(signer);
 
-      const kp = StellarBase.Keypair.fromPublicKey(
-        source.baseAccount().accountId()
-      );
       const feeTx = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
-        kp,
+        source.accountId(),
         '1000',
         tx,
         networkPassphrase,
-        '2'
+        true
       );
 
       expect(feeTx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
