@@ -272,18 +272,36 @@ export class TransactionBuilder {
   }
 
   /**
-   * Builds a {@link FeeBumpTransaction}
-   * @param {Keypair} feeSource - The account paying for the transaction.
-   * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
-   * @param {Transaction} innerTx - The Transaction to be bumped by the fee bump transaction.
-   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * Builds a {@link FeeBumpTransaction}, enabling you to resubmit an existing
+   * transaction with a higher fee.
+   *
+   * @param {Keypair}     feeSource         - account paying for the transaction
+   * @param {string}      baseFee           - max fee willing to pay per
+   *     operation in inner transaction (**in stroops**)
+   * @param {Transaction} innerTx           - {@link Transaction} to be bumped
+   *     by the fee bump transaction
+   * @param {string}      networkPassphrase - passphrase of the target Stellar
+   *     network (e.g. "Public Global Stellar Network ; September 2015")
+   * @param {string}      [muxedId]         - an (optional, stringified) ID to
+   *     indicate that the source account for the fee-bump is a muxed account.
+   *     The muxed account will be built from the `feeSource`'s public key and
+   *     this `muxedId`.
+   *
+   * @todo Alongside the next major version bump, this type signature can be
+   *       changed to be less awkward: accept a MuxedAccount as the `feeSource`
+   *       rather than a keypair and an optional ID.
+   *
+   * @note Your fee-bump amount should be 10x the original fee.
+   * @see  https://developers.stellar.org/docs/glossary/fee-bumps/#replace-by-fee
+   *
    * @returns {FeeBumpTransaction}
    */
   static buildFeeBumpTransaction(
     feeSource,
     baseFee,
     innerTx,
-    networkPassphrase
+    networkPassphrase,
+    muxedId
   ) {
     const innerOps = innerTx.operations.length;
     const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
@@ -328,7 +346,7 @@ export class TransactionBuilder {
     }
 
     const tx = new xdr.FeeBumpTransaction({
-      feeSource: feeSource.xdrMuxedAccount(),
+      feeSource: feeSource.xdrMuxedAccount(muxedId),
       fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
@@ -343,7 +361,11 @@ export class TransactionBuilder {
       feeBumpTxEnvelope
     );
 
-    return new FeeBumpTransaction(envelope, networkPassphrase);
+    return new FeeBumpTransaction(
+      envelope,
+      networkPassphrase,
+      !isUndefined(muxedId)
+    );
   }
 
   /**
