@@ -35,7 +35,7 @@ export function payment(opts) {
       opts.withMuxing
     );
   } catch (e) {
-    throw new Error('destination is invalid');
+    throw new Error('destination is invalid; did you forget to enable muxing?');
   }
 
   attributes.asset = opts.asset.toXDRObject();
