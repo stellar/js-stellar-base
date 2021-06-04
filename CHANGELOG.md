@@ -1,6 +1,10 @@
 # Changelog
 
+
 ## Unreleased
+
+### Add
+- **Opt-in support for muxed accounts.** In addition to the support introduced in [v5.2.0](https://github.com/stellar/js-stellar-base/releases/v5.2.0), this completes support for muxed accounts by enabling them for fee-bump transactions. Pass the muxing ID as the (new, optional) last parameter to `TransactionBuilder.buildFeeBumpTransaction` to make the `feeSource` a fully-muxed account instance ([#434](https://github.com/stellar/js-stellar-base/pull/434)).
 
 
 ## [v5.2.0](https://github.com/stellar/js-stellar-base/compare/v5.1.0..v5.2.0)
