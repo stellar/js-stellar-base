@@ -150,17 +150,6 @@ export class MuxedAccount {
   }
 
   /**
-   * A helper method to turn an M-address into its underlying G-address.
-   *
-   * @param   {string} mAddress - muxed address to convert
-   * @returns {string} underlying G-address
-   */
-  static parseBaseAddress(mAddress) {
-    const muxedAccount = decodeAddressToMuxedAccount(mAddress, true);
-    return encodeMuxedAccountToAddress(muxedAccount, false);
-  }
-
-  /**
    * @return {Account} the underlying account object shared among all muxed
    *     accounts with this Stellar address
    */
