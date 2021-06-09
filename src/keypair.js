@@ -1,8 +1,12 @@
 import nacl from 'tweetnacl';
+import isUndefined from 'lodash/isUndefined';
+import isString from 'lodash/isString';
+
 import { sign, verify, generate } from './signing';
 import { StrKey } from './strkey';
-import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
+
+import xdr from './generated/stellar-xdr_generated';
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
@@ -121,7 +125,31 @@ export class Keypair {
     return new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
   }
 
-  xdrMuxedAccount() {
+  /**
+   * Creates a {@link xdr.MuxedAccount} object from the public key.
+   *
+   * You will get a different type of muxed account depending on whether or not
+   * you pass an ID.
+   *
+   * @param  {string} [id] - stringified integer indicating the underlying muxed
+   *     ID of the new account object
+   *
+   * @return {xdr.MuxedAccount}
+   */
+  xdrMuxedAccount(id) {
+    if (!isUndefined(id)) {
+      if (!isString(id)) {
+        throw new TypeError(`expected string for ID, got ${typeof id}`);
+      }
+
+      return xdr.MuxedAccount.keyTypeMuxedEd25519(
+        new xdr.MuxedAccountMed25519({
+          id: xdr.Uint64.fromString(id),
+          ed25519: this._publicKey
+        })
+      );
+    }
+
     return new xdr.MuxedAccount.keyTypeEd25519(this._publicKey);
   }
 

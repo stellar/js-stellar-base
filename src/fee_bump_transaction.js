@@ -13,12 +13,19 @@ import { encodeMuxedAccountToAddress } from './util/decode_encode_muxed_account'
  * Once a {@link FeeBumpTransaction} has been created, its attributes and operations
  * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
  * submitting to the network or forwarding on to additional signers.
- * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
- * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+ *
+ * @param {string|xdr.TransactionEnvelope} envelope - transaction envelope
+ *     object or base64 encoded string.
+ * @param {string} networkPassphrase - passphrase of the target Stellar network
+ *     (e.g. "Public Global Stellar Network ; September 2015").
+ * @param {bool}    [opts.withMuxing] - indicates that the fee source of this
+ *     transaction is a proper muxed account (i.e. coming from an M... address).
+ *     By default, this option is disabled until muxed accounts are mature.
+ *
  * @extends TransactionBase
  */
 export class FeeBumpTransaction extends TransactionBase {
-  constructor(envelope, networkPassphrase) {
+  constructor(envelope, networkPassphrase, withMuxing) {
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
@@ -42,7 +49,10 @@ export class FeeBumpTransaction extends TransactionBase {
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
       tx.innerTx().v1()
     );
-    this._feeSource = encodeMuxedAccountToAddress(this.tx.feeSource());
+    this._feeSource = encodeMuxedAccountToAddress(
+      this.tx.feeSource(),
+      withMuxing
+    );
     this._innerTransaction = new Transaction(
       innerTxEnvelope,
       networkPassphrase

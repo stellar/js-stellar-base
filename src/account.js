@@ -196,6 +196,16 @@ export class MuxedAccount {
   }
 
   /**
+   * Creates another muxed "sub"account from the base with a new ID set
+   *
+   * @param  {string} id - the ID of the new muxed account
+   * @return {MuxedAccount} a new instance w/ the specified parameters
+   */
+  createSubaccount(id) {
+    return new MuxedAccount(this.account, id);
+  }
+
+  /**
    * @return {xdr.MuxedAccount} the XDR object representing this muxed account's
    *     G-address and uint64 ID
    */

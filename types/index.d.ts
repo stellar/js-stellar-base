@@ -16,11 +16,13 @@ export class Account {
 export class MuxedAccount {
   constructor(account: Account, sequence: string);
   static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount;
+  static parseBaseAddress(mAddress: string): string;
 
   /* Modeled after Account, above */
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
+  createSubaccount(id: string): MuxedAccount;
 
   baseAccount(): Account;
   id(): string;
@@ -99,7 +101,10 @@ export class Keypair {
   signDecorated(data: Buffer): xdr.DecoratedSignature;
   signatureHint(): Buffer;
   verify(data: Buffer, signature: Buffer): boolean;
+
   xdrAccountId(): xdr.AccountId;
+  xdrPublicKey(): xdr.PublicKey;
+  xdrMuxedAccount(id: string): xdr.MuxedAccount;
 }
 
 export const MemoNone = 'none';
@@ -763,7 +768,8 @@ export class TransactionI {
 export class FeeBumpTransaction extends TransactionI {
   constructor(
     envelope: string | xdr.TransactionEnvelope,
-    networkPassphrase: string
+    networkPassphrase: string,
+    withMuxing?: boolean
   );
   feeSource: string;
   innerTransaction: Transaction;
@@ -775,7 +781,8 @@ export class Transaction<
 > extends TransactionI {
   constructor(
     envelope: string | xdr.TransactionEnvelope,
-    networkPassphrase: string
+    networkPassphrase: string,
+    withMuxing?: boolean
   );
   memo: TMemo;
   operations: TOps;
@@ -801,15 +808,18 @@ export class TransactionBuilder {
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(
-    feeSource: Keypair,
+    feeSource: Keypair | string,
     baseFee: string,
     innerTx: Transaction,
-    networkPassphrase: string
+    networkPassphrase: string,
+    withMuxing?: boolean
   ): FeeBumpTransaction;
   static fromXDR(
     envelope: string | xdr.TransactionEnvelope,
     networkPassphrase: string
   ): Transaction | FeeBumpTransaction;
+
+  supportMuxedAccounts: boolean;
 }
 
 export namespace TransactionBuilder {
@@ -822,6 +832,7 @@ export namespace TransactionBuilder {
     memo?: Memo;
     networkPassphrase?: string;
     v1?: boolean;
+    withMuxing?: boolean;
   }
 }
 

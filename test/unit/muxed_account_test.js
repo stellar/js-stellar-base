@@ -82,6 +82,9 @@ describe('muxed account abstraction works', function() {
     const mux1 = new StellarBase.MuxedAccount.fromAddress(MPUBKEY_ZERO, '123');
     expect(mux1.id()).to.equal('0');
     expect(mux1.accountId()).to.equal(MPUBKEY_ZERO);
+    expect(mux1.baseAccount().accountId()).to.equal(
+      'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+    );
     expect(mux1.sequenceNumber()).to.equal('123');
   });
 });

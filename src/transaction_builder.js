@@ -2,6 +2,7 @@ import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import clone from 'lodash/clone';
 import isUndefined from 'lodash/isUndefined';
+import isString from 'lodash/isString';
 
 import xdr from './generated/stellar-xdr_generated';
 import { Transaction } from './transaction';
@@ -272,18 +273,37 @@ export class TransactionBuilder {
   }
 
   /**
-   * Builds a {@link FeeBumpTransaction}
-   * @param {Keypair} feeSource - The account paying for the transaction.
-   * @param {string} baseFee - The max fee willing to pay per operation in inner transaction (**in stroops**). Required.
-   * @param {Transaction} innerTx - The Transaction to be bumped by the fee bump transaction.
-   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * Builds a {@link FeeBumpTransaction}, enabling you to resubmit an existing
+   * transaction with a higher fee.
+   *
+   * @param {Keypair|string}  feeSource - account paying for the transaction,
+   *     in the form of either a Keypair (only the public key is used) or
+   *     an account ID (in G... or M... form, but refer to `withMuxing`)
+   * @param {string}          baseFee   - max fee willing to pay per operation
+   *     in inner transaction (**in stroops**)
+   * @param {Transaction}     innerTx   - {@link Transaction} to be bumped by
+   *     the fee bump transaction
+   * @param {string}          networkPassphrase - passphrase of the target Stellar
+   *     network (e.g. "Public Global Stellar Network ; September 2015")
+   * @param {bool}            [withMuxing]      - allows fee sources to be proper
+   *     muxed accounts (i.e. coming from an M... address). By default, this
+   *     option is disabled until muxed accounts are mature.
+   *
+   * @todo Alongside the next major version bump, this type signature can be
+   *       changed to be less awkward: accept a MuxedAccount as the `feeSource`
+   *       rather than a keypair or string.
+   *
+   * @note Your fee-bump amount should be 10x the original fee.
+   * @see  https://developers.stellar.org/docs/glossary/fee-bumps/#replace-by-fee
+   *
    * @returns {FeeBumpTransaction}
    */
   static buildFeeBumpTransaction(
     feeSource,
     baseFee,
     innerTx,
-    networkPassphrase
+    networkPassphrase,
+    withMuxing
   ) {
     const innerOps = innerTx.operations.length;
     const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
@@ -327,8 +347,15 @@ export class TransactionBuilder {
       );
     }
 
+    let feeSourceAccount;
+    if (isString(feeSource)) {
+      feeSourceAccount = decodeAddressToMuxedAccount(feeSource, withMuxing);
+    } else {
+      feeSourceAccount = feeSource.xdrMuxedAccount();
+    }
+
     const tx = new xdr.FeeBumpTransaction({
-      feeSource: feeSource.xdrMuxedAccount(),
+      feeSource: feeSourceAccount,
       fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
@@ -343,7 +370,7 @@ export class TransactionBuilder {
       feeBumpTxEnvelope
     );
 
-    return new FeeBumpTransaction(envelope, networkPassphrase);
+    return new FeeBumpTransaction(envelope, networkPassphrase, withMuxing);
   }
 
   /**
