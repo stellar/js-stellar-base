@@ -104,6 +104,7 @@ describe('Operation', function() {
     const asset = StellarBase.Asset.native();
     const source =
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ';
+    const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
     it('does not support muxed accounts by default', function() {
       expect(() => {
@@ -115,14 +116,8 @@ describe('Operation', function() {
         });
       }).to.throw(/destination is invalid/);
     });
-    it('optionally supports muxed accounts', function() {
-      const opts = {
-        destination,
-        asset,
-        amount,
-        source
-      };
-      opts.withMuxing = true;
+
+    function paymentPacksCorrectly(opts) {
       const packed = StellarBase.Operation.payment(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -133,11 +128,34 @@ describe('Operation', function() {
 
       const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
 
+      // Ensure the properties match the inputs:
       expect(unpacked.type).to.equal('payment');
       expect(unpacked.source).to.equal(opts.source);
       expect(unpacked.destination).to.equal(opts.destination);
       expect(unpacked.asset).to.eql(opts.asset);
+    }
+
+    let opts = {
+      destination,
+      asset,
+      amount,
+      source
+    };
+    opts.withMuxing = true;
+
+    it('optionally supports muxed accounts', function() {
+      paymentPacksCorrectly(opts);
     });
+
+    it('supports mixing muxed and unmuxed properties', function() {
+      opts.source = base;
+      paymentPacksCorrectly(opts);
+
+      opts.source = source;
+      opts.destination = base;
+      paymentPacksCorrectly(opts);
+    });
+
     it('fails to create payment operation with an invalid destination address', function() {
       let opts = {
         destination: 'GCEZW',

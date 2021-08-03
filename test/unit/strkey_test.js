@@ -282,24 +282,20 @@ describe('StrKey', function() {
         StellarBase.StrKey.decodeMed25519PublicKey(MPUBKEY).equals(RAW_MPUBKEY)
       ).to.be.true;
     });
-    it('decodes to an empty muxed account when given a G...', function() {
-      const emptyMux = StellarBase.decodeAddressToMuxedAccount(PUBKEY, true);
-      const ZERO = StellarBase.xdr.Uint64.fromString('0');
 
-      expect(StellarBase.xdr.MuxedAccount.isValid(emptyMux)).to.be.true;
-      expect(emptyMux.switch()).to.equal(
-        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
+    it('lets G... accounts pass through (unmuxed)', function() {
+      const unmuxed = StellarBase.decodeAddressToMuxedAccount(PUBKEY, true);
+
+      expect(StellarBase.xdr.MuxedAccount.isValid(unmuxed)).to.be.true;
+      expect(unmuxed.switch()).to.equal(
+        StellarBase.xdr.CryptoKeyType.keyTypeEd25519()
       );
       expect(
-        emptyMux
-          .med25519()
+        unmuxed
           .ed25519()
           .equals(StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY))
       ).to.be.true;
-      expect(emptyMux.med25519().id()).to.eql(ZERO);
-      expect(StellarBase.encodeMuxedAccountToAddress(emptyMux)).to.equal(
-        PUBKEY
-      );
+      expect(StellarBase.encodeMuxedAccountToAddress(unmuxed)).to.equal(PUBKEY);
     });
     it('decodes underlying G... address correctly', function() {
       expect(
@@ -308,9 +304,7 @@ describe('StrKey', function() {
         )
       ).to.equal(PUBKEY);
     });
-  });
 
-  describe('#muxedAccounts', function() {
     const RAW_PUBKEY = StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY);
     const unmuxed = StellarBase.xdr.MuxedAccount.keyTypeEd25519(RAW_PUBKEY);
 

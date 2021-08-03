@@ -5,7 +5,8 @@ import xdr from './generated/stellar-xdr_generated';
 import { StrKey } from './strkey';
 import {
   decodeAddressToMuxedAccount,
-  encodeMuxedAccountToAddress
+  encodeMuxedAccountToAddress,
+  encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
 
 /**
@@ -97,11 +98,11 @@ export class Account {
  *   4: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAQLQQ
  *
  * This object makes it easy to create muxed accounts from regular accounts,
- * duplicate them, retrieve the underlying IDs, etc. without mucking around with
+ * duplicate them, get/set the underlying IDs, etc. without mucking around with
  * the raw XDR.
  *
  * Because muxed accounts are purely an off-chain convention, they all share the
- * sequence number tied to the underlying G... account. Thus, this object
+ * sequence number tied to their underlying G... account. Thus, this object
  * *requires* an {@link Account} instance to be passed in, so that muxed
  * instances of an account can collectively modify the sequence number whenever
  * a muxed account is used as the source of a @{link Transaction} with {@link
@@ -110,9 +111,11 @@ export class Account {
  * @constructor
  *
  * @param {Account}   account - the @{link Account} instance representing the
- *     underlying G... address
+ *                              underlying G... address
  * @param {string}    id      - a stringified uint64 value that represents the
- *     ID of the muxed account
+ *                              ID of the muxed account
+ *
+ * @link https://developers.stellar.org/docs/glossary/muxed-accounts/
  */
 export class MuxedAccount {
   constructor(baseAccount, id) {
@@ -122,9 +125,9 @@ export class MuxedAccount {
     }
 
     this.account = baseAccount;
-    this._muxedXdr = decodeAddressToMuxedAccount(accountId, true);
+    this._muxedXdr = encodeMuxedAccount(accountId, id);
     this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr, true);
-    this.setId(id);
+    this._id = id;
   }
 
   /**

@@ -20,9 +20,10 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @param {Asset}   opts.destAsset    - asset the destination will receive
  * @param {string}  opts.destMin      - minimum amount of destAsset to be receive
  * @param {Asset[]} opts.path         - array of Asset objects to use as the path
- * @param {bool}    [opts.withMuxing] - Indicates that opts.destination is an
- *     M... address and should be interpreted fully as a muxed account. By
- *     default, this option is disabled until muxed accounts are mature.
+ * @param {bool}    [opts.withMuxing] - indicates that some parameters in the
+ *     operation are M... addresses that should be interpreted fully as a muxed
+ *     account. By default, this option is disabled until muxed accounts are
+ *     mature.
  * @param {string}  [opts.source]     - The source account for the payment.
  *     Defaults to the transaction's source account.
  *

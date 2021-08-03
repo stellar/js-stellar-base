@@ -9,9 +9,10 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  *
  * @param {object} opts - options object
  * @param {string} opts.destination - destination to merge the source account into
- * @param {bool}  [opts.withMuxing] - indicates that opts.destination is an
- *     M... address and should be interpreted fully as a muxed account. By
- *     default, this option is disabled until muxed accounts are mature.*
+ * @param {bool}  [opts.withMuxing] - indicates that some parameters in the
+ *     operation are M... addresses that should be interpreted fully as a muxed
+ *     account. By default, this option is disabled until muxed accounts are
+ *     mature.
  * @param {string} [opts.source]    - operation source account (defaults to
  *     transaction source)
  * @returns {xdr.Operation} an Account Merge operation (xdr.AccountMergeOp)

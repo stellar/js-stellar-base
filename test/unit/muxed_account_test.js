@@ -61,7 +61,7 @@ describe('muxed account abstraction works', function() {
     expect(mux2.sequenceNumber()).to.equal('12348');
   });
 
-  it('lets subaccounts be created', function() {
+  it('lets virtual accounts be created', function() {
     let baseAccount = new StellarBase.Account(PUBKEY, '12345');
     const mux1 = new StellarBase.MuxedAccount(baseAccount, '1');
 

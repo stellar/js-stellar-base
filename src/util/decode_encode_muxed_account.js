@@ -20,20 +20,13 @@ import { StrKey } from '../strkey';
  *
  * @returns {xdr.MuxedAccount}  a muxed account object for this address string
  *
- * @note     If you pass a G... address and DO specify supportMuxing=true, then
- *           this will return an xdr.MuxedAccount with an ID of zero.
+ * @note     If you pass a G... address, `supportMuxing` will be ignored.
  * @warning  If you pass an M... address and do NOT specify supportMuxing=true,
  *           then this function will throw an error.
  */
 export function decodeAddressToMuxedAccount(address, supportMuxing) {
-  if (supportMuxing) {
-    if (StrKey.isValidMed25519PublicKey(address)) {
-      return _decodeAddressFullyToMuxedAccount(address);
-    }
-
-    if (StrKey.isValidEd25519PublicKey(address)) {
-      return encodeMuxedAccount(address, '0');
-    }
+  if (supportMuxing && StrKey.isValidMed25519PublicKey(address)) {
+    return _decodeAddressFullyToMuxedAccount(address);
   }
 
   return xdr.MuxedAccount.keyTypeEd25519(
@@ -52,7 +45,7 @@ export function decodeAddressToMuxedAccount(address, supportMuxing) {
  * @param   {xdr.MuxedAccount} muxedAccount   account to stringify
  * @param   {bool}            [supportMuxing] converts the object into its full,
  *     proper M... address, encoding both the underlying G... address and the
- *     Muxing ID
+ *     muxing ID, but *ONLY* when the ID is present.
  *
  * @returns {string}  stringified G... (corresponding to the underlying pubkey)
  *     or M... address (corresponding to both the key and the muxed ID)
