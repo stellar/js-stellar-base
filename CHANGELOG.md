@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+## [v5.3.1](https://github.com/stellar/js-stellar-base/compare/v5.3.0..v5.3.1)
+
+
 ### Fix
 - Creating operations with both muxed and unmuxed properties resulted in unintuitive XDR. Specifically, the unmuxed property would be transformed into the equivalent property with an ID of 0 ([#441](https://github.com/stellar/js-stellar-base/pull/441)). 
 
