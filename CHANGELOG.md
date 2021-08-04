@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+### Fix
+- Update various dependencies to more-secure versions. Most are developer dependencies which means no or minimal downstream effects; the only non-developer dependency upgrade is a patch version bump to `lodash` ([#446](https://github.com/stellar/js-stellar-base/pull/446), [#447](https://github.com/stellar/js-stellar-base/pull/447)).
+
 
 ## [v5.3.1](https://github.com/stellar/js-stellar-base/compare/v5.3.0..v5.3.1)
-
 
 ### Fix
 - Creating operations with both muxed and unmuxed properties resulted in unintuitive XDR. Specifically, the unmuxed property would be transformed into the equivalent property with an ID of 0 ([#441](https://github.com/stellar/js-stellar-base/pull/441)). 
