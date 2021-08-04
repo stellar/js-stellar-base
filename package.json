@@ -83,7 +83,7 @@
     "husky": "^1.3.1",
     "isparta": "^4.1.1",
     "istanbul": "^0.4.5",
-    "jsdoc": "3.5.5",
+    "jsdoc": "^3.5.5",
     "karma": "^5.0.2",
     "karma-chrome-launcher": "^3.1.0",
     "karma-firefox-launcher": "^1.2.0",
@@ -107,7 +107,7 @@
     "bignumber.js": "^4.0.0",
     "crc": "^3.5.0",
     "js-xdr": "^1.1.3",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.0"
   },
