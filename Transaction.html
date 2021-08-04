@@ -179,7 +179,7 @@ additional signers.</p></div>
 
             <td class="description last">
                 <p>transaction envelope
-    object or base64 encoded string</p>
+object or base64 encoded string</p>
                 
             </td>
         </tr>
@@ -216,7 +216,7 @@ additional signers.</p></div>
 
             <td class="description last">
                 <p>passphrase of the target stellar
-    network (e.g. &quot;Public Global Stellar Network ; September 2015&quot;)</p>
+network (e.g. &quot;Public Global Stellar Network ; September 2015&quot;)</p>
                 
             </td>
         </tr>
@@ -253,9 +253,9 @@ additional signers.</p></div>
 
             <td class="description last">
                 <p>Indicates that this.sourceAccount is a
-    muxed account (i.e. came from an M... address) and should be interpreted
-    fully as such. By default, this option is disabled until muxed accounts
-    are mature.</p>
+muxed account (i.e. came from an M... address) and should be interpreted
+fully as such. By default, this option is disabled until muxed accounts
+are mature.</p>
                 
             </td>
         </tr>
@@ -299,6 +299,13 @@ additional signers.</p></div>
     
 
     
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="Transaction.html">Transaction</a></dt>
+            <dd></dd>
+        </dl>
+    
 
      
 
@@ -326,12 +333,12 @@ additional signers.</p></div>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#fee">TransactionBase#fee</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -471,12 +478,12 @@ additional signers.</p></div>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#networkPassphrase">TransactionBase#networkPassphrase</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -530,7 +537,7 @@ additional signers.</p></div>
         
             
 <div class="section-members">
-<h4 class="name" id="operations"><span class="type-signature">(readonly) </span>operations<span class="type-signature"> :</span></h4>
+<h4 class="name" id="operations"><span class="type-signature">(readonly) </span>operations<span class="type-signature"> :Array.&lt;xdr.Operation></span></h4>
 
 
 
@@ -585,7 +592,7 @@ additional signers.</p></div>
     <ul>
         <li>
             
-<span class="param-type"><code></code></span>
+<span class="param-type"><code>Array.&lt;xdr.Operation></code></span>
 
 
         </li>
@@ -670,7 +677,7 @@ additional signers.</p></div>
         
             
 <div class="section-members">
-<h4 class="name" id="signatures"><span class="type-signature">(readonly) </span>signatures<span class="type-signature"> :</span></h4>
+<h4 class="name" id="signatures"><span class="type-signature">(readonly) </span>signatures<span class="type-signature"> :Array.&lt;xdr.DecoratedSignature></span></h4>
 
 
 
@@ -686,12 +693,12 @@ additional signers.</p></div>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#signatures">TransactionBase#signatures</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -730,7 +737,7 @@ additional signers.</p></div>
     <ul>
         <li>
             
-<span class="param-type"><code></code></span>
+<span class="param-type"><code>Array.&lt;xdr.DecoratedSignature></code></span>
 
 
         </li>
@@ -1012,12 +1019,12 @@ this function.</li>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#addSignature">TransactionBase#addSignature</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -1199,7 +1206,8 @@ you a transaction XDR for you to sign and return (see
 <pre class="prettyprint source lang-javascript"><code>// `transactionXDR` is a string from the person generating the transaction
 const transaction = new Transaction(transactionXDR, networkPassphrase);
 const keypair = Keypair.fromSecret(myStellarSeed);
-return transaction.getKeypairSignature(keypair);</code></pre>
+return transaction.getKeypairSignature(keypair);
+</code></pre>
 </div>
 
 
@@ -1213,12 +1221,12 @@ return transaction.getKeypairSignature(keypair);</code></pre>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#getKeypairSignature">TransactionBase#getKeypairSignature</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -1378,12 +1386,12 @@ return transaction.getKeypairSignature(keypair);</code></pre>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#hash">TransactionBase#hash</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -1487,12 +1495,12 @@ return transaction.getKeypairSignature(keypair);</code></pre>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#sign">TransactionBase#sign</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -1768,12 +1776,12 @@ of this transaction.</p>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#signHashX">TransactionBase#signHashX</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -2036,12 +2044,12 @@ of this transaction.</p>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="TransactionBase.html#toXDR">TransactionBase#toXDR</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -2140,7 +2148,7 @@ of this transaction.</p>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 03 2021 23:47:23 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Aug 04 2021 17:17:51 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
