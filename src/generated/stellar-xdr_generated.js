@@ -1,4 +1,4 @@
-// Automatically generated on 2021-03-19T18:40:30-07:00
+// Automatically generated on 2021-08-11T18:06:04-03:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -60,6 +60,13 @@ xdr.typedef("DataValue", xdr.varOpaque(64));
 
 // === xdr source ============================================================
 //
+//   typedef Hash PoolID;
+//
+// ===========================================================================
+xdr.typedef("PoolId", xdr.lookup("Hash"));
+
+// === xdr source ============================================================
+//
 //   typedef opaque AssetCode4[4];
 //
 // ===========================================================================
@@ -78,7 +85,8 @@ xdr.typedef("AssetCode12", xdr.opaque(12));
 //   {
 //       ASSET_TYPE_NATIVE = 0,
 //       ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
-//       ASSET_TYPE_CREDIT_ALPHANUM12 = 2
+//       ASSET_TYPE_CREDIT_ALPHANUM12 = 2,
+//       ASSET_TYPE_POOL_SHARE = 3
 //   };
 //
 // ===========================================================================
@@ -86,6 +94,7 @@ xdr.enum("AssetType", {
   assetTypeNative: 0,
   assetTypeCreditAlphanum4: 1,
   assetTypeCreditAlphanum12: 2,
+  assetTypePoolShare: 3,
 });
 
 // === xdr source ============================================================
@@ -117,28 +126,28 @@ xdr.union("AssetCode", {
 
 // === xdr source ============================================================
 //
-//   struct
-//       {
-//           AssetCode4 assetCode;
-//           AccountID issuer;
-//       }
+//   struct AlphaNum4
+//   {
+//       AssetCode4 assetCode;
+//       AccountID issuer;
+//   };
 //
 // ===========================================================================
-xdr.struct("AssetAlphaNum4", [
+xdr.struct("AlphaNum4", [
   ["assetCode", xdr.lookup("AssetCode4")],
   ["issuer", xdr.lookup("AccountId")],
 ]);
 
 // === xdr source ============================================================
 //
-//   struct
-//       {
-//           AssetCode12 assetCode;
-//           AccountID issuer;
-//       }
+//   struct AlphaNum12
+//   {
+//       AssetCode12 assetCode;
+//       AccountID issuer;
+//   };
 //
 // ===========================================================================
-xdr.struct("AssetAlphaNum12", [
+xdr.struct("AlphaNum12", [
   ["assetCode", xdr.lookup("AssetCode12")],
   ["issuer", xdr.lookup("AccountId")],
 ]);
@@ -151,18 +160,10 @@ xdr.struct("AssetAlphaNum12", [
 //       void;
 //   
 //   case ASSET_TYPE_CREDIT_ALPHANUM4:
-//       struct
-//       {
-//           AssetCode4 assetCode;
-//           AccountID issuer;
-//       } alphaNum4;
+//       AlphaNum4 alphaNum4;
 //   
 //   case ASSET_TYPE_CREDIT_ALPHANUM12:
-//       struct
-//       {
-//           AssetCode12 assetCode;
-//           AccountID issuer;
-//       } alphaNum12;
+//       AlphaNum12 alphaNum12;
 //   
 //       // add other asset types here in the future
 //   };
@@ -177,8 +178,8 @@ xdr.union("Asset", {
     ["assetTypeCreditAlphanum12", "alphaNum12"],
   ],
   arms: {
-    alphaNum4: xdr.lookup("AssetAlphaNum4"),
-    alphaNum12: xdr.lookup("AssetAlphaNum12"),
+    alphaNum4: xdr.lookup("AlphaNum4"),
+    alphaNum12: xdr.lookup("AlphaNum12"),
   },
 });
 
@@ -236,7 +237,8 @@ xdr.enum("ThresholdIndices", {
 //       TRUSTLINE = 1,
 //       OFFER = 2,
 //       DATA = 3,
-//       CLAIMABLE_BALANCE = 4
+//       CLAIMABLE_BALANCE = 4,
+//       LIQUIDITY_POOL = 5
 //   };
 //
 // ===========================================================================
@@ -246,6 +248,7 @@ xdr.enum("LedgerEntryType", {
   offer: 2,
   data: 3,
   claimableBalance: 4,
+  liquidityPool: 5,
 });
 
 // === xdr source ============================================================
@@ -299,10 +302,10 @@ xdr.const("MASK_ACCOUNT_FLAGS", 0x7);
 
 // === xdr source ============================================================
 //
-//   const MASK_ACCOUNT_FLAGS_V16 = 0xF;
+//   const MASK_ACCOUNT_FLAGS_V17 = 0xF;
 //
 // ===========================================================================
-xdr.const("MASK_ACCOUNT_FLAGS_V16", 0xF);
+xdr.const("MASK_ACCOUNT_FLAGS_V17", 0xF);
 
 // === xdr source ============================================================
 //
@@ -511,10 +514,97 @@ xdr.const("MASK_TRUSTLINE_FLAGS_V13", 3);
 
 // === xdr source ============================================================
 //
-//   const MASK_TRUSTLINE_FLAGS_V16 = 7;
+//   const MASK_TRUSTLINE_FLAGS_V17 = 7;
 //
 // ===========================================================================
-xdr.const("MASK_TRUSTLINE_FLAGS_V16", 7);
+xdr.const("MASK_TRUSTLINE_FLAGS_V17", 7);
+
+// === xdr source ============================================================
+//
+//   enum LiquidityPoolType
+//   {
+//       LIQUIDITY_POOL_CONSTANT_PRODUCT = 0
+//   };
+//
+// ===========================================================================
+xdr.enum("LiquidityPoolType", {
+  liquidityPoolConstantProduct: 0,
+});
+
+// === xdr source ============================================================
+//
+//   union TrustLineAsset switch (AssetType type)
+//   {
+//   case ASSET_TYPE_NATIVE: // Not credit
+//       void;
+//   
+//   case ASSET_TYPE_CREDIT_ALPHANUM4:
+//       AlphaNum4 alphaNum4;
+//   
+//   case ASSET_TYPE_CREDIT_ALPHANUM12:
+//       AlphaNum12 alphaNum12;
+//   
+//   case ASSET_TYPE_POOL_SHARE:
+//       PoolID liquidityPoolID;
+//   
+//       // add other asset types here in the future
+//   };
+//
+// ===========================================================================
+xdr.union("TrustLineAsset", {
+  switchOn: xdr.lookup("AssetType"),
+  switchName: "type",
+  switches: [
+    ["assetTypeNative", xdr.void()],
+    ["assetTypeCreditAlphanum4", "alphaNum4"],
+    ["assetTypeCreditAlphanum12", "alphaNum12"],
+    ["assetTypePoolShare", "liquidityPoolId"],
+  ],
+  arms: {
+    alphaNum4: xdr.lookup("AlphaNum4"),
+    alphaNum12: xdr.lookup("AlphaNum12"),
+    liquidityPoolId: xdr.lookup("PoolId"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//
+// ===========================================================================
+xdr.union("TrustLineEntryExtensionV2Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct TrustLineEntryExtensionV2
+//   {
+//       int32 liquidityPoolUseCount;
+//   
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("TrustLineEntryExtensionV2", [
+  ["liquidityPoolUseCount", xdr.lookup("Int32")],
+  ["ext", xdr.lookup("TrustLineEntryExtensionV2Ext")],
+]);
 
 // === xdr source ============================================================
 //
@@ -522,6 +612,8 @@ xdr.const("MASK_TRUSTLINE_FLAGS_V16", 7);
 //               {
 //               case 0:
 //                   void;
+//               case 2:
+//                   TrustLineEntryExtensionV2 v2;
 //               }
 //
 // ===========================================================================
@@ -530,8 +622,10 @@ xdr.union("TrustLineEntryV1Ext", {
   switchName: "v",
   switches: [
     [0, xdr.void()],
+    [2, "v2"],
   ],
   arms: {
+    v2: xdr.lookup("TrustLineEntryExtensionV2"),
   },
 });
 
@@ -545,6 +639,8 @@ xdr.union("TrustLineEntryV1Ext", {
 //               {
 //               case 0:
 //                   void;
+//               case 2:
+//                   TrustLineEntryExtensionV2 v2;
 //               }
 //               ext;
 //           }
@@ -570,6 +666,8 @@ xdr.struct("TrustLineEntryV1", [
 //               {
 //               case 0:
 //                   void;
+//               case 2:
+//                   TrustLineEntryExtensionV2 v2;
 //               }
 //               ext;
 //           } v1;
@@ -593,7 +691,7 @@ xdr.union("TrustLineEntryExt", {
 //   struct TrustLineEntry
 //   {
 //       AccountID accountID; // account this trustline belongs to
-//       Asset asset;         // type of asset (with issuer)
+//       TrustLineAsset asset;         // type of asset (with issuer)
 //       int64 balance;       // how much of this asset the user has.
 //                            // Asset defines the unit for this;
 //   
@@ -614,6 +712,8 @@ xdr.union("TrustLineEntryExt", {
 //               {
 //               case 0:
 //                   void;
+//               case 2:
+//                   TrustLineEntryExtensionV2 v2;
 //               }
 //               ext;
 //           } v1;
@@ -624,7 +724,7 @@ xdr.union("TrustLineEntryExt", {
 // ===========================================================================
 xdr.struct("TrustLineEntry", [
   ["accountId", xdr.lookup("AccountId")],
-  ["asset", xdr.lookup("Asset")],
+  ["asset", xdr.lookup("TrustLineAsset")],
   ["balance", xdr.lookup("Int64")],
   ["limit", xdr.lookup("Int64")],
   ["flags", xdr.lookup("Uint32")],
@@ -1018,6 +1118,99 @@ xdr.struct("ClaimableBalanceEntry", [
 
 // === xdr source ============================================================
 //
+//   struct LiquidityPoolConstantProductParameters
+//   {
+//       Asset assetA; // assetA < assetB
+//       Asset assetB;
+//       int32 fee;    // Fee is in basis points, so the actual rate is (fee/100)%
+//   };
+//
+// ===========================================================================
+xdr.struct("LiquidityPoolConstantProductParameters", [
+  ["asseta", xdr.lookup("Asset")],
+  ["assetB", xdr.lookup("Asset")],
+  ["fee", xdr.lookup("Int32")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct
+//           {
+//               LiquidityPoolConstantProductParameters params;
+//   
+//               int64 reserveA;        // amount of A in the pool
+//               int64 reserveB;        // amount of B in the pool
+//               int64 totalPoolShares; // total number of pool shares issued
+//               int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+//           }
+//
+// ===========================================================================
+xdr.struct("LiquidityPoolEntryConstantProduct", [
+  ["params", xdr.lookup("LiquidityPoolConstantProductParameters")],
+  ["reserveA", xdr.lookup("Int64")],
+  ["reserveB", xdr.lookup("Int64")],
+  ["totalPoolShares", xdr.lookup("Int64")],
+  ["poolSharesTrustLineCount", xdr.lookup("Int64")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (LiquidityPoolType type)
+//       {
+//       case LIQUIDITY_POOL_CONSTANT_PRODUCT:
+//           struct
+//           {
+//               LiquidityPoolConstantProductParameters params;
+//   
+//               int64 reserveA;        // amount of A in the pool
+//               int64 reserveB;        // amount of B in the pool
+//               int64 totalPoolShares; // total number of pool shares issued
+//               int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+//           } constantProduct;
+//       }
+//
+// ===========================================================================
+xdr.union("LiquidityPoolEntryBody", {
+  switchOn: xdr.lookup("LiquidityPoolType"),
+  switchName: "type",
+  switches: [
+    ["liquidityPoolConstantProduct", "constantProduct"],
+  ],
+  arms: {
+    constantProduct: xdr.lookup("LiquidityPoolEntryConstantProduct"),
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct LiquidityPoolEntry
+//   {
+//       PoolID liquidityPoolID;
+//   
+//       union switch (LiquidityPoolType type)
+//       {
+//       case LIQUIDITY_POOL_CONSTANT_PRODUCT:
+//           struct
+//           {
+//               LiquidityPoolConstantProductParameters params;
+//   
+//               int64 reserveA;        // amount of A in the pool
+//               int64 reserveB;        // amount of B in the pool
+//               int64 totalPoolShares; // total number of pool shares issued
+//               int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+//           } constantProduct;
+//       }
+//       body;
+//   };
+//
+// ===========================================================================
+xdr.struct("LiquidityPoolEntry", [
+  ["liquidityPoolId", xdr.lookup("PoolId")],
+  ["body", xdr.lookup("LiquidityPoolEntryBody")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (int v)
 //       {
 //       case 0:
@@ -1069,6 +1262,8 @@ xdr.struct("LedgerEntryExtensionV1", [
 //           DataEntry data;
 //       case CLAIMABLE_BALANCE:
 //           ClaimableBalanceEntry claimableBalance;
+//       case LIQUIDITY_POOL:
+//           LiquidityPoolEntry liquidityPool;
 //       }
 //
 // ===========================================================================
@@ -1081,6 +1276,7 @@ xdr.union("LedgerEntryData", {
     ["offer", "offer"],
     ["data", "data"],
     ["claimableBalance", "claimableBalance"],
+    ["liquidityPool", "liquidityPool"],
   ],
   arms: {
     account: xdr.lookup("AccountEntry"),
@@ -1088,6 +1284,7 @@ xdr.union("LedgerEntryData", {
     offer: xdr.lookup("OfferEntry"),
     data: xdr.lookup("DataEntry"),
     claimableBalance: xdr.lookup("ClaimableBalanceEntry"),
+    liquidityPool: xdr.lookup("LiquidityPoolEntry"),
   },
 });
 
@@ -1132,6 +1329,8 @@ xdr.union("LedgerEntryExt", {
 //           DataEntry data;
 //       case CLAIMABLE_BALANCE:
 //           ClaimableBalanceEntry claimableBalance;
+//       case LIQUIDITY_POOL:
+//           LiquidityPoolEntry liquidityPool;
 //       }
 //       data;
 //   
@@ -1170,13 +1369,13 @@ xdr.struct("LedgerKeyAccount", [
 //   struct
 //       {
 //           AccountID accountID;
-//           Asset asset;
+//           TrustLineAsset asset;
 //       }
 //
 // ===========================================================================
 xdr.struct("LedgerKeyTrustLine", [
   ["accountId", xdr.lookup("AccountId")],
-  ["asset", xdr.lookup("Asset")],
+  ["asset", xdr.lookup("TrustLineAsset")],
 ]);
 
 // === xdr source ============================================================
@@ -1221,6 +1420,18 @@ xdr.struct("LedgerKeyClaimableBalance", [
 
 // === xdr source ============================================================
 //
+//   struct
+//       {
+//           PoolID liquidityPoolID;
+//       }
+//
+// ===========================================================================
+xdr.struct("LedgerKeyLiquidityPool", [
+  ["liquidityPoolId", xdr.lookup("PoolId")],
+]);
+
+// === xdr source ============================================================
+//
 //   union LedgerKey switch (LedgerEntryType type)
 //   {
 //   case ACCOUNT:
@@ -1233,7 +1444,7 @@ xdr.struct("LedgerKeyClaimableBalance", [
 //       struct
 //       {
 //           AccountID accountID;
-//           Asset asset;
+//           TrustLineAsset asset;
 //       } trustLine;
 //   
 //   case OFFER:
@@ -1255,6 +1466,12 @@ xdr.struct("LedgerKeyClaimableBalance", [
 //       {
 //           ClaimableBalanceID balanceID;
 //       } claimableBalance;
+//   
+//   case LIQUIDITY_POOL:
+//       struct
+//       {
+//           PoolID liquidityPoolID;
+//       } liquidityPool;
 //   };
 //
 // ===========================================================================
@@ -1267,6 +1484,7 @@ xdr.union("LedgerKey", {
     ["offer", "offer"],
     ["data", "data"],
     ["claimableBalance", "claimableBalance"],
+    ["liquidityPool", "liquidityPool"],
   ],
   arms: {
     account: xdr.lookup("LedgerKeyAccount"),
@@ -1274,6 +1492,7 @@ xdr.union("LedgerKey", {
     offer: xdr.lookup("LedgerKeyOffer"),
     data: xdr.lookup("LedgerKeyData"),
     claimableBalance: xdr.lookup("LedgerKeyClaimableBalance"),
+    liquidityPool: xdr.lookup("LedgerKeyLiquidityPool"),
   },
 });
 
@@ -2778,16 +2997,36 @@ xdr.struct("ScpEnvelope", [
 //   struct SCPQuorumSet
 //   {
 //       uint32 threshold;
-//       PublicKey validators<>;
+//       NodeID validators<>;
 //       SCPQuorumSet innerSets<>;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScpQuorumSet", [
   ["threshold", xdr.lookup("Uint32")],
-  ["validators", xdr.varArray(xdr.lookup("PublicKey"), 2147483647)],
+  ["validators", xdr.varArray(xdr.lookup("NodeId"), 2147483647)],
   ["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
 ]);
+
+// === xdr source ============================================================
+//
+//   union LiquidityPoolParameters switch (LiquidityPoolType type)
+//   {
+//   case LIQUIDITY_POOL_CONSTANT_PRODUCT:
+//       LiquidityPoolConstantProductParameters constantProduct;
+//   };
+//
+// ===========================================================================
+xdr.union("LiquidityPoolParameters", {
+  switchOn: xdr.lookup("LiquidityPoolType"),
+  switchName: "type",
+  switches: [
+    ["liquidityPoolConstantProduct", "constantProduct"],
+  ],
+  arms: {
+    constantProduct: xdr.lookup("LiquidityPoolConstantProductParameters"),
+  },
+});
 
 // === xdr source ============================================================
 //
@@ -2870,7 +3109,9 @@ xdr.struct("DecoratedSignature", [
 //       REVOKE_SPONSORSHIP = 18,
 //       CLAWBACK = 19,
 //       CLAWBACK_CLAIMABLE_BALANCE = 20,
-//       SET_TRUST_LINE_FLAGS = 21
+//       SET_TRUST_LINE_FLAGS = 21,
+//       LIQUIDITY_POOL_DEPOSIT = 22,
+//       LIQUIDITY_POOL_WITHDRAW = 23
 //   };
 //
 // ===========================================================================
@@ -2897,6 +3138,8 @@ xdr.enum("OperationType", {
   clawback: 19,
   clawbackClaimableBalance: 20,
   setTrustLineFlags: 21,
+  liquidityPoolDeposit: 22,
+  liquidityPoolWithdraw: 23,
 });
 
 // === xdr source ============================================================
@@ -3081,9 +3324,45 @@ xdr.struct("SetOptionsOp", [
 
 // === xdr source ============================================================
 //
+//   union ChangeTrustAsset switch (AssetType type)
+//   {
+//   case ASSET_TYPE_NATIVE: // Not credit
+//       void;
+//   
+//   case ASSET_TYPE_CREDIT_ALPHANUM4:
+//       AlphaNum4 alphaNum4;
+//   
+//   case ASSET_TYPE_CREDIT_ALPHANUM12:
+//       AlphaNum12 alphaNum12;
+//   
+//   case ASSET_TYPE_POOL_SHARE:
+//       LiquidityPoolParameters liquidityPool;
+//   
+//       // add other asset types here in the future
+//   };
+//
+// ===========================================================================
+xdr.union("ChangeTrustAsset", {
+  switchOn: xdr.lookup("AssetType"),
+  switchName: "type",
+  switches: [
+    ["assetTypeNative", xdr.void()],
+    ["assetTypeCreditAlphanum4", "alphaNum4"],
+    ["assetTypeCreditAlphanum12", "alphaNum12"],
+    ["assetTypePoolShare", "liquidityPool"],
+  ],
+  arms: {
+    alphaNum4: xdr.lookup("AlphaNum4"),
+    alphaNum12: xdr.lookup("AlphaNum12"),
+    liquidityPool: xdr.lookup("LiquidityPoolParameters"),
+  },
+});
+
+// === xdr source ============================================================
+//
 //   struct ChangeTrustOp
 //   {
-//       Asset line;
+//       ChangeTrustAsset line;
 //   
 //       // if limit is set to 0, deletes the trust line
 //       int64 limit;
@@ -3091,7 +3370,7 @@ xdr.struct("SetOptionsOp", [
 //
 // ===========================================================================
 xdr.struct("ChangeTrustOp", [
-  ["line", xdr.lookup("Asset")],
+  ["line", xdr.lookup("ChangeTrustAsset")],
   ["limit", xdr.lookup("Int64")],
 ]);
 
@@ -3284,6 +3563,51 @@ xdr.struct("SetTrustLineFlagsOp", [
 
 // === xdr source ============================================================
 //
+//   const LIQUIDITY_POOL_FEE_V18 = 30;
+//
+// ===========================================================================
+xdr.const("LIQUIDITY_POOL_FEE_V18", 30);
+
+// === xdr source ============================================================
+//
+//   struct LiquidityPoolDepositOp
+//   {
+//       PoolID liquidityPoolID;
+//       int64 maxAmountA;     // maximum amount of first asset to deposit
+//       int64 maxAmountB;     // maximum amount of second asset to deposit
+//       Price minPrice;       // minimum depositA/depositB
+//       Price maxPrice;       // maximum depositA/depositB
+//   };
+//
+// ===========================================================================
+xdr.struct("LiquidityPoolDepositOp", [
+  ["liquidityPoolId", xdr.lookup("PoolId")],
+  ["maxAmounta", xdr.lookup("Int64")],
+  ["maxAmountB", xdr.lookup("Int64")],
+  ["minPrice", xdr.lookup("Price")],
+  ["maxPrice", xdr.lookup("Price")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct LiquidityPoolWithdrawOp
+//   {
+//       PoolID liquidityPoolID;
+//       int64 amount;         // amount of pool shares to withdraw
+//       int64 minAmountA;     // minimum amount of first asset to withdraw
+//       int64 minAmountB;     // minimum amount of second asset to withdraw
+//   };
+//
+// ===========================================================================
+xdr.struct("LiquidityPoolWithdrawOp", [
+  ["liquidityPoolId", xdr.lookup("PoolId")],
+  ["amount", xdr.lookup("Int64")],
+  ["minAmounta", xdr.lookup("Int64")],
+  ["minAmountB", xdr.lookup("Int64")],
+]);
+
+// === xdr source ============================================================
+//
 //   union switch (OperationType type)
 //       {
 //       case CREATE_ACCOUNT:
@@ -3330,6 +3654,10 @@ xdr.struct("SetTrustLineFlagsOp", [
 //           ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
 //       case SET_TRUST_LINE_FLAGS:
 //           SetTrustLineFlagsOp setTrustLineFlagsOp;
+//       case LIQUIDITY_POOL_DEPOSIT:
+//           LiquidityPoolDepositOp liquidityPoolDepositOp;
+//       case LIQUIDITY_POOL_WITHDRAW:
+//           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
 //       }
 //
 // ===========================================================================
@@ -3359,6 +3687,8 @@ xdr.union("OperationBody", {
     ["clawback", "clawbackOp"],
     ["clawbackClaimableBalance", "clawbackClaimableBalanceOp"],
     ["setTrustLineFlags", "setTrustLineFlagsOp"],
+    ["liquidityPoolDeposit", "liquidityPoolDepositOp"],
+    ["liquidityPoolWithdraw", "liquidityPoolWithdrawOp"],
   ],
   arms: {
     createAccountOp: xdr.lookup("CreateAccountOp"),
@@ -3381,6 +3711,8 @@ xdr.union("OperationBody", {
     clawbackOp: xdr.lookup("ClawbackOp"),
     clawbackClaimableBalanceOp: xdr.lookup("ClawbackClaimableBalanceOp"),
     setTrustLineFlagsOp: xdr.lookup("SetTrustLineFlagsOp"),
+    liquidityPoolDepositOp: xdr.lookup("LiquidityPoolDepositOp"),
+    liquidityPoolWithdrawOp: xdr.lookup("LiquidityPoolWithdrawOp"),
   },
 });
 
@@ -3439,6 +3771,10 @@ xdr.union("OperationBody", {
 //           ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
 //       case SET_TRUST_LINE_FLAGS:
 //           SetTrustLineFlagsOp setTrustLineFlagsOp;
+//       case LIQUIDITY_POOL_DEPOSIT:
+//           LiquidityPoolDepositOp liquidityPoolDepositOp;
+//       case LIQUIDITY_POOL_WITHDRAW:
+//           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
 //       }
 //       body;
 //   };
@@ -3453,14 +3789,14 @@ xdr.struct("Operation", [
 //
 //   struct
 //       {
-//           MuxedAccount sourceAccount;
+//           AccountID sourceAccount;
 //           SequenceNumber seqNum;
 //           uint32 opNum;
 //       }
 //
 // ===========================================================================
 xdr.struct("OperationIdId", [
-  ["sourceAccount", xdr.lookup("MuxedAccount")],
+  ["sourceAccount", xdr.lookup("AccountId")],
   ["seqNum", xdr.lookup("SequenceNumber")],
   ["opNum", xdr.lookup("Uint32")],
 ]);
@@ -3472,7 +3808,7 @@ xdr.struct("OperationIdId", [
 //   case ENVELOPE_TYPE_OP_ID:
 //       struct
 //       {
-//           MuxedAccount sourceAccount;
+//           AccountID sourceAccount;
 //           SequenceNumber seqNum;
 //           uint32 opNum;
 //       } id;
@@ -3865,6 +4201,47 @@ xdr.struct("TransactionSignaturePayload", [
 
 // === xdr source ============================================================
 //
+//   enum ClaimAtomType
+//   {
+//       CLAIM_ATOM_TYPE_V0 = 0,
+//       CLAIM_ATOM_TYPE_ORDER_BOOK = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("ClaimAtomType", {
+  claimAtomTypeV0: 0,
+  claimAtomTypeOrderBook: 1,
+});
+
+// === xdr source ============================================================
+//
+//   struct ClaimOfferAtomV0
+//   {
+//       // emitted to identify the offer
+//       uint256 sellerEd25519; // Account that owns the offer
+//       int64 offerID;
+//   
+//       // amount and asset taken from the owner
+//       Asset assetSold;
+//       int64 amountSold;
+//   
+//       // amount and asset sent to the owner
+//       Asset assetBought;
+//       int64 amountBought;
+//   };
+//
+// ===========================================================================
+xdr.struct("ClaimOfferAtomV0", [
+  ["sellerEd25519", xdr.lookup("Uint256")],
+  ["offerId", xdr.lookup("Int64")],
+  ["assetSold", xdr.lookup("Asset")],
+  ["amountSold", xdr.lookup("Int64")],
+  ["assetBought", xdr.lookup("Asset")],
+  ["amountBought", xdr.lookup("Int64")],
+]);
+
+// === xdr source ============================================================
+//
 //   struct ClaimOfferAtom
 //   {
 //       // emitted to identify the offer
@@ -3889,6 +4266,30 @@ xdr.struct("ClaimOfferAtom", [
   ["assetBought", xdr.lookup("Asset")],
   ["amountBought", xdr.lookup("Int64")],
 ]);
+
+// === xdr source ============================================================
+//
+//   union ClaimAtom switch (ClaimAtomType type)
+//   {
+//   case CLAIM_ATOM_TYPE_V0:
+//       ClaimOfferAtomV0 v0;
+//   case CLAIM_ATOM_TYPE_ORDER_BOOK:
+//       ClaimOfferAtom orderBook;
+//   };
+//
+// ===========================================================================
+xdr.union("ClaimAtom", {
+  switchOn: xdr.lookup("ClaimAtomType"),
+  switchName: "type",
+  switches: [
+    ["claimAtomTypeV0", "v0"],
+    ["claimAtomTypeOrderBook", "orderBook"],
+  ],
+  arms: {
+    v0: xdr.lookup("ClaimOfferAtomV0"),
+    orderBook: xdr.lookup("ClaimOfferAtom"),
+  },
+});
 
 // === xdr source ============================================================
 //
@@ -3941,7 +4342,7 @@ xdr.union("CreateAccountResult", {
 //   enum PaymentResultCode
 //   {
 //       // codes considered as "success" for the operation
-//       PAYMENT_SUCCESS = 0, // payment successfuly completed
+//       PAYMENT_SUCCESS = 0, // payment successfully completed
 //   
 //       // codes considered as "failure" for the operation
 //       PAYMENT_MALFORMED = -1,          // bad input
@@ -4059,13 +4460,13 @@ xdr.struct("SimplePaymentResult", [
 //
 //   struct
 //       {
-//           ClaimOfferAtom offers<>;
+//           ClaimAtom offers<>;
 //           SimplePaymentResult last;
 //       }
 //
 // ===========================================================================
 xdr.struct("PathPaymentStrictReceiveResultSuccess", [
-  ["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)],
+  ["offers", xdr.varArray(xdr.lookup("ClaimAtom"), 2147483647)],
   ["last", xdr.lookup("SimplePaymentResult")],
 ]);
 
@@ -4077,7 +4478,7 @@ xdr.struct("PathPaymentStrictReceiveResultSuccess", [
 //   case PATH_PAYMENT_STRICT_RECEIVE_SUCCESS:
 //       struct
 //       {
-//           ClaimOfferAtom offers<>;
+//           ClaimAtom offers<>;
 //           SimplePaymentResult last;
 //       } success;
 //   case PATH_PAYMENT_STRICT_RECEIVE_NO_ISSUER:
@@ -4152,13 +4553,13 @@ xdr.enum("PathPaymentStrictSendResultCode", {
 //
 //   struct
 //       {
-//           ClaimOfferAtom offers<>;
+//           ClaimAtom offers<>;
 //           SimplePaymentResult last;
 //       }
 //
 // ===========================================================================
 xdr.struct("PathPaymentStrictSendResultSuccess", [
-  ["offers", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)],
+  ["offers", xdr.varArray(xdr.lookup("ClaimAtom"), 2147483647)],
   ["last", xdr.lookup("SimplePaymentResult")],
 ]);
 
@@ -4169,7 +4570,7 @@ xdr.struct("PathPaymentStrictSendResultSuccess", [
 //   case PATH_PAYMENT_STRICT_SEND_SUCCESS:
 //       struct
 //       {
-//           ClaimOfferAtom offers<>;
+//           ClaimAtom offers<>;
 //           SimplePaymentResult last;
 //       } success;
 //   case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:
@@ -4285,7 +4686,7 @@ xdr.union("ManageOfferSuccessResultOffer", {
 //   struct ManageOfferSuccessResult
 //   {
 //       // offers that got claimed while creating this offer
-//       ClaimOfferAtom offersClaimed<>;
+//       ClaimAtom offersClaimed<>;
 //   
 //       union switch (ManageOfferEffect effect)
 //       {
@@ -4300,7 +4701,7 @@ xdr.union("ManageOfferSuccessResultOffer", {
 //
 // ===========================================================================
 xdr.struct("ManageOfferSuccessResult", [
-  ["offersClaimed", xdr.varArray(xdr.lookup("ClaimOfferAtom"), 2147483647)],
+  ["offersClaimed", xdr.varArray(xdr.lookup("ClaimAtom"), 2147483647)],
   ["offer", xdr.lookup("ManageOfferSuccessResultOffer")],
 ]);
 
@@ -4463,7 +4864,10 @@ xdr.union("SetOptionsResult", {
 //                                        // cannot create with a limit of 0
 //       CHANGE_TRUST_LOW_RESERVE =
 //           -4, // not enough funds to create a new trust line,
-//       CHANGE_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
+//       CHANGE_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+//       CHANGE_TRUST_TRUST_LINE_MISSING = -6, // Asset trustline is missing for pool
+//       CHANGE_TRUST_CANNOT_DELETE = -7, // Asset trustline is still referenced in a pool
+//       CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES = -8 // Asset trustline is deauthorized
 //   };
 //
 // ===========================================================================
@@ -4474,6 +4878,9 @@ xdr.enum("ChangeTrustResultCode", {
   changeTrustInvalidLimit: -3,
   changeTrustLowReserve: -4,
   changeTrustSelfNotAllowed: -5,
+  changeTrustTrustLineMissing: -6,
+  changeTrustCannotDelete: -7,
+  changeTrustNotAuthMaintainLiabilities: -8,
 });
 
 // === xdr source ============================================================
@@ -4579,7 +4986,7 @@ xdr.enum("AccountMergeResultCode", {
 //   union AccountMergeResult switch (AccountMergeResultCode code)
 //   {
 //   case ACCOUNT_MERGE_SUCCESS:
-//       int64 sourceAccountBalance; // how much got transfered from source account
+//       int64 sourceAccountBalance; // how much got transferred from source account
 //   default:
 //       void;
 //   };
@@ -4920,7 +5327,8 @@ xdr.union("EndSponsoringFutureReservesResult", {
 //       REVOKE_SPONSORSHIP_DOES_NOT_EXIST = -1,
 //       REVOKE_SPONSORSHIP_NOT_SPONSOR = -2,
 //       REVOKE_SPONSORSHIP_LOW_RESERVE = -3,
-//       REVOKE_SPONSORSHIP_ONLY_TRANSFERABLE = -4
+//       REVOKE_SPONSORSHIP_ONLY_TRANSFERABLE = -4,
+//       REVOKE_SPONSORSHIP_MALFORMED = -5
 //   };
 //
 // ===========================================================================
@@ -4930,6 +5338,7 @@ xdr.enum("RevokeSponsorshipResultCode", {
   revokeSponsorshipNotSponsor: -2,
   revokeSponsorshipLowReserve: -3,
   revokeSponsorshipOnlyTransferable: -4,
+  revokeSponsorshipMalformed: -5,
 });
 
 // === xdr source ============================================================
@@ -5090,6 +5499,113 @@ xdr.union("SetTrustLineFlagsResult", {
 
 // === xdr source ============================================================
 //
+//   enum LiquidityPoolDepositResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       LIQUIDITY_POOL_DEPOSIT_SUCCESS = 0,
+//   
+//       // codes considered as "failure" for the operation
+//       LIQUIDITY_POOL_DEPOSIT_MALFORMED = -1,      // bad input
+//       LIQUIDITY_POOL_DEPOSIT_NO_TRUST = -2,       // no trust line for one of the
+//                                                   // assets
+//       LIQUIDITY_POOL_DEPOSIT_NOT_AUTHORIZED = -3, // not authorized for one of the
+//                                                   // assets
+//       LIQUIDITY_POOL_DEPOSIT_UNDERFUNDED = -4,    // not enough balance for one of
+//                                                   // the assets
+//       LIQUIDITY_POOL_DEPOSIT_LINE_FULL = -5,      // pool share trust line doesn't
+//                                                   // have sufficient limit
+//       LIQUIDITY_POOL_DEPOSIT_BAD_PRICE = -6,      // deposit price outside bounds
+//       LIQUIDITY_POOL_DEPOSIT_POOL_FULL = -7       // pool reserves are full
+//   };
+//
+// ===========================================================================
+xdr.enum("LiquidityPoolDepositResultCode", {
+  liquidityPoolDepositSuccess: 0,
+  liquidityPoolDepositMalformed: -1,
+  liquidityPoolDepositNoTrust: -2,
+  liquidityPoolDepositNotAuthorized: -3,
+  liquidityPoolDepositUnderfunded: -4,
+  liquidityPoolDepositLineFull: -5,
+  liquidityPoolDepositBadPrice: -6,
+  liquidityPoolDepositPoolFull: -7,
+});
+
+// === xdr source ============================================================
+//
+//   union LiquidityPoolDepositResult switch (
+//       LiquidityPoolDepositResultCode code)
+//   {
+//   case LIQUIDITY_POOL_DEPOSIT_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("LiquidityPoolDepositResult", {
+  switchOn: xdr.lookup("LiquidityPoolDepositResultCode"),
+  switchName: "code",
+  switches: [
+    ["liquidityPoolDepositSuccess", xdr.void()],
+  ],
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
+//   enum LiquidityPoolWithdrawResultCode
+//   {
+//       // codes considered as "success" for the operation
+//       LIQUIDITY_POOL_WITHDRAW_SUCCESS = 0,
+//   
+//       // codes considered as "failure" for the operation
+//       LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,      // bad input
+//       LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,       // no trust line for one of the
+//                                                    // assets
+//       LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED = -3,    // not enough balance of the
+//                                                    // pool share
+//       LIQUIDITY_POOL_WITHDRAW_LINE_FULL = -4,      // would go above limit for one
+//                                                    // of the assets
+//       LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM = -5   // didn't withdraw enough
+//   };
+//
+// ===========================================================================
+xdr.enum("LiquidityPoolWithdrawResultCode", {
+  liquidityPoolWithdrawSuccess: 0,
+  liquidityPoolWithdrawMalformed: -1,
+  liquidityPoolWithdrawNoTrust: -2,
+  liquidityPoolWithdrawUnderfunded: -3,
+  liquidityPoolWithdrawLineFull: -4,
+  liquidityPoolWithdrawUnderMinimum: -5,
+});
+
+// === xdr source ============================================================
+//
+//   union LiquidityPoolWithdrawResult switch (
+//       LiquidityPoolWithdrawResultCode code)
+//   {
+//   case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
+//       void;
+//   default:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("LiquidityPoolWithdrawResult", {
+  switchOn: xdr.lookup("LiquidityPoolWithdrawResultCode"),
+  switchName: "code",
+  switches: [
+    ["liquidityPoolWithdrawSuccess", xdr.void()],
+  ],
+  arms: {
+  },
+  defaultArm: xdr.void(),
+});
+
+// === xdr source ============================================================
+//
 //   enum OperationResultCode
 //   {
 //       opINNER = 0, // inner object result is valid
@@ -5161,6 +5677,10 @@ xdr.enum("OperationResultCode", {
 //           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
 //       case SET_TRUST_LINE_FLAGS:
 //           SetTrustLineFlagsResult setTrustLineFlagsResult;
+//       case LIQUIDITY_POOL_DEPOSIT:
+//           LiquidityPoolDepositResult liquidityPoolDepositResult;
+//       case LIQUIDITY_POOL_WITHDRAW:
+//           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
 //       }
 //
 // ===========================================================================
@@ -5190,6 +5710,8 @@ xdr.union("OperationResultTr", {
     ["clawback", "clawbackResult"],
     ["clawbackClaimableBalance", "clawbackClaimableBalanceResult"],
     ["setTrustLineFlags", "setTrustLineFlagsResult"],
+    ["liquidityPoolDeposit", "liquidityPoolDepositResult"],
+    ["liquidityPoolWithdraw", "liquidityPoolWithdrawResult"],
   ],
   arms: {
     createAccountResult: xdr.lookup("CreateAccountResult"),
@@ -5214,6 +5736,8 @@ xdr.union("OperationResultTr", {
     clawbackResult: xdr.lookup("ClawbackResult"),
     clawbackClaimableBalanceResult: xdr.lookup("ClawbackClaimableBalanceResult"),
     setTrustLineFlagsResult: xdr.lookup("SetTrustLineFlagsResult"),
+    liquidityPoolDepositResult: xdr.lookup("LiquidityPoolDepositResult"),
+    liquidityPoolWithdrawResult: xdr.lookup("LiquidityPoolWithdrawResult"),
   },
 });
 
@@ -5268,6 +5792,10 @@ xdr.union("OperationResultTr", {
 //           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
 //       case SET_TRUST_LINE_FLAGS:
 //           SetTrustLineFlagsResult setTrustLineFlagsResult;
+//       case LIQUIDITY_POOL_DEPOSIT:
+//           LiquidityPoolDepositResult liquidityPoolDepositResult;
+//       case LIQUIDITY_POOL_WITHDRAW:
+//           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
 //       }
 //       tr;
 //   default:
@@ -5306,7 +5834,7 @@ xdr.union("OperationResult", {
 //       txNO_ACCOUNT = -8,           // source account not found
 //       txINSUFFICIENT_FEE = -9,     // fee is too small
 //       txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
-//       txINTERNAL_ERROR = -11,      // an unknown error occured
+//       txINTERNAL_ERROR = -11,      // an unknown error occurred
 //   
 //       txNOT_SUPPORTED = -12,         // transaction type not supported
 //       txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
