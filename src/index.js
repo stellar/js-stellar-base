@@ -14,6 +14,7 @@ export {
   BASE_FEE
 } from './transaction_builder';
 export { Asset } from './asset';
+export { TrustLineAsset } from './trustline_asset';
 export {
   Operation,
   AuthRequiredFlag,
