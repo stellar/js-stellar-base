@@ -79,10 +79,10 @@ export class Asset {
     let xdrType;
     let xdrTypeString;
     if (this.code.length <= 4) {
-      xdrType = xdr.AssetAlphaNum4;
+      xdrType = xdr.AlphaNum4;
       xdrTypeString = 'assetTypeCreditAlphanum4';
     } else {
-      xdrType = xdr.AssetAlphaNum12;
+      xdrType = xdr.AlphaNum12;
       xdrTypeString = 'assetTypeCreditAlphanum12';
     }
 
