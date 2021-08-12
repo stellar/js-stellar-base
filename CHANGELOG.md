@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The `TrustLineAsset` object has been included to handle both Liquidity Pools and regular Assets in the trustline ([#451](https://github.com/stellar/js-stellar-base/pull/451)).
+- The XDR definitions have been updated to support CAP-38 ([#451](https://github.com/stellar/js-stellar-base/pull/451)).
+
 ### Fix
 - Update various dependencies to secure versions. Most are developer dependencies which means no or minimal downstream effects ([#446](https://github.com/stellar/js-stellar-base/pull/446), [#447](https://github.com/stellar/js-stellar-base/pull/447), [#392](https://github.com/stellar/js-stellar-base/pull/392), [#428](https://github.com/stellar/js-stellar-base/pull/428)); the only non-developer dependency upgrade is a patch version bump to `lodash` ([#449](https://github.com/stellar/js-stellar-base/pull/449)).
 

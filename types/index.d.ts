@@ -845,3 +845,23 @@ export function verify(
   signature: Buffer,
   rawPublicKey: Buffer
 ): boolean;
+
+export class TrustLineAsset {
+  static native(): TrustLineAsset;
+  static fromOperation(xdr: xdr.TrustLineAsset): TrustLineAsset;
+
+  constructor(code?: string, issuer?: string, liquidityPoolId?: string);
+
+  getCode(): string;
+  getIssuer(): string;
+  getLiquidityPoolId(): string;
+  getAssetType(): AssetType;
+  isNative(): boolean;
+  isLiquidityPool(): boolean;
+  equals(other: TrustLineAsset): boolean;
+  toXDRObject(): xdr.TrustLineAsset;
+
+  code: string;
+  issuer: string;
+  liquidityPoolId: string;
+}
