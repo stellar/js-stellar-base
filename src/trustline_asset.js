@@ -27,12 +27,12 @@ export class TrustLineAsset {
     if (!code && !issuer && !liquidityPoolId) {
       throw new Error('Must provide either code, issuer or liquidityPoolId');
     }
-    if (code && !/^[a-zA-Z0-9]{1,12}$/.test(code)) {
+    if ((code || issuer) && !/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(
         'Asset code is invalid (maximum alphanumeric, 12 characters at max)'
       );
     }
-    if (String(code).toLowerCase() !== 'xlm' && !issuer) {
+    if (code && String(code).toLowerCase() !== 'xlm' && !issuer) {
       throw new Error('Issuer cannot be null');
     }
     if (issuer && !StrKey.isValidEd25519PublicKey(issuer)) {
