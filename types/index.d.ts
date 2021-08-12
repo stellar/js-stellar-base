@@ -35,11 +35,13 @@ export namespace AssetType {
   type native = 'native';
   type credit4 = 'credit_alphanum4';
   type credit12 = 'credit_alphanum12';
+  type liquidityPoolShares = 'liquidity_pool_shares';
 }
 export type AssetType =
   | AssetType.native
   | AssetType.credit4
-  | AssetType.credit12;
+  | AssetType.credit12
+  | AssetType.liquidityPoolShares;
 
 export class Asset {
   static native(): Asset;
