@@ -536,6 +536,15 @@ case ENVELOPE_TYPE_OP_ID:
         SequenceNumber seqNum;
         uint32 opNum;
     } id;
+case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
+    struct
+    {
+        AccountID sourceAccount;
+        SequenceNumber seqNum;
+        uint32 opNum;
+        PoolID liquidityPoolID;
+        Asset asset;
+    } revokeId;
 };
 
 enum MemoType
@@ -698,7 +707,8 @@ struct TransactionSignaturePayload
 enum ClaimAtomType
 {
     CLAIM_ATOM_TYPE_V0 = 0,
-    CLAIM_ATOM_TYPE_ORDER_BOOK = 1
+    CLAIM_ATOM_TYPE_ORDER_BOOK = 1,
+    CLAIM_ATOM_TYPE_LIQUIDITY_POOL = 2
 };
 
 // ClaimOfferAtomV0 is a ClaimOfferAtom with the AccountID discriminant stripped
@@ -736,6 +746,19 @@ struct ClaimOfferAtom
     int64 amountBought;
 };
 
+struct ClaimLiquidityAtom
+{
+    PoolID liquidityPoolID;
+
+    // amount and asset taken from the pool
+    Asset assetSold;
+    int64 amountSold;
+
+    // amount and asset sent to the pool
+    Asset assetBought;
+    int64 amountBought;
+};
+
 /* This result is used when offers are taken or liquidity is exchanged with a
    liquidity pool during an operation
 */
@@ -745,6 +768,8 @@ case CLAIM_ATOM_TYPE_V0:
     ClaimOfferAtomV0 v0;
 case CLAIM_ATOM_TYPE_ORDER_BOOK:
     ClaimOfferAtom orderBook;
+case CLAIM_ATOM_TYPE_LIQUIDITY_POOL:
+    ClaimLiquidityAtom liquidityPool;
 };
 
 /******* CreateAccount Result ********/
@@ -1055,7 +1080,9 @@ enum AllowTrustResultCode
                                     // source account does not require trust
     ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
     ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
-    ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
+    ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+    ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
+                                 // on revoke due to low reserves 
 };
 
 union AllowTrustResult switch (AllowTrustResultCode code)
@@ -1318,7 +1345,9 @@ enum SetTrustLineFlagsResultCode
     SET_TRUST_LINE_FLAGS_MALFORMED = -1,
     SET_TRUST_LINE_FLAGS_NO_TRUST_LINE = -2,
     SET_TRUST_LINE_FLAGS_CANT_REVOKE = -3,
-    SET_TRUST_LINE_FLAGS_INVALID_STATE = -4
+    SET_TRUST_LINE_FLAGS_INVALID_STATE = -4,
+    SET_TRUST_LINE_FLAGS_LOW_RESERVE = -5 // claimable balances can't be created
+                                          // on revoke due to low reserves
 };
 
 union SetTrustLineFlagsResult switch (SetTrustLineFlagsResultCode code)
@@ -1385,6 +1414,7 @@ case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
 default:
     void;
 };
+
 
 /* High level Operation Result */
 enum OperationResultCode

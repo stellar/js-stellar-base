@@ -1,4 +1,4 @@
-// Automatically generated on 2021-08-11T18:06:04-03:00
+// Automatically generated on 2021-08-12T17:10:08-03:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -969,12 +969,14 @@ xdr.union("Claimant", {
 //
 //   enum ClaimableBalanceIDType
 //   {
-//       CLAIMABLE_BALANCE_ID_TYPE_V0 = 0
+//       CLAIMABLE_BALANCE_ID_TYPE_V0 = 0,
+//       CLAIMABLE_BALANCE_ID_TYPE_FROM_POOL_REVOKE = 1
 //   };
 //
 // ===========================================================================
 xdr.enum("ClaimableBalanceIdType", {
   claimableBalanceIdTypeV0: 0,
+  claimableBalanceIdTypeFromPoolRevoke: 1,
 });
 
 // === xdr source ============================================================
@@ -983,6 +985,8 @@ xdr.enum("ClaimableBalanceIdType", {
 //   {
 //   case CLAIMABLE_BALANCE_ID_TYPE_V0:
 //       Hash v0;
+//   case CLAIMABLE_BALANCE_ID_TYPE_FROM_POOL_REVOKE:
+//       Hash fromPoolRevoke;
 //   };
 //
 // ===========================================================================
@@ -991,9 +995,11 @@ xdr.union("ClaimableBalanceId", {
   switchName: "type",
   switches: [
     ["claimableBalanceIdTypeV0", "v0"],
+    ["claimableBalanceIdTypeFromPoolRevoke", "fromPoolRevoke"],
   ],
   arms: {
     v0: xdr.lookup("Hash"),
+    fromPoolRevoke: xdr.lookup("Hash"),
   },
 });
 
@@ -1506,7 +1512,8 @@ xdr.union("LedgerKey", {
 //       ENVELOPE_TYPE_AUTH = 3,
 //       ENVELOPE_TYPE_SCPVALUE = 4,
 //       ENVELOPE_TYPE_TX_FEE_BUMP = 5,
-//       ENVELOPE_TYPE_OP_ID = 6
+//       ENVELOPE_TYPE_OP_ID = 6,
+//       ENVELOPE_TYPE_POOL_REVOKE_OP_ID = 7
 //   };
 //
 // ===========================================================================
@@ -1518,6 +1525,7 @@ xdr.enum("EnvelopeType", {
   envelopeTypeScpvalue: 4,
   envelopeTypeTxFeeBump: 5,
   envelopeTypeOpId: 6,
+  envelopeTypePoolRevokeOpId: 7,
 });
 
 // === xdr source ============================================================
@@ -1589,7 +1597,7 @@ xdr.union("StellarValueExt", {
 //       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
 //       // unknown steps during consensus if needed.
 //       // see notes below on 'LedgerUpgrade' for more detail
-//       // max size is dictated by number of upgrade types (+ room for future)
+//       // max size is dictated by number of upgrade types ( room for future)
 //       UpgradeType upgrades<6>;
 //   
 //       // reserved for future use
@@ -1613,10 +1621,75 @@ xdr.struct("StellarValue", [
 
 // === xdr source ============================================================
 //
+//   const MASK_LEDGERHEADER_FLAGS = 0x7;
+//
+// ===========================================================================
+xdr.const("MASK_LEDGERHEADER_FLAGS", 0x7);
+
+// === xdr source ============================================================
+//
+//   enum LedgerHeaderFlags
+//   { // masks for each flag
+//   
+//       DISABLE_LIQUIDITY_POOL_TRADING_FLAG = 0x1,
+//       DISABLE_LIQUIDITY_POOL_DEPOSIT_FLAG = 0x2,
+//       DISABLE_LIQUIDITY_POOL_WITHDRAWAL_FLAG = 0x4
+//   };
+//
+// ===========================================================================
+xdr.enum("LedgerHeaderFlags", {
+  disableLiquidityPoolTradingFlag: 1,
+  disableLiquidityPoolDepositFlag: 2,
+  disableLiquidityPoolWithdrawalFlag: 4,
+});
+
+// === xdr source ============================================================
+//
 //   union switch (int v)
 //       {
 //       case 0:
 //           void;
+//       }
+//
+// ===========================================================================
+xdr.union("LedgerHeaderExtensionV1Ext", {
+  switchOn: xdr.int(),
+  switchName: "v",
+  switches: [
+    [0, xdr.void()],
+  ],
+  arms: {
+  },
+});
+
+// === xdr source ============================================================
+//
+//   struct LedgerHeaderExtensionV1
+//   {
+//       uint32 flags; // UpgradeFlags
+//   
+//       union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       }
+//       ext;
+//   };
+//
+// ===========================================================================
+xdr.struct("LedgerHeaderExtensionV1", [
+  ["flags", xdr.lookup("Uint32")],
+  ["ext", xdr.lookup("LedgerHeaderExtensionV1Ext")],
+]);
+
+// === xdr source ============================================================
+//
+//   union switch (int v)
+//       {
+//       case 0:
+//           void;
+//       case 1:
+//           LedgerHeaderExtensionV1 v1;
 //       }
 //
 // ===========================================================================
@@ -1625,8 +1698,10 @@ xdr.union("LedgerHeaderExt", {
   switchName: "v",
   switches: [
     [0, xdr.void()],
+    [1, "v1"],
   ],
   arms: {
+    v1: xdr.lookup("LedgerHeaderExtensionV1"),
   },
 });
 
@@ -1666,6 +1741,8 @@ xdr.union("LedgerHeaderExt", {
 //       {
 //       case 0:
 //           void;
+//       case 1:
+//           LedgerHeaderExtensionV1 v1;
 //       }
 //       ext;
 //   };
@@ -1696,7 +1773,8 @@ xdr.struct("LedgerHeader", [
 //       LEDGER_UPGRADE_VERSION = 1,
 //       LEDGER_UPGRADE_BASE_FEE = 2,
 //       LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
-//       LEDGER_UPGRADE_BASE_RESERVE = 4
+//       LEDGER_UPGRADE_BASE_RESERVE = 4,
+//       LEDGER_UPGRADE_FLAGS = 5
 //   };
 //
 // ===========================================================================
@@ -1705,6 +1783,7 @@ xdr.enum("LedgerUpgradeType", {
   ledgerUpgradeBaseFee: 2,
   ledgerUpgradeMaxTxSetSize: 3,
   ledgerUpgradeBaseReserve: 4,
+  ledgerUpgradeFlags: 5,
 });
 
 // === xdr source ============================================================
@@ -1719,6 +1798,8 @@ xdr.enum("LedgerUpgradeType", {
 //       uint32 newMaxTxSetSize; // update maxTxSetSize
 //   case LEDGER_UPGRADE_BASE_RESERVE:
 //       uint32 newBaseReserve; // update baseReserve
+//   case LEDGER_UPGRADE_FLAGS:
+//       uint32 newFlags; // update flags
 //   };
 //
 // ===========================================================================
@@ -1730,12 +1811,14 @@ xdr.union("LedgerUpgrade", {
     ["ledgerUpgradeBaseFee", "newBaseFee"],
     ["ledgerUpgradeMaxTxSetSize", "newMaxTxSetSize"],
     ["ledgerUpgradeBaseReserve", "newBaseReserve"],
+    ["ledgerUpgradeFlags", "newFlags"],
   ],
   arms: {
     newLedgerVersion: xdr.lookup("Uint32"),
     newBaseFee: xdr.lookup("Uint32"),
     newMaxTxSetSize: xdr.lookup("Uint32"),
     newBaseReserve: xdr.lookup("Uint32"),
+    newFlags: xdr.lookup("Uint32"),
   },
 });
 
@@ -3803,6 +3886,26 @@ xdr.struct("OperationIdId", [
 
 // === xdr source ============================================================
 //
+//   struct
+//       {
+//           AccountID sourceAccount;
+//           SequenceNumber seqNum;
+//           uint32 opNum;
+//           PoolID liquidityPoolID;
+//           Asset asset;
+//       }
+//
+// ===========================================================================
+xdr.struct("OperationIdRevokeId", [
+  ["sourceAccount", xdr.lookup("AccountId")],
+  ["seqNum", xdr.lookup("SequenceNumber")],
+  ["opNum", xdr.lookup("Uint32")],
+  ["liquidityPoolId", xdr.lookup("PoolId")],
+  ["asset", xdr.lookup("Asset")],
+]);
+
+// === xdr source ============================================================
+//
 //   union OperationID switch (EnvelopeType type)
 //   {
 //   case ENVELOPE_TYPE_OP_ID:
@@ -3812,6 +3915,15 @@ xdr.struct("OperationIdId", [
 //           SequenceNumber seqNum;
 //           uint32 opNum;
 //       } id;
+//   case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
+//       struct
+//       {
+//           AccountID sourceAccount;
+//           SequenceNumber seqNum;
+//           uint32 opNum;
+//           PoolID liquidityPoolID;
+//           Asset asset;
+//       } revokeId;
 //   };
 //
 // ===========================================================================
@@ -3820,9 +3932,11 @@ xdr.union("OperationId", {
   switchName: "type",
   switches: [
     ["envelopeTypeOpId", "id"],
+    ["envelopeTypePoolRevokeOpId", "revokeId"],
   ],
   arms: {
     id: xdr.lookup("OperationIdId"),
+    revokeId: xdr.lookup("OperationIdRevokeId"),
   },
 });
 
@@ -4204,13 +4318,15 @@ xdr.struct("TransactionSignaturePayload", [
 //   enum ClaimAtomType
 //   {
 //       CLAIM_ATOM_TYPE_V0 = 0,
-//       CLAIM_ATOM_TYPE_ORDER_BOOK = 1
+//       CLAIM_ATOM_TYPE_ORDER_BOOK = 1,
+//       CLAIM_ATOM_TYPE_LIQUIDITY_POOL = 2
 //   };
 //
 // ===========================================================================
 xdr.enum("ClaimAtomType", {
   claimAtomTypeV0: 0,
   claimAtomTypeOrderBook: 1,
+  claimAtomTypeLiquidityPool: 2,
 });
 
 // === xdr source ============================================================
@@ -4269,12 +4385,38 @@ xdr.struct("ClaimOfferAtom", [
 
 // === xdr source ============================================================
 //
+//   struct ClaimLiquidityAtom
+//   {
+//       PoolID liquidityPoolID;
+//   
+//       // amount and asset taken from the pool
+//       Asset assetSold;
+//       int64 amountSold;
+//   
+//       // amount and asset sent to the pool
+//       Asset assetBought;
+//       int64 amountBought;
+//   };
+//
+// ===========================================================================
+xdr.struct("ClaimLiquidityAtom", [
+  ["liquidityPoolId", xdr.lookup("PoolId")],
+  ["assetSold", xdr.lookup("Asset")],
+  ["amountSold", xdr.lookup("Int64")],
+  ["assetBought", xdr.lookup("Asset")],
+  ["amountBought", xdr.lookup("Int64")],
+]);
+
+// === xdr source ============================================================
+//
 //   union ClaimAtom switch (ClaimAtomType type)
 //   {
 //   case CLAIM_ATOM_TYPE_V0:
 //       ClaimOfferAtomV0 v0;
 //   case CLAIM_ATOM_TYPE_ORDER_BOOK:
 //       ClaimOfferAtom orderBook;
+//   case CLAIM_ATOM_TYPE_LIQUIDITY_POOL:
+//       ClaimLiquidityAtom liquidityPool;
 //   };
 //
 // ===========================================================================
@@ -4284,10 +4426,12 @@ xdr.union("ClaimAtom", {
   switches: [
     ["claimAtomTypeV0", "v0"],
     ["claimAtomTypeOrderBook", "orderBook"],
+    ["claimAtomTypeLiquidityPool", "liquidityPool"],
   ],
   arms: {
     v0: xdr.lookup("ClaimOfferAtomV0"),
     orderBook: xdr.lookup("ClaimOfferAtom"),
+    liquidityPool: xdr.lookup("ClaimLiquidityAtom"),
   },
 });
 
@@ -4917,7 +5061,9 @@ xdr.union("ChangeTrustResult", {
 //                                       // source account does not require trust
 //       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
 //       ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
-//       ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
+//       ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+//       ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
+//                                    // on revoke due to low reserves 
 //   };
 //
 // ===========================================================================
@@ -4928,6 +5074,7 @@ xdr.enum("AllowTrustResultCode", {
   allowTrustTrustNotRequired: -3,
   allowTrustCantRevoke: -4,
   allowTrustSelfNotAllowed: -5,
+  allowTrustLowReserve: -6,
 });
 
 // === xdr source ============================================================
@@ -5463,7 +5610,9 @@ xdr.union("ClawbackClaimableBalanceResult", {
 //       SET_TRUST_LINE_FLAGS_MALFORMED = -1,
 //       SET_TRUST_LINE_FLAGS_NO_TRUST_LINE = -2,
 //       SET_TRUST_LINE_FLAGS_CANT_REVOKE = -3,
-//       SET_TRUST_LINE_FLAGS_INVALID_STATE = -4
+//       SET_TRUST_LINE_FLAGS_INVALID_STATE = -4,
+//       SET_TRUST_LINE_FLAGS_LOW_RESERVE = -5 // claimable balances can't be created
+//                                             // on revoke due to low reserves
 //   };
 //
 // ===========================================================================
@@ -5473,6 +5622,7 @@ xdr.enum("SetTrustLineFlagsResultCode", {
   setTrustLineFlagsNoTrustLine: -2,
   setTrustLineFlagsCantRevoke: -3,
   setTrustLineFlagsInvalidState: -4,
+  setTrustLineFlagsLowReserve: -5,
 });
 
 // === xdr source ============================================================
