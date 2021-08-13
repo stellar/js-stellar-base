@@ -3,6 +3,11 @@ import xdr from './generated/stellar-xdr_generated';
 export { xdr };
 export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';
+export {
+  liquidityPoolId,
+  LiquidityPoolFeeV18,
+  validateLexicographicalAssetsOrder
+} from './liquidity_pool_id';
 export { Keypair } from './keypair';
 export { UnsignedHyper, Hyper } from 'js-xdr';
 export { TransactionBase } from './transaction_base';

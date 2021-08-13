@@ -109,6 +109,25 @@ export class Keypair {
   xdrMuxedAccount(id: string): xdr.MuxedAccount;
 }
 
+export const LiquidityPoolFeeV18 = 30;
+
+export function liquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParams: LiquidityPoolParams.ConstantProduct): Buffer;
+
+// TODO: review how we're exporting this interface and namespace
+export namespace LiquidityPoolParams {
+  export interface ConstantProduct{
+    asseta: Asset;
+    assetB: Asset;
+    fee: number;
+  }
+}
+
+export namespace LiquidityPoolType {
+  type ConstantProduct = 0;
+}
+export type LiquidityPoolType = LiquidityPoolType.ConstantProduct;
+
+
 export const MemoNone = 'none';
 export const MemoID = 'id';
 export const MemoText = 'text';
