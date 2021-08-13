@@ -17,9 +17,9 @@ import { hash } from './hashing';
  * must respect the rule assetA < assetB.
  * @param {number} liquidityPoolParams.fee – the liquidity pool fee. For now the
  * only fee supported is `30`.
- * @return {Buffer} the Pool ID buffer. It can be stringfied with `toString('hex')`.
+ * @return {Buffer} the Pool ID buffer. It can be stringfied with
+ * `toString('hex')`.
  */
-
 export function liquidityPoolId(liquidityPoolType, liquidityPoolParams) {
   if (!liquidityPoolType) {
     liquidityPoolType = 0;
@@ -42,7 +42,7 @@ export function liquidityPoolId(liquidityPoolType, liquidityPoolParams) {
   if (!assetB || !(assetB instanceof Asset)) {
     throw new Error('assetB is invalid');
   }
-  if (!fee || fee != LiquidityPoolFeeV18) {
+  if (!fee || fee !== LiquidityPoolFeeV18) {
     throw new Error('fee is invalid');
   }
 
@@ -68,8 +68,8 @@ export function liquidityPoolId(liquidityPoolType, liquidityPoolParams) {
  * 2. If the types are equal, compare the assets codes.
  * 3. If the asset codes are equal, compare the issuers.
  *
- * @param {Asset} assetA
- * @param {Asset} assetB
+ * @param {Asset} assetA - the first asset in the lexicographical order.
+ * @param {Asset} assetB - the second asset in the lexicographical order.
  * @return {boolean} true if assetA < assetB.
  */
 export function validateLexicographicalAssetsOrder(assetA, assetB) {
@@ -100,6 +100,7 @@ export function validateLexicographicalAssetsOrder(assetA, assetB) {
       if (assetB.getAssetType() !== 'credit_alphanum12') {
         return false;
       }
+      break;
     default:
       throw new Error('Unexpected asset type');
   }
