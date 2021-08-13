@@ -5,13 +5,22 @@ import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
+// TODO: TrustLineAsset
+// - [ ] TrustLineEntry.asset changes from Asset to TrustLineAsset
+// - [ ] TrustLineEntry.ext can now be `TrustLineEntryExtensionV2`
+// - [ ] LedgerKeyTrustLine.asset changes from Asset to TrustLineAsset
+
+// TODO: ledger Key:
+// - [ ] LedgerKey type can also be liquidityPool -> LedgerKeyLiquidityPool
+// - [ ] (Create) new LedgerKeyLiquidityPool. All it contains is a liquidityPoolId: PoolId
+
 /**
  * TrustLineAsset class represents a trustline to either a liquidity pool, a
- * native asset (`XLM`) of an issued asset with an asset code / issuer account
+ * native asset (`XLM`) or an issued asset with an asset code / issuer account
  * ID pair.
  *
- * The trustline asset can wither represent a trustline to the native asset, an
- * issued asset of to a liquidity pool. In case of the native asset, the code
+ * The trustline asset can either represent a trustline to the native asset, an
+ * issued asset or to a liquidity pool. In case of the native asset, the code
  * will represent `XLM` while the issuer and liquidityPoolId will be empty. For
  * an issued asset, the code and issuer will be valid and liquidityPoolId will
  * be empty. For liquidity pools, the liquidityPoolId will be valid and the
@@ -20,7 +29,7 @@ import { StrKey } from './strkey';
  * @constructor
  * @param {string} code - The asset code.
  * @param {string} issuer - The account ID of the asset issuer.
- * @param {string} liquidityPoolId - The ID of the liquidity pool.
+ * @param {string} liquidityPoolId - The ID of the liquidity poolin string 'hex'.
  */
 export class TrustLineAsset {
   constructor(code, issuer, liquidityPoolId) {
@@ -77,7 +86,7 @@ export class TrustLineAsset {
         return new this(code, issuer);
       case xdr.AssetType.assetTypePoolShare():
         // TODO: review if this is correct
-        liquidityPoolId = tlAssetXdr.liquidityPoolId();
+        liquidityPoolId = tlAssetXdr.liquidityPoolId().toString('hex');
         return new this(null, null, liquidityPoolId);
       default:
         throw new Error(`Invalid asset type: ${tlAssetXdr.switch().name}`);

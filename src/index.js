@@ -19,6 +19,7 @@ export {
   BASE_FEE
 } from './transaction_builder';
 export { Asset } from './asset';
+export { ChangeTrustAsset } from './change_trust_asset';
 export { TrustLineAsset } from './trustline_asset';
 export {
   Operation,

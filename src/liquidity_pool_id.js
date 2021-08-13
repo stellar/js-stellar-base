@@ -21,10 +21,6 @@ import { hash } from './hashing';
  * `toString('hex')`.
  */
 export function liquidityPoolId(liquidityPoolType, liquidityPoolParams) {
-  if (!liquidityPoolType) {
-    liquidityPoolType = 0;
-  }
-
   if (
     liquidityPoolType !== xdr.LiquidityPoolType.liquidityPoolConstantProduct()
   ) {
@@ -34,7 +30,6 @@ export function liquidityPoolId(liquidityPoolType, liquidityPoolParams) {
   if (!liquidityPoolParams) {
     throw new Error('liquidityPoolParams cannot be empty');
   }
-
   const { asseta, assetB, fee } = liquidityPoolParams;
   if (!asseta || !(asseta instanceof Asset)) {
     throw new Error('asseta is invalid');

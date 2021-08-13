@@ -60,6 +60,26 @@ export class Asset {
   issuer: string;
 }
 
+export class ChangeTrustAsset {
+  static native(): ChangeTrustAsset;
+  static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset;
+
+  constructor(code?: string, issuer?: string, liquidityPoolParams?: LiquidityPoolParams.ConstantProduct);
+
+  getCode(): string;
+  getIssuer(): string;
+  getLiquidityPoolParams(): LiquidityPoolParams.ConstantProduct;
+  getAssetType(): AssetType;
+  isNative(): boolean;
+  isLiquidityPool(): boolean;
+  equals(other: ChangeTrustAsset): boolean;
+  toXDRObject(): xdr.ChangeTrustAsset;
+
+  code: string;
+  issuer: string;
+  liquidityPoolParams: LiquidityPoolParams.ConstantProduct;
+}
+
 export class Claimant {
   readonly destination: string;
   readonly predicate: xdr.ClaimPredicate;
