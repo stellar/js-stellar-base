@@ -11,6 +11,7 @@ import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
 import { Claimant } from './claimant';
 import { StrKey } from './strkey';
+import { TrustLineAsset } from './trustline_asset';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 import {
@@ -517,7 +518,9 @@ function extractRevokeSponshipDetails(attrs, result) {
           result.account = accountIdtoAddress(
             ledgerKey.trustLine().accountId()
           );
-          result.asset = Asset.fromOperation(ledgerKey.trustLine().asset());
+          result.asset = TrustLineAsset.fromOperation(
+            ledgerKey.trustLine().asset()
+          );
           break;
         }
         case xdr.LedgerEntryType.offer().name: {

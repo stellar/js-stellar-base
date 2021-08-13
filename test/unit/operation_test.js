@@ -2060,7 +2060,7 @@ describe('Operation', function() {
     it('creates a revokeTrustlineSponsorship', function() {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      var asset = new StellarBase.Asset(
+      var asset = new StellarBase.TrustLineAsset(
         'USDUSD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
@@ -2073,6 +2073,25 @@ describe('Operation', function() {
       var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
       expect(operation.body().switch().name).to.equal('revokeSponsorship');
       var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeTrustlineSponsorship');
+    });
+    it('creates a revokeTrustlineSponsorship for a liquidity pool', function() {
+      const account =
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+      const asset = new StellarBase.TrustLineAsset(
+        undefined,
+        undefined,
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+      );
+      const op = StellarBase.Operation.revokeTrustlineSponsorship({
+        account,
+        asset
+      });
+      const xdr = op.toXDR('hex');
+
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      const obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('revokeTrustlineSponsorship');
     });
     it('throws an error when account is invalid', function() {

@@ -2,7 +2,7 @@ import isString from 'lodash/isString';
 import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
-import { Asset } from '../asset';
+import { TrustLineAsset } from '../trustline_asset';
 
 /**
  * Create a "revoke sponsorship" operation for an account.
@@ -45,7 +45,7 @@ export function revokeAccountSponsorship(opts = {}) {
  * @alias Operation.revokeTrustlineSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the trustline.
- * @param {Asset} opts.asset - The asset in the trustline.
+ * @param {TrustLineAsset} opts.asset - The asset in the trustline.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.Operation} xdr operation
  *
@@ -63,7 +63,7 @@ export function revokeTrustlineSponsorship(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error('account is invalid');
   }
-  if (!(opts.asset instanceof Asset)) {
+  if (!(opts.asset instanceof TrustLineAsset)) {
     throw new Error('asset is invalid');
   }
 
