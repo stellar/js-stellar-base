@@ -96,12 +96,8 @@ export class TrustLineAsset {
 
     if (this.isLiquidityPool()) {
       // TODO: review if this is correct
-      const xdrTypeString = 'assetTypePoolShare';
-      const xdrType = new xdr.LiquidityPoolEntry({
-        liquidityPoolId: this.liquidityPoolId,
-        body: xdr.LiquidityPoolType.liquidityPoolConstantProduct()
-      });
-      return xdr.PoolId(xdrTypeString, xdrType);
+      const xdrPoolId = xdr.PoolId.fromXDR(this.liquidityPoolId, 'hex');
+      return new xdr.TrustLineAsset('assetTypePoolShare', xdrPoolId);
     }
 
     let xdrType;

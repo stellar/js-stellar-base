@@ -219,6 +219,21 @@ describe('TrustLineAsset', function() {
       expect(xdr.arm()).to.equal('alphaNum12');
       expect(xdr.value().assetCode()).to.equal('123456789012');
     });
+
+    it('parses a liquidity pool trustline asset object', function() {
+      const asset = new StellarBase.TrustLineAsset(
+        undefined,
+        undefined,
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+      );
+      const xdr = asset.toXDRObject();
+
+      expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
+      expect(xdr.arm()).to.equal('liquidityPoolId');
+      expect(xdr.liquidityPoolId().toString('hex')).to.equal(
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+      );
+    });
   });
 
   describe('fromOperation()', function() {
@@ -266,6 +281,21 @@ describe('TrustLineAsset', function() {
       expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
       expect(asset.getCode()).to.equal(assetCode);
       expect(asset.getIssuer()).to.equal(issuer);
+    });
+
+    it('parses a liquidityPoolId asset XDR', function() {
+      const poolId =
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
+      const xdrPoolId = StellarBase.xdr.PoolId.fromXDR(poolId, 'hex');
+      const xdr = new StellarBase.xdr.TrustLineAsset(
+        'assetTypePoolShare',
+        xdrPoolId
+      );
+
+      const asset = StellarBase.TrustLineAsset.fromOperation(xdr);
+
+      expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
+      expect(asset.getLiquidityPoolId().toString('hex')).to.equal(poolId);
     });
   });
 
