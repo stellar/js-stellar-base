@@ -2,6 +2,7 @@ import clone from 'lodash/clone';
 import padEnd from 'lodash/padEnd';
 import trimEnd from 'lodash/trimEnd';
 import xdr from './generated/stellar-xdr_generated';
+import { hash } from './hashing';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
@@ -90,7 +91,7 @@ export class TrustLineAsset {
    */
   toXDRObject() {
     if (this.isNative()) {
-      return xdr.Asset.assetTypeNative();
+      return xdr.TrustLineAsset.assetTypeNative();
     }
 
     if (this.isLiquidityPool()) {
@@ -123,7 +124,7 @@ export class TrustLineAsset {
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
-    return new xdr.Asset(xdrTypeString, assetType);
+    return new xdr.TrustLineAsset(xdrTypeString, assetType);
   }
 
   /**
