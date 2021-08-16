@@ -574,6 +574,40 @@ describe('Operation', function() {
       expect(obj.limit).to.be.equal('50.0000000');
     });
 
+    it('creates a changeTrustOp to a liquidity pool', function() {
+      const assetA = new StellarBase.Asset(
+        'ARST',
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+      );
+      const assetB = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const fee = StellarBase.LiquidityPoolFeeV18;
+      const asset = new StellarBase.ChangeTrustAsset(null, null, {
+        asseta: assetA,
+        assetB,
+        fee
+      });
+      const op = StellarBase.Operation.changeTrust({ asset: asset });
+      expect(op).to.be.instanceof(StellarBase.xdr.Operation);
+
+      const opXdr = op.toXDR('hex');
+      const opXdrObj = StellarBase.xdr.Operation.fromXDR(opXdr, 'hex');
+      const operation = StellarBase.Operation.fromXDRObject(opXdrObj);
+
+      expect(operation.type).to.be.equal('changeTrust');
+      expect(operation.line).to.be.deep.equal(asset);
+      expect(
+        opXdrObj
+          .body()
+          .value()
+          .limit()
+          .toString()
+      ).to.be.equal('9223372036854775807'); // MAX_INT64
+      expect(operation.limit).to.be.equal('922337203685.4775807');
+    });
+
     it('deletes a trustline', function() {
       let asset = new StellarBase.ChangeTrustAsset(
         'USD',

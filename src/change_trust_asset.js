@@ -108,8 +108,8 @@ export class ChangeTrustAsset {
         // TODO: review if this is correct
         liquidityPoolParams = ctAssetXdr.liquidityPool().constantProduct();
         return new this(null, null, {
-          asseta: liquidityPoolParams.asseta(),
-          assetB: liquidityPoolParams.assetB(),
+          asseta: Asset.fromOperation(liquidityPoolParams.asseta()),
+          assetB: Asset.fromOperation(liquidityPoolParams.assetB()),
           fee: liquidityPoolParams.fee()
         });
       default:
@@ -128,8 +128,13 @@ export class ChangeTrustAsset {
 
     if (this.isLiquidityPool()) {
       // TODO: review if this is correct
+      const { asseta, assetB, fee } = this.getLiquidityPoolParams();
       const lpConstantProductParamsXdr = new xdr.LiquidityPoolConstantProductParameters(
-        this.getLiquidityPoolParams()
+        {
+          asseta: asseta.toXDRObject(),
+          assetB: assetB.toXDRObject(),
+          fee
+        }
       );
       const lpParamsXdr = new xdr.LiquidityPoolParameters(
         'liquidityPoolConstantProduct',

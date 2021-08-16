@@ -295,8 +295,8 @@ describe('ChangeTrustAsset', function() {
     it('parses a liquidityPool asset XDR', function() {
       const lpConstantProductParamsXdr = new StellarBase.xdr.LiquidityPoolConstantProductParameters(
         {
-          asseta: assetA,
-          assetB,
+          asseta: assetA.toXDRObject(),
+          assetB: assetB.toXDRObject(),
           fee
         }
       );
@@ -316,8 +316,8 @@ describe('ChangeTrustAsset', function() {
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
 
       const gotPoolParams = asset.getLiquidityPoolParams();
-      expect(gotPoolParams.asseta).to.be.equal(assetA);
-      expect(gotPoolParams.assetB).to.be.equal(assetB);
+      expect(gotPoolParams.asseta).to.be.deep.equal(assetA);
+      expect(gotPoolParams.assetB).to.be.deep.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
     });
   });
