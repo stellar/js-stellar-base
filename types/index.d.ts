@@ -443,6 +443,9 @@ export namespace OperationOptions {
   interface RevokeClaimableBalanceSponsorship extends BaseOptions {
     balanceId: string;
   }
+  interface RevokeLiquidityPoolSponsorship extends BaseOptions {
+    liquidityPoolId: string;
+  }
   interface RevokeSignerSponsorship extends BaseOptions {
     account: string;
     signer: SignerKeyOptions;
@@ -488,6 +491,7 @@ export type OperationOptions =
   | OperationOptions.RevokeOfferSponsorship
   | OperationOptions.RevokeDataSponsorship
   | OperationOptions.RevokeClaimableBalanceSponsorship
+  | OperationOptions.RevokeLiquidityPoolSponsorship
   | OperationOptions.RevokeSignerSponsorship
   | OperationOptions.Clawback
   | OperationOptions.ClawbackClaimableBalance
@@ -707,6 +711,13 @@ export namespace Operation {
   function revokeClaimableBalanceSponsorship(
     options: OperationOptions.RevokeClaimableBalanceSponsorship
   ): xdr.Operation<RevokeClaimableBalanceSponsorship>;
+  
+  interface RevokeLiquidityPoolSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    balanceId: string;
+  }
+  function revokeLiquidityPoolSponsorship(
+    options: OperationOptions.RevokeLiquidityPoolSponsorship
+  ): xdr.Operation<RevokeLiquidityPoolSponsorship>;
 
   interface RevokeSignerSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
     account: string;
@@ -773,6 +784,7 @@ export type Operation =
   | Operation.RevokeOfferSponsorship
   | Operation.RevokeDataSponsorship
   | Operation.RevokeClaimableBalanceSponsorship
+  | Operation.RevokeLiquidityPoolSponsorship
   | Operation.RevokeSignerSponsorship
   | Operation.Clawback
   | Operation.ClawbackClaimableBalance

@@ -2242,6 +2242,28 @@ describe('Operation', function() {
     });
   });
 
+  describe('revokeLiquidityPoolSponsorship()', function() {
+    it('creates a revokeLiquidityPoolSponsorship', function() {
+      const liquidityPoolId =
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
+      const op = StellarBase.Operation.revokeLiquidityPoolSponsorship({
+        liquidityPoolId
+      });
+      const xdr = op.toXDR('hex');
+
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      expect(operation.body().switch().name).to.equal('revokeSponsorship');
+      const obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeLiquidityPoolSponsorship');
+      expect(obj.liquidityPoolId).to.be.equal(liquidityPoolId);
+    });
+    it('throws an error when balanceId is invalid', function() {
+      expect(() =>
+        StellarBase.Operation.revokeLiquidityPoolSponsorship({})
+      ).to.throw(/liquidityPoolId is invalid/);
+    });
+  });
+
   describe('revokeSignerSponsorship()', function() {
     it('creates a revokeSignerSponsorship', function() {
       const account =

@@ -85,6 +85,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.revokeOfferSponsorship}`
  * * `{@link Operation.revokeDataSponsorship}`
  * * `{@link Operation.revokeClaimableBalanceSponsorship}`
+ * * `{@link Operation.revokeLiquidityPoolSponsorship}`
  * * `{@link Operation.revokeSignerSponsorship}`
  * * `{@link Operation.clawback}`
  * * `{@link Operation.clawbackClaimableBalance}`
@@ -550,6 +551,14 @@ function extractRevokeSponshipDetails(attrs, result) {
             .toXDR('hex');
           break;
         }
+        case xdr.LedgerEntryType.liquidityPool().name: {
+          result.type = 'revokeLiquidityPoolSponsorship';
+          result.liquidityPoolId = ledgerKey
+            .liquidityPool()
+            .liquidityPoolId()
+            .toString('hex');
+          break;
+        }
         default: {
           throw new Error(`Unknown ledgerKey: ${attrs.switch().name}`);
         }
@@ -623,6 +632,7 @@ Operation.revokeOfferSponsorship = ops.revokeOfferSponsorship;
 Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
 Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
+Operation.revokeLiquidityPoolSponsorship = ops.revokeLiquidityPoolSponsorship;
 Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
 Operation.clawback = ops.clawback;
 Operation.setTrustLineFlags = ops.setTrustLineFlags;

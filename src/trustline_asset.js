@@ -5,15 +5,6 @@ import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
-// TODO: TrustLineAsset
-// - [ ] TrustLineEntry.asset changes from Asset to TrustLineAsset
-// - [ ] TrustLineEntry.ext can now be `TrustLineEntryExtensionV2`
-// - [ ] LedgerKeyTrustLine.asset changes from Asset to TrustLineAsset
-
-// TODO: ledger Key:
-// - [ ] LedgerKey type can also be liquidityPool -> LedgerKeyLiquidityPool
-// - [ ] (Create) new LedgerKeyLiquidityPool. All it contains is a liquidityPoolId: PoolId
-
 /**
  * TrustLineAsset class represents a trustline to either a liquidity pool, a
  * native asset (`XLM`) or an issued asset with an asset code / issuer account

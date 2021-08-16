@@ -4,6 +4,7 @@
 
 - The `TrustLineAsset` and `ChangeTrustAsset` objects have been included to interact with both assets and liquidity pools ([#451](https://github.com/stellar/js-stellar-base/pull/451)).
 - The XDR definitions have been updated to support CAP-38 ([#451](https://github.com/stellar/js-stellar-base/pull/451)).
+- Add helper `Operation.revokeLiquidityPoolSponsorship`.
 
 ### Fix
 - Update various dependencies to secure versions. Most are developer dependencies which means no or minimal downstream effects ([#446](https://github.com/stellar/js-stellar-base/pull/446), [#447](https://github.com/stellar/js-stellar-base/pull/447), [#392](https://github.com/stellar/js-stellar-base/pull/392), [#428](https://github.com/stellar/js-stellar-base/pull/428)); the only non-developer dependency upgrade is a patch version bump to `lodash` ([#449](https://github.com/stellar/js-stellar-base/pull/449)).
@@ -255,6 +256,10 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   ).addOperation(
     StellarSdk.Operation.revokeClaimableBalanceSponsorship({
       balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+    })
+  ).addOperation(
+    StellarSdk.Operation.revokeLiquidityPoolSponsorship({
+      liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
     })
   ).addOperation(
     StellarSdk.Operation.revokeSignerSponsorship({

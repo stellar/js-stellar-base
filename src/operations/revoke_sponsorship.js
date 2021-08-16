@@ -196,6 +196,41 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
 }
 
 /**
+ * Create a "revoke sponsorship" operation for a claimable balance.
+ *
+ * @function
+ * @alias Operation.revokeLiquidityPoolSponsorship
+ * @param {object} opts Options object
+ * @param {string} opts.liquidityPoolId - The sponsored liquidity pool ID in 'hex' string.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ * @returns {xdr.Operation} xdr operation
+ *
+ * @example
+ * const op = Operation.revokeLiquidityPoolSponsorship({
+ *   liquidityPoolId: 'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+ * });
+ *
+ */
+export function revokeLiquidityPoolSponsorship(opts = {}) {
+  if (!isString(opts.liquidityPoolId)) {
+    throw new Error('liquidityPoolId is invalid');
+  }
+
+  const ledgerKey = xdr.LedgerKey.liquidityPool(
+    new xdr.LedgerKeyLiquidityPool({
+      liquidityPoolId: xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex')
+    })
+  );
+
+  const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
+  const opAttributes = {};
+  opAttributes.body = xdr.OperationBody.revokeSponsorship(op);
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}
+
+/**
  * Create a "revoke sponsorship" operation for a signer.
  *
  * @function

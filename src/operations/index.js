@@ -23,6 +23,7 @@ export {
   revokeOfferSponsorship,
   revokeDataSponsorship,
   revokeClaimableBalanceSponsorship,
+  revokeLiquidityPoolSponsorship,
   revokeSignerSponsorship
 } from './revoke_sponsorship';
 export { clawback } from './clawback';
