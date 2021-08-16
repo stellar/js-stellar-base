@@ -137,7 +137,7 @@ export function validateLexicographicalAssetsOrder(assetA: Asset, assetB: Asset)
 
 // TODO: review how we're exporting this interface and namespace
 export namespace LiquidityPoolParams {
-  export interface ConstantProduct{
+  interface ConstantProduct {
     asseta: Asset;
     assetB: Asset;
     fee: number;
@@ -711,7 +711,7 @@ export namespace Operation {
   function revokeClaimableBalanceSponsorship(
     options: OperationOptions.RevokeClaimableBalanceSponsorship
   ): xdr.Operation<RevokeClaimableBalanceSponsorship>;
-  
+
   interface RevokeLiquidityPoolSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
     balanceId: string;
   }

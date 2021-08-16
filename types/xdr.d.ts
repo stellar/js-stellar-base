@@ -1612,7 +1612,7 @@ export namespace xdr {
 
   const DataValue: VarOpaque;
 
-  type PoolId = Hash;
+  type PoolId = typeof Hash;
 
   const AssetCode4: Opaque;
 
