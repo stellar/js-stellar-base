@@ -47,6 +47,23 @@ describe('TrustLineAsset', function() {
         /Issuer cannot be null/
       );
     });
+
+    it('throws an error when pool ID is not a valid hash', function() {
+      expect(
+        () => new StellarBase.TrustLineAsset(undefined, undefined, 'abc')
+      ).to.throw(/Liquidity pool ID is not a valid hash/);
+    });
+
+    it('does not throw an error when pool ID is a valid hash', function() {
+      expect(
+        () =>
+          new StellarBase.TrustLineAsset(
+            undefined,
+            undefined,
+            'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+          )
+      ).to.not.throw;
+    });
   });
 
   describe('getCode()', function() {
@@ -67,7 +84,7 @@ describe('TrustLineAsset', function() {
       var asset = new StellarBase.TrustLineAsset(
         undefined,
         undefined,
-        'liquidity_pool_id_here'
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getCode()).to.be.undefined;
     });
@@ -93,7 +110,7 @@ describe('TrustLineAsset', function() {
       var asset = new StellarBase.TrustLineAsset(
         undefined,
         undefined,
-        'liquidity_pool_id_here'
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getIssuer()).to.be.undefined;
     });
@@ -117,9 +134,11 @@ describe('TrustLineAsset', function() {
       var asset = new StellarBase.TrustLineAsset(
         undefined,
         undefined,
-        'liquidity_pool_id_here'
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
-      expect(asset.getLiquidityPoolId()).to.be.equal('liquidity_pool_id_here');
+      expect(asset.getLiquidityPoolId()).to.be.equal(
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+      );
     });
   });
 
@@ -149,7 +168,7 @@ describe('TrustLineAsset', function() {
       var asset = new StellarBase.TrustLineAsset(
         undefined,
         undefined,
-        'liquidity_pool_id_here'
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
     });
@@ -321,10 +340,10 @@ describe('TrustLineAsset', function() {
       var asset = new StellarBase.TrustLineAsset(
         undefined,
         undefined,
-        'liquidity_pool_id_here'
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.toString()).to.be.equal(
-        'liquidity_pool:liquidity_pool_id_here'
+        'liquidity_pool:dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
     });
   });

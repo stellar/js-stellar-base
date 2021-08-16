@@ -29,7 +29,7 @@ import { StrKey } from './strkey';
  * @constructor
  * @param {string} code - The asset code.
  * @param {string} issuer - The account ID of the asset issuer.
- * @param {string} liquidityPoolId - The ID of the liquidity poolin string 'hex'.
+ * @param {string} liquidityPoolId - The ID of the liquidity pool in string 'hex'.
  */
 export class TrustLineAsset {
   constructor(code, issuer, liquidityPoolId) {
@@ -48,7 +48,10 @@ export class TrustLineAsset {
       throw new Error('Issuer is invalid');
     }
 
-    // TODO: test if the liquidityPoolId is valid
+    // Test if liquiditry pool ID is a hash.
+    if (liquidityPoolId && !/^[a-fA-F0-9]{64}$/.test(liquidityPoolId)) {
+      throw new Error('Liquidity pool ID is not a valid hash');
+    }
 
     this.code = code;
     this.issuer = issuer;
@@ -108,27 +111,23 @@ export class TrustLineAsset {
       return new xdr.TrustLineAsset('assetTypePoolShare', xdrPoolId);
     }
 
-    let xdrType;
-    let xdrTypeString;
-    if (this.code.length <= 4) {
-      xdrType = xdr.AlphaNum4;
-      xdrTypeString = 'assetTypeCreditAlphanum4';
-    } else {
-      xdrType = xdr.AlphaNum12;
-      xdrTypeString = 'assetTypeCreditAlphanum12';
-    }
-
     // pad code with null bytes if necessary
     const padLength = this.code.length <= 4 ? 4 : 12;
     const paddedCode = padEnd(this.code, padLength, '\0');
 
-    // eslint-disable-next-line new-cap
-    const assetType = new xdrType({
+    if (this.code.length <= 4) {
+      const xdrAsset = new xdr.AlphaNum4({
+        assetCode: paddedCode,
+        issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
+      });
+      return new xdr.TrustLineAsset('assetTypeCreditAlphanum4', xdrAsset);
+    }
+
+    const xdrAsset = new xdr.AlphaNum12({
       assetCode: paddedCode,
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
-
-    return new xdr.TrustLineAsset(xdrTypeString, assetType);
+    return new xdr.TrustLineAsset('assetTypeCreditAlphanum12', xdrAsset);
   }
 
   /**

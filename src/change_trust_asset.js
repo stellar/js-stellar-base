@@ -4,11 +4,8 @@ import trimEnd from 'lodash/trimEnd';
 import { Asset } from './asset';
 import xdr from './generated/stellar-xdr_generated';
 import { Keypair } from './keypair';
-import { LiquidityPoolFeeV18, liquidityPoolId } from './liquidity_pool_id';
+import { LiquidityPoolFeeV18, getLiquidityPoolId } from './liquidity_pool_id';
 import { StrKey } from './strkey';
-
-// TODO: ChangeTrustAsset
-// - [ ] ChangeTrustOp -> Asset to ChangeTrustAsset
 
 /**
  * ChangeTrustAsset class represents a trustline change to either a liquidity
@@ -143,27 +140,23 @@ export class ChangeTrustAsset {
       return new xdr.ChangeTrustAsset('assetTypePoolShare', lpParamsXdr);
     }
 
-    let xdrType;
-    let xdrTypeString;
-    if (this.code.length <= 4) {
-      xdrType = xdr.AlphaNum4;
-      xdrTypeString = 'assetTypeCreditAlphanum4';
-    } else {
-      xdrType = xdr.AlphaNum12;
-      xdrTypeString = 'assetTypeCreditAlphanum12';
-    }
-
     // pad code with null bytes if necessary
     const padLength = this.code.length <= 4 ? 4 : 12;
     const paddedCode = padEnd(this.code, padLength, '\0');
 
-    // eslint-disable-next-line new-cap
-    const assetType = new xdrType({
+    if (this.code.length <= 4) {
+      const xdrAsset = new xdr.AlphaNum4({
+        assetCode: paddedCode,
+        issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
+      });
+      return new xdr.ChangeTrustAsset('assetTypeCreditAlphanum4', xdrAsset);
+    }
+
+    const xdrAsset = new xdr.AlphaNum12({
       assetCode: paddedCode,
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
-
-    return new xdr.ChangeTrustAsset(xdrTypeString, assetType);
+    return new xdr.ChangeTrustAsset('assetTypeCreditAlphanum12', xdrAsset);
   }
 
   /**
@@ -245,8 +238,8 @@ export class ChangeTrustAsset {
     }
 
     if (this.isLiquidityPool()) {
-      const poolId = liquidityPoolId(
-        xdr.LiquidityPoolType.liquidityPoolConstantProduct(),
+      const poolId = getLiquidityPoolId(
+        'constant_product',
         this.getLiquidityPoolParams()
       ).toString('hex');
       // TODO: review if this is correct

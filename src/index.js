@@ -4,7 +4,7 @@ export { xdr };
 export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';
 export {
-  liquidityPoolId,
+  getLiquidityPoolId,
   LiquidityPoolFeeV18,
   validateLexicographicalAssetsOrder
 } from './liquidity_pool_id';

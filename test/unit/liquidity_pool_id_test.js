@@ -1,30 +1,30 @@
-import {
-  liquidityPoolId,
-  validateLexicographicalAssetsOrder,
-  xdr
-} from '../../src';
-import { LiquidityPoolFeeV18 } from '../../src/liquidity_pool_id';
-const liquidityPoolTypeConstantProduct = xdr.LiquidityPoolType.liquidityPoolConstantProduct();
+const liquidityPoolTypeConstantProduct = 'constant_product';
 
 describe('StellarBase#liquidityPoolId', function() {
   it('throws an error if the liquidity pool type is not `0` for constant product', function() {
-    expect(() => liquidityPoolId()).to.throw(/liquidityPoolType is invalid/);
+    expect(() => StellarBase.getLiquidityPoolId()).to.throw(
+      /liquidityPoolType is invalid/
+    );
 
-    expect(() => liquidityPoolId(1)).to.throw(/liquidityPoolType is invalid/);
+    expect(() => StellarBase.getLiquidityPoolId(1)).to.throw(
+      /liquidityPoolType is invalid/
+    );
   });
 
   it('throws an error if liquidity pool parameters is missing', function() {
-    expect(() => liquidityPoolId(liquidityPoolTypeConstantProduct)).to.throw(
-      /liquidityPoolParams cannot be empty/
-    );
+    expect(() =>
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct)
+    ).to.throw(/liquidityPoolParams cannot be empty/);
   });
 
   it('throws an error if assetA is invalid', function() {
     expect(() =>
-      liquidityPoolId(liquidityPoolTypeConstantProduct, {})
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct, {})
     ).to.throw(/asseta is invalid/);
     expect(() =>
-      liquidityPoolId(liquidityPoolTypeConstantProduct, { asseta: 'random' })
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct, {
+        asseta: 'random'
+      })
     ).to.throw(/asseta is invalid/);
   });
 
@@ -34,10 +34,12 @@ describe('StellarBase#liquidityPoolId', function() {
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
     expect(() =>
-      liquidityPoolId(liquidityPoolTypeConstantProduct, { asseta: assetA })
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct, {
+        asseta: assetA
+      })
     ).to.throw(/assetB is invalid/);
     expect(() =>
-      liquidityPoolId(liquidityPoolTypeConstantProduct, {
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct, {
         asseta: assetA,
         assetB: 'random'
       })
@@ -54,7 +56,7 @@ describe('StellarBase#liquidityPoolId', function() {
       'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
     );
     expect(() =>
-      liquidityPoolId(liquidityPoolTypeConstantProduct, {
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct, {
         asseta: assetA,
         assetB
       })
@@ -70,15 +72,17 @@ describe('StellarBase#liquidityPoolId', function() {
       'USD',
       'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
     );
-    const fee = LiquidityPoolFeeV18;
+    const fee = StellarBase.LiquidityPoolFeeV18;
 
-    const poolId = liquidityPoolId(liquidityPoolTypeConstantProduct, {
-      asseta: assetA,
-      assetB,
-      fee
-    });
+    const poolId = StellarBase.getLiquidityPoolId(
+      liquidityPoolTypeConstantProduct,
+      {
+        asseta: assetA,
+        assetB,
+        fee
+      }
+    );
 
-    expect(poolId).to.be.instanceof(Buffer);
     expect(poolId.toString('hex')).to.equal(
       'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
     );
@@ -93,10 +97,10 @@ describe('StellarBase#liquidityPoolId', function() {
       'ARST',
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
-    const fee = LiquidityPoolFeeV18;
+    const fee = StellarBase.LiquidityPoolFeeV18;
 
     expect(() =>
-      liquidityPoolId(liquidityPoolTypeConstantProduct, {
+      StellarBase.getLiquidityPoolId(liquidityPoolTypeConstantProduct, {
         asseta: assetA,
         assetB,
         fee
@@ -107,7 +111,7 @@ describe('StellarBase#liquidityPoolId', function() {
 
 describe('StellarBase#validateLexicographicalAssetsOrder', function() {
   it('throws an error if the input assets are invalid', function() {
-    expect(() => validateLexicographicalAssetsOrder()).to.throw(
+    expect(() => StellarBase.validateLexicographicalAssetsOrder()).to.throw(
       /assetA is invalid/
     );
 
@@ -115,14 +119,14 @@ describe('StellarBase#validateLexicographicalAssetsOrder', function() {
       'ARST',
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
-    expect(() => validateLexicographicalAssetsOrder(assetA)).to.throw(
-      /assetB is invalid/
-    );
+    expect(() =>
+      StellarBase.validateLexicographicalAssetsOrder(assetA)
+    ).to.throw(/assetB is invalid/);
   });
 
   it('returns false if assets are equal', function() {
     const XLM = new StellarBase.Asset.native();
-    expect(validateLexicographicalAssetsOrder(XLM, XLM)).to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, XLM)).to.false;
   });
 
   it('test if asset types are being validated as native < anum4 < anum12', function() {
@@ -135,17 +139,22 @@ describe('StellarBase#validateLexicographicalAssetsOrder', function() {
       'ARSTANUM12',
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
-    expect(validateLexicographicalAssetsOrder(XLM, XLM)).to.false;
-    expect(validateLexicographicalAssetsOrder(XLM, anum4)).to.true;
-    expect(validateLexicographicalAssetsOrder(XLM, anum12)).to.true;
+    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, XLM)).to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, anum4)).to.true;
+    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, anum12)).to.true;
 
-    expect(validateLexicographicalAssetsOrder(anum4, XLM)).to.false;
-    expect(validateLexicographicalAssetsOrder(anum4, anum4)).to.false;
-    expect(validateLexicographicalAssetsOrder(anum4, anum12)).to.true;
+    expect(StellarBase.validateLexicographicalAssetsOrder(anum4, XLM)).to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(anum4, anum4)).to
+      .false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(anum4, anum12)).to
+      .true;
 
-    expect(validateLexicographicalAssetsOrder(anum12, XLM)).to.false;
-    expect(validateLexicographicalAssetsOrder(anum12, anum4)).to.false;
-    expect(validateLexicographicalAssetsOrder(anum12, anum12)).to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(anum12, XLM)).to
+      .false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(anum12, anum4)).to
+      .false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(anum12, anum12)).to
+      .false;
   });
 
   it('test if asset codes are being validated as assetACode < assetBCode', function() {
@@ -157,11 +166,15 @@ describe('StellarBase#validateLexicographicalAssetsOrder', function() {
       'USDX',
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
-    expect(validateLexicographicalAssetsOrder(assetARST, assetUSDX)).to.true;
-    expect(validateLexicographicalAssetsOrder(assetARST, assetARST)).to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(assetARST, assetUSDX))
+      .to.true;
+    expect(StellarBase.validateLexicographicalAssetsOrder(assetARST, assetARST))
+      .to.false;
 
-    expect(validateLexicographicalAssetsOrder(assetUSDX, assetARST)).to.false;
-    expect(validateLexicographicalAssetsOrder(assetUSDX, assetUSDX)).to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(assetUSDX, assetARST))
+      .to.false;
+    expect(StellarBase.validateLexicographicalAssetsOrder(assetUSDX, assetUSDX))
+      .to.false;
   });
 
   it('test if asset issuers are being validated as assetAIssuer < assetBIssuer', function() {
@@ -174,17 +187,29 @@ describe('StellarBase#validateLexicographicalAssetsOrder', function() {
       'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
     );
     expect(
-      validateLexicographicalAssetsOrder(assetARSTIssuerA, assetARSTIssuerB)
+      StellarBase.validateLexicographicalAssetsOrder(
+        assetARSTIssuerA,
+        assetARSTIssuerB
+      )
     ).to.true;
     expect(
-      validateLexicographicalAssetsOrder(assetARSTIssuerA, assetARSTIssuerA)
+      StellarBase.validateLexicographicalAssetsOrder(
+        assetARSTIssuerA,
+        assetARSTIssuerA
+      )
     ).to.false;
 
     expect(
-      validateLexicographicalAssetsOrder(assetARSTIssuerB, assetARSTIssuerA)
+      StellarBase.validateLexicographicalAssetsOrder(
+        assetARSTIssuerB,
+        assetARSTIssuerA
+      )
     ).to.false;
     expect(
-      validateLexicographicalAssetsOrder(assetARSTIssuerB, assetARSTIssuerB)
+      StellarBase.validateLexicographicalAssetsOrder(
+        assetARSTIssuerB,
+        assetARSTIssuerB
+      )
     ).to.false;
   });
 });

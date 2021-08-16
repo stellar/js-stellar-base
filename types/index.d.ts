@@ -129,9 +129,11 @@ export class Keypair {
   xdrMuxedAccount(id: string): xdr.MuxedAccount;
 }
 
-export const LiquidityPoolFeeV18 = 30;
+export const LiquidityPoolFeeV18: number;
 
-export function liquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParams: LiquidityPoolParams.ConstantProduct): Buffer;
+export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParams: LiquidityPoolParams.ConstantProduct): Buffer;
+
+export function validateLexicographicalAssetsOrder(assetA: Asset, assetB: Asset): boolean;
 
 // TODO: review how we're exporting this interface and namespace
 export namespace LiquidityPoolParams {
@@ -143,10 +145,10 @@ export namespace LiquidityPoolParams {
 }
 
 export namespace LiquidityPoolType {
-  type ConstantProduct = 0;
+  type constantProduct = 'constant_product';
 }
-export type LiquidityPoolType = LiquidityPoolType.ConstantProduct;
-
+export type LiquidityPoolType =
+  | LiquidityPoolType.constantProduct;
 
 export const MemoNone = 'none';
 export const MemoID = 'id';

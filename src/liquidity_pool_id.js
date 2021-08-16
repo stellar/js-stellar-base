@@ -20,10 +20,8 @@ import { hash } from './hashing';
  * @return {Buffer} the Pool ID buffer. It can be stringfied with
  * `toString('hex')`.
  */
-export function liquidityPoolId(liquidityPoolType, liquidityPoolParams) {
-  if (
-    liquidityPoolType !== xdr.LiquidityPoolType.liquidityPoolConstantProduct()
-  ) {
+export function getLiquidityPoolId(liquidityPoolType, liquidityPoolParams) {
+  if (liquidityPoolType !== 'constant_product') {
     throw new Error('liquidityPoolType is invalid');
   }
 
