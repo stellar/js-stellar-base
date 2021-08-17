@@ -2673,7 +2673,81 @@ describe('Operation', function() {
     });
   });
 
-  // TODO: liquidityPoolWithdrawOp tests
+  describe('liquidityPoolWithdraw()', function() {
+    it('throws an error if a required parameter is missing', function() {
+      expect(() => StellarBase.Operation.liquidityPoolWithdraw()).to.throw(
+        /opts cannot be empty/
+      );
+
+      let opts = {};
+      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
+        /liquidityPoolId argument is required/
+      );
+
+      opts.liquidityPoolId =
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
+      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
+        /amount argument is required/
+      );
+
+      opts.amount = '10';
+      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
+        /minAmounta argument is required/
+      );
+
+      opts.minAmounta = '10000';
+      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
+        /minAmountB argument is required/
+      );
+
+      opts.minAmountB = '20000';
+      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.not
+        .throw;
+    });
+
+    it('creates a liquidityPoolWithdraw', function() {
+      const opts = {
+        liquidityPoolId:
+          'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+        amount: '5.0000000',
+        minAmounta: '10.0000000',
+        minAmountB: '20.0000000'
+      };
+      const op = StellarBase.Operation.liquidityPoolWithdraw(opts);
+      const xdr = op.toXDR('hex');
+
+      const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
+      expect(xdrObj.body().switch().name).to.equal('liquidityPoolWithdraw');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .amount()
+          .toString()
+      ).to.equal('50000000');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .minAmounta()
+          .toString()
+      ).to.equal('100000000');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .minAmountB()
+          .toString()
+      ).to.equal('200000000');
+
+      const operation = StellarBase.Operation.fromXDRObject(xdrObj);
+      expect(operation.type).to.be.equal('liquidityPoolWithdraw');
+      expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
+      expect(operation.amount).to.be.equals(opts.amount);
+      expect(operation.minAmounta).to.be.equals(opts.minAmounta);
+      expect(operation.minAmountB).to.be.equals(opts.minAmountB);
+    });
+  });
 
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {

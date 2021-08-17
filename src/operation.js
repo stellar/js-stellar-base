@@ -90,8 +90,8 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.clawback}`
  * * `{@link Operation.clawbackClaimableBalance}`
  * * `{@link Operation.setTrustLineFlags}`
- * * `{@link Operation.liquidityPoolDepositOp}`
- * * `{@link Operation.liquidityPoolWithdrawOp}`
+ * * `{@link Operation.liquidityPoolDeposit}`
+ * * `{@link Operation.liquidityPoolWithdraw}`
  *
  * @class Operation
  */
@@ -384,7 +384,14 @@ export class Operation {
         result.maxPrice = this._fromXDRPrice(attrs.maxPrice());
         break;
       }
-      // TODO: liquidityPoolWithdrawOp
+      case 'liquidityPoolWithdraw': {
+        result.type = 'liquidityPoolWithdraw';
+        result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
+        result.amount = this._fromXDRAmount(attrs.amount());
+        result.minAmounta = this._fromXDRAmount(attrs.minAmounta());
+        result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -649,4 +656,4 @@ Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
 Operation.clawback = ops.clawback;
 Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
-// Operation.liquidityPoolWithdrawOp = ops.liquidityPoolWithdrawOp;
+Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;

@@ -311,6 +311,7 @@ export namespace OperationType {
   type ClawbackClaimableBalance = 'clawbackClaimableBalance';
   type SetTrustLineFlags = 'setTrustLineFlags';
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
+  type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -335,7 +336,8 @@ export type OperationType =
   | OperationType.Clawback
   | OperationType.ClawbackClaimableBalance
   | OperationType.SetTrustLineFlags
-  | OperationType.LiquidityPoolDeposit;
+  | OperationType.LiquidityPoolDeposit
+  | OperationType.LiquidityPoolWithdraw;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -476,6 +478,12 @@ export namespace OperationOptions {
     minPrice: number | string | object /* bignumber.js */;
     maxPrice: number | string | object /* bignumber.js */;
   }
+  interface LiquidityPoolWithdraw extends BaseOptions {
+    liquidityPoolId: string;
+    amount: string;
+    minAmounta: string;
+    minAmountB: string;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -505,7 +513,8 @@ export type OperationOptions =
   | OperationOptions.Clawback
   | OperationOptions.ClawbackClaimableBalance
   | OperationOptions.SetTrustLineFlags
-  | OperationOptions.LiquidityPoolDeposit;
+  | OperationOptions.LiquidityPoolDeposit
+  | OperationOptions.LiquidityPoolWithdraw;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -775,6 +784,15 @@ export namespace Operation {
   function liquidityPoolDeposit(
     options: OperationOptions.LiquidityPoolDeposit
   ): xdr.Operation<LiquidityPoolDeposit>;
+  interface LiquidityPoolWithdraw extends BaseOperation<OperationType.LiquidityPoolWithdraw> {
+    liquidityPoolId: string;
+    amount: string;
+    minAmounta: string;
+    minAmountB: string;
+  }
+  function liquidityPoolWithdraw(
+    options: OperationOptions.LiquidityPoolWithdraw
+  ): xdr.Operation<LiquidityPoolWithdraw>;
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -809,7 +827,8 @@ export type Operation =
   | Operation.Clawback
   | Operation.ClawbackClaimableBalance
   | Operation.SetTrustLineFlags
-  | Operation.LiquidityPoolDeposit;
+  | Operation.LiquidityPoolDeposit
+  | Operation.LiquidityPoolWithdraw;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

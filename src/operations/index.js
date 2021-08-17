@@ -29,11 +29,4 @@ export {
 export { clawback } from './clawback';
 export { setTrustLineFlags } from './set_trustline_flags';
 export { liquidityPoolDeposit } from './liquidity_pool_deposit';
-// TODO: add LIQUIDITY_POOL_WITHDRAW
-// struct LiquidityPoolWithdrawOp
-// {
-//     PoolID liquidityPoolID;
-//     int64 amount;         // amount of pool shares to withdraw
-//     int64 minAmountA;     // minimum amount of first asset to withdraw
-//     int64 minAmountB;     // minimum amount of second asset to withdraw
-// };
+export { liquidityPoolWithdraw } from './liquidity_pool_withdraw';

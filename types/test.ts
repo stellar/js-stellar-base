@@ -121,6 +121,13 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       maxPrice: "0.55",
     })
   ).addOperation(
+    StellarSdk.Operation.liquidityPoolWithdraw({
+      liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
+      amount: "100",
+      minAmounta: "10000",
+      minAmountB: "20000",
+    })
+  ).addOperation(
     StellarSdk.Operation.setOptions({
       setFlags:   (StellarSdk.AuthImmutableFlag | StellarSdk.AuthRequiredFlag) as StellarSdk.AuthFlag,
       clearFlags: (StellarSdk.AuthRevocableFlag | StellarSdk.AuthClawbackEnabledFlag) as StellarSdk.AuthFlag,
@@ -289,3 +296,10 @@ const lpDeposit = StellarSdk.xdr.LiquidityPoolDepositOp.fromXDR(
   'base64'
 );
 lpDeposit; // $ExpectType LiquidityPoolDepositOp
+
+const lpWithdraw = StellarSdk.xdr.LiquidityPoolWithdrawOp.fromXDR(
+  // tslint:disable:max-line-length
+  '3XsauDHCczEN2+xvl4cKqDwvvXjOIq3tN+y/TzOA+scAAAAAAvrwgAAAAAAF9eEAAAAAAAvrwgA=',
+  'base64'
+);
+lpWithdraw; // $ExpectType LiquidityPoolWithdrawOp
