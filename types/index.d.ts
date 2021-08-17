@@ -310,6 +310,7 @@ export namespace OperationType {
   type Clawback = 'clawback';
   type ClawbackClaimableBalance = 'clawbackClaimableBalance';
   type SetTrustLineFlags = 'setTrustLineFlags';
+  type LiquidityPoolDeposit = 'liquidityPoolDeposit';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -333,7 +334,8 @@ export type OperationType =
   | OperationType.RevokeSponsorship
   | OperationType.Clawback
   | OperationType.ClawbackClaimableBalance
-  | OperationType.SetTrustLineFlags;
+  | OperationType.SetTrustLineFlags
+  | OperationType.LiquidityPoolDeposit;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -467,6 +469,13 @@ export namespace OperationOptions {
       clawbackEnabled?: boolean;
     };
   }
+  interface LiquidityPoolDeposit extends BaseOptions {
+    liquidityPoolId: string;
+    maxAmounta: string;
+    maxAmountB: string;
+    minPrice: number | string | object /* bignumber.js */;
+    maxPrice: number | string | object /* bignumber.js */;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -495,7 +504,8 @@ export type OperationOptions =
   | OperationOptions.RevokeSignerSponsorship
   | OperationOptions.Clawback
   | OperationOptions.ClawbackClaimableBalance
-  | OperationOptions.SetTrustLineFlags;
+  | OperationOptions.SetTrustLineFlags
+  | OperationOptions.LiquidityPoolDeposit;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -755,6 +765,16 @@ export namespace Operation {
   function setTrustLineFlags(
     options: OperationOptions.SetTrustLineFlags
   ): xdr.Operation<SetTrustLineFlags>;
+  interface LiquidityPoolDeposit extends BaseOperation<OperationType.LiquidityPoolDeposit> {
+    liquidityPoolId: string;
+    maxAmounta: string;
+    maxAmountB: string;
+    minPrice: string;
+    maxPrice: string;
+  }
+  function liquidityPoolDeposit(
+    options: OperationOptions.LiquidityPoolDeposit
+  ): xdr.Operation<LiquidityPoolDeposit>;
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -788,7 +808,8 @@ export type Operation =
   | Operation.RevokeSignerSponsorship
   | Operation.Clawback
   | Operation.ClawbackClaimableBalance
-  | Operation.SetTrustLineFlags;
+  | Operation.SetTrustLineFlags
+  | Operation.LiquidityPoolDeposit;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

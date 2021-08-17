@@ -2459,6 +2459,222 @@ describe('Operation', function() {
     });
   });
 
+  describe('liquidityPoolDeposit()', function() {
+    it('throws an error if a required parameter is missing', function() {
+      expect(() => StellarBase.Operation.liquidityPoolDeposit()).to.throw(
+        /opts cannot be empty/
+      );
+
+      let opts = {};
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
+        /liquidityPoolId argument is required/
+      );
+
+      opts.liquidityPoolId =
+        'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
+        /maxAmounta argument is required/
+      );
+
+      opts.maxAmounta = '10';
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
+        /maxAmountB argument is required/
+      );
+
+      opts.maxAmountB = '20';
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
+        /minPrice argument is required/
+      );
+
+      opts.minPrice = '0.45';
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
+        /maxPrice argument is required/
+      );
+
+      opts.maxPrice = '0.55';
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.not
+        .throw;
+    });
+
+    it('throws an error if prices are negative', function() {
+      const opts = {
+        liquidityPoolId:
+          'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+        maxAmounta: '10.0000000',
+        maxAmountB: '20.0000000',
+        minPrice: '-0.45',
+        maxPrice: '0.55'
+      };
+      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
+        /price must be positive/
+      );
+    });
+
+    it('creates a liquidityPoolDeposit (string prices)', function() {
+      const opts = {
+        liquidityPoolId:
+          'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+        maxAmounta: '10.0000000',
+        maxAmountB: '20.0000000',
+        minPrice: '0.45',
+        maxPrice: '0.55'
+      };
+      const op = StellarBase.Operation.liquidityPoolDeposit(opts);
+      const xdr = op.toXDR('hex');
+
+      const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
+      expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmounta()
+          .toString()
+      ).to.equal('100000000');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmountB()
+          .toString()
+      ).to.equal('200000000');
+
+      const operation = StellarBase.Operation.fromXDRObject(xdrObj);
+      expect(operation.type).to.be.equal('liquidityPoolDeposit');
+      expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
+      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
+      expect(operation.minPrice).to.be.equals(opts.minPrice);
+      expect(operation.maxPrice).to.be.equals(opts.maxPrice);
+    });
+
+    it('creates a liquidityPoolDeposit (fraction prices)', function() {
+      const opts = {
+        liquidityPoolId:
+          'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+        maxAmounta: '10.0000000',
+        maxAmountB: '20.0000000',
+        minPrice: {
+          n: 9,
+          d: 20
+        },
+        maxPrice: {
+          n: 11,
+          d: 20
+        }
+      };
+      const op = StellarBase.Operation.liquidityPoolDeposit(opts);
+      const xdr = op.toXDR('hex');
+
+      const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
+      expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmounta()
+          .toString()
+      ).to.equal('100000000');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmountB()
+          .toString()
+      ).to.equal('200000000');
+
+      const operation = StellarBase.Operation.fromXDRObject(xdrObj);
+      expect(operation.type).to.be.equal('liquidityPoolDeposit');
+      expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
+      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
+      expect(operation.minPrice).to.be.equals(
+        new BigNumber(opts.minPrice.n).div(opts.minPrice.d).toString()
+      );
+      expect(operation.maxPrice).to.be.equals(
+        new BigNumber(opts.maxPrice.n).div(opts.maxPrice.d).toString()
+      );
+    });
+
+    it('creates a liquidityPoolDeposit (number prices)', function() {
+      const opts = {
+        liquidityPoolId:
+          'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+        maxAmounta: '10.0000000',
+        maxAmountB: '20.0000000',
+        minPrice: 0.45,
+        maxPrice: 0.55
+      };
+      const op = StellarBase.Operation.liquidityPoolDeposit(opts);
+      const xdr = op.toXDR('hex');
+
+      const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
+      expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmounta()
+          .toString()
+      ).to.equal('100000000');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmountB()
+          .toString()
+      ).to.equal('200000000');
+
+      const operation = StellarBase.Operation.fromXDRObject(xdrObj);
+      expect(operation.type).to.be.equal('liquidityPoolDeposit');
+      expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
+      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
+      expect(operation.minPrice).to.be.equals(opts.minPrice.toString());
+      expect(operation.maxPrice).to.be.equals(opts.maxPrice.toString());
+    });
+
+    it('creates a liquidityPoolDeposit (BigNumber prices)', function() {
+      const opts = {
+        liquidityPoolId:
+          'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+        maxAmounta: '10.0000000',
+        maxAmountB: '20.0000000',
+        minPrice: new BigNumber(9).dividedBy(20),
+        maxPrice: new BigNumber(11).dividedBy(20)
+      };
+      const op = StellarBase.Operation.liquidityPoolDeposit(opts);
+      const xdr = op.toXDR('hex');
+
+      const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
+      expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmounta()
+          .toString()
+      ).to.equal('100000000');
+      expect(
+        xdrObj
+          .body()
+          .value()
+          .maxAmountB()
+          .toString()
+      ).to.equal('200000000');
+
+      const operation = StellarBase.Operation.fromXDRObject(xdrObj);
+      expect(operation.type).to.be.equal('liquidityPoolDeposit');
+      expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
+      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
+      expect(operation.minPrice).to.be.equals(opts.minPrice.toString());
+      expect(operation.maxPrice).to.be.equals(opts.maxPrice.toString());
+    });
+  });
+
+  // TODO: liquidityPoolWithdrawOp tests
+
   describe('.isValidAmount()', function() {
     it('returns true for valid amounts', function() {
       let amounts = [
