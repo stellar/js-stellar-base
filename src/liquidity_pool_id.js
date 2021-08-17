@@ -2,33 +2,30 @@ import xdr from './generated/stellar-xdr_generated';
 import { Asset } from './asset';
 import { hash } from './hashing';
 
+// LiquidityPoolFeeV18 is the default liquidity pool fee in protocol v18. It defaults to 30 base points (0.3%).
+export const LiquidityPoolFeeV18 = 30;
+
 /**
- * Compute the Pool ID for a given set of assets, fee and pool type.
+ * getLiquidityPoolId computes the Pool ID for the given assets, fee and pool type.
  * @see [stellar-core getPoolID](https://github.com/stellar/stellar-core/blob/9f3a48c6a8f1aa77b6043a055d0638661f718080/src/ledger/test/LedgerTxnTests.cpp#L3746-L3751)
  *
  * @export
- * @param {LiquidityPoolType} liquidityPoolType – a number representing the
- * liquidity pool type. It defaults to `0` for constant product type.
- * @param {LiquidityPoolParams.ConstantProduct} liquidityPoolParams – the
- * liquidity pool parameters.
- * @param {Asset} liquidityPoolParams.asseta – the first asset in the Pool, it
- * must respect the rule assetA < assetB.
- * @param {Asset} liquidityPoolParams.assetB – the second asset in the Pool, it
- * must respect the rule assetA < assetB.
- * @param {number} liquidityPoolParams.fee – the liquidity pool fee. For now the
- * only fee supported is `30`.
- * @return {Buffer} the Pool ID buffer. It can be stringfied with
- * `toString('hex')`.
+ * @param {LiquidityPoolType} liquidityPoolType – A number representing the liquidity pool type.
+ * @param {LiquidityPoolParameters} liquidityPoolParameters – The liquidity pool parameters.
+ * @param {Asset} liquidityPoolParameters.asseta – The first asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {number} liquidityPoolParameters.fee – The liquidity pool fee. For now the only fee supported is `30`.
+ * @return {Buffer} the Pool ID buffer, it can be stringfied with `toString('hex')`.
  */
-export function getLiquidityPoolId(liquidityPoolType, liquidityPoolParams) {
+export function getLiquidityPoolId(
+  liquidityPoolType,
+  liquidityPoolParameters = {}
+) {
   if (liquidityPoolType !== 'constant_product') {
     throw new Error('liquidityPoolType is invalid');
   }
 
-  if (!liquidityPoolParams) {
-    throw new Error('liquidityPoolParams cannot be empty');
-  }
-  const { asseta, assetB, fee } = liquidityPoolParams;
+  const { asseta, assetB, fee } = liquidityPoolParameters;
   if (!asseta || !(asseta instanceof Asset)) {
     throw new Error('asseta is invalid');
   }
@@ -40,7 +37,7 @@ export function getLiquidityPoolId(liquidityPoolType, liquidityPoolParams) {
   }
 
   if (!validateLexicographicalAssetsOrder(asseta, assetB)) {
-    throw new Error('assets are not in lexicografichal order');
+    throw new Error('Assets are not in lexicographical order');
   }
 
   const lpTypeData = xdr.LiquidityPoolType.liquidityPoolConstantProduct().toXDR();
@@ -50,20 +47,18 @@ export function getLiquidityPoolId(liquidityPoolType, liquidityPoolParams) {
     fee
   }).toXDR();
   const payload = Buffer.concat([lpTypeData, lpParamsData]);
-  const poolId = hash(payload);
-
-  return poolId;
+  return hash(payload);
 }
 
 /**
- * Validates if assetA < assetB:
+ * validateLexicographicalAssetsOrder validates if assetA < assetB:
  * 1. First compare the type (eg. native before alphanum4 before alphanum12).
  * 2. If the types are equal, compare the assets codes.
  * 3. If the asset codes are equal, compare the issuers.
  *
- * @param {Asset} assetA - the first asset in the lexicographical order.
- * @param {Asset} assetB - the second asset in the lexicographical order.
- * @return {boolean} true if assetA < assetB.
+ * @param {Asset} assetA - The first asset in the lexicographical order.
+ * @param {Asset} assetB - The second asset in the lexicographical order.
+ * @return {boolean} `true` if assetA < assetB.
  */
 export function validateLexicographicalAssetsOrder(assetA, assetB) {
   if (!assetA || !(assetA instanceof Asset)) {
@@ -109,7 +104,5 @@ export function validateLexicographicalAssetsOrder(assetA, assetB) {
   }
 
   // Compare asset issuers.
-  return assetA.getIssuer().localeCompare(assetB.getIssuer()) < 0;
+  return assetA.getIssuer().localeCompare(assetB.getIssuer()) === -1;
 }
-
-export const LiquidityPoolFeeV18 = 30;

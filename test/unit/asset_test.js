@@ -189,7 +189,7 @@ describe('Asset', function() {
     it('parses a 12-alphanum asset XDR', function() {
       var issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
       var assetCode = 'KHLTOKEN';
-      var assetType = new StellarBase.xdr.AlphaNum4({
+      var assetType = new StellarBase.xdr.AlphaNum12({
         assetCode: assetCode + '\0\0\0\0',
         issuer: StellarBase.Keypair.fromPublicKey(issuer).xdrAccountId()
       });

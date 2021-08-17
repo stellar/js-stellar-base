@@ -2,7 +2,7 @@ import isUndefined from 'lodash/isUndefined';
 import xdr from '../generated/stellar-xdr_generated';
 
 /**
- * Create a liquidity pool withdraw operation.
+ * Creates a liquidity pool withdraw operation.
  *
  * @function
  * @alias Operation.liquidityPoolWithdraw
@@ -10,19 +10,14 @@ import xdr from '../generated/stellar-xdr_generated';
  *
  * @param {object} opts - Options object
  * @param {string} opts.liquidityPoolId - The liquidity pool ID.
- * @param {string} opts.amount          - Amount of pool shares to withdraw.
- * @param {string} opts.minAmounta      - Minimum amount of first asset to withdraw.
- * @param {string} opts.minAmountB      - Minimum amount of second asset to withdraw.
- * @param {string} [opts.source]        - The source account for the operation.
- *     Defaults to the transaction's source account.
+ * @param {string} opts.amount - Amount of pool shares to withdraw.
+ * @param {string} opts.minAmounta - Minimum amount of first asset to withdraw.
+ * @param {string} opts.minAmountB - Minimum amount of second asset to withdraw.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  *
  * @returns {xdr.Operation}   The resulting operation (xdr.LiquidityPoolWithdrawOp).
  */
-export function liquidityPoolWithdraw(opts) {
-  if (!opts) {
-    throw new TypeError('opts cannot be empty');
-  }
-
+export function liquidityPoolWithdraw(opts = {}) {
   const attributes = {};
   if (!opts.liquidityPoolId) {
     throw new TypeError('liquidityPoolId argument is required');

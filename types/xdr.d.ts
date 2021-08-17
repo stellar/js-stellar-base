@@ -1612,6 +1612,7 @@ export namespace xdr {
 
   const DataValue: VarOpaque;
 
+  // The generated code was `type PoolId = Hash;` but that's not a valid type.
   type PoolId = typeof Hash;
 
   const AssetCode4: Opaque;

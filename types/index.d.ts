@@ -64,11 +64,11 @@ export class ChangeTrustAsset {
   static native(): ChangeTrustAsset;
   static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset;
 
-  constructor(code?: string, issuer?: string, liquidityPoolParams?: LiquidityPoolParams.ConstantProduct);
+  constructor(code?: string, issuer?: string, liquidityPoolParameters?: LiquidityPoolParameters);
 
   getCode(): string;
   getIssuer(): string;
-  getLiquidityPoolParams(): LiquidityPoolParams.ConstantProduct;
+  getLiquidityPoolParameters(): LiquidityPoolParameters;
   getAssetType(): AssetType;
   isNative(): boolean;
   isLiquidityPool(): boolean;
@@ -77,7 +77,7 @@ export class ChangeTrustAsset {
 
   code: string;
   issuer: string;
-  liquidityPoolParams: LiquidityPoolParams.ConstantProduct;
+  liquidityPoolParameters: LiquidityPoolParameters;
 }
 
 export class Claimant {
@@ -129,20 +129,21 @@ export class Keypair {
   xdrMuxedAccount(id: string): xdr.MuxedAccount;
 }
 
-export const LiquidityPoolFeeV18: number;
+export const LiquidityPoolFeeV18 = 30;
 
-export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParams: LiquidityPoolParams.ConstantProduct): Buffer;
+export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
 
 export function validateLexicographicalAssetsOrder(assetA: Asset, assetB: Asset): boolean;
 
-// TODO: review how we're exporting this interface and namespace
-export namespace LiquidityPoolParams {
+export namespace LiquidityPoolParameters {
   interface ConstantProduct {
     asseta: Asset;
     assetB: Asset;
     fee: number;
   }
 }
+export type LiquidityPoolParameters =
+  | LiquidityPoolParameters.ConstantProduct;
 
 export namespace LiquidityPoolType {
   type constantProduct = 'constant_product';

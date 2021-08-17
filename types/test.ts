@@ -297,6 +297,7 @@ const lpDeposit = StellarSdk.xdr.LiquidityPoolDepositOp.fromXDR(
 );
 lpDeposit; // $ExpectType LiquidityPoolDepositOp
 
+// TODO: check if this is correct
 const lpWithdraw = StellarSdk.xdr.LiquidityPoolWithdrawOp.fromXDR(
   // tslint:disable:max-line-length
   '3XsauDHCczEN2+xvl4cKqDwvvXjOIq3tN+y/TzOA+scAAAAAAvrwgAAAAAAF9eEAAAAAAAvrwgA=',

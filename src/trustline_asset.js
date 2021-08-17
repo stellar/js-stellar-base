@@ -6,16 +6,14 @@ import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
 /**
- * TrustLineAsset class represents a trustline to either a liquidity pool, a
+ * TrustLineAsset class represents a trustline to either a liquidity pool, the
  * native asset (`XLM`) or an issued asset with an asset code / issuer account
  * ID pair.
  *
- * The trustline asset can either represent a trustline to the native asset, an
- * issued asset or to a liquidity pool. In case of the native asset, the code
- * will represent `XLM` while the issuer and liquidityPoolId will be empty. For
- * an issued asset, the code and issuer will be valid and liquidityPoolId will
- * be empty. For liquidity pools, the liquidityPoolId will be valid and the
- * remaining two fields will be empty.
+ * In case of the native asset, the code will represent `XLM` while the issuer
+ * and liquidityPoolId will be empty. For an issued asset, the code and issuer
+ * will be valid and liquidityPoolId will be empty. For liquidity pools, the
+ * liquidityPoolId will be valid and the remaining two fields will be empty.
  *
  * @constructor
  * @param {string} code - The asset code.
@@ -59,7 +57,7 @@ export class TrustLineAsset {
 
   /**
    * Returns a trustline asset object from its XDR object representation.
-   * @param {xdr.TrustLineAsset} tlAssetXdr - The asset xdr object.
+   * @param {xdr.TrustLineAsset} tlAssetXdr - The asset XDR object.
    * @returns {TrustLineAsset}
    */
   static fromOperation(tlAssetXdr) {
@@ -88,7 +86,7 @@ export class TrustLineAsset {
   }
 
   /**
-   * Returns the xdr object for this asset.
+   * Returns the XDR object for this trustline asset.
    * @returns {xdr.TrustLineAsset} XDR TrustLineAsset object
    */
   toXDRObject() {
@@ -122,21 +120,21 @@ export class TrustLineAsset {
   }
 
   /**
-   * @returns {string} Asset code
+   * @returns {string} Asset code.
    */
   getCode() {
     return clone(this.code);
   }
 
   /**
-   * @returns {string} Asset issuer
+   * @returns {string} Asset issuer.
    */
   getIssuer() {
     return clone(this.issuer);
   }
 
   /**
-   * @returns {string} Liquidity pool ID
+   * @returns {string} Liquidity pool ID.
    */
   getLiquidityPoolId() {
     return clone(this.liquidityPoolId);
@@ -144,7 +142,7 @@ export class TrustLineAsset {
 
   /**
    * @see [Assets concept](https://www.stellar.org/developers/guides/concepts/assets.html)
-   * @returns {string} Asset type. Can be one of following types:
+   * @returns {string} Asset type. Can be one of the following:
    *
    * * `native`
    * * `credit_alphanum4`
@@ -169,22 +167,22 @@ export class TrustLineAsset {
   }
 
   /**
-   * @returns {boolean}  true if this trustline asset object is the native asset.
+   * @returns {boolean} `true` if this trustline asset object is the native asset.
    */
   isNative() {
     return this.code && !this.issuer;
   }
 
   /**
-   * @returns {boolean}  true if this trustline asset object is a liquidity pool.
+   * @returns {boolean} `true` if this trustline asset object is a liquidity pool.
    */
   isLiquidityPool() {
     return !!this.liquidityPoolId;
   }
 
   /**
-   * @param {TrustLineAsset} asset Asset to compare
-   * @returns {boolean} true if this asset equals the given asset.
+   * @param {TrustLineAsset} asset TrustLineAsset to compare.
+   * @returns {boolean} `true` if this asset equals the given asset.
    */
   equals(asset) {
     return (
@@ -200,7 +198,6 @@ export class TrustLineAsset {
     }
 
     if (this.isLiquidityPool()) {
-      // TODO: review if this is correct
       return `liquidity_pool:${this.liquidityPoolId}`;
     }
 

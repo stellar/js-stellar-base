@@ -12,13 +12,7 @@ describe('ChangeTrustAsset', function() {
   describe('constructor', function() {
     it('throws an error when no parameter is provided', function() {
       expect(() => new StellarBase.ChangeTrustAsset()).to.throw(
-        /Must provide either code, issuer or liquidityPoolParams/
-      );
-    });
-
-    it("throws an error when there's no issuer for a trustline asset with code `XLM`", function() {
-      expect(() => new StellarBase.ChangeTrustAsset('USD')).to.throw(
-        /Issuer cannot be null/
+        /Must provide either code, issuer or liquidityPoolParameters/
       );
     });
 
@@ -46,16 +40,26 @@ describe('ChangeTrustAsset', function() {
       ).to.throw(/Asset code is invalid/);
     });
 
+    it('throws an error when issuer is null and asset is not XLM', function() {
+      expect(() => new StellarBase.ChangeTrustAsset('USD')).to.throw(
+        /Issuer cannot be null/
+      );
+    });
+
     it('throws an error when issuer is invalid', function() {
       expect(
         () => new StellarBase.ChangeTrustAsset('USD', 'GCEZWKCA5')
       ).to.throw(/Issuer is invalid/);
     });
+
+    it('native asset does not throw', function() {
+      expect(() => new StellarBase.ChangeTrustAsset.native()).to.not.throw;
+    });
   });
 
   describe('getCode()', function() {
-    it('returns a code for a native asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset.native();
+    it('returns a code for a native asset', function() {
+      const asset = new StellarBase.ChangeTrustAsset.native();
       expect(asset.getCode()).to.be.equal('XLM');
     });
 
@@ -78,12 +82,12 @@ describe('ChangeTrustAsset', function() {
   });
 
   describe('getIssuer()', function() {
-    it('returns a code for a native asset object', function() {
+    it('returns undefined issuer for a native asset', function() {
       const asset = new StellarBase.ChangeTrustAsset.native();
       expect(asset.getIssuer()).to.be.undefined;
     });
 
-    it('returns a code for a non-native asset', function() {
+    it('returns an issuer for a non-native asset', function() {
       const asset = new StellarBase.ChangeTrustAsset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
@@ -103,18 +107,18 @@ describe('ChangeTrustAsset', function() {
     });
   });
 
-  describe('getLiquidityPoolParams()', function() {
-    it('returns empty liquidity pool params for a native asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset.native();
-      expect(asset.getLiquidityPoolParams()).to.be.undefined;
+  describe('getLiquidityPoolParameters()', function() {
+    it('returns undefined liquidity pool params for a native asset', function() {
+      const asset = new StellarBase.ChangeTrustAsset.native();
+      expect(asset.getLiquidityPoolParameters()).to.be.undefined;
     });
 
-    it('returns empty liquidity pool params for a non-native asset', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+    it('returns undefined liquidity pool params for a non-native asset', function() {
+      const asset = new StellarBase.ChangeTrustAsset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      expect(asset.getLiquidityPoolParams()).to.be.undefined;
+      expect(asset.getLiquidityPoolParameters()).to.be.undefined;
     });
 
     it('returns liquidity pool parameters for a liquidity pool asset', function() {
@@ -123,7 +127,7 @@ describe('ChangeTrustAsset', function() {
         assetB,
         fee
       });
-      const gotPoolParams = asset.getLiquidityPoolParams();
+      const gotPoolParams = asset.getLiquidityPoolParameters();
       expect(gotPoolParams.asseta).to.be.equal(assetA);
       expect(gotPoolParams.assetB).to.be.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
@@ -131,28 +135,28 @@ describe('ChangeTrustAsset', function() {
   });
 
   describe('getAssetType()', function() {
-    it('returns native for native assets', function() {
-      var asset = StellarBase.ChangeTrustAsset.native();
+    it('returns "native" for native assets', function() {
+      const asset = StellarBase.ChangeTrustAsset.native();
       expect(asset.getAssetType()).to.eq('native');
     });
 
-    it('returns credit_alphanum4 if the trustline asset code length is between 1 and 4', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+    it('returns "credit_alphanum4" if the trustline asset code length is between 1 and 4', function() {
+      const asset = new StellarBase.ChangeTrustAsset(
         'ABCD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
       expect(asset.getAssetType()).to.eq('credit_alphanum4');
     });
 
-    it('returns credit_alphanum12 if the trustline asset code length is between 5 and 12', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+    it('returns "credit_alphanum12" if the trustline asset code length is between 5 and 12', function() {
+      const asset = new StellarBase.ChangeTrustAsset(
         'ABCDEF',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
       expect(asset.getAssetType()).to.eq('credit_alphanum12');
     });
 
-    it('returns liquidity_pool_shares if the trustline asset is a liquidity pool ID', function() {
+    it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
         asseta: assetA,
         assetB,
@@ -164,19 +168,19 @@ describe('ChangeTrustAsset', function() {
 
   describe('toXDRObject()', function() {
     it('parses a native asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset.native();
-      var xdr = asset.toXDRObject();
+      const asset = new StellarBase.ChangeTrustAsset.native();
+      const xdr = asset.toXDRObject();
       expect(xdr.toXDR().toString()).to.be.equal(
         Buffer.from([0, 0, 0, 0]).toString()
       );
     });
 
     it('parses a 3-alphanum asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+      const asset = new StellarBase.ChangeTrustAsset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
+      const xdr = asset.toXDRObject();
 
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -186,11 +190,11 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('parses a 4-alphanum asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+      const asset = new StellarBase.ChangeTrustAsset(
         'BART',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
+      const xdr = asset.toXDRObject();
 
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -200,11 +204,11 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('parses a 5-alphanum asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+      const asset = new StellarBase.ChangeTrustAsset(
         '12345',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
+      const xdr = asset.toXDRObject();
 
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -214,11 +218,11 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('parses a 12-alphanum asset object', function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+      const asset = new StellarBase.ChangeTrustAsset(
         '123456789012',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
+      const xdr = asset.toXDRObject();
 
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
@@ -238,7 +242,7 @@ describe('ChangeTrustAsset', function() {
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(xdr.arm()).to.equal('liquidityPool');
 
-      const gotPoolParams = asset.getLiquidityPoolParams();
+      const gotPoolParams = asset.getLiquidityPoolParameters();
       expect(gotPoolParams.asseta).to.be.equal(assetA);
       expect(gotPoolParams.assetB).to.be.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
@@ -247,49 +251,51 @@ describe('ChangeTrustAsset', function() {
 
   describe('fromOperation()', function() {
     it('parses a native asset XDR', function() {
-      var xdr = new StellarBase.xdr.ChangeTrustAsset.assetTypeNative();
-      var asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
+      const xdr = new StellarBase.xdr.ChangeTrustAsset.assetTypeNative();
+      const asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
 
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
       expect(asset.isNative()).to.equal(true);
+      expect(asset.getAssetType()).to.equal('native');
     });
 
     it('parses a 4-alphanum asset XDR', function() {
-      var issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
-      var assetCode = 'KHL';
-      var assetType = new StellarBase.xdr.AlphaNum4({
+      const issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+      const assetCode = 'KHL';
+      const assetXdr = new StellarBase.xdr.AlphaNum4({
         assetCode: assetCode + '\0',
         issuer: StellarBase.Keypair.fromPublicKey(issuer).xdrAccountId()
       });
-      var xdr = new StellarBase.xdr.ChangeTrustAsset(
+      const xdr = new StellarBase.xdr.ChangeTrustAsset(
         'assetTypeCreditAlphanum4',
-        assetType
+        assetXdr
       );
 
-      var asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
-
+      const asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
       expect(asset.getCode()).to.equal(assetCode);
       expect(asset.getIssuer()).to.equal(issuer);
+      expect(asset.getAssetType()).to.equal('credit_alphanum4');
     });
 
     it('parses a 12-alphanum asset XDR', function() {
-      var issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
-      var assetCode = 'KHLTOKEN';
-      var assetType = new StellarBase.xdr.AlphaNum4({
+      const issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+      const assetCode = 'KHLTOKEN';
+      const assetXdr = new StellarBase.xdr.AlphaNum12({
         assetCode: assetCode + '\0\0\0\0',
         issuer: StellarBase.Keypair.fromPublicKey(issuer).xdrAccountId()
       });
-      var xdr = new StellarBase.xdr.ChangeTrustAsset(
+      const xdr = new StellarBase.xdr.ChangeTrustAsset(
         'assetTypeCreditAlphanum12',
-        assetType
+        assetXdr
       );
 
-      var asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
+      const asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
 
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
       expect(asset.getCode()).to.equal(assetCode);
       expect(asset.getIssuer()).to.equal(issuer);
+      expect(asset.getAssetType()).to.equal('credit_alphanum12');
     });
 
     it('parses a liquidityPool asset XDR', function() {
@@ -314,22 +320,22 @@ describe('ChangeTrustAsset', function() {
 
       const asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
-
-      const gotPoolParams = asset.getLiquidityPoolParams();
+      const gotPoolParams = asset.getLiquidityPoolParameters();
       expect(gotPoolParams.asseta).to.be.deep.equal(assetA);
       expect(gotPoolParams.assetB).to.be.deep.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
+      expect(asset.getAssetType()).to.equal('liquidity_pool_shares');
     });
   });
 
   describe('toString()', function() {
     it("returns 'native' for native asset", function() {
-      var asset = StellarBase.ChangeTrustAsset.native();
+      const asset = StellarBase.ChangeTrustAsset.native();
       expect(asset.toString()).to.be.equal('native');
     });
 
     it("returns 'code:issuer' for non-native asset", function() {
-      var asset = new StellarBase.ChangeTrustAsset(
+      const asset = new StellarBase.ChangeTrustAsset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
@@ -338,8 +344,8 @@ describe('ChangeTrustAsset', function() {
       );
     });
 
-    it("returns 'liquidity_pool:<id>' for liquidity pool assets", function() {
-      var asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
+    it("returns 'liquidity_pool:<pool_id>' for liquidity pool assets", function() {
+      const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
         asseta: assetA,
         assetB,
         fee

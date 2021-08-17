@@ -2,7 +2,7 @@ import isUndefined from 'lodash/isUndefined';
 import xdr from '../generated/stellar-xdr_generated';
 
 /**
- * Create a liquidity pool deposit operation.
+ * Creates a liquidity pool deposit operation.
  *
  * @function
  * @alias Operation.liquidityPoolDeposit
@@ -10,24 +10,19 @@ import xdr from '../generated/stellar-xdr_generated';
  *
  * @param {object} opts - Options object
  * @param {string} opts.liquidityPoolId - The liquidity pool ID.
- * @param {string} opts.maxAmounta      - Maximum amount of first asset to deposit.
- * @param {string} opts.maxAmountB      - Maximum amount of second asset to deposit.
+ * @param {string} opts.maxAmounta - Maximum amount of first asset to deposit.
+ * @param {string} opts.maxAmountB - Maximum amount of second asset to deposit.
  * @param {number|string|BigNumber|Object} opts.minPrice -  Minimum depositA/depositB price.
  * @param {number} opts.minPrice.n - If `opts.minPrice` is an object: the price numerator
  * @param {number} opts.minPrice.d - If `opts.minPrice` is an object: the price denominator
  * @param {number|string|BigNumber|Object} opts.maxPrice -  Maximum depositA/depositB price.
  * @param {number} opts.maxPrice.n - If `opts.maxPrice` is an object: the price numerator
  * @param {number} opts.maxPrice.d - If `opts.maxPrice` is an object: the price denominator
- * @param {string} [opts.source]        - The source account for the operation.
- *     Defaults to the transaction's source account.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  *
- * @returns {xdr.Operation}   The resulting operation (xdr.LiquidityPoolDepositOp).
+ * @returns {xdr.Operation} The resulting operation (xdr.LiquidityPoolDepositOp).
  */
-export function liquidityPoolDeposit(opts) {
-  if (!opts) {
-    throw new TypeError('opts cannot be empty');
-  }
-
+export function liquidityPoolDeposit(opts = {}) {
   const attributes = {};
   if (!opts.liquidityPoolId) {
     throw new TypeError('liquidityPoolId argument is required');
