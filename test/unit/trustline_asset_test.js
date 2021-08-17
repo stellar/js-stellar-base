@@ -6,12 +6,6 @@ describe('TrustLineAsset', function() {
       );
     });
 
-    it("throws an error when there's no issuer for a trustline asset with code `XLM`", function() {
-      expect(() => new StellarBase.TrustLineAsset('USD')).to.throw(
-        /Issuer cannot be null/
-      );
-    });
-
     it('throws an error when there is an asset issuer but the code is invalid', function() {
       expect(
         () =>
@@ -36,15 +30,15 @@ describe('TrustLineAsset', function() {
       ).to.throw(/Asset code is invalid/);
     });
 
-    it('throws an error when issuer is invalid', function() {
-      expect(() => new StellarBase.TrustLineAsset('USD', 'GCEZWKCA5')).to.throw(
-        /Issuer is invalid/
-      );
-    });
-
     it('throws an error when issuer is null and asset is not XLM', function() {
       expect(() => new StellarBase.TrustLineAsset('USD')).to.throw(
         /Issuer cannot be null/
+      );
+    });
+
+    it('throws an error when issuer is invalid', function() {
+      expect(() => new StellarBase.TrustLineAsset('USD', 'GCEZWKCA5')).to.throw(
+        /Issuer is invalid/
       );
     });
 
@@ -67,7 +61,7 @@ describe('TrustLineAsset', function() {
   });
 
   describe('getCode()', function() {
-    it('returns a code for a native asset object', function() {
+    it('returns an issuer for a native asset', function() {
       var asset = new StellarBase.TrustLineAsset.native();
       expect(asset.getCode()).to.be.equal('XLM');
     });
@@ -91,12 +85,12 @@ describe('TrustLineAsset', function() {
   });
 
   describe('getIssuer()', function() {
-    it('returns a code for a native asset object', function() {
+    it('returns undefined issuer for a native asset', function() {
       var asset = new StellarBase.TrustLineAsset.native();
       expect(asset.getIssuer()).to.be.undefined;
     });
 
-    it('returns a code for a non-native asset', function() {
+    it('returns an issuer for a non-native asset', function() {
       var asset = new StellarBase.TrustLineAsset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
@@ -117,12 +111,12 @@ describe('TrustLineAsset', function() {
   });
 
   describe('getLiquidityPoolId()', function() {
-    it('returns empty liquidity pool ID for a native asset object', function() {
+    it('returns undefined liquidity pool ID for a native asset', function() {
       var asset = new StellarBase.TrustLineAsset.native();
       expect(asset.getLiquidityPoolId()).to.be.undefined;
     });
 
-    it('returns empty liquidity pool ID for a non-native asset', function() {
+    it('returns undefined liquidity pool ID for a non-native asset', function() {
       var asset = new StellarBase.TrustLineAsset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'

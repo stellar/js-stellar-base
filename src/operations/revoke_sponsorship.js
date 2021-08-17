@@ -45,14 +45,14 @@ export function revokeAccountSponsorship(opts = {}) {
  * @alias Operation.revokeTrustlineSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the trustline.
- * @param {TrustLineAsset} opts.asset - The asset in the trustline.
+ * @param {TrustLineAsset} opts.asset - The trustline asset.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.Operation} xdr operation
  *
  * @example
  * const op = Operation.revokeTrustlineSponsorship({
  *   account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7
- *   asset: new StellarBase.Asset(
+ *   asset: new StellarBase.TrustLineAsset(
  *     'USDUSD',
  *     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
  *   )
@@ -196,14 +196,14 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
 }
 
 /**
- * Create a "revoke sponsorship" operation for a claimable balance.
+ * Creates a "revoke sponsorship" operation for a liquidity pool.
  *
  * @function
  * @alias Operation.revokeLiquidityPoolSponsorship
- * @param {object} opts Options object
+ * @param {object} opts – Options object.
  * @param {string} opts.liquidityPoolId - The sponsored liquidity pool ID in 'hex' string.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
- * @returns {xdr.Operation} xdr operation
+ * @returns {xdr.Operation} xdr Operation.
  *
  * @example
  * const op = Operation.revokeLiquidityPoolSponsorship({
@@ -223,8 +223,9 @@ export function revokeLiquidityPoolSponsorship(opts = {}) {
   );
 
   const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.revokeSponsorship(op);
+  const opAttributes = {
+    body: xdr.OperationBody.revokeSponsorship(op)
+  };
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);

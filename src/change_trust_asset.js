@@ -1,33 +1,30 @@
 import clone from 'lodash/clone';
 import padEnd from 'lodash/padEnd';
 import trimEnd from 'lodash/trimEnd';
-import { Asset } from './asset';
 import xdr from './generated/stellar-xdr_generated';
+import { Asset } from './asset';
 import { Keypair } from './keypair';
 import { LiquidityPoolFeeV18, getLiquidityPoolId } from './liquidity_pool_id';
 import { StrKey } from './strkey';
 
 /**
  * ChangeTrustAsset class represents a trustline change to either a liquidity
- * pool or an issued asset with an asset code / issuer account ID pair.
+ * pool, the native asset (`XLM`) or an issued asset with an asset code / issuer
+ * account ID pair.
  *
- * The change trust asset can either represent a trustline change to the an
- * issued asset or to a liquidity pool. For an issued asset, the code and issuer
- * will be valid and liquidityPool parameters will be empty. For liquidity
- * pools, the liquidityPool parameters will all be valid while the code and
- * issuer will be empty.
+ * In case of the native asset, the code will represent `XLM` while the issuer
+ * and liquidityPoolParams will be empty. For an issued asset, the code and
+ * issuer will be valid and liquidityPoolParams will be empty. For liquidity
+ * pools, the liquidityPoolParams will be valid and the remaining two fields
+ * will be empty.
  *
  * @constructor
  * @param {string} code - The asset code.
  * @param {string} issuer - The account ID of the asset issuer.
- * @param {LiquidityPoolParams.ConstantProduct} liquidityPoolParams – the
- * liquidity pool parameters.
- * @param {Asset} liquidityPoolParams.asseta – the first asset in the Pool, it
- * must respect the rule assetA < assetB.
- * @param {Asset} liquidityPoolParams.assetB – the second asset in the Pool, it
- * must respect the rule assetA < assetB.
- * @param {number} liquidityPoolParams.fee – the liquidity pool fee. For now the
- * only fee supported is `30`.
+ * @param {LiquidityPoolParams.ConstantProduct} liquidityPoolParams – The liquidity pool parameters.
+ * @param {Asset} liquidityPoolParams.asseta – The first asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {Asset} liquidityPoolParams.assetB – The second asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {number} liquidityPoolParams.fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
 export class ChangeTrustAsset {
   constructor(code, issuer, liquidityPoolParams) {
@@ -50,30 +47,29 @@ export class ChangeTrustAsset {
       throw new Error('Issuer is invalid');
     }
 
-    // Validate liquidity pool params.
-    if (!code && !issuer) {
-      if (!liquidityPoolParams) {
-        throw new Error('Must provide liquidityPoolParams or code & issuer');
-      }
-      const { asseta, assetB, fee } = liquidityPoolParams;
-      if (!asseta || !(asseta instanceof Asset)) {
-        throw new Error('asseta is invalid');
-      }
-      if (!assetB || !(assetB instanceof Asset)) {
-        throw new Error('assetB is invalid');
-      }
-      if (!fee || fee !== LiquidityPoolFeeV18) {
-        throw new Error('fee is invalid');
-      }
-    }
-
     this.code = code;
     this.issuer = issuer;
+    if (code) {
+      // return early if it's an asset with code.
+      return;
+    }
+
+    // Validate liquidity pool params.
+    const { asseta, assetB, fee } = liquidityPoolParams;
+    if (!asseta || !(asseta instanceof Asset)) {
+      throw new Error('asseta is invalid');
+    }
+    if (!assetB || !(assetB instanceof Asset)) {
+      throw new Error('assetB is invalid');
+    }
+    if (!fee || fee !== LiquidityPoolFeeV18) {
+      throw new Error('fee is invalid');
+    }
     this.liquidityPoolParams = liquidityPoolParams;
   }
 
   /**
-   * Returns a trustline asset object for the native asset.
+   * Returns a change trust asset object for the native asset.
    * @returns {ChangeTrustAsset}
    */
   static native() {
@@ -82,7 +78,7 @@ export class ChangeTrustAsset {
 
   /**
    * Returns a change trust asset object from its XDR object representation.
-   * @param {xdr.ChangeTrustAsset} ctAssetXdr - The asset xdr object.
+   * @param {xdr.ChangeTrustAsset} ctAssetXdr - The asset XDR object.
    * @returns {ChangeTrustAsset}
    */
   static fromOperation(ctAssetXdr) {
@@ -115,8 +111,8 @@ export class ChangeTrustAsset {
   }
 
   /**
-   * Returns the xdr object for this asset.
-   * @returns {xdr.ChangeTrustAsset} XDR ChangeTrustAsset object
+   * Returns the XDR object for this change trust asset.
+   * @returns {xdr.ChangeTrustAsset} XDR ChangeTrustAsset object.
    */
   toXDRObject() {
     if (this.isNative()) {
@@ -160,21 +156,21 @@ export class ChangeTrustAsset {
   }
 
   /**
-   * @returns {string} Asset code
+   * @returns {string} Asset code.
    */
   getCode() {
     return clone(this.code);
   }
 
   /**
-   * @returns {string} Asset issuer
+   * @returns {string} Asset issuer.
    */
   getIssuer() {
     return clone(this.issuer);
   }
 
   /**
-   * @returns {string} Liquidity pool ID
+   * @returns {LiquidityPoolParams.ConstantProduct} Liquidity pool parameters.
    */
   getLiquidityPoolParams() {
     return clone(this.liquidityPoolParams);
@@ -182,7 +178,7 @@ export class ChangeTrustAsset {
 
   /**
    * @see [Assets concept](https://www.stellar.org/developers/guides/concepts/assets.html)
-   * @returns {string} Asset type. Can be one of following types:
+   * @returns {string} Asset type. Can be one of the following:
    *
    * * `native`
    * * `credit_alphanum4`
@@ -207,22 +203,22 @@ export class ChangeTrustAsset {
   }
 
   /**
-   * @returns {boolean}  true if this trustline asset object is the native asset.
+   * @returns {boolean} `true` if this change trust asset object is the native asset.
    */
   isNative() {
     return this.code && !this.issuer;
   }
 
   /**
-   * @returns {boolean} true if this trustline asset object is a liquidity pool.
+   * @returns {boolean} `true` if this change trust asset object is a liquidity pool.
    */
   isLiquidityPool() {
     return !!this.liquidityPoolParams;
   }
 
   /**
-   * @param {ChangeTrustAsset} asset Asset to compare
-   * @returns {boolean} true if this asset equals the given asset.
+   * @param {ChangeTrustAsset} asset the ChangeTrustAsset to compare
+   * @returns {boolean} `true` if this asset equals the given asset.
    */
   equals(asset) {
     return (
@@ -242,7 +238,6 @@ export class ChangeTrustAsset {
         'constant_product',
         this.getLiquidityPoolParams()
       ).toString('hex');
-      // TODO: review if this is correct
       return `liquidity_pool:${poolId}`;
     }
 

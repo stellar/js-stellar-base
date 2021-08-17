@@ -589,7 +589,7 @@ describe('Operation', function() {
         assetB,
         fee
       });
-      const op = StellarBase.Operation.changeTrust({ asset: asset });
+      const op = StellarBase.Operation.changeTrust({ asset });
       expect(op).to.be.instanceof(StellarBase.xdr.Operation);
 
       const opXdr = op.toXDR('hex');
@@ -2253,11 +2253,13 @@ describe('Operation', function() {
 
       const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
       expect(operation.body().switch().name).to.equal('revokeSponsorship');
+
       const obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('revokeLiquidityPoolSponsorship');
       expect(obj.liquidityPoolId).to.be.equal(liquidityPoolId);
     });
-    it('throws an error when balanceId is invalid', function() {
+
+    it('throws an error when liquidityPoolId is invalid', function() {
       expect(() =>
         StellarBase.Operation.revokeLiquidityPoolSponsorship({})
       ).to.throw(/liquidityPoolId is invalid/);
@@ -2462,7 +2464,7 @@ describe('Operation', function() {
   describe('liquidityPoolDeposit()', function() {
     it('throws an error if a required parameter is missing', function() {
       expect(() => StellarBase.Operation.liquidityPoolDeposit()).to.throw(
-        /opts cannot be empty/
+        /liquidityPoolId argument is required/
       );
 
       let opts = {};
@@ -2676,7 +2678,7 @@ describe('Operation', function() {
   describe('liquidityPoolWithdraw()', function() {
     it('throws an error if a required parameter is missing', function() {
       expect(() => StellarBase.Operation.liquidityPoolWithdraw()).to.throw(
-        /opts cannot be empty/
+        /liquidityPoolId argument is required/
       );
 
       let opts = {};
