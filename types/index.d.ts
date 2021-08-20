@@ -133,7 +133,7 @@ export const LiquidityPoolFeeV18 = 30;
 
 export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
 
-export function validateLexicographicalAssetsOrder(assetA: Asset, assetB: Asset): boolean;
+export function validateLexicographicAssetsOrder(assetA: Asset, assetB: Asset): boolean;
 
 export namespace LiquidityPoolParameters {
   interface ConstantProduct {

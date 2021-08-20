@@ -36,8 +36,8 @@ export function getLiquidityPoolId(
     throw new Error('fee is invalid');
   }
 
-  if (!validateLexicographicalAssetsOrder(asseta, assetB)) {
-    throw new Error('Assets are not in lexicographical order');
+  if (!validateLexicographicAssetsOrder(asseta, assetB)) {
+    throw new Error('Assets are not in lexicographic order');
   }
 
   const lpTypeData = xdr.LiquidityPoolType.liquidityPoolConstantProduct().toXDR();
@@ -51,16 +51,16 @@ export function getLiquidityPoolId(
 }
 
 /**
- * validateLexicographicalAssetsOrder validates if assetA < assetB:
+ * validateLexicographicAssetsOrder validates if assetA < assetB:
  * 1. First compare the type (eg. native before alphanum4 before alphanum12).
  * 2. If the types are equal, compare the assets codes.
  * 3. If the asset codes are equal, compare the issuers.
  *
- * @param {Asset} assetA - The first asset in the lexicographical order.
- * @param {Asset} assetB - The second asset in the lexicographical order.
+ * @param {Asset} assetA - The first asset in the lexicographic order.
+ * @param {Asset} assetB - The second asset in the lexicographic order.
  * @return {boolean} `true` if assetA < assetB.
  */
-export function validateLexicographicalAssetsOrder(assetA, assetB) {
+export function validateLexicographicAssetsOrder(assetA, assetB) {
   if (!assetA || !(assetA instanceof Asset)) {
     throw new Error('assetA is invalid');
   }

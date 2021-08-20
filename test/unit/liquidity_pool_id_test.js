@@ -69,37 +69,37 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     );
   });
 
-  it('throws an error if assets are not in lexicographical order', function() {
+  it('throws an error if assets are not in lexicographic order', function() {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
         asseta: assetB,
         assetB: assetA,
         fee
       })
-    ).to.throw(/Assets are not in lexicographical order/);
+    ).to.throw(/Assets are not in lexicographic order/);
   });
 });
 
-describe('StellarBase#validateLexicographicalAssetsOrder()', function() {
+describe('StellarBase#validateLexicographicAssetsOrder()', function() {
   it('throws an error if the input assets are invalid', function() {
-    expect(() => StellarBase.validateLexicographicalAssetsOrder()).to.throw(
+    expect(() => StellarBase.validateLexicographicAssetsOrder()).to.throw(
       /assetA is invalid/
     );
 
-    expect(() =>
-      StellarBase.validateLexicographicalAssetsOrder(assetA)
-    ).to.throw(/assetB is invalid/);
+    expect(() => StellarBase.validateLexicographicAssetsOrder(assetA)).to.throw(
+      /assetB is invalid/
+    );
 
-    expect(() => StellarBase.validateLexicographicalAssetsOrder(assetA, assetB))
+    expect(() => StellarBase.validateLexicographicAssetsOrder(assetA, assetB))
       .to.not.throw;
   });
 
   it('returns false if assets are equal', function() {
     const XLM = new StellarBase.Asset.native();
-    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, XLM)).to.false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(assetA, assetA)).to
+    expect(StellarBase.validateLexicographicAssetsOrder(XLM, XLM)).to.false;
+    expect(StellarBase.validateLexicographicAssetsOrder(assetA, assetA)).to
       .false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(assetB, assetB)).to
+    expect(StellarBase.validateLexicographicAssetsOrder(assetB, assetB)).to
       .false;
   });
 
@@ -114,21 +114,18 @@ describe('StellarBase#validateLexicographicalAssetsOrder()', function() {
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
 
-    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, XLM)).to.false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, anum4)).to.true;
-    expect(StellarBase.validateLexicographicalAssetsOrder(XLM, anum12)).to.true;
+    expect(StellarBase.validateLexicographicAssetsOrder(XLM, XLM)).to.false;
+    expect(StellarBase.validateLexicographicAssetsOrder(XLM, anum4)).to.true;
+    expect(StellarBase.validateLexicographicAssetsOrder(XLM, anum12)).to.true;
 
-    expect(StellarBase.validateLexicographicalAssetsOrder(anum4, XLM)).to.false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(anum4, anum4)).to
-      .false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(anum4, anum12)).to
-      .true;
+    expect(StellarBase.validateLexicographicAssetsOrder(anum4, XLM)).to.false;
+    expect(StellarBase.validateLexicographicAssetsOrder(anum4, anum4)).to.false;
+    expect(StellarBase.validateLexicographicAssetsOrder(anum4, anum12)).to.true;
 
-    expect(StellarBase.validateLexicographicalAssetsOrder(anum12, XLM)).to
+    expect(StellarBase.validateLexicographicAssetsOrder(anum12, XLM)).to.false;
+    expect(StellarBase.validateLexicographicAssetsOrder(anum12, anum4)).to
       .false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(anum12, anum4)).to
-      .false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(anum12, anum12)).to
+    expect(StellarBase.validateLexicographicAssetsOrder(anum12, anum12)).to
       .false;
   });
 
@@ -142,14 +139,14 @@ describe('StellarBase#validateLexicographicalAssetsOrder()', function() {
       'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
     );
 
-    expect(StellarBase.validateLexicographicalAssetsOrder(assetARST, assetARST))
+    expect(StellarBase.validateLexicographicAssetsOrder(assetARST, assetARST))
       .to.false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(assetARST, assetUSDX))
+    expect(StellarBase.validateLexicographicAssetsOrder(assetARST, assetUSDX))
       .to.true;
 
-    expect(StellarBase.validateLexicographicalAssetsOrder(assetUSDX, assetARST))
+    expect(StellarBase.validateLexicographicAssetsOrder(assetUSDX, assetARST))
       .to.false;
-    expect(StellarBase.validateLexicographicalAssetsOrder(assetUSDX, assetUSDX))
+    expect(StellarBase.validateLexicographicAssetsOrder(assetUSDX, assetUSDX))
       .to.false;
   });
 
@@ -164,17 +161,17 @@ describe('StellarBase#validateLexicographicalAssetsOrder()', function() {
     );
 
     expect(
-      StellarBase.validateLexicographicalAssetsOrder(assetIssuerA, assetIssuerB)
+      StellarBase.validateLexicographicAssetsOrder(assetIssuerA, assetIssuerB)
     ).to.true;
     expect(
-      StellarBase.validateLexicographicalAssetsOrder(assetIssuerA, assetIssuerA)
+      StellarBase.validateLexicographicAssetsOrder(assetIssuerA, assetIssuerA)
     ).to.false;
 
     expect(
-      StellarBase.validateLexicographicalAssetsOrder(assetIssuerB, assetIssuerA)
+      StellarBase.validateLexicographicAssetsOrder(assetIssuerB, assetIssuerA)
     ).to.false;
     expect(
-      StellarBase.validateLexicographicalAssetsOrder(assetIssuerB, assetIssuerB)
+      StellarBase.validateLexicographicAssetsOrder(assetIssuerB, assetIssuerB)
     ).to.false;
   });
 });

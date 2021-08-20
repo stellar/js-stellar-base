@@ -6,7 +6,7 @@ export { sign, verify, FastSigning } from './signing';
 export {
   getLiquidityPoolId,
   LiquidityPoolFeeV18,
-  validateLexicographicalAssetsOrder
+  validateLexicographicAssetsOrder
 } from './liquidity_pool_id';
 export { Keypair } from './keypair';
 export { UnsignedHyper, Hyper } from 'js-xdr';
