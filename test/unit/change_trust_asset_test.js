@@ -73,7 +73,7 @@ describe('ChangeTrustAsset', function() {
 
     it('returns undefined code for a liquidity pool asset', function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });
@@ -99,7 +99,7 @@ describe('ChangeTrustAsset', function() {
 
     it('returns undefined issuer for a liquidity pool asset', function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });
@@ -123,12 +123,12 @@ describe('ChangeTrustAsset', function() {
 
     it('returns liquidity pool parameters for a liquidity pool asset', function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });
       const gotPoolParams = asset.getLiquidityPoolParameters();
-      expect(gotPoolParams.asseta).to.be.equal(assetA);
+      expect(gotPoolParams.assetA).to.be.equal(assetA);
       expect(gotPoolParams.assetB).to.be.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
     });
@@ -158,7 +158,7 @@ describe('ChangeTrustAsset', function() {
 
     it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });
@@ -233,7 +233,7 @@ describe('ChangeTrustAsset', function() {
 
     it('parses a liquidity pool trustline asset object', function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });
@@ -243,7 +243,7 @@ describe('ChangeTrustAsset', function() {
       expect(xdr.arm()).to.equal('liquidityPool');
 
       const gotPoolParams = asset.getLiquidityPoolParameters();
-      expect(gotPoolParams.asseta).to.be.equal(assetA);
+      expect(gotPoolParams.assetA).to.be.equal(assetA);
       expect(gotPoolParams.assetB).to.be.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
     });
@@ -301,7 +301,7 @@ describe('ChangeTrustAsset', function() {
     it('parses a liquidityPool asset XDR', function() {
       const lpConstantProductParamsXdr = new StellarBase.xdr.LiquidityPoolConstantProductParameters(
         {
-          asseta: assetA.toXDRObject(),
+          assetA: assetA.toXDRObject(),
           assetB: assetB.toXDRObject(),
           fee
         }
@@ -321,7 +321,7 @@ describe('ChangeTrustAsset', function() {
       const asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
       const gotPoolParams = asset.getLiquidityPoolParameters();
-      expect(gotPoolParams.asseta).to.be.deep.equal(assetA);
+      expect(gotPoolParams.assetA).to.be.deep.equal(assetA);
       expect(gotPoolParams.assetB).to.be.deep.equal(assetB);
       expect(gotPoolParams.fee).to.be.equal(fee);
       expect(asset.getAssetType()).to.equal('liquidity_pool_shares');
@@ -346,7 +346,7 @@ describe('ChangeTrustAsset', function() {
 
     it("returns 'liquidity_pool:<pool_id>' for liquidity pool assets", function() {
       const asset = new StellarBase.ChangeTrustAsset(undefined, undefined, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });

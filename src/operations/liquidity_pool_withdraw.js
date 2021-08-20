@@ -11,7 +11,7 @@ import xdr from '../generated/stellar-xdr_generated';
  * @param {object} opts - Options object
  * @param {string} opts.liquidityPoolId - The liquidity pool ID.
  * @param {string} opts.amount - Amount of pool shares to withdraw.
- * @param {string} opts.minAmounta - Minimum amount of first asset to withdraw.
+ * @param {string} opts.minAmountA - Minimum amount of first asset to withdraw.
  * @param {string} opts.minAmountB - Minimum amount of second asset to withdraw.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  *
@@ -29,10 +29,10 @@ export function liquidityPoolWithdraw(opts = {}) {
   }
   attributes.amount = this._toXDRAmount(opts.amount);
 
-  if (isUndefined(opts.minAmounta)) {
-    throw new TypeError('minAmounta argument is required');
+  if (isUndefined(opts.minAmountA)) {
+    throw new TypeError('minAmountA argument is required');
   }
-  attributes.minAmounta = this._toXDRAmount(opts.minAmounta);
+  attributes.minAmountA = this._toXDRAmount(opts.minAmountA);
 
   if (isUndefined(opts.minAmountB)) {
     throw new TypeError('minAmountB argument is required');

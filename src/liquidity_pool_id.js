@@ -12,7 +12,7 @@ export const LiquidityPoolFeeV18 = 30;
  * @export
  * @param {LiquidityPoolType} liquidityPoolType – A number representing the liquidity pool type.
  * @param {LiquidityPoolParameters} liquidityPoolParameters – The liquidity pool parameters.
- * @param {Asset} liquidityPoolParameters.asseta – The first asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {Asset} liquidityPoolParameters.assetA – The first asset in the Pool, it must respect the rule assetA < assetB.
  * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB.
  * @param {number} liquidityPoolParameters.fee – The liquidity pool fee. For now the only fee supported is `30`.
  * @return {Buffer} the Pool ID buffer, it can be stringfied with `toString('hex')`.
@@ -25,9 +25,9 @@ export function getLiquidityPoolId(
     throw new Error('liquidityPoolType is invalid');
   }
 
-  const { asseta, assetB, fee } = liquidityPoolParameters;
-  if (!asseta || !(asseta instanceof Asset)) {
-    throw new Error('asseta is invalid');
+  const { assetA, assetB, fee } = liquidityPoolParameters;
+  if (!assetA || !(assetA instanceof Asset)) {
+    throw new Error('assetA is invalid');
   }
   if (!assetB || !(assetB instanceof Asset)) {
     throw new Error('assetB is invalid');
@@ -36,13 +36,13 @@ export function getLiquidityPoolId(
     throw new Error('fee is invalid');
   }
 
-  if (!validateLexicographicAssetsOrder(asseta, assetB)) {
+  if (!validateLexicographicAssetsOrder(assetA, assetB)) {
     throw new Error('Assets are not in lexicographic order');
   }
 
   const lpTypeData = xdr.LiquidityPoolType.liquidityPoolConstantProduct().toXDR();
   const lpParamsData = new xdr.LiquidityPoolConstantProductParameters({
-    asseta: asseta.toXDRObject(),
+    assetA: assetA.toXDRObject(),
     assetB: assetB.toXDRObject(),
     fee
   }).toXDR();

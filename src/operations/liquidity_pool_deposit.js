@@ -10,7 +10,7 @@ import xdr from '../generated/stellar-xdr_generated';
  *
  * @param {object} opts - Options object
  * @param {string} opts.liquidityPoolId - The liquidity pool ID.
- * @param {string} opts.maxAmounta - Maximum amount of first asset to deposit.
+ * @param {string} opts.maxAmountA - Maximum amount of first asset to deposit.
  * @param {string} opts.maxAmountB - Maximum amount of second asset to deposit.
  * @param {number|string|BigNumber|Object} opts.minPrice -  Minimum depositA/depositB price.
  * @param {number} opts.minPrice.n - If `opts.minPrice` is an object: the price numerator
@@ -29,10 +29,10 @@ export function liquidityPoolDeposit(opts = {}) {
   }
   attributes.liquidityPoolId = xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex');
 
-  if (isUndefined(opts.maxAmounta)) {
-    throw new TypeError('maxAmounta argument is required');
+  if (isUndefined(opts.maxAmountA)) {
+    throw new TypeError('maxAmountA argument is required');
   }
-  attributes.maxAmounta = this._toXDRAmount(opts.maxAmounta);
+  attributes.maxAmountA = this._toXDRAmount(opts.maxAmountA);
 
   if (isUndefined(opts.maxAmountB)) {
     throw new TypeError('maxAmountB argument is required');

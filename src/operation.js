@@ -378,7 +378,7 @@ export class Operation {
       case 'liquidityPoolDeposit': {
         result.type = 'liquidityPoolDeposit';
         result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
-        result.maxAmounta = this._fromXDRAmount(attrs.maxAmounta());
+        result.maxAmountA = this._fromXDRAmount(attrs.maxAmountA());
         result.maxAmountB = this._fromXDRAmount(attrs.maxAmountB());
         result.minPrice = this._fromXDRPrice(attrs.minPrice());
         result.maxPrice = this._fromXDRPrice(attrs.maxPrice());
@@ -388,7 +388,7 @@ export class Operation {
         result.type = 'liquidityPoolWithdraw';
         result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
         result.amount = this._fromXDRAmount(attrs.amount());
-        result.minAmounta = this._fromXDRAmount(attrs.minAmounta());
+        result.minAmountA = this._fromXDRAmount(attrs.minAmountA());
         result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
         break;
       }

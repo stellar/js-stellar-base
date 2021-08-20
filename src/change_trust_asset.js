@@ -22,7 +22,7 @@ import { StrKey } from './strkey';
  * @param {string} code - The asset code.
  * @param {string} issuer - The account ID of the asset issuer.
  * @param {LiquidityPoolParameters} liquidityPoolParameters – The liquidity pool parameters.
- * @param {Asset} liquidityPoolParameters.asseta – The first asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {Asset} liquidityPoolParameters.assetA – The first asset in the Pool, it must respect the rule assetA < assetB.
  * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB.
  * @param {number} liquidityPoolParameters.fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
@@ -55,9 +55,9 @@ export class ChangeTrustAsset {
     }
 
     // Validate liquidity pool params.
-    const { asseta, assetB, fee } = liquidityPoolParameters;
-    if (!asseta || !(asseta instanceof Asset)) {
-      throw new Error('asseta is invalid');
+    const { assetA, assetB, fee } = liquidityPoolParameters;
+    if (!assetA || !(assetA instanceof Asset)) {
+      throw new Error('assetA is invalid');
     }
     if (!assetB || !(assetB instanceof Asset)) {
       throw new Error('assetB is invalid');
@@ -101,7 +101,7 @@ export class ChangeTrustAsset {
         // TODO: review if this is correct
         liquidityPoolParameters = ctAssetXdr.liquidityPool().constantProduct();
         return new this(null, null, {
-          asseta: Asset.fromOperation(liquidityPoolParameters.asseta()),
+          assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
           assetB: Asset.fromOperation(liquidityPoolParameters.assetB()),
           fee: liquidityPoolParameters.fee()
         });
@@ -121,10 +121,10 @@ export class ChangeTrustAsset {
 
     if (this.isLiquidityPool()) {
       // TODO: review if this is correct
-      const { asseta, assetB, fee } = this.getLiquidityPoolParameters();
+      const { assetA, assetB, fee } = this.getLiquidityPoolParameters();
       const lpConstantProductParamsXdr = new xdr.LiquidityPoolConstantProductParameters(
         {
-          asseta: asseta.toXDRObject(),
+          assetA: assetA.toXDRObject(),
           assetB: assetB.toXDRObject(),
           fee
         }

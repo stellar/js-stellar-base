@@ -1,4 +1,4 @@
-// Automatically generated on 2021-08-12T17:10:08-03:00
+// Automatically generated on 2021-08-20T10:57:07-03:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -1133,7 +1133,7 @@ xdr.struct("ClaimableBalanceEntry", [
 //
 // ===========================================================================
 xdr.struct("LiquidityPoolConstantProductParameters", [
-  ["asseta", xdr.lookup("Asset")],
+  ["assetA", xdr.lookup("Asset")],
   ["assetB", xdr.lookup("Asset")],
   ["fee", xdr.lookup("Int32")],
 ]);
@@ -3665,7 +3665,7 @@ xdr.const("LIQUIDITY_POOL_FEE_V18", 30);
 // ===========================================================================
 xdr.struct("LiquidityPoolDepositOp", [
   ["liquidityPoolId", xdr.lookup("PoolId")],
-  ["maxAmounta", xdr.lookup("Int64")],
+  ["maxAmountA", xdr.lookup("Int64")],
   ["maxAmountB", xdr.lookup("Int64")],
   ["minPrice", xdr.lookup("Price")],
   ["maxPrice", xdr.lookup("Price")],
@@ -3685,7 +3685,7 @@ xdr.struct("LiquidityPoolDepositOp", [
 xdr.struct("LiquidityPoolWithdrawOp", [
   ["liquidityPoolId", xdr.lookup("PoolId")],
   ["amount", xdr.lookup("Int64")],
-  ["minAmounta", xdr.lookup("Int64")],
+  ["minAmountA", xdr.lookup("Int64")],
   ["minAmountB", xdr.lookup("Int64")],
 ]);
 

@@ -26,23 +26,23 @@ describe('StellarBase#getLiquidityPoolId()', function() {
   it('throws an error if assetA is invalid', function() {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {})
-    ).to.throw(/asseta is invalid/);
+    ).to.throw(/assetA is invalid/);
 
     expect(() =>
-      StellarBase.getLiquidityPoolId('constant_product', { asseta: 'random' })
-    ).to.throw(/asseta is invalid/);
+      StellarBase.getLiquidityPoolId('constant_product', { assetA: 'random' })
+    ).to.throw(/assetA is invalid/);
   });
 
   it('throws an error if assetB is invalid', function() {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
-        asseta: assetA
+        assetA
       })
     ).to.throw(/assetB is invalid/);
 
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
-        asseta: assetA,
+        assetA,
         assetB: 'random'
       })
     ).to.throw(/assetB is invalid/);
@@ -51,7 +51,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
   it('throws an error if fee is invalid', function() {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
-        asseta: assetA,
+        assetA,
         assetB
       })
     ).to.throw(/fee is invalid/);
@@ -59,7 +59,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
 
   it('returns poolId correctly', function() {
     const poolId = StellarBase.getLiquidityPoolId('constant_product', {
-      asseta: assetA,
+      assetA,
       assetB,
       fee
     });
@@ -72,7 +72,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
   it('throws an error if assets are not in lexicographic order', function() {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
-        asseta: assetB,
+        assetA: assetB,
         assetB: assetA,
         fee
       })

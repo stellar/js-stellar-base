@@ -137,7 +137,7 @@ export function validateLexicographicAssetsOrder(assetA: Asset, assetB: Asset): 
 
 export namespace LiquidityPoolParameters {
   interface ConstantProduct {
-    asseta: Asset;
+    assetA: Asset;
     assetB: Asset;
     fee: number;
   }
@@ -474,7 +474,7 @@ export namespace OperationOptions {
   }
   interface LiquidityPoolDeposit extends BaseOptions {
     liquidityPoolId: string;
-    maxAmounta: string;
+    maxAmountA: string;
     maxAmountB: string;
     minPrice: number | string | object /* bignumber.js */;
     maxPrice: number | string | object /* bignumber.js */;
@@ -482,7 +482,7 @@ export namespace OperationOptions {
   interface LiquidityPoolWithdraw extends BaseOptions {
     liquidityPoolId: string;
     amount: string;
-    minAmounta: string;
+    minAmountA: string;
     minAmountB: string;
   }
 }
@@ -777,7 +777,7 @@ export namespace Operation {
   ): xdr.Operation<SetTrustLineFlags>;
   interface LiquidityPoolDeposit extends BaseOperation<OperationType.LiquidityPoolDeposit> {
     liquidityPoolId: string;
-    maxAmounta: string;
+    maxAmountA: string;
     maxAmountB: string;
     minPrice: string;
     maxPrice: string;
@@ -788,7 +788,7 @@ export namespace Operation {
   interface LiquidityPoolWithdraw extends BaseOperation<OperationType.LiquidityPoolWithdraw> {
     liquidityPoolId: string;
     amount: string;
-    minAmounta: string;
+    minAmountA: string;
     minAmountB: string;
   }
   function liquidityPoolWithdraw(

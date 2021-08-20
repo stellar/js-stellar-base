@@ -115,7 +115,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   ).addOperation(
     StellarSdk.Operation.liquidityPoolDeposit({
       liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
-      maxAmounta: "10000",
+      maxAmountA: "10000",
       maxAmountB: "20000",
       minPrice: "0.45",
       maxPrice: "0.55",
@@ -124,7 +124,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     StellarSdk.Operation.liquidityPoolWithdraw({
       liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
       amount: "100",
-      minAmounta: "10000",
+      minAmountA: "10000",
       minAmountB: "20000",
     })
   ).addOperation(

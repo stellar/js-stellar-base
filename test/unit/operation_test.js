@@ -585,7 +585,7 @@ describe('Operation', function() {
       );
       const fee = StellarBase.LiquidityPoolFeeV18;
       const asset = new StellarBase.ChangeTrustAsset(null, null, {
-        asseta: assetA,
+        assetA,
         assetB,
         fee
       });
@@ -2475,10 +2475,10 @@ describe('Operation', function() {
       opts.liquidityPoolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
-        /maxAmounta argument is required/
+        /maxAmountA argument is required/
       );
 
-      opts.maxAmounta = '10';
+      opts.maxAmountA = '10';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
         /maxAmountB argument is required/
       );
@@ -2502,7 +2502,7 @@ describe('Operation', function() {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
-        maxAmounta: '10.0000000',
+        maxAmountA: '10.0000000',
         maxAmountB: '20.0000000',
         minPrice: '-0.45',
         maxPrice: '0.55'
@@ -2516,7 +2516,7 @@ describe('Operation', function() {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
-        maxAmounta: '10.0000000',
+        maxAmountA: '10.0000000',
         maxAmountB: '20.0000000',
         minPrice: '0.45',
         maxPrice: '0.55'
@@ -2530,7 +2530,7 @@ describe('Operation', function() {
         xdrObj
           .body()
           .value()
-          .maxAmounta()
+          .maxAmountA()
           .toString()
       ).to.equal('100000000');
       expect(
@@ -2544,7 +2544,7 @@ describe('Operation', function() {
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
       expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
-      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountA).to.be.equals(opts.maxAmountA);
       expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
       expect(operation.minPrice).to.be.equals(opts.minPrice);
       expect(operation.maxPrice).to.be.equals(opts.maxPrice);
@@ -2554,7 +2554,7 @@ describe('Operation', function() {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
-        maxAmounta: '10.0000000',
+        maxAmountA: '10.0000000',
         maxAmountB: '20.0000000',
         minPrice: {
           n: 9,
@@ -2574,7 +2574,7 @@ describe('Operation', function() {
         xdrObj
           .body()
           .value()
-          .maxAmounta()
+          .maxAmountA()
           .toString()
       ).to.equal('100000000');
       expect(
@@ -2588,7 +2588,7 @@ describe('Operation', function() {
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
       expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
-      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountA).to.be.equals(opts.maxAmountA);
       expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
       expect(operation.minPrice).to.be.equals(
         new BigNumber(opts.minPrice.n).div(opts.minPrice.d).toString()
@@ -2602,7 +2602,7 @@ describe('Operation', function() {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
-        maxAmounta: '10.0000000',
+        maxAmountA: '10.0000000',
         maxAmountB: '20.0000000',
         minPrice: 0.45,
         maxPrice: 0.55
@@ -2616,7 +2616,7 @@ describe('Operation', function() {
         xdrObj
           .body()
           .value()
-          .maxAmounta()
+          .maxAmountA()
           .toString()
       ).to.equal('100000000');
       expect(
@@ -2630,7 +2630,7 @@ describe('Operation', function() {
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
       expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
-      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountA).to.be.equals(opts.maxAmountA);
       expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
       expect(operation.minPrice).to.be.equals(opts.minPrice.toString());
       expect(operation.maxPrice).to.be.equals(opts.maxPrice.toString());
@@ -2640,7 +2640,7 @@ describe('Operation', function() {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
-        maxAmounta: '10.0000000',
+        maxAmountA: '10.0000000',
         maxAmountB: '20.0000000',
         minPrice: new BigNumber(9).dividedBy(20),
         maxPrice: new BigNumber(11).dividedBy(20)
@@ -2654,7 +2654,7 @@ describe('Operation', function() {
         xdrObj
           .body()
           .value()
-          .maxAmounta()
+          .maxAmountA()
           .toString()
       ).to.equal('100000000');
       expect(
@@ -2668,7 +2668,7 @@ describe('Operation', function() {
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
       expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
-      expect(operation.maxAmounta).to.be.equals(opts.maxAmounta);
+      expect(operation.maxAmountA).to.be.equals(opts.maxAmountA);
       expect(operation.maxAmountB).to.be.equals(opts.maxAmountB);
       expect(operation.minPrice).to.be.equals(opts.minPrice.toString());
       expect(operation.maxPrice).to.be.equals(opts.maxPrice.toString());
@@ -2694,10 +2694,10 @@ describe('Operation', function() {
 
       opts.amount = '10';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /minAmounta argument is required/
+        /minAmountA argument is required/
       );
 
-      opts.minAmounta = '10000';
+      opts.minAmountA = '10000';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
         /minAmountB argument is required/
       );
@@ -2712,7 +2712,7 @@ describe('Operation', function() {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
         amount: '5.0000000',
-        minAmounta: '10.0000000',
+        minAmountA: '10.0000000',
         minAmountB: '20.0000000'
       };
       const op = StellarBase.Operation.liquidityPoolWithdraw(opts);
@@ -2731,7 +2731,7 @@ describe('Operation', function() {
         xdrObj
           .body()
           .value()
-          .minAmounta()
+          .minAmountA()
           .toString()
       ).to.equal('100000000');
       expect(
@@ -2746,7 +2746,7 @@ describe('Operation', function() {
       expect(operation.type).to.be.equal('liquidityPoolWithdraw');
       expect(operation.liquidityPoolId).to.be.equals(opts.liquidityPoolId);
       expect(operation.amount).to.be.equals(opts.amount);
-      expect(operation.minAmounta).to.be.equals(opts.minAmounta);
+      expect(operation.minAmountA).to.be.equals(opts.minAmountA);
       expect(operation.minAmountB).to.be.equals(opts.minAmountB);
     });
   });

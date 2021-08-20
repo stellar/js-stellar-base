@@ -1,4 +1,4 @@
-// The type definitions inside the namespace xdr were automatically generated on 2021-03-19T18:40:30Z
+// The type definitions inside the namespace xdr were automatically generated on 2021-08-20T10:57:07-03:00
 // using https://github.com/stellar/dts-xdr.
 // DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
 
@@ -2228,9 +2228,9 @@ export namespace xdr {
   }
 
   class LiquidityPoolConstantProductParameters {
-    constructor(attributes: { asseta: Asset; assetB: Asset; fee: number });
+    constructor(attributes: { assetA: Asset; assetB: Asset; fee: number });
 
-    asseta(value?: Asset): Asset;
+    assetA(value?: Asset): Asset;
 
     assetB(value?: Asset): Asset;
 
@@ -4775,7 +4775,7 @@ export namespace xdr {
   class LiquidityPoolDepositOp {
     constructor(attributes: {
       liquidityPoolId: PoolId;
-      maxAmounta: Int64;
+      maxAmountA: Int64;
       maxAmountB: Int64;
       minPrice: Price;
       maxPrice: Price;
@@ -4783,7 +4783,7 @@ export namespace xdr {
 
     liquidityPoolId(value?: PoolId): PoolId;
 
-    maxAmounta(value?: Int64): Int64;
+    maxAmountA(value?: Int64): Int64;
 
     maxAmountB(value?: Int64): Int64;
 
@@ -4819,7 +4819,7 @@ export namespace xdr {
     constructor(attributes: {
       liquidityPoolId: PoolId;
       amount: Int64;
-      minAmounta: Int64;
+      minAmountA: Int64;
       minAmountB: Int64;
     });
 
@@ -4827,7 +4827,7 @@ export namespace xdr {
 
     amount(value?: Int64): Int64;
 
-    minAmounta(value?: Int64): Int64;
+    minAmountA(value?: Int64): Int64;
 
     minAmountB(value?: Int64): Int64;
 
