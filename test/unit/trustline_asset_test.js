@@ -2,7 +2,7 @@ describe('TrustLineAsset', function() {
   describe('constructor', function() {
     it('throws an error when no parameter is provided', function() {
       expect(() => new StellarBase.TrustLineAsset()).to.throw(
-        /Do not instantiate TrustLineAsset objects directly, use the class static methods instead./
+        /Must provide either code, issuer or liquidityPoolId/
       );
     });
 
@@ -56,7 +56,7 @@ describe('TrustLineAsset', function() {
 
   describe('getCode()', function() {
     it('returns an issuer for a native asset', function() {
-      const asset = new StellarBase.TrustLineAsset.native();
+      const asset = StellarBase.TrustLineAsset.native();
       expect(asset.getCode()).to.be.equal('XLM');
     });
 
@@ -78,7 +78,7 @@ describe('TrustLineAsset', function() {
 
   describe('getIssuer()', function() {
     it('returns undefined issuer for a native asset', function() {
-      const asset = new StellarBase.TrustLineAsset.native();
+      const asset = StellarBase.TrustLineAsset.native();
       expect(asset.getIssuer()).to.be.undefined;
     });
 
@@ -102,7 +102,7 @@ describe('TrustLineAsset', function() {
 
   describe('getLiquidityPoolId()', function() {
     it('returns undefined liquidity pool ID for a native asset', function() {
-      const asset = new StellarBase.TrustLineAsset.native();
+      const asset = StellarBase.TrustLineAsset.native();
       expect(asset.getLiquidityPoolId()).to.be.undefined;
     });
 
@@ -156,7 +156,7 @@ describe('TrustLineAsset', function() {
 
   describe('toXDRObject()', function() {
     it('parses a native asset object', function() {
-      const asset = new StellarBase.TrustLineAsset.native();
+      const asset = StellarBase.TrustLineAsset.native();
       const xdr = asset.toXDRObject();
       expect(xdr.toXDR().toString()).to.be.equal(
         Buffer.from([0, 0, 0, 0]).toString()

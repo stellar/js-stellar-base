@@ -28,18 +28,6 @@ import { StrKey } from './strkey';
  */
 export class ChangeTrustAsset {
   constructor(code, issuer, liquidityPoolParameters) {
-    const callerFilename = new Error().stack
-      .replace('Error\n', '')
-      .split('\n')[1]
-      .split('/')
-      .slice(-1)[0]
-      .split('/')[0];
-    if (!callerFilename.startsWith('change_trust_asset.js')) {
-      throw new Error(
-        'Do not instantiate ChangeTrustAsset objects directly, use the class static methods instead.'
-      );
-    }
-
     if (!code && !issuer && !liquidityPoolParameters) {
       throw new Error(
         'Must provide either code, issuer or liquidityPoolParameters'

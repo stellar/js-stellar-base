@@ -526,7 +526,7 @@ describe('Operation', function() {
 
   describe('.changeTrust()', function() {
     it('creates a changeTrustOp', function() {
-      let asset = new StellarBase.ChangeTrustAsset.creditAsset(
+      let asset = StellarBase.ChangeTrustAsset.creditAsset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
@@ -549,7 +549,7 @@ describe('Operation', function() {
     });
 
     it('creates a changeTrustOp with limit', function() {
-      let asset = new StellarBase.ChangeTrustAsset.creditAsset(
+      let asset = StellarBase.ChangeTrustAsset.creditAsset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
@@ -584,7 +584,7 @@ describe('Operation', function() {
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       const fee = StellarBase.LiquidityPoolFeeV18;
-      const asset = new StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
         assetA,
         assetB,
         fee
@@ -609,7 +609,7 @@ describe('Operation', function() {
     });
 
     it('deletes a trustline', function() {
-      let asset = new StellarBase.ChangeTrustAsset.creditAsset(
+      let asset = StellarBase.ChangeTrustAsset.creditAsset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );

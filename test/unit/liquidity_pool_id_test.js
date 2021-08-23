@@ -70,7 +70,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
   });
 
   it('returns poolId correctly, based on stellar-core tests', function() {
-    // The tests below were extracted from https://github.com/stellar/stellar-core/blob/c5f6349b240818f716617ca6e0f08d295a6fad9a/src/transactions/test/LiquidityPoolTradeTests.cpp#L430-L526
+    // The tests below were copied from https://github.com/stellar/stellar-core/blob/c5f6349b240818f716617ca6e0f08d295a6fad9a/src/transactions/test/LiquidityPoolTradeTests.cpp#L430-L526
     const issuer1 = StellarBase.StrKey.encodeEd25519PublicKey(
       Buffer.from(
         '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
