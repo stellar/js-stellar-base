@@ -584,7 +584,7 @@ describe('Operation', function() {
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       const fee = StellarBase.LiquidityPoolFeeV18;
-      const asset = new StellarBase.ChangeTrustAsset.liquidityPoolSharesAsset({
+      const asset = new StellarBase.ChangeTrustAsset.liquidityPoolAsset({
         assetA,
         assetB,
         fee

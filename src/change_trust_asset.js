@@ -103,7 +103,7 @@ export class ChangeTrustAsset {
    * @return {ChangeTrustAsset}
    * @memberof ChangeTrustAsset
    */
-  static liquidityPoolSharesAsset(liquidityPoolParameters) {
+  static liquidityPoolAsset(liquidityPoolParameters) {
     return new ChangeTrustAsset(undefined, undefined, liquidityPoolParameters);
   }
 
@@ -139,7 +139,7 @@ export class ChangeTrustAsset {
       case xdr.AssetType.assetTypePoolShare():
         // TODO: review if this is correct
         liquidityPoolParameters = ctAssetXdr.liquidityPool().constantProduct();
-        return this.liquidityPoolSharesAsset({
+        return this.liquidityPoolAsset({
           assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
           assetB: Asset.fromOperation(liquidityPoolParameters.assetB()),
           fee: liquidityPoolParameters.fee()
