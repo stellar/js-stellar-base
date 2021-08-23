@@ -31,3 +31,6 @@ jobs:
 
     - name: Run Browser Tests
       run: gulp test:browser
+
+    - name: Run Linter
+      run: yarn dtslint
