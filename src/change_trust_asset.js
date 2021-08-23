@@ -231,7 +231,7 @@ export class ChangeTrustAsset {
    * @returns {boolean} `true` if this change trust asset object is the native asset.
    */
   isNative() {
-    return this.code && !this.issuer;
+    return this.code && this.code.toLowerCase() === 'xlm' && !this.issuer;
   }
 
   /**

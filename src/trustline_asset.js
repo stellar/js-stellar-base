@@ -192,7 +192,7 @@ export class TrustLineAsset {
    * @returns {boolean} `true` if this trustline asset object is the native asset.
    */
   isNative() {
-    return this.code && !this.issuer;
+    return this.code && this.code.toLowerCase() === 'xlm' && !this.issuer;
   }
 
   /**
