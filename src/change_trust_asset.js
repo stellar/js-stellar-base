@@ -22,8 +22,8 @@ import { StrKey } from './strkey';
  * @param {string} code - The asset code.
  * @param {string} issuer - The account ID of the asset issuer.
  * @param {LiquidityPoolParameters} liquidityPoolParameters – The liquidity pool parameters.
- * @param {Asset} liquidityPoolParameters.assetA – The first asset in the Pool, it must respect the rule assetA < assetB.
- * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB.
+ * @param {Asset} liquidityPoolParameters.assetA – The first asset in the Pool, it must respect the rule assetA < assetB. See validateLexicographicAssetsOrder() for more details on how assets are sorted.
+ * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB. See validateLexicographicAssetsOrder() for more details on how assets are sorted.
  * @param {number} liquidityPoolParameters.fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
 export class ChangeTrustAsset {
