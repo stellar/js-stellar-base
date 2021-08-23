@@ -63,8 +63,8 @@ export class Asset {
 export class ChangeTrustAsset {
   static native(): ChangeTrustAsset;
   static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset;
-
-  constructor(code?: string, issuer?: string, liquidityPoolParameters?: LiquidityPoolParameters);
+  static creditAsset(code: string, issuer?: string): ChangeTrustAsset;
+  static liquidityPoolSharesAsset(liquidityPoolParameters: LiquidityPoolParameters): ChangeTrustAsset;
 
   getCode(): string;
   getIssuer(): string;

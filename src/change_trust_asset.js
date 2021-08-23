@@ -69,6 +69,33 @@ export class ChangeTrustAsset {
   }
 
   /**
+   * Returns a change trust asset object of the type "credit asset". Can be a
+   * native or an issued asset.
+   * @static
+   * @param {string} code - The asset code.
+   * @param {string} issuer - The account ID of the asset issuer.
+   * @return {ChangeTrustAsset}
+   * @memberof ChangeTrustAsset
+   */
+  static creditAsset(code, issuer) {
+    return new ChangeTrustAsset(code, issuer);
+  }
+
+  /**
+   * Returns a change trust asset object of the type "liquidity pool shares".
+   * @static
+   * @param {LiquidityPoolParameters} liquidityPoolParameters – The liquidity pool parameters.
+   * @param {Asset} liquidityPoolParameters.assetA – The first asset in the Pool, it must respect the rule assetA < assetB.
+   * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB.
+   * @param {number} liquidityPoolParameters.fee – The liquidity pool fee. For now the only fee supported is `30`.
+   * @return {ChangeTrustAsset}
+   * @memberof ChangeTrustAsset
+   */
+  static liquidityPoolSharesAsset(liquidityPoolParameters) {
+    return new ChangeTrustAsset(undefined, undefined, liquidityPoolParameters);
+  }
+
+  /**
    * Returns a change trust asset object for the native asset.
    * @returns {ChangeTrustAsset}
    */
@@ -100,7 +127,7 @@ export class ChangeTrustAsset {
       case xdr.AssetType.assetTypePoolShare():
         // TODO: review if this is correct
         liquidityPoolParameters = ctAssetXdr.liquidityPool().constantProduct();
-        return new this(null, null, {
+        return this.liquidityPoolSharesAsset({
           assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
           assetB: Asset.fromOperation(liquidityPoolParameters.assetB()),
           fee: liquidityPoolParameters.fee()
