@@ -12,7 +12,7 @@ describe('ChangeTrustAsset', function() {
   describe('constructor', function() {
     it('throws an error when no parameter is provided', function() {
       expect(() => new StellarBase.ChangeTrustAsset()).to.throw(
-        /Must provide either code, issuer or liquidityPoolParameters/
+        /Do not instantiate ChangeTrustAsset objects directly, use the class static methods instead./
       );
     });
 
