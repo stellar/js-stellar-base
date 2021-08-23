@@ -57,7 +57,7 @@ describe('TrustLineAsset', function() {
   describe('getCode()', function() {
     it('returns an issuer for a native asset', function() {
       const asset = StellarBase.TrustLineAsset.native();
-      expect(asset.getCode()).to.be.equal('XLM');
+      expect(asset.getCode()).to.eq('XLM');
     });
 
     it('returns a code for a non-native asset', function() {
@@ -65,7 +65,7 @@ describe('TrustLineAsset', function() {
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      expect(asset.getCode()).to.be.equal('USD');
+      expect(asset.getCode()).to.eq('USD');
     });
 
     it('returns undefined code for a liquidity pool asset', function() {
@@ -87,7 +87,7 @@ describe('TrustLineAsset', function() {
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      expect(asset.getIssuer()).to.be.equal(
+      expect(asset.getIssuer()).to.eq(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
     });
@@ -118,7 +118,7 @@ describe('TrustLineAsset', function() {
       const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
-      expect(asset.getLiquidityPoolId()).to.be.equal(
+      expect(asset.getLiquidityPoolId()).to.eq(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
     });
@@ -158,7 +158,7 @@ describe('TrustLineAsset', function() {
     it('parses a native asset object', function() {
       const asset = StellarBase.TrustLineAsset.native();
       const xdr = asset.toXDRObject();
-      expect(xdr.toXDR().toString()).to.be.equal(
+      expect(xdr.toXDR().toString()).to.eq(
         Buffer.from([0, 0, 0, 0]).toString()
       );
     });
@@ -173,8 +173,8 @@ describe('TrustLineAsset', function() {
       expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
 
-      expect(xdr.arm()).to.equal('alphaNum4');
-      expect(xdr.value().assetCode()).to.equal('USD\0');
+      expect(xdr.arm()).to.eq('alphaNum4');
+      expect(xdr.value().assetCode()).to.eq('USD\0');
     });
 
     it('parses a 4-alphanum asset object', function() {
@@ -187,8 +187,8 @@ describe('TrustLineAsset', function() {
       expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
 
-      expect(xdr.arm()).to.equal('alphaNum4');
-      expect(xdr.value().assetCode()).to.equal('BART');
+      expect(xdr.arm()).to.eq('alphaNum4');
+      expect(xdr.value().assetCode()).to.eq('BART');
     });
 
     it('parses a 5-alphanum asset object', function() {
@@ -201,8 +201,8 @@ describe('TrustLineAsset', function() {
       expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
 
-      expect(xdr.arm()).to.equal('alphaNum12');
-      expect(xdr.value().assetCode()).to.equal('12345\0\0\0\0\0\0\0');
+      expect(xdr.arm()).to.eq('alphaNum12');
+      expect(xdr.value().assetCode()).to.eq('12345\0\0\0\0\0\0\0');
     });
 
     it('parses a 12-alphanum asset object', function() {
@@ -215,8 +215,8 @@ describe('TrustLineAsset', function() {
       expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
 
-      expect(xdr.arm()).to.equal('alphaNum12');
-      expect(xdr.value().assetCode()).to.equal('123456789012');
+      expect(xdr.arm()).to.eq('alphaNum12');
+      expect(xdr.value().assetCode()).to.eq('123456789012');
     });
 
     it('parses a liquidity pool trustline asset object', function() {
@@ -226,11 +226,11 @@ describe('TrustLineAsset', function() {
       const xdr = asset.toXDRObject();
 
       expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
-      expect(xdr.arm()).to.equal('liquidityPoolId');
-      expect(xdr.liquidityPoolId().toString('hex')).to.equal(
+      expect(xdr.arm()).to.eq('liquidityPoolId');
+      expect(xdr.liquidityPoolId().toString('hex')).to.eq(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
-      expect(xdr.liquidityPoolId().toString('hex')).to.equal(
+      expect(xdr.liquidityPoolId().toString('hex')).to.eq(
         asset.getLiquidityPoolId()
       );
     });
@@ -242,8 +242,8 @@ describe('TrustLineAsset', function() {
       const asset = StellarBase.TrustLineAsset.fromOperation(xdr);
 
       expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
-      expect(asset.isNative()).to.equal(true);
-      expect(asset.getAssetType()).to.equal('native');
+      expect(asset.isNative()).to.eq(true);
+      expect(asset.getAssetType()).to.eq('native');
     });
 
     it('parses a 4-alphanum asset XDR', function() {
@@ -261,9 +261,9 @@ describe('TrustLineAsset', function() {
       const asset = StellarBase.TrustLineAsset.fromOperation(xdr);
 
       expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
-      expect(asset.getCode()).to.equal(assetCode);
-      expect(asset.getIssuer()).to.equal(issuer);
-      expect(asset.getAssetType()).to.equal('credit_alphanum4');
+      expect(asset.getCode()).to.eq(assetCode);
+      expect(asset.getIssuer()).to.eq(issuer);
+      expect(asset.getAssetType()).to.eq('credit_alphanum4');
     });
 
     it('parses a 12-alphanum asset XDR', function() {
@@ -281,9 +281,9 @@ describe('TrustLineAsset', function() {
       const asset = StellarBase.TrustLineAsset.fromOperation(xdr);
 
       expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
-      expect(asset.getCode()).to.equal(assetCode);
-      expect(asset.getIssuer()).to.equal(issuer);
-      expect(asset.getAssetType()).to.equal('credit_alphanum12');
+      expect(asset.getCode()).to.eq(assetCode);
+      expect(asset.getIssuer()).to.eq(issuer);
+      expect(asset.getAssetType()).to.eq('credit_alphanum12');
     });
 
     it('parses a liquidityPoolId asset XDR', function() {
@@ -297,15 +297,15 @@ describe('TrustLineAsset', function() {
 
       const asset = StellarBase.TrustLineAsset.fromOperation(xdr);
       expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
-      expect(asset.getLiquidityPoolId()).to.equal(poolId);
-      expect(asset.getAssetType()).to.equal('liquidity_pool_shares');
+      expect(asset.getLiquidityPoolId()).to.eq(poolId);
+      expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
     });
   });
 
   describe('toString()', function() {
     it("returns 'native' for native asset", function() {
       const asset = StellarBase.TrustLineAsset.native();
-      expect(asset.toString()).to.be.equal('native');
+      expect(asset.toString()).to.eq('native');
     });
 
     it("returns '<code>:<issuer>' for non-native asset", function() {
@@ -313,7 +313,7 @@ describe('TrustLineAsset', function() {
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      expect(asset.toString()).to.be.equal(
+      expect(asset.toString()).to.eq(
         'USD:GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
     });
@@ -322,7 +322,7 @@ describe('TrustLineAsset', function() {
       const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
-      expect(asset.toString()).to.be.equal(
+      expect(asset.toString()).to.eq(
         'liquidity_pool:dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
     });
