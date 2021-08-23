@@ -289,7 +289,6 @@ const trust = StellarSdk.xdr.SetTrustLineFlagsOp.fromXDR(
 );
 trust; // $ExpectType SetTrustLineFlagsOp
 
-// TODO: check if this is correct
 const lpDeposit = StellarSdk.xdr.LiquidityPoolDepositOp.fromXDR(
   // tslint:disable:max-line-length
   '3XsauDHCczEN2+xvl4cKqDwvvXjOIq3tN+y/TzOA+scAAAAABfXhAAAAAAAL68IAAAAACQAAABQAAAALAAAAFA==',
@@ -297,7 +296,6 @@ const lpDeposit = StellarSdk.xdr.LiquidityPoolDepositOp.fromXDR(
 );
 lpDeposit; // $ExpectType LiquidityPoolDepositOp
 
-// TODO: check if this is correct
 const lpWithdraw = StellarSdk.xdr.LiquidityPoolWithdrawOp.fromXDR(
   // tslint:disable:max-line-length
   '3XsauDHCczEN2+xvl4cKqDwvvXjOIq3tN+y/TzOA+scAAAAAAvrwgAAAAAAF9eEAAAAAAAvrwgA=',

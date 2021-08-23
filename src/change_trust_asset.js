@@ -125,7 +125,6 @@ export class ChangeTrustAsset {
         code = trimEnd(anum.assetCode(), '\0');
         return new this(code, issuer);
       case xdr.AssetType.assetTypePoolShare():
-        // TODO: review if this is correct
         liquidityPoolParameters = ctAssetXdr.liquidityPool().constantProduct();
         return this.liquidityPoolAsset({
           assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
@@ -147,7 +146,6 @@ export class ChangeTrustAsset {
     }
 
     if (this.isLiquidityPool()) {
-      // TODO: review if this is correct
       const { assetA, assetB, fee } = this.getLiquidityPoolParameters();
       const lpConstantProductParamsXdr = new xdr.LiquidityPoolConstantProductParameters(
         {

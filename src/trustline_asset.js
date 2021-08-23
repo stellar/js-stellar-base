@@ -101,7 +101,6 @@ export class TrustLineAsset {
         code = trimEnd(anum.assetCode(), '\0');
         return new this(code, issuer);
       case xdr.AssetType.assetTypePoolShare():
-        // TODO: review if this is correct
         liquidityPoolId = tlAssetXdr.liquidityPoolId().toString('hex');
         return new this(null, null, liquidityPoolId);
       default:
@@ -119,7 +118,6 @@ export class TrustLineAsset {
     }
 
     if (this.isLiquidityPool()) {
-      // TODO: review if this is correct
       const xdrPoolId = xdr.PoolId.fromXDR(this.liquidityPoolId, 'hex');
       return new xdr.TrustLineAsset('assetTypePoolShare', xdrPoolId);
     }
