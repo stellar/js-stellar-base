@@ -27,8 +27,11 @@ jobs:
         gulp
 
     - name: Run Tests
-    - uses: cypress-io/github-action@v2
-      with:
-        start: gulp test
-        wait-on: 'http://localhost:9876/'
-        wait-on-timeout: 120
+      run: yarn test
+
+    # - name: Run Browser Tests
+    # - uses: cypress-io/github-action@v2
+    #   with:
+    #     start: gulp test
+    #     wait-on: 'http://localhost:9876/'
+    #     wait-on-timeout: 120
