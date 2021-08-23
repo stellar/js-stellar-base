@@ -2094,7 +2094,7 @@ describe('Operation', function() {
     it('creates a revokeTrustlineSponsorship', function() {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      var asset = new StellarBase.TrustLineAsset(
+      var asset = StellarBase.TrustLineAsset.creditAsset(
         'USDUSD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
@@ -2112,9 +2112,7 @@ describe('Operation', function() {
     it('creates a revokeTrustlineSponsorship for a liquidity pool', function() {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      const asset = new StellarBase.TrustLineAsset(
-        undefined,
-        undefined,
+      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       const op = StellarBase.Operation.revokeTrustlineSponsorship({

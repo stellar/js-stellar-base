@@ -22,6 +22,18 @@ import { StrKey } from './strkey';
  */
 export class TrustLineAsset {
   constructor(code, issuer, liquidityPoolId) {
+    const callerFilename = new Error().stack
+      .replace('Error\n', '')
+      .split('\n')[1]
+      .split('/')
+      .slice(-1)[0]
+      .split('/')[0];
+    if (!callerFilename.startsWith('trustline_asset.js')) {
+      throw new Error(
+        'Do not instantiate TrustLineAsset objects directly, use the class static methods instead.'
+      );
+    }
+
     if (!code && !issuer && !liquidityPoolId) {
       throw new Error('Must provide either code, issuer or liquidityPoolId');
     }
@@ -45,6 +57,30 @@ export class TrustLineAsset {
     this.code = code;
     this.issuer = issuer;
     this.liquidityPoolId = liquidityPoolId;
+  }
+
+  /**
+   * Returns a trustline asset object of the type "credit asset". Can be a
+   * native or an issued asset.
+   * @static
+   * @param {string} code - The asset code.
+   * @param {string} issuer - The account ID of the asset issuer.
+   * @return {TrustLineAsset}
+   * @memberof TrustLineAsset
+   */
+  static creditAsset(code, issuer) {
+    return new TrustLineAsset(code, issuer);
+  }
+
+  /**
+   * Returns a trustline asset object of the type "liquidity pool ID".
+   * @static
+   * @param {string} liquidityPoolId - The ID of the liquidity pool in string 'hex'.
+   * @return {TrustLineAsset}
+   * @memberof TrustLineAsset
+   */
+  static liquidityPoolAsset(liquidityPoolId) {
+    return new TrustLineAsset(undefined, undefined, liquidityPoolId);
   }
 
   /**
