@@ -26,8 +26,11 @@ jobs:
         npm install
         gulp
 
-    - name: Run Tests
+    - name: Run Node Tests
       run: yarn test
+
+    - name: Run Browser Tests
+      run: gulp test:browser
 
     # - name: Run Browser Tests
     # - uses: cypress-io/github-action@v2
