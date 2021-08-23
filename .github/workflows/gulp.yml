@@ -31,10 +31,3 @@ jobs:
 
     - name: Run Browser Tests
       run: gulp test:browser
-
-    # - name: Run Browser Tests
-    # - uses: cypress-io/github-action@v2
-    #   with:
-    #     start: gulp test
-    #     wait-on: 'http://localhost:9876/'
-    #     wait-on-timeout: 120
