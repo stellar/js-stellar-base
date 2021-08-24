@@ -6,12 +6,6 @@ module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
     browsers: ['FirefoxHeadless', 'ChromeHeadless'],
-    customLaunchers: {
-      FirefoxHeadless: {
-        base: 'Firefox',
-        flags: ['-headless']
-      }
-    },
 
     files: ['dist/stellar-base.js', 'test/unit/**/*.js'],
 
