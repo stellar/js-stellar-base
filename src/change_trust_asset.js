@@ -1,11 +1,7 @@
 import clone from 'lodash/clone';
-import padEnd from 'lodash/padEnd';
-import trimEnd from 'lodash/trimEnd';
 import xdr from './generated/stellar-xdr_generated';
 import { Asset } from './asset';
-import { Keypair } from './keypair';
 import { LiquidityPoolFeeV18, getLiquidityPoolId } from './liquidity_pool_id';
-import { StrKey } from './strkey';
 
 /**
  * ChangeTrustAsset class represents a trustline change to either a liquidity
@@ -26,7 +22,7 @@ import { StrKey } from './strkey';
  * @param {Asset} liquidityPoolParameters.assetB – The second asset in the Pool, it must respect the rule assetA < assetB. See validateLexicographicAssetsOrder() for more details on how assets are sorted.
  * @param {number} liquidityPoolParameters.fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
-export class ChangeTrustAsset {
+export class ChangeTrustAsset extends Asset {
   constructor(code, issuer, liquidityPoolParameters) {
     if (!code && !issuer && !liquidityPoolParameters) {
       throw new Error(
@@ -40,25 +36,15 @@ export class ChangeTrustAsset {
       );
     }
 
-    // Validate code & issuer.
-    if ((code || issuer) && !/^[a-zA-Z0-9]{1,12}$/.test(code)) {
-      throw new Error(
-        'Asset code is invalid (maximum alphanumeric, 12 characters at max)'
-      );
-    }
-    if (code && String(code).toLowerCase() !== 'xlm' && !issuer) {
-      throw new Error('Issuer cannot be null');
-    }
-    if (issuer && !StrKey.isValidEd25519PublicKey(issuer)) {
-      throw new Error('Issuer is invalid');
-    }
-
-    this.code = code;
-    this.issuer = issuer;
-    if (code) {
-      // return early if it's an asset with code.
+    if (!liquidityPoolParameters) {
+      super(code, issuer);
+      this.xdrClass = xdr.ChangeTrustAsset;
       return;
     }
+
+    // We need to call the super constructor this way because Asset requires a valid code and issuer.
+    super('XLM');
+    this.code = undefined;
 
     // Validate liquidity pool params.
     const { assetA, assetB, fee } = liquidityPoolParameters;
@@ -72,6 +58,7 @@ export class ChangeTrustAsset {
       throw new Error('fee is invalid');
     }
     this.liquidityPoolParameters = liquidityPoolParameters;
+    this.xdrClass = xdr.ChangeTrustAsset;
   }
 
   /**
@@ -115,31 +102,18 @@ export class ChangeTrustAsset {
    * @returns {ChangeTrustAsset}
    */
   static fromOperation(ctAssetXdr) {
-    let anum;
-    let code;
-    let issuer;
-    let liquidityPoolParameters;
-    switch (ctAssetXdr.switch()) {
-      case xdr.AssetType.assetTypeNative():
-        return this.native();
-      case xdr.AssetType.assetTypeCreditAlphanum4():
-        anum = ctAssetXdr.alphaNum4();
-      /* falls through */
-      case xdr.AssetType.assetTypeCreditAlphanum12():
-        anum = anum || ctAssetXdr.alphaNum12();
-        issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
-        code = trimEnd(anum.assetCode(), '\0');
-        return new this(code, issuer);
-      case xdr.AssetType.assetTypePoolShare():
-        liquidityPoolParameters = ctAssetXdr.liquidityPool().constantProduct();
-        return this.liquidityPoolAsset({
-          assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
-          assetB: Asset.fromOperation(liquidityPoolParameters.assetB()),
-          fee: liquidityPoolParameters.fee()
-        });
-      default:
-        throw new Error(`Invalid asset type: ${ctAssetXdr.switch().name}`);
+    if (ctAssetXdr.switch() === xdr.AssetType.assetTypePoolShare()) {
+      const liquidityPoolParameters = ctAssetXdr
+        .liquidityPool()
+        .constantProduct();
+      return this.liquidityPoolAsset({
+        assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
+        assetB: Asset.fromOperation(liquidityPoolParameters.assetB()),
+        fee: liquidityPoolParameters.fee()
+      });
     }
+
+    return super.fromOperation(ctAssetXdr);
   }
 
   /**
@@ -147,10 +121,6 @@ export class ChangeTrustAsset {
    * @returns {xdr.ChangeTrustAsset} XDR ChangeTrustAsset object.
    */
   toXDRObject() {
-    if (this.isNative()) {
-      return xdr.ChangeTrustAsset.assetTypeNative();
-    }
-
     if (this.isLiquidityPool()) {
       const { assetA, assetB, fee } = this.getLiquidityPoolParameters();
       const lpConstantProductParamsXdr = new xdr.LiquidityPoolConstantProductParameters(
@@ -164,40 +134,10 @@ export class ChangeTrustAsset {
         'liquidityPoolConstantProduct',
         lpConstantProductParamsXdr
       );
-      return new xdr.ChangeTrustAsset('assetTypePoolShare', lpParamsXdr);
+      return new this.xdrClass('assetTypePoolShare', lpParamsXdr);
     }
 
-    // pad code with null bytes if necessary
-    const padLength = this.code.length <= 4 ? 4 : 12;
-    const paddedCode = padEnd(this.code, padLength, '\0');
-
-    if (this.code.length <= 4) {
-      const xdrAsset = new xdr.AlphaNum4({
-        assetCode: paddedCode,
-        issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
-      });
-      return new xdr.ChangeTrustAsset('assetTypeCreditAlphanum4', xdrAsset);
-    }
-
-    const xdrAsset = new xdr.AlphaNum12({
-      assetCode: paddedCode,
-      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
-    });
-    return new xdr.ChangeTrustAsset('assetTypeCreditAlphanum12', xdrAsset);
-  }
-
-  /**
-   * @returns {string} Asset code.
-   */
-  getCode() {
-    return clone(this.code);
-  }
-
-  /**
-   * @returns {string} Asset issuer.
-   */
-  getIssuer() {
-    return clone(this.issuer);
+    return super.toXDRObject();
   }
 
   /**
@@ -217,27 +157,11 @@ export class ChangeTrustAsset {
    * * `liquidity_pool_shares`
    */
   getAssetType() {
-    if (this.isNative()) {
-      return 'native';
-    }
     if (this.isLiquidityPool()) {
       return 'liquidity_pool_shares';
     }
-    if (this.code.length >= 1 && this.code.length <= 4) {
-      return 'credit_alphanum4';
-    }
-    if (this.code.length >= 5 && this.code.length <= 12) {
-      return 'credit_alphanum12';
-    }
 
-    return null;
-  }
-
-  /**
-   * @returns {boolean} `true` if this change trust asset object is the native asset.
-   */
-  isNative() {
-    return this.code && this.code.toLowerCase() === 'xlm' && !this.issuer;
+    return super.getAssetType();
   }
 
   /**
@@ -247,23 +171,7 @@ export class ChangeTrustAsset {
     return !!this.liquidityPoolParameters;
   }
 
-  /**
-   * @param {ChangeTrustAsset} asset the ChangeTrustAsset to compare
-   * @returns {boolean} `true` if this asset equals the given asset.
-   */
-  equals(asset) {
-    return (
-      this.code === asset.getCode() &&
-      this.issuer === asset.getIssuer() &&
-      this.liquidityPoolParameters === asset.getLiquidityPoolParameters()
-    );
-  }
-
   toString() {
-    if (this.isNative()) {
-      return 'native';
-    }
-
     if (this.isLiquidityPool()) {
       const poolId = getLiquidityPoolId(
         'constant_product',
@@ -272,6 +180,6 @@ export class ChangeTrustAsset {
       return `liquidity_pool:${poolId}`;
     }
 
-    return `${this.getCode()}:${this.getIssuer()}`;
+    return super.toString();
   }
 }

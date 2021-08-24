@@ -32,6 +32,7 @@ export class Asset {
 
     this.code = code;
     this.issuer = issuer;
+    this.xdrClass = xdr.Asset;
   }
 
   /**
@@ -44,8 +45,8 @@ export class Asset {
 
   /**
    * Returns an asset object from its XDR object representation.
-   * @param {xdr.Asset} assetXdr - The asset xdr object.
-   * @returns {Asset}
+   * @param {xdr.Asset | xdr.ChangeTrustAsset} assetXdr - The asset xdr object.
+   * @returns {Asset | ChangeTrustAsset} The asset object.
    */
   static fromOperation(assetXdr) {
     let anum;
@@ -69,11 +70,11 @@ export class Asset {
 
   /**
    * Returns the xdr object for this asset.
-   * @returns {xdr.Asset} XDR Asset object
+   * @returns {xdr.Asset | xdr.ChangeTrustAsset} XDR asset object.
    */
   toXDRObject() {
     if (this.isNative()) {
-      return xdr.Asset.assetTypeNative();
+      return this.xdrClass.assetTypeNative();
     }
 
     let xdrType;
@@ -96,7 +97,7 @@ export class Asset {
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
-    return new xdr.Asset(xdrTypeString, assetType);
+    return new this.xdrClass(xdrTypeString, assetType);
   }
 
   /**
@@ -136,18 +137,23 @@ export class Asset {
   }
 
   /**
-   * @returns {boolean}  true if this asset object is the native asset.
+   * @returns {boolean}  `true` if this asset object is the native asset.
    */
   isNative() {
-    return !this.issuer;
+    return this.code && this.code.toLowerCase() === 'xlm' && !this.issuer;
   }
 
   /**
-   * @param {Asset} asset Asset to compare
-   * @returns {boolean} true if this asset equals the given asset.
+   * @param {Asset | ChangeTrustAsset} asset Asset to compare
+   * @returns {boolean} `true` if this asset equals the given asset.
    */
   equals(asset) {
-    return this.code === asset.getCode() && this.issuer === asset.getIssuer();
+    return (
+      this.code === asset.getCode() &&
+      this.issuer === asset.getIssuer() &&
+      this.liquidityPoolParameters ===
+        (asset.getLiquidityPoolParameters && asset.getLiquidityPoolParameters())
+    );
   }
 
   toString() {
