@@ -5,7 +5,7 @@ delete webpackConfig.output;
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
-    browsers: ['FirefoxHeadless'],
+    browsers: ['FirefoxHeadless', 'ChromeHeadless'],
     customLaunchers: {
       FirefoxHeadless: {
         base: 'Firefox',

@@ -35,6 +35,3 @@ jobs:
 
     - name: Run Linter
       run: yarn dtslint
-
-    - name: Is Node 14?
-      run: echo "${{ matrix.node-version == '14.x' }}"
