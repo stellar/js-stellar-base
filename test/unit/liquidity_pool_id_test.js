@@ -69,22 +69,33 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     );
   });
 
-  it('returns poolId correctly, based on stellar-core tests', function() {
-    // The tests below were copied from https://github.com/stellar/stellar-core/blob/c5f6349b240818f716617ca6e0f08d295a6fad9a/src/transactions/test/LiquidityPoolTradeTests.cpp#L430-L526
-    const issuer1 = StellarBase.StrKey.encodeEd25519PublicKey(
-      Buffer.from(
-        '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
-        'hex'
-      )
-    );
-    const issuer2 = StellarBase.StrKey.encodeEd25519PublicKey(
-      Buffer.from(
-        'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789',
-        'hex'
-      )
-    );
+  it('throws an error if assets are not in lexicographic order', function() {
+    expect(() =>
+      StellarBase.getLiquidityPoolId('constant_product', {
+        assetA: assetB,
+        assetB: assetA,
+        fee
+      })
+    ).to.throw(/Assets are not in lexicographic order/);
+  });
+});
 
-    // NATIVE and ALPHANUM4 (short and full length)
+describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests', function() {
+  // The tests below were copied from https://github.com/stellar/stellar-core/blob/c5f6349b240818f716617ca6e0f08d295a6fad9a/src/transactions/test/LiquidityPoolTradeTests.cpp#L430-L526
+  const issuer1 = StellarBase.StrKey.encodeEd25519PublicKey(
+    Buffer.from(
+      '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+      'hex'
+    )
+  );
+  const issuer2 = StellarBase.StrKey.encodeEd25519PublicKey(
+    Buffer.from(
+      'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789',
+      'hex'
+    )
+  );
+
+  it('returns poolId correctly for native and alphaNum4 (short and full length)', function() {
     let poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset.native(),
       assetB: new StellarBase.Asset('AbC', issuer1),
@@ -102,9 +113,10 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     expect(poolId.toString('hex')).to.equal(
       '80e0c5dc79ed76bb7e63681f6456136762f0d01ede94bb379dbc793e66db35e6'
     );
+  });
 
-    // NATIVE and ALPHANUM12 (short and full length)
-    poolId = StellarBase.getLiquidityPoolId('constant_product', {
+  it('returns poolId correctly for native and alphaNum12 (short and full length)', function() {
+    let poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset.native(),
       assetB: new StellarBase.Asset('AbCdEfGhIjK', issuer1),
       fee
@@ -120,9 +132,10 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     expect(poolId.toString('hex')).to.equal(
       '807e9e66653b5fda4dd4e672ff64a929fc5fdafe152eeadc07bb460c4849d711'
     );
+  });
 
-    // ALPHANUM4 and ALPHANUM12: same code different issuer
-    poolId = StellarBase.getLiquidityPoolId('constant_product', {
+  it('returns poolId correctly for alphaNum4 and alphaNum12, same code but different issuer', function() {
+    let poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset('aBc', issuer1),
       assetB: new StellarBase.Asset('aBc', issuer2),
       fee
@@ -139,9 +152,10 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     expect(poolId.toString('hex')).to.equal(
       '93fa82ecaabe987461d1e3c8e0fd6510558b86ac82a41f7c70b112281be90c71'
     );
+  });
 
-    // ALPHANUM4 before ALPHANUM12 doesn't depend on issuer or code
-    poolId = StellarBase.getLiquidityPoolId('constant_product', {
+  it('returns poolId correctly for alphaNum4 and alphaNum12 do not depend on issuer or code', function() {
+    const poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset('aBc', issuer1),
       assetB: new StellarBase.Asset('aBcDeFgHiJk', issuer2),
       fee
@@ -149,16 +163,6 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     expect(poolId.toString('hex')).to.equal(
       'c0d4c87bbaade53764b904fde2901a0353af437e9d3a976f1252670b85a36895'
     );
-  });
-
-  it('throws an error if assets are not in lexicographic order', function() {
-    expect(() =>
-      StellarBase.getLiquidityPoolId('constant_product', {
-        assetA: assetB,
-        assetB: assetA,
-        fee
-      })
-    ).to.throw(/Assets are not in lexicographic order/);
   });
 });
 
