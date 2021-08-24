@@ -33,4 +33,4 @@ jobs:
       run: gulp test:browser
 
     - name: Run Linter
-      run: yarn dtslint
+      run: node_modules/.bin/dtslint types
