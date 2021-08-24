@@ -34,6 +34,12 @@ export class ChangeTrustAsset {
       );
     }
 
+    if ((code || issuer) && liquidityPoolParameters) {
+      throw new Error(
+        'Must provide either code (and optionally issuer) or liquidityPoolParameters but not both'
+      );
+    }
+
     // Validate code & issuer.
     if ((code || issuer) && !/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(

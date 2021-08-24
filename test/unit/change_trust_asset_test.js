@@ -16,6 +16,19 @@ describe('ChangeTrustAsset', function() {
       );
     });
 
+    it('throws an error when all parameters are provided', function() {
+      expect(
+        () =>
+          new StellarBase.ChangeTrustAsset(
+            'ARST',
+            'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO',
+            { fee: 30 }
+          )
+      ).to.throw(
+        /Must provide either code \(and optionally issuer\) or liquidityPoolParameters but not both/
+      );
+    });
+
     it('throws an error when there is an asset issuer but the code is invalid', function() {
       expect(() =>
         StellarBase.ChangeTrustAsset.creditAsset(

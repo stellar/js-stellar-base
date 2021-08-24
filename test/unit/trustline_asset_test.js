@@ -6,6 +6,19 @@ describe('TrustLineAsset', function() {
       );
     });
 
+    it('throws an error when all parameters are provided', function() {
+      expect(
+        () =>
+          new StellarBase.TrustLineAsset(
+            'ARST',
+            'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO',
+            'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+          )
+      ).to.throw(
+        /Must provide either code \(and optionally issuer\) or liquidityPoolId but not both/
+      );
+    });
+
     it('throws an error when there is an asset issuer but the code is invalid', function() {
       expect(() =>
         StellarBase.TrustLineAsset.creditAsset(
