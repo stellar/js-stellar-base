@@ -35,3 +35,19 @@ jobs:
 
     - name: Run Linter
       run: yarn dtslint
+
+  send_report:
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      - name: Print Event Name
+        run: echo ${{ github.event_name }}
+      
+      - name: Is Event Push
+        run: echo ${{ github.event_name == 'push' }}
+      
+      - name: Node Version
+        run: echo ${{ matrix.node-version }}
+      
+      - name: Is Node Version 14
+        run: echo ${{ matrix.node-version == '14.x' }}
