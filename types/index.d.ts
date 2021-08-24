@@ -62,7 +62,7 @@ export class Asset {
 
 export class ChangeTrustAsset extends Asset {
   static creditAsset(code: string, issuer?: string): ChangeTrustAsset;
-  static liquidityPoolAsset(liquidityPoolParameters: LiquidityPoolParameters): ChangeTrustAsset;
+  static liquidityPoolShare(liquidityPoolParameters: LiquidityPoolParameters): ChangeTrustAsset;
   static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset;
 
   getLiquidityPoolParameters(): LiquidityPoolParameters;
@@ -936,7 +936,7 @@ export function verify(
 export class TrustLineAsset {
   static native(): TrustLineAsset;
   static creditAsset(code: string, issuer?: string): TrustLineAsset;
-  static liquidityPoolAsset(liquidityPoolId: string): TrustLineAsset;
+  static liquidityPoolShare(liquidityPoolId: string): TrustLineAsset;
   static fromOperation(xdr: xdr.TrustLineAsset): TrustLineAsset;
 
   getCode(): string;

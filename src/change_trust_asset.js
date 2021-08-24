@@ -84,7 +84,7 @@ export class ChangeTrustAsset extends Asset {
    * @return {ChangeTrustAsset}
    * @memberof ChangeTrustAsset
    */
-  static liquidityPoolAsset(liquidityPoolParameters) {
+  static liquidityPoolShare(liquidityPoolParameters) {
     return new ChangeTrustAsset(undefined, undefined, liquidityPoolParameters);
   }
 
@@ -106,7 +106,7 @@ export class ChangeTrustAsset extends Asset {
       const liquidityPoolParameters = ctAssetXdr
         .liquidityPool()
         .constantProduct();
-      return this.liquidityPoolAsset({
+      return this.liquidityPoolShare({
         assetA: Asset.fromOperation(liquidityPoolParameters.assetA()),
         assetB: Asset.fromOperation(liquidityPoolParameters.assetB()),
         fee: liquidityPoolParameters.fee()

@@ -54,13 +54,13 @@ describe('TrustLineAsset', function() {
 
     it('throws an error when pool ID is not a valid hash', function() {
       expect(() =>
-        StellarBase.TrustLineAsset.liquidityPoolAsset('abc')
+        StellarBase.TrustLineAsset.liquidityPoolShare('abc')
       ).to.throw(/Liquidity pool ID is not a valid hash/);
     });
 
     it('does not throw an error when pool ID is a valid hash', function() {
       expect(() =>
-        StellarBase.TrustLineAsset.liquidityPoolAsset(
+        StellarBase.TrustLineAsset.liquidityPoolShare(
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
         )
       ).to.not.throw;
@@ -82,7 +82,7 @@ describe('TrustLineAsset', function() {
     });
 
     it('returns undefined code for a liquidity pool asset', function() {
-      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
+      const asset = StellarBase.TrustLineAsset.liquidityPoolShare(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getCode()).to.be.undefined;
@@ -106,7 +106,7 @@ describe('TrustLineAsset', function() {
     });
 
     it('returns undefined issuer for a liquidity pool asset', function() {
-      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
+      const asset = StellarBase.TrustLineAsset.liquidityPoolShare(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getIssuer()).to.be.undefined;
@@ -128,7 +128,7 @@ describe('TrustLineAsset', function() {
     });
 
     it('returns liquidity pool ID of liquidity pool asset', function() {
-      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
+      const asset = StellarBase.TrustLineAsset.liquidityPoolShare(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getLiquidityPoolId()).to.eq(
@@ -160,7 +160,7 @@ describe('TrustLineAsset', function() {
     });
 
     it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function() {
-      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
+      const asset = StellarBase.TrustLineAsset.liquidityPoolShare(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
@@ -234,7 +234,7 @@ describe('TrustLineAsset', function() {
     });
 
     it('parses a liquidity pool trustline asset object', function() {
-      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
+      const asset = StellarBase.TrustLineAsset.liquidityPoolShare(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       const xdr = asset.toXDRObject();
@@ -333,7 +333,7 @@ describe('TrustLineAsset', function() {
     });
 
     it("returns 'liquidity_pool:<id>' for liquidity pool assets", function() {
-      const asset = StellarBase.TrustLineAsset.liquidityPoolAsset(
+      const asset = StellarBase.TrustLineAsset.liquidityPoolShare(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.toString()).to.eq(

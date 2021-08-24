@@ -82,7 +82,7 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('returns undefined code for a liquidity pool asset', function() {
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
         assetA,
         assetB,
         fee
@@ -108,7 +108,7 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('returns undefined issuer for a liquidity pool asset', function() {
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
         assetA,
         assetB,
         fee
@@ -132,7 +132,7 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('returns liquidity pool parameters for a liquidity pool asset', function() {
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
         assetA,
         assetB,
         fee
@@ -167,7 +167,7 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function() {
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
         assetA,
         assetB,
         fee
@@ -243,7 +243,7 @@ describe('ChangeTrustAsset', function() {
     });
 
     it('parses a liquidity pool trustline asset object', function() {
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
         assetA,
         assetB,
         fee
@@ -356,7 +356,7 @@ describe('ChangeTrustAsset', function() {
     });
 
     it("returns 'liquidity_pool:<pool_id>' for liquidity pool assets", function() {
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolAsset({
+      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
         assetA,
         assetB,
         fee

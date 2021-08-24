@@ -75,7 +75,7 @@ export class TrustLineAsset {
    * @return {TrustLineAsset}
    * @memberof TrustLineAsset
    */
-  static liquidityPoolAsset(liquidityPoolId) {
+  static liquidityPoolShare(liquidityPoolId) {
     return new TrustLineAsset(undefined, undefined, liquidityPoolId);
   }
 
@@ -110,7 +110,7 @@ export class TrustLineAsset {
         return new this(code, issuer);
       case xdr.AssetType.assetTypePoolShare():
         liquidityPoolId = tlAssetXdr.liquidityPoolId().toString('hex');
-        return new this(null, null, liquidityPoolId);
+        return this.liquidityPoolShare(liquidityPoolId);
       default:
         throw new Error(`Invalid asset type: ${tlAssetXdr.switch().name}`);
     }
