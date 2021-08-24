@@ -6,9 +6,9 @@ import { Keypair } from './keypair';
 import { StrKey } from './strkey';
 
 /**
- * TrustLineAsset class represents a trustline to either a liquidity pool, the
- * native asset (`XLM`) or an issued asset with an asset code / issuer account
- * ID pair.
+ * TrustLineAsset class represents the asset referenced by a trustline to either
+ * a liquidity pool, the native asset (`XLM`) or an issued asset with an asset
+ * code / issuer account ID pair.
  *
  * In case of the native asset, the code will represent `XLM` while the issuer
  * and liquidityPoolId will be empty. For an issued asset, the code and issuer
