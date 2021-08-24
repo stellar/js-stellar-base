@@ -65,6 +65,59 @@ describe('ChangeTrustAsset', function() {
     it('native asset does not throw', function() {
       expect(() => StellarBase.ChangeTrustAsset.native()).to.not.throw;
     });
+
+    it('throws an error if assetA is invalid', function() {
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({})
+      ).to.throw(/assetA is invalid/);
+
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({ assetA: 'random' })
+      ).to.throw(/assetA is invalid/);
+    });
+
+    it('throws an error if assetB is invalid', function() {
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({
+          assetA
+        })
+      ).to.throw(/assetB is invalid/);
+
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({
+          assetA,
+          assetB: 'random'
+        })
+      ).to.throw(/assetB is invalid/);
+    });
+
+    it('throws an error if assets are not ordered', function() {
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({
+          assetA: assetB,
+          assetB: assetA
+        })
+      ).to.throw(/Assets are not in lexicographic order/);
+    });
+
+    it('throws an error if fee is invalid', function() {
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({
+          assetA,
+          assetB
+        })
+      ).to.throw(/fee is invalid/);
+    });
+
+    it('does not throw when using the correct attributes', function() {
+      expect(() =>
+        StellarBase.ChangeTrustAsset.liquidityPoolShare({
+          assetA,
+          assetB,
+          fee
+        })
+      ).to.not.throw;
+    });
   });
 
   describe('getCode()', function() {
