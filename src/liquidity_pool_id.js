@@ -36,7 +36,7 @@ export function getLiquidityPoolId(
     throw new Error('fee is invalid');
   }
 
-  if (!validateLexicographicAssetsOrder(assetA, assetB)) {
+  if (Asset.compare(assetA, assetB) !== -1) {
     throw new Error('Assets are not in lexicographic order');
   }
 
@@ -48,61 +48,4 @@ export function getLiquidityPoolId(
   }).toXDR();
   const payload = Buffer.concat([lpTypeData, lpParamsData]);
   return hash(payload);
-}
-
-/**
- * validateLexicographicAssetsOrder validates if assetA < assetB:
- * 1. First compare the type (eg. native before alphanum4 before alphanum12).
- * 2. If the types are equal, compare the assets codes.
- * 3. If the asset codes are equal, compare the issuers.
- *
- * @param {Asset} assetA - The first asset in the lexicographic order.
- * @param {Asset} assetB - The second asset in the lexicographic order.
- * @return {boolean} `true` if assetA < assetB.
- */
-export function validateLexicographicAssetsOrder(assetA, assetB) {
-  if (!assetA || !(assetA instanceof Asset)) {
-    throw new Error('assetA is invalid');
-  }
-  if (!assetB || !(assetB instanceof Asset)) {
-    throw new Error('assetB is invalid');
-  }
-
-  if (assetA === assetB) {
-    return false;
-  }
-
-  // Compare asset types.
-  switch (assetA.getAssetType()) {
-    case 'native':
-      return true;
-    case 'credit_alphanum4':
-      if (assetB.getAssetType() === 'native') {
-        return false;
-      }
-      if (assetB.getAssetType() === 'credit_alphanum12') {
-        return true;
-      }
-      break;
-    case 'credit_alphanum12':
-      if (assetB.getAssetType() !== 'credit_alphanum12') {
-        return false;
-      }
-      break;
-    default:
-      throw new Error('Unexpected asset type');
-  }
-
-  // Compare asset codes.
-  switch (assetA.getCode().localeCompare(assetB.getCode())) {
-    case -1: // assetA < assetB
-      return true;
-    case 1: // assetA > assetB
-      return false;
-    default:
-      break;
-  }
-
-  // Compare asset issuers.
-  return assetA.getIssuer().localeCompare(assetB.getIssuer()) === -1;
 }

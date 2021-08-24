@@ -163,4 +163,63 @@ export class Asset {
 
     return `${this.getCode()}:${this.getIssuer()}`;
   }
+
+  /**
+   * Compares if assetA < assetB according with the criteria:
+   * 1. First compare the type (eg. native before alphanum4 before alphanum12).
+   * 2. If the types are equal, compare the assets codes.
+   * 3. If the asset codes are equal, compare the issuers.
+   *
+   * @static
+   * @param {Asset} assetA - The first asset in the lexicographic order.
+   * @param {Asset} assetB - The second asset in the lexicographic order.
+   * @return {-1 | 0 | 1} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
+   * @memberof Asset
+   */
+  static compare(assetA, assetB) {
+    if (!assetA || !(assetA instanceof Asset)) {
+      throw new Error('assetA is invalid');
+    }
+    if (!assetB || !(assetB instanceof Asset)) {
+      throw new Error('assetB is invalid');
+    }
+
+    if (assetA.equals(assetB)) {
+      return 0;
+    }
+
+    // Compare asset types.
+    switch (assetA.getAssetType()) {
+      case 'native':
+        return -1;
+      case 'credit_alphanum4':
+        if (assetB.getAssetType() === 'native') {
+          return 1;
+        }
+        if (assetB.getAssetType() === 'credit_alphanum12') {
+          return -1;
+        }
+        break;
+      case 'credit_alphanum12':
+        if (assetB.getAssetType() !== 'credit_alphanum12') {
+          return 1;
+        }
+        break;
+      default:
+        throw new Error('Unexpected asset type');
+    }
+
+    // Compare asset codes.
+    switch (assetA.getCode().localeCompare(assetB.getCode())) {
+      case -1: // assetA < assetB
+        return -1;
+      case 1: // assetA > assetB
+        return 1;
+      default:
+        break;
+    }
+
+    // Compare asset issuers.
+    return assetA.getIssuer().localeCompare(assetB.getIssuer());
+  }
 }

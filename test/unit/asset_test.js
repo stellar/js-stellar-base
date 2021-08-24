@@ -223,4 +223,90 @@ describe('Asset', function() {
       );
     });
   });
+
+  describe('compare()', function() {
+    const assetA = new StellarBase.Asset(
+      'ARST',
+      'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
+    );
+    const assetB = new StellarBase.Asset(
+      'USD',
+      'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+    );
+
+    it('throws an error if the input assets are invalid', function() {
+      expect(() => StellarBase.Asset.compare()).to.throw(/assetA is invalid/);
+
+      expect(() => StellarBase.Asset.compare(assetA)).to.throw(
+        /assetB is invalid/
+      );
+
+      expect(() => StellarBase.Asset.compare(assetA, assetB)).to.not.throw;
+    });
+
+    it('returns false if assets are equal', function() {
+      const XLM = new StellarBase.Asset.native();
+      expect(StellarBase.Asset.compare(XLM, XLM)).to.eq(0);
+      expect(StellarBase.Asset.compare(assetA, assetA)).to.eq(0);
+      expect(StellarBase.Asset.compare(assetB, assetB)).to.eq(0);
+    });
+
+    it('test if asset types are being validated as native < anum4 < anum12', function() {
+      const XLM = new StellarBase.Asset.native();
+      const anum4 = new StellarBase.Asset(
+        'ARST',
+        'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
+      );
+      const anum12 = new StellarBase.Asset(
+        'ARSTANUM12',
+        'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
+      );
+
+      expect(StellarBase.Asset.compare(XLM, XLM)).to.eq(0);
+      expect(StellarBase.Asset.compare(XLM, anum4)).to.eq(-1);
+      expect(StellarBase.Asset.compare(XLM, anum12)).to.eq(-1);
+
+      expect(StellarBase.Asset.compare(anum4, XLM)).to.eq(1);
+      expect(StellarBase.Asset.compare(anum4, anum4)).to.eq(0);
+      expect(StellarBase.Asset.compare(anum4, anum12)).to.eq(-1);
+
+      expect(StellarBase.Asset.compare(anum12, XLM)).to.eq(1);
+      expect(StellarBase.Asset.compare(anum12, anum4)).to.eq(1);
+      expect(StellarBase.Asset.compare(anum12, anum12)).to.eq(0);
+    });
+
+    it('test if asset codes are being validated as assetCodeA < assetCodeB', function() {
+      const assetARST = new StellarBase.Asset(
+        'ARST',
+        'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
+      );
+      const assetUSDX = new StellarBase.Asset(
+        'USDX',
+        'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
+      );
+
+      expect(StellarBase.Asset.compare(assetARST, assetARST)).to.eq(0);
+      expect(StellarBase.Asset.compare(assetARST, assetUSDX)).to.eq(-1);
+
+      expect(StellarBase.Asset.compare(assetUSDX, assetARST)).to.eq(1);
+      expect(StellarBase.Asset.compare(assetUSDX, assetUSDX)).to.eq(0);
+    });
+
+    it('test if asset issuers are being validated as assetIssuerA < assetIssuerB', function() {
+      const assetIssuerA = new StellarBase.Asset(
+        'ARST',
+        'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
+      );
+      const assetIssuerB = new StellarBase.Asset(
+        'ARST',
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
+      );
+
+      expect(StellarBase.Asset.compare(assetIssuerA, assetIssuerB)).to.eq(-1);
+      expect(StellarBase.Asset.compare(assetIssuerA, assetIssuerA)).to.eq(0);
+
+      expect(StellarBase.Asset.compare(assetIssuerB, assetIssuerA)).to.eq(1);
+      expect(StellarBase.Asset.compare(assetIssuerB, assetIssuerB)).to.eq(0);
+    });
+  });
 });

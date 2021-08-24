@@ -46,6 +46,7 @@ export type AssetType =
 export class Asset {
   static native(): Asset;
   static fromOperation(xdr: xdr.Asset | xdr.ChangeTrustAsset): Asset | ChangeTrustAsset;
+  static compare(assetA: Asset, assetB: Asset): -1 | 0 | 1;
 
   constructor(code: string, issuer?: string);
 
@@ -125,8 +126,6 @@ export class Keypair {
 export const LiquidityPoolFeeV18 = 30;
 
 export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
-
-export function validateLexicographicAssetsOrder(assetA: Asset, assetB: Asset): boolean;
 
 export namespace LiquidityPoolParameters {
   interface ConstantProduct {
