@@ -530,7 +530,7 @@ describe('Operation', function() {
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
-      let op = StellarBase.Operation.changeTrust({ asset: asset });
+      let op = StellarBase.Operation.changeTrust({ asset });
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
         Buffer.from(xdr, 'hex')
@@ -546,6 +546,16 @@ describe('Operation', function() {
           .toString()
       ).to.be.equal('9223372036854775807'); // MAX_INT64
       expect(obj.limit).to.be.equal('922337203685.4775807');
+    });
+
+    it('throws if creating a changeTrustOp with a regular Asset', function() {
+      const asset = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      expect(() => StellarBase.Operation.changeTrust({ asset })).to.throw(
+        /options.asset must be a ChangeTrustAsset/
+      );
     });
 
     it('creates a changeTrustOp with limit', function() {

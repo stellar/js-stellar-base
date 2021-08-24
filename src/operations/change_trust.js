@@ -2,6 +2,7 @@ import isUndefined from 'lodash/isUndefined';
 import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from '../generated/stellar-xdr_generated';
+import { ChangeTrustAsset } from '../change_trust_asset';
 
 const MAX_INT64 = '9223372036854775807';
 
@@ -20,6 +21,11 @@ const MAX_INT64 = '9223372036854775807';
  */
 export function changeTrust(opts) {
   const attributes = {};
+
+  if (!(opts.asset instanceof ChangeTrustAsset)) {
+    throw new TypeError('options.asset must be a ChangeTrustAsset');
+  }
+
   attributes.line = opts.asset.toXDRObject();
   if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
     throw new TypeError(this.constructAmountRequirementsError('limit'));

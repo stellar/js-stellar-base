@@ -346,7 +346,7 @@ export namespace OperationOptions {
     authorize?: boolean | TrustLineFlag;
   }
   interface ChangeTrust extends BaseOptions {
-    asset: Asset;
+    asset: ChangeTrustAsset;
     limit?: string;
   }
   interface CreateAccount extends BaseOptions {
