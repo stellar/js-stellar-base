@@ -32,7 +32,6 @@ export class Asset {
 
     this.code = code;
     this.issuer = issuer;
-    this.xdrClass = xdr.Asset;
   }
 
   /**
@@ -45,8 +44,8 @@ export class Asset {
 
   /**
    * Returns an asset object from its XDR object representation.
-   * @param {xdr.Asset | xdr.ChangeTrustAsset} assetXdr - The asset xdr object.
-   * @returns {Asset | ChangeTrustAsset} The asset object.
+   * @param {xdr.Asset} assetXdr - The asset xdr object.
+   * @returns {Asset}
    */
   static fromOperation(assetXdr) {
     let anum;
@@ -70,11 +69,11 @@ export class Asset {
 
   /**
    * Returns the xdr object for this asset.
-   * @returns {xdr.Asset | xdr.ChangeTrustAsset} XDR asset object.
+   * @returns {xdr.Asset} XDR Asset object
    */
   toXDRObject() {
     if (this.isNative()) {
-      return this.xdrClass.assetTypeNative();
+      return xdr.Asset.assetTypeNative();
     }
 
     let xdrType;
@@ -97,7 +96,7 @@ export class Asset {
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
-    return new this.xdrClass(xdrTypeString, assetType);
+    return new xdr.Asset(xdrTypeString, assetType);
   }
 
   /**
@@ -137,23 +136,18 @@ export class Asset {
   }
 
   /**
-   * @returns {boolean}  `true` if this asset object is the native asset.
+   * @returns {boolean}  true if this asset object is the native asset.
    */
   isNative() {
-    return this.code && this.code.toLowerCase() === 'xlm' && !this.issuer;
+    return !this.issuer;
   }
 
   /**
-   * @param {Asset | ChangeTrustAsset} asset Asset to compare
-   * @returns {boolean} `true` if this asset equals the given asset.
+   * @param {Asset} asset Asset to compare
+   * @returns {boolean} true if this asset equals the given asset.
    */
   equals(asset) {
-    return (
-      this.code === asset.getCode() &&
-      this.issuer === asset.getIssuer() &&
-      this.liquidityPoolParameters ===
-        (asset.getLiquidityPoolParameters && asset.getLiquidityPoolParameters())
-    );
+    return this.code === asset.getCode() && this.issuer === asset.getIssuer();
   }
 
   toString() {

@@ -45,7 +45,7 @@ export type AssetType =
 
 export class Asset {
   static native(): Asset;
-  static fromOperation(xdr: xdr.Asset | xdr.ChangeTrustAsset): Asset | ChangeTrustAsset;
+  static fromOperation(xdr: xdr.Asset): Asset;
   static compare(assetA: Asset, assetB: Asset): -1 | 0 | 1;
 
   constructor(code: string, issuer?: string);
@@ -54,23 +54,30 @@ export class Asset {
   getIssuer(): string;
   getAssetType(): AssetType;
   isNative(): boolean;
-  equals(other: Asset | ChangeTrustAsset): boolean;
-  toXDRObject(): xdr.Asset | xdr.ChangeTrustAsset;
+  equals(other: Asset): boolean;
+  toXDRObject(): xdr.Asset;
 
   code: string;
   issuer: string;
 }
 
-export class ChangeTrustAsset extends Asset {
+export class ChangeTrustAsset {
+  static native(): ChangeTrustAsset;
   static creditAsset(code: string, issuer?: string): ChangeTrustAsset;
   static liquidityPoolShare(liquidityPoolParameters: LiquidityPoolParameters): ChangeTrustAsset;
   static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset;
 
+  getCode(): string;
+  getIssuer(): string;
   getLiquidityPoolParameters(): LiquidityPoolParameters;
+  getAssetType(): AssetType;
+  isNative(): boolean;
   isLiquidityPool(): boolean;
   equals(other: ChangeTrustAsset): boolean;
   toXDRObject(): xdr.ChangeTrustAsset;
 
+  code: string;
+  issuer: string;
   liquidityPoolParameters: LiquidityPoolParameters;
 }
 
