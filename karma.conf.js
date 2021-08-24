@@ -5,7 +5,13 @@ delete webpackConfig.output;
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
-    browsers: ['Firefox'],
+    browsers: ['FirefoxHeadless'],
+    customLaunchers: {
+      FirefoxHeadless: {
+        base: 'Firefox',
+        flags: ['-headless']
+      }
+    },
 
     files: ['dist/stellar-base.js', 'test/unit/**/*.js'],
 
