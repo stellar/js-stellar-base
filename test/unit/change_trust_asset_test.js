@@ -180,6 +180,7 @@ describe('ChangeTrustAsset', function() {
     it('parses a native asset object', function() {
       const asset = StellarBase.ChangeTrustAsset.native();
       const xdr = asset.toXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(xdr.toXDR().toString()).to.eq(
         Buffer.from([0, 0, 0, 0]).toString()
       );

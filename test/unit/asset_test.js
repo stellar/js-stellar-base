@@ -96,6 +96,7 @@ describe('Asset', function() {
     it('parses a native asset object', function() {
       var asset = new StellarBase.Asset.native();
       var xdr = asset.toXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
       expect(xdr.toXDR().toString()).to.be.equal(
         Buffer.from([0, 0, 0, 0]).toString()
       );
