@@ -1,6 +1,5 @@
 # JS Stellar Base
 
-[![Build Status](https://travis-ci.com/stellar/js-stellar-base.svg?branch=master)](https://travis-ci.com/stellar/js-stellar-base)
 [![Code Climate](https://codeclimate.com/github/stellar/js-stellar-base/badges/gpa.svg)](https://codeclimate.com/github/stellar/js-stellar-base)
 [![Coverage Status](https://coveralls.io/repos/stellar/js-stellar-base/badge.svg?branch=master&service=github)](https://coveralls.io/github/stellar/js-stellar-base?branch=master)
 [![Dependency Status](https://david-dm.org/stellar/js-stellar-base.svg)](https://david-dm.org/stellar/js-stellar-base)
@@ -195,9 +194,8 @@ gulp test:browser
 
 You can also run `yarn test` for a simpler subset of the test cases.
 
-Tests are also run on the
-[Travis CI js-stellar-base project](https://travis-ci.org/stellar/js-stellar-base)
-automatically.
+Tests are also run automatically in Github Actions for every master commit and
+pull request.
 
 ## Documentation
 
