@@ -935,8 +935,8 @@ export function verify(
 
 export class TrustLineAsset {
   static native(): TrustLineAsset;
-  static creditAsset(code: string, issuer?: string): ChangeTrustAsset;
-  static liquidityPoolAsset(liquidityPoolId: string): ChangeTrustAsset;
+  static creditAsset(code: string, issuer?: string): TrustLineAsset;
+  static liquidityPoolAsset(liquidityPoolId: string): TrustLineAsset;
   static fromOperation(xdr: xdr.TrustLineAsset): TrustLineAsset;
 
   getCode(): string;
