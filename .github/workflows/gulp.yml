@@ -21,10 +21,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Install deps
+      run: yarn
+
     - name: Build
-      run: |
-        npm install
-        gulp
+      run: gulp
 
     - name: Run Node Tests
       run: yarn test
