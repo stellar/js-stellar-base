@@ -58,6 +58,14 @@ describe('TrustLineAsset', function() {
       ).to.throw(/Liquidity pool ID is not a valid hash/);
     });
 
+    it('throws an error when pool ID is not all lowercase', function() {
+      expect(() =>
+        StellarBase.TrustLineAsset.liquidityPoolShare(
+          'DD7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
+        )
+      ).to.throw(/Liquidity pool ID should be a lowerc case hash/);
+    });
+
     it('does not throw an error when pool ID is a valid hash', function() {
       expect(() =>
         StellarBase.TrustLineAsset.liquidityPoolShare(
