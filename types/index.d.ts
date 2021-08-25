@@ -57,6 +57,7 @@ export class Asset {
   equals(other: Asset): boolean;
   toXDRObject(): xdr.Asset;
   toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
+  toTrustLineXDRObject(): xdr.TrustLineAsset;
 
   code: string;
   issuer: string;
@@ -75,6 +76,18 @@ export class LiquidityPoolAsset {
   assetA: Asset;
   assetB: Asset;
   fee: number;
+}
+
+export class TrustLineAsset {
+  constructor(liquidityPoolId: string);
+
+  static fromOperation(xdr: xdr.TrustLineAsset): TrustLineAsset;
+
+  toXDRObject(): xdr.TrustLineAsset;
+  getLiquidityPoolId(): string;
+  equals(other: TrustLineAsset): boolean;
+
+  liquidityPoolId: string;
 }
 
 export class Claimant {
@@ -430,7 +443,7 @@ export namespace OperationOptions {
   }
   interface RevokeTrustlineSponsorship extends BaseOptions {
     account: string;
-    asset: TrustLineAsset;
+    asset: Asset | TrustLineAsset;
   }
   interface RevokeOfferSponsorship extends BaseOptions {
     seller: string;
@@ -698,7 +711,7 @@ export namespace Operation {
 
   interface RevokeTrustlineSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
     account: string;
-    asset: Asset;
+    asset: Asset | TrustLineAsset;
   }
   function revokeTrustlineSponsorship(
     options: OperationOptions.RevokeTrustlineSponsorship
@@ -934,23 +947,3 @@ export function verify(
   signature: Buffer,
   rawPublicKey: Buffer
 ): boolean;
-
-export class TrustLineAsset {
-  static native(): TrustLineAsset;
-  static creditAsset(code: string, issuer?: string): TrustLineAsset;
-  static liquidityPoolShare(liquidityPoolId: string): TrustLineAsset;
-  static fromOperation(xdr: xdr.TrustLineAsset): TrustLineAsset;
-
-  getCode(): string;
-  getIssuer(): string;
-  getLiquidityPoolId(): string;
-  getAssetType(): AssetType;
-  isNative(): boolean;
-  isLiquidityPool(): boolean;
-  equals(other: TrustLineAsset): boolean;
-  toXDRObject(): xdr.TrustLineAsset;
-
-  code: string;
-  issuer: string;
-  liquidityPoolId: string;
-}

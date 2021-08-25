@@ -92,7 +92,7 @@ describe('Asset', function() {
     });
   });
 
-  describe('toXDRObject() and toChangeTrustXDRObject()', function() {
+  describe('toXDRObject(), toChangeTrustXDRObject(), toTrustLineXDRObject', function() {
     it('parses a native asset object', function() {
       const asset = new StellarBase.Asset.native();
 
@@ -104,6 +104,12 @@ describe('Asset', function() {
 
       xdr = asset.toChangeTrustXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(xdr.toXDR().toString()).to.be.equal(
+        Buffer.from([0, 0, 0, 0]).toString()
+      );
+
+      xdr = asset.toTrustLineXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(xdr.toXDR().toString()).to.be.equal(
         Buffer.from([0, 0, 0, 0]).toString()
       );
@@ -126,6 +132,12 @@ describe('Asset', function() {
       expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum4');
       expect(xdr.value().assetCode()).to.equal('USD\0');
+
+      xdr = asset.toTrustLineXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum4');
+      expect(xdr.value().assetCode()).to.equal('USD\0');
     });
 
     it('parses a 4-alphanum asset object', function() {
@@ -141,6 +153,12 @@ describe('Asset', function() {
 
       xdr = asset.toChangeTrustXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum4');
+      expect(xdr.value().assetCode()).to.equal('BART');
+
+      xdr = asset.toTrustLineXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum4');
       expect(xdr.value().assetCode()).to.equal('BART');
@@ -162,6 +180,12 @@ describe('Asset', function() {
       expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum12');
       expect(xdr.value().assetCode()).to.equal('12345\0\0\0\0\0\0\0');
+
+      xdr = asset.toTrustLineXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum12');
+      expect(xdr.value().assetCode()).to.equal('12345\0\0\0\0\0\0\0');
     });
 
     it('parses a 12-alphanum asset object', function() {
@@ -177,6 +201,12 @@ describe('Asset', function() {
 
       xdr = asset.toChangeTrustXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum12');
+      expect(xdr.value().assetCode()).to.equal('123456789012');
+
+      xdr = asset.toTrustLineXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.TrustLineAsset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum12');
       expect(xdr.value().assetCode()).to.equal('123456789012');

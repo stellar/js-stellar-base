@@ -84,9 +84,17 @@ export class Asset {
   }
 
   /**
+   * Returns the xdr.TrustLineAsset object for this asset.
+   * @returns {xdr.TrustLineAsset} XDR asset object
+   */
+  toTrustLineXDRObject() {
+    return this._toXDRObject(xdr.TrustLineAsset);
+  }
+
+  /**
    * Returns the xdr object for this asset.
    * @param {xdr.Asset | xdr.ChangeTrustAsset} xdrAsset - The asset xdr object.
-   * @returns {xdr.Asset | xdr.ChangeTrustAsset } XDR Asset object
+   * @returns {xdr.Asset | xdr.ChangeTrustAsset | xdr.TrustLineAsset} XDR Asset object
    */
   _toXDRObject(xdrAsset = xdr.Asset) {
     if (this.isNative()) {

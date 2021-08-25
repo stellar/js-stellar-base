@@ -2,6 +2,7 @@ import isString from 'lodash/isString';
 import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
+import { Asset } from '../asset';
 import { TrustLineAsset } from '../trustline_asset';
 
 /**
@@ -45,7 +46,7 @@ export function revokeAccountSponsorship(opts = {}) {
  * @alias Operation.revokeTrustlineSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the trustline.
- * @param {TrustLineAsset} opts.asset - The trustline asset.
+ * @param {Asset | TrustLineAsset} opts.asset - The trustline asset.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.Operation} xdr operation
  *
@@ -63,14 +64,20 @@ export function revokeTrustlineSponsorship(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error('account is invalid');
   }
-  if (!(opts.asset instanceof TrustLineAsset)) {
-    throw new Error('asset is invalid');
+
+  let asset;
+  if (opts.asset instanceof Asset) {
+    asset = opts.asset.toTrustLineXDRObject();
+  } else if (opts.asset instanceof TrustLineAsset) {
+    asset = opts.asset.toXDRObject();
+  } else {
+    throw new TypeError('asset must be an Asset or TrustLineAsset');
   }
 
   const ledgerKey = xdr.LedgerKey.trustline(
     new xdr.LedgerKeyTrustLine({
       accountId: Keypair.fromPublicKey(opts.account).xdrAccountId(),
-      asset: opts.asset.toXDRObject()
+      asset
     })
   );
   const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);

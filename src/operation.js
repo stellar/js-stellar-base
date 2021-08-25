@@ -546,9 +546,15 @@ function extractRevokeSponshipDetails(attrs, result) {
           result.account = accountIdtoAddress(
             ledgerKey.trustLine().accountId()
           );
-          result.asset = TrustLineAsset.fromOperation(
-            ledgerKey.trustLine().asset()
-          );
+          const xdrAsset = ledgerKey.trustLine().asset();
+          switch (xdrAsset.switch()) {
+            case xdr.AssetType.assetTypePoolShare():
+              result.asset = TrustLineAsset.fromOperation(xdrAsset);
+              break;
+            default:
+              result.asset = Asset.fromOperation(xdrAsset);
+              break;
+          }
           break;
         }
         case xdr.LedgerEntryType.offer().name: {
