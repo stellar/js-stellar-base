@@ -525,8 +525,8 @@ describe('Operation', function() {
   });
 
   describe('.changeTrust()', function() {
-    it('creates a changeTrustOp', function() {
-      let asset = StellarBase.ChangeTrustAsset.creditAsset(
+    it('creates a changeTrustOp with Asset', function() {
+      let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
@@ -548,23 +548,13 @@ describe('Operation', function() {
       expect(obj.limit).to.be.equal('922337203685.4775807');
     });
 
-    it('throws if creating a changeTrustOp with a regular Asset', function() {
-      const asset = new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      );
-      expect(() => StellarBase.Operation.changeTrust({ asset })).to.throw(
-        /options.asset must be a ChangeTrustAsset/
-      );
-    });
-
-    it('creates a changeTrustOp with limit', function() {
-      let asset = StellarBase.ChangeTrustAsset.creditAsset(
+    it('creates a changeTrustOp with Asset and limit', function() {
+      let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       let op = StellarBase.Operation.changeTrust({
-        asset: asset,
+        asset,
         limit: '50.0000000'
       });
       var xdr = op.toXDR('hex');
@@ -594,11 +584,7 @@ describe('Operation', function() {
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       const fee = StellarBase.LiquidityPoolFeeV18;
-      const asset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
-        assetA,
-        assetB,
-        fee
-      });
+      const asset = new StellarBase.ChangeTrustAsset(assetA, assetB, fee);
       const op = StellarBase.Operation.changeTrust({ asset });
       expect(op).to.be.instanceof(StellarBase.xdr.Operation);
 
@@ -618,13 +604,38 @@ describe('Operation', function() {
       expect(operation.limit).to.be.equal('922337203685.4775807');
     });
 
-    it('deletes a trustline', function() {
-      let asset = StellarBase.ChangeTrustAsset.creditAsset(
+    it('deletes an Asset trustline', function() {
+      let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       let op = StellarBase.Operation.changeTrust({
         asset: asset,
+        limit: '0.0000000'
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('changeTrust');
+      expect(obj.line).to.be.deep.equal(asset);
+      expect(obj.limit).to.be.equal('0.0000000');
+    });
+
+    it('deletes a ChangeTrustAsset trustline', function() {
+      const assetA = new StellarBase.Asset(
+        'ARST',
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+      );
+      const assetB = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      const fee = StellarBase.LiquidityPoolFeeV18;
+      const asset = new StellarBase.ChangeTrustAsset(assetA, assetB, fee);
+      let op = StellarBase.Operation.changeTrust({
+        asset,
         limit: '0.0000000'
       });
       var xdr = op.toXDR('hex');

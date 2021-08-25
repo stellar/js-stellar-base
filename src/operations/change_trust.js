@@ -2,6 +2,7 @@ import isUndefined from 'lodash/isUndefined';
 import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from '../generated/stellar-xdr_generated';
+import { Asset } from '../asset';
 import { ChangeTrustAsset } from '../change_trust_asset';
 
 const MAX_INT64 = '9223372036854775807';
@@ -13,7 +14,7 @@ const MAX_INT64 = '9223372036854775807';
  * @function
  * @alias Operation.changeTrust
  * @param {object} opts Options object
- * @param {ChangeTrustAsset} opts.asset - The change trust asset for the trust line.
+ * @param {Asset | ChangeTrustAsset} opts.asset - The change trust asset for the trust line.
  * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
  *                                If the limit is set to "0" it deletes the trustline.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -22,11 +23,16 @@ const MAX_INT64 = '9223372036854775807';
 export function changeTrust(opts) {
   const attributes = {};
 
-  if (!(opts.asset instanceof ChangeTrustAsset)) {
-    throw new TypeError('options.asset must be a ChangeTrustAsset');
+  if (opts.asset instanceof Asset) {
+    attributes.line = opts.asset.toChangeTrustXDRObject();
+  } else if (opts.asset instanceof ChangeTrustAsset) {
+    attributes.line = opts.asset.toXDRObject();
+  } else {
+    throw new TypeError(
+      'options.asset must be an instance of Asset or ChangeTrustAsset'
+    );
   }
 
-  attributes.line = opts.asset.toXDRObject();
   if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
     throw new TypeError(this.constructAmountRequirementsError('limit'));
   }

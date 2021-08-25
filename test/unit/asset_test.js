@@ -92,68 +92,92 @@ describe('Asset', function() {
     });
   });
 
-  describe('toXDRObject()', function() {
+  describe('toXDRObject() and toChangeTrustXDRObject()', function() {
     it('parses a native asset object', function() {
-      var asset = new StellarBase.Asset.native();
-      var xdr = asset.toXDRObject();
+      const asset = new StellarBase.Asset.native();
+
+      let xdr = asset.toXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
+      expect(xdr.toXDR().toString()).to.be.equal(
+        Buffer.from([0, 0, 0, 0]).toString()
+      );
+
+      xdr = asset.toChangeTrustXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
       expect(xdr.toXDR().toString()).to.be.equal(
         Buffer.from([0, 0, 0, 0]).toString()
       );
     });
 
     it('parses a 3-alphanum asset object', function() {
-      var asset = new StellarBase.Asset(
+      const asset = new StellarBase.Asset(
         'USD',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
 
+      let xdr = asset.toXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum4');
+      expect(xdr.value().assetCode()).to.equal('USD\0');
 
+      xdr = asset.toChangeTrustXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum4');
       expect(xdr.value().assetCode()).to.equal('USD\0');
     });
 
     it('parses a 4-alphanum asset object', function() {
-      var asset = new StellarBase.Asset(
+      const asset = new StellarBase.Asset(
         'BART',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
-
+      let xdr = asset.toXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum4');
+      expect(xdr.value().assetCode()).to.equal('BART');
 
+      xdr = asset.toChangeTrustXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum4');
       expect(xdr.value().assetCode()).to.equal('BART');
     });
 
     it('parses a 5-alphanum asset object', function() {
-      var asset = new StellarBase.Asset(
+      const asset = new StellarBase.Asset(
         '12345',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
-
+      let xdr = asset.toXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum12');
+      expect(xdr.value().assetCode()).to.equal('12345\0\0\0\0\0\0\0');
 
+      xdr = asset.toChangeTrustXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum12');
       expect(xdr.value().assetCode()).to.equal('12345\0\0\0\0\0\0\0');
     });
 
     it('parses a 12-alphanum asset object', function() {
-      var asset = new StellarBase.Asset(
+      const asset = new StellarBase.Asset(
         '123456789012',
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       );
-      var xdr = asset.toXDRObject();
-
+      let xdr = asset.toXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
       expect(() => xdr.toXDR('hex')).to.not.throw();
+      expect(xdr.arm()).to.equal('alphaNum12');
+      expect(xdr.value().assetCode()).to.equal('123456789012');
 
+      xdr = asset.toChangeTrustXDRObject();
+      expect(xdr).to.be.instanceof(StellarBase.xdr.ChangeTrustAsset);
+      expect(() => xdr.toXDR('hex')).to.not.throw();
       expect(xdr.arm()).to.equal('alphaNum12');
       expect(xdr.value().assetCode()).to.equal('123456789012');
     });

@@ -72,8 +72,25 @@ export class Asset {
    * @returns {xdr.Asset} XDR Asset object
    */
   toXDRObject() {
+    return this._toXDRObject(xdr.Asset);
+  }
+
+  /**
+   * Returns the xdr object for this asset.
+   * @returns {xdr.ChangeTrustAsset} XDR Asset object
+   */
+  toChangeTrustXDRObject() {
+    return this._toXDRObject(xdr.ChangeTrustAsset);
+  }
+
+  /**
+   * Returns the xdr object for this asset.
+   * @param {xdr.Asset | xdr.ChangeTrustAsset} xdrAsset - The asset xdr object.
+   * @returns {xdr.Asset | xdr.ChangeTrustAsset} XDR Asset object
+   */
+  _toXDRObject(xdrAsset = xdr.Asset) {
     if (this.isNative()) {
-      return xdr.Asset.assetTypeNative();
+      return xdrAsset.assetTypeNative();
     }
 
     let xdrType;
@@ -96,7 +113,7 @@ export class Asset {
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
-    return new xdr.Asset(xdrTypeString, assetType);
+    return new xdrAsset(xdrTypeString, assetType);
   }
 
   /**

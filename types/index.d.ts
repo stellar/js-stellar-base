@@ -56,29 +56,25 @@ export class Asset {
   isNative(): boolean;
   equals(other: Asset): boolean;
   toXDRObject(): xdr.Asset;
+  toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
 
   code: string;
   issuer: string;
 }
 
 export class ChangeTrustAsset {
-  static native(): ChangeTrustAsset;
-  static creditAsset(code: string, issuer?: string): ChangeTrustAsset;
-  static liquidityPoolShare(liquidityPoolParameters: LiquidityPoolParameters): ChangeTrustAsset;
-  static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset;
+  constructor(assetA: Asset, assetB: Asset, fee: number);
 
-  getCode(): string;
-  getIssuer(): string;
-  getLiquidityPoolParameters(): LiquidityPoolParameters;
-  getAssetType(): AssetType;
-  isNative(): boolean;
-  isLiquidityPool(): boolean;
-  equals(other: ChangeTrustAsset): boolean;
+  static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset | Asset;
+
   toXDRObject(): xdr.ChangeTrustAsset;
+  getLiquidityPoolParameters(): LiquidityPoolParameters;
+  getAssetType(): AssetType.liquidityPoolShares;
+  equals(other: ChangeTrustAsset): boolean;
 
-  code: string;
-  issuer: string;
-  liquidityPoolParameters: LiquidityPoolParameters;
+  assetA: Asset;
+  assetB: Asset;
+  fee: number;
 }
 
 export class Claimant {
@@ -352,7 +348,7 @@ export namespace OperationOptions {
     authorize?: boolean | TrustLineFlag;
   }
   interface ChangeTrust extends BaseOptions {
-    asset: ChangeTrustAsset;
+    asset: Asset | ChangeTrustAsset;
     limit?: string;
   }
   interface CreateAccount extends BaseOptions {
@@ -540,7 +536,7 @@ export namespace Operation {
   ): xdr.Operation<AllowTrust>;
 
   interface ChangeTrust extends BaseOperation<OperationType.ChangeTrust> {
-    line: Asset;
+    line: Asset | ChangeTrustAsset;
     limit: string;
   }
   function changeTrust(
