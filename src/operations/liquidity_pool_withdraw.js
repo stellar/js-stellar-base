@@ -1,4 +1,3 @@
-import isUndefined from 'lodash/isUndefined';
 import xdr from '../generated/stellar-xdr_generated';
 
 /**
@@ -24,17 +23,17 @@ export function liquidityPoolWithdraw(opts = {}) {
   }
   attributes.liquidityPoolId = xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex');
 
-  if (isUndefined(opts.amount)) {
+  if (!this.isValidAmount(opts.amount)) {
     throw new TypeError('amount argument is required');
   }
   attributes.amount = this._toXDRAmount(opts.amount);
 
-  if (isUndefined(opts.minAmountA)) {
+  if (!this.isValidAmount(opts.minAmountA, true)) {
     throw new TypeError('minAmountA argument is required');
   }
   attributes.minAmountA = this._toXDRAmount(opts.minAmountA);
 
-  if (isUndefined(opts.minAmountB)) {
+  if (!this.isValidAmount(opts.minAmountB, true)) {
     throw new TypeError('minAmountB argument is required');
   }
   attributes.minAmountB = this._toXDRAmount(opts.minAmountB);

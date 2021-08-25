@@ -23,31 +23,33 @@ import xdr from '../generated/stellar-xdr_generated';
  * @returns {xdr.Operation} The resulting operation (xdr.LiquidityPoolDepositOp).
  */
 export function liquidityPoolDeposit(opts = {}) {
+  const { liquidityPoolId, maxAmountA, maxAmountB, minPrice, maxPrice } = opts;
   const attributes = {};
-  if (!opts.liquidityPoolId) {
+
+  if (!liquidityPoolId) {
     throw new TypeError('liquidityPoolId argument is required');
   }
-  attributes.liquidityPoolId = xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex');
+  attributes.liquidityPoolId = xdr.PoolId.fromXDR(liquidityPoolId, 'hex');
 
-  if (isUndefined(opts.maxAmountA)) {
+  if (!this.isValidAmount(maxAmountA, true)) {
     throw new TypeError('maxAmountA argument is required');
   }
-  attributes.maxAmountA = this._toXDRAmount(opts.maxAmountA);
+  attributes.maxAmountA = this._toXDRAmount(maxAmountA);
 
-  if (isUndefined(opts.maxAmountB)) {
+  if (!this.isValidAmount(maxAmountB, true)) {
     throw new TypeError('maxAmountB argument is required');
   }
-  attributes.maxAmountB = this._toXDRAmount(opts.maxAmountB);
+  attributes.maxAmountB = this._toXDRAmount(maxAmountB);
 
-  if (isUndefined(opts.minPrice)) {
+  if (isUndefined(minPrice)) {
     throw new TypeError('minPrice argument is required');
   }
-  attributes.minPrice = this._toXDRPrice(opts.minPrice);
+  attributes.minPrice = this._toXDRPrice(minPrice);
 
-  if (isUndefined(opts.maxPrice)) {
+  if (isUndefined(maxPrice)) {
     throw new TypeError('maxPrice argument is required');
   }
-  attributes.maxPrice = this._toXDRPrice(opts.maxPrice);
+  attributes.maxPrice = this._toXDRPrice(maxPrice);
 
   const liquidityPoolDepositOp = new xdr.LiquidityPoolDepositOp(attributes);
   const opAttributes = {
