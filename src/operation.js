@@ -12,7 +12,7 @@ import { Asset } from './asset';
 import { LiquidityPoolAsset } from './liquidity_pool_asset';
 import { Claimant } from './claimant';
 import { StrKey } from './strkey';
-import { LiquidityPoolId } from './trustline_asset';
+import { LiquidityPoolId } from './liquidity_pool_id';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 import {

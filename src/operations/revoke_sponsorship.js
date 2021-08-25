@@ -3,7 +3,7 @@ import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
 import { Asset } from '../asset';
-import { LiquidityPoolId } from '../trustline_asset';
+import { LiquidityPoolId } from '../liquidity_pool_id';
 
 /**
  * Create a "revoke sponsorship" operation for an account.
