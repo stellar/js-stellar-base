@@ -12,7 +12,7 @@ import { Asset } from './asset';
 import { LiquidityPoolAsset } from './liquidity_pool_asset';
 import { Claimant } from './claimant';
 import { StrKey } from './strkey';
-import { TrustLineAsset } from './trustline_asset';
+import { LiquidityPoolId } from './trustline_asset';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 import {
@@ -549,7 +549,7 @@ function extractRevokeSponshipDetails(attrs, result) {
           const xdrAsset = ledgerKey.trustLine().asset();
           switch (xdrAsset.switch()) {
             case xdr.AssetType.assetTypePoolShare():
-              result.asset = TrustLineAsset.fromOperation(xdrAsset);
+              result.asset = LiquidityPoolId.fromOperation(xdrAsset);
               break;
             default:
               result.asset = Asset.fromOperation(xdrAsset);

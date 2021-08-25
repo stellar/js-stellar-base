@@ -78,14 +78,14 @@ export class LiquidityPoolAsset {
   fee: number;
 }
 
-export class TrustLineAsset {
+export class LiquidityPoolId {
   constructor(liquidityPoolId: string);
 
-  static fromOperation(xdr: xdr.TrustLineAsset): TrustLineAsset;
+  static fromOperation(xdr: xdr.TrustLineAsset): LiquidityPoolId;
 
   toXDRObject(): xdr.TrustLineAsset;
   getLiquidityPoolId(): string;
-  equals(other: TrustLineAsset): boolean;
+  equals(other: LiquidityPoolId): boolean;
 
   liquidityPoolId: string;
 }
@@ -443,7 +443,7 @@ export namespace OperationOptions {
   }
   interface RevokeTrustlineSponsorship extends BaseOptions {
     account: string;
-    asset: Asset | TrustLineAsset;
+    asset: Asset | LiquidityPoolId;
   }
   interface RevokeOfferSponsorship extends BaseOptions {
     seller: string;
@@ -711,7 +711,7 @@ export namespace Operation {
 
   interface RevokeTrustlineSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
     account: string;
-    asset: Asset | TrustLineAsset;
+    asset: Asset | LiquidityPoolId;
   }
   function revokeTrustlineSponsorship(
     options: OperationOptions.RevokeTrustlineSponsorship

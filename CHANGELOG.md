@@ -7,7 +7,7 @@
 ### Add
 
 - Introduced new CAP-38 operations `LiquidityPoolDepositOp` and `LiquidityPoolWithdrawOp`.
-- Introduced two new types of assets, `TrustLineAsset` and `LiquidityPoolAsset`.
+- Introduced two new types of assets, `LiquidityPoolId` and `LiquidityPoolAsset`.
 
 ### Update
 
@@ -15,10 +15,10 @@
 - Extended `Operation` class with the `Operation.revokeLiquidityPoolSponsorship` helper that allows revoking a liquidity pool sponsorship.
 - Asset types now include `AssetType.liquidityPoolShares`.
 - `Operation.changeTrust` and `ChangeTrustOp` can now use `LiquidityPoolAsset` in addition to `Asset`.
+- `Operation.revokeTrustlineSponsorship` can now use `LiquidityPoolId` in addition to `Asset`.
 
 ### Breaking
 
-- Must use `TrustLineAsset` instead of `Asset` in the function `Operation.revokeTrustlineSponsorship` and the XDR objects `TrustLineEntry` and `LedgerKeyTrustLine`.
 - The `AssetAlphaNum4` and `AssetAlphaNum12` objects were renamed to `AlphaNum4` and `AlphaNum12` respectively.
 
 ## [v5.3.2](https://github.com/stellar/js-stellar-base/compare/v5.3.1..v5.3.2)

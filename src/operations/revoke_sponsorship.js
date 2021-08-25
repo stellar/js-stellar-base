@@ -3,7 +3,7 @@ import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
 import { Asset } from '../asset';
-import { TrustLineAsset } from '../trustline_asset';
+import { LiquidityPoolId } from '../trustline_asset';
 
 /**
  * Create a "revoke sponsorship" operation for an account.
@@ -46,14 +46,14 @@ export function revokeAccountSponsorship(opts = {}) {
  * @alias Operation.revokeTrustlineSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the trustline.
- * @param {Asset | TrustLineAsset} opts.asset - The trustline asset.
+ * @param {Asset | LiquidityPoolId} opts.asset - The trustline asset.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.Operation} xdr operation
  *
  * @example
  * const op = Operation.revokeTrustlineSponsorship({
  *   account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7
- *   asset: new StellarBase.TrustLineAsset(
+ *   asset: new StellarBase.LiquidityPoolId(
  *     'USDUSD',
  *     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
  *   )
@@ -68,10 +68,10 @@ export function revokeTrustlineSponsorship(opts = {}) {
   let asset;
   if (opts.asset instanceof Asset) {
     asset = opts.asset.toTrustLineXDRObject();
-  } else if (opts.asset instanceof TrustLineAsset) {
+  } else if (opts.asset instanceof LiquidityPoolId) {
     asset = opts.asset.toXDRObject();
   } else {
-    throw new TypeError('asset must be an Asset or TrustLineAsset');
+    throw new TypeError('asset must be an Asset or LiquidityPoolId');
   }
 
   const ledgerKey = xdr.LedgerKey.trustline(

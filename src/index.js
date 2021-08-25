@@ -16,7 +16,7 @@ export {
 } from './transaction_builder';
 export { Asset } from './asset';
 export { LiquidityPoolAsset } from './liquidity_pool_asset';
-export { TrustLineAsset } from './trustline_asset';
+export { LiquidityPoolId } from './trustline_asset';
 export {
   Operation,
   AuthRequiredFlag,

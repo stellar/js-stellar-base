@@ -1,13 +1,13 @@
-describe('TrustLineAsset', function() {
+describe('LiquidityPoolId', function() {
   describe('constructor', function() {
     it('throws an error when no parameter is provided', function() {
-      expect(() => new StellarBase.TrustLineAsset()).to.throw(
+      expect(() => new StellarBase.LiquidityPoolId()).to.throw(
         /liquidityPoolId cannot be empty/
       );
     });
 
     it('throws an error when pool ID is not a valid hash', function() {
-      expect(() => new StellarBase.TrustLineAsset('abc')).to.throw(
+      expect(() => new StellarBase.LiquidityPoolId('abc')).to.throw(
         /Liquidity pool ID is not a valid hash/
       );
     });
@@ -15,7 +15,7 @@ describe('TrustLineAsset', function() {
     it('throws an error when pool ID is not all lowercase', function() {
       expect(
         () =>
-          new StellarBase.TrustLineAsset(
+          new StellarBase.LiquidityPoolId(
             'DD7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
           )
       ).to.throw(/Liquidity pool ID should be a lowerc case hash/);
@@ -24,7 +24,7 @@ describe('TrustLineAsset', function() {
     it('does not throw an error when pool ID is a valid hash', function() {
       expect(
         () =>
-          new StellarBase.TrustLineAsset(
+          new StellarBase.LiquidityPoolId(
             'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
           )
       ).to.not.throw;
@@ -33,7 +33,7 @@ describe('TrustLineAsset', function() {
 
   describe('getLiquidityPoolId()', function() {
     it('returns liquidity pool ID of liquidity pool asset', function() {
-      const asset = new StellarBase.TrustLineAsset(
+      const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getLiquidityPoolId()).to.eq(
@@ -44,7 +44,7 @@ describe('TrustLineAsset', function() {
 
   describe('getAssetType()', function() {
     it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function() {
-      const asset = new StellarBase.TrustLineAsset(
+      const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
@@ -53,7 +53,7 @@ describe('TrustLineAsset', function() {
 
   describe('toXDRObject()', function() {
     it('parses a liquidity pool trustline asset object', function() {
-      const asset = new StellarBase.TrustLineAsset(
+      const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       const xdr = asset.toXDRObject();
@@ -134,8 +134,8 @@ describe('TrustLineAsset', function() {
         xdrPoolId
       );
 
-      const asset = StellarBase.TrustLineAsset.fromOperation(xdr);
-      expect(asset).to.be.instanceof(StellarBase.TrustLineAsset);
+      const asset = StellarBase.LiquidityPoolId.fromOperation(xdr);
+      expect(asset).to.be.instanceof(StellarBase.LiquidityPoolId);
       expect(asset.getLiquidityPoolId()).to.eq(poolId);
       expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
     });
@@ -143,7 +143,7 @@ describe('TrustLineAsset', function() {
 
   describe('toString()', function() {
     it("returns 'liquidity_pool:<id>' for liquidity pool assets", function() {
-      const asset = new StellarBase.TrustLineAsset(
+      const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
       expect(asset.toString()).to.eq(

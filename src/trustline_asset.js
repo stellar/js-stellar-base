@@ -2,13 +2,13 @@ import clone from 'lodash/clone';
 import xdr from './generated/stellar-xdr_generated';
 
 /**
- * TrustLineAsset class represents the asset referenced by a trustline to a
+ * LiquidityPoolId class represents the asset referenced by a trustline to a
  * liquidity pool.
  *
  * @constructor
  * @param {string} liquidityPoolId - The ID of the liquidity pool in string 'hex'.
  */
-export class TrustLineAsset {
+export class LiquidityPoolId {
   constructor(liquidityPoolId) {
     if (!liquidityPoolId) {
       throw new Error('liquidityPoolId cannot be empty');
@@ -24,9 +24,9 @@ export class TrustLineAsset {
   }
 
   /**
-   * Returns a trustline asset object from its XDR object representation.
+   * Returns a liquidity pool ID object from its xdr.TrustLineAsset representation.
    * @param {xdr.TrustLineAsset} tlAssetXdr - The asset XDR object.
-   * @returns {TrustLineAsset}
+   * @returns {LiquidityPoolId}
    */
   static fromOperation(tlAssetXdr) {
     const assetType = tlAssetXdr.switch();
@@ -39,8 +39,8 @@ export class TrustLineAsset {
   }
 
   /**
-   * Returns the XDR object for this trustline asset.
-   * @returns {xdr.TrustLineAsset} XDR TrustLineAsset object
+   * Returns the xdr.TrustLineAsset object for this liquidity pool ID.
+   * @returns {xdr.TrustLineAsset} XDR LiquidityPoolId object
    */
   toXDRObject() {
     const xdrPoolId = xdr.PoolId.fromXDR(this.liquidityPoolId, 'hex');
@@ -63,7 +63,7 @@ export class TrustLineAsset {
   }
 
   /**
-   * @param {TrustLineAsset} asset TrustLineAsset to compare.
+   * @param {LiquidityPoolId} asset LiquidityPoolId to compare.
    * @returns {boolean} `true` if this asset equals the given asset.
    */
   equals(asset) {
