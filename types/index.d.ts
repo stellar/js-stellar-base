@@ -62,15 +62,15 @@ export class Asset {
   issuer: string;
 }
 
-export class ChangeTrustAsset {
+export class LiquidityPoolAsset {
   constructor(assetA: Asset, assetB: Asset, fee: number);
 
-  static fromOperation(xdr: xdr.ChangeTrustAsset): ChangeTrustAsset | Asset;
+  static fromOperation(xdr: xdr.ChangeTrustAsset): LiquidityPoolAsset;
 
   toXDRObject(): xdr.ChangeTrustAsset;
   getLiquidityPoolParameters(): LiquidityPoolParameters;
   getAssetType(): AssetType.liquidityPoolShares;
-  equals(other: ChangeTrustAsset): boolean;
+  equals(other: LiquidityPoolAsset): boolean;
 
   assetA: Asset;
   assetB: Asset;
@@ -348,7 +348,7 @@ export namespace OperationOptions {
     authorize?: boolean | TrustLineFlag;
   }
   interface ChangeTrust extends BaseOptions {
-    asset: Asset | ChangeTrustAsset;
+    asset: Asset | LiquidityPoolAsset;
     limit?: string;
   }
   interface CreateAccount extends BaseOptions {
@@ -536,7 +536,7 @@ export namespace Operation {
   ): xdr.Operation<AllowTrust>;
 
   interface ChangeTrust extends BaseOperation<OperationType.ChangeTrust> {
-    line: Asset | ChangeTrustAsset;
+    line: Asset | LiquidityPoolAsset;
     limit: string;
   }
   function changeTrust(

@@ -68,16 +68,16 @@ export class Asset {
   }
 
   /**
-   * Returns the xdr object for this asset.
-   * @returns {xdr.Asset} XDR Asset object
+   * Returns the xdr.Asset object for this asset.
+   * @returns {xdr.Asset} XDR asset object
    */
   toXDRObject() {
     return this._toXDRObject(xdr.Asset);
   }
 
   /**
-   * Returns the xdr object for this asset.
-   * @returns {xdr.ChangeTrustAsset} XDR Asset object
+   * Returns the xdr.ChangeTrustAsset object for this asset.
+   * @returns {xdr.ChangeTrustAsset} XDR asset object
    */
   toChangeTrustXDRObject() {
     return this._toXDRObject(xdr.ChangeTrustAsset);
@@ -86,7 +86,7 @@ export class Asset {
   /**
    * Returns the xdr object for this asset.
    * @param {xdr.Asset | xdr.ChangeTrustAsset} xdrAsset - The asset xdr object.
-   * @returns {xdr.Asset | xdr.ChangeTrustAsset} XDR Asset object
+   * @returns {xdr.Asset | xdr.ChangeTrustAsset } XDR Asset object
    */
   _toXDRObject(xdrAsset = xdr.Asset) {
     if (this.isNative()) {

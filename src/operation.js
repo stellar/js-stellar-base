@@ -9,7 +9,7 @@ import isNumber from 'lodash/isNumber';
 import isFinite from 'lodash/isFinite';
 import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
-import { ChangeTrustAsset } from './change_trust_asset';
+import { LiquidityPoolAsset } from './liquidity_pool_asset';
 import { Claimant } from './claimant';
 import { StrKey } from './strkey';
 import { TrustLineAsset } from './trustline_asset';
@@ -192,7 +192,14 @@ export class Operation {
       }
       case 'changeTrust': {
         result.type = 'changeTrust';
-        result.line = ChangeTrustAsset.fromOperation(attrs.line());
+        switch (attrs.line().switch()) {
+          case xdr.AssetType.assetTypePoolShare():
+            result.line = LiquidityPoolAsset.fromOperation(attrs.line());
+            break;
+          default:
+            result.line = Asset.fromOperation(attrs.line());
+            break;
+        }
         result.limit = this._fromXDRAmount(attrs.limit());
         break;
       }

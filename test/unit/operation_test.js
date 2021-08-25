@@ -584,7 +584,7 @@ describe('Operation', function() {
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       const fee = StellarBase.LiquidityPoolFeeV18;
-      const asset = new StellarBase.ChangeTrustAsset(assetA, assetB, fee);
+      const asset = new StellarBase.LiquidityPoolAsset(assetA, assetB, fee);
       const op = StellarBase.Operation.changeTrust({ asset });
       expect(op).to.be.instanceof(StellarBase.xdr.Operation);
 
@@ -623,7 +623,7 @@ describe('Operation', function() {
       expect(obj.limit).to.be.equal('0.0000000');
     });
 
-    it('deletes a ChangeTrustAsset trustline', function() {
+    it('deletes a LiquidityPoolAsset trustline', function() {
       const assetA = new StellarBase.Asset(
         'ARST',
         'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
@@ -633,7 +633,7 @@ describe('Operation', function() {
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
       );
       const fee = StellarBase.LiquidityPoolFeeV18;
-      const asset = new StellarBase.ChangeTrustAsset(assetA, assetB, fee);
+      const asset = new StellarBase.LiquidityPoolAsset(assetA, assetB, fee);
       let op = StellarBase.Operation.changeTrust({
         asset,
         limit: '0.0000000'

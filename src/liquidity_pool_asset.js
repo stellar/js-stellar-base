@@ -4,14 +4,14 @@ import { Asset } from './asset';
 import { LiquidityPoolFeeV18, getLiquidityPoolId } from './liquidity_pool_id';
 
 /**
- * ChangeTrustAsset class represents a liquidity pool trustline change.
+ * LiquidityPoolAsset class represents a liquidity pool trustline change.
  *
  * @constructor
  * @param {Asset} assetA – The first asset in the Pool, it must respect the rule assetA < assetB. See `Asset.compare(A, B)` for more details on how assets are sorted.
  * @param {Asset} assetB – The second asset in the Pool, it must respect the rule assetA < assetB. See `Asset.compare(A, B)` for more details on how assets are sorted.
  * @param {number} fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
-export class ChangeTrustAsset {
+export class LiquidityPoolAsset {
   constructor(assetA, assetB, fee) {
     if (!assetA || !(assetA instanceof Asset)) {
       throw new Error('assetA is invalid');
@@ -32,13 +32,14 @@ export class ChangeTrustAsset {
   }
 
   /**
-   * Returns a change trust asset object from its XDR object representation.
+   * Returns a liquidity pool asset object from its XDR ChangeTrustAsset object
+   * representation.
    * @param {xdr.ChangeTrustAsset} ctAssetXdr - The asset XDR object.
-   * @returns {ChangeTrustAsset | Asset}
+   * @returns {LiquidityPoolAsset}
    */
   static fromOperation(ctAssetXdr) {
     const assetType = ctAssetXdr.switch();
-    if (assetType.name === 'assetTypePoolShare') {
+    if (assetType === xdr.AssetType.assetTypePoolShare()) {
       const liquidityPoolParameters = ctAssetXdr
         .liquidityPool()
         .constantProduct();
@@ -49,11 +50,11 @@ export class ChangeTrustAsset {
       );
     }
 
-    return Asset.fromOperation(ctAssetXdr);
+    throw new Error(`Invalid asset type: ${assetType.name}`);
   }
 
   /**
-   * Returns the XDR object for this change trust asset.
+   * Returns the xdr.ChangeTrustAsset object for this liquidity pool asset.
    *
    * Note: To convert from `Asset` to xdr.ChangeTrustAsset please refer to the
    * `Asset.toChangeTrustXDR` method.
@@ -95,7 +96,7 @@ export class ChangeTrustAsset {
   }
 
   /**
-   * @param {ChangeTrustAsset} other the ChangeTrustAsset to compare
+   * @param {LiquidityPoolAsset} other the LiquidityPoolAsset to compare
    * @returns {boolean} `true` if this asset equals the given asset.
    */
   equals(other) {

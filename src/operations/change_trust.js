@@ -3,18 +3,17 @@ import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from '../generated/stellar-xdr_generated';
 import { Asset } from '../asset';
-import { ChangeTrustAsset } from '../change_trust_asset';
+import { LiquidityPoolAsset } from '../liquidity_pool_asset';
 
 const MAX_INT64 = '9223372036854775807';
 
 /**
  * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
- * trust line for a given asset from the source account to another. The issuer being
- * trusted and the asset code are in the given ChangeTrustAsset object.
+ * trust line for a given asset from the source account to another.
  * @function
  * @alias Operation.changeTrust
  * @param {object} opts Options object
- * @param {Asset | ChangeTrustAsset} opts.asset - The change trust asset for the trust line.
+ * @param {Asset | LiquidityPoolAsset} opts.asset - The asset for the trust line.
  * @param {string} [opts.limit] - The limit for the asset, defaults to max int64.
  *                                If the limit is set to "0" it deletes the trustline.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -25,12 +24,10 @@ export function changeTrust(opts) {
 
   if (opts.asset instanceof Asset) {
     attributes.line = opts.asset.toChangeTrustXDRObject();
-  } else if (opts.asset instanceof ChangeTrustAsset) {
+  } else if (opts.asset instanceof LiquidityPoolAsset) {
     attributes.line = opts.asset.toXDRObject();
   } else {
-    throw new TypeError(
-      'options.asset must be an instance of Asset or ChangeTrustAsset'
-    );
+    throw new TypeError('asset must be Asset or LiquidityPoolAsset');
   }
 
   if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
