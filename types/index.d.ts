@@ -434,7 +434,7 @@ export namespace OperationOptions {
   }
   interface RevokeTrustlineSponsorship extends BaseOptions {
     account: string;
-    asset: Asset;
+    asset: TrustLineAsset;
   }
   interface RevokeOfferSponsorship extends BaseOptions {
     seller: string;
