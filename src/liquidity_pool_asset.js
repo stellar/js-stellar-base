@@ -1,7 +1,10 @@
 import clone from 'lodash/clone';
 import xdr from './generated/stellar-xdr_generated';
 import { Asset } from './asset';
-import { LiquidityPoolFeeV18, getLiquidityPoolId } from './liquidity_pool_id';
+import {
+  LiquidityPoolFeeV18,
+  getLiquidityPoolId
+} from './get_liquidity_pool_id';
 
 /**
  * LiquidityPoolAsset class represents a liquidity pool trustline change.
