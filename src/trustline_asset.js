@@ -45,7 +45,7 @@ export class TrustLineAsset {
       throw new Error('Issuer is invalid');
     }
 
-    // Test if liquiditry pool ID is a hash.
+    // Test if liquidity pool ID is a hash.
     if (liquidityPoolId && !/^[a-fA-F0-9]{64}$/.test(liquidityPoolId)) {
       throw new Error('Liquidity pool ID is not a valid hash');
     }

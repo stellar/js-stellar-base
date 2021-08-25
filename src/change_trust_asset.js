@@ -226,14 +226,10 @@ export class ChangeTrustAsset {
     if (this.isLiquidityPool()) {
       return 'liquidity_pool_shares';
     }
-    if (this.code.length >= 1 && this.code.length <= 4) {
+    if (this.code.length <= 4) {
       return 'credit_alphanum4';
     }
-    if (this.code.length >= 5 && this.code.length <= 12) {
-      return 'credit_alphanum12';
-    }
-
-    return null;
+    return 'credit_alphanum12';
   }
 
   /**

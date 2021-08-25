@@ -204,13 +204,9 @@ export class Asset {
     }
 
     // Compare asset codes.
-    switch (assetA.getCode().localeCompare(assetB.getCode())) {
-      case -1: // assetA < assetB
-        return -1;
-      case 1: // assetA > assetB
-        return 1;
-      default:
-        break;
+    const result = assetA.getCode().localeCompare(assetB.getCode());
+    if (result !== 0) {
+      return result;
     }
 
     // Compare asset issuers.
