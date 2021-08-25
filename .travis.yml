@@ -25,7 +25,6 @@ script:
     else
       # Ugly but it's the only way to make istanbul generate coverage report
       yarn test
-
       # only run the type test on node >8.2.1, since some of the type libs have
       # trailing commas in function args
       if [ "${TYPE_TEST}" = "true" ]; then
