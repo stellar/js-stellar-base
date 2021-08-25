@@ -384,11 +384,11 @@ describe('ChangeTrustAsset', function() {
 
       const asset = StellarBase.ChangeTrustAsset.fromOperation(xdr);
       expect(asset).to.be.instanceof(StellarBase.ChangeTrustAsset);
+      expect(asset.isLiquidityPool()).to.true;
       const gotPoolParams = asset.getLiquidityPoolParameters();
       expect(gotPoolParams.assetA).to.be.deep.equal(assetA);
       expect(gotPoolParams.assetB).to.be.deep.equal(assetB);
       expect(gotPoolParams.fee).to.eq(fee);
-      expect(gotPoolParams.isLiquidityPool()).to.true;
       expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
     });
   });
