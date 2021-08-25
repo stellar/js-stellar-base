@@ -60,7 +60,7 @@ export class LiquidityPoolAsset {
    * Returns the xdr.ChangeTrustAsset object for this liquidity pool asset.
    *
    * Note: To convert from `Asset` to xdr.ChangeTrustAsset please refer to the
-   * `Asset.toChangeTrustXDR` method.
+   * `Asset.toChangeTrustXDR()` method.
    *
    * @returns {xdr.ChangeTrustAsset} XDR ChangeTrustAsset object.
    */

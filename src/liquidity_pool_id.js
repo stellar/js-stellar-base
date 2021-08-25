@@ -40,6 +40,10 @@ export class LiquidityPoolId {
 
   /**
    * Returns the xdr.TrustLineAsset object for this liquidity pool ID.
+   *
+   * Note: To convert from `Asset` to xdr.TrustLineAsset please refer to the
+   * `Asset.toTrustLineXDR()` method.
+   *
    * @returns {xdr.TrustLineAsset} XDR LiquidityPoolId object
    */
   toXDRObject() {
