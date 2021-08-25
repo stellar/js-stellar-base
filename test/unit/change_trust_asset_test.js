@@ -388,7 +388,49 @@ describe('ChangeTrustAsset', function() {
       expect(gotPoolParams.assetA).to.be.deep.equal(assetA);
       expect(gotPoolParams.assetB).to.be.deep.equal(assetB);
       expect(gotPoolParams.fee).to.eq(fee);
+      expect(gotPoolParams.isLiquidityPool()).to.true;
       expect(asset.getAssetType()).to.eq('liquidity_pool_shares');
+    });
+  });
+
+  describe('equals()', function() {
+    const nativeAsset = StellarBase.ChangeTrustAsset.native();
+    const lpAsset = StellarBase.ChangeTrustAsset.liquidityPoolShare({
+      assetA,
+      assetB,
+      fee
+    });
+
+    it('returns false if assets are different and true if identical', function() {
+      expect(nativeAsset.equals(nativeAsset)).to.true;
+      expect(nativeAsset.equals(assetA)).to.false;
+      expect(nativeAsset.equals(assetB)).to.false;
+      expect(nativeAsset.equals(lpAsset)).to.false;
+
+      expect(assetA.equals(nativeAsset)).to.false;
+      expect(assetA.equals(assetA)).to.true;
+      expect(assetA.equals(assetB)).to.false;
+      expect(assetA.equals(lpAsset)).to.false;
+
+      expect(assetB.equals(nativeAsset)).to.false;
+      expect(assetB.equals(assetA)).to.false;
+      expect(assetB.equals(assetB)).to.true;
+      expect(assetB.equals(lpAsset)).to.false;
+
+      expect(lpAsset.equals(nativeAsset)).to.false;
+      expect(lpAsset.equals(assetA)).to.false;
+      expect(lpAsset.equals(assetB)).to.false;
+      expect(lpAsset.equals(lpAsset)).to.true;
+    });
+
+    it('returns true even if liquidity pool parameters in different order', function() {
+      const lpAsset2 = StellarBase.ChangeTrustAsset.liquidityPoolShare({
+        fee,
+        assetB,
+        assetA
+      });
+
+      expect(lpAsset.equals(lpAsset2)).to.true;
     });
   });
 

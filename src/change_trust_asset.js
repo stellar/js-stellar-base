@@ -1,6 +1,7 @@
 import clone from 'lodash/clone';
 import padEnd from 'lodash/padEnd';
 import trimEnd from 'lodash/trimEnd';
+import isEqual from 'lodash/isEqual';
 import xdr from './generated/stellar-xdr_generated';
 import { Asset } from './asset';
 import { Keypair } from './keypair';
@@ -251,11 +252,7 @@ export class ChangeTrustAsset {
    * @returns {boolean} `true` if this asset equals the given asset.
    */
   equals(asset) {
-    return (
-      this.code === asset.getCode() &&
-      this.issuer === asset.getIssuer() &&
-      this.liquidityPoolParameters === asset.getLiquidityPoolParameters()
-    );
+    return isEqual(this, asset);
   }
 
   toString() {
