@@ -24,7 +24,7 @@ jobs:
         run: yarn jsdoc -c .jsdoc.json --verbose
 
       - name: Deploy to GH Pages
-        uses: JamesIves/github-pages-deploy-action@12a916dfb718ab8fc2ec3ad7cb731a89d7d23332
+        uses: JamesIves/github-pages-deploy-action@0f24da7de3e7e135102609a4c9633b025be8411b
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: jsdoc # The folder the action should deploy.
