@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+## [v6.0.0](https://github.com/stellar/js-stellar-base/compare/v5.3.2..v6.0.0)
+
+### Add
+
+- Introduced new CAP-38 operations `LiquidityPoolDepositOp` and `LiquidityPoolWithdrawOp`.
+- Introduced two new types of assets, `LiquidityPoolId` and `LiquidityPoolAsset`.
+
+### Update
+
+- The XDR definitions have been updated to support CAP-38.
+- Extended `Operation` class with the `Operation.revokeLiquidityPoolSponsorship` helper that allows revoking a liquidity pool sponsorship.
+- Asset types now include `AssetType.liquidityPoolShares`.
+- `Operation.changeTrust` and `ChangeTrustOp` can now use `LiquidityPoolAsset` in addition to `Asset`.
+- `Operation.revokeTrustlineSponsorship` can now use `LiquidityPoolId` in addition to `Asset`.
+
+## [v5.3.2](https://github.com/stellar/js-stellar-base/compare/v5.3.1..v5.3.2)
+
 ### Fix
 - Update various dependencies to secure versions. Most are developer dependencies which means no or minimal downstream effects ([#446](https://github.com/stellar/js-stellar-base/pull/446), [#447](https://github.com/stellar/js-stellar-base/pull/447), [#392](https://github.com/stellar/js-stellar-base/pull/392), [#428](https://github.com/stellar/js-stellar-base/pull/428)); the only non-developer dependency upgrade is a patch version bump to `lodash` ([#449](https://github.com/stellar/js-stellar-base/pull/449)).
 

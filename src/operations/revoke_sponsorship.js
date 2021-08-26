@@ -3,6 +3,7 @@ import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
 import { Asset } from '../asset';
+import { LiquidityPoolId } from '../liquidity_pool_id';
 
 /**
  * Create a "revoke sponsorship" operation for an account.
@@ -45,14 +46,14 @@ export function revokeAccountSponsorship(opts = {}) {
  * @alias Operation.revokeTrustlineSponsorship
  * @param {object} opts Options object
  * @param {string} opts.account - The account ID which owns the trustline.
- * @param {Asset} opts.asset - The asset in the trustline.
+ * @param {Asset | LiquidityPoolId} opts.asset - The trustline asset.
  * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
  * @returns {xdr.Operation} xdr operation
  *
  * @example
  * const op = Operation.revokeTrustlineSponsorship({
  *   account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7
- *   asset: new StellarBase.Asset(
+ *   asset: new StellarBase.LiquidityPoolId(
  *     'USDUSD',
  *     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
  *   )
@@ -63,14 +64,20 @@ export function revokeTrustlineSponsorship(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error('account is invalid');
   }
-  if (!(opts.asset instanceof Asset)) {
-    throw new Error('asset is invalid');
+
+  let asset;
+  if (opts.asset instanceof Asset) {
+    asset = opts.asset.toTrustLineXDRObject();
+  } else if (opts.asset instanceof LiquidityPoolId) {
+    asset = opts.asset.toXDRObject();
+  } else {
+    throw new TypeError('asset must be an Asset or LiquidityPoolId');
   }
 
   const ledgerKey = xdr.LedgerKey.trustline(
     new xdr.LedgerKeyTrustLine({
       accountId: Keypair.fromPublicKey(opts.account).xdrAccountId(),
-      asset: opts.asset.toXDRObject()
+      asset
     })
   );
   const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
@@ -190,6 +197,42 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
   const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
   const opAttributes = {};
   opAttributes.body = xdr.OperationBody.revokeSponsorship(op);
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}
+
+/**
+ * Creates a "revoke sponsorship" operation for a liquidity pool.
+ *
+ * @function
+ * @alias Operation.revokeLiquidityPoolSponsorship
+ * @param {object} opts – Options object.
+ * @param {string} opts.liquidityPoolId - The sponsored liquidity pool ID in 'hex' string.
+ * @param {string} [opts.source] - The source account for the operation. Defaults to the transaction's source account.
+ * @returns {xdr.Operation} xdr Operation.
+ *
+ * @example
+ * const op = Operation.revokeLiquidityPoolSponsorship({
+ *   liquidityPoolId: 'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
+ * });
+ *
+ */
+export function revokeLiquidityPoolSponsorship(opts = {}) {
+  if (!isString(opts.liquidityPoolId)) {
+    throw new Error('liquidityPoolId is invalid');
+  }
+
+  const ledgerKey = xdr.LedgerKey.liquidityPool(
+    new xdr.LedgerKeyLiquidityPool({
+      liquidityPoolId: xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex')
+    })
+  );
+
+  const op = xdr.RevokeSponsorshipOp.revokeSponsorshipLedgerEntry(ledgerKey);
+  const opAttributes = {
+    body: xdr.OperationBody.revokeSponsorship(op)
+  };
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);

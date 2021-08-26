@@ -9,8 +9,10 @@ import isNumber from 'lodash/isNumber';
 import isFinite from 'lodash/isFinite';
 import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
+import { LiquidityPoolAsset } from './liquidity_pool_asset';
 import { Claimant } from './claimant';
 import { StrKey } from './strkey';
+import { LiquidityPoolId } from './liquidity_pool_id';
 import xdr from './generated/stellar-xdr_generated';
 import * as ops from './operations/index';
 import {
@@ -83,10 +85,13 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.revokeOfferSponsorship}`
  * * `{@link Operation.revokeDataSponsorship}`
  * * `{@link Operation.revokeClaimableBalanceSponsorship}`
+ * * `{@link Operation.revokeLiquidityPoolSponsorship}`
  * * `{@link Operation.revokeSignerSponsorship}`
  * * `{@link Operation.clawback}`
  * * `{@link Operation.clawbackClaimableBalance}`
  * * `{@link Operation.setTrustLineFlags}`
+ * * `{@link Operation.liquidityPoolDeposit}`
+ * * `{@link Operation.liquidityPoolWithdraw}`
  *
  * @class Operation
  */
@@ -187,7 +192,14 @@ export class Operation {
       }
       case 'changeTrust': {
         result.type = 'changeTrust';
-        result.line = Asset.fromOperation(attrs.line());
+        switch (attrs.line().switch()) {
+          case xdr.AssetType.assetTypePoolShare():
+            result.line = LiquidityPoolAsset.fromOperation(attrs.line());
+            break;
+          default:
+            result.line = Asset.fromOperation(attrs.line());
+            break;
+        }
         result.limit = this._fromXDRAmount(attrs.limit());
         break;
       }
@@ -370,6 +382,23 @@ export class Operation {
 
         break;
       }
+      case 'liquidityPoolDeposit': {
+        result.type = 'liquidityPoolDeposit';
+        result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
+        result.maxAmountA = this._fromXDRAmount(attrs.maxAmountA());
+        result.maxAmountB = this._fromXDRAmount(attrs.maxAmountB());
+        result.minPrice = this._fromXDRPrice(attrs.minPrice());
+        result.maxPrice = this._fromXDRPrice(attrs.maxPrice());
+        break;
+      }
+      case 'liquidityPoolWithdraw': {
+        result.type = 'liquidityPoolWithdraw';
+        result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
+        result.amount = this._fromXDRAmount(attrs.amount());
+        result.minAmountA = this._fromXDRAmount(attrs.minAmountA());
+        result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -517,7 +546,15 @@ function extractRevokeSponshipDetails(attrs, result) {
           result.account = accountIdtoAddress(
             ledgerKey.trustLine().accountId()
           );
-          result.asset = Asset.fromOperation(ledgerKey.trustLine().asset());
+          const xdrAsset = ledgerKey.trustLine().asset();
+          switch (xdrAsset.switch()) {
+            case xdr.AssetType.assetTypePoolShare():
+              result.asset = LiquidityPoolId.fromOperation(xdrAsset);
+              break;
+            default:
+              result.asset = Asset.fromOperation(xdrAsset);
+              break;
+          }
           break;
         }
         case xdr.LedgerEntryType.offer().name: {
@@ -544,6 +581,14 @@ function extractRevokeSponshipDetails(attrs, result) {
             .claimableBalance()
             .balanceId()
             .toXDR('hex');
+          break;
+        }
+        case xdr.LedgerEntryType.liquidityPool().name: {
+          result.type = 'revokeLiquidityPoolSponsorship';
+          result.liquidityPoolId = ledgerKey
+            .liquidityPool()
+            .liquidityPoolId()
+            .toString('hex');
           break;
         }
         default: {
@@ -619,6 +664,9 @@ Operation.revokeOfferSponsorship = ops.revokeOfferSponsorship;
 Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
 Operation.revokeClaimableBalanceSponsorship =
   ops.revokeClaimableBalanceSponsorship;
+Operation.revokeLiquidityPoolSponsorship = ops.revokeLiquidityPoolSponsorship;
 Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
 Operation.clawback = ops.clawback;
 Operation.setTrustLineFlags = ops.setTrustLineFlags;
+Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
+Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;

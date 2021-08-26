@@ -68,21 +68,46 @@ export class Asset {
   }
 
   /**
-   * Returns the xdr object for this asset.
-   * @returns {xdr.Asset} XDR Asset object
+   * Returns the xdr.Asset object for this asset.
+   * @returns {xdr.Asset} XDR asset object
    */
   toXDRObject() {
+    return this._toXDRObject(xdr.Asset);
+  }
+
+  /**
+   * Returns the xdr.ChangeTrustAsset object for this asset.
+   * @returns {xdr.ChangeTrustAsset} XDR asset object
+   */
+  toChangeTrustXDRObject() {
+    return this._toXDRObject(xdr.ChangeTrustAsset);
+  }
+
+  /**
+   * Returns the xdr.TrustLineAsset object for this asset.
+   * @returns {xdr.TrustLineAsset} XDR asset object
+   */
+  toTrustLineXDRObject() {
+    return this._toXDRObject(xdr.TrustLineAsset);
+  }
+
+  /**
+   * Returns the xdr object for this asset.
+   * @param {xdr.Asset | xdr.ChangeTrustAsset} xdrAsset - The asset xdr object.
+   * @returns {xdr.Asset | xdr.ChangeTrustAsset | xdr.TrustLineAsset} XDR Asset object
+   */
+  _toXDRObject(xdrAsset = xdr.Asset) {
     if (this.isNative()) {
-      return xdr.Asset.assetTypeNative();
+      return xdrAsset.assetTypeNative();
     }
 
     let xdrType;
     let xdrTypeString;
     if (this.code.length <= 4) {
-      xdrType = xdr.AssetAlphaNum4;
+      xdrType = xdr.AlphaNum4;
       xdrTypeString = 'assetTypeCreditAlphanum4';
     } else {
-      xdrType = xdr.AssetAlphaNum12;
+      xdrType = xdr.AlphaNum12;
       xdrTypeString = 'assetTypeCreditAlphanum12';
     }
 
@@ -96,7 +121,7 @@ export class Asset {
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
-    return new xdr.Asset(xdrTypeString, assetType);
+    return new xdrAsset(xdrTypeString, assetType);
   }
 
   /**
@@ -156,5 +181,60 @@ export class Asset {
     }
 
     return `${this.getCode()}:${this.getIssuer()}`;
+  }
+
+  /**
+   * Compares if assetA < assetB according with the criteria:
+   * 1. First compare the type (eg. native before alphanum4 before alphanum12).
+   * 2. If the types are equal, compare the assets codes.
+   * 3. If the asset codes are equal, compare the issuers.
+   *
+   * @static
+   * @param {Asset} assetA - The first asset in the lexicographic order.
+   * @param {Asset} assetB - The second asset in the lexicographic order.
+   * @return {-1 | 0 | 1} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
+   * @memberof Asset
+   */
+  static compare(assetA, assetB) {
+    if (!assetA || !(assetA instanceof Asset)) {
+      throw new Error('assetA is invalid');
+    }
+    if (!assetB || !(assetB instanceof Asset)) {
+      throw new Error('assetB is invalid');
+    }
+
+    if (assetA.equals(assetB)) {
+      return 0;
+    }
+
+    // Compare asset types.
+    switch (assetA.getAssetType()) {
+      case 'native':
+        return -1;
+      case 'credit_alphanum4':
+        if (assetB.getAssetType() === 'native') {
+          return 1;
+        }
+        if (assetB.getAssetType() === 'credit_alphanum12') {
+          return -1;
+        }
+        break;
+      case 'credit_alphanum12':
+        if (assetB.getAssetType() !== 'credit_alphanum12') {
+          return 1;
+        }
+        break;
+      default:
+        throw new Error('Unexpected asset type');
+    }
+
+    // Compare asset codes.
+    const result = assetA.getCode().localeCompare(assetB.getCode());
+    if (result !== 0) {
+      return result;
+    }
+
+    // Compare asset issuers.
+    return assetA.getIssuer().localeCompare(assetB.getIssuer());
   }
 }

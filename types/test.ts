@@ -60,6 +60,10 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
     })
   ).addOperation(
+    StellarSdk.Operation.revokeLiquidityPoolSponsorship({
+      liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
+    })
+  ).addOperation(
     StellarSdk.Operation.revokeSignerSponsorship({
       account: account.accountId(),
       signer: {
@@ -107,6 +111,21 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       flags: {
         authorized: true,
       },
+    })
+  ).addOperation(
+    StellarSdk.Operation.liquidityPoolDeposit({
+      liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
+      maxAmountA: "10000",
+      maxAmountB: "20000",
+      minPrice: "0.45",
+      maxPrice: "0.55",
+    })
+  ).addOperation(
+    StellarSdk.Operation.liquidityPoolWithdraw({
+      liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
+      amount: "100",
+      minAmountA: "10000",
+      minAmountB: "20000",
     })
   ).addOperation(
     StellarSdk.Operation.setOptions({
@@ -269,3 +288,17 @@ const trust = StellarSdk.xdr.SetTrustLineFlagsOp.fromXDR(
   'base64'
 );
 trust; // $ExpectType SetTrustLineFlagsOp
+
+const lpDeposit = StellarSdk.xdr.LiquidityPoolDepositOp.fromXDR(
+  // tslint:disable:max-line-length
+  '3XsauDHCczEN2+xvl4cKqDwvvXjOIq3tN+y/TzOA+scAAAAABfXhAAAAAAAL68IAAAAACQAAABQAAAALAAAAFA==',
+  'base64'
+);
+lpDeposit; // $ExpectType LiquidityPoolDepositOp
+
+const lpWithdraw = StellarSdk.xdr.LiquidityPoolWithdrawOp.fromXDR(
+  // tslint:disable:max-line-length
+  '3XsauDHCczEN2+xvl4cKqDwvvXjOIq3tN+y/TzOA+scAAAAAAvrwgAAAAAAF9eEAAAAAAAvrwgA=',
+  'base64'
+);
+lpWithdraw; // $ExpectType LiquidityPoolWithdrawOp

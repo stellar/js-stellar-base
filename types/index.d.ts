@@ -35,15 +35,18 @@ export namespace AssetType {
   type native = 'native';
   type credit4 = 'credit_alphanum4';
   type credit12 = 'credit_alphanum12';
+  type liquidityPoolShares = 'liquidity_pool_shares';
 }
 export type AssetType =
   | AssetType.native
   | AssetType.credit4
-  | AssetType.credit12;
+  | AssetType.credit12
+  | AssetType.liquidityPoolShares;
 
 export class Asset {
   static native(): Asset;
   static fromOperation(xdr: xdr.Asset): Asset;
+  static compare(assetA: Asset, assetB: Asset): -1 | 0 | 1;
 
   constructor(code: string, issuer?: string);
 
@@ -53,9 +56,38 @@ export class Asset {
   isNative(): boolean;
   equals(other: Asset): boolean;
   toXDRObject(): xdr.Asset;
+  toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
+  toTrustLineXDRObject(): xdr.TrustLineAsset;
 
   code: string;
   issuer: string;
+}
+
+export class LiquidityPoolAsset {
+  constructor(assetA: Asset, assetB: Asset, fee: number);
+
+  static fromOperation(xdr: xdr.ChangeTrustAsset): LiquidityPoolAsset;
+
+  toXDRObject(): xdr.ChangeTrustAsset;
+  getLiquidityPoolParameters(): LiquidityPoolParameters;
+  getAssetType(): AssetType.liquidityPoolShares;
+  equals(other: LiquidityPoolAsset): boolean;
+
+  assetA: Asset;
+  assetB: Asset;
+  fee: number;
+}
+
+export class LiquidityPoolId {
+  constructor(liquidityPoolId: string);
+
+  static fromOperation(xdr: xdr.TrustLineAsset): LiquidityPoolId;
+
+  toXDRObject(): xdr.TrustLineAsset;
+  getLiquidityPoolId(): string;
+  equals(other: LiquidityPoolId): boolean;
+
+  liquidityPoolId: string;
 }
 
 export class Claimant {
@@ -106,6 +138,26 @@ export class Keypair {
   xdrPublicKey(): xdr.PublicKey;
   xdrMuxedAccount(id: string): xdr.MuxedAccount;
 }
+
+export const LiquidityPoolFeeV18 = 30;
+
+export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
+
+export namespace LiquidityPoolParameters {
+  interface ConstantProduct {
+    assetA: Asset;
+    assetB: Asset;
+    fee: number;
+  }
+}
+export type LiquidityPoolParameters =
+  | LiquidityPoolParameters.ConstantProduct;
+
+export namespace LiquidityPoolType {
+  type constantProduct = 'constant_product';
+}
+export type LiquidityPoolType =
+  | LiquidityPoolType.constantProduct;
 
 export const MemoNone = 'none';
 export const MemoID = 'id';
@@ -267,6 +319,8 @@ export namespace OperationType {
   type Clawback = 'clawback';
   type ClawbackClaimableBalance = 'clawbackClaimableBalance';
   type SetTrustLineFlags = 'setTrustLineFlags';
+  type LiquidityPoolDeposit = 'liquidityPoolDeposit';
+  type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -290,7 +344,9 @@ export type OperationType =
   | OperationType.RevokeSponsorship
   | OperationType.Clawback
   | OperationType.ClawbackClaimableBalance
-  | OperationType.SetTrustLineFlags;
+  | OperationType.SetTrustLineFlags
+  | OperationType.LiquidityPoolDeposit
+  | OperationType.LiquidityPoolWithdraw;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -305,7 +361,7 @@ export namespace OperationOptions {
     authorize?: boolean | TrustLineFlag;
   }
   interface ChangeTrust extends BaseOptions {
-    asset: Asset;
+    asset: Asset | LiquidityPoolAsset;
     limit?: string;
   }
   interface CreateAccount extends BaseOptions {
@@ -387,7 +443,7 @@ export namespace OperationOptions {
   }
   interface RevokeTrustlineSponsorship extends BaseOptions {
     account: string;
-    asset: Asset;
+    asset: Asset | LiquidityPoolId;
   }
   interface RevokeOfferSponsorship extends BaseOptions {
     seller: string;
@@ -399,6 +455,9 @@ export namespace OperationOptions {
   }
   interface RevokeClaimableBalanceSponsorship extends BaseOptions {
     balanceId: string;
+  }
+  interface RevokeLiquidityPoolSponsorship extends BaseOptions {
+    liquidityPoolId: string;
   }
   interface RevokeSignerSponsorship extends BaseOptions {
     account: string;
@@ -420,6 +479,19 @@ export namespace OperationOptions {
       authorizedToMaintainLiabilities?: boolean;
       clawbackEnabled?: boolean;
     };
+  }
+  interface LiquidityPoolDeposit extends BaseOptions {
+    liquidityPoolId: string;
+    maxAmountA: string;
+    maxAmountB: string;
+    minPrice: number | string | object /* bignumber.js */;
+    maxPrice: number | string | object /* bignumber.js */;
+  }
+  interface LiquidityPoolWithdraw extends BaseOptions {
+    liquidityPoolId: string;
+    amount: string;
+    minAmountA: string;
+    minAmountB: string;
   }
 }
 export type OperationOptions =
@@ -445,10 +517,13 @@ export type OperationOptions =
   | OperationOptions.RevokeOfferSponsorship
   | OperationOptions.RevokeDataSponsorship
   | OperationOptions.RevokeClaimableBalanceSponsorship
+  | OperationOptions.RevokeLiquidityPoolSponsorship
   | OperationOptions.RevokeSignerSponsorship
   | OperationOptions.Clawback
   | OperationOptions.ClawbackClaimableBalance
-  | OperationOptions.SetTrustLineFlags;
+  | OperationOptions.SetTrustLineFlags
+  | OperationOptions.LiquidityPoolDeposit
+  | OperationOptions.LiquidityPoolWithdraw;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -474,7 +549,7 @@ export namespace Operation {
   ): xdr.Operation<AllowTrust>;
 
   interface ChangeTrust extends BaseOperation<OperationType.ChangeTrust> {
-    line: Asset;
+    line: Asset | LiquidityPoolAsset;
     limit: string;
   }
   function changeTrust(
@@ -636,7 +711,7 @@ export namespace Operation {
 
   interface RevokeTrustlineSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
     account: string;
-    asset: Asset;
+    asset: Asset | LiquidityPoolId;
   }
   function revokeTrustlineSponsorship(
     options: OperationOptions.RevokeTrustlineSponsorship
@@ -664,6 +739,13 @@ export namespace Operation {
   function revokeClaimableBalanceSponsorship(
     options: OperationOptions.RevokeClaimableBalanceSponsorship
   ): xdr.Operation<RevokeClaimableBalanceSponsorship>;
+
+  interface RevokeLiquidityPoolSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+    balanceId: string;
+  }
+  function revokeLiquidityPoolSponsorship(
+    options: OperationOptions.RevokeLiquidityPoolSponsorship
+  ): xdr.Operation<RevokeLiquidityPoolSponsorship>;
 
   interface RevokeSignerSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
     account: string;
@@ -701,6 +783,25 @@ export namespace Operation {
   function setTrustLineFlags(
     options: OperationOptions.SetTrustLineFlags
   ): xdr.Operation<SetTrustLineFlags>;
+  interface LiquidityPoolDeposit extends BaseOperation<OperationType.LiquidityPoolDeposit> {
+    liquidityPoolId: string;
+    maxAmountA: string;
+    maxAmountB: string;
+    minPrice: string;
+    maxPrice: string;
+  }
+  function liquidityPoolDeposit(
+    options: OperationOptions.LiquidityPoolDeposit
+  ): xdr.Operation<LiquidityPoolDeposit>;
+  interface LiquidityPoolWithdraw extends BaseOperation<OperationType.LiquidityPoolWithdraw> {
+    liquidityPoolId: string;
+    amount: string;
+    minAmountA: string;
+    minAmountB: string;
+  }
+  function liquidityPoolWithdraw(
+    options: OperationOptions.LiquidityPoolWithdraw
+  ): xdr.Operation<LiquidityPoolWithdraw>;
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -730,10 +831,13 @@ export type Operation =
   | Operation.RevokeOfferSponsorship
   | Operation.RevokeDataSponsorship
   | Operation.RevokeClaimableBalanceSponsorship
+  | Operation.RevokeLiquidityPoolSponsorship
   | Operation.RevokeSignerSponsorship
   | Operation.Clawback
   | Operation.ClawbackClaimableBalance
-  | Operation.SetTrustLineFlags;
+  | Operation.SetTrustLineFlags
+  | Operation.LiquidityPoolDeposit
+  | Operation.LiquidityPoolWithdraw;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
