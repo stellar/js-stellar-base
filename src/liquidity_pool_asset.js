@@ -10,8 +10,8 @@ import {
  * LiquidityPoolAsset class represents a liquidity pool trustline change.
  *
  * @constructor
- * @param {Asset} assetA – The first asset in the Pool, it must respect the rule assetA < assetB. See `Asset.compare(A, B)` for more details on how assets are sorted.
- * @param {Asset} assetB – The second asset in the Pool, it must respect the rule assetA < assetB. See `Asset.compare(A, B)` for more details on how assets are sorted.
+ * @param {Asset} assetA – The first asset in the Pool, it must respect the rule assetA < assetB. See {@link Asset.compare} for more details on how assets are sorted.
+ * @param {Asset} assetB – The second asset in the Pool, it must respect the rule assetA < assetB. See {@link Asset.compare} for more details on how assets are sorted.
  * @param {number} fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
 export class LiquidityPoolAsset {
@@ -57,10 +57,11 @@ export class LiquidityPoolAsset {
   }
 
   /**
-   * Returns the xdr.ChangeTrustAsset object for this liquidity pool asset.
+   * Returns the `xdr.ChangeTrustAsset` object for this liquidity pool asset.
    *
-   * Note: To convert from `Asset` to xdr.ChangeTrustAsset please refer to the
-   * `Asset.toChangeTrustXDR()` method.
+   * Note: To convert from an {@link Asset `Asset`} to `xdr.ChangeTrustAsset`
+   * please refer to the
+   * {@link Asset.toChangeTrustXDRObject `Asset.toChangeTrustXDRObject`} method.
    *
    * @returns {xdr.ChangeTrustAsset} XDR ChangeTrustAsset object.
    */
