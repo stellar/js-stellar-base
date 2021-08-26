@@ -26,6 +26,3 @@ jobs:
         run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Unpublish Version v6.0.0
-        run: npm unpublish stellar-base@6.0.0
