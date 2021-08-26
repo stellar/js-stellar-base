@@ -192,7 +192,7 @@ export class Asset {
    * @static
    * @param {Asset} assetA - The first asset in the lexicographic order.
    * @param {Asset} assetB - The second asset in the lexicographic order.
-   * @return {-1 | 0 | 1} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
+   * @return {number} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
    * @memberof Asset
    */
   static compare(assetA, assetB) {
