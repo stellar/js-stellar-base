@@ -21,7 +21,7 @@ jobs:
         run: gulp
 
       - name: Generate JSDoc
-        run: jsdoc -c .jsdoc.json --verbose
+        run: yarn jsdoc -c .jsdoc.json --verbose
 
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@12a916dfb718ab8fc2ec3ad7cb731a89d7d23332
