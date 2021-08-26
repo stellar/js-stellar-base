@@ -13,11 +13,8 @@ export class LiquidityPoolId {
     if (!liquidityPoolId) {
       throw new Error('liquidityPoolId cannot be empty');
     }
-    if (liquidityPoolId && !/^[a-fA-F0-9]{64}$/.test(liquidityPoolId)) {
+    if (!/^[a-f0-9]{64}$/.test(liquidityPoolId)) {
       throw new Error('Liquidity pool ID is not a valid hash');
-    }
-    if (liquidityPoolId && liquidityPoolId !== liquidityPoolId.toLowerCase()) {
-      throw new Error('Liquidity pool ID should be a lowerc case hash');
     }
 
     this.liquidityPoolId = liquidityPoolId;
