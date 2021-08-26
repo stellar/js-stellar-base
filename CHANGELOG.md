@@ -17,10 +17,6 @@
 - `Operation.changeTrust` and `ChangeTrustOp` can now use `LiquidityPoolAsset` in addition to `Asset`.
 - `Operation.revokeTrustlineSponsorship` can now use `LiquidityPoolId` in addition to `Asset`.
 
-### Breaking
-
-- The `AssetAlphaNum4` and `AssetAlphaNum12` objects were renamed to `AlphaNum4` and `AlphaNum12` respectively.
-
 ## [v5.3.2](https://github.com/stellar/js-stellar-base/compare/v5.3.1..v5.3.2)
 
 ### Fix
