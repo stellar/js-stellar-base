@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [v6.0.0](https://github.com/stellar/js-stellar-base/compare/v5.3.2..v6.0.0)
+## [v6.0.1](https://github.com/stellar/js-stellar-base/compare/v5.3.2..v6.0.1)
 
 ### Add
 
