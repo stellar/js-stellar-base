@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Memo - Documentation</title>
+    <title>LiquidityPoolId - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Memo</h1>
+    <h1 class="page-title">LiquidityPoolId</h1>
     
 
     
@@ -42,8 +42,11 @@
 <header>
     
         <h2>
-        Memo
+        LiquidityPoolId
         </h2>
+        
+            <div class="class-description"><p>LiquidityPoolId class represents the asset referenced by a trustline to a
+liquidity pool.</p></div>
         
     
 </header>
@@ -55,16 +58,14 @@
 <div class="section-method">
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="Memo"><span class="type-signature"></span>new Memo<span class="signature">(type, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="LiquidityPoolId"><span class="type-signature"></span>new LiquidityPoolId<span class="signature">(liquidityPoolId)</span><span class="type-signature"></span></h4>
 
     
 
 
-
-<div class="description">
-    <p><code>Memo</code> represents memos attached to transactions.</p>
-</div>
 
 
 
@@ -99,19 +100,12 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line29">line 29</a>
+        <a href="liquidity_pool_id.js.html">liquidity_pool_id.js</a>, <a href="liquidity_pool_id.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
     
 
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><p><a href="https://www.stellar.org/developers/guides/concepts/transactions.html">Transactions concept</a></p></li>
-        </ul>
-    </dd>
     
 
     
@@ -150,7 +144,7 @@
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>liquidityPoolId</code></td>
             
 
             <td class="type">
@@ -167,33 +161,7 @@
             
 
             <td class="description last">
-                <p><code>MemoNone</code>, <code>MemoID</code>, <code>MemoText</code>, <code>MemoHash</code> or <code>MemoReturn</code></p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>*</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p><code>string</code> for <code>MemoID</code>, <code>MemoText</code>, buffer of hex string for <code>MemoHash</code> or <code>MemoReturn</code></p>
+                <p>The ID of the liquidity pool in string 'hex'.</p>
                 
             </td>
         </tr>
@@ -226,149 +194,18 @@
     
 
     
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="LiquidityPoolId.html">LiquidityPoolId</a></dt>
+            <dd></dd>
+        </dl>
+    
 
      
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="type"><span class="type-signature"></span>type<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Contains memo type: <code>MemoNone</code>, <code>MemoID</code>, <code>MemoText</code>, <code>MemoHash</code> or <code>MemoReturn</code></p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line67">line 67</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
-            
-<div class="section-members">
-<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Contains memo value:</p>
-<ul>
-<li><code>null</code> for <code>MemoNone</code>,</li>
-<li><code>string</code> for <code>MemoID</code>,</li>
-<li><code>Buffer</code> for <code>MemoText</code> after decoding using <code>fromXDRObject</code>, original value otherwise,</li>
-<li><code>Buffer</code> for <code>MemoHash</code>, <code>MemoReturn</code>.</li>
-</ul>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line82">line 82</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-</div>
-
-        
     
 
     
@@ -380,14 +217,14 @@
 
     
 
-    <h4 class="name" id=".fromXDRObject"><span class="type-signature">(static) </span>fromXDRObject<span class="signature">(object)</span><span class="type-signature"> &rarr; {<a href="Memo.html">Memo</a>}</span></h4>
+    <h4 class="name" id=".fromOperation"><span class="type-signature">(static) </span>fromOperation<span class="signature">(tlAssetXdr)</span><span class="type-signature"> &rarr; {<a href="LiquidityPoolId.html">LiquidityPoolId</a>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns <a href="Memo.html">Memo</a> from XDR memo object.</p>
+    <p>Returns a liquidity pool ID object from its xdr.TrustLineAsset representation.</p>
 </div>
 
 
@@ -423,7 +260,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line228">line 228</a>
+        <a href="liquidity_pool_id.js.html">liquidity_pool_id.js</a>, <a href="liquidity_pool_id.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -467,13 +304,13 @@
 
         <tr>
             
-                <td class="name"><code>object</code></td>
+                <td class="name"><code>tlAssetXdr</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>xdr.Memo</code></span>
+<span class="param-type"><code>xdr.TrustLineAsset</code></span>
 
 
             
@@ -484,7 +321,7 @@
             
 
             <td class="description last">
-                <p>XDR memo object</p>
+                <p>The asset XDR object.</p>
                 
             </td>
         </tr>
@@ -517,7 +354,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
+<span class="param-type"><code><a href="LiquidityPoolId.html">LiquidityPoolId</a></code></span>
 
 
     </dd>
@@ -536,15 +373,11 @@
 
     
 
-    <h4 class="name" id=".hash"><span class="type-signature">(static) </span>hash<span class="signature">(hash)</span><span class="type-signature"> &rarr; {<a href="Memo.html">Memo</a>}</span></h4>
+    <h4 class="name" id="equals"><span class="type-signature"></span>equals<span class="signature">(asset)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
 
     
 
 
-
-<div class="description">
-    <p>Creates and returns a <code>MemoHash</code> memo.</p>
-</div>
 
 
 
@@ -579,7 +412,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line189">line 189</a>
+        <a href="liquidity_pool_id.js.html">liquidity_pool_id.js</a>, <a href="liquidity_pool_id.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -623,65 +456,281 @@
 
         <tr>
             
-                <td class="name"><code>hash</code></td>
+                <td class="name"><code>asset</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>array</code></span>
-|
+<span class="param-type"><code><a href="LiquidityPoolId.html">LiquidityPoolId</a></code></span>
 
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>LiquidityPoolId to compare.</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p><code>true</code> if this asset equals the given asset.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="getAssetType"><span class="type-signature"></span>getAssetType<span class="signature">()</span><span class="type-signature"> &rarr; {AssetType.liquidityPoolShares}</span></h4>
+
+    
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="liquidity_pool_id.js.html">liquidity_pool_id.js</a>, <a href="liquidity_pool_id.js.html#line63">line 63</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="https://www.stellar.org/developers/guides/concepts/assets.html">Assets concept</a></p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>AssetType.liquidityPoolShares</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>asset type. Can only be <code>liquidity_pool_shares</code>.</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="getLiquidityPoolId"><span class="type-signature"></span>getLiquidityPoolId<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="liquidity_pool_id.js.html">liquidity_pool_id.js</a>, <a href="liquidity_pool_id.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
 <span class="param-type"><code>string</code></span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>32 byte hash or hex encoded string</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
-
-
     </dd>
 </dl>
 
+
+<div class="param-desc">
+    <p>Liquidity pool ID.</p>
+</div>
 
     
 </div>
@@ -695,14 +744,17 @@
 
     
 
-    <h4 class="name" id=".id"><span class="type-signature">(static) </span>id<span class="signature">(id)</span><span class="type-signature"> &rarr; {<a href="Memo.html">Memo</a>}</span></h4>
+    <h4 class="name" id="toXDRObject"><span class="type-signature"></span>toXDRObject<span class="signature">()</span><span class="type-signature"> &rarr; {xdr.TrustLineAsset}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Creates and returns a <code>MemoID</code> memo.</p>
+    <p>Returns the <code>xdr.TrustLineAsset</code> object for this liquidity pool ID.</p>
+<p>Note: To convert from <a href="Asset.html"><code>Asset</code></a> to <code>xdr.TrustLineAsset</code> please
+refer to the
+<code>Asset.toTrustLineXDRObject</code> method.</p>
 </div>
 
 
@@ -738,163 +790,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line180">line 180</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>64-bit number represented as a string</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".none"><span class="type-signature">(static) </span>none<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Memo.html">Memo</a>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns an empty memo (<code>MemoNone</code>).</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line162">line 162</a>
+        <a href="liquidity_pool_id.js.html">liquidity_pool_id.js</a>, <a href="liquidity_pool_id.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -936,431 +832,16 @@
     </dt>
     <dd>
         
-<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
+<span class="param-type"><code>xdr.TrustLineAsset</code></span>
 
 
     </dd>
 </dl>
 
 
-    
+<div class="param-desc">
+    <p>XDR LiquidityPoolId object</p>
 </div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".return"><span class="type-signature">(static) </span>return<span class="signature">(hash)</span><span class="type-signature"> &rarr; {<a href="Memo.html">Memo</a>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Creates and returns a <code>MemoReturn</code> memo.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line198">line 198</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>hash</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>array</code></span>
-|
-
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>32 byte hash or hex encoded string</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".text"><span class="type-signature">(static) </span>text<span class="signature">(text)</span><span class="type-signature"> &rarr; {<a href="Memo.html">Memo</a>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Creates and returns a <code>MemoText</code> memo.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line171">line 171</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>text</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>memo text</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code><a href="Memo.html">Memo</a></code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="toXDRObject"><span class="type-signature"></span>toXDRObject<span class="signature">()</span><span class="type-signature"> &rarr; {xdr.Memo}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns XDR memo object.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="memo.js.html">memo.js</a>, <a href="memo.js.html#line206">line 206</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>xdr.Memo</code></span>
-
-
-    </dd>
-</dl>
-
 
     
 </div>
