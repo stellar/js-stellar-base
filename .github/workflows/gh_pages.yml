@@ -34,7 +34,8 @@ jobs:
       - name: Publish JS docs
         uses: actions/checkout@v2
         run: |
+          DESCRIPTION=`git describe --tags`
           cd jsdoc
           git add .
-          git commit -m `git describe --tags`
+          git commit -m $DESCRIPTION
           git push origin gh-pages
