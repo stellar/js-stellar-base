@@ -21,16 +21,20 @@ jobs:
       - name: Build
         run: gulp
 
-      - name: Generate JSDoc
-        run: yarn docs
-
-      - name: Deploy to GH Pages
+      - name: Checkout GH pages
         uses: actions/checkout@v2
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git clone -b gh-pages "git@github.com:stellar/js-stellar-base.git" jsdoc
-          yarn docs
+
+      - name: Generate JS docs
+        run: yarn docs
+
+      - name: Publish JS docs
+        uses: actions/checkout@v2
+        run: |
+          cd jsdoc
           git add .
           git commit -m `git describe --tags`
           git push origin gh-pages
