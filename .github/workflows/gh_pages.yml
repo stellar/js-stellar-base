@@ -25,7 +25,12 @@ jobs:
         run: yarn docs
 
       - name: Deploy to GH Pages
-        uses: JamesIves/github-pages-deploy-action@0f24da7de3e7e135102609a4c9633b025be8411b # v4.1.5
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: jsdoc # The folder the action should deploy.
+        uses: actions/checkout@v2
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git clone -b gh-pages "git@github.com:stellar/js-stellar-base.git" jsdoc
+          yarn docs
+          git add .
+          git commit -m `git describe --tags`
+          git push origin gh-pages
