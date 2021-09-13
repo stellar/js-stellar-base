@@ -24,7 +24,7 @@ Once all of the PRs for a particular release are in, it's time to actually publi
 
  - [ ] Update the top-level `"version"` field in the [package.json](./package.json) file to reflect the new version.
 
- - [ ] Run the final sanity check to ensure the builds pass: `yarn dtslint && yarn test && yarn preversion`.
+ - [ ] Run the final sanity check to ensure the builds pass: `yarn dtslint && yarn test && yarn preversion`. The first command checks that you have Typescript compatibility (one of the most common sources of bugs, since this library is written purely in JS but must be usable from TS).
 
  - [ ] Commit & push your branch, then [create a PR](https://github.com/stellar/js-stellar-base/compare).
 
