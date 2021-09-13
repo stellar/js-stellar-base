@@ -351,6 +351,7 @@ export type OperationType =
 export namespace OperationOptions {
   interface BaseOptions {
     source?: string;
+    withMuxing?: boolean; // all operations support a muxed source
   }
   interface AccountMerge extends BaseOptions {
     destination: string;

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+
+## [v6.0.2](https://github.com/stellar/js-stellar-base/compare/v6.0.1..v6.0.2)
+
+### Fix
+ - Fix Typescript signatures for operations to universally allow setting the `withMuxing` flag.
+
+
 ## [v6.0.1](https://github.com/stellar/js-stellar-base/compare/v5.3.2..v6.0.1)
 
 ### Add

@@ -15,10 +15,19 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .addOperation(
     StellarSdk.Operation.beginSponsoringFutureReserves({
       sponsoredId: account.accountId(),
-      source: masterKey.publicKey()
+      source: masterKey.publicKey(),
+      withMuxing: false, // ensures source can always be muxed
     })
   ).addOperation(
     StellarSdk.Operation.accountMerge({ destination: destKey.publicKey() }),
+  ).addOperation(
+    StellarSdk.Operation.payment({
+      source: account.accountId(),
+      destination: muxedAccount.accountId(),
+      amount: "100",
+      asset: usd,
+      withMuxing: false, // ensure muxed ops also allow the flag
+    })
   ).addOperation(
     StellarSdk.Operation.createClaimableBalance({
       amount: "10",
