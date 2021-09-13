@@ -1,14 +1,15 @@
 name: Github Pages
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1
-      
+
       - name: Install Node (14.x)
         uses: actions/setup-node@v2
         with:
@@ -16,15 +17,25 @@ jobs:
 
       - name: Install Dependencies
         run: yarn install
-        
+
       - name: Build
         run: gulp
 
-      - name: Generate JSDoc
-        run: yarn jsdoc -c .jsdoc.json --verbose
+      - name: Checkout GH pages
+        uses: actions/checkout@v2
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git clone -b gh-pages "git@github.com:stellar/js-stellar-base.git" jsdoc
 
-      - name: Deploy to GH Pages
-        uses: JamesIves/github-pages-deploy-action@0f24da7de3e7e135102609a4c9633b025be8411b
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: jsdoc # The folder the action should deploy.
+      - name: Generate JS docs
+        run: yarn docs
+
+      - name: Publish JS docs
+        uses: actions/checkout@v2
+        run: |
+          DESCRIPTION=`git describe --tags`
+          cd jsdoc
+          git add .
+          git commit -m $DESCRIPTION
+          git push origin gh-pages
