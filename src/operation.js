@@ -114,8 +114,8 @@ export class Operation {
    * was used to create the operation (i.e. the `opts` parameter to most ops).
    *
    * @param {xdr.Operation}   operation - An XDR Operation.
-   * @param {boolean}         [withMuxing] - Indicates that the operation
-   *     contains M... addresses which should be interpreted fully as muxed
+   * @param {boolean}         [withMuxing] - Indicates that if the operation
+   *     contains M... addresses, they should be interpreted fully as muxed
    *     accounts. By default, this option is disabled until muxed accounts are
    *     mature.
    *
