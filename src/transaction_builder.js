@@ -94,10 +94,10 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {bool}    [opts.withMuxing] - Indicates that the source account of
- *     every transaction created by this Builder can be interpreted as a proper
- *     muxed account (i.e. coming from an M... address). By default, this option
- *     is disabled until muxed accounts are mature.
+ * @param {bool}                [opts.withMuxing] - Indicates any properties in
+ *     this transaction or its underlying operations that use fully-muxed
+ *     accounts (i.e. come from an M... address) should be interpreted as such.
+ *     By default, this option is disabled until muxed accounts are mature.
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -283,11 +283,13 @@ export class TransactionBuilder {
    *     in inner transaction (**in stroops**)
    * @param {Transaction}     innerTx   - {@link Transaction} to be bumped by
    *     the fee bump transaction
-   * @param {string}          networkPassphrase - passphrase of the target Stellar
-   *     network (e.g. "Public Global Stellar Network ; September 2015")
-   * @param {bool}            [withMuxing]      - allows fee sources to be proper
-   *     muxed accounts (i.e. coming from an M... address). By default, this
-   *     option is disabled until muxed accounts are mature.
+   * @param {string}          networkPassphrase - passphrase of the target
+   *     Stellar network (e.g. "Public Global Stellar Network ; September 2015",
+   *     see {@link Networks})
+   * @param {bool}            [withMuxing] - Indicates any properties in this
+   *     transaction or its underlying operations that use fully-muxed accounts
+   *     (i.e. come from an M... address) should be interpreted as such. By
+   *     default, this option is disabled until muxed accounts are mature.
    *
    * @todo Alongside the next major version bump, this type signature can be
    *       changed to be less awkward: accept a MuxedAccount as the `feeSource`
@@ -374,21 +376,31 @@ export class TransactionBuilder {
   }
 
   /**
-   * Build a {@link Transaction} or {@link FeeBumpTransaction} from an xdr.TransactionEnvelope.
-   * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope object or base64 encoded string.
-   * @param {string} networkPassphrase - networkPassphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * Build a {@link Transaction} or {@link FeeBumpTransaction} from an
+   * xdr.TransactionEnvelope.
+   *
+   * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope
+   *     object or base64 encoded string.
+   * @param {string} networkPassphrase - The network passphrase of the target
+   *     Stellar network (e.g. "Public Global Stellar Network ; September
+   *     2015"), see {@link Networks}.
+   * @param {bool} [withMuxing] - Indicates any properties in this transaction
+   *     or its underlying operations that use fully-muxed accounts (i.e. come
+   *     from an M... address) should be interpreted as such. By default, this
+   *     option is disabled until muxed accounts are mature.
+   *
    * @returns {Transaction|FeeBumpTransaction}
    */
-  static fromXDR(envelope, networkPassphrase) {
+  static fromXDR(envelope, networkPassphrase, withMuxing) {
     if (typeof envelope === 'string') {
       envelope = xdr.TransactionEnvelope.fromXDR(envelope, 'base64');
     }
 
     if (envelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
-      return new FeeBumpTransaction(envelope, networkPassphrase);
+      return new FeeBumpTransaction(envelope, networkPassphrase, withMuxing);
     }
 
-    return new Transaction(envelope, networkPassphrase);
+    return new Transaction(envelope, networkPassphrase, withMuxing);
   }
 }
 
