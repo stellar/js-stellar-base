@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v2
 
       - name: Install Node (14.x)
         uses: actions/setup-node@v2
@@ -22,10 +22,11 @@ jobs:
         run: gulp
 
       - name: Checkout GH pages
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git clone -b gh-pages "git@github.com:stellar/js-stellar-base.git" jsdoc
+        uses: actions/checkout@v2
+        with:
+          repository: stellar/js-stellar-base
+          ref: gh-pages
+          path: jsdoc
 
       - name: Generate JS docs
         run: yarn docs
