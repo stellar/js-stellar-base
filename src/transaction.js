@@ -83,7 +83,9 @@ export class Transaction extends TransactionBase {
       };
     }
     const operations = tx.operations() || [];
-    this._operations = map(operations, (op) => Operation.fromXDRObject(op));
+    this._operations = map(operations, (op) =>
+      Operation.fromXDRObject(op, withMuxing)
+    );
   }
 
   /**

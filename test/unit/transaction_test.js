@@ -532,25 +532,19 @@ describe('Transaction', function() {
         )
         .addMemo(StellarBase.Memo.text('Happy birthday!'))
         .build();
-      let med25519 = new StellarBase.xdr.MuxedAccountMed25519({
-        id: StellarBase.xdr.Uint64.fromString('0'),
-        ed25519: source.rawPublicKey()
-      });
-      let muxedAccount = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
-        med25519
-      );
+
+      // force the source to be muxed in the envelope
+      const muxedSource = new StellarBase.MuxedAccount(account, '0');
       const envelope = tx.toEnvelope();
       envelope
         .v1()
         .tx()
-        .sourceAccount(muxedAccount);
+        .sourceAccount(muxedSource.toXDRObject());
 
-      let destMed25519 = new StellarBase.xdr.MuxedAccountMed25519({
-        id: StellarBase.xdr.Uint64.fromString('0'),
-        ed25519: StellarBase.StrKey.decodeEd25519PublicKey(destination)
-      });
-      let destMuxedAccount = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
-        destMed25519
+      // force the payment destination to be muxed in the envelope
+      const destinationMuxed = new StellarBase.MuxedAccount(
+        new StellarBase.Account(destination, '1'),
+        '0'
       );
       envelope
         .v1()
@@ -558,16 +552,27 @@ describe('Transaction', function() {
         .operations()[0]
         .body()
         .value()
-        .destination(destMuxedAccount);
+        .destination(destinationMuxed.toXDRObject());
 
-      const txWithMuxedAccount = new StellarBase.Transaction(
+      // make sure there are no muxed properties on decoding by default
+      const unmuxedTx = new StellarBase.Transaction(
         envelope,
         networkPassphrase
       );
-      expect(txWithMuxedAccount.source).to.equal(source.publicKey());
       expect(tx.source).to.equal(source.publicKey());
-      var operation = txWithMuxedAccount.operations[0];
-      expect(operation.destination).to.be.equal(destination);
+      expect(unmuxedTx.source).to.equal(source.publicKey());
+      expect(unmuxedTx.operations[0].destination).to.be.equal(destination);
+
+      // but they should be muxed if we enforce it
+      const muxedTx = new StellarBase.Transaction(
+        envelope,
+        StellarBase.Networks.TESTNET,
+        true
+      );
+      expect(muxedTx.source).to.be.equal(muxedSource.accountId());
+      expect(muxedTx.operations[0].destination).to.be.equal(
+        destinationMuxed.accountId()
+      );
     });
   });
 });

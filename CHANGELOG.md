@@ -3,10 +3,16 @@
 ## Unreleased
 
 
+## [v6.0.3](https://github.com/stellar/js-stellar-base/compare/v6.0.2..v6.0.3)
+
+### Fix
+- When creating a `Transaction`, forward the optional `withMuxing` flag along to its operations so that their properties are also decoded with the appropriate muxing state ([#469](https://github.com/stellar/js-stellar-base/pull/469)).
+
+
 ## [v6.0.2](https://github.com/stellar/js-stellar-base/compare/v6.0.1..v6.0.2)
 
 ### Fix
- - Fix Typescript signatures for operations to universally allow setting the `withMuxing` flag.
+- Fix Typescript signatures for operations to universally allow setting the `withMuxing` flag ([#466](https://github.com/stellar/js-stellar-base/pull/466)).
 
 
 ## [v6.0.1](https://github.com/stellar/js-stellar-base/compare/v5.3.2..v6.0.1)
