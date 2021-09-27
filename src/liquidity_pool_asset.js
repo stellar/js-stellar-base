@@ -92,7 +92,7 @@ export class LiquidityPoolAsset {
   }
 
   /**
-   * @see [Assets concept](https://www.stellar.org/developers/guides/concepts/assets.html)
+   * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
    * @returns {AssetType.liquidityPoolShares} asset type. Can only be `liquidity_pool_shares`.
    */
   getAssetType() {

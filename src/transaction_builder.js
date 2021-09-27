@@ -18,14 +18,14 @@ import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account'
  * fee on the network.
  *
  * @constant
- * @see [Fees](https://www.stellar.org/developers/guides/concepts/fees.html)
+ * @see [Fees](https://developers.stellar.org/docs/glossary/fees/)
  */
 export const BASE_FEE = '100'; // Stroops
 
 /**
  * @constant
  * @see {@link TransactionBuilder#setTimeout}
- * @see [Timeout](https://www.stellar.org/developers/horizon/reference/endpoints/transactions-create.html#timeout)
+ * @see [Timeout](https://developers.stellar.org/api/resources/transactions/post/)
  */
 export const TimeoutInfinite = 0;
 

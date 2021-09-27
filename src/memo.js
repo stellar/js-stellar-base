@@ -31,7 +31,7 @@ export const MemoReturn = 'return';
  *
  * @param {string} type - `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
  * @param {*} value - `string` for `MemoID`, `MemoText`, buffer of hex string for `MemoHash` or `MemoReturn`
- * @see [Transactions concept](https://www.stellar.org/developers/guides/concepts/transactions.html)
+ * @see [Transactions concept](https://developers.stellar.org/docs/glossary/transactions/)
  * @class Memo
  */
 export class Memo {

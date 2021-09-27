@@ -46,7 +46,7 @@ function weightCheckFunction(value, name) {
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  *
  * @returns {xdr.SetOptionsOp}  XDR operation
- * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export function setOptions(opts) {
   const attributes = {};

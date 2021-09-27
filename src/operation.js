@@ -29,7 +29,7 @@ const MAX_INT64 = '9223372036854775807';
  * account’s credit.
  *
  * @constant
- * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthRequiredFlag = 1 << 0;
 /**
@@ -37,7 +37,7 @@ export const AuthRequiredFlag = 1 << 0;
  * account to revoke its credit held by other accounts.
  *
  * @constant
- * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthRevocableFlag = 1 << 1;
 /**
@@ -45,7 +45,7 @@ export const AuthRevocableFlag = 1 << 1;
  * authorization flags can be set and the account can never be deleted.
  *
  * @constant
- * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthImmutableFlag = 1 << 2;
 
@@ -55,12 +55,12 @@ export const AuthImmutableFlag = 1 << 2;
  * corresponding asset.
  *
  * @constant
- * @see [Account flags](https://www.stellar.org/developers/guides/concepts/accounts.html#flags)
+ * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthClawbackEnabledFlag = 1 << 3;
 
 /**
- * `Operation` class represents [operations](https://www.stellar.org/developers/guides/concepts/operations.html) in Stellar network.
+ * `Operation` class represents [operations](https://developers.stellar.org/docs/glossary/operations/) in Stellar network.
  * Use one of static methods to create operations:
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`
