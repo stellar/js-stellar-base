@@ -112,6 +112,6 @@
     "tweetnacl": "^1.0.0"
   },
   "optionalDependencies": {
-    "sodium-native": "^2.4.9"
+    "sodium-native": "^3.2.1"
   }
 }
