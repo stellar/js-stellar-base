@@ -1,7 +1,12 @@
 # Changelog
 
+
 ## Unreleased
 
+
+## [v6.0.4](https://github.com/stellar/js-stellar-base/compare/v6.0.3..v6.0.4)
+
+### Fix
 - Allow muxed accounts when decoding transactions via `TransactionBuilder.fromXDR()` ([#470](https://github.com/stellar/js-stellar-base/pull/470)).
 
 
