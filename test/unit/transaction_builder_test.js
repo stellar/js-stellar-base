@@ -743,6 +743,28 @@ describe('TransactionBuilder', function() {
 
       expect(source.sequenceNumber()).to.equal('1235');
       expect(source.baseAccount().sequenceNumber()).to.equal('1235');
+
+      // it should decode muxed properties when specified
+      let decodedTx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toXDR('base64'),
+        networkPassphrase,
+        true
+      );
+      let paymentOp = decodedTx.operations[0];
+      expect(decodedTx.source).to.equal(source.accountId());
+      expect(paymentOp.destination).to.equal(destination);
+      expect(paymentOp.source).to.equal(source.accountId());
+
+      const expectedBaseAccount = source.baseAccount().accountId();
+      decodedTx = StellarBase.TransactionBuilder.fromXDR(
+        tx.toXDR('base64'),
+        networkPassphrase,
+        false
+      );
+      paymentOp = decodedTx.operations[0];
+      expect(decodedTx.source).to.equal(expectedBaseAccount);
+      expect(paymentOp.destination).to.equal(expectedBaseAccount); // dest and src are same base
+      expect(paymentOp.source).to.equal(expectedBaseAccount);
     });
 
     it('does not regress js-stellar-sdk#646', function() {
@@ -800,6 +822,16 @@ describe('TransactionBuilder', function() {
         source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
+
+      const decodedTx = StellarBase.TransactionBuilder.fromXDR(
+        feeTx.toXDR('base64'),
+        networkPassphrase,
+        true
+      );
+      expect(decodedTx.feeSource).to.equal(source.accountId());
+      expect(decodedTx.innerTransaction.operations[0].source).to.equal(
+        source.baseAccount().accountId()
+      );
     });
   });
 });
