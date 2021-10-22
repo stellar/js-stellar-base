@@ -8408,7 +8408,7 @@ typescript@next:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.0-dev.20200420.tgz#99c2bc0936dbf4479b0b5260d80475ed494b1532"
   integrity sha512-36MW6V+oXNnsSgliSjUWvtOkO21g9+iFGHPFv+O06HsCl3dcuqzBac17m8xuOuWo1LUlEgS6yAnD9fiVgvmCfg==
 
-ua-parser-js@0.7.28:
+ua-parser-js@0.7.28, ua-parser-js@^0.7.28:
   version "0.7.28"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
   integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
