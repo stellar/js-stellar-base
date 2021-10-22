@@ -4,6 +4,14 @@
 ## Unreleased
 
 
+## [v6.0.5](https://github.com/stellar/js-stellar-base/compare/v6.0.4..v6.0.5)
+
+This version bump fixes a security vulnerability in a _developer_ dependency; **please upgrade as soon as possible!**
+
+### Security Fix
+- Pin `ua-parser-js` to a known safe version (https://github.com/stellar/js-stellar-base/pull/477).
+
+
 ## [v6.0.4](https://github.com/stellar/js-stellar-base/compare/v6.0.3..v6.0.4)
 
 ### Fix
