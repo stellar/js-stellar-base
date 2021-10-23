@@ -6,7 +6,10 @@
 
 ## [v6.0.5](https://github.com/stellar/js-stellar-base/compare/v6.0.4..v6.0.5)
 
-This version bump fixes a security vulnerability in a _developer_ dependency; **please upgrade as soon as possible!**
+This version bump fixes a security vulnerability in a _developer_ dependency; **please upgrade as soon as possible!** You may be affected if you are working on this package in a developer capacity (i.e. you've cloned this repository) and have run `yarn` or `yarn install` any time on Oct 22nd, 2021.
+
+Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-rvh2-c87w) for details.
+
 
 ### Security Fix
 - Pin `ua-parser-js` to a known safe version ([#477](https://github.com/stellar/js-stellar-base/pull/477)).
