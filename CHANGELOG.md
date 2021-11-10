@@ -4,6 +4,13 @@
 ## Unreleased
 
 
+## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)
+
+### Fix
+
+- Upgrades the `path-parse` dependency from 1.0.6 to 1.0.7 ([#450](https://github.com/stellar/js-stellar-base/pull/450)).
+
+
 ## [v6.0.5](https://github.com/stellar/js-stellar-base/compare/v6.0.4..v6.0.5)
 
 This version bump fixes a security vulnerability in a _developer_ dependency; **please upgrade as soon as possible!** You may be affected if you are working on this package in a developer capacity (i.e. you've cloned this repository) and have run `yarn` or `yarn install` any time on Oct 22nd, 2021.
