@@ -1,5 +1,8 @@
 name: Github Pages
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -30,12 +33,7 @@ jobs:
 
       - name: Publish JS docs
         run: |
-          ls -lAh
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git remote -v
-          TAG=`git describe --tags --always`
-          echo $TAG
+          TAG=`git describe --tags`
           cd jsdoc
           git config user.name github-actions
           git config user.email github-actions@github.com
