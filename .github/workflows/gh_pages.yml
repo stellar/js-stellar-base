@@ -1,8 +1,5 @@
 name: Github Pages
-on:
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -33,8 +30,10 @@ jobs:
 
       - name: Publish JS docs
         run: |
-          DESCRIPTION=`git describe --tags`
+          ls -lAh
+          git remote -v
+          TAG=`git describe --tags --always`
           cd jsdoc
           git add .
-          git commit -m $DESCRIPTION
+          git commit -m $TAG
           git push origin gh-pages
