@@ -1,5 +1,8 @@
 name: Github Pages
-on: [pull_request]
+on:
+  release:
+    types: [published]
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
