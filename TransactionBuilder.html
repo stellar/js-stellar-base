@@ -538,10 +538,10 @@ target Stellar network (e.g. &quot;Public Global Stellar Network ; September
             
 
             <td class="description last">
-                <p>Indicates that the source account of
-every transaction created by this Builder can be interpreted as a proper
-muxed account (i.e. coming from an M... address). By default, this option
-is disabled until muxed accounts are mature.</p>
+                <p>Indicates any properties in
+this transaction or its underlying operations that use fully-muxed
+accounts (i.e. come from an M... address) should be interpreted as such.
+By default, this option is disabled until muxed accounts are mature.</p>
                 
             </td>
         </tr>
@@ -649,7 +649,7 @@ transaction with a higher fee.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line301">line 301</a>
+        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -845,8 +845,9 @@ the fee bump transaction</p>
             
 
             <td class="description last">
-                <p>passphrase of the target Stellar
-network (e.g. &quot;Public Global Stellar Network ; September 2015&quot;)</p>
+                <p>passphrase of the target
+Stellar network (e.g. &quot;Public Global Stellar Network ; September 2015&quot;,
+see <a href="global.html#Networks">Networks</a>)</p>
                 
             </td>
         </tr>
@@ -882,9 +883,10 @@ network (e.g. &quot;Public Global Stellar Network ; September 2015&quot;)</p>
             
 
             <td class="description last">
-                <p>allows fee sources to be proper
-muxed accounts (i.e. coming from an M... address). By default, this
-option is disabled until muxed accounts are mature.</p>
+                <p>Indicates any properties in this
+transaction or its underlying operations that use fully-muxed accounts
+(i.e. come from an M... address) should be interpreted as such. By
+default, this option is disabled until muxed accounts are mature.</p>
                 
             </td>
         </tr>
@@ -936,14 +938,15 @@ option is disabled until muxed accounts are mature.</p>
 
     
 
-    <h4 class="name" id=".fromXDR"><span class="type-signature">(static) </span>fromXDR<span class="signature">(envelope, networkPassphrase)</span><span class="type-signature"> &rarr; {<a href="Transaction.html">Transaction</a>|<a href="FeeBumpTransaction.html">FeeBumpTransaction</a>}</span></h4>
+    <h4 class="name" id=".fromXDR"><span class="type-signature">(static) </span>fromXDR<span class="signature">(envelope, networkPassphrase, withMuxing<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Transaction.html">Transaction</a>|<a href="FeeBumpTransaction.html">FeeBumpTransaction</a>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Build a <a href="Transaction.html">Transaction</a> or <a href="FeeBumpTransaction.html">FeeBumpTransaction</a> from an xdr.TransactionEnvelope.</p>
+    <p>Build a <a href="Transaction.html">Transaction</a> or <a href="FeeBumpTransaction.html">FeeBumpTransaction</a> from an
+xdr.TransactionEnvelope.</p>
 </div>
 
 
@@ -979,7 +982,7 @@ option is disabled until muxed accounts are mature.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line382">line 382</a>
+        <a href="transaction_builder.js.html">transaction_builder.js</a>, <a href="transaction_builder.js.html#line394">line 394</a>
     </li></ul></dd>
     
 
@@ -1011,6 +1014,8 @@ option is disabled until muxed accounts are mature.</p>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1039,11 +1044,20 @@ option is disabled until muxed accounts are mature.</p>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">
-                <p>The transaction envelope object or base64 encoded string.</p>
+                <p>The transaction envelope
+object or base64 encoded string.</p>
                 
             </td>
         </tr>
@@ -1065,11 +1079,60 @@ option is disabled until muxed accounts are mature.</p>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">
-                <p>networkPassphrase of the target stellar network (e.g. &quot;Public Global Stellar Network ; September 2015&quot;).</p>
+                <p>The network passphrase of the target
+Stellar network (e.g. &quot;Public Global Stellar Network ; September
+2015&quot;), see <a href="global.html#Networks">Networks</a>.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>withMuxing</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>bool</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>Indicates any properties in this transaction
+or its underlying operations that use fully-muxed accounts (i.e. come
+from an M... address) should be interpreted as such. By default, this
+option is disabled until muxed accounts are mature.</p>
                 
             </td>
         </tr>
@@ -2003,7 +2066,7 @@ If the value is <code>0</code>, the transaction is good indefinitely.</p>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Sep 09 2021 12:22:28 GMT-0300 (Brasilia Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Nov 10 2021 18:42:11 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
