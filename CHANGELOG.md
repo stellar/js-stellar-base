@@ -8,7 +8,7 @@
 
 ### Fix
 
-- Upgrades the `path-parse` dependency from 1.0.6 to 1.0.7 ([#450](https://github.com/stellar/js-stellar-base/pull/450)).
+- Upgrades dependencies: `path-parse` (1.0.6 --> 1.0.7) and `jszip` (3.4.0 to 3.7.1) ([#450](https://github.com/stellar/js-stellar-base/pull/450), [#458](https://github.com/stellar/js-stellar-base/pull/458)).
 
 
 ## [v6.0.5](https://github.com/stellar/js-stellar-base/compare/v6.0.4..v6.0.5)
