@@ -15,7 +15,7 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @param {bool}    [opts.withMuxing] - Indicates that some parameters (either
  *     the `destination` or `source`, in this case) are M... addresses that
  *     should be interpreted fully as a muxed account. By default, this option
- *     is disabled until muxed accounts are mature.
+ *     is *enabled* now that muxed accounts are mature.
  * @param {string}  [opts.source]     - The source account for the payment.
  *     Defaults to the transaction's source account.
  *
@@ -29,14 +29,15 @@ export function payment(opts) {
     throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
 
+  const muxing = opts.withMuxing === undefined ? true : opts.withMuxing;
   const attributes = {};
   try {
     attributes.destination = decodeAddressToMuxedAccount(
       opts.destination,
-      opts.withMuxing
+      muxing
     );
   } catch (e) {
-    throw new Error('destination is invalid; did you forget to enable muxing?');
+    throw new Error('destination is invalid; did you disable muxing?');
   }
 
   attributes.asset = opts.asset.toXDRObject();

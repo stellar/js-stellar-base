@@ -114,15 +114,16 @@ export class Operation {
    * was used to create the operation (i.e. the `opts` parameter to most ops).
    *
    * @param {xdr.Operation}   operation - An XDR Operation.
-   * @param {boolean}         [withMuxing] - Indicates that if the operation
-   *     contains M... addresses, they should be interpreted fully as muxed
-   *     accounts. By default, this option is disabled until muxed accounts are
-   *     mature.
+   * @param {bool}    [opts.withMuxing] - Indicates that some parameters (either
+   *     the `destination` or `source`, in this case) are M... addresses that
+   *     should be interpreted fully as a muxed account. By default, this option
+   *     is *enabled* now that muxed accounts are mature.
    *
    * @return {Operation}
    */
   static fromXDRObject(operation, withMuxing) {
     const result = {};
+    withMuxing = withMuxing === undefined ? true : withMuxing;
     if (operation.sourceAccount()) {
       result.source = encodeMuxedAccountToAddress(
         operation.sourceAccount(),

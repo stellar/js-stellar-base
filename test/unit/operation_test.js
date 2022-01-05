@@ -106,7 +106,7 @@ describe('Operation', function() {
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ';
     const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
-    it('does not support muxed accounts by default', function() {
+    it('supports muxed accounts by default', function() {
       expect(() => {
         StellarBase.Operation.payment({
           destination,
@@ -114,7 +114,7 @@ describe('Operation', function() {
           amount,
           source
         });
-      }).to.throw(/destination is invalid/);
+      }).not.to.throw();
     });
 
     function paymentPacksCorrectly(opts) {
@@ -141,14 +141,15 @@ describe('Operation', function() {
       amount,
       source
     };
-    opts.withMuxing = true;
 
-    it('optionally supports muxed accounts', function() {
+    it('supports disabling muxed accounts', function() {
+      opts.withMuxing = false;
       paymentPacksCorrectly(opts);
     });
 
     it('supports mixing muxed and unmuxed properties', function() {
       opts.source = base;
+      opts.withMuxing = true;
       paymentPacksCorrectly(opts);
 
       opts.source = source;
