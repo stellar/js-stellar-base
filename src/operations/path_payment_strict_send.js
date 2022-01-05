@@ -20,10 +20,10 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @param {Asset}   opts.destAsset    - asset the destination will receive
  * @param {string}  opts.destMin      - minimum amount of destAsset to be receive
  * @param {Asset[]} opts.path         - array of Asset objects to use as the path
- * @param {bool}    [opts.withMuxing] - Indicates that some parameters (either
- *     the `destination` or `source`, in this case) are M... addresses that
- *     should be interpreted fully as a muxed account. By default, this option
- *     is *enabled* now that muxed accounts are mature.
+ *
+ * @param {bool}    [opts.withMuxing=true] - Indicates that any addresses that
+ *     can be muxed accounts (M... addresses) should be fully interpreted as a
+ *     muxed account. Disabling this will throw if M-addresses are used.
  * @param {string}  [opts.source]     - The source account for the payment.
  *     Defaults to the transaction's source account.
  *
@@ -31,6 +31,8 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  *     (xdr.PathPaymentStrictSendOp)
  */
 export function pathPaymentStrictSend(opts) {
+  opts.withMuxing = opts.withMuxing === undefined ? true : opts.withMuxing;
+
   switch (true) {
     case !opts.sendAsset:
       throw new Error('Must specify a send asset');
@@ -44,14 +46,13 @@ export function pathPaymentStrictSend(opts) {
       break;
   }
 
-  const muxing = opts.withMuxing === undefined ? true : opts.withMuxing;
   const attributes = {};
   attributes.sendAsset = opts.sendAsset.toXDRObject();
   attributes.sendAmount = this._toXDRAmount(opts.sendAmount);
   try {
     attributes.destination = decodeAddressToMuxedAccount(
       opts.destination,
-      muxing
+      opts.withMuxing
     );
   } catch (e) {
     throw new Error('destination is invalid');
