@@ -24,15 +24,17 @@ import { encodeMuxedAccountToAddress } from './util/decode_encode_muxed_account'
  *     object or base64 encoded string
  * @param {string}  [networkPassphrase] - passphrase of the target stellar
  *     network (e.g. "Public Global Stellar Network ; September 2015")
- * @param {bool}    [opts.withMuxing] - Indicates that this.sourceAccount is a
- *     muxed account (i.e. came from an M... address) and should be interpreted
- *     fully as such. By default, this option is disabled until muxed accounts
- *     are mature.
+ * @param {bool}    [opts.withMuxing] - Indicates that some parameters (either
+ *     the `destination` or `source`, in this case) are M... addresses that
+ *     should be interpreted fully as a muxed account. By default, this option
+ *     is *enabled* now that muxed accounts are mature.
  *
  * @extends TransactionBase
  */
 export class Transaction extends TransactionBase {
   constructor(envelope, networkPassphrase, withMuxing) {
+    withMuxing = withMuxing === undefined ? true : withMuxing;
+
     if (typeof envelope === 'string') {
       const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);

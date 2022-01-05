@@ -94,10 +94,10 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {bool}                [opts.withMuxing] - Indicates any properties in
- *     this transaction or its underlying operations that use fully-muxed
- *     accounts (i.e. come from an M... address) should be interpreted as such.
- *     By default, this option is disabled until muxed accounts are mature.
+ * @param {bool}                [opts.withMuxing=true] - Indicates any
+ *     properties in this transaction or its underlying operations that can be
+ *     muxed accounts (i.e. come from an M... address) should be fully
+ *     interpreted as such. Disabling this will throw if M-addresses are used.
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -112,11 +112,13 @@ export class TransactionBuilder {
     this.source = sourceAccount;
     this.operations = [];
 
-    this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
+    this.baseFee = opts.fee;
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
-    this.supportMuxedAccounts = opts.withMuxing || false;
+    this.supportMuxedAccounts = isUndefined(opts.withMuxing)
+      ? true
+      : opts.withMuxing;
   }
 
   /**
@@ -200,11 +202,11 @@ export class TransactionBuilder {
   }
 
   /**
-   * Enable support for muxed accounts for the Transaction that will be built.
+   * Disable support for muxed accounts for the Transaction that will be built.
    * @returns {TransactionBuilder}
    */
-  enableMuxedAccounts() {
-    this.supportMuxedAccounts = true;
+  disableMuxedAccounts() {
+    this.supportMuxedAccounts = false;
     return this;
   }
 
