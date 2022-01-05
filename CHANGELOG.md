@@ -25,6 +25,7 @@ function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: b
 function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 ```
 
+- Adds a helper function `Transaction.getClaimableBalanceId(int)` which lets you pre-determine the hex claimable balance ID of a `createClaimableBalance` operation prior to submission to the network ([#482](https://github.com/stellar/js-stellar-base/pull/482)).
 
 ### Breaking Changes
 
