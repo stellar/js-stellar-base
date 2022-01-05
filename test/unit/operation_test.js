@@ -2425,6 +2425,20 @@ describe('Operation', function() {
         StellarBase.Operation.setTrustLineFlags({});
       }).to.throw();
     });
+    it('fails with a muxed account trustor', function() {
+      expect(() => {
+        const mAddress =
+          'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
+        console.log(mAddress);
+        StellarBase.Operation.setTrustLineFlags({
+          trustor: mAddress,
+          asset: StellarBase.Asset.native(),
+          flags: {
+            clawbackEnabled: false
+          }
+        });
+      }).to.throw();
+    });
   });
 
   describe('liquidityPoolDeposit()', function() {
