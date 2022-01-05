@@ -1,5 +1,4 @@
 import map from 'lodash/map';
-import { isInteger } from 'lodash';
 
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
@@ -228,7 +227,7 @@ export class Transaction extends TransactionBase {
    *    - the source account doesn't have a sequence number
    *    - general XDR un/marshalling failures
    *
-   * @param   {integer}  opIndex   the index of the operation to calculate
+   * @param   {integer}  opIndex   the index of the CreateClaimableBalance op
    * @returns {string}   a hex string representing the claimable balance ID
    *
    * @see https://github.com/stellar/go/blob/master/txnbuild/transaction.go#L392
@@ -236,7 +235,7 @@ export class Transaction extends TransactionBase {
   getClaimableBalanceId(opIndex) {
     // Validate and then extract the operation from the transaction.
     if (
-      !isInteger(opIndex) ||
+      !Number.isInteger(opIndex) ||
       opIndex < 0 ||
       opIndex >= this.operations.length
     ) {
