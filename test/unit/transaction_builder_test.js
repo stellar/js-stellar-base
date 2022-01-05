@@ -669,41 +669,37 @@ describe('TransactionBuilder', function() {
     // muxed accounts.
     const asset = StellarBase.Asset.native();
     const amount = '1000.0000000';
-    const destination =
-      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
-    const source = new StellarBase.MuxedAccount(
-      new StellarBase.Account(
-        'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
-        '1234'
-      ),
-      '2'
+
+    const base = new StellarBase.Account(
+      'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
+      '1234'
     );
+    const source = new StellarBase.MuxedAccount(base, '2');
+    const destination = new StellarBase.MuxedAccount(base, '3').accountId();
 
     const PUBKEY_SRC = StellarBase.StrKey.decodeEd25519PublicKey(
       source.baseAccount().accountId()
     );
-    const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString('2');
+    const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString(source.id());
     const networkPassphrase = 'Standalone Network ; February 2017';
     const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
-    it('enables muxed support after creation', function() {
+    it('can disable muxed support after creation', function() {
       let builder = new StellarBase.TransactionBuilder(source, {
         fee: '100',
-        timebounds: { minTime: 0, maxTime: 0 },
-        withMuxing: false
+        timebounds: { minTime: 0, maxTime: 0 }
       });
-      expect(builder.supportMuxedAccounts).to.be.false;
-      expect(builder.enableMuxedAccounts().supportMuxedAccounts).to.be.true;
+      expect(builder.supportMuxedAccounts).to.be.true;
+      expect(builder.disableMuxedAccounts().supportMuxedAccounts).to.be.false;
     });
 
-    it('works when muxed accounts are enabled', function() {
+    it('works with muxed accounts default-enabled', function() {
       const operations = [
         StellarBase.Operation.payment({
           source: source.accountId(),
           destination: destination,
           amount: amount,
-          asset: asset,
-          withMuxing: true
+          asset: asset
         })
         // TODO: More muxed-enabled operations
       ];
@@ -715,7 +711,6 @@ describe('TransactionBuilder', function() {
           StellarBase.MemoText,
           'Testing muxed accounts'
         ),
-        withMuxing: true,
         networkPassphrase: networkPassphrase
       });
 
@@ -744,11 +739,10 @@ describe('TransactionBuilder', function() {
       expect(source.sequenceNumber()).to.equal('1235');
       expect(source.baseAccount().sequenceNumber()).to.equal('1235');
 
-      // it should decode muxed properties when specified
+      // it should decode muxed properties by default
       let decodedTx = StellarBase.TransactionBuilder.fromXDR(
         tx.toXDR('base64'),
-        networkPassphrase,
-        true
+        networkPassphrase
       );
       let paymentOp = decodedTx.operations[0];
       expect(decodedTx.source).to.equal(source.accountId());
@@ -759,7 +753,7 @@ describe('TransactionBuilder', function() {
       decodedTx = StellarBase.TransactionBuilder.fromXDR(
         tx.toXDR('base64'),
         networkPassphrase,
-        false
+        false // force unmuxed
       );
       paymentOp = decodedTx.operations[0];
       expect(decodedTx.source).to.equal(expectedBaseAccount);
