@@ -846,6 +846,10 @@ export namespace StrKey {
   function decodeEd25519SecretSeed(data: string): Buffer;
   function isValidEd25519SecretSeed(seed: string): boolean;
 
+  function encodeMed25519PublicKey(data: Buffer): string;
+  function decodeMed25519PublicKey(data: string): Buffer;
+  function isValidMed25519PublicKey(publicKey: string): boolean;
+
   function encodePreAuthTx(data: Buffer): string;
   function decodePreAuthTx(data: string): Buffer;
 
