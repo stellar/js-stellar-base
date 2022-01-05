@@ -97,6 +97,8 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  */
 export class Operation {
   static setSourceAccount(opAttributes, opts) {
+    opts.withMuxing = opts.withMuxing === undefined ? true : opts.withMuxing;
+
     if (opts.source) {
       try {
         opAttributes.sourceAccount = decodeAddressToMuxedAccount(
