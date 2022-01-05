@@ -340,7 +340,7 @@ export class Operation {
       case 'clawback': {
         result.type = 'clawback';
         result.amount = this._fromXDRAmount(attrs.amount());
-        result.from = encodeMuxedAccountToAddress(attrs.from());
+        result.from = encodeMuxedAccountToAddress(attrs.from(), withMuxing);
         result.asset = Asset.fromOperation(attrs.asset());
         break;
       }
