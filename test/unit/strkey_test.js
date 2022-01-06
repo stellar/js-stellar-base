@@ -300,7 +300,8 @@ describe('StrKey', function() {
     it('decodes underlying G... address correctly', function() {
       expect(
         StellarBase.encodeMuxedAccountToAddress(
-          StellarBase.decodeAddressToMuxedAccount(MPUBKEY, true)
+          StellarBase.decodeAddressToMuxedAccount(MPUBKEY, true),
+          false
         )
       ).to.equal(PUBKEY);
     });
