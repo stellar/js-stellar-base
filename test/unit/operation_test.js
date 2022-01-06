@@ -1656,33 +1656,41 @@ describe('Operation', function() {
   });
 
   describe('.accountMerge', function() {
-    it('creates a accountMergeOp', function() {
-      var opts = {};
-      opts.destination =
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      let op = StellarBase.Operation.accountMerge(opts);
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
+    const base = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+
+    const checkMergeOp = function(opts) {
+      const xdr = StellarBase.Operation.accountMerge(opts).toXDR('hex');
+      const op = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      const obj = StellarBase.Operation.fromXDRObject(op);
+
       expect(obj.type).to.be.equal('accountMerge');
       expect(obj.destination).to.be.equal(opts.destination);
+      return obj;
+    };
+
+    it('creates an accountMergeOp', function() {
+      let opts = { destination: base };
+      checkMergeOp(opts);
     });
-    it('does not support muxed accounts', function() {
-      var opts = {};
-      opts.destination =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      opts.source =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      expect(() => {
-        StellarBase.Operation.accountMerge(opts);
-      }).to.throw(/destination is invalid/);
+
+    it('creates accountMergeOps with muxed accounts correctly', function() {
+      const dest = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
+      const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '2'));
+
+      let opts = { destination: dest, source: source };
+      let obj = checkMergeOp(opts);
+      expect(obj.source).to.equal(source);
+
+      opts.withMuxing = false;
+      expect(() => StellarBase.Operation.accountMerge(opts)).to.throw();
+
+      opts.destination = opts.source = base;
+      obj = checkMergeOp(opts);
+      expect(obj.source).to.equal(base);
     });
-    it('fails to create accountMerge operation with an invalid destination address', function() {
-      let opts = {
-        destination: 'GCEZW'
-      };
+
+    it('fails to create accountMergeOp with invalid destination', function() {
+      let opts = { destination: 'GCEZW' };
       expect(() => StellarBase.Operation.accountMerge(opts)).to.throw(
         /destination is invalid/
       );
