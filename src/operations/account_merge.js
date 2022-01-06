@@ -27,7 +27,7 @@ export function accountMerge(opts) {
       decodeAddressToMuxedAccount(opts.destination, opts.withMuxing)
     );
   } catch (e) {
-    throw new Error('destination is invalid');
+    throw new Error('destination is invalid; did you disable muxing?');
   }
   this.setSourceAccount(opAttributes, opts);
 
