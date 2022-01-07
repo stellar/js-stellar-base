@@ -112,7 +112,7 @@
     "tweetnacl": "^1.0.0"
   },
   "optionalDependencies": {
-    "sodium-native": "^2.3.0"
+    "sodium-native": "^3.2.1"
   },
   "resolutions": {
     "**/ua-parser-js": "0.7.28"
