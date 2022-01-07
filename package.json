@@ -1,5 +1,5 @@
 {
-  "name": "stellar-base",
+  "name": "skyhitz-stellar-base",
   "version": "6.0.6",
   "description": "Low level stellar support library",
   "main": "./lib/index.js",
