@@ -94,10 +94,6 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {bool}                [opts.withMuxing=true] - Indicates any
- *     properties in this transaction or its underlying operations that can be
- *     muxed accounts (i.e. come from an M... address) should be fully
- *     interpreted as such. Disabling this will throw if M-addresses are used.
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -116,9 +112,6 @@ export class TransactionBuilder {
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
-    this.supportMuxedAccounts = isUndefined(opts.withMuxing)
-      ? true
-      : opts.withMuxing;
   }
 
   /**
@@ -202,15 +195,6 @@ export class TransactionBuilder {
   }
 
   /**
-   * Disable support for muxed accounts for the Transaction that will be built.
-   * @returns {TransactionBuilder}
-   */
-  disableMuxedAccounts() {
-    this.supportMuxedAccounts = false;
-    return this;
-  }
-
-  /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
@@ -251,10 +235,7 @@ export class TransactionBuilder {
     );
 
     attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
-    attrs.sourceAccount = decodeAddressToMuxedAccount(
-      this.source.accountId(),
-      this.supportMuxedAccounts
-    );
+    attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
     attrs.ext = new xdr.TransactionExt(0);
 
     const xtx = new xdr.Transaction(attrs);
@@ -263,11 +244,7 @@ export class TransactionBuilder {
       new xdr.TransactionV1Envelope({ tx: xtx })
     );
 
-    const tx = new Transaction(
-      txEnvelope,
-      this.networkPassphrase,
-      this.supportMuxedAccounts
-    );
+    const tx = new Transaction(txEnvelope, this.networkPassphrase);
 
     this.source.incrementSequenceNumber();
 
@@ -288,16 +265,12 @@ export class TransactionBuilder {
    * @param {string}          networkPassphrase - passphrase of the target
    *     Stellar network (e.g. "Public Global Stellar Network ; September 2015",
    *     see {@link Networks})
-   * @param {bool}            [withMuxing] - Indicates any properties in this
-   *     transaction or its underlying operations that use fully-muxed accounts
-   *     (i.e. come from an M... address) should be interpreted as such. By
-   *     default, this option is disabled until muxed accounts are mature.
    *
    * @todo Alongside the next major version bump, this type signature can be
    *       changed to be less awkward: accept a MuxedAccount as the `feeSource`
    *       rather than a keypair or string.
    *
-   * @note Your fee-bump amount should be 10x the original fee.
+   * @note Your fee-bump amount should be >= 10x the original fee.
    * @see  https://developers.stellar.org/docs/glossary/fee-bumps/#replace-by-fee
    *
    * @returns {FeeBumpTransaction}
@@ -306,8 +279,7 @@ export class TransactionBuilder {
     feeSource,
     baseFee,
     innerTx,
-    networkPassphrase,
-    withMuxing
+    networkPassphrase
   ) {
     const innerOps = innerTx.operations.length;
     const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
@@ -353,7 +325,7 @@ export class TransactionBuilder {
 
     let feeSourceAccount;
     if (isString(feeSource)) {
-      feeSourceAccount = decodeAddressToMuxedAccount(feeSource, withMuxing);
+      feeSourceAccount = decodeAddressToMuxedAccount(feeSource);
     } else {
       feeSourceAccount = feeSource.xdrMuxedAccount();
     }
@@ -374,7 +346,7 @@ export class TransactionBuilder {
       feeBumpTxEnvelope
     );
 
-    return new FeeBumpTransaction(envelope, networkPassphrase, withMuxing);
+    return new FeeBumpTransaction(envelope, networkPassphrase);
   }
 
   /**
@@ -386,23 +358,19 @@ export class TransactionBuilder {
    * @param {string} networkPassphrase - The network passphrase of the target
    *     Stellar network (e.g. "Public Global Stellar Network ; September
    *     2015"), see {@link Networks}.
-   * @param {bool} [withMuxing] - Indicates any properties in this transaction
-   *     or its underlying operations that use fully-muxed accounts (i.e. come
-   *     from an M... address) should be interpreted as such. By default, this
-   *     option is disabled until muxed accounts are mature.
    *
    * @returns {Transaction|FeeBumpTransaction}
    */
-  static fromXDR(envelope, networkPassphrase, withMuxing) {
+  static fromXDR(envelope, networkPassphrase) {
     if (typeof envelope === 'string') {
       envelope = xdr.TransactionEnvelope.fromXDR(envelope, 'base64');
     }
 
     if (envelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
-      return new FeeBumpTransaction(envelope, networkPassphrase, withMuxing);
+      return new FeeBumpTransaction(envelope, networkPassphrase);
     }
 
-    return new Transaction(envelope, networkPassphrase, withMuxing);
+    return new Transaction(envelope, networkPassphrase);
   }
 }
 

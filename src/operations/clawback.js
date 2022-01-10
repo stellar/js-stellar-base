@@ -18,7 +18,7 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  *
  * @return {xdr.ClawbackOp}
  *
- * @see {@link https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-operation}
+ * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-operation
  */
 export function clawback(opts) {
   const attributes = {};
