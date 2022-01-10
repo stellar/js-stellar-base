@@ -3,6 +3,42 @@
 
 ## Unreleased
 
+### Breaking Changes
+
+This release introduces **unconditional support for muxed accounts** [#485](https://github.com/stellar/js-stellar-base/pull/485).
+
+In [v5.2.0](https://github.com/stellar/js-stellar-base/releases/tag/v5.2.0), we introduced _opt-in_ support for muxed accounts, where you would need to explicitly pass a `true` flag if you wanted to interpret muxed account objects as muxed addresses (in the form `M...`, see [SEP-23](https://stellar.org/protocol/sep-23)). We stated that this would become the default in the future. That is now the case.
+
+The following fields will now always support muxed properties:
+
+  * `FeeBumpTransaction.feeSource`
+  * `Transaction.sourceAccount`
+  * `Operation.sourceAccount`
+  * `Payment.destination`
+  * `PathPaymentStrictReceive.destination`
+  * `PathPaymentStrictSend.destination`
+  * `AccountMerge.destination`
+  * `Clawback.from`
+
+The following functions had a `withMuxing` parameter removed:
+
+  - `Operation.fromXDRObject`
+  - `Transaction.constructor`
+  - `TransactionBuilder.fromXDR`
+
+The following functions will no longer check the `opts` object for a `withMuxing` field:
+
+  - `TransactionBuilder.constructor`
+  - `Operation.setSourceAccount`
+
+There are several other breaking changes:
+
+  - `Account.createSubaccount` is removed
+  - `MuxedAccount.createSubaccount` is renamed to `MuxedAccount.createSibling`
+  - `TransactionBuilder.enableMuxedAccounts()` is removed
+  - `decodeAddressToMuxedAccount()` no longer accepts a second boolean parameter
+  - the second parameter to `encodeMuxedAccountToAddress()` is inverted; refer to the docstring for more details
+
 
 ## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)
 
