@@ -33,8 +33,7 @@ The following functions will no longer check the `opts` object for a `withMuxing
 
 There are several other breaking changes:
 
-  - `Account.createSubaccount` is removed
-  - `MuxedAccount.createSubaccount` is renamed to `MuxedAccount.createSibling`
+  - `Account.createSubaccount` and `MuxedAccount.createSubaccount` are removed
   - `TransactionBuilder.enableMuxedAccounts()` is removed
   - `decodeAddressToMuxedAccount()` no longer accepts a second boolean parameter
   - the second parameter to `encodeMuxedAccountToAddress()` is inverted; refer to the docstring for more details
