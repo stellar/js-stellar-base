@@ -315,7 +315,7 @@ describe('FeeBumpTransaction', function() {
 
   it('decodes muxed addresses correctly', function() {
     const muxedFeeSource = this.feeSource.xdrMuxedAccount('0');
-    const muxedAddress = encodeMuxedAccountToAddress(muxedFeeSource, true);
+    const muxedAddress = encodeMuxedAccountToAddress(muxedFeeSource);
 
     const envelope = this.transaction.toEnvelope();
     envelope
@@ -326,17 +326,8 @@ describe('FeeBumpTransaction', function() {
     const txWithMuxedAccount = new StellarBase.FeeBumpTransaction(
       envelope,
       this.networkPassphrase
-      // default is withMuxing: true
     );
-
-    const txWithUnmuxedAccount = new StellarBase.FeeBumpTransaction(
-      envelope,
-      this.networkPassphrase,
-      false
-    );
-
     expect(txWithMuxedAccount.feeSource).to.equal(muxedAddress);
-    expect(txWithUnmuxedAccount.feeSource).to.equal(this.feeSource.publicKey());
   });
 });
 

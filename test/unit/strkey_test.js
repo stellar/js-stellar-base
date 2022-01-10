@@ -302,7 +302,7 @@ describe('StrKey', function() {
       expect(
         StellarBase.encodeMuxedAccountToAddress(
           StellarBase.decodeAddressToMuxedAccount(MPUBKEY),
-          true
+          StellarBase.MUXED_ACCOUNT_FORCE_ED25519
         )
       ).to.equal(PUBKEY);
     });

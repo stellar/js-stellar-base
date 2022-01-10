@@ -684,24 +684,20 @@ describe('TransactionBuilder', function() {
     const networkPassphrase = 'Standalone Network ; February 2017';
     const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
-    it('can disable muxed support after creation', function() {
-      let builder = new StellarBase.TransactionBuilder(source, {
-        fee: '100',
-        timebounds: { minTime: 0, maxTime: 0 }
-      });
-      expect(builder.supportMuxedAccounts).to.be.true;
-      expect(builder.disableMuxedAccounts().supportMuxedAccounts).to.be.false;
-    });
-
-    it('works with muxed accounts default-enabled', function() {
+    it('works with muxed accounts by default', function() {
       const operations = [
         StellarBase.Operation.payment({
           source: source.accountId(),
           destination: destination,
           amount: amount,
           asset: asset
+        }),
+        StellarBase.Operation.clawback({
+          source: source.baseAccount().accountId(),
+          from: destination,
+          amount: amount,
+          asset: asset
         })
-        // TODO: More muxed-enabled operations
       ];
 
       let builder = new StellarBase.TransactionBuilder(source, {
@@ -715,7 +711,6 @@ describe('TransactionBuilder', function() {
       });
 
       operations.forEach((op) => builder.addOperation(op));
-      expect(builder.supportMuxedAccounts).to.be.true;
 
       let tx = builder.build();
       tx.sign(signer);
@@ -731,7 +726,7 @@ describe('TransactionBuilder', function() {
 
       const innerMux = rawMuxedSourceAccount.med25519();
       expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
-      expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount, true)).to.equal(
+      expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount)).to.equal(
         source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
@@ -744,21 +739,16 @@ describe('TransactionBuilder', function() {
         tx.toXDR('base64'),
         networkPassphrase
       );
-      let paymentOp = decodedTx.operations[0];
       expect(decodedTx.source).to.equal(source.accountId());
+
+      let paymentOp = decodedTx.operations[0];
       expect(paymentOp.destination).to.equal(destination);
       expect(paymentOp.source).to.equal(source.accountId());
 
-      const expectedBaseAccount = source.baseAccount().accountId();
-      decodedTx = StellarBase.TransactionBuilder.fromXDR(
-        tx.toXDR('base64'),
-        networkPassphrase,
-        false // force unmuxed
-      );
-      paymentOp = decodedTx.operations[0];
-      expect(decodedTx.source).to.equal(expectedBaseAccount);
-      expect(paymentOp.destination).to.equal(expectedBaseAccount); // dest and src are same base
-      expect(paymentOp.source).to.equal(expectedBaseAccount);
+      // and unmuxed where appropriate
+      let clawbackOp = decodedTx.operations[1];
+      expect(clawbackOp.source).to.equal(source.baseAccount().accountId());
+      expect(clawbackOp.from).to.equal(destination);
     });
 
     it('does not regress js-stellar-sdk#646', function() {
@@ -796,8 +786,7 @@ describe('TransactionBuilder', function() {
         source.accountId(),
         '1000',
         tx,
-        networkPassphrase,
-        true
+        networkPassphrase
       );
 
       expect(feeTx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
@@ -812,15 +801,14 @@ describe('TransactionBuilder', function() {
 
       const innerMux = rawFeeSource.med25519();
       expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
-      expect(encodeMuxedAccountToAddress(rawFeeSource, true)).to.equal(
+      expect(encodeMuxedAccountToAddress(rawFeeSource)).to.equal(
         source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
 
       const decodedTx = StellarBase.TransactionBuilder.fromXDR(
         feeTx.toXDR('base64'),
-        networkPassphrase,
-        true
+        networkPassphrase
       );
       expect(decodedTx.feeSource).to.equal(source.accountId());
       expect(decodedTx.innerTransaction.operations[0].source).to.equal(

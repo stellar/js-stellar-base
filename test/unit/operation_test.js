@@ -383,13 +383,9 @@ describe('Operation', function() {
     });
 
     const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
-    const source = encodeMuxedAccountToAddress(
-      encodeMuxedAccount(base, '1'),
-      true
-    );
+    const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
     const destination = encodeMuxedAccountToAddress(
-      encodeMuxedAccount(base, '2'),
-      true
+      encodeMuxedAccount(base, '2')
     );
 
     let opts = { source, destination };
