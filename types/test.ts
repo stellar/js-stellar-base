@@ -309,3 +309,23 @@ const lpWithdraw = StellarSdk.xdr.LiquidityPoolWithdrawOp.fromXDR(
   'base64'
 );
 lpWithdraw; // $ExpectType LiquidityPoolWithdrawOp
+
+const pubkey = masterKey.rawPublicKey(); // $ExpectType Buffer
+const seckey = masterKey.rawSecretKey(); // $ExpectType Buffer
+const muxed = StellarSdk.encodeMuxedAccount(masterKey.publicKey(), '1'); // $ExpectType MuxedAccount
+const muxkey = muxed.toXDR("raw"); // $ExpectType Buffer
+
+let result = StellarSdk.StrKey.encodeEd25519PublicKey(pubkey);  // $ExpectType string
+StellarSdk.StrKey.decodeEd25519PublicKey(result);               // $ExpectType Buffer
+StellarSdk.StrKey.isValidEd25519PublicKey(result);              // $ExpectType boolean
+
+result = StellarSdk.StrKey.encodeEd25519SecretSeed(seckey); // $ExpectType string
+StellarSdk.StrKey.decodeEd25519SecretSeed(result);          // $ExpectType Buffer
+StellarSdk.StrKey.isValidEd25519SecretSeed(result);         // $ExpectType boolean
+
+result = StellarSdk.StrKey.encodeMed25519PublicKey(muxkey);   // $ExpectType string
+StellarSdk.StrKey.decodeMed25519PublicKey(result);            // $ExpectType Buffer
+StellarSdk.StrKey.isValidMed25519PublicKey(result);           // $ExpectType boolean
+
+const muxedAddr = StellarSdk.encodeMuxedAccountToAddress(muxed, true);  // $ExpectType string
+StellarSdk.decodeAddressToMuxedAccount(muxedAddr, true);                // $ExpectType MuxedAccount

@@ -12,9 +12,17 @@ function extractBaseAddess(address: string): string;
 
 The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
 
-  - `encodeMed25519PublicKey(data: Buffer): string`
-  - `decodeMed25519PublicKey(data: string): Buffer`
-  - `isValidMed25519PublicKey(publicKey: string): boolean`
+```typescript
+namespace StrKey {
+  function encodeMed25519PublicKey(data: Buffer): string;
+  function decodeMed25519PublicKey(data: string): Buffer;
+  function isValidMed25519PublicKey(publicKey: string): boolean;
+}
+
+function decodeAddressToMuxedAccount(address: string, supportMuxing: boolean): xdr.MuxedAccount;
+function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
+function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
+```
 
 
 ### Breaking Changes
