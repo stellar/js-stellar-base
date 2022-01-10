@@ -25,7 +25,6 @@ export class MuxedAccount {
   baseAccount(): Account;
   id(): string;
   setId(id: string): MuxedAccount;
-  createSibling(id: string): MuxedAccount;
   toXDRObject(): xdr.MuxedAccount;
   equals(otherMuxedAccount: MuxedAccount): boolean;
 }
