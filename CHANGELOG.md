@@ -56,6 +56,11 @@ There are several other breaking changes:
   let mux2 = new MuxedAccount(mux1.baseAccount(), '2');
 ```
 
+### Fix
+
+- Add `Buffer` as a parameter type option for the `Keypair` constructor in Typescript [#484](https://github.com/stellar/js-stellar-base/pull/484).
+
+
 ## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)
 
 ### Fix
