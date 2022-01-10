@@ -111,17 +111,6 @@ describe('Operation', function() {
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ';
     const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
-    it('supports muxed accounts by default', function() {
-      expect(() => {
-        StellarBase.Operation.payment({
-          destination,
-          asset,
-          amount,
-          source
-        });
-      }).not.to.throw();
-    });
-
     function paymentPacksCorrectly(opts) {
       const packed = StellarBase.Operation.payment(opts);
 
@@ -142,8 +131,7 @@ describe('Operation', function() {
 
     let opts = { destination, asset, amount, source };
 
-    it('supports disabling muxed accounts', function() {
-      opts.withMuxing = false;
+    it('supports muxed accounts', function() {
       opts.source = opts.destination = base;
       paymentPacksCorrectly(opts);
     });
@@ -151,7 +139,6 @@ describe('Operation', function() {
     it('supports mixing muxed and unmuxed properties', function() {
       opts.source = base;
       opts.destination = destination;
-      opts.withMuxing = true;
       paymentPacksCorrectly(opts);
 
       opts.source = source;
@@ -250,13 +237,9 @@ describe('Operation', function() {
     });
 
     const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
-    const source = encodeMuxedAccountToAddress(
-      encodeMuxedAccount(base, '1'),
-      true
-    );
+    const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
     const destination = encodeMuxedAccountToAddress(
-      encodeMuxedAccount(base, '2'),
-      true
+      encodeMuxedAccount(base, '2')
     );
     const sendAsset = new StellarBase.Asset(
       'USD',
@@ -286,21 +269,7 @@ describe('Operation', function() {
       source
     };
 
-    it('supports muxed accounts by default', function() {
-      expect(() => {
-        StellarBase.Operation.pathPaymentStrictReceive(opts);
-      }).to.not.throw();
-    });
-
-    it('optionally supports disabling muxed accounts', function() {
-      opts.withMuxing = false;
-
-      expect(() => {
-        StellarBase.Operation.pathPaymentStrictReceive(opts);
-      }).to.throw(/muxing/);
-
-      opts.destination = base;
-      opts.source = base;
+    it('supports muxed accounts', function() {
       const packed = StellarBase.Operation.pathPaymentStrictReceive(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -309,8 +278,7 @@ describe('Operation', function() {
         StellarBase.xdr.Operation.fromXDR(packed.toXDR('hex'), 'hex');
       }).to.not.throw();
 
-      const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
-
+      const unpacked = StellarBase.Operation.fromXDRObject(packed);
       expect(unpacked.type).to.equal('pathPaymentStrictReceive');
       expect(unpacked.source).to.equal(opts.source);
       expect(unpacked.destination).to.equal(opts.destination);
@@ -438,19 +406,7 @@ describe('Operation', function() {
       )
     ];
 
-    it('supports muxed accounts by default', function() {
-      expect(() => {
-        StellarBase.Operation.pathPaymentStrictSend(opts);
-      }).to.not.throw();
-    });
-    it('optionally supports disabling muxed accounts', function() {
-      opts.withMuxing = false;
-      expect(() => {
-        StellarBase.Operation.pathPaymentStrictSend(opts);
-      }).to.throw();
-
-      opts.source = base;
-      opts.destination = base;
+    it('supports muxed accounts', function() {
       const packed = StellarBase.Operation.pathPaymentStrictSend(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -459,8 +415,7 @@ describe('Operation', function() {
         StellarBase.xdr.Operation.fromXDR(packed.toXDR('hex'), 'hex');
       }).to.not.throw();
 
-      const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
-
+      const unpacked = StellarBase.Operation.fromXDRObject(packed);
       expect(unpacked.type).to.equal('pathPaymentStrictSend');
       expect(unpacked.source).to.equal(opts.source);
       expect(unpacked.destination).to.equal(opts.destination);
@@ -1673,16 +1628,13 @@ describe('Operation', function() {
       checkMergeOp(opts);
     });
 
-    it('creates accountMergeOps with muxed accounts correctly', function() {
+    it('supports muxed accounts', function() {
       const dest = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
       const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '2'));
 
       let opts = { destination: dest, source: source };
       let obj = checkMergeOp(opts);
       expect(obj.source).to.equal(source);
-
-      opts.withMuxing = false;
-      expect(() => StellarBase.Operation.accountMerge(opts)).to.throw();
 
       opts.destination = opts.source = base;
       obj = checkMergeOp(opts);
