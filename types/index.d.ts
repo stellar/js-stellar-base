@@ -10,7 +10,6 @@ export class Account {
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
-  createSubaccount(id: string): MuxedAccount;
 }
 
 export class MuxedAccount {
@@ -22,11 +21,11 @@ export class MuxedAccount {
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
-  createSubaccount(id: string): MuxedAccount;
 
   baseAccount(): Account;
   id(): string;
   setId(id: string): MuxedAccount;
+  createSibling(id: string): MuxedAccount;
   toXDRObject(): xdr.MuxedAccount;
   equals(otherMuxedAccount: MuxedAccount): boolean;
 }
