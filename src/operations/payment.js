@@ -13,17 +13,12 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @param {Asset}   opts.asset        - asset to send
  * @param {string}  opts.amount       - amount to send
  *
- * @param {bool}    [opts.withMuxing=true] - Indicates that any addresses that
- *     can be muxed accounts (M... addresses) should be fully interpreted as a
- *     muxed account. Disabling this will throw if M-addresses are used.
  * @param {string}  [opts.source]     - The source account for the payment.
  *     Defaults to the transaction's source account.
  *
  * @returns {xdr.Operation}   The resulting payment operation (xdr.PaymentOp)
  */
 export function payment(opts) {
-  opts.withMuxing = opts.withMuxing === undefined ? true : opts.withMuxing;
-
   if (!opts.asset) {
     throw new Error('Must provide an asset for a payment operation');
   }
@@ -33,12 +28,9 @@ export function payment(opts) {
 
   const attributes = {};
   try {
-    attributes.destination = decodeAddressToMuxedAccount(
-      opts.destination,
-      opts.withMuxing
-    );
+    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
-    throw new Error('destination is invalid; did you disable muxing?');
+    throw new Error('destination is invalid');
   }
 
   attributes.asset = opts.asset.toXDRObject();
