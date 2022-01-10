@@ -66,6 +66,18 @@ export class Account {
   incrementSequenceNumber() {
     this.sequence = this.sequence.add(1);
   }
+
+  /**
+   * Creates a muxed "sub"account with this base address and an ID set.
+   *
+   * @param  {string} id - the ID of the new muxed account
+   * @return {MuxedAccount} a new instance w/ the specified parameters
+   *
+   * @see MuxedAccount
+   */
+  createSubaccount(id) {
+    return new MuxedAccount(this, id);
+  }
 }
 
 /**
@@ -187,6 +199,16 @@ export class MuxedAccount {
    */
   incrementSequenceNumber() {
     return this.account.incrementSequenceNumber();
+  }
+
+  /**
+   * Creates another muxed "sub"account from the base with a new ID set
+   *
+   * @param  {string} id - the ID of the new muxed account
+   * @return {MuxedAccount} a new instance w/ the specified parameters
+   */
+  createSubaccount(id) {
+    return new MuxedAccount(this.account, id);
   }
 
   /**

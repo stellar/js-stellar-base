@@ -10,6 +10,7 @@ export class Account {
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
+  createSubaccount(id: string): MuxedAccount;
 }
 
 export class MuxedAccount {
@@ -21,6 +22,7 @@ export class MuxedAccount {
   accountId(): string;
   sequenceNumber(): string;
   incrementSequenceNumber(): void;
+  createSubaccount(id: string): MuxedAccount;
 
   baseAccount(): Account;
   id(): string;
