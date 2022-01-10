@@ -4,15 +4,22 @@
 ## Unreleased
 
 ### Add
-A new helper method is introduced to help convert from muxed account addresses to their underlying Stellar addresses:
+A new helper method is introduced to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
 
 ```ts
 function extractBaseAddess(address: string): string;
 ```
 
+The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
+
+  - `encodeMed25519PublicKey(data: Buffer): string`
+  - `decodeMed25519PublicKey(data: string): Buffer`
+  - `isValidMed25519PublicKey(publicKey: string): boolean`
+
+
 ### Breaking Changes
 
-This release introduces **unconditional support for muxed accounts** [#485](https://github.com/stellar/js-stellar-base/pull/485).
+This release introduces **unconditional support for muxed accounts** ([#485](https://github.com/stellar/js-stellar-base/pull/485)).
 
 In [v5.2.0](https://github.com/stellar/js-stellar-base/releases/tag/v5.2.0), we introduced _opt-in_ support for muxed accounts, where you would need to explicitly pass a `true` flag if you wanted to interpret muxed account objects as muxed addresses (in the form `M...`, see [SEP-23](https://stellar.org/protocol/sep-23)). We stated that this would become the default in the future. That is now the case.
 
