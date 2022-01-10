@@ -284,7 +284,7 @@ describe('StrKey', function() {
     });
 
     it('lets G... accounts pass through (unmuxed)', function() {
-      const unmuxed = StellarBase.decodeAddressToMuxedAccount(PUBKEY, true);
+      const unmuxed = StellarBase.decodeAddressToMuxedAccount(PUBKEY);
 
       expect(StellarBase.xdr.MuxedAccount.isValid(unmuxed)).to.be.true;
       expect(unmuxed.switch()).to.equal(
@@ -297,11 +297,12 @@ describe('StrKey', function() {
       ).to.be.true;
       expect(StellarBase.encodeMuxedAccountToAddress(unmuxed)).to.equal(PUBKEY);
     });
+
     it('decodes underlying G... address correctly', function() {
       expect(
         StellarBase.encodeMuxedAccountToAddress(
-          StellarBase.decodeAddressToMuxedAccount(MPUBKEY, true),
-          false
+          StellarBase.decodeAddressToMuxedAccount(MPUBKEY),
+          true
         )
       ).to.equal(PUBKEY);
     });
@@ -334,10 +335,7 @@ describe('StrKey', function() {
       const CASE_ID = CASES[CASE_MPUBKEY];
 
       it(`encodes & decodes muxed key w/ ID=${CASE_ID}`, function() {
-        const muxed = StellarBase.decodeAddressToMuxedAccount(
-          CASE_MPUBKEY,
-          true
-        );
+        const muxed = StellarBase.decodeAddressToMuxedAccount(CASE_MPUBKEY);
         expect(StellarBase.xdr.MuxedAccount.isValid(muxed)).to.be.true;
         expect(muxed.switch()).to.equal(
           StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
@@ -351,7 +349,7 @@ describe('StrKey', function() {
         expect(innerMux.ed25519().equals(unmuxed.ed25519())).to.be.true;
         expect(innerMux.id()).to.eql(id);
 
-        const mpubkey = StellarBase.encodeMuxedAccountToAddress(muxed, true);
+        const mpubkey = StellarBase.encodeMuxedAccountToAddress(muxed);
         expect(mpubkey).to.equal(CASE_MPUBKEY);
       });
     }
