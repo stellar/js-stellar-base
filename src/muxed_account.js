@@ -85,6 +85,17 @@ export class MuxedAccount {
   }
 
   /**
+   * Returns a *new* muxed account with the same address but a new ID
+   *
+   * @param  {string} id    - a stringified uint64 representing the new ID
+   * @return {MuxedAccount} - a new account that shares the underlying base
+   *     account (incl. sequence number) but a different ID set
+   */
+  createSibling(id) {
+    return new MuxedAccount(this.account, id);
+  }
+
+  /**
    * @return {Account} the underlying account object shared among all muxed
    *     accounts with this Stellar public key (G... address)
    */

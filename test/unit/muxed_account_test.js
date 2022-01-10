@@ -28,7 +28,7 @@ describe('muxed account abstraction works', function() {
     ).to.be.true;
     expect(innerMux.id()).to.eql(StellarBase.xdr.Uint64.fromString('420'));
 
-    expect(StellarBase.encodeMuxedAccountToAddress(muxXdr, true)).to.equal(
+    expect(StellarBase.encodeMuxedAccountToAddress(muxXdr)).to.equal(
       mux.accountId()
     );
   });
@@ -65,7 +65,7 @@ describe('muxed account abstraction works', function() {
     let baseAccount = new StellarBase.Account(PUBKEY, '12345');
     const mux1 = new StellarBase.MuxedAccount(baseAccount, '1');
 
-    const mux2 = mux1.baseAccount().createSubaccount('420');
+    const mux2 = mux1.createSibling('420');
     expect(mux2.id()).to.equal('420');
     expect(mux2.accountId()).to.equal(MPUBKEY_ID);
     expect(mux2.sequenceNumber()).to.equal('12345');
