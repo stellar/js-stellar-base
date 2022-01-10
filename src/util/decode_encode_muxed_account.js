@@ -1,7 +1,10 @@
 import isString from 'lodash/isString';
+import isNil from 'lodash/isNil';
 
 import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
+
+export const MUXED_ACCOUNT_FORCE_ED25519 = true;
 
 /**
  * Converts a Stellar address (in G... or M... form) to an `xdr.MuxedAccount`
@@ -12,20 +15,11 @@ import { StrKey } from '../strkey';
  *
  * @function
  *
- * @param   {string}  address         G... or M... address to encode into XDR
- * @param   {bool}   [supportMuxing]  allows decoding of the muxed
- *     representation of the address, extracting the underlying ID from the M...
- *     address
- *
+ * @param   {string}  address   G... or M... address to encode into XDR
  * @returns {xdr.MuxedAccount}  a muxed account object for this address string
- *
- * @note     If you pass a G... address, `supportMuxing` will be ignored.
- * @warning  If you pass an M... address and do specify supportMuxing=false,
- *           then this function will throw an error.
  */
-export function decodeAddressToMuxedAccount(address, supportMuxing) {
-  supportMuxing = supportMuxing === undefined ? true : supportMuxing;
-  if (supportMuxing && StrKey.isValidMed25519PublicKey(address)) {
+export function decodeAddressToMuxedAccount(address) {
+  if (StrKey.isValidMed25519PublicKey(address)) {
     return _decodeAddressFullyToMuxedAccount(address);
   }
 
@@ -35,30 +29,30 @@ export function decodeAddressToMuxedAccount(address, supportMuxing) {
 }
 
 /**
- * Converts an xdr.MuxedAccount to its string representation.
+ * Converts an xdr.MuxedAccount to its StrKey representation.
  *
- * By default, this returns its "M..." string representation, but it can return
- * the "G..." representation (i.e. forcing the ed25519 representation) via
- * opt-out.
+ * By default, this returns its "M..." string representation (SEP-23), but it
+ * can return the "G..." representation (i.e. forcing the ed25519
+ * representation) via an explicit flag. The latter option is useful when you
+ * have an object but only care about representing its underlying public key.
  *
  * @function
  *
  * @param   {xdr.MuxedAccount} muxedAccount   Raw account to stringify
- * @param   {bool} [supportMuxing=true]       If the ID is present within the
- *     `muxedAccount` object, this converts the object into its full, proper
- *     M... address. Otherwise, it converts it to the underlying G... address.
+ * @param   {bool} [forceEd25519=false]       If this is set to `true`, this
+ *     will always return the underlying G... address of the `muxedAccount`.
  *
  * @returns {string}  stringified G... (corresponding to the underlying pubkey)
  *     or M... address (corresponding to both the key and the muxed ID)
  */
-export function encodeMuxedAccountToAddress(muxedAccount, supportMuxing) {
-  supportMuxing = supportMuxing === undefined ? true : supportMuxing;
+export function encodeMuxedAccountToAddress(muxedAccount, forceEd25519) {
+  forceEd25519 = isNil(forceEd25519) ? false : forceEd25519;
 
   if (
     muxedAccount.switch().value ===
     xdr.CryptoKeyType.keyTypeMuxedEd25519().value
   ) {
-    if (supportMuxing) {
+    if (!forceEd25519) {
       return _encodeMuxedAccountFullyToAddress(muxedAccount);
     }
     muxedAccount = muxedAccount.med25519();
