@@ -111,11 +111,6 @@ export class Operation {
    * was used to create the operation (i.e. the `opts` parameter to most ops).
    *
    * @param {xdr.Operation}   operation - An XDR Operation.
-   * @param {bool}    [=true] - Indicates any properties in this
-   *     operation that *can* be muxed accounts (i.e. come from an M... address)
-   *     *should* be fully interpreted as such. Disabling this will throw if
-   *     M-addresses were used.
-   *
    * @return {Operation}
    */
   static fromXDRObject(operation) {
