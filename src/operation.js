@@ -97,14 +97,9 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  */
 export class Operation {
   static setSourceAccount(opAttributes, opts) {
-    opts.withMuxing = opts.withMuxing === undefined ? true : opts.withMuxing;
-
     if (opts.source) {
       try {
-        opAttributes.sourceAccount = decodeAddressToMuxedAccount(
-          opts.source,
-          opts.withMuxing
-        );
+        opAttributes.sourceAccount = decodeAddressToMuxedAccount(opts.source);
       } catch (e) {
         throw new Error('Source address is invalid');
       }
@@ -116,21 +111,17 @@ export class Operation {
    * was used to create the operation (i.e. the `opts` parameter to most ops).
    *
    * @param {xdr.Operation}   operation - An XDR Operation.
-   * @param {bool}    [withMuxing=true] - Indicates any properties in this
+   * @param {bool}    [=true] - Indicates any properties in this
    *     operation that *can* be muxed accounts (i.e. come from an M... address)
    *     *should* be fully interpreted as such. Disabling this will throw if
    *     M-addresses were used.
    *
    * @return {Operation}
    */
-  static fromXDRObject(operation, withMuxing) {
+  static fromXDRObject(operation) {
     const result = {};
-    withMuxing = withMuxing === undefined ? true : withMuxing;
     if (operation.sourceAccount()) {
-      result.source = encodeMuxedAccountToAddress(
-        operation.sourceAccount(),
-        withMuxing
-      );
+      result.source = encodeMuxedAccountToAddress(operation.sourceAccount());
     }
 
     const attrs = operation.body().value();
@@ -145,10 +136,7 @@ export class Operation {
       }
       case 'payment': {
         result.type = 'payment';
-        result.destination = encodeMuxedAccountToAddress(
-          attrs.destination(),
-          withMuxing
-        );
+        result.destination = encodeMuxedAccountToAddress(attrs.destination());
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
@@ -157,10 +145,7 @@ export class Operation {
         result.type = 'pathPaymentStrictReceive';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
-        result.destination = encodeMuxedAccountToAddress(
-          attrs.destination(),
-          withMuxing
-        );
+        result.destination = encodeMuxedAccountToAddress(attrs.destination());
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destAmount = this._fromXDRAmount(attrs.destAmount());
         result.path = [];
@@ -177,10 +162,7 @@ export class Operation {
         result.type = 'pathPaymentStrictSend';
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
-        result.destination = encodeMuxedAccountToAddress(
-          attrs.destination(),
-          withMuxing
-        );
+        result.destination = encodeMuxedAccountToAddress(attrs.destination());
         result.destAsset = Asset.fromOperation(attrs.destAsset());
         result.destMin = this._fromXDRAmount(attrs.destMin());
         result.path = [];
@@ -292,7 +274,7 @@ export class Operation {
       }
       case 'accountMerge': {
         result.type = 'accountMerge';
-        result.destination = encodeMuxedAccountToAddress(attrs, withMuxing);
+        result.destination = encodeMuxedAccountToAddress(attrs);
         break;
       }
       case 'manageData': {
@@ -342,7 +324,7 @@ export class Operation {
       case 'clawback': {
         result.type = 'clawback';
         result.amount = this._fromXDRAmount(attrs.amount());
-        result.from = encodeMuxedAccountToAddress(attrs.from(), withMuxing);
+        result.from = encodeMuxedAccountToAddress(attrs.from());
         result.asset = Asset.fromOperation(attrs.asset());
         break;
       }
