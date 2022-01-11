@@ -42,7 +42,7 @@ export function setTrustLineFlags(opts = {}) {
   const attributes = {};
 
   if (typeof opts.flags !== 'object' || Object.keys(opts.flags).length === 0) {
-    throw new Error('opts.flags must be an map of boolean flags to modify');
+    throw new Error('opts.flags must be a map of boolean flags to modify');
   }
 
   const mapping = {
