@@ -846,6 +846,10 @@ export namespace StrKey {
   function decodeEd25519SecretSeed(data: string): Buffer;
   function isValidEd25519SecretSeed(seed: string): boolean;
 
+  function encodeMed25519PublicKey(data: Buffer): string;
+  function decodeMed25519PublicKey(data: string): Buffer;
+  function isValidMed25519PublicKey(publicKey: string): boolean;
+
   function encodePreAuthTx(data: Buffer): string;
   function decodePreAuthTx(data: string): Buffer;
 
@@ -940,4 +944,7 @@ export function verify(
   rawPublicKey: Buffer
 ): boolean;
 
+export function decodeAddressToMuxedAccount(address: string, supportMuxing: boolean): xdr.MuxedAccount;
+export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
+export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 export function extractBaseAddress(address: string): string;
