@@ -108,7 +108,7 @@ export class TransactionBuilder {
     this.source = sourceAccount;
     this.operations = [];
 
-    this.baseFee = isUndefined(opts.fee) ? BASE_FEE : opts.fee;
+    this.baseFee = opts.fee;
     this.timebounds = clone(opts.timebounds) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;

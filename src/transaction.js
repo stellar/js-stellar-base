@@ -1,4 +1,5 @@
 import map from 'lodash/map';
+
 import xdr from './generated/stellar-xdr_generated';
 import { hash } from './hashing';
 
@@ -6,7 +7,10 @@ import { StrKey } from './strkey';
 import { Operation } from './operation';
 import { Memo } from './memo';
 import { TransactionBase } from './transaction_base';
-import { encodeMuxedAccountToAddress } from './util/decode_encode_muxed_account';
+import {
+  extractBaseAddress,
+  encodeMuxedAccountToAddress
+} from './util/decode_encode_muxed_account';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object. If you have an
@@ -212,5 +216,54 @@ export class Transaction extends TransactionBase {
     }
 
     return envelope;
+  }
+
+  /**
+   * Calculate the claimable balance ID for an operation within the transaction.
+   *
+   * @param   {integer}  opIndex   the index of the CreateClaimableBalance op
+   * @returns {string}   a hex string representing the claimable balance ID
+   *
+   * @throws {RangeError}   for invalid `opIndex` value
+   * @throws {TypeError}    if op at `opIndex` is not `CreateClaimableBalance`
+   * @throws for general XDR un/marshalling failures
+   *
+   * @see https://github.com/stellar/go/blob/d712346e61e288d450b0c08038c158f8848cc3e4/txnbuild/transaction.go#L392-L435
+   *
+   */
+  getClaimableBalanceId(opIndex) {
+    // Validate and then extract the operation from the transaction.
+    if (
+      !Number.isInteger(opIndex) ||
+      opIndex < 0 ||
+      opIndex >= this.operations.length
+    ) {
+      throw new RangeError('invalid operation index');
+    }
+
+    let op = this.operations[opIndex];
+    try {
+      op = Operation.createClaimableBalance(op);
+    } catch (err) {
+      throw new TypeError(
+        `expected createClaimableBalance, got ${op.type}: ${err}`
+      );
+    }
+
+    // Always use the transaction's *unmuxed* source.
+    const account = StrKey.decodeEd25519PublicKey(
+      extractBaseAddress(this.source)
+    );
+    const operationId = xdr.OperationId.envelopeTypeOpId(
+      new xdr.OperationIdId({
+        sourceAccount: xdr.AccountId.publicKeyTypeEd25519(account),
+        seqNum: new xdr.SequenceNumber(this.sequence),
+        opNum: opIndex
+      })
+    );
+
+    const opIdHash = hash(operationId.toXDR('raw'));
+    const balanceId = xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(opIdHash);
+    return balanceId.toXDR('hex');
   }
 }
