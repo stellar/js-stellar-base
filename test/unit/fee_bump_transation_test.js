@@ -1,4 +1,5 @@
 import randomBytes from 'randombytes';
+import { encodeMuxedAccountToAddress } from '../../src/util/decode_encode_muxed_account';
 
 describe('FeeBumpTransaction', function() {
   beforeEach(function() {
@@ -312,26 +313,21 @@ describe('FeeBumpTransaction', function() {
     expect(transaction.toXDR()).to.be.equal(xdrString);
   });
 
-  it('handles muxed accounts', function() {
-    let med25519 = new StellarBase.xdr.MuxedAccountMed25519({
-      id: StellarBase.xdr.Uint64.fromString('0'),
-      ed25519: this.feeSource.rawPublicKey()
-    });
-
-    let muxedAccount = StellarBase.xdr.MuxedAccount.keyTypeMuxedEd25519(
-      med25519
-    );
+  it('decodes muxed addresses correctly', function() {
+    const muxedFeeSource = this.feeSource.xdrMuxedAccount('0');
+    const muxedAddress = encodeMuxedAccountToAddress(muxedFeeSource);
 
     const envelope = this.transaction.toEnvelope();
     envelope
       .feeBump()
       .tx()
-      .feeSource(muxedAccount);
+      .feeSource(muxedFeeSource);
+
     const txWithMuxedAccount = new StellarBase.FeeBumpTransaction(
       envelope,
       this.networkPassphrase
     );
-    expect(txWithMuxedAccount.feeSource).to.equal(this.feeSource.publicKey());
+    expect(txWithMuxedAccount.feeSource).to.equal(muxedAddress);
   });
 });
 

@@ -9,13 +9,10 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @see https://developers.stellar.org/docs/start/list-of-operations/#payment
  *
  * @param {object}  opts - Options object
- * @param {string}  opts.destination  - The destination account ID.
- * @param {Asset}   opts.asset        - The asset to send.
- * @param {string}  opts.amount       - The amount to send.
- * @param {bool}    [opts.withMuxing] - Indicates that some parameters (either
- *     the `destination` or `source`, in this case) are M... addresses that
- *     should be interpreted fully as a muxed account. By default, this option
- *     is disabled until muxed accounts are mature.
+ * @param {string}  opts.destination  - destination account ID
+ * @param {Asset}   opts.asset        - asset to send
+ * @param {string}  opts.amount       - amount to send
+ *
  * @param {string}  [opts.source]     - The source account for the payment.
  *     Defaults to the transaction's source account.
  *
@@ -31,12 +28,9 @@ export function payment(opts) {
 
   const attributes = {};
   try {
-    attributes.destination = decodeAddressToMuxedAccount(
-      opts.destination,
-      opts.withMuxing
-    );
+    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
-    throw new Error('destination is invalid; did you forget to enable muxing?');
+    throw new Error('destination is invalid');
   }
 
   attributes.asset = opts.asset.toXDRObject();

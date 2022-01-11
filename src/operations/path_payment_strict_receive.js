@@ -21,15 +21,11 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  * @param {Asset}   opts.destAsset    - asset the destination will receive
  * @param {string}  opts.destAmount   - amount the destination receives
  * @param {Asset[]} opts.path         - array of Asset objects to use as the path
- * @param {bool}    [opts.withMuxing] - indicates that some parameters in the
- *     operation are M... addresses that should be interpreted fully as a muxed
- *     account. By default, this option is disabled until muxed accounts are
- *     mature.
+ *
  * @param {string}  [opts.source]     - The source account for the payment.
  *     Defaults to the transaction's source account.
  *
- * @returns {xdr.Operation}   the resulting path payment operation
- *     (xdr.PathPaymentStrictReceiveOp)
+ * @returns {xdr.PathPaymentStrictReceiveOp} the resulting path payment op
  */
 export function pathPaymentStrictReceive(opts) {
   switch (true) {
@@ -48,12 +44,8 @@ export function pathPaymentStrictReceive(opts) {
   const attributes = {};
   attributes.sendAsset = opts.sendAsset.toXDRObject();
   attributes.sendMax = this._toXDRAmount(opts.sendMax);
-
   try {
-    attributes.destination = decodeAddressToMuxedAccount(
-      opts.destination,
-      opts.withMuxing
-    );
+    attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
     throw new Error('destination is invalid');
   }

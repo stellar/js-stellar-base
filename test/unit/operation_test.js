@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js';
 import isString from 'lodash/isString';
 
+import {
+  encodeMuxedAccountToAddress,
+  encodeMuxedAccount
+} from '../../src/util/decode_encode_muxed_account.js';
+
 describe('Operation', function() {
   describe('.createAccount()', function() {
     it('creates a createAccountOp', function() {
@@ -106,17 +111,6 @@ describe('Operation', function() {
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ';
     const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
-    it('does not support muxed accounts by default', function() {
-      expect(() => {
-        StellarBase.Operation.payment({
-          destination,
-          asset,
-          amount,
-          source
-        });
-      }).to.throw(/destination is invalid/);
-    });
-
     function paymentPacksCorrectly(opts) {
       const packed = StellarBase.Operation.payment(opts);
 
@@ -135,20 +129,16 @@ describe('Operation', function() {
       expect(unpacked.asset).to.eql(opts.asset);
     }
 
-    let opts = {
-      destination,
-      asset,
-      amount,
-      source
-    };
-    opts.withMuxing = true;
+    let opts = { destination, asset, amount, source };
 
-    it('optionally supports muxed accounts', function() {
+    it('supports muxed accounts', function() {
+      opts.source = opts.destination = base;
       paymentPacksCorrectly(opts);
     });
 
     it('supports mixing muxed and unmuxed properties', function() {
       opts.source = base;
+      opts.destination = destination;
       paymentPacksCorrectly(opts);
 
       opts.source = source;
@@ -246,28 +236,16 @@ describe('Operation', function() {
       );
     });
 
-    // Destination:
-    //  MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ
-    //  Address: GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ
-    //  ID:      1
-    //
-    // Source:
-    //  MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ
-    //  Address: GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ
-    //  ID:      2
-
-    const destination =
-      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
+    const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+    const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
+    const destination = encodeMuxedAccountToAddress(
+      encodeMuxedAccount(base, '2')
+    );
     const sendAsset = new StellarBase.Asset(
       'USD',
       'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
     );
-    const destAsset = new StellarBase.Asset(
-      'USD',
-      'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-    );
-    const source =
-      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ';
+    const destAsset = sendAsset;
 
     const sendMax = '3.0070000';
     const destAmount = '3.1415000';
@@ -291,14 +269,7 @@ describe('Operation', function() {
       source
     };
 
-    it('does not support muxed accounts by default', function() {
-      expect(() => {
-        StellarBase.Operation.pathPaymentStrictReceive(opts);
-      }).to.throw(/destination is invalid/);
-    });
-    it('optionally supports muxed accounts', function() {
-      opts.withMuxing = true;
-
+    it('supports muxed accounts', function() {
       const packed = StellarBase.Operation.pathPaymentStrictReceive(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -307,40 +278,21 @@ describe('Operation', function() {
         StellarBase.xdr.Operation.fromXDR(packed.toXDR('hex'), 'hex');
       }).to.not.throw();
 
-      const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
-
+      const unpacked = StellarBase.Operation.fromXDRObject(packed);
       expect(unpacked.type).to.equal('pathPaymentStrictReceive');
       expect(unpacked.source).to.equal(opts.source);
       expect(unpacked.destination).to.equal(opts.destination);
     });
 
     it('fails to create path payment operation with an invalid destination address', function() {
-      let opts = {
-        destination: 'GCEZW',
-        sendMax: '20',
-        destAmount: '50',
-        sendAsset: StellarBase.Asset.native(),
-        destAsset: new StellarBase.Asset(
-          'USD',
-          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-        )
-      };
+      opts.destination = 'GCEZW';
       expect(() =>
         StellarBase.Operation.pathPaymentStrictReceive(opts)
       ).to.throw(/destination is invalid/);
     });
 
     it('fails to create path payment operation with an invalid sendMax', function() {
-      let opts = {
-        destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
-        sendMax: 20,
-        destAmount: '50',
-        sendAsset: StellarBase.Asset.native(),
-        destAsset: new StellarBase.Asset(
-          'USD',
-          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-        )
-      };
+      opts.sendMax = 20;
       expect(() =>
         StellarBase.Operation.pathPaymentStrictReceive(opts)
       ).to.throw(/sendMax argument must be of type String/);
@@ -430,36 +382,27 @@ describe('Operation', function() {
       );
     });
 
-    let opts = {
-      sendAsset: new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      ),
-      sendAmount: '3.0070000',
-      destination:
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6',
-      source:
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6',
-      destAsset: new StellarBase.Asset(
-        'USD',
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-      ),
-      destMin: '3.1415000',
-      path: [
-        new StellarBase.Asset(
-          'USD',
-          'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
-        )
-      ]
-    };
+    const base = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+    const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
+    const destination = encodeMuxedAccountToAddress(
+      encodeMuxedAccount(base, '2')
+    );
 
-    it('does not support muxed accounts by default', function() {
-      expect(() => {
-        StellarBase.Operation.pathPaymentStrictSend(opts);
-      }).to.throw(/destination is invalid/);
-    });
-    it('optionally supports muxed accounts', function() {
-      opts.withMuxing = true;
+    let opts = { source, destination };
+    opts.sendAsset = opts.destAsset = new StellarBase.Asset(
+      'USD',
+      'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+    );
+    opts.destMin = '3.1415000';
+    opts.sendAmount = '3.0070000';
+    opts.path = [
+      new StellarBase.Asset(
+        'USD',
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
+      )
+    ];
+
+    it('supports muxed accounts', function() {
       const packed = StellarBase.Operation.pathPaymentStrictSend(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -468,8 +411,7 @@ describe('Operation', function() {
         StellarBase.xdr.Operation.fromXDR(packed.toXDR('hex'), 'hex');
       }).to.not.throw();
 
-      const unpacked = StellarBase.Operation.fromXDRObject(packed, true);
-
+      const unpacked = StellarBase.Operation.fromXDRObject(packed);
       expect(unpacked.type).to.equal('pathPaymentStrictSend');
       expect(unpacked.source).to.equal(opts.source);
       expect(unpacked.destination).to.equal(opts.destination);
@@ -1665,33 +1607,38 @@ describe('Operation', function() {
   });
 
   describe('.accountMerge', function() {
-    it('creates a accountMergeOp', function() {
-      var opts = {};
-      opts.destination =
-        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
-      let op = StellarBase.Operation.accountMerge(opts);
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, 'hex')
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
+    const base = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
+
+    const checkMergeOp = function(opts) {
+      const xdr = StellarBase.Operation.accountMerge(opts).toXDR('hex');
+      const op = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      const obj = StellarBase.Operation.fromXDRObject(op);
+
       expect(obj.type).to.be.equal('accountMerge');
       expect(obj.destination).to.be.equal(opts.destination);
+      return obj;
+    };
+
+    it('creates an accountMergeOp', function() {
+      let opts = { destination: base };
+      checkMergeOp(opts);
     });
-    it('does not support muxed accounts', function() {
-      var opts = {};
-      opts.destination =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      opts.source =
-        'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
-      expect(() => {
-        StellarBase.Operation.accountMerge(opts);
-      }).to.throw(/destination is invalid/);
+
+    it('supports muxed accounts', function() {
+      const dest = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
+      const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '2'));
+
+      let opts = { destination: dest, source: source };
+      let obj = checkMergeOp(opts);
+      expect(obj.source).to.equal(source);
+
+      opts.destination = opts.source = base;
+      obj = checkMergeOp(opts);
+      expect(obj.source).to.equal(base);
     });
-    it('fails to create accountMerge operation with an invalid destination address', function() {
-      let opts = {
-        destination: 'GCEZW'
-      };
+
+    it('fails to create accountMergeOp with invalid destination', function() {
+      let opts = { destination: 'GCEZW' };
       expect(() => StellarBase.Operation.accountMerge(opts)).to.throw(
         /destination is invalid/
       );

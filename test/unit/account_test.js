@@ -29,7 +29,7 @@ describe('Account.constructor', function() {
   it('wont create Account objects from muxed account strings', function() {
     expect(() => {
       new StellarBase.Account(MUXED_ADDRESS, '123');
-    }).to.throw();
+    }).to.throw(/MuxedAccount/);
   });
 });
 

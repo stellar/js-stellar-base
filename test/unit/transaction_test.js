@@ -554,21 +554,9 @@ describe('Transaction', function() {
         .value()
         .destination(destinationMuxed.toXDRObject());
 
-      // make sure there are no muxed properties on decoding by default
-      const unmuxedTx = new StellarBase.Transaction(
-        envelope,
-        networkPassphrase
-      );
+      // muxed properties should decode
+      const muxedTx = new StellarBase.Transaction(envelope, networkPassphrase);
       expect(tx.source).to.equal(source.publicKey());
-      expect(unmuxedTx.source).to.equal(source.publicKey());
-      expect(unmuxedTx.operations[0].destination).to.be.equal(destination);
-
-      // but they should be muxed if we enforce it
-      const muxedTx = new StellarBase.Transaction(
-        envelope,
-        StellarBase.Networks.TESTNET,
-        true
-      );
       expect(muxedTx.source).to.be.equal(muxedSource.accountId());
       expect(muxedTx.operations[0].destination).to.be.equal(
         destinationMuxed.accountId()

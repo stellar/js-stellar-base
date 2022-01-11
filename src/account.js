@@ -1,12 +1,12 @@
 import isString from 'lodash/isString';
 import BigNumber from 'bignumber.js';
 
-import xdr from './generated/stellar-xdr_generated';
 import { StrKey } from './strkey';
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
-  encodeMuxedAccount
+  encodeMuxedAccount,
+  extractBaseAddress
 } from './util/decode_encode_muxed_account';
 
 /**
@@ -83,8 +83,8 @@ export class Account {
 /**
  * Represents a muxed account for transactions and operations.
  *
- * A muxed (or *multiplexed*) account (defined rigorously in
- * [CAP-27](https://stellar.org/protocol/cap-27) and briefly in
+ * A muxed (or *multiplexed*) account (defined in
+ * [CAP-27](https://stellar.org/protocol/cap-27) and
  * [SEP-23](https://stellar.org/protocol/sep-23)) is one that resolves a single
  * Stellar `G...`` account to many different underlying IDs.
  *
@@ -115,7 +115,7 @@ export class Account {
  * @param {string}    id      - a stringified uint64 value that represents the
  *                              ID of the muxed account
  *
- * @link https://developers.stellar.org/docs/glossary/muxed-accounts/
+ * @see https://developers.stellar.org/docs/glossary/muxed-accounts/
  */
 export class MuxedAccount {
   constructor(baseAccount, id) {
@@ -126,7 +126,7 @@ export class MuxedAccount {
 
     this.account = baseAccount;
     this._muxedXdr = encodeMuxedAccount(accountId, id);
-    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr, true);
+    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
     this._id = id;
   }
 
@@ -142,8 +142,8 @@ export class MuxedAccount {
    * @return {MuxedAccount}
    */
   static fromAddress(mAddress, sequenceNum) {
-    const muxedAccount = decodeAddressToMuxedAccount(mAddress, true);
-    const gAddress = encodeMuxedAccountToAddress(muxedAccount, false);
+    const muxedAccount = decodeAddressToMuxedAccount(mAddress);
+    const gAddress = extractBaseAddress(mAddress);
     const id = muxedAccount
       .med25519()
       .id()
@@ -154,7 +154,7 @@ export class MuxedAccount {
 
   /**
    * @return {Account} the underlying account object shared among all muxed
-   *     accounts with this Stellar address
+   *     accounts with this Stellar public key (G... address)
    */
   baseAccount() {
     return this.account;
@@ -176,8 +176,8 @@ export class MuxedAccount {
       throw new Error('id should be a string representing a number (uint64)');
     }
 
-    this._muxedXdr.med25519().id(xdr.Uint64.fromString(id));
-    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr, true);
+    this._muxedXdr = encodeMuxedAccount(this.account.accountId(), id);
+    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
     this._id = id;
     return this;
   }
