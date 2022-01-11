@@ -4,13 +4,14 @@
 ## Unreleased
 
 ### Add
-A new helper method is introduced to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
+
+ - A new helper method is introduced to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
 
 ```ts
 function extractBaseAddess(address: string): string;
 ```
 
-The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
+ - The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
 
 ```typescript
 namespace StrKey {
