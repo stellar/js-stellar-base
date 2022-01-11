@@ -44,7 +44,17 @@ There are several other breaking changes:
 
   - `TransactionBuilder.enableMuxedAccounts()` is removed
   - `decodeAddressToMuxedAccount()` and `encodeMuxedAccountToAddress()` no longer accept a second boolean parameter
+  - `Account.createSubaccount()` and `MuxedAccount.createSubaccount()` are removed ([#487](https://github.com/stellar/js-stellar-base/pull/487)). You should prefer to create them manually:
 
+```js
+  let mux1 = new MuxedAccount(someAccount, '1');
+
+  // before:
+  let mux2 = mux1.createSubaccount('2');
+
+  // now:
+  let mux2 = new MuxedAccount(mux1.baseAccount(), '2');
+```
 
 ## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)
 
