@@ -8,7 +8,7 @@ import { Operation } from './operation';
 import { Memo } from './memo';
 import { TransactionBase } from './transaction_base';
 import {
-  decodeAddressToMuxedAccount,
+  extractBaseAddress,
   encodeMuxedAccountToAddress
 } from './util/decode_encode_muxed_account';
 
@@ -251,14 +251,12 @@ export class Transaction extends TransactionBase {
     }
 
     // Always use the transaction's *unmuxed* source.
-    let account = decodeAddressToMuxedAccount(this.source);
-    if (account.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
-      account = account.med25519();
-    }
-
+    const account = StrKey.decodeEd25519PublicKey(
+      extractBaseAddress(this.source)
+    );
     const operationId = xdr.OperationId.envelopeTypeOpId(
       new xdr.OperationIdId({
-        sourceAccount: xdr.AccountId.publicKeyTypeEd25519(account.ed25519()),
+        sourceAccount: xdr.AccountId.publicKeyTypeEd25519(account),
         seqNum: new xdr.SequenceNumber(this.sequence),
         opNum: opIndex
       })
