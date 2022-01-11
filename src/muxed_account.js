@@ -6,7 +6,8 @@ import { StrKey } from './strkey';
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
-  encodeMuxedAccount
+  encodeMuxedAccount,
+  extractBaseAddress
 } from './util/decode_encode_muxed_account';
 
 /**
@@ -55,7 +56,7 @@ export class MuxedAccount {
 
     this.account = baseAccount;
     this._muxedXdr = encodeMuxedAccount(accountId, id);
-    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr, true);
+    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
     this._id = id;
   }
 
@@ -71,8 +72,8 @@ export class MuxedAccount {
    * @return {MuxedAccount}
    */
   static fromAddress(mAddress, sequenceNum) {
-    const muxedAccount = decodeAddressToMuxedAccount(mAddress, true);
-    const gAddress = encodeMuxedAccountToAddress(muxedAccount, false);
+    const muxedAccount = decodeAddressToMuxedAccount(mAddress);
+    const gAddress = extractBaseAddress(mAddress);
     const id = muxedAccount
       .med25519()
       .id()
@@ -106,7 +107,7 @@ export class MuxedAccount {
     }
 
     this._muxedXdr.med25519().id(xdr.Uint64.fromString(id));
-    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr, true);
+    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
     this._id = id;
     return this;
   }
