@@ -221,16 +221,15 @@ export class Transaction extends TransactionBase {
   /**
    * Calculate the claimable balance ID for an operation within the transaction.
    *
-   * This helper throws under the following circumstances:
-   *    - invalid `opIndex` value
-   *    - the operation at the `opIndex` is not a CreateClaimableBalance op
-   *    - the source account doesn't have a sequence number
-   *    - general XDR un/marshalling failures
-   *
    * @param   {integer}  opIndex   the index of the CreateClaimableBalance op
    * @returns {string}   a hex string representing the claimable balance ID
    *
-   * @see https://github.com/stellar/go/blob/master/txnbuild/transaction.go#L392
+   * @throws {RangeError}   for invalid `opIndex` value
+   * @throws {TypeError}    if op at `opIndex` is not `CreateClaimableBalance`
+   * @throws for general XDR un/marshalling failures
+   *
+   * @see https://github.com/stellar/go/blob/d712346e61e288d450b0c08038c158f8848cc3e4/txnbuild/transaction.go#L392-L435
+   *
    */
   getClaimableBalanceId(opIndex) {
     // Validate and then extract the operation from the transaction.
@@ -251,9 +250,8 @@ export class Transaction extends TransactionBase {
       );
     }
 
-    // Use the operation's source account or the transaction's source if not. In
-    // either case, use the unmuxed version.
-    let account = decodeAddressToMuxedAccount(this.source, true);
+    // Always use the transaction's *unmuxed* source.
+    let account = decodeAddressToMuxedAccount(this.source);
     if (account.switch() === xdr.CryptoKeyType.keyTypeMuxedEd25519()) {
       account = account.med25519();
     }

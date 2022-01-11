@@ -2429,7 +2429,6 @@ describe('Operation', function() {
       expect(() => {
         const mAddress =
           'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ';
-        console.log(mAddress);
         StellarBase.Operation.setTrustLineFlags({
           trustor: mAddress,
           asset: StellarBase.Asset.native(),
