@@ -3,33 +3,12 @@
 
 ## Unreleased
 
-### Add
 
- - A new helper method is introduced to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
-
-```ts
-function extractBaseAddess(address: string): string;
-```
-
- - The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
-
-```typescript
-namespace StrKey {
-  function encodeMed25519PublicKey(data: Buffer): string;
-  function decodeMed25519PublicKey(data: string): Buffer;
-  function isValidMed25519PublicKey(publicKey: string): boolean;
-}
-
-function decodeAddressToMuxedAccount(address: string, supportMuxing: boolean): xdr.MuxedAccount;
-function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
-function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
-```
-
-- Adds a helper function `Transaction.getClaimableBalanceId(int)` which lets you pre-determine the hex claimable balance ID of a `createClaimableBalance` operation prior to submission to the network ([#482](https://github.com/stellar/js-stellar-base/pull/482)).
-
-### Breaking Changes
+## [v7.0.0](https://github.com/stellar/js-stellar-base/compare/v6.0.6..v7.0.0)
 
 This release introduces **unconditional support for muxed accounts** ([#485](https://github.com/stellar/js-stellar-base/pull/485)).
+
+### Breaking Changes
 
 In [v5.2.0](https://github.com/stellar/js-stellar-base/releases/tag/v5.2.0), we introduced _opt-in_ support for muxed accounts, where you would need to explicitly pass a `true` flag if you wanted to interpret muxed account objects as muxed addresses (in the form `M...`, see [SEP-23](https://stellar.org/protocol/sep-23)). We stated that this would become the default in the future. That is now the case.
 
@@ -73,9 +52,32 @@ There are several other breaking changes:
   let mux2 = new MuxedAccount(mux1.baseAccount(), '2');
 ```
 
+
+ - Introduced a new helper method to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
+
+```ts
+function extractBaseAddess(address: string): string;
+```
+
+ - The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
+
+```typescript
+namespace StrKey {
+  function encodeMed25519PublicKey(data: Buffer): string;
+  function decodeMed25519PublicKey(data: string): Buffer;
+  function isValidMed25519PublicKey(publicKey: string): boolean;
+}
+
+function decodeAddressToMuxedAccount(address: string, supportMuxing: boolean): xdr.MuxedAccount;
+function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
+function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
+```
+
+- Added a helper function `Transaction.getClaimableBalanceId(int)` which lets you pre-determine the hex claimable balance ID of a `createClaimableBalance` operation prior to submission to the network ([#482](https://github.com/stellar/js-stellar-base/pull/482)).
+
 ### Fix
 
-- Add `Buffer` as a parameter type option for the `Keypair` constructor in Typescript [#484](https://github.com/stellar/js-stellar-base/pull/484).
+- Add `Buffer` as a parameter type option for the `Keypair` constructor in Typescript ([#484](https://github.com/stellar/js-stellar-base/pull/484)).
 
 
 ## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)
