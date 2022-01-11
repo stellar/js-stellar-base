@@ -299,12 +299,7 @@ describe('StrKey', function() {
     });
 
     it('decodes underlying G... address correctly', function() {
-      expect(
-        StellarBase.encodeMuxedAccountToAddress(
-          StellarBase.decodeAddressToMuxedAccount(MPUBKEY),
-          StellarBase.MUXED_ACCOUNT_FORCE_ED25519
-        )
-      ).to.equal(PUBKEY);
+      expect(StellarBase.extractBaseAddress(MPUBKEY)).to.equal(PUBKEY);
     });
 
     const RAW_PUBKEY = StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY);

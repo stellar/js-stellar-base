@@ -35,8 +35,8 @@ export { StrKey } from './strkey';
 export {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
-  encodeMuxedAccount,
-  MUXED_ACCOUNT_FORCE_ED25519
+  extractBaseAddress,
+  encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
 
 export default module.exports;

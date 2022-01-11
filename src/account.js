@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js';
 
 import { StrKey } from './strkey';
 import {
-  MUXED_ACCOUNT_FORCE_ED25519,
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
-  encodeMuxedAccount
+  encodeMuxedAccount,
+  extractBaseAddress
 } from './util/decode_encode_muxed_account';
 
 /**
@@ -143,10 +143,7 @@ export class MuxedAccount {
    */
   static fromAddress(mAddress, sequenceNum) {
     const muxedAccount = decodeAddressToMuxedAccount(mAddress);
-    const gAddress = encodeMuxedAccountToAddress(
-      muxedAccount,
-      MUXED_ACCOUNT_FORCE_ED25519
-    );
+    const gAddress = extractBaseAddress(mAddress);
     const id = muxedAccount
       .med25519()
       .id()

@@ -1,5 +1,4 @@
 import isString from 'lodash/isString';
-import isNil from 'lodash/isNil';
 
 import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
@@ -39,29 +38,24 @@ export function decodeAddressToMuxedAccount(address) {
  * @function
  *
  * @param   {xdr.MuxedAccount} muxedAccount   Raw account to stringify
- * @param   {bool} [forceEd25519=false]       If this is set to `true`, this
- *     will always return the underlying G... address of the `muxedAccount`.
- *
- * @returns {string}  stringified G... (corresponding to the underlying pubkey)
+ * @returns {string} Stringified G... (corresponding to the underlying pubkey)
  *     or M... address (corresponding to both the key and the muxed ID)
  */
-export function encodeMuxedAccountToAddress(muxedAccount, forceEd25519) {
-  forceEd25519 = isNil(forceEd25519) ? false : forceEd25519;
-
+export function encodeMuxedAccountToAddress(muxedAccount) {
   if (
     muxedAccount.switch().value ===
     xdr.CryptoKeyType.keyTypeMuxedEd25519().value
   ) {
-    if (!forceEd25519) {
-      return _encodeMuxedAccountFullyToAddress(muxedAccount);
-    }
-    muxedAccount = muxedAccount.med25519();
+    return _encodeMuxedAccountFullyToAddress(muxedAccount);
   }
+
   return StrKey.encodeEd25519PublicKey(muxedAccount.ed25519());
 }
 
 /**
  * Transform a Stellar address (G...) and an ID into its XDR representation.
+ *
+ * @function
  *
  * @param  {string} address   - a Stellar G... address
  * @param  {string} id        - a Uint64 ID represented as a string
@@ -81,6 +75,20 @@ export function encodeMuxedAccount(address, id) {
       ed25519: StrKey.decodeEd25519PublicKey(address)
     })
   );
+}
+
+/**
+ * Extracts the underlying base (G...) address from an M-address.
+ * @param  {string} address  a muxed account address (M...)
+ * @return {string} a Stellar public key address (G...)
+ */
+export function extractBaseAddress(address) {
+  if (!StrKey.isValidMed25519PublicKey(address)) {
+    throw new Error('address should be a muxed account (M...)');
+  }
+
+  const muxedAccount = decodeAddressToMuxedAccount(address);
+  return StrKey.encodeEd25519PublicKey(muxedAccount.med25519().ed25519());
 }
 
 // Decodes an "M..." account ID into its MuxedAccount object representation.

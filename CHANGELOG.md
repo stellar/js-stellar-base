@@ -3,6 +3,13 @@
 
 ## Unreleased
 
+### Add
+A new helper method is introduced to help convert from muxed account addresses to their underlying Stellar addresses:
+
+```ts
+function extractBaseAddess(address: string): string;
+```
+
 ### Breaking Changes
 
 This release introduces **unconditional support for muxed accounts** [#485](https://github.com/stellar/js-stellar-base/pull/485).
@@ -34,8 +41,7 @@ The following functions will no longer check the `opts` object for a `withMuxing
 There are several other breaking changes:
 
   - `TransactionBuilder.enableMuxedAccounts()` is removed
-  - `decodeAddressToMuxedAccount()` no longer accepts a second boolean parameter
-  - the second parameter to `encodeMuxedAccountToAddress()` is inverted; refer to the docstring for more details
+  - `decodeAddressToMuxedAccount()` and `encodeMuxedAccountToAddress()` no longer accept a second boolean parameter
 
 
 ## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)

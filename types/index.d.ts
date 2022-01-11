@@ -948,3 +948,5 @@ export function verify(
   signature: Buffer,
   rawPublicKey: Buffer
 ): boolean;
+
+export function extractBaseAddress(address: string): string;
