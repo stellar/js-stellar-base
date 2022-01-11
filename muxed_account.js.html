@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>liquidity_pool_id.js - Documentation</title>
+    <title>muxed_account.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">liquidity_pool_id.js</h1>
+    <h1 class="page-title">muxed_account.js</h1>
     
 
     
@@ -39,82 +39,146 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import clone from 'lodash/clone';
+            <pre class="prettyprint source linenums"><code>import isString from 'lodash/isString';
+
 import xdr from './generated/stellar-xdr_generated';
+import { Account } from './account';
+import { StrKey } from './strkey';
+import {
+  decodeAddressToMuxedAccount,
+  encodeMuxedAccountToAddress,
+  encodeMuxedAccount,
+  extractBaseAddress
+} from './util/decode_encode_muxed_account';
 
 /**
- * LiquidityPoolId class represents the asset referenced by a trustline to a
- * liquidity pool.
+ * Represents a muxed account for transactions and operations.
+ *
+ * A muxed (or *multiplexed*) account (defined rigorously in
+ * [CAP-27](https://stellar.org/protocol/cap-27) and briefly in
+ * [SEP-23](https://stellar.org/protocol/sep-23)) is one that resolves a single
+ * Stellar `G...`` account to many different underlying IDs.
+ *
+ * For example, you may have a single Stellar address for accounting purposes:
+ *   GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ
+ *
+ * Yet would like to use it for 4 different family members:
+ *   1: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ
+ *   2: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ
+ *   3: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAPYHQ
+ *   4: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAQLQQ
+ *
+ * This object makes it easy to create muxed accounts from regular accounts,
+ * duplicate them, get/set the underlying IDs, etc. without mucking around with
+ * the raw XDR.
+ *
+ * Because muxed accounts are purely an off-chain convention, they all share the
+ * sequence number tied to their underlying G... account. Thus, this object
+ * *requires* an {@link Account} instance to be passed in, so that muxed
+ * instances of an account can collectively modify the sequence number whenever
+ * a muxed account is used as the source of a @{link Transaction} with {@link
+ * TransactionBuilder}.
  *
  * @constructor
- * @param {string} liquidityPoolId - The ID of the liquidity pool in string 'hex'.
+ *
+ * @param {Account}   account - the @{link Account} instance representing the
+ *                              underlying G... address
+ * @param {string}    id      - a stringified uint64 value that represents the
+ *                              ID of the muxed account
+ *
+ * @link https://developers.stellar.org/docs/glossary/muxed-accounts/
  */
-export class LiquidityPoolId {
-  constructor(liquidityPoolId) {
-    if (!liquidityPoolId) {
-      throw new Error('liquidityPoolId cannot be empty');
-    }
-    if (!/^[a-f0-9]{64}$/.test(liquidityPoolId)) {
-      throw new Error('Liquidity pool ID is not a valid hash');
+export class MuxedAccount {
+  constructor(baseAccount, id) {
+    const accountId = baseAccount.accountId();
+    if (!StrKey.isValidEd25519PublicKey(accountId)) {
+      throw new Error('accountId is invalid');
     }
 
-    this.liquidityPoolId = liquidityPoolId;
+    this.account = baseAccount;
+    this._muxedXdr = encodeMuxedAccount(accountId, id);
+    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
+    this._id = id;
   }
 
   /**
-   * Returns a liquidity pool ID object from its xdr.TrustLineAsset representation.
-   * @param {xdr.TrustLineAsset} tlAssetXdr - The asset XDR object.
-   * @returns {LiquidityPoolId}
+   * Parses an M-address into a MuxedAccount object.
+   *
+   * @param  {string} mAddress    - an M-address to transform
+   * @param  {string} sequenceNum - the sequence number of the underlying {@link
+   *     Account}, to use for the underlying base account (@link
+   *     MuxedAccount.baseAccount). If you're using the SDK, you can use
+   *     `server.loadAccount` to fetch this if you don't know it.
+   *
+   * @return {MuxedAccount}
    */
-  static fromOperation(tlAssetXdr) {
-    const assetType = tlAssetXdr.switch();
-    if (assetType === xdr.AssetType.assetTypePoolShare()) {
-      const liquidityPoolId = tlAssetXdr.liquidityPoolId().toString('hex');
-      return new this(liquidityPoolId);
-    }
+  static fromAddress(mAddress, sequenceNum) {
+    const muxedAccount = decodeAddressToMuxedAccount(mAddress);
+    const gAddress = extractBaseAddress(mAddress);
+    const id = muxedAccount
+      .med25519()
+      .id()
+      .toString();
 
-    throw new Error(`Invalid asset type: ${assetType.name}`);
+    return new MuxedAccount(new Account(gAddress, sequenceNum), id);
   }
 
   /**
-   * Returns the `xdr.TrustLineAsset` object for this liquidity pool ID.
-   *
-   * Note: To convert from {@link Asset `Asset`} to `xdr.TrustLineAsset` please
-   * refer to the
-   * {@link Asset.toTrustLineXDRObject `Asset.toTrustLineXDRObject`} method.
-   *
-   * @returns {xdr.TrustLineAsset} XDR LiquidityPoolId object
+   * @return {Account} the underlying account object shared among all muxed
+   *     accounts with this Stellar address
+   */
+  baseAccount() {
+    return this.account;
+  }
+
+  /**
+   * @return {string} the M-address representing this account's (G-address, ID)
+   */
+  accountId() {
+    return this._mAddress;
+  }
+
+  id() {
+    return this._id;
+  }
+
+  setId(id) {
+    if (!isString(id)) {
+      throw new Error('id should be a string representing a number (uint64)');
+    }
+
+    this._muxedXdr.med25519().id(xdr.Uint64.fromString(id));
+    this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
+    this._id = id;
+    return this;
+  }
+
+  /**
+   * Accesses the underlying account's sequence number.
+   * @return {string}  strigified sequence number for the underlying account
+   */
+  sequenceNumber() {
+    return this.account.sequenceNumber();
+  }
+
+  /**
+   * Increments the underlying account's sequence number by one.
+   * @return {void}
+   */
+  incrementSequenceNumber() {
+    return this.account.incrementSequenceNumber();
+  }
+
+  /**
+   * @return {xdr.MuxedAccount} the XDR object representing this muxed account's
+   *     G-address and uint64 ID
    */
   toXDRObject() {
-    const xdrPoolId = xdr.PoolId.fromXDR(this.liquidityPoolId, 'hex');
-    return new xdr.TrustLineAsset('assetTypePoolShare', xdrPoolId);
+    return this._muxedXdr;
   }
 
-  /**
-   * @returns {string} Liquidity pool ID.
-   */
-  getLiquidityPoolId() {
-    return clone(this.liquidityPoolId);
-  }
-
-  /**
-   * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
-   * @returns {AssetType.liquidityPoolShares} asset type. Can only be `liquidity_pool_shares`.
-   */
-  getAssetType() {
-    return 'liquidity_pool_shares';
-  }
-
-  /**
-   * @param {LiquidityPoolId} asset LiquidityPoolId to compare.
-   * @returns {boolean} `true` if this asset equals the given asset.
-   */
-  equals(asset) {
-    return this.liquidityPoolId === asset.getLiquidityPoolId();
-  }
-
-  toString() {
-    return `liquidity_pool:${this.liquidityPoolId}`;
+  equals(otherMuxedAccount) {
+    return this.accountId() === otherMuxedAccount.accountId();
   }
 }
 </code></pre>
