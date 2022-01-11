@@ -7,8 +7,8 @@ import { StrKey } from '../strkey';
  * Converts a Stellar address (in G... or M... form) to an `xdr.MuxedAccount`
  * structure, using the ed25519 representation when possible.
  *
- * This supports full muxed accounts by default, where an M... address will
- * resolve to both its underlying G... address and an ID.
+ * This supports full muxed accounts, where an `M...` address will resolve to
+ * both its underlying `G...` address and an integer ID.
  *
  * @param   {string}  address   G... or M... address to encode into XDR
  * @returns {xdr.MuxedAccount}  a muxed account object for this address string
@@ -72,12 +72,16 @@ export function encodeMuxedAccount(address, id) {
 
 /**
  * Extracts the underlying base (G...) address from an M-address.
- * @param  {string} address  a muxed account address (M...)
+ * @param  {string} address   an account address (either M... or G...)
  * @return {string} a Stellar public key address (G...)
  */
 export function extractBaseAddress(address) {
+  if (StrKey.isValidEd25519PublicKey(address)) {
+    return address;
+  }
+
   if (!StrKey.isValidMed25519PublicKey(address)) {
-    throw new TypeError('address should be a muxed account (M...)');
+    throw new TypeError(`expected muxed account (M...), got ${address}`);
   }
 
   const muxedAccount = decodeAddressToMuxedAccount(address);

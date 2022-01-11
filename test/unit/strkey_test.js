@@ -300,6 +300,7 @@ describe('StrKey', function() {
 
     it('decodes underlying G... address correctly', function() {
       expect(StellarBase.extractBaseAddress(MPUBKEY)).to.equal(PUBKEY);
+      expect(StellarBase.extractBaseAddress(PUBKEY)).to.equal(PUBKEY);
     });
 
     const RAW_PUBKEY = StellarBase.StrKey.decodeEd25519PublicKey(PUBKEY);
