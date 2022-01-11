@@ -3,8 +3,6 @@ import isString from 'lodash/isString';
 import xdr from '../generated/stellar-xdr_generated';
 import { StrKey } from '../strkey';
 
-export const MUXED_ACCOUNT_FORCE_ED25519 = true;
-
 /**
  * Converts a Stellar address (in G... or M... form) to an `xdr.MuxedAccount`
  * structure, using the ed25519 representation when possible.

@@ -31,7 +31,9 @@ The following functions had a `withMuxing` parameter removed:
 
   - `Operation.fromXDRObject`
   - `Transaction.constructor`
+  - `FeeBumpTransaction.constructor`
   - `TransactionBuilder.fromXDR`
+  - `TransactionBuilder.buildFeeBumpTransaction`
 
 The following functions will no longer check the `opts` object for a `withMuxing` field:
 
