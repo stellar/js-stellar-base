@@ -117,8 +117,15 @@ export class Keypair {
 
   constructor(
     keys:
-      | { type: KeypairType; secretKey: string; publicKey?: string }
-      | { type: KeypairType; publicKey: string }
+      | {
+        type: KeypairType;
+        secretKey: string | Buffer;
+        publicKey?: string | Buffer
+      }
+      | {
+        type: KeypairType;
+        publicKey: string | Buffer
+      }
   );
 
   readonly type: KeypairType;
