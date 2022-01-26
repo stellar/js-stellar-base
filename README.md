@@ -12,14 +12,6 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 
 - **[API Reference](https://stellar.github.io/js-stellar-base/)**
 
-> **Warning!** Node version of this package is using [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as an [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
-> This means that if for any reason installation of this package fails, `stellar-base` will fallback to the much slower implementation contained in [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
->
-> If you are using `stellar-base` in a browser you can ignore this. However, for production backend deployments you should definitely be using `sodium-native`.
-> If `sodium-native` is successfully installed and working
-> `StellarBase.FastSigning` variable will be equal `true`. Otherwise it will be
-> `false`.
-
 ## Quick start
 
 Using yarn to include js-stellar-base in your own project:

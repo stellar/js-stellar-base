@@ -104,8 +104,6 @@ export class Claimant {
   static predicateBeforeRelativeTime(seconds: string): xdr.ClaimPredicate;
 }
 
-export const FastSigning: boolean;
-
 export type KeypairType = 'ed25519';
 
 export class Keypair {

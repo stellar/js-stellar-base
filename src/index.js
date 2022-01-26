@@ -2,7 +2,7 @@ import xdr from './generated/stellar-xdr_generated';
 
 export { xdr };
 export { hash } from './hashing';
-export { sign, verify, FastSigning } from './signing';
+export { sign, verify } from './signing';
 export {
   getLiquidityPoolId,
   LiquidityPoolFeeV18
