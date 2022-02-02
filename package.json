@@ -109,10 +109,10 @@
     "js-xdr": "^1.1.3",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.0"
+    "tweetnacl": "^1.0.3"
   },
   "optionalDependencies": {
-    "sodium-native": "^2.3.0"
+    "sodium-native": "^3.3.0"
   },
   "resolutions": {
     "**/ua-parser-js": "0.7.28"
