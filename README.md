@@ -98,9 +98,9 @@ Make sure that you are using the latest version number. They can be found on the
 
 ### To develop and test js-stellar-base itself
 
-1. Install Node 10.16.3
+1. Install Node 12.x
 
-Because we support earlier versions of Node, please install and develop on Node 10.16.3 so you don't get surprised when your code works locally but breaks in CI.
+We support the LTS release of Node, which is [currently](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 12 so you don't get surprised when your code works locally but breaks in CI.
 
 If you work on several projects that use different Node versions, you might find helpful to install a nodejs version manager.
 
@@ -215,9 +215,9 @@ contribute to this project.
 npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]
 ```
 
-A new version will be published to npm **and** Bower by Travis CI.
+A new version will be published to npm **and** Bower by GitHub Actions.
 
-npm >=2.13.0 required. Read more about
+npm >= 2.13.0 required. Read more about
 [npm version](https://docs.npmjs.com/cli/version).
 
 ## License
