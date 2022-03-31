@@ -1,4 +1,50 @@
-declare namespace xdr {
+// The type definitions inside the namespace xdr were automatically generated on
+// 2022-03-31T12:45:43-07:00 using https://github.com/stellar/dts-xdr.
+//
+// DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
+
+import { Operation } from './index';
+
+export {};
+
+// Hidden namespace as hack to work around name collision.
+declare namespace xdrHidden {
+  // tslint:disable-line:strict-export-declare-modifiers
+  class Operation2<T extends Operation = Operation> {
+    constructor(attributes: {
+      sourceAccount: null | xdr.MuxedAccount;
+      body: xdr.OperationBody;
+    });
+
+    sourceAccount(value?: null | xdr.MuxedAccount): null | xdr.MuxedAccount;
+
+    body(value?: xdr.OperationBody): xdr.OperationBody;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): xdr.Operation;
+
+    static write(value: xdr.Operation, io: Buffer): void;
+
+    static isValid(value: xdr.Operation): boolean;
+
+    static toXDR(value: xdr.Operation): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): xdr.Operation;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+}
+
+export namespace xdr {
+  export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -1591,7 +1637,8 @@ declare namespace xdr {
 
   const DataValue: VarOpaque;
 
-  type PoolId = Hash;
+  // The generated code was `type PoolId = Hash;` but that's not a valid type.
+  type PoolId = typeof Hash;
 
   const AssetCode4: Opaque;
 
@@ -4890,37 +4937,6 @@ declare namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): LiquidityPoolWithdrawOp;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class Operation {
-    constructor(attributes: {
-      sourceAccount: null | MuxedAccount;
-      body: OperationBody;
-    });
-
-    sourceAccount(value?: null | MuxedAccount): null | MuxedAccount;
-
-    body(value?: OperationBody): OperationBody;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Operation;
-
-    static write(value: Operation, io: Buffer): void;
-
-    static isValid(value: Operation): boolean;
-
-    static toXDR(value: Operation): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Operation;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Operation;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
