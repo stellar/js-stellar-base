@@ -234,7 +234,9 @@ export class TransactionBuilder {
       this.timebounds.maxTime.toString()
     );
 
-    attrs.timeBounds = new xdr.TimeBounds(this.timebounds);
+    attrs.cond = xdr.Preconditions.precondTime(
+      new xdr.TimeBounds(this.timebounds)
+    );
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
     attrs.ext = new xdr.TransactionExt(0);
 
@@ -310,7 +312,7 @@ export class TransactionBuilder {
         ),
         fee: v0Tx.fee(),
         seqNum: v0Tx.seqNum(),
-        timeBounds: v0Tx.timeBounds(),
+        cond: xdr.Preconditions.precondTime(v0Tx.timeBounds()),
         memo: v0Tx.memo(),
         operations: v0Tx.operations(),
         ext: new xdr.TransactionExt(0)

@@ -72,13 +72,41 @@ export class Transaction extends TransactionBase {
         break;
     }
 
-    const timeBounds = tx.timeBounds();
+    let timeBounds = null;
+    switch (this._envelopeType) {
+      case xdr.EnvelopeType.envelopeTypeTxV0():
+        timeBounds = tx.timeBounds();
+        break;
+
+      case xdr.EnvelopeType.envelopeTypeTx():
+        switch (tx.cond().switch()) {
+          case xdr.PreconditionType.precondTime():
+            timeBounds = tx.cond().timeBounds();
+            break;
+
+          case xdr.PreconditionType.precondV2():
+            timeBounds = tx
+              .cond()
+              .v2()
+              .timeBounds();
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      default:
+        break;
+    }
+
     if (timeBounds) {
       this._timeBounds = {
         minTime: timeBounds.minTime().toString(),
         maxTime: timeBounds.maxTime().toString()
       };
     }
+
     const operations = tx.operations() || [];
     this._operations = map(operations, (op) => Operation.fromXDRObject(op));
   }
@@ -254,8 +282,8 @@ export class Transaction extends TransactionBase {
     const account = StrKey.decodeEd25519PublicKey(
       extractBaseAddress(this.source)
     );
-    const operationId = xdr.OperationId.envelopeTypeOpId(
-      new xdr.OperationIdId({
+    const operationId = xdr.HashIdPreimage.envelopeTypeOpId(
+      new xdr.HashIdPreimageOperationId({
         sourceAccount: xdr.AccountId.publicKeyTypeEd25519(account),
         seqNum: new xdr.SequenceNumber(this.sequence),
         opNum: opIndex
