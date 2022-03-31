@@ -527,7 +527,7 @@ struct Operation
     body;
 };
 
-union OperationID switch (EnvelopeType type)
+union HashIDPreimage switch (EnvelopeType type)
 {
 case ENVELOPE_TYPE_OP_ID:
     struct
@@ -535,7 +535,7 @@ case ENVELOPE_TYPE_OP_ID:
         AccountID sourceAccount;
         SequenceNumber seqNum;
         uint32 opNum;
-    } id;
+    } operationID;
 case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
@@ -544,7 +544,7 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
-    } revokeId;
+    } revokeID;
 };
 
 enum MemoType
@@ -574,6 +574,59 @@ struct TimeBounds
 {
     TimePoint minTime;
     TimePoint maxTime; // 0 here means no maxTime
+};
+
+struct LedgerBounds
+{
+    uint32 minLedger;
+    uint32 maxLedger; // 0 here means no maxLedger
+};
+
+struct PreconditionsV2 {
+    TimeBounds *timeBounds;
+
+    // Transaction only valid for ledger numbers n such that
+    // minLedger <= n < maxLedger (if maxLedger == 0, then
+    // only minLedger is checked)
+    LedgerBounds *ledgerBounds;
+
+    // If NULL, only valid when sourceAccount's sequence number
+    // is seqNum - 1.  Otherwise, valid when sourceAccount's
+    // sequence number n satisfies minSeqNum <= n < tx.seqNum.
+    // Note that after execution the account's sequence number
+    // is always raised to tx.seqNum, and a transaction is not
+    // valid if tx.seqNum is too high to ensure replay protection.
+    SequenceNumber *minSeqNum;
+
+    // For the transaction to be valid, the current ledger time must
+    // be at least minSeqAge greater than sourceAccount's seqTime.
+    Duration minSeqAge;
+
+    // For the transaction to be valid, the current ledger number
+    // must be at least minSeqLedgerGap greater than sourceAccount's
+    // seqLedger.
+    uint32 minSeqLedgerGap;
+
+    // For the transaction to be valid, there must be a signature
+    // corresponding to every Signer in this array, even if the
+    // signature is not otherwise required by the sourceAccount or
+    // operations.
+    SignerKey extraSigners<2>;
+};
+
+enum PreconditionType {
+    PRECOND_NONE = 0,
+    PRECOND_TIME = 1,
+    PRECOND_V2 = 2
+};
+
+union Preconditions switch (PreconditionType type) {
+    case PRECOND_NONE:
+        void;
+    case PRECOND_TIME:
+        TimeBounds timeBounds;
+    case PRECOND_V2:
+        PreconditionsV2 v2;
 };
 
 // maximum number of operations per transaction
@@ -627,8 +680,8 @@ struct Transaction
     // sequence number to consume in the account
     SequenceNumber seqNum;
 
-    // validity range (inclusive) for the last ledger close time
-    TimeBounds* timeBounds;
+    // validity conditions
+    Preconditions cond;
 
     Memo memo;
 
@@ -1082,7 +1135,7 @@ enum AllowTrustResultCode
     ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
     ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
     ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
-                                 // on revoke due to low reserves 
+                                 // on revoke due to low reserves
 };
 
 union AllowTrustResult switch (AllowTrustResultCode code)
@@ -1415,7 +1468,6 @@ default:
     void;
 };
 
-
 /* High level Operation Result */
 enum OperationResultCode
 {
@@ -1509,7 +1561,8 @@ enum TransactionResultCode
 
     txNOT_SUPPORTED = -12,         // transaction type not supported
     txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
-    txBAD_SPONSORSHIP = -14        // sponsorship not confirmed
+    txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
+    txBAD_MIN_SEQ_AGE_OR_GAP = -15 //minSeqAge or minSeqLedgerGap conditions not met
 };
 
 // InnerTransactionResult must be binary compatible with TransactionResult
@@ -1538,6 +1591,7 @@ struct InnerTransactionResult
     case txNOT_SUPPORTED:
     // txFEE_BUMP_INNER_FAILED is not included
     case txBAD_SPONSORSHIP:
+    case txBAD_MIN_SEQ_AGE_OR_GAP:
         void;
     }
     result;
