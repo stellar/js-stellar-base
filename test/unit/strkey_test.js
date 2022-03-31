@@ -351,6 +351,46 @@ describe('StrKey', function() {
     }
   });
 
+  describe('#signedPayloads', function() {
+    const HAPPY_PATHS = [
+      {
+        desc: 'valid w/ 32-byte payload',
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IBZGM',
+        ed25519: 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
+        payload:
+          '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20'
+      },
+      {
+        desc: 'valid w/ 29-byte payload',
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUAAAAFGBU',
+        ed25519: 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
+        payload: '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d'
+      }
+    ];
+
+    HAPPY_PATHS.forEach((testCase) => {
+      it(testCase.desc, function() {
+        const spBuf = StellarBase.StrKey.decodeSignedPayload(testCase.strkey);
+        expect(spBuf).to.be.instanceof(Buffer);
+        const sp = StellarBase.xdr.SignerKeyEd25519SignedPayload.fromXDR(
+          spBuf,
+          'raw'
+        );
+
+        const signer = StellarBase.StrKey.encodeEd25519PublicKey(sp.ed25519());
+        expect(signer).to.equal(testCase.ed25519);
+
+        const payload = sp.payload().toString('hex');
+        expect(payload).to.equal(testCase.payload);
+
+        const str = StellarBase.StrKey.decodeSignedPayload(sp.toXDR('raw'));
+        expect(str).to.equal(testCase.strkey);
+      });
+    });
+  });
+
   describe('#invalidStrKeys', function() {
     // From https://stellar.org/protocol/sep-23#invalid-test-cases
     const BAD_STRKEYS = [
@@ -368,7 +408,13 @@ describe('StrKey', function() {
       // Padding bytes are not allowed
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUK===',
       // Invalid checksum
-      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUO'
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUO',
+      // Length prefix specifies length that is shorter than payload in signed payload
+      'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IAAAAAAAAPM',
+      // Length prefix specifies length that is longer than payload in signed payload
+      'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4Z2PQ',
+      // No zero padding in signed payload
+      'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DXFH6'
 
       //
       // FIXME: The following test cases don't pass (i.e. don't throw).
@@ -392,6 +438,8 @@ describe('StrKey', function() {
           decoder = StellarBase.StrKey.decodeEd25519PublicKey;
         } else if (address.indexOf('M') === 0) {
           decoder = StellarBase.StrKey.decodeMed25519PublicKey;
+        } else if (address.indexOf('P') === 0) {
+          decoder = StellarBase.StrKey.decodeSignedPayload;
         } else {
           expect(`can't understand address`).to.be.true;
         }
