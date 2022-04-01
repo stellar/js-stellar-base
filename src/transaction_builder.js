@@ -505,29 +505,50 @@ export class TransactionBuilder {
     );
 
     if (this.hasV2Preconditions()) {
-      attrs.cond = xdr.Preconditions.precondV2("??");
-      if (this.ledgerbounds !== null) {
-        this.ledgerbounds.minLedger = UnsignedHyper.fromString(
-          this.ledgerbounds.minLedger.toString()
-        );
-        this.ledgerbounds.maxLedger = UnsignedHyper.fromString(
-          this.ledgerbounds.maxLedger.toString()
-        );
-        attrs.preconditions.ledgerBounds = new xdr.LedgerBounds(
-          this.ledgerbounds
-        );
+      let timeBounds = null;
+      if (this.timebounds !== null) {
+        timeBounds = xdr.TimeBounds({
+          minTime: this.timebounds.minTime,
+          maxTime: this.timebounds.maxTime
+        });
       }
 
-      attrs.preconditions.minAccountSequence = UnsignedHyper.fromString(
-        this.preconditions.minAccountSequence.toString()
+      let ledgerBounds = null;
+      if (this.ledgerbounds !== null) {
+        ledgerBounds = xdr.LedgerBounds({
+          minLedger: UnsignedHyper.fromString(
+            this.ledgerbounds.minLedger.toString()
+          ),
+          maxLedger: UnsignedHyper.fromString(
+            this.ledgerbounds.maxLedger.toString()
+          )
+        });
+      }
+
+      let minSeqNum = null;
+      if (this.minAccountSequence !== null) {
+        minSeqNum = xdr.SequenceNumber(this.minAccountSequence);
+      }
+
+      const minSeqAge = UnsignedHyper.fromString(
+        this.minAccountSequenceAge?.toString() || '0'
       );
-      attrs.preconditions.minAccountSequenceAge = UnsignedHyper.fromString(
-        this.preconditions.minAccountSequenceAge.toString()
-      );
-      attrs.preconditions.minAccountSequenceLedgerGap = UnsignedHyper.fromString(
-        this.preconditions.minAccountSequenceLedgerGap.toString()
-      );
-      attrs.preconditions.extraSigners = clone(this.extraSigners);
+      const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
+
+      // TODO: Parse these somehow? or make them a richer type?
+      const extraSigners =
+        this.extraSigners?.map((s) => {
+          s;
+        }) || [];
+
+      attrs.cond = xdr.Preconditions.precondV2({
+        timeBounds,
+        ledgerBounds,
+        minSeqNum,
+        minSeqAge,
+        minSeqLedgerGap,
+        extraSigners
+      });
     } else {
       attrs.cond = xdr.Preconditions.precondTime(
         new xdr.TimeBounds(this.timebounds)
@@ -551,11 +572,13 @@ export class TransactionBuilder {
   }
 
   hasV2Preconditions() {
-    return this.ledgerbounds !== null ||
+    return (
+      this.ledgerbounds !== null ||
       this.preconditions.minAccountSequence !== null ||
       this.preconditions.minAccountSequenceAge !== null ||
       this.preconditions.minAccountSequenceLedgerGap !== null ||
-      this.extraSigners !== null;
+      this.extraSigners !== null
+    );
   }
 
   /**
