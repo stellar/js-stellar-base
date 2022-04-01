@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise */
+/* eslint no-bitwise: ["error", {"allow": ["<<"]}] */
 
 import base32 from 'base32.js';
 import crc from 'crc';

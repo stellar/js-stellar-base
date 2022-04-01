@@ -381,7 +381,6 @@ describe('StrKey', function() {
     HAPPY_PATHS.forEach((testCase) => {
       it(testCase.desc, function() {
         const spBuf = StellarBase.StrKey.decodeSignedPayload(testCase.strkey);
-        expect(spBuf).to.be.instanceof(Buffer);
         const sp = StellarBase.xdr.SignerKeyEd25519SignedPayload.fromXDR(
           spBuf,
           'raw'
