@@ -528,7 +528,7 @@ export class TransactionBuilder {
     if (this.hasV2Preconditions()) {
       let timeBounds = null;
       if (this.timebounds !== null) {
-        timeBounds = xdr.TimeBounds({
+        timeBounds = new xdr.TimeBounds({
           minTime: this.timebounds.minTime,
           maxTime: this.timebounds.maxTime
         });
@@ -552,15 +552,16 @@ export class TransactionBuilder {
       }
 
       const minSeqAge = UnsignedHyper.fromString(
-        this.minAccountSequenceAge?.toString() || '0'
+        this.minAccountSequenceAge !== null
+          ? this.minAccountSequenceAge.toString()
+          : '0'
       );
+
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
 
       // TODO: Parse these somehow? or make them a richer type?
       const extraSigners =
-        this.extraSigners?.map((s) => {
-          s;
-        }) || [];
+        this.extraSigners !== null ? this.extraSigners.map((s) => s) : [];
 
       attrs.cond = xdr.Preconditions.precondV2({
         timeBounds,
@@ -595,9 +596,9 @@ export class TransactionBuilder {
   hasV2Preconditions() {
     return (
       this.ledgerbounds !== null ||
-      this.preconditions.minAccountSequence !== null ||
-      this.preconditions.minAccountSequenceAge !== null ||
-      this.preconditions.minAccountSequenceLedgerGap !== null ||
+      this.minAccountSequence !== null ||
+      this.minAccountSequenceAge !== null ||
+      this.minAccountSequenceLedgerGap !== null ||
       this.extraSigners !== null
     );
   }

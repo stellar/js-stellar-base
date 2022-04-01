@@ -72,6 +72,7 @@ export class Transaction extends TransactionBase {
         break;
     }
 
+    let cond = null;
     let timeBounds = null;
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
@@ -85,10 +86,8 @@ export class Transaction extends TransactionBase {
             break;
 
           case xdr.PreconditionType.precondV2():
-            timeBounds = tx
-              .cond()
-              .v2()
-              .timeBounds();
+            cond = tx.cond().v2();
+            timeBounds = cond.timeBounds();
             break;
 
           default:
@@ -107,17 +106,20 @@ export class Transaction extends TransactionBase {
       };
     }
 
-    const ledgerBounds = tx.cond()?.v2()?.ledgerBounds();
-    if (ledgerBounds) {
-      this._ledgerBounds = {
-        minLedger: ledgerBounds.minLedger(),
-        maxLedger: ledgerBounds.maxLedger()
-      };
-    }
-
-    const cond = tx.cond()?.v2();
     if (cond) {
-      this._minAccountSequence = cond.minAccountSequence()?.toString();
+      const ledgerBounds = cond.ledgerBounds();
+      if (ledgerBounds) {
+        this._ledgerBounds = {
+          minLedger: ledgerBounds.minLedger(),
+          maxLedger: ledgerBounds.maxLedger()
+        };
+      }
+
+      const minSeq = cond.minAccountSequence();
+      if (minSeq) {
+        this._minAccountSequence = minSeq.toString();
+      }
+
       this._minAccountSequenceAge = cond.minAccountSequenceAge();
       this._minAccountSequenceLedgerGap = cond.minAccountSequenceLedgerGap();
       this._extraSigners = cond.extraSigners();
