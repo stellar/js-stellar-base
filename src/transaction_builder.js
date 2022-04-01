@@ -472,9 +472,36 @@ export class TransactionBuilder {
       this.timebounds.maxTime.toString()
     );
 
-    attrs.cond = xdr.Preconditions.precondTime(
-      new xdr.TimeBounds(this.timebounds)
-    );
+    if (this.hasV2Preconditions()) {
+      attrs.cond = xdr.Preconditions.precondV2("??");
+      if (this.ledgerbounds !== null) {
+        this.ledgerbounds.minLedger = UnsignedHyper.fromString(
+          this.ledgerbounds.minLedger.toString()
+        );
+        this.ledgerbounds.maxLedger = UnsignedHyper.fromString(
+          this.ledgerbounds.maxLedger.toString()
+        );
+        attrs.preconditions.ledgerBounds = new xdr.LedgerBounds(
+          this.ledgerbounds
+        );
+      }
+
+      attrs.preconditions.minAccountSequence = UnsignedHyper.fromString(
+        this.preconditions.minAccountSequence.toString()
+      );
+      attrs.preconditions.minAccountSequenceAge = UnsignedHyper.fromString(
+        this.preconditions.minAccountSequenceAge.toString()
+      );
+      attrs.preconditions.minAccountSequenceLedgerGap = UnsignedHyper.fromString(
+        this.preconditions.minAccountSequenceLedgerGap.toString()
+      );
+      attrs.preconditions.extraSigners = this.extraSigners;
+    } else {
+      attrs.cond = xdr.Preconditions.precondTime(
+        new xdr.TimeBounds(this.timebounds)
+      );
+    }
+
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
     attrs.ext = new xdr.TransactionExt(0);
 
@@ -489,6 +516,14 @@ export class TransactionBuilder {
     this.source.incrementSequenceNumber();
 
     return tx;
+  }
+
+  hasV2Preconditions() {
+    return this.ledgerbounds !== null ||
+      this.preconditions.minAccountSequence !== null ||
+      this.preconditions.minAccountSequenceAge !== null ||
+      this.preconditions.minAccountSequenceLedgerGap !== null ||
+      this.extraSigners !== null;
   }
 
   /**
