@@ -525,12 +525,12 @@ export class TransactionBuilder {
       this.timebounds.maxTime.toString()
     );
 
-    const timeBounds = new xdr.TimeBounds(this.timeBounds);
+    const timeBounds = new xdr.TimeBounds(this.timebounds);
 
     if (this.hasV2Preconditions()) {
       let ledgerBounds = null;
       if (this.ledgerbounds !== null) {
-        ledgerBounds = xdr.LedgerBounds({
+        ledgerBounds = new xdr.LedgerBounds({
           minLedger: UnsignedHyper.fromString(
             this.ledgerbounds.minLedger.toString()
           ),
@@ -554,17 +554,20 @@ export class TransactionBuilder {
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
 
       // TODO: Parse these somehow? or make them a richer type?
+      // Re: Yep, we're going to need a StrKey -> xdr.SignerKey abstraction :(
       const extraSigners =
         this.extraSigners !== null ? this.extraSigners.map((s) => s) : [];
 
-      attrs.cond = xdr.Preconditions.precondV2({
-        timeBounds,
-        ledgerBounds,
-        minSeqNum,
-        minSeqAge,
-        minSeqLedgerGap,
-        extraSigners
-      });
+      attrs.cond = xdr.Preconditions.precondV2(
+        new xdr.PreconditionsV2({
+          timeBounds,
+          ledgerBounds,
+          minSeqNum,
+          minSeqAge,
+          minSeqLedgerGap,
+          extraSigners
+        })
+      );
     } else {
       attrs.cond = xdr.Preconditions.precondTime(timeBounds);
     }
