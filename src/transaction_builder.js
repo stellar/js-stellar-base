@@ -135,7 +135,10 @@ export class TransactionBuilder {
 
   /**
    * Adds an operation to the transaction.
-   * @param {xdr.Operation} operation The xdr operation object, use {@link Operation} static methods.
+   *
+   * @param {xdr.Operation} operation   The xdr operation object, use {@link
+   *     Operation} static methods.
+   *
    * @returns {TransactionBuilder}
    */
   addOperation(operation) {
@@ -154,41 +157,54 @@ export class TransactionBuilder {
   }
 
   /**
-   * Because of the distributed nature of the Stellar network it is possible that the status of your transaction
-   * will be determined after a long time if the network is highly congested.
-   * If you want to be sure to receive the status of the transaction within a given period you should set the
-   * {@link TimeBounds} with <code>maxTime</code> on the transaction (this is what <code>setTimeout</code> does
-   * internally; if there's <code>minTime</code> set but no <code>maxTime</code> it will be added).
-   * Call to <code>TransactionBuilder.setTimeout</code> is required if Transaction does not have <code>max_time</code> set.
-   * If you don't want to set timeout, use <code>{@link TimeoutInfinite}</code>. In general you should set
-   * <code>{@link TimeoutInfinite}</code> only in smart contracts.
+   * Sets a timeout precondition on the transaction.
    *
-   * Please note that Horizon may still return <code>504 Gateway Timeout</code> error, even for short timeouts.
-   * In such case you need to resubmit the same transaction again without making any changes to receive a status.
-   * This method is using the machine system time (UTC), make sure it is set correctly.
-   * @param {number} timeout Number of seconds the transaction is good. Can't be negative.
-   * If the value is `0`, the transaction is good indefinitely.
-   * @return {TransactionBuilder}
-   * @see TimeoutInfinite
+   *  Because of the distributed nature of the Stellar network it is possible
+   *  that the status of your transaction will be determined after a long time
+   *  if the network is highly congested. If you want to be sure to receive the
+   *  status of the transaction within a given period you should set the {@link
+   *  TimeBounds} with `maxTime` on the transaction (this is what `setTimeout`
+   *  does internally; if there's `minTime` set but no `maxTime` it will be
+   *  added).
+   *
+   *  A call to `TransactionBuilder.setTimeout` is **required** if Transaction
+   *  does not have `max_time` set. If you don't want to set timeout, use
+   *  `{@link TimeoutInfinite}`. In general you should set `{@link
+   *  TimeoutInfinite}` only in smart contracts.
+   *
+   *  Please note that Horizon may still return <code>504 Gateway Timeout</code>
+   *  error, even for short timeouts. In such case you need to resubmit the same
+   *  transaction again without making any changes to receive a status. This
+   *  method is using the machine system time (UTC), make sure it is set
+   *  correctly.
+   *
+   * @param {number} timeoutSeconds   Number of seconds the transaction is good.
+   *     Can't be negative. If the value is {@link TimeoutInfinite}, the
+   *     transaction is good indefinitely.
+   *
+   * @returns {TransactionBuilder}
+   *
+   * @see {@link TimeoutInfinite}
+   * @see https://developers.stellar.org/docs/tutorials/handling-errors/
    */
-  setTimeout(timeout) {
-    if (timeout < 0) {
+  setTimeout(timeoutSeconds) {
+    if (timeoutSeconds < 0) {
       throw new Error('timeout cannot be negative');
     }
 
-    return this.setMaxTime(Math.floor(Date.now() / 1000) + timeout);
+    return this.setMaxTime(Math.floor(Date.now() / 1000) + timeoutSeconds);
   }
 
   /**
    * If you want to prepare a transaction which will become valid at some point
-   * in the future, you can set a minimum time precondition.
-   * Internally this will set the <code>minTime</code> precondition.
+   * in the future, you can set a minimum time precondition. Internally this
+   * will set the `minTime` precondition.
    *
-   * @param {Date|number} dateOrEpochSeconds Either a js Date object, or a
-   * number of unix epoch seconds. Can't be negative. If the value is `0`, the
-   * transaction is valid immediately.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
+   * @param {Date|number} dateOrEpochSeconds  Either a JS Date object, or a
+   *     number of UNIX epoch seconds. Can't be negative. If the value is `0`,
+   *     the transaction is valid immediately.
+   *
+   * @returns {TransactionBuilder}
    */
   setMinTime(dateOrEpochSeconds) {
     // Force it to a date type
@@ -222,15 +238,16 @@ export class TransactionBuilder {
 
   /**
    * If you want to prepare a transaction which will be valid until some point
-   * in the future, you can set a maximum time precondition.
-   * Internally this will set the <code>maxTime</code> precondition.
+   * in the future, you can set a maximum time precondition. Internally this
+   * will set the `maxTime` precondition.
    *
-   * @param {Date|number} dateOrEpochSeconds Either a js Date object, or a
-   * number of unix epoch seconds. Can't be negative. If the value is `0`, the
-   * transaction is valid indefinitely.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
-   * @see setTimeout
+   * @param {Date|number} dateOrEpochSeconds    Either a JS Date object, or a
+   *     number of UNIX epoch seconds. Can't be negative. If the value is
+   *     `TIMEOUT_INFINITE`, the transaction is valid indefinitely.
+   *
+   * @returns {TransactionBuilder}
+   *
+   * @see {@link TransactionBuilder.setTimeout}
    */
   setMaxTime(dateOrEpochSeconds) {
     // Force it to a date type
@@ -265,13 +282,13 @@ export class TransactionBuilder {
   /**
    * If you want to prepare a transaction which will be valid at or after some
    * ledger number in the future, you can set a minimum ledger precondition.
-   * Internally this will set the <code>minLedger</code> precondition.
+   * Internally this will set the `minLedger` precondition.
    *
-   * @param {number} minLedger The minimum ledger this transaction is valid at
-   * or after. Cannot be negative. If the value is `0`, the transaction is
-   * valid immediately.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
+   * @param {number} minLedger  The minimum ledger this transaction is valid at
+   *     or after. Cannot be negative. If the value is `0` (the default), the
+   *     transaction is valid immediately.
+   *
+   * @returns {TransactionBuilder}
    */
   setMinLedger(minLedger) {
     if (this.ledgerbounds !== null && this.ledgerbounds.minLedger > 0) {
@@ -305,15 +322,15 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will be valid before some
-   * ledger number in the future, you can set a maximum ledger precondition.
-   * Internally this will set the <code>maxLedger</code> precondition.
+   * If you want to prepare a transaction which will be valid before some ledger
+   * number in the future, you can set a maximum ledger precondition. Internally
+   * this will set the `maxLedger` precondition.
    *
-   * @param {number} maxLedger The maximum ledger this transaction is valid
-   * before. Cannot be negative. If the value is `0`, the transaction is valid
-   * indefinitely.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
+   * @param {number} maxLedger  The maximum ledger this transaction is valid
+   *     before. Cannot be negative. If the value is `0`, the transaction is
+   *     valid indefinitely.
+   *
+   * @returns {TransactionBuilder}
    */
   setMaxLedger(maxLedger) {
     if (this.ledgerbounds !== null && this.ledgerbounds.maxLedger > 0) {
@@ -348,16 +365,20 @@ export class TransactionBuilder {
 
   /**
    * If you want to prepare a transaction which will be valid only while the
-   * account sequence number is `minAccountSequence <= sourceAccountSequence <
-   * tx.seqNum`. Note that after execution the account's sequence number is
-   * always raised to `tx.seqNum`.
-   * Internally this will set the <code>minAccountSequence</code> precondition.
+   * account sequence number is
    *
-   * @param {string} minAccountSequence The minimum source account sequence
-   * number this transaction is valid for. If the value is `0`, the transaction
-   * is valid when `sourceAccount's sequence number == tx.seqNum - 1`. @return
-   * {TransactionBuilder}
-   * @see TransactionPreconditions
+   *     minAccountSequence <= sourceAccountSequence < tx.seqNum
+   *
+   * Note that after execution the account's sequence number is always raised to
+   * `tx.seqNum`. Internally this will set the `minAccountSequence`
+   * precondition.
+   *
+   * @param {string} minAccountSequence   The minimum source account sequence
+   *     number this transaction is valid for. If the value is `0`, the
+   *     transaction is valid when `sourceAccount's sequence number ==
+   *     tx.seqNum- 1`.
+   *
+   * @returns {TransactionBuilder}
    */
   setMinAccountSequence(minAccountSequence) {
     if (this.minAccountSequence !== null) {
@@ -372,16 +393,16 @@ export class TransactionBuilder {
   }
 
   /**
-   * For the transaction to be valid, the current ledger time must
-   * be at least minAccountSequenceAge greater than sourceAccount's sequenceTime.
-   * Internally this will set the <code>minAccountSequenceAge</code> precondition.
+   * For the transaction to be valid, the current ledger time must be at least
+   * `minAccountSequenceAge` greater than sourceAccount's `sequenceTime`.
+   * Internally this will set the `minAccountSequenceAge` precondition.
    *
-   * @param {number} durationInSeconds The minimum amount of time between
-   * source account sequence time and the ledger time when this transaction
-   * will become valid. If the value is `0`, the transaction is unrestricted by
-   * the account sequence age. Cannot be negative.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
+   * @param {number} durationInSeconds  The minimum amount of time between
+   *     source account sequence time and the ledger time when this transaction
+   *     will become valid. If the value is `0`, the transaction is unrestricted
+   *     by the account sequence age. Cannot be negative.
+   *
+   * @returns {TransactionBuilder}
    */
   setMinAccountSequenceAge(durationInSeconds) {
     if (this.minAccountSequenceAge !== null) {
@@ -400,16 +421,16 @@ export class TransactionBuilder {
   }
 
   /**
-   * For the transaction to be valid, the current ledger number must be at
-   * least minAccountSequenceLedgerGap greater than sourceAccount's ledger
-   * sequence.
-   * Internally this will set the <code>minAccountSequenceLedgerGap</code>
-   * precondition.
+   * For the transaction to be valid, the current ledger number must be at least
+   * `minAccountSequenceLedgerGap` greater than sourceAccount's ledger sequence.
+   * Internally this will set the `minAccountSequenceLedgerGap` precondition.
    *
-   * @param {number} gap The minimum number of ledgers between source account sequence and the ledger number when this transaction will become valid.
-   * If the value is `0`, the transaction is unrestricted by the account sequence ledger. Cannot be negative.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
+   * @param {number} gap  The minimum number of ledgers between source account
+   *     sequence and the ledger number when this transaction will become valid.
+   *     If the value is `0`, the transaction is unrestricted by the account
+   *     sequence ledger. Cannot be negative.
+   *
+   * @returns {TransactionBuilder}
    */
   setMinAccountSequenceLedgerGap(gap) {
     if (this.minAccountSequenceLedgerGap !== null) {
@@ -428,14 +449,14 @@ export class TransactionBuilder {
   }
 
   /**
-   * For the transaction to be valid, there must be a signature corresponding
-   * to every Signer in this array, even if the signature is not otherwise
-   * required by the sourceAccount or operations.
-   * Internally this will set the <code>extraSigners</code> precondition.
+   * For the transaction to be valid, there must be a signature corresponding to
+   * every Signer in this array, even if the signature is not otherwise required
+   * by the sourceAccount or operations. Internally this will set the
+   * `extraSigners` precondition.
    *
-   * @param {string[]} extraSigners The required extra signers.
-   * @return {TransactionBuilder}
-   * @see TransactionPreconditions
+   * @param {string[]} extraSigners   required extra signers
+   *
+   * @returns {TransactionBuilder}
    */
   setExtraSigners(extraSigners) {
     if (this.extraSigners !== null) {
