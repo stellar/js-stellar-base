@@ -918,6 +918,14 @@ export class TransactionBuilder {
   addOperation(operation: xdr.Operation): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
+  setMinTime(minTimeEpochSeconds: Date | number): this;
+  setMaxTime(maxTimeEpochSeconds: Date | number): this;
+  setMinLedger(minLedger: number): this;
+  setMaxLedger(maxLedger: number): this;
+  setMinAccountSequence(minAccountSequence: string): this;
+  setMinAccountSequenceAge(durationInSeconds: number): this;
+  setMinAccountSequenceLedgerGap(gap: number): this;
+  setExtraSigners(extraSigners: string[]): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(

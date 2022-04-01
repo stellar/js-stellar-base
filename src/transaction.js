@@ -107,6 +107,22 @@ export class Transaction extends TransactionBase {
       };
     }
 
+    const ledgerBounds = tx.cond()?.v2()?.ledgerBounds();
+    if (ledgerBounds) {
+      this._ledgerBounds = {
+        minLedger: ledgerBounds.minLedger(),
+        maxLedger: ledgerBounds.maxLedger()
+      };
+    }
+
+    const cond = tx.cond()?.v2();
+    if (cond) {
+      this._minAccountSequence = cond.minAccountSequence()?.toString();
+      this._minAccountSequenceAge = cond.minAccountSequenceAge();
+      this._minAccountSequenceLedgerGap = cond.minAccountSequenceLedgerGap();
+      this._extraSigners = cond.extraSigners();
+    }
+
     const operations = tx.operations() || [];
     this._operations = map(operations, (op) => Operation.fromXDRObject(op));
   }
@@ -120,8 +136,64 @@ export class Transaction extends TransactionBase {
   get timeBounds() {
     return this._timeBounds;
   }
-
   set timeBounds(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {object}
+   * @property {string} 32 bit ledger number
+   * @property {string} 32 bit ledger number
+   * @readonly
+   */
+  get ledgerBounds() {
+    return this._ledgerBounds;
+  }
+  set ledgerBounds(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {string} 64 bit account sequence
+   * @readonly
+   */
+  get minAccountSequence() {
+    return this._minAccountSequence;
+  }
+  set minAccountSequence(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {number} 64 bit number of seconds
+   * @readonly
+   */
+  get minAccountSequenceAge() {
+    return this._minAccountSequenceAge;
+  }
+  set minAccountSequenceAge(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {number} 32 bit number of ledgers
+   * @readonly
+   */
+  get minAccountSequenceLedgerGap() {
+    return this._minAccountSequenceLedgerGap;
+  }
+  set minAccountSequenceLedgerGap(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {string[]} array of extra signers
+   * @readonly
+   */
+  get extraSigners() {
+    return this._extraSigners;
+  }
+  set extraSigners(value) {
     throw new Error('Transaction is immutable');
   }
 

@@ -141,6 +141,14 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
+  .setMinTime(Date.now())
+  .setMaxTime(Date.now())
+  .setMinLedger(5)
+  .setMaxLedger(10)
+  .setMinAccountSequence("5")
+  .setMinAccountSequenceAge(5)
+  .setMinAccountSequenceLedgerGap(5)
+  .setExtraSigners([account.accountId()])
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
 
 const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>

@@ -634,6 +634,105 @@ describe('Transaction', function() {
       expect(() => tx.getClaimableBalanceId(-1)).to.throw(/index/);
     });
   });
+
+  describe('preconditions', function() {
+    const address = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+
+    const source = new StellarBase.Account(address, '1234');
+    const makeBuilder = function() {
+      return new StellarBase.TransactionBuilder(source, {
+        fee: StellarBase.BASE_FEE,
+        networkPassphrase: StellarBase.Networks.TESTNET,
+        withMuxing: true
+      });
+    };
+
+    describe('minTime', function() {
+      it('Date', function() {
+        let now = new Date();
+        let tx = makeBuilder()
+          .setMinTime(now)
+          .build();
+        expect(tx.timeBounds.minTime).to.be.equal(
+          `${Math.floor(now.valueOf() / 1000)}`
+        );
+      });
+
+      it('number', function() {
+        let tx = makeBuilder()
+          .setMinTime(5)
+          .build();
+        expect(tx.timeBounds.minTime).to.be.equal('5');
+      });
+    });
+
+    describe('maxTime', function() {
+      it('Date', function() {
+        let now = new Date();
+        let tx = makeBuilder()
+          .setMaxTime(now)
+          .build();
+        expect(tx.timeBounds.maxTime).to.be.equal(
+          `${Math.floor(now.valueOf() / 1000)}`
+        );
+      });
+
+      it('number', function() {
+        let tx = makeBuilder()
+          .setMaxTime(5)
+          .build();
+        expect(tx.timeBounds.maxTime).to.be.equal('5');
+      });
+    });
+
+    it('minLedger', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinLedger(5)
+        .build();
+      expect(tx.ledgerBounds.minLedger).to.be.equal(5);
+    });
+
+    it('maxLedger', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMaxLedger(5)
+        .build();
+      expect(tx.ledgerBounds.maxLedger).to.be.equal(5);
+    });
+
+    it('minAccountSequence', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequence('5')
+        .build();
+      expect(tx.minAccountSequence).to.be.equal('5');
+    });
+
+    it('minAccountSequenceAge', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequenceAge(5)
+        .build();
+      expect(tx.minAccountSequenceAge).to.be.equal(5);
+    });
+
+    it('minAccountSequenceLedgerGap', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequenceLedgerGap(5)
+        .build();
+      expect(tx.minAccountSequenceLedgerGap).to.be.equal(5);
+    });
+
+    it('extraSigners', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setExtraSigners([address])
+        .build();
+      expect(tx.extraSigners).to.be.equal([address]);
+    });
+  });
 });
 
 function expectBuffersToBeEqual(left, right) {
