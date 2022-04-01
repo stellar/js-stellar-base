@@ -525,15 +525,9 @@ export class TransactionBuilder {
       this.timebounds.maxTime.toString()
     );
 
-    if (this.hasV2Preconditions()) {
-      let timeBounds = null;
-      if (this.timebounds !== null) {
-        timeBounds = new xdr.TimeBounds({
-          minTime: this.timebounds.minTime,
-          maxTime: this.timebounds.maxTime
-        });
-      }
+    const timeBounds = new xdr.TimeBounds(this.timeBounds);
 
+    if (this.hasV2Preconditions()) {
       let ledgerBounds = null;
       if (this.ledgerbounds !== null) {
         ledgerBounds = xdr.LedgerBounds({
@@ -572,9 +566,7 @@ export class TransactionBuilder {
         extraSigners
       });
     } else {
-      attrs.cond = xdr.Preconditions.precondTime(
-        new xdr.TimeBounds(this.timebounds)
-      );
+      attrs.cond = xdr.Preconditions.precondTime(timeBounds);
     }
 
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
