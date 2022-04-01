@@ -115,13 +115,13 @@ export class Transaction extends TransactionBase {
         };
       }
 
-      const minSeq = cond.minAccountSequence();
+      const minSeq = cond.minSeqNum();
       if (minSeq) {
         this._minAccountSequence = minSeq.toString();
       }
 
-      this._minAccountSequenceAge = cond.minAccountSequenceAge();
-      this._minAccountSequenceLedgerGap = cond.minAccountSequenceLedgerGap();
+      this._minAccountSequenceAge = cond.minSeqAge();
+      this._minAccountSequenceLedgerGap = cond.minSeqLedgerGap();
       this._extraSigners = cond.extraSigners();
     }
 

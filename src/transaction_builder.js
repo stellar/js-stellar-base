@@ -96,7 +96,7 @@ export const TimeoutInfinite = 0;
  *     string for the minimum ledger sequence
  * @param {number|string}       [opts.ledgerbounds.maxLedger] - number or
  *     string for the maximum ledger sequence
- * @param {number}              [opts.minAccountSequence] - number for
+ * @param {string}              [opts.minAccountSequence] - number for
  *     the minimum account sequence
  * @param {number}              [opts.minAccountSequenceAge] - number of
  *     seconds for the minimum account sequence age
@@ -374,9 +374,9 @@ export class TransactionBuilder {
    * precondition.
    *
    * @param {string} minAccountSequence   The minimum source account sequence
-   *     number this transaction is valid for. If the value is `0`, the
-   *     transaction is valid when `sourceAccount's sequence number ==
-   *     tx.seqNum- 1`.
+   *     number this transaction is valid for. If the value is `0` (the
+   *     default), the transaction is valid when `sourceAccount's sequence
+   *     number == tx.seqNum- 1`.
    *
    * @returns {TransactionBuilder}
    */
@@ -540,10 +540,9 @@ export class TransactionBuilder {
         });
       }
 
-      let minSeqNum = null;
-      if (this.minAccountSequence !== null) {
-        minSeqNum = xdr.SequenceNumber(this.minAccountSequence);
-      }
+      let minSeqNum =
+        this.minAccountSequence !== null ? this.minAccountSequence : '0';
+      minSeqNum = new xdr.SequenceNumber(UnsignedHyper.fromString(minSeqNum));
 
       const minSeqAge = UnsignedHyper.fromString(
         this.minAccountSequenceAge !== null
@@ -554,7 +553,7 @@ export class TransactionBuilder {
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
 
       // TODO: Parse these somehow? or make them a richer type?
-      // Re: Yep, we're going to need a StrKey -> xdr.SignerKey abstraction :(
+      // Re: Yep, we might need a StrKey -> xdr.SignerKey abstraction :(
       const extraSigners =
         this.extraSigners !== null ? this.extraSigners.map((s) => s) : [];
 

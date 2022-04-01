@@ -730,7 +730,7 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setExtraSigners([address])
         .build();
-      expect(tx.extraSigners).to.be.equal([address]);
+      expect(tx.extraSigners).to.eql([address]);
     });
   });
 });
