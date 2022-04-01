@@ -128,7 +128,7 @@ export class TransactionBuilder {
     this.minAccountSequence = opts.minAccountSequence || null;
     this.minAccountSequenceAge = opts.minAccountSequenceAge || null;
     this.minAccountSequenceLedgerGap = opts.minAccountSequenceLedgerGap || null;
-    this.extraSigners = opts.extraSigners || null;
+    this.extraSigners = clone(opts.extraSigners) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
   }
@@ -180,11 +180,13 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will become valid at some point in the future, you can set a minimum time precondition.
+   * If you want to prepare a transaction which will become valid at some point
+   * in the future, you can set a minimum time precondition.
    * Internally this will set the <code>minTime</code> precondition.
    *
-   * @param {Date|number} dateOrEpochSeconds Either a js Date object, or a number of unix epoch seconds. Can't be negative.
-   * If the value is `0`, the transaction is valid immediately.
+   * @param {Date|number} dateOrEpochSeconds Either a js Date object, or a
+   * number of unix epoch seconds. Can't be negative. If the value is `0`, the
+   * transaction is valid immediately.
    * @return {TransactionBuilder}
    * @see TransactionPreconditions
    */
@@ -195,7 +197,7 @@ export class TransactionBuilder {
     }
 
     // Convert that date to the epoch seconds
-    const t = Math.floor(dateOrEpochSeconds / 1000);
+    const t = Math.floor(dateOrEpochSeconds.valueOf() / 1000);
     if (this.timebounds !== null && this.timebounds.minTime > 0) {
       throw new Error(
         'TimeBounds.min_time has been already set - setting min_time would overwrite it.'
@@ -209,7 +211,7 @@ export class TransactionBuilder {
     if (this.timebounds === null) {
       this.timebounds = {
         minTime: 0,
-        maxTime: 0
+        maxTime: TimeoutInfinite
       };
     }
 
@@ -219,11 +221,13 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will be valid until some point in the future, you can set a maximum time precondition.
+   * If you want to prepare a transaction which will be valid until some point
+   * in the future, you can set a maximum time precondition.
    * Internally this will set the <code>maxTime</code> precondition.
    *
-   * @param {Date|number} dateOrEpochSeconds Either a js Date object, or a number of unix epoch seconds. Can't be negative.
-   * If the value is `0`, the transaction is valid indefinitely.
+   * @param {Date|number} dateOrEpochSeconds Either a js Date object, or a
+   * number of unix epoch seconds. Can't be negative. If the value is `0`, the
+   * transaction is valid indefinitely.
    * @return {TransactionBuilder}
    * @see TransactionPreconditions
    * @see setTimeout
@@ -235,7 +239,7 @@ export class TransactionBuilder {
     }
 
     // Convert that date to the epoch seconds
-    const t = Math.floor(dateOrEpochSeconds / 1000);
+    const t = Math.floor(dateOrEpochSeconds.valueOf() / 1000);
     if (this.timebounds !== null && this.timebounds.maxTime > 0) {
       throw new Error(
         'TimeBounds.max_time has been already set - setting max_time would overwrite it.'
@@ -249,7 +253,7 @@ export class TransactionBuilder {
     if (this.timebounds === null) {
       this.timebounds = {
         minTime: 0,
-        maxTime: 0
+        maxTime: TimeoutInfinite
       };
     }
 
@@ -259,11 +263,13 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will be valid at or after some ledger number in the future, you can set a minimum ledger precondition.
+   * If you want to prepare a transaction which will be valid at or after some
+   * ledger number in the future, you can set a minimum ledger precondition.
    * Internally this will set the <code>minLedger</code> precondition.
    *
-   * @param {number} minLedger The minimum ledger this transaction is valid at or after. Cannot be negative.
-   * If the value is `0`, the transaction is valid immediately.
+   * @param {number} minLedger The minimum ledger this transaction is valid at
+   * or after. Cannot be negative. If the value is `0`, the transaction is
+   * valid immediately.
    * @return {TransactionBuilder}
    * @see TransactionPreconditions
    */
@@ -276,6 +282,14 @@ export class TransactionBuilder {
 
     if (minLedger < 0) {
       throw new Error('min_ledger cannot be negative');
+    }
+
+    if (
+      this.ledgerbounds !== null &&
+      minLedger !== 0 &&
+      minLedger > this.ledgerbounds.maxLedger
+    ) {
+      throw new Error('min_ledger cannot be greater than max_ledger');
     }
 
     if (this.ledgerbounds === null) {
@@ -291,11 +305,13 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will be valid before some ledger number in the future, you can set a maximum ledger precondition.
+   * If you want to prepare a transaction which will be valid before some
+   * ledger number in the future, you can set a maximum ledger precondition.
    * Internally this will set the <code>maxLedger</code> precondition.
    *
-   * @param {number} maxLedger The maximum ledger this transaction is valid before. Cannot be negative.
-   * If the value is `0`, the transaction is valid indefinitely.
+   * @param {number} maxLedger The maximum ledger this transaction is valid
+   * before. Cannot be negative. If the value is `0`, the transaction is valid
+   * indefinitely.
    * @return {TransactionBuilder}
    * @see TransactionPreconditions
    */
@@ -308,6 +324,14 @@ export class TransactionBuilder {
 
     if (maxLedger < 0) {
       throw new Error('max_ledger cannot be negative');
+    }
+
+    if (
+      this.ledgerbounds !== null &&
+      maxLedger !== 0 &&
+      maxLedger < this.ledgerbounds.minLedger
+    ) {
+      throw new Error('max_ledger cannot be less than min_ledger');
     }
 
     if (this.ledgerbounds === null) {
@@ -323,16 +347,20 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will be valid only while the account sequence number is `minAccountSequence <= sourceAccountSequence < tx.seqNum`. Note that after execution the account's sequence number is always raised to `tx.seqNum`.
+   * If you want to prepare a transaction which will be valid only while the
+   * account sequence number is `minAccountSequence <= sourceAccountSequence <
+   * tx.seqNum`. Note that after execution the account's sequence number is
+   * always raised to `tx.seqNum`.
    * Internally this will set the <code>minAccountSequence</code> precondition.
    *
-   * @param {string} minAccountSequence The minimum source account sequence number this transaction is valid for.
-   * If the value is `0`, the transaction is valid when `sourceAccount's sequence number == tx.seqNum - 1`.
-   * @return {TransactionBuilder}
+   * @param {string} minAccountSequence The minimum source account sequence
+   * number this transaction is valid for. If the value is `0`, the transaction
+   * is valid when `sourceAccount's sequence number == tx.seqNum - 1`. @return
+   * {TransactionBuilder}
    * @see TransactionPreconditions
    */
   setMinAccountSequence(minAccountSequence) {
-    if (this.minAccountSequence) {
+    if (this.minAccountSequence !== null) {
       throw new Error(
         'min_account_sequence has been already set - setting min_account_sequence would overwrite it.'
       );
@@ -348,13 +376,15 @@ export class TransactionBuilder {
    * be at least minAccountSequenceAge greater than sourceAccount's sequenceTime.
    * Internally this will set the <code>minAccountSequenceAge</code> precondition.
    *
-   * @param {number} durationInSeconds The minimum amount of time between source account sequence time and the ledger time when this transaction will become valid.
-   * If the value is `0`, the transaction is unrestricted by the account sequence age. Cannot be negative.
+   * @param {number} durationInSeconds The minimum amount of time between
+   * source account sequence time and the ledger time when this transaction
+   * will become valid. If the value is `0`, the transaction is unrestricted by
+   * the account sequence age. Cannot be negative.
    * @return {TransactionBuilder}
    * @see TransactionPreconditions
    */
   setMinAccountSequenceAge(durationInSeconds) {
-    if (this.minAccountSequenceAge !== null && this.minAccountSequenceAge > 0) {
+    if (this.minAccountSequenceAge !== null) {
       throw new Error(
         'min_account_sequence_age has been already set - setting min_account_sequence_age would overwrite it.'
       );
@@ -370,9 +400,11 @@ export class TransactionBuilder {
   }
 
   /**
-   * For the transaction to be valid, the current ledger number
-    must be at least minAccountSequenceLedgerGap greater than sourceAccount's ledger sequence.
-   * Internally this will set the <code>minAccountSequenceLedgerGap</code> precondition.
+   * For the transaction to be valid, the current ledger number must be at
+   * least minAccountSequenceLedgerGap greater than sourceAccount's ledger
+   * sequence.
+   * Internally this will set the <code>minAccountSequenceLedgerGap</code>
+   * precondition.
    *
    * @param {number} gap The minimum number of ledgers between source account sequence and the ledger number when this transaction will become valid.
    * If the value is `0`, the transaction is unrestricted by the account sequence ledger. Cannot be negative.
@@ -380,10 +412,7 @@ export class TransactionBuilder {
    * @see TransactionPreconditions
    */
   setMinAccountSequenceLedgerGap(gap) {
-    if (
-      this.minAccountSequenceLedgerGap !== null &&
-      this.minAccountSequenceLedgerGap > 0
-    ) {
+    if (this.minAccountSequenceLedgerGap !== null) {
       throw new Error(
         'min_account_sequence_ledger_gap has been already set - setting min_account_sequence_ledger_gap would overwrite it.'
       );
@@ -399,10 +428,9 @@ export class TransactionBuilder {
   }
 
   /**
-   * For the transaction to be valid, there must be a signature
-   * corresponding to every Signer in this array, even if the
-   * signature is not otherwise required by the sourceAccount or
-   * operations.
+   * For the transaction to be valid, there must be a signature corresponding
+   * to every Signer in this array, even if the signature is not otherwise
+   * required by the sourceAccount or operations.
    * Internally this will set the <code>extraSigners</code> precondition.
    *
    * @param {string[]} extraSigners The required extra signers.
@@ -410,13 +438,17 @@ export class TransactionBuilder {
    * @see TransactionPreconditions
    */
   setExtraSigners(extraSigners) {
-    if (this.extraSigners !== null && this.extraSigners.length > 0) {
+    if (this.extraSigners !== null) {
       throw new Error(
         'extra_signers has been already set - setting extra_signers would overwrite it.'
       );
     }
 
-    this.extraSigners = extraSigners;
+    if (extraSigners.length > 2) {
+      throw new Error('extra_signers cannot be longer than 2 elements.');
+    }
+
+    this.extraSigners = clone(extraSigners);
 
     return this;
   }
@@ -495,7 +527,7 @@ export class TransactionBuilder {
       attrs.preconditions.minAccountSequenceLedgerGap = UnsignedHyper.fromString(
         this.preconditions.minAccountSequenceLedgerGap.toString()
       );
-      attrs.preconditions.extraSigners = this.extraSigners;
+      attrs.preconditions.extraSigners = clone(this.extraSigners);
     } else {
       attrs.cond = xdr.Preconditions.precondTime(
         new xdr.TimeBounds(this.timebounds)
