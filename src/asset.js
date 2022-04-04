@@ -161,9 +161,7 @@ export class Asset {
   }
 
   /**
-   * Returns the XDR representation of the asset type.
-   *
-   * @return {xdr.AssetType} the raw asset type structure
+   * @returns {xdr.AssetType}  the raw XDR representation of the asset type
    */
   getRawAssetType() {
     if (this.isNative()) {
