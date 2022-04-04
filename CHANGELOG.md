@@ -7,7 +7,11 @@
 
 ### Fix
 
-- Update developer dependencies: `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500)).
+- Update developer dependencies:
+  * `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))
+  * `ajv` ([#503](https://github.com/stellar/js-stellar-base/pull/503))
+  * `karma` ([#505](https://github.com/stellar/js-stellar-base/pull/505))
+  * `minimist` ([#514](https://github.com/stellar/js-stellar-base/pull/514))
 
 
 ## [v7.0.0](https://github.com/stellar/js-stellar-base/compare/v6.0.6..v7.0.0)
