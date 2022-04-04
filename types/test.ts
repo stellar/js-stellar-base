@@ -141,7 +141,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
-  .setTimebounds(Date.now(), Date.now()+5000)
+  .setTimebounds(Date.now(), Date.now() + 5000)
   .setLedgerbounds(5, 10)
   .setMinAccountSequence("5")
   .setMinAccountSequenceAge(5)
