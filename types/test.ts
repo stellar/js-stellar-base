@@ -327,5 +327,9 @@ result = StellarSdk.StrKey.encodeMed25519PublicKey(muxkey);   // $ExpectType str
 StellarSdk.StrKey.decodeMed25519PublicKey(result);            // $ExpectType Buffer
 StellarSdk.StrKey.isValidMed25519PublicKey(result);           // $ExpectType boolean
 
+result = StellarSdk.StrKey.encodeSignedPayload(pubkey);   // $ExpectType string
+StellarSdk.StrKey.decodeSignedPayload(result);            // $ExpectType Buffer
+StellarSdk.StrKey.isValidSignedPayload(result);           // $ExpectType boolean
+
 const muxedAddr = StellarSdk.encodeMuxedAccountToAddress(muxed, true);  // $ExpectType string
 StellarSdk.decodeAddressToMuxedAccount(muxedAddr, true);                // $ExpectType MuxedAccount
