@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+**Note:** As of this release, the minimum supported version of NodeJS is 14.x.
+
 ### Add
 
 - Adds support for converting signed payloads ([CAP-40](https://stellar.org/protocol/cap-40)) to and from their StrKey (`P...`) representation ([#511](https://github.com/stellar/js-stellar-base/pull/511)).
