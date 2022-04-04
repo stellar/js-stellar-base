@@ -5,6 +5,14 @@
 
 **Note:** As of this release, the minimum supported version of NodeJS is 14.x.
 
+### Fix
+
+- Update developer dependencies:
+  * `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))
+  * `ajv` ([#503](https://github.com/stellar/js-stellar-base/pull/503))
+  * `karma` ([#505](https://github.com/stellar/js-stellar-base/pull/505))
+  * `minimist` ([#514](https://github.com/stellar/js-stellar-base/pull/514))
+
 
 ### Fix
 

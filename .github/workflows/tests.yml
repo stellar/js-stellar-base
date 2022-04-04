@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
+      max-parallel: 2
       matrix:
         node-version: [14, 16]
-      fail-fast: false
 
     steps:
     - uses: actions/checkout@v2
