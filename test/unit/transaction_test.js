@@ -676,8 +676,9 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setLedgerbounds(5, 10)
         .build();
-      expect(tx.ledgerBounds.minLedger).to.eql(UnsignedHyper.fromString('5'));
-      expect(tx.ledgerBounds.maxLedger).to.eql(UnsignedHyper.fromString('10'));
+
+      expect(tx.ledgerBounds.minLedger).to.equal(5);
+      expect(tx.ledgerBounds.maxLedger).to.equal(10);
     });
 
     it('minAccountSequence', function() {

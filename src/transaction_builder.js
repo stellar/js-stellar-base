@@ -478,14 +478,7 @@ export class TransactionBuilder {
     if (this.hasV2Preconditions()) {
       let ledgerBounds = null;
       if (this.ledgerbounds !== null) {
-        ledgerBounds = new xdr.LedgerBounds({
-          minLedger: UnsignedHyper.fromString(
-            this.ledgerbounds.minLedger.toString()
-          ),
-          maxLedger: UnsignedHyper.fromString(
-            this.ledgerbounds.maxLedger.toString()
-          )
-        });
+        ledgerBounds = new xdr.LedgerBounds(this.ledgerbounds);
       }
 
       let minSeqNum =
