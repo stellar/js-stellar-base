@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### Add
+
+- Adds support for converting signed payloads ([CAP-40](https://stellar.org/protocol/cap-40)) to and from their StrKey (`P...`) representation ([#511](https://github.com/stellar/js-stellar-base/pull/511)).
+
 
 ## [v7.0.0](https://github.com/stellar/js-stellar-base/compare/v6.0.6..v7.0.0)
 
