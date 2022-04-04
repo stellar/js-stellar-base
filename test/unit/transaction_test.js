@@ -1,3 +1,4 @@
+import { UnsignedHyper } from 'js-xdr';
 import randomBytes from 'randombytes';
 
 describe('Transaction', function() {
@@ -653,10 +654,10 @@ describe('Transaction', function() {
         let tx = makeBuilder()
           .setTimebounds(now, now)
           .build();
-        expect(tx.timeBounds.minTime).to.be.equal(
+        expect(tx.timeBounds.minTime).to.eql(
           `${Math.floor(now.valueOf() / 1000)}`
         );
-        expect(tx.timeBounds.maxTime).to.be.equal(
+        expect(tx.timeBounds.maxTime).to.eql(
           `${Math.floor(now.valueOf() / 1000)}`
         );
       });
@@ -665,8 +666,8 @@ describe('Transaction', function() {
         let tx = makeBuilder()
           .setTimebounds(5, 10)
           .build();
-        expect(tx.timeBounds.minTime).to.be.equal('5');
-        expect(tx.timeBounds.maxTime).to.be.equal('10');
+        expect(tx.timeBounds.minTime).to.eql('5');
+        expect(tx.timeBounds.maxTime).to.eql('10');
       });
     });
 
@@ -675,8 +676,8 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setLedgerbounds(5, 10)
         .build();
-      expect(tx.ledgerBounds.minLedger).to.be.equal(5);
-      expect(tx.ledgerBounds.maxLedger).to.be.equal(10);
+      expect(tx.ledgerBounds.minLedger).to.eql(UnsignedHyper.fromString('5'));
+      expect(tx.ledgerBounds.maxLedger).to.eql(UnsignedHyper.fromString('10'));
     });
 
     it('minAccountSequence', function() {
@@ -684,7 +685,7 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setMinAccountSequence('5')
         .build();
-      expect(tx.minAccountSequence).to.be.equal('5');
+      expect(tx.minAccountSequence).to.eql('5');
     });
 
     it('minAccountSequenceAge', function() {
@@ -692,7 +693,7 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setMinAccountSequenceAge(5)
         .build();
-      expect(tx.minAccountSequenceAge).to.be.equal(5);
+      expect(tx.minAccountSequenceAge).to.eql(UnsignedHyper.fromString('5'));
     });
 
     it('minAccountSequenceLedgerGap', function() {
@@ -700,7 +701,7 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setMinAccountSequenceLedgerGap(5)
         .build();
-      expect(tx.minAccountSequenceLedgerGap).to.be.equal(5);
+      expect(tx.minAccountSequenceLedgerGap).to.eql(5);
     });
 
     it('extraSigners', function() {

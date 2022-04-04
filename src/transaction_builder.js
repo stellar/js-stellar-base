@@ -346,6 +346,9 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder}
    */
   setMinAccountSequenceAge(durationInSeconds) {
+    if (typeof durationInSeconds !== 'number') {
+      throw new Error('min_account_sequence_age must be a number');
+    }
     if (this.minAccountSequenceAge !== null) {
       throw new Error(
         'min_account_sequence_age has been already set - setting min_account_sequence_age would overwrite it.'
@@ -400,7 +403,7 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder}
    */
   setExtraSigners(extraSigners) {
-    if (isArray(extraSigners)) {
+    if (!isArray(extraSigners)) {
       throw new Error('extra_signers must be an array of strings.');
     }
 
