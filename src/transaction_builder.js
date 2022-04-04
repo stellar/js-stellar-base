@@ -188,93 +188,82 @@ export class TransactionBuilder {
    * @see https://developers.stellar.org/docs/tutorials/handling-errors/
    */
   setTimeout(timeoutSeconds) {
+    if (this.timebounds !== null && this.timebounds.maxTime > 0) {
+      throw new Error(
+        'TimeBounds.max_time has been already set - setting timeout would overwrite it.'
+      );
+    }
+
     if (timeoutSeconds < 0) {
       throw new Error('timeout cannot be negative');
     }
 
-    return this.setMaxTime(Math.floor(Date.now() / 1000) + timeoutSeconds);
-  }
-
-  /**
-   * If you want to prepare a transaction which will become valid at some point
-   * in the future, you can set a minimum time precondition. Internally this
-   * will set the `minTime` precondition.
-   *
-   * @param {Date|number} dateOrEpochSeconds  Either a JS Date object, or a
-   *     number of UNIX epoch seconds. Can't be negative. If the value is `0`,
-   *     the transaction is valid immediately.
-   *
-   * @returns {TransactionBuilder}
-   */
-  setMinTime(dateOrEpochSeconds) {
-    // Force it to a date type
-    if (typeof dateOrEpochSeconds === 'number') {
-      dateOrEpochSeconds = new Date(dateOrEpochSeconds * 1000);
-    }
-
-    // Convert that date to the epoch seconds
-    const t = Math.floor(dateOrEpochSeconds.valueOf() / 1000);
-    if (this.timebounds !== null && this.timebounds.minTime > 0) {
-      throw new Error(
-        'TimeBounds.min_time has been already set - setting min_time would overwrite it.'
-      );
-    }
-
-    if (t < 0) {
-      throw new Error('min_time cannot be negative');
-    }
-
-    if (this.timebounds === null) {
+    if (timeoutSeconds > 0) {
+      const timeoutTimestamp = Math.floor(Date.now() / 1000) + timeoutSeconds;
+      if (this.timebounds === null) {
+        this.timebounds = { minTime: 0, maxTime: timeoutTimestamp };
+      } else {
+        this.timebounds = {
+          minTime: this.timebounds.minTime,
+          maxTime: timeoutTimestamp
+        };
+      }
+    } else {
       this.timebounds = {
         minTime: 0,
-        maxTime: TimeoutInfinite
+        maxTime: 0
       };
     }
-
-    this.timebounds.minTime = t;
 
     return this;
   }
 
   /**
-   * If you want to prepare a transaction which will be valid until some point
-   * in the future, you can set a maximum time precondition. Internally this
-   * will set the `maxTime` precondition.
+   * If you want to prepare a transaction which will become valid at some point
+   * in the future, or be invalid after some time, you can set a timebounds
+   * precondition. Internally this will set the `minTime`, and `maxTime`
+   * preconditions. Conflicts with `setTimeout`, so use one or the other.
    *
-   * @param {Date|number} dateOrEpochSeconds    Either a JS Date object, or a
-   *     number of UNIX epoch seconds. Can't be negative. If the value is
-   *     `TIMEOUT_INFINITE`, the transaction is valid indefinitely.
+   * @param {Date|number} minEpochOrDate  Either a JS Date object, or a number
+   *     of UNIX epoch seconds. The transaction is valid after this timestamp.
+   *     Can't be negative. If the value is `0`, the transaction is valid
+   *     immediately.
+   * @param {Date|number} maxEpochOrDate  Either a JS Date object, or a number
+   *     of UNIX epoch seconds. The transaction is valid until this timestamp.
+   *     Can't be negative. If the value is `0`, the transaction is valid
+   *     indefinitely.
    *
    * @returns {TransactionBuilder}
-   *
-   * @see {@link TransactionBuilder.setTimeout}
    */
-  setMaxTime(dateOrEpochSeconds) {
+  setTimebounds(minEpochOrDate, maxEpochOrDate) {
     // Force it to a date type
-    if (typeof dateOrEpochSeconds === 'number') {
-      dateOrEpochSeconds = new Date(dateOrEpochSeconds * 1000);
+    if (typeof minEpochOrDate === 'number') {
+      minEpochOrDate = new Date(minEpochOrDate * 1000);
+    }
+    if (typeof maxEpochOrDate === 'number') {
+      maxEpochOrDate = new Date(maxEpochOrDate * 1000);
     }
 
-    // Convert that date to the epoch seconds
-    const t = Math.floor(dateOrEpochSeconds.valueOf() / 1000);
-    if (this.timebounds !== null && this.timebounds.maxTime > 0) {
+    if (this.timebounds !== null) {
       throw new Error(
-        'TimeBounds.max_time has been already set - setting max_time would overwrite it.'
+        'TimeBounds has been already set - setting timebounds would overwrite it.'
       );
     }
 
-    if (t < 0) {
+    // Convert that date to the epoch seconds
+    const minTime = Math.floor(minEpochOrDate.valueOf() / 1000);
+    const maxTime = Math.floor(maxEpochOrDate.valueOf() / 1000);
+    if (minTime < 0) {
+      throw new Error('min_time cannot be negative');
+    }
+    if (maxTime < 0) {
       throw new Error('max_time cannot be negative');
     }
 
-    if (this.timebounds === null) {
-      this.timebounds = {
-        minTime: 0,
-        maxTime: TimeoutInfinite
-      };
-    }
-
-    this.timebounds.maxTime = t;
+    this.timebounds = {
+      minTime: minTime,
+      maxTime: maxTime
+    };
 
     return this;
   }

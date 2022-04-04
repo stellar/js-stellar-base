@@ -647,31 +647,15 @@ describe('Transaction', function() {
       });
     };
 
-    describe('minTime', function() {
+    describe('timebounds', function() {
       it('Date', function() {
         let now = new Date();
         let tx = makeBuilder()
-          .setMinTime(now)
+          .setTimebounds(now, now)
           .build();
         expect(tx.timeBounds.minTime).to.be.equal(
           `${Math.floor(now.valueOf() / 1000)}`
         );
-      });
-
-      it('number', function() {
-        let tx = makeBuilder()
-          .setMinTime(5)
-          .build();
-        expect(tx.timeBounds.minTime).to.be.equal('5');
-      });
-    });
-
-    describe('maxTime', function() {
-      it('Date', function() {
-        let now = new Date();
-        let tx = makeBuilder()
-          .setMaxTime(now)
-          .build();
         expect(tx.timeBounds.maxTime).to.be.equal(
           `${Math.floor(now.valueOf() / 1000)}`
         );
@@ -679,9 +663,10 @@ describe('Transaction', function() {
 
       it('number', function() {
         let tx = makeBuilder()
-          .setMaxTime(5)
+          .setTimebounds(5, 10)
           .build();
-        expect(tx.timeBounds.maxTime).to.be.equal('5');
+        expect(tx.timeBounds.minTime).to.be.equal('5');
+        expect(tx.timeBounds.maxTime).to.be.equal('10');
       });
     });
 

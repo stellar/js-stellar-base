@@ -918,8 +918,7 @@ export class TransactionBuilder {
   addOperation(operation: xdr.Operation): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
-  setMinTime(minTimeEpochSeconds: Date | number): this;
-  setMaxTime(maxTimeEpochSeconds: Date | number): this;
+  setTimebounds(min: Date | number, max: Date | number): this;
   setMinLedger(minLedger: number): this;
   setMaxLedger(maxLedger: number): this;
   setMinAccountSequence(minAccountSequence: string): this;
