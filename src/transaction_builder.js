@@ -269,51 +269,13 @@ export class TransactionBuilder {
   }
 
   /**
-   * If you want to prepare a transaction which will be valid at or after some
-   * ledger number in the future, you can set a minimum ledger precondition.
-   * Internally this will set the `minLedger` precondition.
+   * If you want to prepare a transaction which will only be valid within some
+   * range of ledgers, you can set a ledgerbounds precondition.
+   * Internally this will set the `minLedger` and `maxLedger` preconditions.
    *
    * @param {number} minLedger  The minimum ledger this transaction is valid at
    *     or after. Cannot be negative. If the value is `0` (the default), the
    *     transaction is valid immediately.
-   *
-   * @returns {TransactionBuilder}
-   */
-  setMinLedger(minLedger) {
-    if (this.ledgerbounds !== null && this.ledgerbounds.minLedger > 0) {
-      throw new Error(
-        'LedgerBounds.min_ledger has been already set - setting min_ledger would overwrite it.'
-      );
-    }
-
-    if (minLedger < 0) {
-      throw new Error('min_ledger cannot be negative');
-    }
-
-    if (
-      this.ledgerbounds !== null &&
-      minLedger !== 0 &&
-      minLedger > this.ledgerbounds.maxLedger
-    ) {
-      throw new Error('min_ledger cannot be greater than max_ledger');
-    }
-
-    if (this.ledgerbounds === null) {
-      this.ledgerbounds = {
-        minLedger: 0,
-        maxLedger: 0
-      };
-    }
-
-    this.ledgerbounds.minLedger = minLedger;
-
-    return this;
-  }
-
-  /**
-   * If you want to prepare a transaction which will be valid before some ledger
-   * number in the future, you can set a maximum ledger precondition. Internally
-   * this will set the `maxLedger` precondition.
    *
    * @param {number} maxLedger  The maximum ledger this transaction is valid
    *     before. Cannot be negative. If the value is `0`, the transaction is
@@ -321,33 +283,28 @@ export class TransactionBuilder {
    *
    * @returns {TransactionBuilder}
    */
-  setMaxLedger(maxLedger) {
-    if (this.ledgerbounds !== null && this.ledgerbounds.maxLedger > 0) {
+  setLedgerbounds(minLedger, maxLedger) {
+    if (this.ledgerbounds !== null) {
       throw new Error(
-        'LedgerBounds.max_ledger has been already set - setting max_ledger would overwrite it.'
+        'LedgerBounds has been already set - setting ledgerbounds would overwrite it.'
       );
     }
 
+    if (minLedger < 0) {
+      throw new Error('min_ledger cannot be negative');
+    }
     if (maxLedger < 0) {
       throw new Error('max_ledger cannot be negative');
     }
 
-    if (
-      this.ledgerbounds !== null &&
-      maxLedger !== 0 &&
-      maxLedger < this.ledgerbounds.minLedger
-    ) {
-      throw new Error('max_ledger cannot be less than min_ledger');
+    if (minLedger > maxLedger) {
+      throw new Error('min_ledger cannot be greater than max_ledger');
     }
 
-    if (this.ledgerbounds === null) {
-      this.ledgerbounds = {
-        minLedger: 0,
-        maxLedger: 0
-      };
-    }
-
-    this.ledgerbounds.maxLedger = maxLedger;
+    this.ledgerbounds = {
+      minLedger: minLedger,
+      maxLedger: maxLedger
+    };
 
     return this;
   }

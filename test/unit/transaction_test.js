@@ -670,20 +670,13 @@ describe('Transaction', function() {
       });
     });
 
-    it('minLedger', function() {
+    it('ledgerbounds', function() {
       let tx = makeBuilder()
         .setTimeout(5)
-        .setMinLedger(5)
+        .setLedgerbounds(5, 10)
         .build();
       expect(tx.ledgerBounds.minLedger).to.be.equal(5);
-    });
-
-    it('maxLedger', function() {
-      let tx = makeBuilder()
-        .setTimeout(5)
-        .setMaxLedger(5)
-        .build();
-      expect(tx.ledgerBounds.maxLedger).to.be.equal(5);
+      expect(tx.ledgerBounds.maxLedger).to.be.equal(10);
     });
 
     it('minAccountSequence', function() {
