@@ -144,8 +144,8 @@ export class Transaction extends TransactionBase {
 
   /**
    * @type {object}
-   * @property {string} 32 bit ledger number
-   * @property {string} 32 bit ledger number
+   * @property {number} minLedger - smallest ledger bound (uint32)
+   * @property {number} maxLedger - largest ledger bound (or 0 for inf)
    * @readonly
    */
   get ledgerBounds() {
