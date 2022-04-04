@@ -161,6 +161,23 @@ export class Asset {
   }
 
   /**
+   * Returns the XDR representation of the asset type.
+   *
+   * @return {xdr.AssetType} the raw asset type structure
+   */
+  getRawAssetType() {
+    if (this.isNative()) {
+      return xdr.AssetType.assetTypeNative();
+    }
+
+    if (this.code.length <= 4) {
+      return xdr.AssetType.assetTypeCreditAlphanum4();
+    }
+
+    return xdr.AssetType.assetTypeCreditAlphanum12();
+  }
+
+  /**
    * @returns {boolean}  true if this asset object is the native asset.
    */
   isNative() {
@@ -184,15 +201,17 @@ export class Asset {
   }
 
   /**
-   * Compares if assetA < assetB according with the criteria:
-   * 1. First compare the type (eg. native before alphanum4 before alphanum12).
-   * 2. If the types are equal, compare the assets codes.
-   * 3. If the asset codes are equal, compare the issuers.
+   * Compares two assets according to the criteria:
+   *
+   *  1. First compare the type (native < alphanum4 < alphanum12).
+   *  2. If the types are equal, compare the assets codes.
+   *  3. If the asset codes are equal, compare the issuers.
+   *
+   * @param   {Asset} assetA - the first asset
+   * @param   {Asset} assetB - the second asset
+   * @returns {number} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
    *
    * @static
-   * @param {Asset} assetA - The first asset in the lexicographic order.
-   * @param {Asset} assetB - The second asset in the lexicographic order.
-   * @return {number} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
    * @memberof Asset
    */
   static compare(assetA, assetB) {
@@ -208,33 +227,35 @@ export class Asset {
     }
 
     // Compare asset types.
-    switch (assetA.getAssetType()) {
-      case 'native':
-        return -1;
-      case 'credit_alphanum4':
-        if (assetB.getAssetType() === 'native') {
-          return 1;
-        }
-        if (assetB.getAssetType() === 'credit_alphanum12') {
-          return -1;
-        }
-        break;
-      case 'credit_alphanum12':
-        if (assetB.getAssetType() !== 'credit_alphanum12') {
-          return 1;
-        }
-        break;
-      default:
-        throw new Error('Unexpected asset type');
+    const xdrAtype = assetA.getRawAssetType().value;
+    const xdrBtype = assetB.getRawAssetType().value;
+    if (xdrAtype !== xdrBtype) {
+      return xdrAtype < xdrBtype ? -1 : 1;
     }
 
     // Compare asset codes.
-    const result = assetA.getCode().localeCompare(assetB.getCode());
+    const result = asciiCompare(assetA.getCode(), assetB.getCode());
     if (result !== 0) {
       return result;
     }
 
     // Compare asset issuers.
-    return assetA.getIssuer().localeCompare(assetB.getIssuer());
+    return asciiCompare(assetA.getIssuer(), assetB.getIssuer());
   }
+}
+
+/**
+ * Compares two ASCII strings in lexographic order with uppercase precedence.
+ *
+ * @param   {string} a - the first string to compare
+ * @param   {string} b - the second
+ * @returns {number} like all `compare()`s:
+ *     -1 if `a < b`, 0 if `a == b`, and 1 if `a > b`
+ *
+ * @warning No type-checks are done on the parameters
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+ */
+function asciiCompare(a, b) {
+  return a.localeCompare(b, 'en', { caseFirst: 'upper' });
 }
