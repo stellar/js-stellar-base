@@ -459,6 +459,10 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder}
    */
   setExtraSigners(extraSigners) {
+    if (typeof extraSigners === 'array') {
+      throw new Error('extra_signers must be an array of strings.');
+    }
+
     if (this.extraSigners !== null) {
       throw new Error(
         'extra_signers has been already set - setting extra_signers would overwrite it.'
