@@ -6,6 +6,11 @@
 **Note:** As of this release, the minimum supported version of NodeJS is 14.x.
 
 
+### Fix
+
+ - Resolves a bug that incorrectly sorted `Asset`s with mixed-case asset codes (it preferred lowercase codes incorrectly) ([#516](https://github.com/stellar/js-stellar-base/pull/516)).
+
+
 ## [v7.0.0](https://github.com/stellar/js-stellar-base/compare/v6.0.6..v7.0.0)
 
 This release introduces **unconditional support for muxed accounts** ([#485](https://github.com/stellar/js-stellar-base/pull/485)).
