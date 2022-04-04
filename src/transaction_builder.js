@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import clone from 'lodash/clone';
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
 
 import xdr from './generated/stellar-xdr_generated';
 import { Transaction } from './transaction';
@@ -260,10 +261,7 @@ export class TransactionBuilder {
       throw new Error('max_time cannot be negative');
     }
 
-    this.timebounds = {
-      minTime: minTime,
-      maxTime: maxTime
-    };
+    this.timebounds = { minTime, maxTime };
 
     return this;
   }
@@ -301,10 +299,7 @@ export class TransactionBuilder {
       throw new Error('min_ledger cannot be greater than max_ledger');
     }
 
-    this.ledgerbounds = {
-      minLedger: minLedger,
-      maxLedger: maxLedger
-    };
+    this.ledgerbounds = { minLedger, maxLedger };
 
     return this;
   }
@@ -405,7 +400,7 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder}
    */
   setExtraSigners(extraSigners) {
-    if (typeof extraSigners === 'array') {
+    if (isArray(extraSigners)) {
       throw new Error('extra_signers must be an array of strings.');
     }
 
