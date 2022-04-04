@@ -233,10 +233,12 @@ function isValid(versionByteName, encoded) {
       return decoded.length === 32;
 
     case 'med25519PublicKey':
-      return decoded.length === 40;
+      return decoded.length === 40; // +8 bytes for the ID
 
     case 'signedPayload':
-      return decoded.length >= 32 + 4 && decoded.length <= 32 + 4 + 64;
+      return (
+        decoded.length >= 32 + 4 && decoded.length <= 32 + 4 + 64 // +4 for the payload size
+      ); // +64 for the max payload
 
     default:
       return false;
