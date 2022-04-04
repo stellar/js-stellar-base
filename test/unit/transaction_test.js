@@ -694,7 +694,8 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setMinAccountSequenceAge(5)
         .build();
-      expect(tx.minAccountSequenceAge).to.eql(UnsignedHyper.fromString('5'));
+
+      expect(tx.minAccountSequenceAge.toString()).to.equal('5');
     });
 
     it('minAccountSequenceLedgerGap', function() {
@@ -702,7 +703,7 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setMinAccountSequenceLedgerGap(5)
         .build();
-      expect(tx.minAccountSequenceLedgerGap).to.eql(5);
+      expect(tx.minAccountSequenceLedgerGap).to.equal(5);
     });
 
     it('extraSigners', function() {
