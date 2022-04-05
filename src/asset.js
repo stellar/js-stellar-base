@@ -142,9 +142,10 @@ export class Asset {
    * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
    * @returns {string} Asset type. Can be one of following types:
    *
-   * * `native`
-   * * `credit_alphanum4`
-   * * `credit_alphanum12`
+   *  - `native`,
+   *  - `credit_alphanum4`,
+   *  - `credit_alphanum12`, or
+   *  - `unknown` as the error case (which should never occur)
    */
   getAssetType() {
     switch (this.getRawAssetType()) {
@@ -155,10 +156,8 @@ export class Asset {
       case xdr.AssetType.assetTypeCreditAlphanum12():
         return 'credit_alphanum12';
       default:
-        break;
+        return 'unknown';
     }
-
-    return null;
   }
 
   /**
