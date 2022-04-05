@@ -36,42 +36,30 @@ export class SignerKey {
 
   static encodeSignerKey(signerKey) {
     let strkeyType;
+    let raw;
 
     switch (signerKey.switch()) {
       case xdr.SignerKeyType.signerKeyTypeEd25519():
         strkeyType = 'ed25519PublicKey';
+        raw = signerKey.value();
         break;
 
       case xdr.SignerKeyType.signerKeyTypePreAuthTx():
         strkeyType = 'preAuthTx';
+        raw = signerKey.value();
         break;
 
       case xdr.SignerKeyType.signerKeyTypeHashX():
         strkeyType = 'sha256Hash';
+        raw = signerKey.value();
         break;
 
       case xdr.SignerKeyType.signerKeyTypeEd25519SignedPayload():
         strkeyType = 'signedPayload';
-        break;
-
-      default:
-        throw new Error(`invalid SignerKey (type: ${signerKey.switch()})`);
-    }
-
-    let raw;
-    switch (strkeyType) {
-      case 'ed25519PublicKey': // falls through
-      case 'preAuthTx': // falls through
-      case 'sha256Hash':
-        raw = signerKey.value();
-        break;
-
-      case 'signedPayload':
         raw = signerKey.ed25519SignedPayload().toXDR('raw');
         break;
 
       default:
-        // shouldn't happen
         throw new Error(`invalid SignerKey (type: ${signerKey.switch()})`);
     }
 
