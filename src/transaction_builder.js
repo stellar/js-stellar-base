@@ -260,6 +260,9 @@ export class TransactionBuilder {
     if (maxTime < 0) {
       throw new Error('max_time cannot be negative');
     }
+    if (maxTime > 0 && minTime > maxTime) {
+      throw new Error('min_time cannot be greater than max_time');
+    }
 
     this.timebounds = { minTime, maxTime };
 
