@@ -146,7 +146,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .setMinAccountSequence("5")
   .setMinAccountSequenceAge(5)
   .setMinAccountSequenceLedgerGap(5)
-  .setExtraSigners([account.accountId()])
+  .setExtraSigners([new StellarSdk.xdr.SignerKey()])
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
 
 const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>
