@@ -7,6 +7,8 @@
 
 ### Fix
 
+- Resolves a bug that incorrectly sorted `Asset`s with mixed-case asset codes (it preferred lowercase codes incorrectly) ([#516](https://github.com/stellar/js-stellar-base/pull/516)).
+
 - Update developer dependencies:
   * `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))
   * `ajv` ([#503](https://github.com/stellar/js-stellar-base/pull/503))
