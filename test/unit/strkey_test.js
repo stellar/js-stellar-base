@@ -230,48 +230,10 @@ describe('StrKey', function() {
   const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
   const MPUBKEY =
     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK';
-  const RAW_MPUBKEY = Buffer.from([
-    0x3f,
-    0x0c,
-    0x34,
-    0xbf,
-    0x93,
-    0xad,
-    0x0d,
-    0x99,
-    0x71,
-    0xd0,
-    0x4c,
-    0xcc,
-    0x90,
-    0xf7,
-    0x05,
-    0x51,
-    0x1c,
-    0x83,
-    0x8a,
-    0xad,
-    0x97,
-    0x34,
-    0xa4,
-    0xa2,
-    0xfb,
-    0x0d,
-    0x7a,
-    0x03,
-    0xfc,
-    0x7f,
-    0xe8,
-    0x9a,
-    0x80,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x00
-  ]);
+  const RAW_MPUBKEY = Buffer.from(
+    '3f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a8000000000000000',
+    'hex'
+  );
 
   describe('#muxedAccounts', function() {
     it('encodes & decodes M... addresses correctly', function() {
@@ -445,7 +407,8 @@ describe('StrKey', function() {
 
     BAD_STRKEYS.forEach((address) => {
       it(`fails in expected case ${address}`, function() {
-        expect(() => StellarBase.StrKey.decodeCheck(address[0])).to.throw();
+        const vb = StellarBase.StrKey.getVersionByteForPrefix(address);
+        expect(() => StellarBase.StrKey.decodeCheck(vb, address)).to.throw();
       });
     });
   });
