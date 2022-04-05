@@ -294,8 +294,7 @@ export class TransactionBuilder {
     if (maxLedger < 0) {
       throw new Error('max_ledger cannot be negative');
     }
-
-    if (minLedger > maxLedger) {
+    if (maxLedger > 0 && minLedger > maxLedger) {
       throw new Error('min_ledger cannot be greater than max_ledger');
     }
 
