@@ -72,6 +72,7 @@ export class Transaction extends TransactionBase {
         break;
     }
 
+    let cond = null;
     let timeBounds = null;
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
@@ -85,10 +86,8 @@ export class Transaction extends TransactionBase {
             break;
 
           case xdr.PreconditionType.precondV2():
-            timeBounds = tx
-              .cond()
-              .v2()
-              .timeBounds();
+            cond = tx.cond().v2();
+            timeBounds = cond.timeBounds();
             break;
 
           default:
@@ -107,6 +106,25 @@ export class Transaction extends TransactionBase {
       };
     }
 
+    if (cond) {
+      const ledgerBounds = cond.ledgerBounds();
+      if (ledgerBounds) {
+        this._ledgerBounds = {
+          minLedger: ledgerBounds.minLedger(),
+          maxLedger: ledgerBounds.maxLedger()
+        };
+      }
+
+      const minSeq = cond.minSeqNum();
+      if (minSeq) {
+        this._minAccountSequence = minSeq.toString();
+      }
+
+      this._minAccountSequenceAge = cond.minSeqAge();
+      this._minAccountSequenceLedgerGap = cond.minSeqLedgerGap();
+      this._extraSigners = cond.extraSigners();
+    }
+
     const operations = tx.operations() || [];
     this._operations = map(operations, (op) => Operation.fromXDRObject(op));
   }
@@ -120,8 +138,64 @@ export class Transaction extends TransactionBase {
   get timeBounds() {
     return this._timeBounds;
   }
-
   set timeBounds(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {object}
+   * @property {number} minLedger - smallest ledger bound (uint32)
+   * @property {number} maxLedger - largest ledger bound (or 0 for inf)
+   * @readonly
+   */
+  get ledgerBounds() {
+    return this._ledgerBounds;
+  }
+  set ledgerBounds(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {string} 64 bit account sequence
+   * @readonly
+   */
+  get minAccountSequence() {
+    return this._minAccountSequence;
+  }
+  set minAccountSequence(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {number} 64 bit number of seconds
+   * @readonly
+   */
+  get minAccountSequenceAge() {
+    return this._minAccountSequenceAge;
+  }
+  set minAccountSequenceAge(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {number} 32 bit number of ledgers
+   * @readonly
+   */
+  get minAccountSequenceLedgerGap() {
+    return this._minAccountSequenceLedgerGap;
+  }
+  set minAccountSequenceLedgerGap(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {xdr.SignerKey[]} array of extra signers
+   * @readonly
+   */
+  get extraSigners() {
+    return this._extraSigners;
+  }
+  set extraSigners(value) {
     throw new Error('Transaction is immutable');
   }
 

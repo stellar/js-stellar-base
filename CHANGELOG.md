@@ -7,7 +7,9 @@
 
 ### Add
 
-- Adds support for converting signed payloads ([CAP-40](https://stellar.org/protocol/cap-40)) to and from their StrKey (`P...`) representation ([#511](https://github.com/stellar/js-stellar-base/pull/511)).
+- Support for converting signed payloads ([CAP-40](https://stellar.org/protocol/cap-40)) to and from their StrKey (`P...`) representation ([#511](https://github.com/stellar/js-stellar-base/pull/511)).
+
+- Support for creating transactions with the new ([CAP-21](https://stellar.org/protocol/cap-21)) preconditions via `TransactionBuilder`. ([#513](https://github.com/stellar/js-stellar-base/pull/513)).
 
 ### Fix
 

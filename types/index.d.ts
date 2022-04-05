@@ -922,6 +922,12 @@ export class TransactionBuilder {
   addOperation(operation: xdr.Operation): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
+  setTimebounds(min: Date | number, max: Date | number): this;
+  setLedgerbounds(minLedger: number, maxLedger: number): this;
+  setMinAccountSequence(minAccountSequence: string): this;
+  setMinAccountSequenceAge(durationInSeconds: number): this;
+  setMinAccountSequenceLedgerGap(gap: number): this;
+  setExtraSigners(extraSigners: xdr.SignerKey[]): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(
@@ -943,6 +949,14 @@ export namespace TransactionBuilder {
       minTime?: number | string;
       maxTime?: number | string;
     };
+    ledgerbounds?: {
+      minLedger?: number;
+      maxLedger?: number;
+    };
+    minAccountSequence?: string;
+    minAccountSequenceAge?: number;
+    minAccountSequenceLedgerGap?: number;
+    extraSigners?: xdr.SignerKey[];
     memo?: Memo;
     networkPassphrase?: string;
     v1?: boolean;
