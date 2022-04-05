@@ -93,9 +93,9 @@ export const TimeoutInfinite = 0;
  *     timestamp or Date object
  * @param {object}              [opts.ledgerbounds] - ledger bounds for the
  *     validity of this transaction
- * @param {number}       [opts.ledgerbounds.minLedger] - number of the minimum
+ * @param {number}              [opts.ledgerbounds.minLedger] - number of the minimum
  *     ledger sequence
- * @param {number}       [opts.ledgerbounds.maxLedger] - number of the maximum
+ * @param {number}              [opts.ledgerbounds.maxLedger] - number of the maximum
  *     ledger sequence
  * @param {string}              [opts.minAccountSequence] - number for
  *     the minimum account sequence
