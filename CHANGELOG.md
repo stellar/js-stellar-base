@@ -11,6 +11,8 @@
 
 - Support for creating transactions with the new ([CAP-21](https://stellar.org/protocol/cap-21)) preconditions via `TransactionBuilder`. ([#513](https://github.com/stellar/js-stellar-base/pull/513)).
 
+- A way to convert between addresses like `G...` and `P...` (i.e. the `StrKey` class) and a signer key (i.e. `xdr.SignerKey`s) ([#](TODO)).
+
 ### Fix
 
 - Update developer dependencies:

@@ -189,7 +189,7 @@ export class Transaction extends TransactionBase {
   }
 
   /**
-   * @type {xdr.SignerKey[]} array of extra signers
+   * @type {string[]}   array of extra signers (@{link StrKey}s)
    * @readonly
    */
   get extraSigners() {

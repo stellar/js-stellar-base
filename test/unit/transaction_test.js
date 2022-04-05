@@ -711,7 +711,10 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setExtraSigners([address])
         .build();
-      expect(tx.extraSigners).to.eql([address]);
+      expect(tx.extraSigners).to.have.lengthOf(1);
+      expect(
+        tx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)
+      ).to.eql([address]);
     });
   });
 });
