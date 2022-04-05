@@ -3,9 +3,19 @@
 
 ## Unreleased
 
+**Note:** As of this release, the minimum supported version of NodeJS is 14.x.
+
 ### Add
 
 - Adds support for converting signed payloads ([CAP-40](https://stellar.org/protocol/cap-40)) to and from their StrKey (`P...`) representation ([#511](https://github.com/stellar/js-stellar-base/pull/511)).
+
+### Fix
+
+- Update developer dependencies:
+  * `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))
+  * `ajv` ([#503](https://github.com/stellar/js-stellar-base/pull/503))
+  * `karma` ([#505](https://github.com/stellar/js-stellar-base/pull/505))
+  * `minimist` ([#514](https://github.com/stellar/js-stellar-base/pull/514))
 
 
 ## [v7.0.0](https://github.com/stellar/js-stellar-base/compare/v6.0.6..v7.0.0)
