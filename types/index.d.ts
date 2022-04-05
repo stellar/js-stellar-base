@@ -927,7 +927,7 @@ export class TransactionBuilder {
   setMinAccountSequence(minAccountSequence: string): this;
   setMinAccountSequenceAge(durationInSeconds: number): this;
   setMinAccountSequenceLedgerGap(gap: number): this;
-  setExtraSigners(extraSigners: string[]): this;
+  setExtraSigners(extraSigners: xdr.SignerKey[]): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(

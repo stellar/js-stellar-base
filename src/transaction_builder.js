@@ -103,7 +103,7 @@ export const TimeoutInfinite = 0;
  *     seconds for the minimum account sequence age
  * @param {number}              [opts.minAccountSequenceLedgerGap] - number of
  *     ledgers for the minimum account sequence ledger gap
- * @param {string[]}            [opts.extraSigners] - list of the extra signers
+ * @param {xdr.SignerKey[]}     [opts.extraSigners] - list of the extra signers
  *     required for this transaction
  * @param {Memo}                [opts.memo] - memo for the transaction
  * @param {string}              [opts.networkPassphrase] passphrase of the
@@ -398,7 +398,7 @@ export class TransactionBuilder {
    * by the sourceAccount or operations. Internally this will set the
    * `extraSigners` precondition.
    *
-   * @param {string[]} extraSigners   required extra signers
+   * @param {xdr.SignerKey[]} extraSigners   required extra signers
    *
    * @returns {TransactionBuilder}
    */
@@ -493,10 +493,10 @@ export class TransactionBuilder {
 
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
 
-      // TODO: Parse these somehow? or make them a richer type?
-      // Re: Yep, we might need a StrKey -> xdr.SignerKey abstraction :(
+      // TODO: Input here should be some StrKey abstraction, then we convert it
+      // to xdr.SignerKey here.
       const extraSigners =
-        this.extraSigners !== null ? this.extraSigners.map((s) => s) : [];
+        this.extraSigners !== null ? clone(this.extraSigners) : [];
 
       attrs.cond = xdr.Preconditions.precondV2(
         new xdr.PreconditionsV2({
