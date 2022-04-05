@@ -846,22 +846,26 @@ export type Operation =
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
-  function decodeEd25519PublicKey(data: string): Buffer;
+  function decodeEd25519PublicKey(address: string): Buffer;
   function isValidEd25519PublicKey(Key: string): boolean;
 
   function encodeEd25519SecretSeed(data: Buffer): string;
-  function decodeEd25519SecretSeed(data: string): Buffer;
+  function decodeEd25519SecretSeed(address: string): Buffer;
   function isValidEd25519SecretSeed(seed: string): boolean;
 
   function encodeMed25519PublicKey(data: Buffer): string;
-  function decodeMed25519PublicKey(data: string): Buffer;
+  function decodeMed25519PublicKey(address: string): Buffer;
   function isValidMed25519PublicKey(publicKey: string): boolean;
 
+  function encodeSignedPayload(data: Buffer): string;
+  function decodeSignedPayload(address: string): Buffer;
+  function isValidSignedPayload(address: string): boolean;
+
   function encodePreAuthTx(data: Buffer): string;
-  function decodePreAuthTx(data: string): Buffer;
+  function decodePreAuthTx(address: string): Buffer;
 
   function encodeSha256Hash(data: Buffer): string;
-  function decodeSha256Hash(data: string): Buffer;
+  function decodeSha256Hash(address: string): Buffer;
 }
 
 export class TransactionI {

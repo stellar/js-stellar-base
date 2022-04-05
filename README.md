@@ -98,9 +98,9 @@ Make sure that you are using the latest version number. They can be found on the
 
 ### To develop and test js-stellar-base itself
 
-1. Install Node 12.x
+1. Install Node 14.x
 
-We support the oldest LTS release of Node, which is [currently](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 12 so you don't get surprised when your code works locally but breaks in CI.
+We support the oldest LTS release of Node, which is [currently 14.x](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 14 so you don't get surprised when your code works locally but breaks in CI.
 
 If you work on several projects that use different Node versions, you might find helpful to install a nodejs version manager.
 

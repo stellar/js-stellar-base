@@ -317,39 +317,88 @@ describe('StrKey', function() {
       expect(pubkey).to.equal(PUBKEY);
     });
 
-    const CASES = {
-      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK:
-        '9223372036854775808', // 0x8000...
-      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAFB4CJJBRKA:
-        '1357924680',
-      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAE2JUG6:
-        '1234',
-      MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ: '0'
-    };
+    const CASES = [
+      {
+        strkey:
+          'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK',
+        id: '9223372036854775808' // 0x8000...
+      },
+      {
+        strkey:
+          'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAFB4CJJBRKA',
+        id: '1357924680'
+      },
+      {
+        strkey:
+          'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAE2JUG6',
+        id: '1234'
+      },
+      {
+        strkey:
+          'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ',
+        id: '0'
+      }
+    ];
 
-    for (const CASE_MPUBKEY in CASES) {
-      const CASE_ID = CASES[CASE_MPUBKEY];
-
-      it(`encodes & decodes muxed key w/ ID=${CASE_ID}`, function() {
-        const muxed = StellarBase.decodeAddressToMuxedAccount(CASE_MPUBKEY);
+    CASES.forEach((testCase) => {
+      it(`encodes & decodes muxed key w/ ID=${testCase.id}`, function() {
+        const muxed = StellarBase.decodeAddressToMuxedAccount(testCase.strkey);
         expect(StellarBase.xdr.MuxedAccount.isValid(muxed)).to.be.true;
         expect(muxed.switch()).to.equal(
           StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
         );
 
-        const innerMux = muxed.value();
-        const id = StellarBase.xdr.Uint64.fromString(CASE_ID);
-        expect(innerMux).to.be.an.instanceof(
-          StellarBase.xdr.MuxedAccountMed25519
-        );
+        const innerMux = muxed.med25519();
+        const id = StellarBase.xdr.Uint64.fromString(testCase.id);
         expect(innerMux.ed25519().equals(unmuxed.ed25519())).to.be.true;
         expect(innerMux.id()).to.eql(id);
 
         const mpubkey = StellarBase.encodeMuxedAccountToAddress(muxed);
-        expect(mpubkey).to.equal(CASE_MPUBKEY);
+        expect(mpubkey).to.equal(testCase.strkey);
       });
-    }
+    });
+  });
 
+  describe('#signedPayloads', function() {
+    const HAPPY_PATHS = [
+      {
+        desc: 'valid w/ 32-byte payload',
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IBZGM',
+        ed25519: 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
+        payload:
+          '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20'
+      },
+      {
+        desc: 'valid w/ 29-byte payload',
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUAAAAFGBU',
+        ed25519: 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
+        payload: '0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d'
+      }
+    ];
+
+    HAPPY_PATHS.forEach((testCase) => {
+      it(testCase.desc, function() {
+        const spBuf = StellarBase.StrKey.decodeSignedPayload(testCase.strkey);
+        const sp = StellarBase.xdr.SignerKeyEd25519SignedPayload.fromXDR(
+          spBuf,
+          'raw'
+        );
+
+        const signer = StellarBase.StrKey.encodeEd25519PublicKey(sp.ed25519());
+        expect(signer).to.equal(testCase.ed25519);
+
+        const payload = sp.payload().toString('hex');
+        expect(payload).to.equal(testCase.payload);
+
+        const str = StellarBase.StrKey.encodeSignedPayload(sp.toXDR('raw'));
+        expect(str).to.equal(testCase.strkey);
+      });
+    });
+  });
+
+  describe('#invalidStrKeys', function() {
     // From https://stellar.org/protocol/sep-23#invalid-test-cases
     const BAD_STRKEYS = [
       // The unused trailing bit must be zero in the encoding of the last three
@@ -374,27 +423,29 @@ describe('StrKey', function() {
       //        decoding works (strkey.js:decodeCheck), because the decoder
       //        doesn't perform length validation.
       //
+      //        It also does not involve the XDR (un)marshalling mechanisms
+      //        whatsoever, meaning something like a signed payload with an
+      //        invalid payload length cannot be caught, since that's an
+      //        internal detail to how XDR encodes variable-length buffers.
+      //
 
       // Invalid length (Ed25519 should be 32 bytes, not 5)
-      // "GAAAAAAAACGC6",
+      // 'GAAAAAAAACGC6',
       // Invalid length (base-32 decoding should yield 35 bytes, not 36)
-      // "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUACUSI",
+      // 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUACUSI',
       // Invalid length (base-32 decoding should yield 43 bytes, not 44)
-      // "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAAV75I",
+      // 'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAAV75I',
+      // Length prefix specifies length that is shorter than payload in signed payload
+      // 'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IAAAAAAAAPM',
+      // Length prefix specifies length that is longer than payload in signed payload
+      // 'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4Z2PQ',
+      // No zero padding in signed payload
+      // 'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DXFH6'
     ];
 
     BAD_STRKEYS.forEach((address) => {
       it(`fails in expected case ${address}`, function() {
-        let decoder;
-        if (address.indexOf('G') === 0) {
-          decoder = StellarBase.StrKey.decodeEd25519PublicKey;
-        } else if (address.indexOf('M') === 0) {
-          decoder = StellarBase.StrKey.decodeMed25519PublicKey;
-        } else {
-          expect(`can't understand address`).to.be.true;
-        }
-
-        expect(() => decoder(address)).to.throw();
+        expect(() => StellarBase.StrKey.decodeCheck(address[0])).to.throw();
       });
     });
   });
