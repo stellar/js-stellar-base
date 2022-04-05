@@ -949,6 +949,14 @@ export namespace TransactionBuilder {
       minTime?: number | string;
       maxTime?: number | string;
     };
+    ledgerbounds?: {
+      minLedger?: number;
+      maxLedger?: number;
+    };
+    minAccountSequence?: string;
+    minAccountSequenceAge?: number;
+    minAccountSequenceLedgerGap?: number;
+    extraSigners?: xdr.SignerKey[];
     memo?: Memo;
     networkPassphrase?: string;
     v1?: boolean;
