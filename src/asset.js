@@ -147,14 +147,15 @@ export class Asset {
    * * `credit_alphanum12`
    */
   getAssetType() {
-    if (this.isNative()) {
-      return 'native';
-    }
-    if (this.code.length >= 1 && this.code.length <= 4) {
-      return 'credit_alphanum4';
-    }
-    if (this.code.length >= 5 && this.code.length <= 12) {
-      return 'credit_alphanum12';
+    switch (this.getRawAssetType()) {
+      case xdr.AssetType.assetTypeNative():
+        return 'native';
+      case xdr.AssetType.assetTypeCreditAlphanum4():
+        return 'credit_alphanum4';
+      case xdr.AssetType.assetTypeCreditAlphanum12():
+        return 'credit_alphanum12';
+      default:
+        break;
     }
 
     return null;
