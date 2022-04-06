@@ -3,7 +3,7 @@
 
 ## Unreleased
 
-**Note:** As of this release, the minimum supported version of NodeJS is 14.x.
+**Note:** As of this release, the minimum supported version of NodeJS is **14.x**.
 
 ### Add
 
@@ -14,6 +14,8 @@
 - A way to convert between addresses (like `G...` and `P...`, i.e. the `StrKey` class) and their respective signer keys (i.e. `xdr.SignerKey`s), particularly for use in the new transaction preconditions ([#520](https://github.com/stellar/js-stellar-base/pull/520)).
 
 ### Fix
+
+- Resolves a bug that incorrectly sorted `Asset`s with mixed-case asset codes (it preferred lowercase codes incorrectly) ([#516](https://github.com/stellar/js-stellar-base/pull/516)).
 
 - Update developer dependencies:
   * `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))

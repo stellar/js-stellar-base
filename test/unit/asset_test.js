@@ -334,16 +334,18 @@ describe('Asset', function() {
         'ARST',
         'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
       );
-      const assetUSDX = new StellarBase.Asset(
-        'USDX',
-        'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO'
-      );
+      const assetUSDX = new StellarBase.Asset('USDA', assetARST.getIssuer());
 
       expect(StellarBase.Asset.compare(assetARST, assetARST)).to.eq(0);
       expect(StellarBase.Asset.compare(assetARST, assetUSDX)).to.eq(-1);
 
       expect(StellarBase.Asset.compare(assetUSDX, assetARST)).to.eq(1);
       expect(StellarBase.Asset.compare(assetUSDX, assetUSDX)).to.eq(0);
+
+      // uppercase should be smaller
+      const assetLower = new StellarBase.Asset('aRST', assetARST.getIssuer());
+      expect(StellarBase.Asset.compare(assetARST, assetLower)).to.eq(-1);
+      expect(StellarBase.Asset.compare(assetLower, assetA)).to.eq(1);
     });
 
     it('test if asset issuers are being validated as assetIssuerA < assetIssuerB', function() {
