@@ -250,8 +250,9 @@ function isValid(versionByteName, encoded) {
 
     case 'signedPayload':
       return (
-        decoded.length >= 32 + 4 && decoded.length <= 32 + 4 + 64 // +4 for the payload size
-      ); // +64 for the max payload
+        // 32 for the signer, +4 for the payload size, +64 for the max payload
+        decoded.length >= 32 + 4 && decoded.length <= 32 + 4 + 64
+      );
 
     default:
       return false;
