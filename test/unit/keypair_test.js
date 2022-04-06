@@ -175,15 +175,23 @@ describe('Keypair.sign*Decorated', function() {
       const sig = kp.sign(data);
 
       it(`signedPayloads#${data.length}`, function() {
+        const expectedXdr = new StellarBase.xdr.DecoratedSignature({
+          hint: testCase.payload,
+          signature: sig
+        });
+
         const decoSig = kp.signPayloadDecorated(data);
-        expect(decoSig.hint()).to.eql(Buffer.from(testCase.payload));
-        expect(decoSig.signature()).to.eql(sig);
+        expect(decoSig.toXDR('hex')).to.eql(expectedXdr.toXDR('hex'));
       });
 
       it(`regular#${data.length}`, function() {
+        const expectedXdr = new StellarBase.xdr.DecoratedSignature({
+          hint: testCase.regular,
+          signature: sig
+        });
+
         const decoSig = kp.signDecorated(data);
-        expect(decoSig.hint()).to.eql(Buffer.from(testCase.regular));
-        expect(decoSig.signature()).to.eql(sig);
+        expect(decoSig.toXDR('hex')).to.eql(expectedXdr.toXDR('hex'));
       });
     });
   });
