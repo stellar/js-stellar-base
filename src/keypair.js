@@ -255,8 +255,8 @@ export class Keypair {
 
     let hint = Buffer.from(data.slice(-4));
     if (hint.length < 4) {
-      // front-pad with zeroes if necessary
-      hint = Buffer.concat([Buffer.alloc(4 - data.length, 0), hint]);
+      // append zeroes as needed
+      hint = Buffer.concat([hint, Buffer.alloc(4 - data.length, 0)]);
     }
 
     return new xdr.DecoratedSignature({
