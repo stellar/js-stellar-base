@@ -36,10 +36,18 @@ describe('SignerKey', function() {
   });
 
   describe('error cases', function() {
-    it('fails on non-strkey', function() {
-      expect(() => StellarBase.SignerKey.decodeAddress('NONSENSE')).to.throw(
-        /invalid signer key type/i
-      );
+    [
+      // these are valid strkeys, just not valid signers
+      'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
+      'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK',
+      // this is (literal) nonsense
+      'NONSENSE'
+    ].forEach((strkey) => {
+      it(`fails on ${strkey.substring(0, 5)}...`, function() {
+        expect(() => {
+          StellarBase.SignerKey.decodeAddress(strkey);
+        }).to.throw(/invalid signer key type/i);
+      });
     });
 
     it('fails on invalid strkey', function() {
