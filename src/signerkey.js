@@ -59,7 +59,8 @@ export class SignerKey {
    * @returns {string} the StrKey representation of the signer
    */
   static encodeSignerKey(signerKey) {
-    let strkeyType, raw;
+    let strkeyType;
+    let raw;
 
     switch (signerKey.switch()) {
       case xdr.SignerKeyType.signerKeyTypeEd25519():
