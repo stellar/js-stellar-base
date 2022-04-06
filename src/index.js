@@ -33,6 +33,7 @@ export { MuxedAccount } from './muxed_account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
+export { SignerKey } from './signerkey';
 export {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,

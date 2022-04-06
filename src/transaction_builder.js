@@ -8,6 +8,7 @@ import isArray from 'lodash/isArray';
 import xdr from './generated/stellar-xdr_generated';
 import { Transaction } from './transaction';
 import { FeeBumpTransaction } from './fee_bump_transaction';
+import { SignerKey } from './signerkey';
 import { Memo } from './memo';
 import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
 
@@ -103,7 +104,7 @@ export const TimeoutInfinite = 0;
  *     seconds for the minimum account sequence age
  * @param {number}              [opts.minAccountSequenceLedgerGap] - number of
  *     ledgers for the minimum account sequence ledger gap
- * @param {xdr.SignerKey[]}     [opts.extraSigners] - list of the extra signers
+ * @param {string[]}            [opts.extraSigners] - list of the extra signers
  *     required for this transaction
  * @param {Memo}                [opts.memo] - memo for the transaction
  * @param {string}              [opts.networkPassphrase] passphrase of the
@@ -400,7 +401,7 @@ export class TransactionBuilder {
    * by the sourceAccount or operations. Internally this will set the
    * `extraSigners` precondition.
    *
-   * @param {xdr.SignerKey[]} extraSigners   required extra signers
+   * @param {string[]} extraSigners   required extra signers (as {@link StrKey}s)
    *
    * @returns {TransactionBuilder}
    */
@@ -427,7 +428,9 @@ export class TransactionBuilder {
   /**
    * Set network nassphrase for the Transaction that will be built.
    *
-   * @param {string} [networkPassphrase] passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
+   * @param {string} networkPassphrase    passphrase of the target Stellar
+   *     network (e.g. "Public Global Stellar Network ; September 2015").
+   *
    * @returns {TransactionBuilder}
    */
   setNetworkPassphrase(networkPassphrase) {
@@ -483,8 +486,7 @@ export class TransactionBuilder {
         ledgerBounds = new xdr.LedgerBounds(this.ledgerbounds);
       }
 
-      let minSeqNum =
-        this.minAccountSequence !== null ? this.minAccountSequence : '0';
+      let minSeqNum = this.minAccountSequence || '0';
       minSeqNum = new xdr.SequenceNumber(UnsignedHyper.fromString(minSeqNum));
 
       const minSeqAge = UnsignedHyper.fromString(
@@ -495,10 +497,10 @@ export class TransactionBuilder {
 
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
 
-      // TODO: Input here should be some StrKey abstraction, then we convert it
-      // to xdr.SignerKey here.
       const extraSigners =
-        this.extraSigners !== null ? clone(this.extraSigners) : [];
+        this.extraSigners !== null
+          ? this.extraSigners.map(SignerKey.decodeAddress)
+          : [];
 
       attrs.cond = xdr.Preconditions.precondV2(
         new xdr.PreconditionsV2({
@@ -536,7 +538,7 @@ export class TransactionBuilder {
       this.minAccountSequence !== null ||
       this.minAccountSequenceAge !== null ||
       this.minAccountSequenceLedgerGap !== null ||
-      this.extraSigners !== null
+      (this.extraSigners !== null && this.extraSigners.length > 0)
     );
   }
 

@@ -16,6 +16,15 @@ const versionBytes = {
   signedPayload: 15 << 3 // P
 };
 
+const strkeyTypes = {
+  G: 'ed25519PublicKey',
+  S: 'ed25519SecretSeed',
+  M: 'med25519PublicKey',
+  T: 'preAuthTx',
+  X: 'sha256Hash',
+  P: 'signedPayload'
+};
+
 /**
  * StrKey is a helper class that allows encoding and decoding Stellar keys
  * to/from strings, i.e. between their binary (Buffer, xdr.PublicKey, etc.) and
@@ -170,6 +179,10 @@ export class StrKey {
   static isValidSignedPayload(address) {
     return isValid('signedPayload', address);
   }
+
+  static getVersionByteForPrefix(address) {
+    return strkeyTypes[address[0]];
+  }
 }
 
 /**
@@ -307,9 +320,8 @@ export function encodeCheck(versionByteName, data) {
   return base32.encode(unencoded);
 }
 
+// Computes the CRC16-XModem checksum of `payload` in little-endian order
 function calculateChecksum(payload) {
-  // This code calculates CRC16-XModem checksum of payload
-  // and returns it as Buffer in little-endian order.
   const checksum = Buffer.alloc(2);
   checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
   return checksum;
