@@ -1,4 +1,4 @@
-// Automatically generated on 2022-03-31T12:45:43-07:00
+// Automatically generated on 2022-04-11T10:56:25-07:00
 // DO NOT EDIT or your changes may be overwritten
 
 /* jshint maxstatements:2147483647  */
@@ -770,7 +770,8 @@ xdr.struct("TrustLineEntry", [
 //
 //   enum OfferEntryFlags
 //   {
-//       // an offer with this flag will not act on and take a reverse offer of equal price
+//       // an offer with this flag will not act on and take a reverse offer of equal
+//       // price
 //       PASSIVE_FLAG = 1
 //   };
 //
@@ -926,7 +927,7 @@ xdr.enum("ClaimPredicateType", {
 //       int64 absBefore; // Predicate will be true if closeTime < absBefore
 //   case CLAIM_PREDICATE_BEFORE_RELATIVE_TIME:
 //       int64 relBefore; // Seconds since closeTime of the ledger in which the
-//                           // ClaimableBalanceEntry was created
+//                        // ClaimableBalanceEntry was created
 //   };
 //
 // ===========================================================================
@@ -1157,7 +1158,7 @@ xdr.struct("ClaimableBalanceEntry", [
 //   {
 //       Asset assetA; // assetA < assetB
 //       Asset assetB;
-//       int32 fee;    // Fee is in basis points, so the actual rate is (fee/100)%
+//       int32 fee; // Fee is in basis points, so the actual rate is (fee/100)%
 //   };
 //
 // ===========================================================================
@@ -1176,7 +1177,8 @@ xdr.struct("LiquidityPoolConstantProductParameters", [
 //               int64 reserveA;        // amount of A in the pool
 //               int64 reserveB;        // amount of B in the pool
 //               int64 totalPoolShares; // total number of pool shares issued
-//               int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+//               int64 poolSharesTrustLineCount; // number of trust lines for the
+//                                               // associated pool shares
 //           }
 //
 // ===========================================================================
@@ -1200,7 +1202,8 @@ xdr.struct("LiquidityPoolEntryConstantProduct", [
 //               int64 reserveA;        // amount of A in the pool
 //               int64 reserveB;        // amount of B in the pool
 //               int64 totalPoolShares; // total number of pool shares issued
-//               int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+//               int64 poolSharesTrustLineCount; // number of trust lines for the
+//                                               // associated pool shares
 //           } constantProduct;
 //       }
 //
@@ -1232,7 +1235,8 @@ xdr.union("LiquidityPoolEntryBody", {
 //               int64 reserveA;        // amount of A in the pool
 //               int64 reserveB;        // amount of B in the pool
 //               int64 totalPoolShares; // total number of pool shares issued
-//               int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+//               int64 poolSharesTrustLineCount; // number of trust lines for the
+//                                               // associated pool shares
 //           } constantProduct;
 //       }
 //       body;
@@ -3703,10 +3707,10 @@ xdr.const("LIQUIDITY_POOL_FEE_V18", 30);
 //   struct LiquidityPoolDepositOp
 //   {
 //       PoolID liquidityPoolID;
-//       int64 maxAmountA;     // maximum amount of first asset to deposit
-//       int64 maxAmountB;     // maximum amount of second asset to deposit
-//       Price minPrice;       // minimum depositA/depositB
-//       Price maxPrice;       // maximum depositA/depositB
+//       int64 maxAmountA; // maximum amount of first asset to deposit
+//       int64 maxAmountB; // maximum amount of second asset to deposit
+//       Price minPrice;   // minimum depositA/depositB
+//       Price maxPrice;   // maximum depositA/depositB
 //   };
 //
 // ===========================================================================
@@ -3723,9 +3727,9 @@ xdr.struct("LiquidityPoolDepositOp", [
 //   struct LiquidityPoolWithdrawOp
 //   {
 //       PoolID liquidityPoolID;
-//       int64 amount;         // amount of pool shares to withdraw
-//       int64 minAmountA;     // minimum amount of first asset to withdraw
-//       int64 minAmountB;     // minimum amount of second asset to withdraw
+//       int64 amount;     // amount of pool shares to withdraw
+//       int64 minAmountA; // minimum amount of first asset to withdraw
+//       int64 minAmountB; // minimum amount of second asset to withdraw
 //   };
 //
 // ===========================================================================
@@ -4072,13 +4076,14 @@ xdr.struct("LedgerBounds", [
 
 // === xdr source ============================================================
 //
-//   struct PreconditionsV2 {
-//       TimeBounds *timeBounds;
+//   struct PreconditionsV2
+//   {
+//       TimeBounds* timeBounds;
 //   
 //       // Transaction only valid for ledger numbers n such that
 //       // minLedger <= n < maxLedger (if maxLedger == 0, then
 //       // only minLedger is checked)
-//       LedgerBounds *ledgerBounds;
+//       LedgerBounds* ledgerBounds;
 //   
 //       // If NULL, only valid when sourceAccount's sequence number
 //       // is seqNum - 1.  Otherwise, valid when sourceAccount's
@@ -4086,7 +4091,7 @@ xdr.struct("LedgerBounds", [
 //       // Note that after execution the account's sequence number
 //       // is always raised to tx.seqNum, and a transaction is not
 //       // valid if tx.seqNum is too high to ensure replay protection.
-//       SequenceNumber *minSeqNum;
+//       SequenceNumber* minSeqNum;
 //   
 //       // For the transaction to be valid, the current ledger time must
 //       // be at least minSeqAge greater than sourceAccount's seqTime.
@@ -4116,7 +4121,8 @@ xdr.struct("PreconditionsV2", [
 
 // === xdr source ============================================================
 //
-//   enum PreconditionType {
+//   enum PreconditionType
+//   {
 //       PRECOND_NONE = 0,
 //       PRECOND_TIME = 1,
 //       PRECOND_V2 = 2
@@ -4131,13 +4137,14 @@ xdr.enum("PreconditionType", {
 
 // === xdr source ============================================================
 //
-//   union Preconditions switch (PreconditionType type) {
-//       case PRECOND_NONE:
-//           void;
-//       case PRECOND_TIME:
-//           TimeBounds timeBounds;
-//       case PRECOND_V2:
-//           PreconditionsV2 v2;
+//   union Preconditions switch (PreconditionType type)
+//   {
+//   case PRECOND_NONE:
+//       void;
+//   case PRECOND_TIME:
+//       TimeBounds timeBounds;
+//   case PRECOND_V2:
+//       PreconditionsV2 v2;
 //   };
 //
 // ===========================================================================
@@ -5154,10 +5161,12 @@ xdr.union("SetOptionsResult", {
 //                                        // cannot create with a limit of 0
 //       CHANGE_TRUST_LOW_RESERVE =
 //           -4, // not enough funds to create a new trust line,
-//       CHANGE_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+//       CHANGE_TRUST_SELF_NOT_ALLOWED = -5,   // trusting self is not allowed
 //       CHANGE_TRUST_TRUST_LINE_MISSING = -6, // Asset trustline is missing for pool
-//       CHANGE_TRUST_CANNOT_DELETE = -7, // Asset trustline is still referenced in a pool
-//       CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES = -8 // Asset trustline is deauthorized
+//       CHANGE_TRUST_CANNOT_DELETE =
+//           -7, // Asset trustline is still referenced in a pool
+//       CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES =
+//           -8 // Asset trustline is deauthorized
 //   };
 //
 // ===========================================================================
@@ -5206,10 +5215,10 @@ xdr.union("ChangeTrustResult", {
 //       ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
 //                                       // source account does not require trust
 //       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-//       ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
+//       ALLOW_TRUST_CANT_REVOKE = -4,      // source account can't revoke trust,
 //       ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
-//       ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
-//                                    // on revoke due to low reserves
+//       ALLOW_TRUST_LOW_RESERVE = -6       // claimable balances can't be created
+//                                          // on revoke due to low reserves
 //   };
 //
 // ===========================================================================
@@ -5828,8 +5837,7 @@ xdr.enum("LiquidityPoolDepositResultCode", {
 
 // === xdr source ============================================================
 //
-//   union LiquidityPoolDepositResult switch (
-//       LiquidityPoolDepositResultCode code)
+//   union LiquidityPoolDepositResult switch (LiquidityPoolDepositResultCode code)
 //   {
 //   case LIQUIDITY_POOL_DEPOSIT_SUCCESS:
 //       void;
@@ -5857,14 +5865,14 @@ xdr.union("LiquidityPoolDepositResult", {
 //       LIQUIDITY_POOL_WITHDRAW_SUCCESS = 0,
 //   
 //       // codes considered as "failure" for the operation
-//       LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,      // bad input
-//       LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,       // no trust line for one of the
-//                                                    // assets
-//       LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED = -3,    // not enough balance of the
-//                                                    // pool share
-//       LIQUIDITY_POOL_WITHDRAW_LINE_FULL = -4,      // would go above limit for one
-//                                                    // of the assets
-//       LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM = -5   // didn't withdraw enough
+//       LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,    // bad input
+//       LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,     // no trust line for one of the
+//                                                  // assets
+//       LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED = -3,  // not enough balance of the
+//                                                  // pool share
+//       LIQUIDITY_POOL_WITHDRAW_LINE_FULL = -4,    // would go above limit for one
+//                                                  // of the assets
+//       LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM = -5 // didn't withdraw enough
 //   };
 //
 // ===========================================================================
@@ -5879,8 +5887,7 @@ xdr.enum("LiquidityPoolWithdrawResultCode", {
 
 // === xdr source ============================================================
 //
-//   union LiquidityPoolWithdrawResult switch (
-//       LiquidityPoolWithdrawResultCode code)
+//   union LiquidityPoolWithdrawResult switch (LiquidityPoolWithdrawResultCode code)
 //   {
 //   case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
 //       void;
@@ -6135,7 +6142,9 @@ xdr.union("OperationResult", {
 //       txNOT_SUPPORTED = -12,         // transaction type not supported
 //       txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
 //       txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
-//       txBAD_MIN_SEQ_AGE_OR_GAP = -15 //minSeqAge or minSeqLedgerGap conditions not met
+//       txBAD_MIN_SEQ_AGE_OR_GAP =
+//           -15, // minSeqAge or minSeqLedgerGap conditions not met
+//       txMALFORMED = -16 // precondition is invalid
 //   };
 //
 // ===========================================================================
@@ -6157,6 +6166,7 @@ xdr.enum("TransactionResultCode", {
   txFeeBumpInnerFailed: -13,
   txBadSponsorship: -14,
   txBadMinSeqAgeOrGap: -15,
+  txMalformed: -16,
 });
 
 // === xdr source ============================================================
@@ -6181,6 +6191,7 @@ xdr.enum("TransactionResultCode", {
 //       // txFEE_BUMP_INNER_FAILED is not included
 //       case txBAD_SPONSORSHIP:
 //       case txBAD_MIN_SEQ_AGE_OR_GAP:
+//       case txMALFORMED:
 //           void;
 //       }
 //
@@ -6204,6 +6215,7 @@ xdr.union("InnerTransactionResultResult", {
     ["txNotSupported", xdr.void()],
     ["txBadSponsorship", xdr.void()],
     ["txBadMinSeqAgeOrGap", xdr.void()],
+    ["txMalformed", xdr.void()],
   ],
   arms: {
     results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
@@ -6256,6 +6268,7 @@ xdr.union("InnerTransactionResultExt", {
 //       // txFEE_BUMP_INNER_FAILED is not included
 //       case txBAD_SPONSORSHIP:
 //       case txBAD_MIN_SEQ_AGE_OR_GAP:
+//       case txMALFORMED:
 //           void;
 //       }
 //       result;
@@ -6419,9 +6432,10 @@ xdr.typedef("Int64", xdr.hyper());
 
 // === xdr source ============================================================
 //
-//   union ExtensionPoint switch (int v) {
+//   union ExtensionPoint switch (int v)
+//   {
 //   case 0:
-//        void;
+//       void;
 //   };
 //
 // ===========================================================================
@@ -6509,7 +6523,8 @@ xdr.union("PublicKey", {
 
 // === xdr source ============================================================
 //
-//   struct {
+//   struct
+//       {
 //           /* Public key that must sign the payload. */
 //           uint256 ed25519;
 //           /* Payload to be raw signed by ed25519. */
@@ -6535,7 +6550,8 @@ xdr.struct("SignerKeyEd25519SignedPayload", [
 //       /* Hash of random 256 bit preimage X */
 //       uint256 hashX;
 //   case SIGNER_KEY_TYPE_ED25519_SIGNED_PAYLOAD:
-//       struct {
+//       struct
+//       {
 //           /* Public key that must sign the payload. */
 //           uint256 ed25519;
 //           /* Payload to be raw signed by ed25519. */

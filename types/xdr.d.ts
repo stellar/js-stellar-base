@@ -1,8 +1,4 @@
-// The type definitions inside the namespace xdr were automatically generated on
-// 2022-03-31T12:45:43-07:00 using https://github.com/stellar/dts-xdr.
-//
-// DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
-
+// Automatically generated on 2022-04-11T10:56:25-07:00
 import { Operation } from './index';
 
 export {};
@@ -1518,7 +1514,8 @@ export namespace xdr {
       | 'txNotSupported'
       | 'txFeeBumpInnerFailed'
       | 'txBadSponsorship'
-      | 'txBadMinSeqAgeOrGap';
+      | 'txBadMinSeqAgeOrGap'
+      | 'txMalformed';
 
     readonly value:
       | 1
@@ -1537,7 +1534,8 @@ export namespace xdr {
       | -12
       | -13
       | -14
-      | -15;
+      | -15
+      | -16;
 
     static txFeeBumpInnerSuccess(): TransactionResultCode;
 
@@ -1572,6 +1570,8 @@ export namespace xdr {
     static txBadSponsorship(): TransactionResultCode;
 
     static txBadMinSeqAgeOrGap(): TransactionResultCode;
+
+    static txMalformed(): TransactionResultCode;
   }
 
   class CryptoKeyType {
@@ -9119,6 +9119,8 @@ export namespace xdr {
     static txBadSponsorship(): InnerTransactionResultResult;
 
     static txBadMinSeqAgeOrGap(): InnerTransactionResultResult;
+
+    static txMalformed(): InnerTransactionResultResult;
 
     value(): OperationResult[] | void;
 
