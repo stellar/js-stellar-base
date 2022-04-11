@@ -659,15 +659,13 @@ describe('Transaction', function() {
         expect(tx.timeBounds.minTime).to.equal(expMin);
         expect(tx.timeBounds.maxTime).to.equal(expMax);
 
-        const txe = tx
+        const tb = tx
           .toEnvelope()
           .v1()
-          .tx();
-        expect(txe.cond().switch()).to.equal(
-          StellarBase.xdr.PreconditionType.precondTime()
-        );
+          .tx()
+          .cond()
+          .timeBounds();
 
-        const tb = txe.cond().timeBounds();
         expect(tb.minTime().toString()).to.equal(expMin);
         expect(tb.maxTime().toString()).to.equal(expMax);
       });
@@ -679,15 +677,12 @@ describe('Transaction', function() {
         expect(tx.timeBounds.minTime).to.eql('5');
         expect(tx.timeBounds.maxTime).to.eql('10');
 
-        const txe = tx
+        const tb = tx
           .toEnvelope()
           .v1()
-          .tx();
-        expect(txe.cond().switch()).to.equal(
-          StellarBase.xdr.PreconditionType.precondTime()
-        );
-
-        const tb = txe.cond().timeBounds();
+          .tx()
+          .cond()
+          .timeBounds();
         expect(tb.minTime().toString()).to.equal('5');
         expect(tb.maxTime().toString()).to.equal('10');
       });
@@ -702,15 +697,10 @@ describe('Transaction', function() {
       expect(tx.ledgerBounds.minLedger).to.equal(5);
       expect(tx.ledgerBounds.maxLedger).to.equal(10);
 
-      const txe = tx
+      const lb = tx
         .toEnvelope()
         .v1()
-        .tx();
-      expect(txe.cond().switch()).to.equal(
-        StellarBase.xdr.PreconditionType.precondV2()
-      );
-
-      const lb = txe
+        .tx()
         .cond()
         .v2()
         .ledgerBounds();
@@ -725,15 +715,10 @@ describe('Transaction', function() {
         .build();
       expect(tx.minAccountSequence).to.eql('5');
 
-      const txe = tx
+      const val = tx
         .toEnvelope()
         .v1()
-        .tx();
-      expect(txe.cond().switch()).to.equal(
-        StellarBase.xdr.PreconditionType.precondV2()
-      );
-
-      const val = txe
+        .tx()
         .cond()
         .v2()
         .minSeqNum();
@@ -747,15 +732,10 @@ describe('Transaction', function() {
         .build();
       expect(tx.minAccountSequenceAge.toString()).to.equal('5');
 
-      const txe = tx
+      const val = tx
         .toEnvelope()
         .v1()
-        .tx();
-      expect(txe.cond().switch()).to.equal(
-        StellarBase.xdr.PreconditionType.precondV2()
-      );
-
-      const val = txe
+        .tx()
         .cond()
         .v2()
         .minSeqAge();
@@ -769,15 +749,10 @@ describe('Transaction', function() {
         .build();
       expect(tx.minAccountSequenceLedgerGap).to.equal(5);
 
-      const txe = tx
+      const val = tx
         .toEnvelope()
         .v1()
-        .tx();
-      expect(txe.cond().switch()).to.equal(
-        StellarBase.xdr.PreconditionType.precondV2()
-      );
-
-      const val = txe
+        .tx()
         .cond()
         .v2()
         .minSeqLedgerGap();
@@ -794,15 +769,10 @@ describe('Transaction', function() {
         tx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)
       ).to.eql([address]);
 
-      const txe = tx
+      const signers = tx
         .toEnvelope()
         .v1()
-        .tx();
-      expect(txe.cond().switch()).to.equal(
-        StellarBase.xdr.PreconditionType.precondV2()
-      );
-
-      const signers = txe
+        .tx()
         .cond()
         .v2()
         .extraSigners();
