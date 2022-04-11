@@ -136,6 +136,7 @@ export class Keypair {
   canSign(): boolean;
   sign(data: Buffer): Buffer;
   signDecorated(data: Buffer): xdr.DecoratedSignature;
+  signPayloadDecorated(data: Buffer): xdr.DecoratedSignature;
   signatureHint(): Buffer;
   verify(data: Buffer, signature: Buffer): boolean;
 
