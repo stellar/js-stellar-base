@@ -6,11 +6,15 @@
 
 ## [v8.0.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0)
 
-**This release adds support for Protocol 19.**
+**This release adds support for Protocol 19**, which includes [CAP-21](https://stellar.org/protocol/cap-21) (new transaction preconditions) and [CAP-40](https://stellar.org/protocol/cap-40) (signed payload signers).
 
 ### Breaking
 
 As of this release, the minimum supported version of NodeJS is **14.x**.
+
+- Two XDR types have been renamed:
+  * `xdr.OperationId` is now `xdr.HashIdPreimage`
+  * `xdr.OperationIdId` is now `xdr.HashIdPreimageOperationId`
 
 ### Add
 
