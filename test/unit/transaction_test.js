@@ -654,12 +654,20 @@ describe('Transaction', function() {
         let tx = makeBuilder()
           .setTimebounds(now, now)
           .build();
-        expect(tx.timeBounds.minTime).to.eql(
-          `${Math.floor(now.valueOf() / 1000)}`
-        );
-        expect(tx.timeBounds.maxTime).to.eql(
-          `${Math.floor(now.valueOf() / 1000)}`
-        );
+        const expMin = `${Math.floor(now.valueOf() / 1000)}`;
+        const expMax = `${Math.floor(now.valueOf() / 1000)}`;
+        expect(tx.timeBounds.minTime).to.equal(expMin);
+        expect(tx.timeBounds.maxTime).to.equal(expMax);
+
+        const tb = tx
+          .toEnvelope()
+          .v1()
+          .tx()
+          .cond()
+          .timeBounds();
+
+        expect(tb.minTime().toString()).to.equal(expMin);
+        expect(tb.maxTime().toString()).to.equal(expMax);
       });
 
       it('number', function() {
@@ -668,6 +676,15 @@ describe('Transaction', function() {
           .build();
         expect(tx.timeBounds.minTime).to.eql('5');
         expect(tx.timeBounds.maxTime).to.eql('10');
+
+        const tb = tx
+          .toEnvelope()
+          .v1()
+          .tx()
+          .cond()
+          .timeBounds();
+        expect(tb.minTime().toString()).to.equal('5');
+        expect(tb.maxTime().toString()).to.equal('10');
       });
     });
 
@@ -679,6 +696,16 @@ describe('Transaction', function() {
 
       expect(tx.ledgerBounds.minLedger).to.equal(5);
       expect(tx.ledgerBounds.maxLedger).to.equal(10);
+
+      const lb = tx
+        .toEnvelope()
+        .v1()
+        .tx()
+        .cond()
+        .v2()
+        .ledgerBounds();
+      expect(lb.minLedger()).to.equal(5);
+      expect(lb.maxLedger()).to.equal(10);
     });
 
     it('minAccountSequence', function() {
@@ -687,6 +714,15 @@ describe('Transaction', function() {
         .setMinAccountSequence('5')
         .build();
       expect(tx.minAccountSequence).to.eql('5');
+
+      const val = tx
+        .toEnvelope()
+        .v1()
+        .tx()
+        .cond()
+        .v2()
+        .minSeqNum();
+      expect(val.toString()).to.equal('5');
     });
 
     it('minAccountSequenceAge', function() {
@@ -694,8 +730,16 @@ describe('Transaction', function() {
         .setTimeout(5)
         .setMinAccountSequenceAge(5)
         .build();
-
       expect(tx.minAccountSequenceAge.toString()).to.equal('5');
+
+      const val = tx
+        .toEnvelope()
+        .v1()
+        .tx()
+        .cond()
+        .v2()
+        .minSeqAge();
+      expect(val.toString()).to.equal('5');
     });
 
     it('minAccountSequenceLedgerGap', function() {
@@ -704,6 +748,15 @@ describe('Transaction', function() {
         .setMinAccountSequenceLedgerGap(5)
         .build();
       expect(tx.minAccountSequenceLedgerGap).to.equal(5);
+
+      const val = tx
+        .toEnvelope()
+        .v1()
+        .tx()
+        .cond()
+        .v2()
+        .minSeqLedgerGap();
+      expect(val.toString()).to.equal('5');
     });
 
     it('extraSigners', function() {
@@ -715,6 +768,16 @@ describe('Transaction', function() {
       expect(
         tx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)
       ).to.eql([address]);
+
+      const signers = tx
+        .toEnvelope()
+        .v1()
+        .tx()
+        .cond()
+        .v2()
+        .extraSigners();
+      expect(signers).to.have.lengthOf(1);
+      expect(signers[0]).to.eql(StellarBase.SignerKey.decodeAddress(address));
     });
   });
 });
