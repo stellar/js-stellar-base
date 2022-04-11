@@ -358,6 +358,40 @@ describe('StrKey', function() {
         expect(str).to.equal(testCase.strkey);
       });
     });
+
+    describe('payload bounds', function() {
+      let sp = new StellarBase.xdr.SignerKeyEd25519SignedPayload({
+        ed25519: StellarBase.StrKey.decodeEd25519PublicKey(
+          'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ'
+        ),
+        payload: Buffer.alloc(0)
+      });
+      const isValid = (sp) => {
+        return StellarBase.StrKey.isValidSignedPayload(
+          StellarBase.StrKey.encodeSignedPayload(sp.toXDR('raw'))
+        );
+      };
+
+      it('invalid with no payload', function() {
+        sp.payload(Buffer.alloc(0));
+        expect(isValid(sp)).to.be.false;
+      });
+
+      it('valid with 1-byte payload', function() {
+        sp.payload(Buffer.alloc(1));
+        expect(isValid(sp)).to.be.true;
+      });
+
+      it('throws with 65-byte payload', function() {
+        sp.payload(Buffer.alloc(65));
+        expect(() => isValid(sp)).to.throw(/XDR Write Error/);
+      });
+
+      it('valid with 64-byte payload (max)', function() {
+        sp.payload(Buffer.alloc(64));
+        expect(isValid(sp)).to.be.true;
+      });
+    });
   });
 
   describe('#invalidStrKeys', function() {
