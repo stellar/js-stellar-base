@@ -15,6 +15,8 @@
 
 ### Fix
 
+- Correct a TypeScript definition on the `RevokeLiquidityPoolSponsorship` operation ([#522](https://github.com/stellar/js-stellar-base/pull/522)).
+
 - Resolves a bug that incorrectly sorted `Asset`s with mixed-case asset codes (it preferred lowercase codes incorrectly) ([#516](https://github.com/stellar/js-stellar-base/pull/516)).
 
 - Update developer dependencies:

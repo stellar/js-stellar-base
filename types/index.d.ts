@@ -747,7 +747,7 @@ export namespace Operation {
   ): xdr.Operation<RevokeClaimableBalanceSponsorship>;
 
   interface RevokeLiquidityPoolSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
-    balanceId: string;
+    liquidityPoolId: string;
   }
   function revokeLiquidityPoolSponsorship(
     options: OperationOptions.RevokeLiquidityPoolSponsorship
