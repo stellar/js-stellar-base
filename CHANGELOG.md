@@ -3,7 +3,14 @@
 
 ## Unreleased
 
-**Note:** As of this release, the minimum supported version of NodeJS is **14.x**.
+
+## [v8.0.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0)
+
+**This release adds support for Protocol 19.**
+
+### Breaking
+
+As of this release, the minimum supported version of NodeJS is **14.x**.
 
 ### Add
 
