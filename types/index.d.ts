@@ -136,6 +136,7 @@ export class Keypair {
   canSign(): boolean;
   sign(data: Buffer): Buffer;
   signDecorated(data: Buffer): xdr.DecoratedSignature;
+  signPayloadDecorated(data: Buffer): xdr.DecoratedSignature;
   signatureHint(): Buffer;
   verify(data: Buffer, signature: Buffer): boolean;
 
@@ -846,22 +847,26 @@ export type Operation =
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
-  function decodeEd25519PublicKey(data: string): Buffer;
+  function decodeEd25519PublicKey(address: string): Buffer;
   function isValidEd25519PublicKey(Key: string): boolean;
 
   function encodeEd25519SecretSeed(data: Buffer): string;
-  function decodeEd25519SecretSeed(data: string): Buffer;
+  function decodeEd25519SecretSeed(address: string): Buffer;
   function isValidEd25519SecretSeed(seed: string): boolean;
 
   function encodeMed25519PublicKey(data: Buffer): string;
-  function decodeMed25519PublicKey(data: string): Buffer;
+  function decodeMed25519PublicKey(address: string): Buffer;
   function isValidMed25519PublicKey(publicKey: string): boolean;
 
+  function encodeSignedPayload(data: Buffer): string;
+  function decodeSignedPayload(address: string): Buffer;
+  function isValidSignedPayload(address: string): boolean;
+
   function encodePreAuthTx(data: Buffer): string;
-  function decodePreAuthTx(data: string): Buffer;
+  function decodePreAuthTx(address: string): Buffer;
 
   function encodeSha256Hash(data: Buffer): string;
-  function decodeSha256Hash(data: string): Buffer;
+  function decodeSha256Hash(address: string): Buffer;
 }
 
 export class TransactionI {
@@ -918,6 +923,12 @@ export class TransactionBuilder {
   addOperation(operation: xdr.Operation): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
+  setTimebounds(min: Date | number, max: Date | number): this;
+  setLedgerbounds(minLedger: number, maxLedger: number): this;
+  setMinAccountSequence(minAccountSequence: string): this;
+  setMinAccountSequenceAge(durationInSeconds: number): this;
+  setMinAccountSequenceLedgerGap(gap: number): this;
+  setExtraSigners(extraSigners: xdr.SignerKey[]): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(
@@ -939,6 +950,14 @@ export namespace TransactionBuilder {
       minTime?: number | string;
       maxTime?: number | string;
     };
+    ledgerbounds?: {
+      minLedger?: number;
+      maxLedger?: number;
+    };
+    minAccountSequence?: string;
+    minAccountSequenceAge?: number;
+    minAccountSequenceLedgerGap?: number;
+    extraSigners?: xdr.SignerKey[];
     memo?: Memo;
     networkPassphrase?: string;
     v1?: boolean;

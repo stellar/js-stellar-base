@@ -44,7 +44,7 @@ describe('FeeBumpTransaction', function() {
     );
   });
 
-  it('constructs a FeeBumTransaction object from a TransactionEnvelope', function() {
+  it('constructs a FeeBumpTransaction object from a TransactionEnvelope', function() {
     const transaction = this.transaction;
     transaction.sign(this.feeSource);
 

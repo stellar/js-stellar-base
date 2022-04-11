@@ -145,3 +145,54 @@ describe('Keypair.xdrMuxedAccount', function() {
     );
   });
 });
+
+describe('Keypair.sign*Decorated', function() {
+  describe('returning the correct hints', function() {
+    const secret = 'SDVSYBKP7ESCODJSNGVDNXAJB63NPS5GQXSBZXLNT2Y4YVUJCFZWODGJ';
+    const kp = StellarBase.Keypair.fromSecret(secret);
+
+    // Note: these were generated using the Go SDK as a source of truth
+    const CASES = [
+      {
+        data: [1, 2, 3, 4, 5, 6],
+        regular: [8, 170, 203, 16],
+        payload: [11, 174, 206, 22]
+      },
+      {
+        data: [1, 2],
+        regular: [8, 170, 203, 16],
+        payload: [9, 168, 203, 16]
+      },
+      {
+        data: [],
+        regular: [8, 170, 203, 16],
+        payload: [8, 170, 203, 16]
+      }
+    ];
+
+    CASES.forEach((testCase) => {
+      const data = testCase.data;
+      const sig = kp.sign(data);
+
+      it(`signedPayloads#${data.length}`, function() {
+        const expectedXdr = new StellarBase.xdr.DecoratedSignature({
+          hint: testCase.payload,
+          signature: sig
+        });
+
+        const decoSig = kp.signPayloadDecorated(data);
+        expect(decoSig.toXDR('hex')).to.eql(expectedXdr.toXDR('hex'));
+      });
+
+      it(`regular#${data.length}`, function() {
+        const expectedXdr = new StellarBase.xdr.DecoratedSignature({
+          hint: testCase.regular,
+          signature: sig
+        });
+
+        const decoSig = kp.signDecorated(data);
+        expect(decoSig.toXDR('hex')).to.eql(expectedXdr.toXDR('hex'));
+      });
+    });
+  });
+});

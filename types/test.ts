@@ -141,6 +141,12 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     })
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
+  .setTimebounds(Date.now(), Date.now() + 5000)
+  .setLedgerbounds(5, 10)
+  .setMinAccountSequence("5")
+  .setMinAccountSequenceAge(5)
+  .setMinAccountSequenceLedgerGap(5)
+  .setExtraSigners([new StellarSdk.xdr.SignerKey()])
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
 
 const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>
@@ -326,6 +332,10 @@ StellarSdk.StrKey.isValidEd25519SecretSeed(result);         // $ExpectType boole
 result = StellarSdk.StrKey.encodeMed25519PublicKey(muxkey);   // $ExpectType string
 StellarSdk.StrKey.decodeMed25519PublicKey(result);            // $ExpectType Buffer
 StellarSdk.StrKey.isValidMed25519PublicKey(result);           // $ExpectType boolean
+
+result = StellarSdk.StrKey.encodeSignedPayload(pubkey);   // $ExpectType string
+StellarSdk.StrKey.decodeSignedPayload(result);            // $ExpectType Buffer
+StellarSdk.StrKey.isValidSignedPayload(result);           // $ExpectType boolean
 
 const muxedAddr = StellarSdk.encodeMuxedAccountToAddress(muxed, true);  // $ExpectType string
 StellarSdk.decodeAddressToMuxedAccount(muxedAddr, true);                // $ExpectType MuxedAccount
