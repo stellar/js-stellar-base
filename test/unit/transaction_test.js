@@ -1,3 +1,4 @@
+import { UnsignedHyper } from 'js-xdr';
 import randomBytes from 'randombytes';
 
 describe('Transaction', function() {
@@ -632,6 +633,88 @@ describe('Transaction', function() {
       expect(() => tx.getClaimableBalanceId(1)).to.not.throw();
       expect(() => tx.getClaimableBalanceId(2)).to.throw(/index/);
       expect(() => tx.getClaimableBalanceId(-1)).to.throw(/index/);
+    });
+  });
+
+  describe('preconditions', function() {
+    const address = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+
+    const source = new StellarBase.Account(address, '1234');
+    const makeBuilder = function() {
+      return new StellarBase.TransactionBuilder(source, {
+        fee: StellarBase.BASE_FEE,
+        networkPassphrase: StellarBase.Networks.TESTNET,
+        withMuxing: true
+      });
+    };
+
+    describe('timebounds', function() {
+      it('Date', function() {
+        let now = new Date();
+        let tx = makeBuilder()
+          .setTimebounds(now, now)
+          .build();
+        expect(tx.timeBounds.minTime).to.eql(
+          `${Math.floor(now.valueOf() / 1000)}`
+        );
+        expect(tx.timeBounds.maxTime).to.eql(
+          `${Math.floor(now.valueOf() / 1000)}`
+        );
+      });
+
+      it('number', function() {
+        let tx = makeBuilder()
+          .setTimebounds(5, 10)
+          .build();
+        expect(tx.timeBounds.minTime).to.eql('5');
+        expect(tx.timeBounds.maxTime).to.eql('10');
+      });
+    });
+
+    it('ledgerbounds', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setLedgerbounds(5, 10)
+        .build();
+
+      expect(tx.ledgerBounds.minLedger).to.equal(5);
+      expect(tx.ledgerBounds.maxLedger).to.equal(10);
+    });
+
+    it('minAccountSequence', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequence('5')
+        .build();
+      expect(tx.minAccountSequence).to.eql('5');
+    });
+
+    it('minAccountSequenceAge', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequenceAge(5)
+        .build();
+
+      expect(tx.minAccountSequenceAge.toString()).to.equal('5');
+    });
+
+    it('minAccountSequenceLedgerGap', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequenceLedgerGap(5)
+        .build();
+      expect(tx.minAccountSequenceLedgerGap).to.equal(5);
+    });
+
+    it('extraSigners', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setExtraSigners([address])
+        .build();
+      expect(tx.extraSigners).to.have.lengthOf(1);
+      expect(
+        tx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)
+      ).to.eql([address]);
     });
   });
 });

@@ -1,7 +1,4 @@
-// The type definitions inside the namespace xdr were automatically generated on 2021-08-20T10:57:07-03:00
-// using https://github.com/stellar/dts-xdr.
-// DO NOT EDIT definitions inside the xdr namespace or your changes may be overwritten
-
+// Automatically generated on 2022-04-11T10:56:25-07:00
 import { Operation } from './index';
 
 export {};
@@ -374,15 +371,11 @@ export namespace xdr {
   }
 
   class ClaimableBalanceIdType {
-    readonly name:
-      | 'claimableBalanceIdTypeV0'
-      | 'claimableBalanceIdTypeFromPoolRevoke';
+    readonly name: 'claimableBalanceIdTypeV0';
 
-    readonly value: 0 | 1;
+    readonly value: 0;
 
     static claimableBalanceIdTypeV0(): ClaimableBalanceIdType;
-
-    static claimableBalanceIdTypeFromPoolRevoke(): ClaimableBalanceIdType;
   }
 
   class ClaimableBalanceFlags {
@@ -543,7 +536,8 @@ export namespace xdr {
       | 'getScpState'
       | 'hello'
       | 'surveyRequest'
-      | 'surveyResponse';
+      | 'surveyResponse'
+      | 'sendMore';
 
     readonly value:
       | 0
@@ -560,7 +554,8 @@ export namespace xdr {
       | 12
       | 13
       | 14
-      | 15;
+      | 15
+      | 16;
 
     static errorMsg(): MessageType;
 
@@ -591,6 +586,8 @@ export namespace xdr {
     static surveyRequest(): MessageType;
 
     static surveyResponse(): MessageType;
+
+    static sendMore(): MessageType;
   }
 
   class SurveyMessageCommandType {
@@ -750,6 +747,18 @@ export namespace xdr {
     static memoHash(): MemoType;
 
     static memoReturn(): MemoType;
+  }
+
+  class PreconditionType {
+    readonly name: 'precondNone' | 'precondTime' | 'precondV2';
+
+    readonly value: 0 | 1 | 2;
+
+    static precondNone(): PreconditionType;
+
+    static precondTime(): PreconditionType;
+
+    static precondV2(): PreconditionType;
   }
 
   class ClaimAtomType {
@@ -1504,7 +1513,9 @@ export namespace xdr {
       | 'txInternalError'
       | 'txNotSupported'
       | 'txFeeBumpInnerFailed'
-      | 'txBadSponsorship';
+      | 'txBadSponsorship'
+      | 'txBadMinSeqAgeOrGap'
+      | 'txMalformed';
 
     readonly value:
       | 1
@@ -1522,7 +1533,9 @@ export namespace xdr {
       | -11
       | -12
       | -13
-      | -14;
+      | -14
+      | -15
+      | -16;
 
     static txFeeBumpInnerSuccess(): TransactionResultCode;
 
@@ -1555,6 +1568,10 @@ export namespace xdr {
     static txFeeBumpInnerFailed(): TransactionResultCode;
 
     static txBadSponsorship(): TransactionResultCode;
+
+    static txBadMinSeqAgeOrGap(): TransactionResultCode;
+
+    static txMalformed(): TransactionResultCode;
   }
 
   class CryptoKeyType {
@@ -1562,15 +1579,18 @@ export namespace xdr {
       | 'keyTypeEd25519'
       | 'keyTypePreAuthTx'
       | 'keyTypeHashX'
+      | 'keyTypeEd25519SignedPayload'
       | 'keyTypeMuxedEd25519';
 
-    readonly value: 0 | 1 | 2 | 256;
+    readonly value: 0 | 1 | 2 | 3 | 256;
 
     static keyTypeEd25519(): CryptoKeyType;
 
     static keyTypePreAuthTx(): CryptoKeyType;
 
     static keyTypeHashX(): CryptoKeyType;
+
+    static keyTypeEd25519SignedPayload(): CryptoKeyType;
 
     static keyTypeMuxedEd25519(): CryptoKeyType;
   }
@@ -1587,15 +1607,18 @@ export namespace xdr {
     readonly name:
       | 'signerKeyTypeEd25519'
       | 'signerKeyTypePreAuthTx'
-      | 'signerKeyTypeHashX';
+      | 'signerKeyTypeHashX'
+      | 'signerKeyTypeEd25519SignedPayload';
 
-    readonly value: 0 | 1 | 2;
+    readonly value: 0 | 1 | 2 | 3;
 
     static signerKeyTypeEd25519(): SignerKeyType;
 
     static signerKeyTypePreAuthTx(): SignerKeyType;
 
     static signerKeyTypeHashX(): SignerKeyType;
+
+    static signerKeyTypeEd25519SignedPayload(): SignerKeyType;
   }
 
   type AccountId = PublicKey;
@@ -1609,6 +1632,8 @@ export namespace xdr {
   type SequenceNumber = Int64;
 
   type TimePoint = Uint64;
+
+  type Duration = Uint64;
 
   const DataValue: VarOpaque;
 
@@ -1783,6 +1808,43 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Signer;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Signer;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class AccountEntryExtensionV3 {
+    constructor(attributes: {
+      ext: ExtensionPoint;
+      seqLedger: number;
+      seqTime: TimePoint;
+    });
+
+    ext(value?: ExtensionPoint): ExtensionPoint;
+
+    seqLedger(value?: number): number;
+
+    seqTime(value?: TimePoint): TimePoint;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AccountEntryExtensionV3;
+
+    static write(value: AccountEntryExtensionV3, io: Buffer): void;
+
+    static isValid(value: AccountEntryExtensionV3): boolean;
+
+    static toXDR(value: AccountEntryExtensionV3): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV3;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AccountEntryExtensionV3;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3271,6 +3333,32 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Error;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Error;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class SendMore {
+    constructor(attributes: { numMessages: number });
+
+    numMessages(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SendMore;
+
+    static write(value: SendMore, io: Buffer): void;
+
+    static isValid(value: SendMore): boolean;
+
+    static toXDR(value: SendMore): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): SendMore;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): SendMore;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4855,7 +4943,7 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class OperationIdId {
+  class HashIdPreimageOperationId {
     constructor(attributes: {
       sourceAccount: AccountId;
       seqNum: SequenceNumber;
@@ -4872,24 +4960,27 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): OperationIdId;
+    static read(io: Buffer): HashIdPreimageOperationId;
 
-    static write(value: OperationIdId, io: Buffer): void;
+    static write(value: HashIdPreimageOperationId, io: Buffer): void;
 
-    static isValid(value: OperationIdId): boolean;
+    static isValid(value: HashIdPreimageOperationId): boolean;
 
-    static toXDR(value: OperationIdId): Buffer;
+    static toXDR(value: HashIdPreimageOperationId): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): OperationIdId;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimageOperationId;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): OperationIdId;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): HashIdPreimageOperationId;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class OperationIdRevokeId {
+  class HashIdPreimageRevokeId {
     constructor(attributes: {
       sourceAccount: AccountId;
       seqNum: SequenceNumber;
@@ -4912,20 +5003,20 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): OperationIdRevokeId;
+    static read(io: Buffer): HashIdPreimageRevokeId;
 
-    static write(value: OperationIdRevokeId, io: Buffer): void;
+    static write(value: HashIdPreimageRevokeId, io: Buffer): void;
 
-    static isValid(value: OperationIdRevokeId): boolean;
+    static isValid(value: HashIdPreimageRevokeId): boolean;
 
-    static toXDR(value: OperationIdRevokeId): Buffer;
+    static toXDR(value: HashIdPreimageRevokeId): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): OperationIdRevokeId;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimageRevokeId;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64'
-    ): OperationIdRevokeId;
+    ): HashIdPreimageRevokeId;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4954,6 +5045,77 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): TimeBounds;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): TimeBounds;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class LedgerBounds {
+    constructor(attributes: { minLedger: number; maxLedger: number });
+
+    minLedger(value?: number): number;
+
+    maxLedger(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerBounds;
+
+    static write(value: LedgerBounds, io: Buffer): void;
+
+    static isValid(value: LedgerBounds): boolean;
+
+    static toXDR(value: LedgerBounds): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerBounds;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerBounds;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class PreconditionsV2 {
+    constructor(attributes: {
+      timeBounds: null | TimeBounds;
+      ledgerBounds: null | LedgerBounds;
+      minSeqNum: null | SequenceNumber;
+      minSeqAge: Duration;
+      minSeqLedgerGap: number;
+      extraSigners: SignerKey[];
+    });
+
+    timeBounds(value?: null | TimeBounds): null | TimeBounds;
+
+    ledgerBounds(value?: null | LedgerBounds): null | LedgerBounds;
+
+    minSeqNum(value?: null | SequenceNumber): null | SequenceNumber;
+
+    minSeqAge(value?: Duration): Duration;
+
+    minSeqLedgerGap(value?: number): number;
+
+    extraSigners(value?: SignerKey[]): SignerKey[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): PreconditionsV2;
+
+    static write(value: PreconditionsV2, io: Buffer): void;
+
+    static isValid(value: PreconditionsV2): boolean;
+
+    static toXDR(value: PreconditionsV2): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): PreconditionsV2;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): PreconditionsV2;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5045,7 +5207,7 @@ export namespace xdr {
       sourceAccount: MuxedAccount;
       fee: number;
       seqNum: SequenceNumber;
-      timeBounds: null | TimeBounds;
+      cond: Preconditions;
       memo: Memo;
       operations: Operation[];
       ext: TransactionExt;
@@ -5057,7 +5219,7 @@ export namespace xdr {
 
     seqNum(value?: SequenceNumber): SequenceNumber;
 
-    timeBounds(value?: null | TimeBounds): null | TimeBounds;
+    cond(value?: Preconditions): Preconditions;
 
     memo(value?: Memo): Memo;
 
@@ -5628,6 +5790,40 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class SignerKeyEd25519SignedPayload {
+    constructor(attributes: { ed25519: Buffer; payload: Buffer });
+
+    ed25519(value?: Buffer): Buffer;
+
+    payload(value?: Buffer): Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): SignerKeyEd25519SignedPayload;
+
+    static write(value: SignerKeyEd25519SignedPayload, io: Buffer): void;
+
+    static isValid(value: SignerKeyEd25519SignedPayload): boolean;
+
+    static toXDR(value: SignerKeyEd25519SignedPayload): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): SignerKeyEd25519SignedPayload;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): SignerKeyEd25519SignedPayload;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class Curve25519Secret {
     constructor(attributes: { key: Buffer });
 
@@ -5805,9 +6001,13 @@ export namespace xdr {
   class AccountEntryExtensionV2Ext {
     switch(): number;
 
+    v3(value?: AccountEntryExtensionV3): AccountEntryExtensionV3;
+
     static 0(): AccountEntryExtensionV2Ext;
 
-    value(): void;
+    static 3(value: AccountEntryExtensionV3): AccountEntryExtensionV2Ext;
+
+    value(): AccountEntryExtensionV3 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6184,15 +6384,9 @@ export namespace xdr {
 
     v0(value?: Buffer): Buffer;
 
-    fromPoolRevoke(value?: Buffer): Buffer;
-
     static claimableBalanceIdTypeV0(value: Buffer): ClaimableBalanceId;
 
-    static claimableBalanceIdTypeFromPoolRevoke(
-      value: Buffer
-    ): ClaimableBalanceId;
-
-    value(): Buffer | Buffer;
+    value(): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -7048,6 +7242,8 @@ export namespace xdr {
 
     getScpLedgerSeq(value?: number): number;
 
+    sendMoreMessage(value?: SendMore): SendMore;
+
     static errorMsg(value: Error): StellarMessage;
 
     static hello(value: Hello): StellarMessage;
@@ -7078,6 +7274,8 @@ export namespace xdr {
 
     static getScpState(value: number): StellarMessage;
 
+    static sendMore(value: SendMore): StellarMessage;
+
     value():
       | Error
       | Hello
@@ -7093,6 +7291,7 @@ export namespace xdr {
       | ScpQuorumSet
       | ScpEnvelope
       | number
+      | SendMore
       | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -7519,34 +7718,36 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class OperationId {
+  class HashIdPreimage {
     switch(): EnvelopeType;
 
-    id(value?: OperationIdId): OperationIdId;
+    operationId(value?: HashIdPreimageOperationId): HashIdPreimageOperationId;
 
-    revokeId(value?: OperationIdRevokeId): OperationIdRevokeId;
+    revokeId(value?: HashIdPreimageRevokeId): HashIdPreimageRevokeId;
 
-    static envelopeTypeOpId(value: OperationIdId): OperationId;
+    static envelopeTypeOpId(value: HashIdPreimageOperationId): HashIdPreimage;
 
-    static envelopeTypePoolRevokeOpId(value: OperationIdRevokeId): OperationId;
+    static envelopeTypePoolRevokeOpId(
+      value: HashIdPreimageRevokeId
+    ): HashIdPreimage;
 
-    value(): OperationIdId | OperationIdRevokeId;
+    value(): HashIdPreimageOperationId | HashIdPreimageRevokeId;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): OperationId;
+    static read(io: Buffer): HashIdPreimage;
 
-    static write(value: OperationId, io: Buffer): void;
+    static write(value: HashIdPreimage, io: Buffer): void;
 
-    static isValid(value: OperationId): boolean;
+    static isValid(value: HashIdPreimage): boolean;
 
-    static toXDR(value: OperationId): Buffer;
+    static toXDR(value: HashIdPreimage): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): OperationId;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimage;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): OperationId;
+    static fromXDR(input: string, format: 'hex' | 'base64'): HashIdPreimage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7591,6 +7792,42 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Memo;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Memo;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class Preconditions {
+    switch(): PreconditionType;
+
+    timeBounds(value?: TimeBounds): TimeBounds;
+
+    v2(value?: PreconditionsV2): PreconditionsV2;
+
+    static precondNone(): Preconditions;
+
+    static precondTime(value: TimeBounds): Preconditions;
+
+    static precondV2(value: PreconditionsV2): Preconditions;
+
+    value(): TimeBounds | PreconditionsV2 | void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Preconditions;
+
+    static write(value: Preconditions, io: Buffer): void;
+
+    static isValid(value: Preconditions): boolean;
+
+    static toXDR(value: Preconditions): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Preconditions;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Preconditions;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -8881,6 +9118,10 @@ export namespace xdr {
 
     static txBadSponsorship(): InnerTransactionResultResult;
 
+    static txBadMinSeqAgeOrGap(): InnerTransactionResultResult;
+
+    static txMalformed(): InnerTransactionResultResult;
+
     value(): OperationResult[] | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -9016,6 +9257,34 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class ExtensionPoint {
+    switch(): number;
+
+    static 0(): ExtensionPoint;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ExtensionPoint;
+
+    static write(value: ExtensionPoint, io: Buffer): void;
+
+    static isValid(value: ExtensionPoint): boolean;
+
+    static toXDR(value: ExtensionPoint): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ExtensionPoint;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ExtensionPoint;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class PublicKey {
     switch(): PublicKeyType;
 
@@ -9055,13 +9324,21 @@ export namespace xdr {
 
     hashX(value?: Buffer): Buffer;
 
+    ed25519SignedPayload(
+      value?: SignerKeyEd25519SignedPayload
+    ): SignerKeyEd25519SignedPayload;
+
     static signerKeyTypeEd25519(value: Buffer): SignerKey;
 
     static signerKeyTypePreAuthTx(value: Buffer): SignerKey;
 
     static signerKeyTypeHashX(value: Buffer): SignerKey;
 
-    value(): Buffer | Buffer | Buffer;
+    static signerKeyTypeEd25519SignedPayload(
+      value: SignerKeyEd25519SignedPayload
+    ): SignerKey;
+
+    value(): Buffer | Buffer | Buffer | SignerKeyEd25519SignedPayload;
 
     toXDR(format?: 'raw'): Buffer;
 

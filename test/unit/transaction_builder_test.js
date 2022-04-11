@@ -601,7 +601,7 @@ describe('TransactionBuilder', function() {
         sourceAccountEd25519: sourceAccountEd25519,
         fee: v1Tx.fee(),
         seqNum: v1Tx.seqNum(),
-        timeBounds: v1Tx.timeBounds(),
+        timeBounds: v1Tx.cond().timeBounds(),
         memo: v1Tx.memo(),
         operations: v1Tx.operations(),
         ext: new StellarBase.xdr.TransactionV0Ext(0)

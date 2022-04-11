@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise */
+/* eslint no-bitwise: ["error", {"allow": ["<<"]}] */
 
 import base32 from 'base32.js';
 import crc from 'crc';
@@ -12,7 +12,17 @@ const versionBytes = {
   ed25519SecretSeed: 18 << 3, // S
   med25519PublicKey: 12 << 3, // M
   preAuthTx: 19 << 3, // T
-  sha256Hash: 23 << 3 // X
+  sha256Hash: 23 << 3, // X
+  signedPayload: 15 << 3 // P
+};
+
+const strkeyTypes = {
+  G: 'ed25519PublicKey',
+  S: 'ed25519SecretSeed',
+  M: 'med25519PublicKey',
+  T: 'preAuthTx',
+  X: 'sha256Hash',
+  P: 'signedPayload'
 };
 
 /**
@@ -64,11 +74,11 @@ export class StrKey {
 
   /**
    * Decodes strkey ed25519 seed to raw data.
-   * @param {string} data data to decode
+   * @param {string} address data to decode
    * @returns {Buffer}
    */
-  static decodeEd25519SecretSeed(data) {
-    return decodeCheck('ed25519SecretSeed', data);
+  static decodeEd25519SecretSeed(address) {
+    return decodeCheck('ed25519SecretSeed', address);
   }
 
   /**
@@ -91,11 +101,11 @@ export class StrKey {
 
   /**
    * Decodes strkey med25519 public key to raw data.
-   * @param {string} data data to decode
+   * @param {string} address data to decode
    * @returns {Buffer}
    */
-  static decodeMed25519PublicKey(data) {
-    return decodeCheck('med25519PublicKey', data);
+  static decodeMed25519PublicKey(address) {
+    return decodeCheck('med25519PublicKey', address);
   }
 
   /**
@@ -118,11 +128,11 @@ export class StrKey {
 
   /**
    * Decodes strkey PreAuthTx to raw data.
-   * @param {string} data data to decode
+   * @param {string} address data to decode
    * @returns {Buffer}
    */
-  static decodePreAuthTx(data) {
-    return decodeCheck('preAuthTx', data);
+  static decodePreAuthTx(address) {
+    return decodeCheck('preAuthTx', address);
   }
 
   /**
@@ -136,31 +146,118 @@ export class StrKey {
 
   /**
    * Decodes strkey sha256 hash to raw data.
-   * @param {string} data data to decode
+   * @param {string} address data to decode
    * @returns {Buffer}
    */
-  static decodeSha256Hash(data) {
-    return decodeCheck('sha256Hash', data);
+  static decodeSha256Hash(address) {
+    return decodeCheck('sha256Hash', address);
+  }
+
+  /**
+   * Encodes raw data to strkey signed payload (P...).
+   * @param   {Buffer} data  data to encode
+   * @returns {string}
+   */
+  static encodeSignedPayload(data) {
+    return encodeCheck('signedPayload', data);
+  }
+
+  /**
+   * Decodes strkey signed payload (P...) to raw data.
+   * @param   {string} address  address to decode
+   * @returns {Buffer}
+   */
+  static decodeSignedPayload(address) {
+    return decodeCheck('signedPayload', address);
+  }
+
+  /**
+   * Checks validity of alleged signed payload (P...) strkey address.
+   * @param   {string} address  signer key to check
+   * @returns {boolean}
+   */
+  static isValidSignedPayload(address) {
+    return isValid('signedPayload', address);
+  }
+
+  static getVersionByteForPrefix(address) {
+    return strkeyTypes[address[0]];
   }
 }
 
-// Warning: This isn't a *definitive* check of validity, but rather just a
-// basic-effort check.
+/**
+ * Sanity-checks whether or not a strkey *appears* valid.
+ *
+ * @param  {string}  versionByteName the type of strkey to expect in `encoded`
+ * @param  {string}  encoded         the strkey to validate
+ *
+ * @return {Boolean} whether or not the `encoded` strkey appears valid for the
+ *     `versionByteName` strkey type (see `versionBytes`, above).
+ *
+ * @note This isn't a *definitive* check of validity, but rather a best-effort
+ *     check based on (a) input length, (b) whether or not it can be decoded,
+ *     and (c) output length.
+ */
 function isValid(versionByteName, encoded) {
-  // it's either non-muxed && len=56, or muxed && len=69
-  if (encoded && encoded.length !== 56 && encoded.length !== 69) {
+  if (!isString(encoded)) {
     return false;
   }
 
-  try {
-    const decoded = decodeCheck(versionByteName, encoded);
-    if (decoded.length !== 32 && decoded.length !== 40) {
+  // basic length checks on the strkey lengths
+  switch (versionByteName) {
+    case 'ed25519PublicKey': // falls through
+    case 'ed25519SecretSeed': // falls through
+    case 'preAuthTx': // falls through
+    case 'sha256Hash':
+      if (encoded.length !== 56) {
+        return false;
+      }
+      break;
+
+    case 'med25519PublicKey':
+      if (encoded.length !== 69) {
+        return false;
+      }
+      break;
+
+    case 'signedPayload':
+      if (encoded.length < 56 || encoded.length > 165) {
+        return false;
+      }
+      break;
+
+    default:
       return false;
-    }
+  }
+
+  let decoded = '';
+  try {
+    decoded = decodeCheck(versionByteName, encoded);
   } catch (err) {
     return false;
   }
-  return true;
+
+  // basic length checks on the resulting buffer sizes
+  switch (versionByteName) {
+    case 'ed25519PublicKey': // falls through
+    case 'ed25519SecretSeed': // falls through
+    case 'preAuthTx': // falls through
+    case 'sha256Hash':
+      return decoded.length === 32;
+
+    case 'med25519PublicKey':
+      return decoded.length === 40; // +8 bytes for the ID
+
+    case 'signedPayload':
+      return (
+        // 32 for the signer, +4 for the payload size, then either +4 for the
+        // min or +64 for the max payload
+        decoded.length >= 32 + 4 + 4 && decoded.length <= 32 + 4 + 64
+      );
+
+    default:
+      return false;
+  }
 }
 
 export function decodeCheck(versionByteName, encoded) {
@@ -225,9 +322,8 @@ export function encodeCheck(versionByteName, data) {
   return base32.encode(unencoded);
 }
 
+// Computes the CRC16-XModem checksum of `payload` in little-endian order
 function calculateChecksum(payload) {
-  // This code calculates CRC16-XModem checksum of payload
-  // and returns it as Buffer in little-endian order.
   const checksum = Buffer.alloc(2);
   checksum.writeUInt16LE(crc.crc16xmodem(payload), 0);
   return checksum;

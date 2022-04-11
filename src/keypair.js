@@ -1,3 +1,5 @@
+/* eslint no-bitwise: ["error", {"allow": ["^"]}] */
+
 import nacl from 'tweetnacl';
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
@@ -235,5 +237,31 @@ export class Keypair {
     const hint = this.signatureHint();
 
     return new xdr.DecoratedSignature({ hint, signature });
+  }
+
+  /**
+   * Returns the signature hint for a signed payload signer.
+   *  This is defined as the last 4 bytes of the signer key XORed with last 4
+   *  bytes of the payload (zero-left-padded if necessary).
+   *
+   * @param  {Buffer} data    data to both sign and treat as the payload
+   * @return {xdr.DecoratedSignature}
+   *
+   * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0040.md#signature-hint
+   */
+  signPayloadDecorated(data) {
+    const signature = this.sign(data);
+    const keyHint = this.signatureHint();
+
+    let hint = Buffer.from(data.slice(-4));
+    if (hint.length < 4) {
+      // append zeroes as needed
+      hint = Buffer.concat([hint, Buffer.alloc(4 - data.length, 0)]);
+    }
+
+    return new xdr.DecoratedSignature({
+      hint: hint.map((byte, i) => byte ^ keyHint[i]),
+      signature
+    });
   }
 }

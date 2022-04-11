@@ -72,13 +72,59 @@ export class Transaction extends TransactionBase {
         break;
     }
 
-    const timeBounds = tx.timeBounds();
+    let cond = null;
+    let timeBounds = null;
+    switch (this._envelopeType) {
+      case xdr.EnvelopeType.envelopeTypeTxV0():
+        timeBounds = tx.timeBounds();
+        break;
+
+      case xdr.EnvelopeType.envelopeTypeTx():
+        switch (tx.cond().switch()) {
+          case xdr.PreconditionType.precondTime():
+            timeBounds = tx.cond().timeBounds();
+            break;
+
+          case xdr.PreconditionType.precondV2():
+            cond = tx.cond().v2();
+            timeBounds = cond.timeBounds();
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      default:
+        break;
+    }
+
     if (timeBounds) {
       this._timeBounds = {
         minTime: timeBounds.minTime().toString(),
         maxTime: timeBounds.maxTime().toString()
       };
     }
+
+    if (cond) {
+      const ledgerBounds = cond.ledgerBounds();
+      if (ledgerBounds) {
+        this._ledgerBounds = {
+          minLedger: ledgerBounds.minLedger(),
+          maxLedger: ledgerBounds.maxLedger()
+        };
+      }
+
+      const minSeq = cond.minSeqNum();
+      if (minSeq) {
+        this._minAccountSequence = minSeq.toString();
+      }
+
+      this._minAccountSequenceAge = cond.minSeqAge();
+      this._minAccountSequenceLedgerGap = cond.minSeqLedgerGap();
+      this._extraSigners = cond.extraSigners();
+    }
+
     const operations = tx.operations() || [];
     this._operations = map(operations, (op) => Operation.fromXDRObject(op));
   }
@@ -92,8 +138,64 @@ export class Transaction extends TransactionBase {
   get timeBounds() {
     return this._timeBounds;
   }
-
   set timeBounds(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {object}
+   * @property {number} minLedger - smallest ledger bound (uint32)
+   * @property {number} maxLedger - largest ledger bound (or 0 for inf)
+   * @readonly
+   */
+  get ledgerBounds() {
+    return this._ledgerBounds;
+  }
+  set ledgerBounds(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {string} 64 bit account sequence
+   * @readonly
+   */
+  get minAccountSequence() {
+    return this._minAccountSequence;
+  }
+  set minAccountSequence(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {number} 64 bit number of seconds
+   * @readonly
+   */
+  get minAccountSequenceAge() {
+    return this._minAccountSequenceAge;
+  }
+  set minAccountSequenceAge(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {number} 32 bit number of ledgers
+   * @readonly
+   */
+  get minAccountSequenceLedgerGap() {
+    return this._minAccountSequenceLedgerGap;
+  }
+  set minAccountSequenceLedgerGap(value) {
+    throw new Error('Transaction is immutable');
+  }
+
+  /**
+   * @type {string[]}   array of extra signers (@{link StrKey}s)
+   * @readonly
+   */
+  get extraSigners() {
+    return this._extraSigners;
+  }
+  set extraSigners(value) {
     throw new Error('Transaction is immutable');
   }
 
@@ -254,8 +356,8 @@ export class Transaction extends TransactionBase {
     const account = StrKey.decodeEd25519PublicKey(
       extractBaseAddress(this.source)
     );
-    const operationId = xdr.OperationId.envelopeTypeOpId(
-      new xdr.OperationIdId({
+    const operationId = xdr.HashIdPreimage.envelopeTypeOpId(
+      new xdr.HashIdPreimageOperationId({
         sourceAccount: xdr.AccountId.publicKeyTypeEd25519(account),
         seqNum: new xdr.SequenceNumber(this.sequence),
         opNum: opIndex
