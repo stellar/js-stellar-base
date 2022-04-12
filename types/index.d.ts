@@ -869,6 +869,11 @@ export namespace StrKey {
   function decodeSha256Hash(address: string): Buffer;
 }
 
+export namespace SignerKey {
+  function decodeAddress(address: string): xdr.SignerKey;
+  function encodeSignerKey(signerKey: xdr.SignerKey): string;
+}
+
 export class TransactionI {
   addSignature(publicKey: string, signature: string): void;
   fee: string;
@@ -908,6 +913,14 @@ export class Transaction<
     minTime: string;
     maxTime: string;
   };
+  ledgerBounds?: {
+    minLedger: number;
+    maxLedger: number;
+  };
+  minAccountSequence?: string;
+  minAccountSequenceAge?: number;
+  minAccountSequenceLedgerGap?: number;
+  extraSigners?: string[];
 
   getClaimableBalanceId(opIndex: number): string;
 }
@@ -928,7 +941,7 @@ export class TransactionBuilder {
   setMinAccountSequence(minAccountSequence: string): this;
   setMinAccountSequenceAge(durationInSeconds: number): this;
   setMinAccountSequenceLedgerGap(gap: number): this;
-  setExtraSigners(extraSigners: xdr.SignerKey[]): this;
+  setExtraSigners(extraSigners: string[]): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(
@@ -947,8 +960,8 @@ export namespace TransactionBuilder {
   interface TransactionBuilderOptions {
     fee: string;
     timebounds?: {
-      minTime?: number | string;
-      maxTime?: number | string;
+      minTime?: Date | number | string;
+      maxTime?: Date | number | string;
     };
     ledgerbounds?: {
       minLedger?: number;
@@ -957,7 +970,7 @@ export namespace TransactionBuilder {
     minAccountSequence?: string;
     minAccountSequenceAge?: number;
     minAccountSequenceLedgerGap?: number;
-    extraSigners?: xdr.SignerKey[];
+    extraSigners?: string[];
     memo?: Memo;
     networkPassphrase?: string;
     v1?: boolean;
