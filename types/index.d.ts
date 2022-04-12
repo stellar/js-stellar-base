@@ -973,7 +973,6 @@ export namespace TransactionBuilder {
     extraSigners?: string[];
     memo?: Memo;
     networkPassphrase?: string;
-    v1?: boolean;
   }
 }
 
