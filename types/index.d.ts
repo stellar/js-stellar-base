@@ -959,6 +959,9 @@ export class TransactionBuilder {
 export namespace TransactionBuilder {
   interface TransactionBuilderOptions {
     fee: string;
+    memo?: Memo;
+    networkPassphrase?: string;
+    // preconditions:
     timebounds?: {
       minTime?: Date | number | string;
       maxTime?: Date | number | string;
@@ -971,8 +974,6 @@ export namespace TransactionBuilder {
     minAccountSequenceAge?: number;
     minAccountSequenceLedgerGap?: number;
     extraSigners?: string[];
-    memo?: Memo;
-    networkPassphrase?: string;
   }
 }
 
