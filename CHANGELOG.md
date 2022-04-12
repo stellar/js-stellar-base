@@ -4,9 +4,11 @@
 ## Unreleased
 
 
-## [v8.0.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0)
+## [v8.0.0-beta.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0-beta.0)
 
 **This release adds support for Protocol 19**, which includes [CAP-21](https://stellar.org/protocol/cap-21) (new transaction preconditions) and [CAP-40](https://stellar.org/protocol/cap-40) (signed payload signers).
+
+This is considered a beta release until the XDR for the Stellar protocol stabilizes and is officially released.
 
 ### Breaking
 
