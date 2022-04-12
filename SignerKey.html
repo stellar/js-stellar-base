@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>operations/manage_data.js - Documentation</title>
+    <title>SignerKey - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,66 +29,465 @@
 
 <div id="main">
     
-    <h1 class="page-title">operations/manage_data.js</h1>
+    <h1 class="page-title">SignerKey</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import isString from 'lodash/isString';
-import xdr from '../generated/stellar-xdr_generated';
+        <h2>
+        SignerKey
+        </h2>
+        
+            <div class="class-description"><p>A container class with helpers to convert between signer keys
+(<code>xdr.SignerKey</code>) and <a href="StrKey.html">StrKey</a>s.</p>
+<p>It's primarly used for manipulating the <code>extraSigners</code> precondition on a
+<a href="Transaction.html">Transaction</a>.</p></div>
+        
+    
+</header>
 
-/**
- * This operation adds data entry to the ledger.
- * @function
- * @alias Operation.manageData
- * @param {object} opts Options object
- * @param {string} opts.name - The name of the data entry.
- * @param {string|Buffer} opts.value - The value of the data entry.
- * @param {string} [opts.source] - The optional source account.
- * @returns {xdr.ManageDataOp} Manage Data operation
- */
-export function manageData(opts) {
-  const attributes = {};
+<article>
+    <div class="container-overview">
+    
+        
+<div class="section-method">
 
-  if (!(isString(opts.name) &amp;&amp; opts.name.length &lt;= 64)) {
-    throw new Error('name must be a string, up to 64 characters');
-  }
-  attributes.dataName = opts.name;
+    
+    <h2>Constructor</h2>
+    
 
-  if (
-    !isString(opts.value) &amp;&amp;
-    !Buffer.isBuffer(opts.value) &amp;&amp;
-    opts.value !== null
-  ) {
-    throw new Error('value must be a string, Buffer or null');
-  }
+    <h4 class="name" id="SignerKey"><span class="type-signature"></span>new SignerKey<span class="signature">()</span><span class="type-signature"></span></h4>
 
-  if (isString(opts.value)) {
-    attributes.dataValue = Buffer.from(opts.value);
-  } else {
-    attributes.dataValue = opts.value;
-  }
+    
 
-  if (attributes.dataValue !== null &amp;&amp; attributes.dataValue.length > 64) {
-    throw new Error('value cannot be longer that 64 bytes');
-  }
 
-  const manageDataOp = new xdr.ManageDataOp(attributes);
 
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.manageData(manageDataOp);
-  this.setSourceAccount(opAttributes, opts);
 
-  return new xdr.Operation(opAttributes);
-}
-</code></pre>
-        </article>
-    </section>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="signerkey.js.html">signerkey.js</a>, <a href="signerkey.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>TransactionBuilder.setExtraSigners</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".decodeAddress"><span class="type-signature">(static) </span>decodeAddress<span class="signature">(address)</span><span class="type-signature"> &rarr; {xdr.SignerKey}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Decodes a StrKey address into an xdr.SignerKey instance.</p>
+<p>Only ED25519 public keys (G...), pre-auth transactions (T...), hashes
+(H...), and signed payloads (P...) can be signer keys.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="signerkey.js.html">signerkey.js</a>, <a href="signerkey.js.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>address</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>a StrKey-encoded signer address</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>xdr.SignerKey</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".encodeSignerKey"><span class="type-signature">(static) </span>encodeSignerKey<span class="signature">(signerKey)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Encodes a signer key into its StrKey equivalent.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="signerkey.js.html">signerkey.js</a>, <a href="signerkey.js.html#line61">line 61</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>signerKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>xdr.SignerKey</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>the signer</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>string</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    <p>the StrKey representation of the signer</p>
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
