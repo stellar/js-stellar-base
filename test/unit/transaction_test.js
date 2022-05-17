@@ -607,6 +607,19 @@ describe('Transaction', function() {
       );
     });
 
+    // See https://github.com/stellar/js-stellar-base/issues/529
+    it('calculates from transaction src (big number sequence)', function() {
+      let gSource = new StellarBase.Account(address, '114272277834498050');
+
+      let tx = makeBuilder(gSource)
+        .addOperation(makeClaimableBalance())
+        .build();
+      const balanceId = tx.getClaimableBalanceId(0);
+      expect(balanceId).to.be.equal(
+        '000000001cd1e39f422a864b4efca661e11ffaa1c54e69b23aaf096e0cfd361bb4a275bf'
+      );
+    });
+
     it('calculates from muxed transaction src as if unmuxed', function() {
       let gSource = new StellarBase.Account(address, '1234');
       let mSource = new StellarBase.MuxedAccount(gSource, '5678');
