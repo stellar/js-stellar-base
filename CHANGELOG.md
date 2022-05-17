@@ -4,6 +4,13 @@
 ## Unreleased
 
 
+## [v8.0.1](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
+
+### Fix
+
+- Correctly predict claimable balance IDs with large sequence numbers ([#530](https://github.com/stellar/js-stellar-base/pull/530), thank you @overcat!).
+
+
 ## [v8.0.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0)
 
 This is a promotion from the beta version without changes, now that the CAP-21 and CAP-40 implementations have made it into [stellar/stellar-core#master](https://github.com/stellar/stellar-core/tree/master/).
