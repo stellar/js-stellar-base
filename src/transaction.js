@@ -359,7 +359,7 @@ export class Transaction extends TransactionBase {
     const operationId = xdr.HashIdPreimage.envelopeTypeOpId(
       new xdr.HashIdPreimageOperationId({
         sourceAccount: xdr.AccountId.publicKeyTypeEd25519(account),
-        seqNum: new xdr.SequenceNumber(this.sequence),
+        seqNum: xdr.SequenceNumber.fromString(this.sequence),
         opNum: opIndex
       })
     );
