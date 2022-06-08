@@ -3,6 +3,12 @@
 
 ## Unreleased
 
+### Add
+
+- This adds a helper function for managing signed payloads (introduced in [CAP-40](https://stellar.org/protocol/cap-40) and [v8.0.0](#v8.0.0) of this library):
+
+  * `SignerKey.encodeSignedPayloadFromAddress` is a convenient way to create a signed payload signer (`P...` address) from a Stellar account acting as the signer (`G...`) and a raw payload.
+
 ### Fix
 
 - This allows signed payload signers to be modified with `Operation.setOptions`:

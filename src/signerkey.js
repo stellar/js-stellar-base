@@ -89,4 +89,23 @@ export class SignerKey {
 
     return encodeCheck(strkeyType, raw);
   }
+
+  /**
+   * Creates a signed payload address (P...) from a signer (G...) and a payload.
+   *
+   * @param  {string} address  the signer of the signed payload, as a StrKey (G...)
+   * @param  {Buffer} payload  the raw payload that was signed
+   *
+   * @returns {string}   the StrKey-encoded signed payload address (P...)
+   */
+  static encodeSignedPayloadFromAddress(address, payload) {
+    return SignerKey.encodeSignerKey(
+      xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
+        new xdr.SignerKeyEd25519SignedPayload({
+          ed25519: StrKey.decodeEd25519PublicKey(address),
+          payload
+        })
+      )
+    );
+  }
 }

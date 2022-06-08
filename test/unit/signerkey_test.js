@@ -35,6 +35,47 @@ describe('SignerKey', function() {
     });
   });
 
+  describe('signed payloads', function() {
+    const SIGNER = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+    const TEST_CASES = [
+      // generated via the Go SDK
+      {
+        payload: Buffer.from('hello world', 'ascii'),
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAFWQZLMNRXSA53POJWGIADD24'
+      },
+      {
+        payload: Buffer.from('', 'ascii'),
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAKH4Y'
+      },
+      {
+        payload: Buffer.from('1', 'ascii'),
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAATCAAAABIRA'
+      },
+      {
+        payload: Buffer.from(
+          'Here is a payload; its length is the maximum length of 64 bytes!',
+          'ascii'
+        ),
+        strkey:
+          'PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAABAEQZLSMUQGS4ZAMEQHAYLZNRXWCZB3EBUXI4ZANRSW4Z3UNAQGS4ZAORUGKIDNMF4GS3LVNUQGYZLOM52GQIDPMYQDMNBAMJ4XIZLTEGSE4'
+      }
+    ];
+
+    TEST_CASES.forEach((testCase) => {
+      it(`works for ${testCase.strkey.substring(0, 5)}...`, function() {
+        const sp = StellarBase.SignerKey.encodeSignedPayloadFromAddress(
+          SIGNER,
+          testCase.payload
+        );
+        expect(sp).to.eql(testCase.strkey);
+        expect(sp.length).to.be.lessThan(226);
+      });
+    });
+  });
+
   describe('error cases', function() {
     [
       // these are valid strkeys, just not valid signers
