@@ -125,12 +125,8 @@ export function setOptions(opts) {
       if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
         throw new Error('signer.ed25519PublicKey is invalid.');
       }
-      const rawKey = StrKey.decodeEd25519PublicKey(
-        opts.signer.ed25519PublicKey
-      );
 
-      // eslint-disable-next-line new-cap
-      key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
+      key = SignerKey.decodeAddress(opts.signer.ed25519PublicKey);
       setValues += 1;
     }
 
@@ -181,7 +177,7 @@ export function setOptions(opts) {
       }
 
       key = SignerKey.decodeAddress(
-        SignerKey.encodeSignedPayloadFromAddress(
+        SignerKey.composeSignedPayload(
           opts.signer.signedPayload.signer,
           opts.signer.signedPayload.payload
         )

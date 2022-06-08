@@ -66,12 +66,17 @@ describe('SignerKey', function() {
 
     TEST_CASES.forEach((testCase) => {
       it(`works for ${testCase.strkey.substring(0, 5)}...`, function() {
-        const sp = StellarBase.SignerKey.encodeSignedPayloadFromAddress(
+        const sp = StellarBase.SignerKey.composeSignedPayload(
           SIGNER,
           testCase.payload
         );
         expect(sp).to.eql(testCase.strkey);
-        expect(sp.length).to.be.lessThan(226);
+
+        const obj = StellarBase.SignerKey.decomposeSignedPayload(sp);
+        expect(obj.signer).to.eql(SIGNER);
+        expect(obj.payload.toString('hex')).to.eql(
+          testCase.payload.toString('hex')
+        );
       });
     });
   });

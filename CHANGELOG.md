@@ -5,9 +5,9 @@
 
 ### Add
 
-- This adds a helper function for managing signed payloads (introduced in [CAP-40](https://stellar.org/protocol/cap-40) and [v8.0.0](#v8.0.0) of this library):
+- This adds helper functions for managing signed payloads (introduced in [CAP-40](https://stellar.org/protocol/cap-40) and [v8.0.0](#v8.0.0) of this library):
 
-  * `SignerKey.encodeSignedPayloadFromAddress` is a convenient way to create a signed payload signer (`P...` address) from a Stellar account acting as the signer (`G...`) and a raw payload.
+  * Convenient ways to create a signed payload signer (`P...` address) from a Stellar account acting as the signer (`G...`) and a raw payload and vice-versa: `SignerKey.composeSignedPayload()` and `SignerKey.decomposeSignedPayload()`. ([#534](https://github.com/stellar/js-stellar-base/pull/534)).
 
 ### Fix
 

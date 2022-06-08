@@ -897,7 +897,10 @@ export namespace SignerKey {
   function decodeAddress(address: string): xdr.SignerKey;
   function encodeSignerKey(signerKey: xdr.SignerKey): string;
 
-  function encodeSignedPayloadFromAddress(address: string, payload: Buffer): string;
+  function composeSignedPayload(address: string, payload: Buffer): string;
+  function decomposeSignedPayload(address: string): {
+    signer: string, payload: Buffer
+  };
 }
 
 export class TransactionI {

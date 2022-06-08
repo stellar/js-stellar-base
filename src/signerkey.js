@@ -98,7 +98,7 @@ export class SignerKey {
    *
    * @returns {string}   the StrKey-encoded signed payload address (P...)
    */
-  static encodeSignedPayloadFromAddress(address, payload) {
+  static composeSignedPayload(address, payload) {
     return SignerKey.encodeSignerKey(
       xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
         new xdr.SignerKeyEd25519SignedPayload({
@@ -107,5 +107,26 @@ export class SignerKey {
         })
       )
     );
+  }
+
+  /**
+   * Decomposes a signed payload (P...) into its signer (G...) and payload.
+   *
+   * @param {string} pAddress  the StrKey-encoded signed payload address (P...)
+   *
+   * @returns {object} an object with two keys:
+   *     `signer` indicating the signer of the signed payload as a StrKey (G...)
+   *     `payload` specifying the raw payload that was signed
+   */
+  static decomposeSignedPayload(pAddress) {
+    const sp = xdr.SignerKeyEd25519SignedPayload.fromXDR(
+      StrKey.decodeSignedPayload(pAddress),
+      'raw'
+    );
+
+    return {
+      signer: StrKey.encodeEd25519PublicKey(sp.ed25519()),
+      payload: sp.payload()
+    };
   }
 }
