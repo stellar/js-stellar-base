@@ -218,18 +218,45 @@ export class Operation {
             .signer()
             .key()
             .arm();
-          if (arm === 'ed25519') {
-            signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
-          } else if (arm === 'preAuthTx') {
-            signer.preAuthTx = attrs
-              .signer()
-              .key()
-              .preAuthTx();
-          } else if (arm === 'hashX') {
-            signer.sha256Hash = attrs
-              .signer()
-              .key()
-              .hashX();
+
+          switch (arm) {
+            case 'ed25519': {
+              signer.ed25519PublicKey = accountIdtoAddress(
+                attrs.signer().key()
+              );
+              break;
+            }
+
+            case 'preAuthTx': {
+              signer.preAuthTx = attrs
+                .signer()
+                .key()
+                .preAuthTx();
+              break;
+            }
+
+            case 'hashX': {
+              signer.sha256Hash = attrs
+                .signer()
+                .key()
+                .hashX();
+              break;
+            }
+
+            case 'ed25519SignedPayload': {
+              const sp = attrs
+                .signer()
+                .key()
+                .ed25519SignedPayload();
+              signer.signedPayload = {
+                signer: accountIdtoAddress(sp),
+                payload: sp.payload()
+              };
+              break;
+            }
+
+            default:
+              throw new Error(`unknown setOptionsOp signer: ${arm}`);
           }
 
           signer.weight = attrs.signer().weight();

@@ -92,6 +92,16 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       }
     })
   ).addOperation(
+    StellarSdk.Operation.revokeSignerSponsorship({
+      account: account.accountId(),
+      signer: {
+        signedPayload: {
+          signer: account.accountId(),
+          payload: "da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
+        }
+      }
+    })
+  ).addOperation(
     StellarSdk.Operation.clawback({
       from: account.accountId(),
       amount: "1000",
@@ -212,6 +222,11 @@ const newSignerXDR3 = StellarSdk.Operation.setOptions({
   signer: { preAuthTx: '', weight: 1 }
 });
 StellarSdk.Operation.fromXDRObject(newSignerXDR3).signer; // $ExpectType PreAuthTx
+
+const newSignerXDR4 = StellarSdk.Operation.setOptions({
+  signer: { signedPayload: {signer: '', payload: ''}, weight: 1 }
+});
+StellarSdk.Operation.fromXDRObject(newSignerXDR4).signer; // $ExpectType SignedPayload
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
 

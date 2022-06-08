@@ -768,6 +768,26 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
+    it('creates a setOptionsOp with signed payload', function() {
+      const signer = StellarBase.Keypair.random().publicKey();
+      const payload = Buffer.from('deadbeef', 'hex');
+      const opts = {
+        signedPayload: { signer, payload },
+        weight: 1
+      };
+
+      let op = StellarBase.Operation.setOptions({ signer: opts });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+
+      expect(obj.signer.signedPayload.signer).to.eql(signer);
+      expectBuffersToBeEqual(obj.signer.signedPayload.payload, payload);
+      expect(obj.signer.weight).to.be.equal(opts.weight);
+    });
+
     it('empty homeDomain is decoded correctly', function() {
       const keypair = StellarBase.Keypair.random();
       const account = new StellarBase.Account(keypair.publicKey(), '0');

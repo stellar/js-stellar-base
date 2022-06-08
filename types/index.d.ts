@@ -254,12 +254,18 @@ export namespace Signer {
     weight: number | undefined;
   }
   interface Sha256Hash {
-    sha256Hash: Buffer;
+    sha256Hash: Buffer | string;
     weight: number | undefined;
   }
   interface PreAuthTx {
-    preAuthTx: Buffer;
+    preAuthTx: Buffer | string;
     weight: number | undefined;
+  }
+  interface SignedPayload {
+    signedPayload: {
+      signer: string;
+      payload: Buffer | string;
+    };
   }
 }
 export namespace SignerKeyOptions {
@@ -272,16 +278,24 @@ export namespace SignerKeyOptions {
   interface PreAuthTx {
     preAuthTx: Buffer | string;
   }
+  interface SignedPayload {
+    signedPayload: {
+      signer: string;
+      payload: Buffer | string;
+    };
+  }
 }
 export type Signer =
   | Signer.Ed25519PublicKey
   | Signer.Sha256Hash
-  | Signer.PreAuthTx;
+  | Signer.PreAuthTx
+  | Signer.SignedPayload;
 
 export type SignerKeyOptions =
   | SignerKeyOptions.Ed25519PublicKey
   | SignerKeyOptions.Sha256Hash
-  | SignerKeyOptions.PreAuthTx;
+  | SignerKeyOptions.PreAuthTx
+  | SignerKeyOptions.SignedPayload;
 
 export namespace SignerOptions {
   interface Ed25519PublicKey {
@@ -296,11 +310,19 @@ export namespace SignerOptions {
     preAuthTx: Buffer | string;
     weight?: number | string;
   }
+  interface SignedPayload {
+    signedPayload: {
+      payload: Buffer | string;
+      signer: string;
+    };
+    weight?: number | string;
+  }
 }
 export type SignerOptions =
   | SignerOptions.Ed25519PublicKey
   | SignerOptions.Sha256Hash
-  | SignerOptions.PreAuthTx;
+  | SignerOptions.PreAuthTx
+  | SignerOptions.SignedPayload;
 
 export namespace OperationType {
   type CreateAccount = 'createAccount';
@@ -666,6 +688,8 @@ export namespace Operation {
       ? Signer.Sha256Hash
       : T extends { preAuthTx: any }
       ? Signer.PreAuthTx
+      : T extends { signedPayload: any }
+      ? Signer.SignedPayload
       : never;
   }
   function setOptions<T extends SignerOptions = never>(

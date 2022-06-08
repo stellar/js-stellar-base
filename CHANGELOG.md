@@ -3,6 +3,22 @@
 
 ## Unreleased
 
+### Fix
+
+- This allows signed payload signers to be modified with `Operation.setOptions`:
+
+```
+const thisWorks = Operation.setOptions({
+  signer: {
+    signedPayload: {
+      signer: Keypair.random().publicKey(),
+      payload: "deadbeef"
+    },
+    weight: 1
+  }
+});
+```
+
 
 ## [v8.0.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0)
 

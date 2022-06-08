@@ -6,6 +6,7 @@ import isString from 'lodash/isString';
 import xdr from '../generated/stellar-xdr_generated';
 import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
+import { SignerKey } from '../signerkey';
 
 function weightCheckFunction(value, name) {
   if (value >= 0 && value <= 255) {
@@ -36,12 +37,31 @@ function weightCheckFunction(value, name) {
  * @param {number|string} [opts.lowThreshold] - The sum weight for the low threshold.
  * @param {number|string} [opts.medThreshold] - The sum weight for the medium threshold.
  * @param {number|string} [opts.highThreshold] - The sum weight for the high threshold.
- * @param {object} [opts.signer] - Add or remove a signer from the account. The signer is
- *                                 deleted if the weight is 0. Only one of `ed25519PublicKey`, `sha256Hash`, `preAuthTx` should be defined.
- * @param {string} [opts.signer.ed25519PublicKey] - The ed25519 public key of the signer.
- * @param {Buffer|string} [opts.signer.sha256Hash] - sha256 hash (Buffer or hex string) of preimage that will unlock funds. Preimage should be used as signature of future transaction.
- * @param {Buffer|string} [opts.signer.preAuthTx] - Hash (Buffer or hex string) of transaction that will unlock funds.
- * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
+ *
+ * @param {object} [opts.signer] - Add or remove a signer from the account. The
+ *     signer is deleted if the weight is 0. Only exactly one of
+ *     `ed25519PublicKey`, `sha256Hash`, `preAuthTx`, or `signedPayload` should
+ *     be defined.
+ * @param {number|string} [opts.signer.weight] - The weight of the new signer (0
+ *     to delete or 1-255)
+ *
+ * @param {string}        [opts.signer.ed25519PublicKey] - The ed25519 public
+ *     key of the signer.
+ *
+ * @param {Buffer|string} [opts.signer.sha256Hash] - sha256 hash (Buffer or hex
+ *     string) of preimage that will unlock funds. Preimage should be used as
+ *     signature of future transaction.
+ *
+ * @param {Buffer|string} [opts.signer.preAuthTx] - Hash (Buffer or hex string)
+ *     of transaction that will unlock funds.
+ *
+ * @param {object}        [opts.signer.signedPayload] - The signed payload for
+ *     which a signature whose signer and payload matches is a valid signature
+ * @param {string}        [opts.signer.signedPayload.signer] - The ed25519
+ *     public key of the signer.
+ * @param {Buffer|string} [opts.signer.signedPayload.payload] - The payload (as
+ *     a Buffer or hex string) which should be signed by the signer.
+
  * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
  *
@@ -152,9 +172,33 @@ export function setOptions(opts) {
       setValues += 1;
     }
 
+    if (opts.signer.signedPayload) {
+      if (isString(opts.signer.signedPayload.payload)) {
+        opts.signer.signedPayload.payload = Buffer.from(
+          opts.signer.signedPayload.payload,
+          'hex'
+        );
+      }
+
+      key = SignerKey.decodeAddress(
+        SignerKey.encodeSignedPayloadFromAddress(
+          opts.signer.signedPayload.signer,
+          opts.signer.signedPayload.payload
+        )
+      );
+      setValues += 1;
+    }
+
     if (setValues !== 1) {
       throw new Error(
-        'Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.'
+        `Signer object must contain exactly one of ${[
+          'ed25519PublicKey',
+          'sha256Hash',
+          'preAuthTx',
+          'signedPayload'
+        ]
+          .map((type) => `signer.${type}`)
+          .join(', ')}`
       );
     }
 
