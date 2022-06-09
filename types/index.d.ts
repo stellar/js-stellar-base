@@ -876,6 +876,8 @@ export namespace SignerKey {
 
 export class TransactionI {
   addSignature(publicKey: string, signature: string): void;
+  addDecoratedSignature(signature: xdr.DecoratedSignature): void;
+
   fee: string;
   getKeypairSignature(keypair: Keypair): string;
   hash(): Buffer;
