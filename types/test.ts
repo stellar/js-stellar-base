@@ -158,7 +158,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .setMinAccountSequenceLedgerGap(5)
   .setExtraSigners([
     sourceKey.publicKey(),
-    StellarSdk.SignerKey.encodeSignedPayloadFromAddress(
+    StellarSdk.SignerKey.composeSignedPayload(
       sourceKey.publicKey(),
       Buffer.from("hello, world!", "ascii")
     )
