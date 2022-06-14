@@ -232,6 +232,15 @@ export class Keypair {
     return verify(data, signature, this._publicKey);
   }
 
+  /**
+   * Returns the decorated signature (hint+sig) for arbitrary data.
+   *
+   * @param  {Buffer} data  arbitrary data to sign
+   * @return {xdr.DecoratedSignature}   the raw signature structure which can be
+   *     added directly to a transaction envelope
+   *
+   * @see TransactionBase.addDecoratedSignature
+   */
   signDecorated(data) {
     const signature = this.sign(data);
     const hint = this.signatureHint();
@@ -240,14 +249,16 @@ export class Keypair {
   }
 
   /**
-   * Returns the signature hint for a signed payload signer.
-   *  This is defined as the last 4 bytes of the signer key XORed with last 4
-   *  bytes of the payload (zero-left-padded if necessary).
+   * Returns the raw decorated signature (hint+sig) for a signed payload signer.
+   *
+   *  The hint is defined as the last 4 bytes of the signer key XORed with last
+   *  4 bytes of the payload (zero-left-padded if necessary).
    *
    * @param  {Buffer} data    data to both sign and treat as the payload
    * @return {xdr.DecoratedSignature}
    *
    * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0040.md#signature-hint
+   * @see TransactionBase.addDecoratedSignature
    */
   signPayloadDecorated(data) {
     const signature = this.sign(data);

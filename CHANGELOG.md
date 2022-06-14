@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Add 
+
+* `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array.
+
+
 
 ## [v8.0.1](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
 

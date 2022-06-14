@@ -159,6 +159,19 @@ export class TransactionBase {
   }
 
   /**
+   * Add a decorated signature directly to the transaction envelope.
+   *
+   * @param {xdr.DecoratedSignature} signature    raw signature to add
+   * @returns {void}
+   *
+   * @see Keypair.signDecorated
+   * @see Keypair.signPayloadDecorated
+   */
+  addDecoratedSignature(signature) {
+    this.signatures.push(signature);
+  }
+
+  /**
    * Add `hashX` signer preimage as signature.
    * @param {Buffer|String} preimage Preimage of hash used as signer
    * @returns {void}
