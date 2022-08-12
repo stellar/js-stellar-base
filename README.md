@@ -143,26 +143,6 @@ versions.)
 
 1. Make sure you have [Docker](https://www.docker.com/) installed and running.
 2. `make reset-xdr`
-3. Transform the newly-generated JS into TypeScript using [dts-xdr](https://github.com/stellar/dts-xdr):
-
-To "scriptify" the above instructions, here are the steps one by one:
-
-```bash
-git clone https://github.com/stellar/js-stellar-base
-cd js-stellar-base
-bundle install
-yarn
-yarn xdr
-
-# If src/generated/stellar-xdr_generated.js changed, then:
-git clone https://github.com/stellar/dts-xdr
-cd dts-xdr
-npm install
-OUT=stellar-xdr_generated.d.ts npx jscodeshift -t src/transform.js ../src/generated/stellar-xdr_generated.js
-cp stellar-xdr_generated.d.ts ../types/xdr.d.ts
-cd .. && rm -rf dts-xdr
-yarn run prettier --write types/xdr.d.ts
-```
 
 ## Usage
 
