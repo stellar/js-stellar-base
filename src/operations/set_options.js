@@ -3,7 +3,7 @@
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
 
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
 

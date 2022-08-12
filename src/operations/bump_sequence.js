@@ -1,7 +1,7 @@
 import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import isString from 'lodash/isString';
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 
 /**
  * This operation bumps sequence number.

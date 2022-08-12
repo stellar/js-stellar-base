@@ -1,6 +1,6 @@
 import isUndefined from 'lodash/isUndefined';
 import { Hyper } from 'js-xdr';
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 /**
  * Returns a XDR ManageBuyOfferOp. A "manage buy offer" operation creates, updates, or
  * deletes a buy offer.

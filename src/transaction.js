@@ -1,6 +1,6 @@
 import map from 'lodash/map';
 
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 import { hash } from './hashing';
 
 import { StrKey } from './strkey';

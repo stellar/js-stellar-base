@@ -13,7 +13,7 @@ import { LiquidityPoolAsset } from './liquidity_pool_asset';
 import { Claimant } from './claimant';
 import { StrKey } from './strkey';
 import { LiquidityPoolId } from './liquidity_pool_id';
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 import * as ops from './operations/index';
 import {
   decodeAddressToMuxedAccount,

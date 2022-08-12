@@ -1,5 +1,5 @@
 import clone from 'lodash/clone';
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 import { Asset } from './asset';
 import {
   LiquidityPoolFeeV18,

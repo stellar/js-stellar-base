@@ -1,5 +1,5 @@
 import isUndefined from 'lodash/isUndefined';
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 
 /**
  * Creates a liquidity pool deposit operation.

@@ -8,7 +8,7 @@ import { sign, verify, generate } from './signing';
 import { StrKey } from './strkey';
 import { hash } from './hashing';
 
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
