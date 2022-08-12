@@ -54,9 +54,9 @@ types/curr.d.ts: src/generated/curr_generated.js
 		git clone --depth 1 https://github.com/stellar/dts-xdr -b $(DTSXDR_COMMIT) --single-branch && \
 		cd /dts-xdr && \
 		yarn install && \
-		OUT=/wd/types/curr.d.ts npx jscodeshift -t src/transform.js /wd/src/generated/curr_generated.js && \
+		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
-		yarn run prettier --write /wd/types/xdr.d.ts \
+		yarn run prettier --write /wd/$@ \
 		'
 
 types/next.d.ts: src/generated/next_generated.js
@@ -65,9 +65,9 @@ types/next.d.ts: src/generated/next_generated.js
 		git clone --depth 1 https://github.com/stellar/dts-xdr -b $(DTSXDR_COMMIT) --single-branch && \
 		cd /dts-xdr && \
 		yarn install && \
-		OUT=/wd/types/next.d.ts npx jscodeshift -t src/transform.js /wd/src/generated/next_generated.js && \
+		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
-		yarn run prettier --write /wd/types/xdr.d.ts \
+		yarn run prettier --write /wd/$@ \
 		'
 
 clean:
