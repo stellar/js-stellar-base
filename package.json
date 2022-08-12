@@ -7,7 +7,6 @@
   "scripts": {
     "test": "gulp test:node",
     "test:watch": "gulp test:watch",
-    "xdr": "bundle exec xdrgen -o src/generated -l javascript -n stellar-xdr xdr/Stellar-ledger-entries.x xdr/Stellar-ledger.x xdr/Stellar-overlay.x xdr/Stellar-SCP.x xdr/Stellar-transaction.x xdr/Stellar-types.x",
     "docs": "jsdoc -c .jsdoc.json --verbose",
     "dtslint": "dtslint types --localTs node_modules/typescript/lib",
     "preversion": "gulp test",
@@ -18,8 +17,7 @@
   "files": [
     "/lib",
     "/dist",
-    "/types/index.d.ts",
-    "/types/xdr.d.ts"
+    "/types"
   ],
   "husky": {
     "hooks": {

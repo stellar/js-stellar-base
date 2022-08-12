@@ -141,20 +141,9 @@ versions.)
 
 #### Updating XDR definitions
 
-1. Make sure you have [Ruby](https://www.ruby-lang.org/en/) installed. You can
-   either use a global installation, or use a version manager.
-
-- https://www.ruby-lang.org/en/downloads/
-- https://github.com/rbenv/rbenv
-- https://rvm.io
-- https://github.com/asdf-vm/asdf
-
-2. Install [Bundler](https://bundler.io).
-3. Install all dependencies.
-4. Copy xdr files from
-   https://github.com/stellar/stellar-core/tree/master/src/xdr to `./xdr`.
-5. Run `yarn xdr` from the js-stellar-base folder.
-6. Transform the newly-generated JS into TypeScript using [dts-xdr](https://github.com/stellar/dts-xdr):
+1. Make sure you have [Docker](https://www.docker.com/) installed and running.
+2. `make reset-xdr`
+3. Transform the newly-generated JS into TypeScript using [dts-xdr](https://github.com/stellar/dts-xdr):
 
 To "scriptify" the above instructions, here are the steps one by one:
 
