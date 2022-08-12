@@ -17,7 +17,7 @@
   "files": [
     "/lib",
     "/dist",
-    "/types"
+    "/types/*.d.ts"
   ],
   "husky": {
     "hooks": {

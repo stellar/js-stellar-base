@@ -1,3 +1,1 @@
-import xdr from './curr';
-
-export default xdr;
+export * from './curr';
