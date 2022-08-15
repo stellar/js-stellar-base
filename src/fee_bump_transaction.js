@@ -1,4 +1,4 @@
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 import { hash } from './hashing';
 
 import { Transaction } from './transaction';

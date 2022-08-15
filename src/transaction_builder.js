@@ -5,7 +5,7 @@ import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 import { Transaction } from './transaction';
 import { FeeBumpTransaction } from './fee_bump_transaction';
 import { SignerKey } from './signerkey';

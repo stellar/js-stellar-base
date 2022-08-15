@@ -1,4 +1,4 @@
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 
 /**
  * Create a new claim claimable balance operation.

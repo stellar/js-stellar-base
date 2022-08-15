@@ -1,4 +1,4 @@
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 
 /**
  * Create an "end sponsoring future reserves" operation.

@@ -1,5 +1,5 @@
 import clone from 'lodash/clone';
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 
 /**
  * LiquidityPoolId class represents the asset referenced by a trustline to a

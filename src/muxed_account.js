@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
 
-import xdr from './generated/stellar-xdr_generated';
+import xdr from './xdr';
 import { Account } from './account';
 import { StrKey } from './strkey';
 import {

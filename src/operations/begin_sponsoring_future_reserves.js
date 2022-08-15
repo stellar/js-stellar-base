@@ -1,4 +1,4 @@
-import xdr from '../generated/stellar-xdr_generated';
+import xdr from '../xdr';
 import { StrKey } from '../strkey';
 import { Keypair } from '../keypair';
 

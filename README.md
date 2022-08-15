@@ -141,39 +141,8 @@ versions.)
 
 #### Updating XDR definitions
 
-1. Make sure you have [Ruby](https://www.ruby-lang.org/en/) installed. You can
-   either use a global installation, or use a version manager.
-
-- https://www.ruby-lang.org/en/downloads/
-- https://github.com/rbenv/rbenv
-- https://rvm.io
-- https://github.com/asdf-vm/asdf
-
-2. Install [Bundler](https://bundler.io).
-3. Install all dependencies.
-4. Copy xdr files from
-   https://github.com/stellar/stellar-core/tree/master/src/xdr to `./xdr`.
-5. Run `yarn xdr` from the js-stellar-base folder.
-6. Transform the newly-generated JS into TypeScript using [dts-xdr](https://github.com/stellar/dts-xdr):
-
-To "scriptify" the above instructions, here are the steps one by one:
-
-```bash
-git clone https://github.com/stellar/js-stellar-base
-cd js-stellar-base
-bundle install
-yarn
-yarn xdr
-
-# If src/generated/stellar-xdr_generated.js changed, then:
-git clone https://github.com/stellar/dts-xdr
-cd dts-xdr
-npm install
-OUT=stellar-xdr_generated.d.ts npx jscodeshift -t src/transform.js ../src/generated/stellar-xdr_generated.js
-cp stellar-xdr_generated.d.ts ../types/xdr.d.ts
-cd .. && rm -rf dts-xdr
-yarn run prettier --write types/xdr.d.ts
-```
+1. Make sure you have [Docker](https://www.docker.com/) installed and running.
+2. `make reset-xdr`
 
 ## Usage
 
