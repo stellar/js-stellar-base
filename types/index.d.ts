@@ -12,6 +12,12 @@ export class Account {
   incrementSequenceNumber(): void;
 }
 
+export class Contract {
+  constructor(contractId: string);
+  contractId(): string;
+  call(fn: string, ...params: xdr.ScVal[]): xdr.InvokeHostFunctionOp;
+}
+
 export class MuxedAccount {
   constructor(account: Account, sequence: string);
   static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount;
@@ -341,6 +347,7 @@ export namespace OperationType {
   type SetTrustLineFlags = 'setTrustLineFlags';
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
+  type InvokeHostFunction = 'invokeHostFunction';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -366,7 +373,8 @@ export type OperationType =
   | OperationType.ClawbackClaimableBalance
   | OperationType.SetTrustLineFlags
   | OperationType.LiquidityPoolDeposit
-  | OperationType.LiquidityPoolWithdraw;
+  | OperationType.LiquidityPoolWithdraw
+  | OperationType.InvokeHostFunction;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -513,6 +521,11 @@ export namespace OperationOptions {
     minAmountA: string;
     minAmountB: string;
   }
+  interface InvokeHostFunction extends BaseOptions {
+    function: xdr.HostFunction;
+    parameters: xdr.ScVal[];
+    footprint: xdr.LedgerFootprint;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -543,7 +556,8 @@ export type OperationOptions =
   | OperationOptions.ClawbackClaimableBalance
   | OperationOptions.SetTrustLineFlags
   | OperationOptions.LiquidityPoolDeposit
-  | OperationOptions.LiquidityPoolWithdraw;
+  | OperationOptions.LiquidityPoolWithdraw
+  | OperationOptions.InvokeHostFunction;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -824,6 +838,14 @@ export namespace Operation {
   function liquidityPoolWithdraw(
     options: OperationOptions.LiquidityPoolWithdraw
   ): xdr.Operation<LiquidityPoolWithdraw>;
+  interface InvokeHostFunction extends BaseOperation<OperationType.InvokeHostFunction> {
+    function: xdr.HostFunction;
+    parameters: xdr.ScVal[];
+    footprint: xdr.LedgerFootprint;
+  }
+  function invokeHostFunction(
+    options: OperationOptions.InvokeHostFunction
+  ): xdr.Operation<InvokeHostFunction>;
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -859,7 +881,8 @@ export type Operation =
   | Operation.ClawbackClaimableBalance
   | Operation.SetTrustLineFlags
   | Operation.LiquidityPoolDeposit
-  | Operation.LiquidityPoolWithdraw;
+  | Operation.LiquidityPoolWithdraw
+  | Operation.InvokeHostFunction;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
