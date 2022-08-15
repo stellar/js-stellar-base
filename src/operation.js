@@ -650,3 +650,4 @@ Operation.clawback = ops.clawback;
 Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
+Operation.invokeHostFunction = ops.invokeHostFunction;
