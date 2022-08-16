@@ -738,6 +738,23 @@ describe('Transaction', function() {
       expect(val.toString()).to.equal('5');
     });
 
+    it('minAccountSequence (big number)', function() {
+      let tx = makeBuilder()
+        .setTimeout(5)
+        .setMinAccountSequence('103420918407103888')
+        .build();
+      expect(tx.minAccountSequence).to.eql('103420918407103888');
+
+      const val = tx
+        .toEnvelope()
+        .v1()
+        .tx()
+        .cond()
+        .v2()
+        .minSeqNum();
+      expect(val.toString()).to.equal('103420918407103888');
+    });
+
     it('minAccountSequenceAge', function() {
       let tx = makeBuilder()
         .setTimeout(5)
