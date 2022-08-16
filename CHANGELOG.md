@@ -3,10 +3,18 @@
 
 ## Unreleased
 
+
+## [v8.1.0](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
+
 ### Add 
 
-* `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array.
+* `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array ([#535](https://github.com/stellar/js-stellar-base/pull/535)).
 
+* Update the XDR definitions (and the way in which they're generated) to contain both the latest current XDR (which introduces CAP-42]) and the "v-next" XDR (which contains XDR related to Soroban and should be considered unstable) ([#537](https://github.com/stellar/js-stellar-base/pull/537)).
+
+### Fix
+
+* Correctly set `minAccountSequence` in `TransactionBuilder` for large values ([#539](https://github.com/stellar/js-stellar-base/pull/539), thank you @overcat!).
 
 
 ## [v8.0.1](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
