@@ -18,7 +18,7 @@ export function invokeHostFunction(opts) {
   const opAttributes = {};
   try {
     opAttributes.body = xdr.OperationBody.invokeHostfunction(
-      new InvokeHostFunctionOp({
+      new xdr.InvokeHostFunctionOp({
         function: opts.function,
         parameters: opts.parameters,
         footprint: opts.footprint
