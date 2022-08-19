@@ -1,4 +1,4 @@
-import { Operation } from './index';
+import { Operation } from './operation';
 import xdr from './xdr';
 
 /**
