@@ -29,6 +29,7 @@ export {
 } from './operation';
 export * from './memo';
 export { Account } from './account';
+export { Contract } from './contract';
 export { MuxedAccount } from './muxed_account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
