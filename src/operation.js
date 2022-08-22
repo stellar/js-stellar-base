@@ -230,6 +230,14 @@ export class Operation {
               .signer()
               .key()
               .hashX();
+          } else if (arm === 'ed25519SignedPayload') {
+            const signedPayload = attrs
+              .signer()
+              .key()
+              .ed25519SignedPayload();
+            signer.ed25519SignedPayload = StrKey.encodeSignedPayload(
+              signedPayload.toXDR()
+            );
           }
 
           signer.weight = attrs.signer().weight();
