@@ -92,6 +92,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.setTrustLineFlags}`
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
+ * * `{@link Operation.invokeHostFunction}`
  *
  * @class Operation
  */
@@ -377,6 +378,13 @@ export class Operation {
         result.amount = this._fromXDRAmount(attrs.amount());
         result.minAmountA = this._fromXDRAmount(attrs.minAmountA());
         result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
+        break;
+      }
+      case 'invokeHostFunction': {
+        result.type = 'invokeHostFunction';
+        result.function = attrs.function();
+        result.parameters = attrs.parameters();
+        result.footprint = attrs.footprint();
         break;
       }
       default: {

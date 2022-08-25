@@ -11,7 +11,7 @@ import xdr from './xdr';
  * @constructor
  *
  * @param {string} contractId - ID of the contract (ex.
- *     `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`).
+ *     `000000000000000000000000000000000000000000000000000000000000000001`).
  */
 // TODO: Support contract deployment, maybe
 export class Contract {
@@ -22,8 +22,8 @@ export class Contract {
   }
 
   /**
-   * Returns Stellar contract ID, ex.
-   * `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`.
+   * Returns Stellar contract ID as a hex string, ex.
+   * `000000000000000000000000000000000000000000000000000000000000000001`.
    * @returns {string}
    */
   contractId() {
@@ -31,16 +31,18 @@ export class Contract {
   }
 
   /**
-   * @param {string} fn - name of the function to call
+   * @param {string} method - name of the method to call
    * @param {...xdr.ScVal} params - arguments to pass to the function call
    * @returns {xdr.Operation} Build a InvokeHostFunctionOp operation to call the contract.
    */
-  call(fn, ...params) {
+  call(method, ...params) {
     return Operation.invokeHostFunction({
       function: xdr.HostFunction.hostFnCall(),
       parameters: [
-        xdr.ScVal.obj(xdr.ScObject.bin(this._id)),
-        xdr.ScVal.obj(xdr.ScObject.bin(fn)),
+        xdr.ScVal.scvObject(
+          xdr.ScObject.scoBytes(Buffer.from(this._id, 'hex'))
+        ),
+        xdr.ScVal.scvSymbol(method),
         ...params
       ],
       // TODO: Figure out how to calculate this or get it from the user?
