@@ -15,18 +15,18 @@ import xdr from '../xdr';
  * @returns {xdr.Operation} an Invoke Host Function operation (xdr.InvokeHostFunctionOp)
  */
 export function invokeHostFunction(opts) {
-  const opAttributes = {};
-  try {
-    opAttributes.body = xdr.OperationBody.invokeHostfunction(
-      new xdr.InvokeHostFunctionOp({
-        function: opts.function,
-        parameters: opts.parameters,
-        footprint: opts.footprint
-      })
-    );
-  } catch (e) {
-    throw new Error('destination is invalid');
+  if (!opts.function) {
+    throw new TypeError('function argument is required');
   }
+
+  const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
+    function: opts.function,
+    parameters: opts.parameters,
+    footprint: opts.footprint
+  });
+  const opAttributes = {
+    body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp)
+  };
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);

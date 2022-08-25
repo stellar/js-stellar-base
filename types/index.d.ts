@@ -15,7 +15,7 @@ export class Account {
 export class Contract {
   constructor(contractId: string);
   contractId(): string;
-  call(fn: string, ...params: xdr.ScVal[]): xdr.InvokeHostFunctionOp;
+  call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
 }
 
 export class MuxedAccount {
