@@ -4,7 +4,14 @@
 ## Unreleased
 
 
-## [v8.1.0](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
+## [v8.2.0](https://github.com/stellar/js-stellar-base/compare/v8.1.0..v8.2.0)
+
+### Add
+
+* `Operation.setOptions` now supports the new [CAP-40](https://stellar.org/protocol/cap-40) signed payload signer (`ed25519SignedPayload`) thanks to @orbitlens ([#542](https://github.com/stellar/js-stellar-base/pull/542)).
+
+
+## [v8.1.0](https://github.com/stellar/js-stellar-base/compare/v8.0.1..v8.1.0)
 
 ### Add 
 
