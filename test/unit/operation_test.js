@@ -768,6 +768,38 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
+    it('creates a setOptionsOp with signed payload signer', function() {
+      var opts = {};
+
+      var pubkey = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+      var signedPayload = new StellarBase.xdr.SignerKeyEd25519SignedPayload({
+        ed25519: StellarBase.StrKey.decodeEd25519PublicKey(pubkey),
+        payload: Buffer.from('test')
+      });
+      var xdrSignerKey = StellarBase.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
+        signedPayload
+      );
+      var payloadKey = StellarBase.SignerKey.encodeSignerKey(xdrSignerKey);
+
+      //var rawSignedPayload = Buffer.concat([StellarBase.StrKey.decodeEd25519PublicKey(pubkey), Buffer.from('test')]);
+      //var payloadKey = StellarBase.StrKey.encodeSignedPayload(rawSignedPayload);
+
+      opts.signer = {
+        ed25519SignedPayload: payloadKey,
+        weight: 10
+      };
+
+      let op = StellarBase.Operation.setOptions(opts);
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+
+      expect(obj.signer.ed25519SignedPayload).to.be.equal(payloadKey);
+      expect(obj.signer.weight).to.be.equal(opts.signer.weight);
+    });
+
     it('empty homeDomain is decoded correctly', function() {
       const keypair = StellarBase.Keypair.random();
       const account = new StellarBase.Account(keypair.publicKey(), '0');
