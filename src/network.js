@@ -6,5 +6,6 @@
  */
 export const Networks = {
   PUBLIC: 'Public Global Stellar Network ; September 2015',
-  TESTNET: 'Test SDF Network ; September 2015'
+  TESTNET: 'Test SDF Network ; September 2015',
+  SANDBOX: 'Local Sandbox Stellar Network ; September 2022'
 };
