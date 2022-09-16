@@ -225,7 +225,8 @@ export class Memo<T extends MemoType = MemoType> {
 
 export enum Networks {
   PUBLIC = 'Public Global Stellar Network ; September 2015',
-  TESTNET = 'Test SDF Network ; September 2015'
+  TESTNET = 'Test SDF Network ; September 2015',
+  SANDBOX = 'Local Sandbox Stellar Network ; September 2022'
 }
 
 export const AuthRequiredFlag: 1;
