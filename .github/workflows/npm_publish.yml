@@ -4,8 +4,6 @@ on:
     types: [published]
   push:
     branches: [soroban]
-    inputs:
-      publish_args: --tag soroban
 
 jobs:
   build:
@@ -26,7 +24,14 @@ jobs:
       - name: Build
         run: gulp
 
-      - name: Publish npm package
-        run: yarn publish {{ inputs.publish_args }}
+      - name: Publish soroban npm package
+        if: github.ref == 'refs/heads/soroban'
+        run: yarn publish --tag soroban
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish release npm package
+        if: github.ref != 'refs/heads/soroban'
+        run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
