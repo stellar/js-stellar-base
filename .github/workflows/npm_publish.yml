@@ -24,14 +24,7 @@ jobs:
       - name: Build
         run: gulp
 
-      - name: Publish soroban npm package
-        if: github.ref == 'refs/heads/soroban'
-        run: yarn publish --tag soroban
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Publish release npm package
-        if: github.ref != 'refs/heads/soroban'
-        run: yarn publish
+        run: yarn publish --tag soroban
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
