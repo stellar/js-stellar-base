@@ -2,6 +2,10 @@ name: npm publish
 on:
   release:
     types: [published]
+  push:
+    branches: [soroban]
+    inputs:
+      publish_args: --tag soroban
 
 jobs:
   build:
@@ -23,6 +27,6 @@ jobs:
         run: gulp
 
       - name: Publish npm package
-        run: yarn publish
+        run: yarn publish {{ inputs.publish_args }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
