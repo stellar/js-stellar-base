@@ -2252,9 +2252,9 @@ export namespace xdr {
 
   const PeerStatList: XDRArray<PeerStats>;
 
-  const TxAdvertVector: XDRArray<Hash>;
+  const TxAdvertVector: XDRArray<typeof Hash>;
 
-  const TxDemandVector: XDRArray<Hash>;
+  const TxDemandVector: XDRArray<typeof Hash>;
 
   const Hash: Opaque;
 
@@ -5249,9 +5249,9 @@ export namespace xdr {
   }
 
   class FloodAdvert {
-    constructor(attributes: { txHashes: Hash[] });
+    constructor(attributes: { txHashes: Array<typeof Hash> });
 
-    txHashes(value?: Hash[]): Hash[];
+    txHashes(value?: Array<typeof Hash>): Array<typeof Hash>;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5275,9 +5275,9 @@ export namespace xdr {
   }
 
   class FloodDemand {
-    constructor(attributes: { txHashes: Hash[] });
+    constructor(attributes: { txHashes: Array<typeof Hash> });
 
-    txHashes(value?: Hash[]): Hash[];
+    txHashes(value?: Array<typeof Hash>): Array<typeof Hash>;
 
     toXDR(format?: 'raw'): Buffer;
 
