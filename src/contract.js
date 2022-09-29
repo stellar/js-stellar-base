@@ -37,7 +37,7 @@ export class Contract {
    */
   call(method, ...params) {
     return Operation.invokeHostFunction({
-      function: xdr.HostFunction.hostFnCall(),
+      function: xdr.HostFunction.hostFnInvokeContract(),
       parameters: [
         xdr.ScVal.scvObject(
           xdr.ScObject.scoBytes(Buffer.from(this._id, 'hex'))
