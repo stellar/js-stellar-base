@@ -30,7 +30,13 @@ export class Asset {
       throw new Error('Issuer is invalid');
     }
 
-    this.code = code;
+    if (String(code).toLowerCase() === 'xlm') {
+      // transform all xLM, Xlm, etc. variants -> XLM
+      this.code = 'XLM';
+    } else {
+      this.code = code;
+    }
+
     this.issuer = issuer;
   }
 
