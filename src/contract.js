@@ -46,7 +46,15 @@ export class Contract {
         ...params
       ],
       // TODO: Figure out how to calculate this or get it from the user?
-      footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] })
+      footprint: new xdr.LedgerFootprint({
+        readOnly: [
+          new xdr.LedgerKeyContractData({
+            contractId: this._id,
+            key: xdr.ScVal.scvStatic(xdr.ScStatic.scsLedgerKeyContractCode())
+          })
+        ],
+        readWrite: []
+      })
     });
   }
 }
