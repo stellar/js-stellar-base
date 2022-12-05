@@ -7,8 +7,7 @@ import xdr from '../xdr';
  * @alias Operation.invokeHostFunction
  *
  * @param {object} opts - options object
- * @param {xdr.HostFunction} opts.function - destination to merge the source account into
- * @param {xdr.ScVal[]} opts.parameters - destination to merge the source account into
+ * @param {xdr.HostFunction} opts.function - host function to invoke
  * @param {xdr.LedgerFootprint} [opts.footprint]    - operation source account (defaults to
  *     transaction source)
  *
@@ -21,7 +20,6 @@ export function invokeHostFunction(opts) {
 
   const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
     function: opts.function,
-    parameters: opts.parameters,
     footprint: opts.footprint
   });
   const opAttributes = {

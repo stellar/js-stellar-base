@@ -37,14 +37,13 @@ export class Contract {
    */
   call(method, ...params) {
     return Operation.invokeHostFunction({
-      function: xdr.HostFunction.hostFnInvokeContract(),
-      parameters: [
+      function: xdr.HostFunction.hostFunctionTypeInvokeContract([
         xdr.ScVal.scvObject(
           xdr.ScObject.scoBytes(Buffer.from(this._id, 'hex'))
         ),
         xdr.ScVal.scvSymbol(method),
         ...params
-      ],
+      ]),
       // TODO: Figure out how to calculate this or get it from the user?
       footprint: new xdr.LedgerFootprint({
         readOnly: [
