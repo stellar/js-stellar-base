@@ -18,7 +18,7 @@ export class Contract {
   // TODO: Figure out contract owner/id stuff here. How should we represent that?
   constructor(contractId) {
     // TODO: Add methods based on the contractSpec (or do that elsewhere?)
-    this._id = contractId;
+    this._id = Buffer.from(contractId, 'hex');
   }
 
   /**
@@ -27,7 +27,7 @@ export class Contract {
    * @returns {string}
    */
   contractId() {
-    return this._id;
+    return this._id.toString('hex');
   }
 
   /**
@@ -36,7 +36,7 @@ export class Contract {
    * @returns {xdr.Operation} Build a InvokeHostFunctionOp operation to call the contract.
    */
   call(method, ...params) {
-    let contractId = Buffer.from(this._id, 'hex');
+    const contractId = Buffer.from(this._id, 'hex');
     return Operation.invokeHostFunction({
       function: xdr.HostFunction.hostFunctionTypeInvokeContract([
         xdr.ScVal.scvObject(xdr.ScObject.scoBytes(contractId)),
