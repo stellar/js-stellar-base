@@ -18,7 +18,7 @@ export class Contract {
   // TODO: Figure out contract owner/id stuff here. How should we represent that?
   constructor(contractId) {
     // TODO: Add methods based on the contractSpec (or do that elsewhere?)
-    this._id = contractId;
+    this._id = Buffer.from(contractId, 'hex');
   }
 
   /**
@@ -27,7 +27,7 @@ export class Contract {
    * @returns {string}
    */
   contractId() {
-    return this._id;
+    return this._id.toString('hex');
   }
 
   /**
@@ -36,21 +36,22 @@ export class Contract {
    * @returns {xdr.Operation} Build a InvokeHostFunctionOp operation to call the contract.
    */
   call(method, ...params) {
+    const contractId = Buffer.from(this._id, 'hex');
     return Operation.invokeHostFunction({
       function: xdr.HostFunction.hostFunctionTypeInvokeContract([
-        xdr.ScVal.scvObject(
-          xdr.ScObject.scoBytes(Buffer.from(this._id, 'hex'))
-        ),
+        xdr.ScVal.scvObject(xdr.ScObject.scoBytes(contractId)),
         xdr.ScVal.scvSymbol(method),
         ...params
       ]),
       // TODO: Figure out how to calculate this or get it from the user?
       footprint: new xdr.LedgerFootprint({
         readOnly: [
-          new xdr.LedgerKeyContractData({
-            contractId: this._id,
-            key: xdr.ScVal.scvStatic(xdr.ScStatic.scsLedgerKeyContractCode())
-          })
+          xdr.LedgerKey.contractData(
+            new xdr.LedgerKeyContractData({
+              contractId,
+              key: xdr.ScVal.scvStatic(xdr.ScStatic.scsLedgerKeyContractCode())
+            })
+          )
         ],
         readWrite: []
       })

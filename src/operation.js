@@ -391,7 +391,6 @@ export class Operation {
       case 'invokeHostFunction': {
         result.type = 'invokeHostFunction';
         result.function = attrs.function();
-        result.parameters = attrs.parameters();
         result.footprint = attrs.footprint();
         break;
       }
