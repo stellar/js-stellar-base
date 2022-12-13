@@ -7,7 +7,7 @@
 
 ### Fix
 
-- Enable signing in service workers using FastSigning.
+- Enable signing in service workers using FastSigning ([#567](https://github.com/stellar/js-stellar-base/pull/567)).
 
 ## [v8.2.1](https://github.com/stellar/js-stellar-base/compare/v8.2.0..v8.2.1)
 
