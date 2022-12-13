@@ -42,6 +42,10 @@ function checkFastSigningNode() {
     return checkFastSigningBrowser();
   }
 
+  if (!Object.keys(sodium).length) {
+    return checkFastSigningBrowser();
+  }
+
   actualMethods.generate = (secretKey) => {
     const pk = Buffer.alloc(sodium.crypto_sign_PUBLICKEYBYTES);
     const sk = Buffer.alloc(sodium.crypto_sign_SECRETKEYBYTES);
