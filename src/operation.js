@@ -392,6 +392,7 @@ export class Operation {
         result.type = 'invokeHostFunction';
         result.function = attrs.function();
         result.footprint = attrs.footprint();
+        result.auth = attrs.auth();
         break;
       }
       default: {

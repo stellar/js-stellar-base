@@ -528,6 +528,7 @@ export namespace OperationOptions {
     function: xdr.HostFunction;
     parameters: xdr.ScVal[];
     footprint: xdr.LedgerFootprint;
+    auth: xdr.ContractAuth[];
   }
 }
 export type OperationOptions =
