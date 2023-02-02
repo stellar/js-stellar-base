@@ -1,6 +1,6 @@
 {
   "name": "stellar-base",
-  "version": "8.2.2-soroban.6",
+  "version": "8.2.2-soroban.7",
   "description": "Low level stellar support library",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",

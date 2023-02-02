@@ -47,6 +47,7 @@ struct Hello
     uint256 nonce;
 };
 
+
 // During the roll-out phrase, pull mode will be optional.
 // Therefore, we need a way to communicate with other nodes
 // that we want/don't want pull mode.
@@ -126,6 +127,12 @@ enum SurveyMessageCommandType
     SURVEY_TOPOLOGY = 0
 };
 
+enum SurveyMessageResponseType
+{
+    SURVEY_TOPOLOGY_RESPONSE_V0 = 0,
+    SURVEY_TOPOLOGY_RESPONSE_V1 = 1
+};
+
 struct SurveyRequestMessage
 {
     NodeID surveyorPeerID;
@@ -180,13 +187,33 @@ struct PeerStats
 
 typedef PeerStats PeerStatList<25>;
 
-struct TopologyResponseBody
+struct TopologyResponseBodyV0
 {
     PeerStatList inboundPeers;
     PeerStatList outboundPeers;
 
     uint32 totalInboundPeerCount;
     uint32 totalOutboundPeerCount;
+};
+
+struct TopologyResponseBodyV1
+{
+    PeerStatList inboundPeers;
+    PeerStatList outboundPeers;
+
+    uint32 totalInboundPeerCount;
+    uint32 totalOutboundPeerCount;
+
+    uint32 maxInboundPeerCount;
+    uint32 maxOutboundPeerCount;
+};
+
+union SurveyResponseBody switch (SurveyMessageResponseType type)
+{
+case SURVEY_TOPOLOGY_RESPONSE_V0:
+    TopologyResponseBodyV0 topologyResponseBodyV0;
+case SURVEY_TOPOLOGY_RESPONSE_V1:
+    TopologyResponseBodyV1 topologyResponseBodyV1;
 };
 
 const TX_ADVERT_VECTOR_MAX_SIZE = 1000;
@@ -203,12 +230,6 @@ typedef Hash TxDemandVector<TX_DEMAND_VECTOR_MAX_SIZE>;
 struct FloodDemand
 {
     TxDemandVector txHashes;
-};
-
-union SurveyResponseBody switch (SurveyMessageCommandType type)
-{
-case SURVEY_TOPOLOGY:
-    TopologyResponseBody topologyResponseBody;
 };
 
 union StellarMessage switch (MessageType type)
@@ -256,9 +277,9 @@ case SEND_MORE:
 
 // Pull mode
 case FLOOD_ADVERT:
-    FloodAdvert floodAdvert;
+     FloodAdvert floodAdvert;
 case FLOOD_DEMAND:
-    FloodDemand floodDemand;
+     FloodDemand floodDemand;
 };
 
 union AuthenticatedMessage switch (uint32 v)

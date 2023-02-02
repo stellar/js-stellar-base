@@ -217,7 +217,8 @@ enum SCObjectType
     SCO_I128 = 5,
     SCO_BYTES = 6,
     SCO_CONTRACT_CODE = 7,
-    SCO_ACCOUNT_ID = 8
+    SCO_ADDRESS = 8,
+    SCO_NONCE_KEY = 9
 
     // TODO: add more
 };
@@ -255,6 +256,20 @@ struct Int128Parts {
     uint64 hi;
 };
 
+enum SCAddressType
+{
+    SC_ADDRESS_TYPE_ACCOUNT = 0,
+    SC_ADDRESS_TYPE_CONTRACT = 1
+};
+
+union SCAddress switch (SCAddressType type)
+{
+case SC_ADDRESS_TYPE_ACCOUNT:
+    AccountID accountId;
+case SC_ADDRESS_TYPE_CONTRACT:
+    Hash contractId;
+};
+
 union SCObject switch (SCObjectType type)
 {
 case SCO_VEC:
@@ -273,7 +288,9 @@ case SCO_BYTES:
     opaque bin<SCVAL_LIMIT>;
 case SCO_CONTRACT_CODE:
     SCContractCode contractCode;
-case SCO_ACCOUNT_ID:
-    AccountID accountID;
+case SCO_ADDRESS:
+    SCAddress address;
+case SCO_NONCE_KEY:
+    SCAddress nonceAddress;
 };
 }
