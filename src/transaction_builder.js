@@ -487,7 +487,7 @@ export class TransactionBuilder {
       }
 
       let minSeqNum = this.minAccountSequence || '0';
-      minSeqNum = new xdr.SequenceNumber(UnsignedHyper.fromString(minSeqNum));
+      minSeqNum = xdr.SequenceNumber.fromString(minSeqNum);
 
       const minSeqAge = UnsignedHyper.fromString(
         this.minAccountSequenceAge !== null

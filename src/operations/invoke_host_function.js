@@ -8,8 +8,8 @@ import xdr from '../xdr';
  *
  * @param {object} opts - options object
  * @param {xdr.HostFunction} opts.function - host function to invoke
- * @param {xdr.LedgerFootprint} [opts.footprint]    - operation source account (defaults to
- *     transaction source)
+ * @param {xdr.LedgerFootprint} [opts.footprint] - footprint of the ledger state accessed by this call
+ * @param {xdr.ContractAuth[]} [opts.auth] - authorizations for the call
  *
  * @returns {xdr.Operation} an Invoke Host Function operation (xdr.InvokeHostFunctionOp)
  */
@@ -20,7 +20,8 @@ export function invokeHostFunction(opts) {
 
   const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
     function: opts.function,
-    footprint: opts.footprint
+    footprint: opts.footprint,
+    auth: opts.auth
   });
   const opAttributes = {
     body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp)

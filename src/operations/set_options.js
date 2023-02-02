@@ -41,6 +41,7 @@ function weightCheckFunction(value, name) {
  * @param {string} [opts.signer.ed25519PublicKey] - The ed25519 public key of the signer.
  * @param {Buffer|string} [opts.signer.sha256Hash] - sha256 hash (Buffer or hex string) of preimage that will unlock funds. Preimage should be used as signature of future transaction.
  * @param {Buffer|string} [opts.signer.preAuthTx] - Hash (Buffer or hex string) of transaction that will unlock funds.
+ * @param {string} [opts.signer.ed25519SignedPayload] - Signed payload signer (ed25519 public key + raw payload) for atomic transaction signature disclosure.
  * @param {number|string} [opts.signer.weight] - The weight of the new signer (0 to delete or 1-255)
  * @param {string} [opts.homeDomain] - sets the home domain used for reverse federation lookup.
  * @param {string} [opts.source] - The source account (defaults to transaction source).
@@ -149,6 +150,22 @@ export function setOptions(opts) {
 
       // eslint-disable-next-line new-cap
       key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
+      setValues += 1;
+    }
+
+    if (opts.signer.ed25519SignedPayload) {
+      if (!StrKey.isValidSignedPayload(opts.signer.ed25519SignedPayload)) {
+        throw new Error('signer.ed25519SignedPayload is invalid.');
+      }
+      const rawKey = StrKey.decodeSignedPayload(
+        opts.signer.ed25519SignedPayload
+      );
+      const signedPayloadXdr = xdr.SignerKeyEd25519SignedPayload.fromXDR(
+        rawKey
+      );
+
+      // eslint-disable-next-line new-cap
+      key = xdr.SignerKey.signerKeyTypeEd25519SignedPayload(signedPayloadXdr);
       setValues += 1;
     }
 

@@ -54,7 +54,8 @@ export class Contract {
           )
         ],
         readWrite: []
-      })
+      }),
+      auth: []
     });
   }
 }

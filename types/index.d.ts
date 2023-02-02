@@ -270,6 +270,10 @@ export namespace Signer {
     preAuthTx: Buffer;
     weight: number | undefined;
   }
+  interface Ed25519SignedPayload {
+    ed25519SignedPayload: string;
+    weight?: number | string;
+  }
 }
 export namespace SignerKeyOptions {
   interface Ed25519PublicKey {
@@ -281,16 +285,21 @@ export namespace SignerKeyOptions {
   interface PreAuthTx {
     preAuthTx: Buffer | string;
   }
+  interface Ed25519SignedPayload {
+    ed25519SignedPayload: string;
+  }
 }
 export type Signer =
   | Signer.Ed25519PublicKey
   | Signer.Sha256Hash
-  | Signer.PreAuthTx;
+  | Signer.PreAuthTx
+  | Signer.Ed25519SignedPayload;
 
 export type SignerKeyOptions =
   | SignerKeyOptions.Ed25519PublicKey
   | SignerKeyOptions.Sha256Hash
-  | SignerKeyOptions.PreAuthTx;
+  | SignerKeyOptions.PreAuthTx
+  | SignerKeyOptions.Ed25519SignedPayload;
 
 export namespace SignerOptions {
   interface Ed25519PublicKey {
@@ -305,11 +314,16 @@ export namespace SignerOptions {
     preAuthTx: Buffer | string;
     weight?: number | string;
   }
+  interface Ed25519SignedPayload {
+    ed25519SignedPayload: string;
+    weight?: number | string;
+  }
 }
 export type SignerOptions =
   | SignerOptions.Ed25519PublicKey
   | SignerOptions.Sha256Hash
-  | SignerOptions.PreAuthTx;
+  | SignerOptions.PreAuthTx
+  | SignerOptions.Ed25519SignedPayload;
 
 export namespace OperationType {
   type CreateAccount = 'createAccount';
@@ -514,6 +528,7 @@ export namespace OperationOptions {
     function: xdr.HostFunction;
     parameters: xdr.ScVal[];
     footprint: xdr.LedgerFootprint;
+    auth: xdr.ContractAuth[];
   }
 }
 export type OperationOptions =
@@ -683,6 +698,8 @@ export namespace Operation {
       ? Signer.Sha256Hash
       : T extends { preAuthTx: any }
       ? Signer.PreAuthTx
+      : T extends { ed25519SignedPayload: any }
+      ? Signer.Ed25519SignedPayload
       : never;
   }
   function setOptions<T extends SignerOptions = never>(

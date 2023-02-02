@@ -3,10 +3,37 @@
 
 ## Unreleased
 
+## [v8.2.2](https://github.com/stellar/js-stellar-base/compare/v8.2.1..v8.2.2)
+
+### Fix
+
+- Enable signing in service workers using FastSigning ([#567](https://github.com/stellar/js-stellar-base/pull/567)).
+
+## [v8.2.1](https://github.com/stellar/js-stellar-base/compare/v8.2.0..v8.2.1)
+
+### Fix
+
+* Turn all XLM-like (i.e. casing agnostic) asset codes into the native asset with code `XLM` ([#546](https://github.com/stellar/js-stellar-base/pull/546)).
+
+
+## [v8.2.0](https://github.com/stellar/js-stellar-base/compare/v8.1.0..v8.2.0)
+
+### Add
+
+* `Operation.setOptions` now supports the new [CAP-40](https://stellar.org/protocol/cap-40) signed payload signer (`ed25519SignedPayload`) thanks to @orbitlens ([#542](https://github.com/stellar/js-stellar-base/pull/542)).
+
+
+## [v8.1.0](https://github.com/stellar/js-stellar-base/compare/v8.0.1..v8.1.0)
+
 ### Add 
 
-* `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array.
+* `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array ([#535](https://github.com/stellar/js-stellar-base/pull/535)).
 
+* Update the XDR definitions (and the way in which they're generated) to contain both the latest current XDR (which introduces [CAP-42](https://stellar.org/protocol/cap-42)) and the "v-next" XDR (which contains XDR related to Soroban and should be considered unstable) ([#537](https://github.com/stellar/js-stellar-base/pull/537)).
+
+### Fix
+
+* Correctly set `minAccountSequence` in `TransactionBuilder` for large values ([#539](https://github.com/stellar/js-stellar-base/pull/539), thank you @overcat!).
 
 
 ## [v8.0.1](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
