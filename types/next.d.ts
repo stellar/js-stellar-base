@@ -1,4 +1,4 @@
-// Automatically generated on 2022-08-12T12:40:00+01:00
+// Automatically generated on 2023-02-02T13:12:00Z
 import { Operation } from './index';
 
 export {};
@@ -455,9 +455,10 @@ export namespace xdr {
       | 'envelopeTypeContractIdFromContract'
       | 'envelopeTypeContractIdFromAsset'
       | 'envelopeTypeContractIdFromSourceAccount'
-      | 'envelopeTypeCreateContractArgs';
+      | 'envelopeTypeCreateContractArgs'
+      | 'envelopeTypeContractAuth';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
     static envelopeTypeTxV0(): EnvelopeType;
 
@@ -484,6 +485,8 @@ export namespace xdr {
     static envelopeTypeContractIdFromSourceAccount(): EnvelopeType;
 
     static envelopeTypeCreateContractArgs(): EnvelopeType;
+
+    static envelopeTypeContractAuth(): EnvelopeType;
   }
 
   class StellarValueType {
@@ -711,6 +714,16 @@ export namespace xdr {
     readonly value: 0;
 
     static surveyTopology(): SurveyMessageCommandType;
+  }
+
+  class SurveyMessageResponseType {
+    readonly name: 'surveyTopologyResponseV0' | 'surveyTopologyResponseV1';
+
+    readonly value: 0 | 1;
+
+    static surveyTopologyResponseV0(): SurveyMessageResponseType;
+
+    static surveyTopologyResponseV1(): SurveyMessageResponseType;
   }
 
   class OperationType {
@@ -2086,9 +2099,10 @@ export namespace xdr {
       | 'scoI128'
       | 'scoBytes'
       | 'scoContractCode'
-      | 'scoAccountId';
+      | 'scoAddress'
+      | 'scoNonceKey';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     static scoVec(): ScObjectType;
 
@@ -2106,7 +2120,9 @@ export namespace xdr {
 
     static scoContractCode(): ScObjectType;
 
-    static scoAccountId(): ScObjectType;
+    static scoAddress(): ScObjectType;
+
+    static scoNonceKey(): ScObjectType;
   }
 
   class ScContractCodeType {
@@ -2117,6 +2133,16 @@ export namespace xdr {
     static sccontractCodeWasmRef(): ScContractCodeType;
 
     static sccontractCodeToken(): ScContractCodeType;
+  }
+
+  class ScAddressType {
+    readonly name: 'scAddressTypeAccount' | 'scAddressTypeContract';
+
+    readonly value: 0 | 1;
+
+    static scAddressTypeAccount(): ScAddressType;
+
+    static scAddressTypeContract(): ScAddressType;
   }
 
   class ScEnvMetaKind {
@@ -2142,7 +2168,7 @@ export namespace xdr {
       | 'scSpecTypeStatus'
       | 'scSpecTypeBytes'
       | 'scSpecTypeInvoker'
-      | 'scSpecTypeAccountId'
+      | 'scSpecTypeAddress'
       | 'scSpecTypeOption'
       | 'scSpecTypeResult'
       | 'scSpecTypeVec'
@@ -2202,7 +2228,7 @@ export namespace xdr {
 
     static scSpecTypeInvoker(): ScSpecType;
 
-    static scSpecTypeAccountId(): ScSpecType;
+    static scSpecTypeAddress(): ScSpecType;
 
     static scSpecTypeOption(): ScSpecType;
 
@@ -5319,7 +5345,7 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class TopologyResponseBody {
+  class TopologyResponseBodyV0 {
     constructor(attributes: {
       inboundPeers: PeerStats[];
       outboundPeers: PeerStats[];
@@ -5339,20 +5365,66 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): TopologyResponseBody;
+    static read(io: Buffer): TopologyResponseBodyV0;
 
-    static write(value: TopologyResponseBody, io: Buffer): void;
+    static write(value: TopologyResponseBodyV0, io: Buffer): void;
 
-    static isValid(value: TopologyResponseBody): boolean;
+    static isValid(value: TopologyResponseBodyV0): boolean;
 
-    static toXDR(value: TopologyResponseBody): Buffer;
+    static toXDR(value: TopologyResponseBodyV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): TopologyResponseBody;
+    static fromXDR(input: Buffer, format?: 'raw'): TopologyResponseBodyV0;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64'
-    ): TopologyResponseBody;
+    ): TopologyResponseBodyV0;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class TopologyResponseBodyV1 {
+    constructor(attributes: {
+      inboundPeers: PeerStats[];
+      outboundPeers: PeerStats[];
+      totalInboundPeerCount: number;
+      totalOutboundPeerCount: number;
+      maxInboundPeerCount: number;
+      maxOutboundPeerCount: number;
+    });
+
+    inboundPeers(value?: PeerStats[]): PeerStats[];
+
+    outboundPeers(value?: PeerStats[]): PeerStats[];
+
+    totalInboundPeerCount(value?: number): number;
+
+    totalOutboundPeerCount(value?: number): number;
+
+    maxInboundPeerCount(value?: number): number;
+
+    maxOutboundPeerCount(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TopologyResponseBodyV1;
+
+    static write(value: TopologyResponseBodyV1, io: Buffer): void;
+
+    static isValid(value: TopologyResponseBodyV1): boolean;
+
+    static toXDR(value: TopologyResponseBodyV1): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TopologyResponseBodyV1;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TopologyResponseBodyV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5386,9 +5458,9 @@ export namespace xdr {
   }
 
   class FloodDemand {
-    constructor(attributes: { txHashes: Array<typeof Hash> });
+    constructor(attributes: { txHashes: Hash[] });
 
-    txHashes(value?: Array<typeof Hash>): Array<typeof Hash>;
+    txHashes(value?: Hash[]): Hash[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6388,15 +6460,120 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class AuthorizedInvocation {
+    constructor(attributes: {
+      contractId: Buffer;
+      functionName: string | Buffer;
+      args: ScVal[];
+      subInvocations: AuthorizedInvocation[];
+    });
+
+    contractId(value?: Buffer): Buffer;
+
+    functionName(value?: string | Buffer): string | Buffer;
+
+    args(value?: ScVal[]): ScVal[];
+
+    subInvocations(value?: AuthorizedInvocation[]): AuthorizedInvocation[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AuthorizedInvocation;
+
+    static write(value: AuthorizedInvocation, io: Buffer): void;
+
+    static isValid(value: AuthorizedInvocation): boolean;
+
+    static toXDR(value: AuthorizedInvocation): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AuthorizedInvocation;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): AuthorizedInvocation;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class AddressWithNonce {
+    constructor(attributes: { address: ScAddress; nonce: Uint64 });
+
+    address(value?: ScAddress): ScAddress;
+
+    nonce(value?: Uint64): Uint64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): AddressWithNonce;
+
+    static write(value: AddressWithNonce, io: Buffer): void;
+
+    static isValid(value: AddressWithNonce): boolean;
+
+    static toXDR(value: AddressWithNonce): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): AddressWithNonce;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): AddressWithNonce;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ContractAuth {
+    constructor(attributes: {
+      addressWithNonce: null | AddressWithNonce;
+      rootInvocation: AuthorizedInvocation;
+      signatureArgs: ScVal[];
+    });
+
+    addressWithNonce(value?: null | AddressWithNonce): null | AddressWithNonce;
+
+    rootInvocation(value?: AuthorizedInvocation): AuthorizedInvocation;
+
+    signatureArgs(value?: ScVal[]): ScVal[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ContractAuth;
+
+    static write(value: ContractAuth, io: Buffer): void;
+
+    static isValid(value: ContractAuth): boolean;
+
+    static toXDR(value: ContractAuth): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ContractAuth;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractAuth;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class InvokeHostFunctionOp {
     constructor(attributes: {
       function: HostFunction;
       footprint: LedgerFootprint;
+      auth: ContractAuth[];
     });
 
     function(value?: HostFunction): HostFunction;
 
     footprint(value?: LedgerFootprint): LedgerFootprint;
+
+    auth(value?: ContractAuth[]): ContractAuth[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6718,6 +6895,40 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): HashIdPreimageCreateContractArgs;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class HashIdPreimageContractAuth {
+    constructor(attributes: {
+      networkId: Buffer;
+      invocation: AuthorizedInvocation;
+    });
+
+    networkId(value?: Buffer): Buffer;
+
+    invocation(value?: AuthorizedInvocation): AuthorizedInvocation;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): HashIdPreimageContractAuth;
+
+    static write(value: HashIdPreimageContractAuth, io: Buffer): void;
+
+    static isValid(value: HashIdPreimageContractAuth): boolean;
+
+    static toXDR(value: HashIdPreimageContractAuth): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimageContractAuth;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): HashIdPreimageContractAuth;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -9823,13 +10034,25 @@ export namespace xdr {
   }
 
   class SurveyResponseBody {
-    switch(): SurveyMessageCommandType;
+    switch(): SurveyMessageResponseType;
 
-    topologyResponseBody(value?: TopologyResponseBody): TopologyResponseBody;
+    topologyResponseBodyV0(
+      value?: TopologyResponseBodyV0
+    ): TopologyResponseBodyV0;
 
-    static surveyTopology(value: TopologyResponseBody): SurveyResponseBody;
+    topologyResponseBodyV1(
+      value?: TopologyResponseBodyV1
+    ): TopologyResponseBodyV1;
 
-    value(): TopologyResponseBody;
+    static surveyTopologyResponseV0(
+      value: TopologyResponseBodyV0
+    ): SurveyResponseBody;
+
+    static surveyTopologyResponseV1(
+      value: TopologyResponseBodyV1
+    ): SurveyResponseBody;
+
+    value(): TopologyResponseBodyV0 | TopologyResponseBodyV1;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -10443,6 +10666,10 @@ export namespace xdr {
       value?: HashIdPreimageCreateContractArgs
     ): HashIdPreimageCreateContractArgs;
 
+    contractAuth(
+      value?: HashIdPreimageContractAuth
+    ): HashIdPreimageContractAuth;
+
     static envelopeTypeOpId(value: HashIdPreimageOperationId): HashIdPreimage;
 
     static envelopeTypePoolRevokeOpId(
@@ -10469,6 +10696,10 @@ export namespace xdr {
       value: HashIdPreimageCreateContractArgs
     ): HashIdPreimage;
 
+    static envelopeTypeContractAuth(
+      value: HashIdPreimageContractAuth
+    ): HashIdPreimage;
+
     value():
       | HashIdPreimageOperationId
       | HashIdPreimageRevokeId
@@ -10476,7 +10707,8 @@ export namespace xdr {
       | HashIdPreimageContractId
       | HashIdPreimageFromAsset
       | HashIdPreimageSourceAccountContractId
-      | HashIdPreimageCreateContractArgs;
+      | HashIdPreimageCreateContractArgs
+      | HashIdPreimageContractAuth;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -12641,6 +12873,40 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class ScAddress {
+    switch(): ScAddressType;
+
+    accountId(value?: AccountId): AccountId;
+
+    contractId(value?: Buffer): Buffer;
+
+    static scAddressTypeAccount(value: AccountId): ScAddress;
+
+    static scAddressTypeContract(value: Buffer): ScAddress;
+
+    value(): AccountId | Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScAddress;
+
+    static write(value: ScAddress, io: Buffer): void;
+
+    static isValid(value: ScAddress): boolean;
+
+    static toXDR(value: ScAddress): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScAddress;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScAddress;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class ScObject {
     switch(): ScObjectType;
 
@@ -12660,7 +12926,9 @@ export namespace xdr {
 
     contractCode(value?: ScContractCode): ScContractCode;
 
-    accountId(value?: AccountId): AccountId;
+    address(value?: ScAddress): ScAddress;
+
+    nonceAddress(value?: ScAddress): ScAddress;
 
     static scoVec(value: ScVal[]): ScObject;
 
@@ -12678,7 +12946,9 @@ export namespace xdr {
 
     static scoContractCode(value: ScContractCode): ScObject;
 
-    static scoAccountId(value: AccountId): ScObject;
+    static scoAddress(value: ScAddress): ScObject;
+
+    static scoNonceKey(value: ScAddress): ScObject;
 
     value():
       | ScVal[]
@@ -12689,7 +12959,8 @@ export namespace xdr {
       | Int128Parts
       | Buffer
       | ScContractCode
-      | AccountId;
+      | ScAddress
+      | ScAddress;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -12785,9 +13056,7 @@ export namespace xdr {
 
     static scSpecTypeBytes(): ScSpecTypeDef;
 
-    static scSpecTypeInvoker(): ScSpecTypeDef;
-
-    static scSpecTypeAccountId(): ScSpecTypeDef;
+    static scSpecTypeAddress(): ScSpecTypeDef;
 
     static scSpecTypeOption(value: ScSpecTypeOption): ScSpecTypeDef;
 

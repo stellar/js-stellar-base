@@ -1987,7 +1987,8 @@ xdr.union("LedgerKey", {
 //       ENVELOPE_TYPE_CONTRACT_ID_FROM_CONTRACT = 9,
 //       ENVELOPE_TYPE_CONTRACT_ID_FROM_ASSET = 10,
 //       ENVELOPE_TYPE_CONTRACT_ID_FROM_SOURCE_ACCOUNT = 11,
-//       ENVELOPE_TYPE_CREATE_CONTRACT_ARGS = 12
+//       ENVELOPE_TYPE_CREATE_CONTRACT_ARGS = 12,
+//       ENVELOPE_TYPE_CONTRACT_AUTH = 13
 //   };
 //
 // ===========================================================================
@@ -2005,6 +2006,7 @@ xdr.enum("EnvelopeType", {
   envelopeTypeContractIdFromAsset: 10,
   envelopeTypeContractIdFromSourceAccount: 11,
   envelopeTypeCreateContractArgs: 12,
+  envelopeTypeContractAuth: 13,
 });
 
 // === xdr source ============================================================
@@ -3491,6 +3493,20 @@ xdr.enum("SurveyMessageCommandType", {
 
 // === xdr source ============================================================
 //
+//   enum SurveyMessageResponseType
+//   {
+//       SURVEY_TOPOLOGY_RESPONSE_V0 = 0,
+//       SURVEY_TOPOLOGY_RESPONSE_V1 = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("SurveyMessageResponseType", {
+  surveyTopologyResponseV0: 0,
+  surveyTopologyResponseV1: 1,
+});
+
+// === xdr source ============================================================
+//
 //   struct SurveyRequestMessage
 //   {
 //       NodeID surveyorPeerID;
@@ -3615,7 +3631,7 @@ xdr.typedef("PeerStatList", xdr.varArray(xdr.lookup("PeerStats"), 25));
 
 // === xdr source ============================================================
 //
-//   struct TopologyResponseBody
+//   struct TopologyResponseBodyV0
 //   {
 //       PeerStatList inboundPeers;
 //       PeerStatList outboundPeers;
@@ -3625,12 +3641,60 @@ xdr.typedef("PeerStatList", xdr.varArray(xdr.lookup("PeerStats"), 25));
 //   };
 //
 // ===========================================================================
-xdr.struct("TopologyResponseBody", [
+xdr.struct("TopologyResponseBodyV0", [
   ["inboundPeers", xdr.lookup("PeerStatList")],
   ["outboundPeers", xdr.lookup("PeerStatList")],
   ["totalInboundPeerCount", xdr.lookup("Uint32")],
   ["totalOutboundPeerCount", xdr.lookup("Uint32")],
 ]);
+
+// === xdr source ============================================================
+//
+//   struct TopologyResponseBodyV1
+//   {
+//       PeerStatList inboundPeers;
+//       PeerStatList outboundPeers;
+//   
+//       uint32 totalInboundPeerCount;
+//       uint32 totalOutboundPeerCount;
+//   
+//       uint32 maxInboundPeerCount;
+//       uint32 maxOutboundPeerCount;
+//   };
+//
+// ===========================================================================
+xdr.struct("TopologyResponseBodyV1", [
+  ["inboundPeers", xdr.lookup("PeerStatList")],
+  ["outboundPeers", xdr.lookup("PeerStatList")],
+  ["totalInboundPeerCount", xdr.lookup("Uint32")],
+  ["totalOutboundPeerCount", xdr.lookup("Uint32")],
+  ["maxInboundPeerCount", xdr.lookup("Uint32")],
+  ["maxOutboundPeerCount", xdr.lookup("Uint32")],
+]);
+
+// === xdr source ============================================================
+//
+//   union SurveyResponseBody switch (SurveyMessageResponseType type)
+//   {
+//   case SURVEY_TOPOLOGY_RESPONSE_V0:
+//       TopologyResponseBodyV0 topologyResponseBodyV0;
+//   case SURVEY_TOPOLOGY_RESPONSE_V1:
+//       TopologyResponseBodyV1 topologyResponseBodyV1;
+//   };
+//
+// ===========================================================================
+xdr.union("SurveyResponseBody", {
+  switchOn: xdr.lookup("SurveyMessageResponseType"),
+  switchName: "type",
+  switches: [
+    ["surveyTopologyResponseV0", "topologyResponseBodyV0"],
+    ["surveyTopologyResponseV1", "topologyResponseBodyV1"],
+  ],
+  arms: {
+    topologyResponseBodyV0: xdr.lookup("TopologyResponseBodyV0"),
+    topologyResponseBodyV1: xdr.lookup("TopologyResponseBodyV1"),
+  },
+});
 
 // === xdr source ============================================================
 //
@@ -3686,26 +3750,6 @@ xdr.struct("FloodDemand", [
 
 // === xdr source ============================================================
 //
-//   union SurveyResponseBody switch (SurveyMessageCommandType type)
-//   {
-//   case SURVEY_TOPOLOGY:
-//       TopologyResponseBody topologyResponseBody;
-//   };
-//
-// ===========================================================================
-xdr.union("SurveyResponseBody", {
-  switchOn: xdr.lookup("SurveyMessageCommandType"),
-  switchName: "type",
-  switches: [
-    ["surveyTopology", "topologyResponseBody"],
-  ],
-  arms: {
-    topologyResponseBody: xdr.lookup("TopologyResponseBody"),
-  },
-});
-
-// === xdr source ============================================================
-//
 //   union StellarMessage switch (MessageType type)
 //   {
 //   case ERROR_MSG:
@@ -3751,9 +3795,9 @@ xdr.union("SurveyResponseBody", {
 //   
 //   // Pull mode
 //   case FLOOD_ADVERT:
-//       FloodAdvert floodAdvert;
+//        FloodAdvert floodAdvert;
 //   case FLOOD_DEMAND:
-//       FloodDemand floodDemand;
+//        FloodDemand floodDemand;
 //   };
 //
 // ===========================================================================
@@ -4609,18 +4653,70 @@ xdr.union("HostFunction", {
 
 // === xdr source ============================================================
 //
+//   struct AuthorizedInvocation
+//   {
+//       Hash contractID;
+//       SCSymbol functionName;
+//       SCVec args;
+//       AuthorizedInvocation subInvocations<>;
+//   };
+//
+// ===========================================================================
+xdr.struct("AuthorizedInvocation", [
+  ["contractId", xdr.lookup("Hash")],
+  ["functionName", xdr.lookup("ScSymbol")],
+  ["args", xdr.lookup("ScVec")],
+  ["subInvocations", xdr.varArray(xdr.lookup("AuthorizedInvocation"), 2147483647)],
+]);
+
+// === xdr source ============================================================
+//
+//   struct AddressWithNonce
+//   {
+//       SCAddress address;
+//       uint64 nonce;
+//   };
+//
+// ===========================================================================
+xdr.struct("AddressWithNonce", [
+  ["address", xdr.lookup("ScAddress")],
+  ["nonce", xdr.lookup("Uint64")],
+]);
+
+// === xdr source ============================================================
+//
+//   struct ContractAuth
+//   {
+//       AddressWithNonce* addressWithNonce; // not present for invoker
+//       AuthorizedInvocation rootInvocation;
+//       SCVec signatureArgs;
+//   };
+//
+// ===========================================================================
+xdr.struct("ContractAuth", [
+  ["addressWithNonce", xdr.option(xdr.lookup("AddressWithNonce"))],
+  ["rootInvocation", xdr.lookup("AuthorizedInvocation")],
+  ["signatureArgs", xdr.lookup("ScVec")],
+]);
+
+// === xdr source ============================================================
+//
 //   struct InvokeHostFunctionOp
 //   {
 //       // The host function to invoke
 //       HostFunction function;
 //       // The footprint for this invocation
 //       LedgerFootprint footprint;
+//       // Per-address authorizations for this host fn
+//       // Currently only supported for INVOKE_CONTRACT function
+//       ContractAuth auth<>;
 //   };
 //
 // ===========================================================================
 xdr.struct("InvokeHostFunctionOp", [
   ["function", xdr.lookup("HostFunction")],
   ["footprint", xdr.lookup("LedgerFootprint")],
+  ["auth", xdr.varArray(xdr.lookup("ContractAuth"), 2147483647)],
 ]);
 
 // === xdr source ============================================================
@@ -4924,6 +5020,20 @@ xdr.struct("HashIdPreimageCreateContractArgs", [
 
 // === xdr source ============================================================
 //
+//   struct
+//       {
+//           Hash networkID;
+//           AuthorizedInvocation invocation;
+//       }
+//
+// ===========================================================================
+xdr.struct("HashIdPreimageContractAuth", [
+  ["networkId", xdr.lookup("Hash")],
+  ["invocation", xdr.lookup("AuthorizedInvocation")],
+]);
+
+// === xdr source ============================================================
+//
 //   union HashIDPreimage switch (EnvelopeType type)
 //   {
 //   case ENVELOPE_TYPE_OP_ID:
@@ -4975,7 +5085,13 @@ xdr.struct("HashIdPreimageCreateContractArgs", [
 //           Hash networkID;
 //           SCContractCode source;
 //           uint256 salt;
-//       } createContractArgs;        
+//       } createContractArgs;
+//   case ENVELOPE_TYPE_CONTRACT_AUTH:
+//       struct
+//       {
+//           Hash networkID;
+//           AuthorizedInvocation invocation;
+//       } contractAuth;
 //   };
 //
 // ===========================================================================
@@ -4990,6 +5106,7 @@ xdr.union("HashIdPreimage", {
     ["envelopeTypeContractIdFromAsset", "fromAsset"],
     ["envelopeTypeContractIdFromSourceAccount", "sourceAccountContractId"],
     ["envelopeTypeCreateContractArgs", "createContractArgs"],
+    ["envelopeTypeContractAuth", "contractAuth"],
   ],
   arms: {
     operationId: xdr.lookup("HashIdPreimageOperationId"),
@@ -4999,6 +5116,7 @@ xdr.union("HashIdPreimage", {
     fromAsset: xdr.lookup("HashIdPreimageFromAsset"),
     sourceAccountContractId: xdr.lookup("HashIdPreimageSourceAccountContractId"),
     createContractArgs: xdr.lookup("HashIdPreimageCreateContractArgs"),
+    contractAuth: xdr.lookup("HashIdPreimageContractAuth"),
   },
 });
 
@@ -8367,7 +8485,8 @@ xdr.union("ScVal", {
 //       SCO_I128 = 5,
 //       SCO_BYTES = 6,
 //       SCO_CONTRACT_CODE = 7,
-//       SCO_ACCOUNT_ID = 8
+//       SCO_ADDRESS = 8,
+//       SCO_NONCE_KEY = 9
 //   
 //       // TODO: add more
 //   };
@@ -8382,7 +8501,8 @@ xdr.enum("ScObjectType", {
   scoI128: 5,
   scoBytes: 6,
   scoContractCode: 7,
-  scoAccountId: 8,
+  scoAddress: 8,
+  scoNonceKey: 9,
 });
 
 // === xdr source ============================================================
@@ -8401,7 +8521,7 @@ xdr.struct("ScMapEntry", [
 
 // === xdr source ============================================================
 //
-const SCVAL_LIMIT = 256000;
+//   const SCVAL_LIMIT = 256000;
 //
 // ===========================================================================
 xdr.const("SCVAL_LIMIT", 256000);
@@ -8475,6 +8595,44 @@ xdr.struct("Int128Parts", [
 
 // === xdr source ============================================================
 //
+//   enum SCAddressType
+//   {
+//       SC_ADDRESS_TYPE_ACCOUNT = 0,
+//       SC_ADDRESS_TYPE_CONTRACT = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("ScAddressType", {
+  scAddressTypeAccount: 0,
+  scAddressTypeContract: 1,
+});
+
+// === xdr source ============================================================
+//
+//   union SCAddress switch (SCAddressType type)
+//   {
+//   case SC_ADDRESS_TYPE_ACCOUNT:
+//       AccountID accountId;
+//   case SC_ADDRESS_TYPE_CONTRACT:
+//       Hash contractId;
+//   };
+//
+// ===========================================================================
+xdr.union("ScAddress", {
+  switchOn: xdr.lookup("ScAddressType"),
+  switchName: "type",
+  switches: [
+    ["scAddressTypeAccount", "accountId"],
+    ["scAddressTypeContract", "contractId"],
+  ],
+  arms: {
+    accountId: xdr.lookup("AccountId"),
+    contractId: xdr.lookup("Hash"),
+  },
+});
+
+// === xdr source ============================================================
+//
 //   union SCObject switch (SCObjectType type)
 //   {
 //   case SCO_VEC:
@@ -8493,8 +8651,10 @@ xdr.struct("Int128Parts", [
 //       opaque bin<SCVAL_LIMIT>;
 //   case SCO_CONTRACT_CODE:
 //       SCContractCode contractCode;
-//   case SCO_ACCOUNT_ID:
-//       AccountID accountID;
+//   case SCO_ADDRESS:
+//       SCAddress address;
+//   case SCO_NONCE_KEY:
+//       SCAddress nonceAddress;
 //   };
 //
 // ===========================================================================
@@ -8510,7 +8670,8 @@ xdr.union("ScObject", {
     ["scoI128", "i128"],
     ["scoBytes", "bin"],
     ["scoContractCode", "contractCode"],
-    ["scoAccountId", "accountId"],
+    ["scoAddress", "address"],
+    ["scoNonceKey", "nonceAddress"],
   ],
   arms: {
     vec: xdr.lookup("ScVec"),
@@ -8521,7 +8682,8 @@ xdr.union("ScObject", {
     i128: xdr.lookup("Int128Parts"),
     bin: xdr.varOpaque(SCVAL_LIMIT),
     contractCode: xdr.lookup("ScContractCode"),
-    accountId: xdr.lookup("AccountId"),
+    address: xdr.lookup("ScAddress"),
+    nonceAddress: xdr.lookup("ScAddress"),
   },
 });
 
@@ -8576,7 +8738,7 @@ xdr.union("ScEnvMetaEntry", {
 //       SC_SPEC_TYPE_STATUS = 10,
 //       SC_SPEC_TYPE_BYTES = 11,
 //       SC_SPEC_TYPE_INVOKER = 12,
-//       SC_SPEC_TYPE_ACCOUNT_ID = 13,
+//       SC_SPEC_TYPE_ADDRESS = 13,
 //   
 //       // Types with parameters.
 //       SC_SPEC_TYPE_OPTION = 1000,
@@ -8606,7 +8768,7 @@ xdr.enum("ScSpecType", {
   scSpecTypeStatus: 10,
   scSpecTypeBytes: 11,
   scSpecTypeInvoker: 12,
-  scSpecTypeAccountId: 13,
+  scSpecTypeAddress: 13,
   scSpecTypeOption: 1000,
   scSpecTypeResult: 1001,
   scSpecTypeVec: 1002,
@@ -8733,8 +8895,7 @@ xdr.struct("ScSpecTypeUdt", [
 //   case SC_SPEC_TYPE_BITSET:
 //   case SC_SPEC_TYPE_STATUS:
 //   case SC_SPEC_TYPE_BYTES:
-//   case SC_SPEC_TYPE_INVOKER:
-//   case SC_SPEC_TYPE_ACCOUNT_ID:
+//   case SC_SPEC_TYPE_ADDRESS:
 //       void;
 //   case SC_SPEC_TYPE_OPTION:
 //       SCSpecTypeOption option;
@@ -8771,8 +8932,7 @@ xdr.union("ScSpecTypeDef", {
     ["scSpecTypeBitset", xdr.void()],
     ["scSpecTypeStatus", xdr.void()],
     ["scSpecTypeBytes", xdr.void()],
-    ["scSpecTypeInvoker", xdr.void()],
-    ["scSpecTypeAccountId", xdr.void()],
+    ["scSpecTypeAddress", xdr.void()],
     ["scSpecTypeOption", "option"],
     ["scSpecTypeResult", "result"],
     ["scSpecTypeVec", "vec"],
