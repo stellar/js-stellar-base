@@ -5458,9 +5458,9 @@ export namespace xdr {
   }
 
   class FloodDemand {
-    constructor(attributes: { txHashes: Hash[] });
+    constructor(attributes: { txHashes: Array<typeof Hash> });
 
-    txHashes(value?: Hash[]): Hash[];
+    txHashes(value?: Array<typeof Hash>): Array<typeof Hash>;
 
     toXDR(format?: 'raw'): Buffer;
 
