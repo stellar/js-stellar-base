@@ -38,6 +38,26 @@ export class Address {
   }
 
   /**
+   * Creates a new account Address object from a buffer of raw bytes.
+   *
+   * @param {Buffer} buffer - The bytes of an address to parse.
+   * @returns {Address}
+   */
+  static account(buffer) {
+    return new Address(StrKey.encodeEd25519PublicKey(buffer));
+  }
+
+  /**
+   * Creates a new contract Address object from a buffer of raw bytes.
+   *
+   * @param {Buffer} buffer - The bytes of an address to parse.
+   * @returns {Address}
+   */
+  static contract(buffer) {
+    return new Address(StrKey.encodeContract(buffer));
+  }
+
+  /**
    * Serialize an address to string.
    *
    * @returns {string}

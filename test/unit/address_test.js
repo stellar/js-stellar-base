@@ -28,6 +28,27 @@ describe('Address', function() {
     });
   });
 
+  describe('static constructors', function() {
+    it('.fromString', function() {
+      let account = StellarBase.Address.fromString(ACCOUNT);
+      expect(account.toString()).to.equal(ACCOUNT);
+    });
+
+    it('.account', function() {
+      let account = StellarBase.Address.account(Buffer.alloc(32));
+      expect(account.toString()).to.equal(
+        'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF'
+      );
+    });
+
+    it('.contract', function() {
+      let account = StellarBase.Address.contract(Buffer.alloc(32));
+      expect(account.toString()).to.equal(
+        'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4'
+      );
+    });
+  });
+
   describe('.toScAddress', function() {
     it('converts accounts to an ScAddress', function() {
       const a = new StellarBase.Address(ACCOUNT);
