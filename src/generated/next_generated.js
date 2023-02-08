@@ -8179,7 +8179,8 @@ xdr.enum("ScStatic", {
 //       SST_HOST_STORAGE_ERROR = 5,
 //       SST_HOST_CONTEXT_ERROR = 6,
 //       SST_VM_ERROR = 7,
-//       SST_CONTRACT_ERROR = 8
+//       SST_CONTRACT_ERROR = 8,
+//       SST_HOST_AUTH_ERROR = 9
 //       // TODO: add more
 //   };
 //
@@ -8194,6 +8195,7 @@ xdr.enum("ScStatusType", {
   sstHostContextError: 6,
   sstVmError: 7,
   sstContractError: 8,
+  sstHostAuthError: 9,
 });
 
 // === xdr source ============================================================
@@ -8298,6 +8300,24 @@ xdr.enum("ScHostStorageErrorCode", {
 
 // === xdr source ============================================================
 //
+//   enum SCHostAuthErrorCode
+//   {
+//       HOST_AUTH_UNKNOWN_ERROR = 0,
+//       HOST_AUTH_NONCE_ERROR = 1,
+//       HOST_AUTH_DUPLICATE_AUTHORIZATION = 2,
+//       HOST_AUTH_NOT_AUTHORIZED = 3
+//   };
+//
+// ===========================================================================
+xdr.enum("ScHostAuthErrorCode", {
+  hostAuthUnknownError: 0,
+  hostAuthNonceError: 1,
+  hostAuthDuplicateAuthorization: 2,
+  hostAuthNotAuthorized: 3,
+});
+
+// === xdr source ============================================================
+//
 //   enum SCHostContextErrorCode
 //   {
 //       HOST_CONTEXT_UNKNOWN_ERROR = 0,
@@ -8393,6 +8413,8 @@ xdr.enum("ScUnknownErrorCode", {
 //       SCVmErrorCode vmCode;
 //   case SST_CONTRACT_ERROR:
 //       uint32 contractCode;
+//   case SST_HOST_AUTH_ERROR:
+//       SCHostAuthErrorCode authCode;
 //   };
 //
 // ===========================================================================
@@ -8409,6 +8431,7 @@ xdr.union("ScStatus", {
     ["sstHostContextError", "contextCode"],
     ["sstVmError", "vmCode"],
     ["sstContractError", "contractCode"],
+    ["sstHostAuthError", "authCode"],
   ],
   arms: {
     unknownCode: xdr.lookup("ScUnknownErrorCode"),
@@ -8419,6 +8442,7 @@ xdr.union("ScStatus", {
     contextCode: xdr.lookup("ScHostContextErrorCode"),
     vmCode: xdr.lookup("ScVmErrorCode"),
     contractCode: xdr.lookup("Uint32"),
+    authCode: xdr.lookup("ScHostAuthErrorCode"),
   },
 });
 
@@ -8721,6 +8745,13 @@ xdr.union("ScEnvMetaEntry", {
 
 // === xdr source ============================================================
 //
+const SC_SPEC_DOC_LIMIT = 1024;
+//
+// ===========================================================================
+xdr.const("SC_SPEC_DOC_LIMIT", 1024);
+
+// === xdr source ============================================================
+//
 //   enum SCSpecType
 //   {
 //       SC_SPEC_TYPE_VAL = 0,
@@ -8958,12 +8989,14 @@ xdr.union("ScSpecTypeDef", {
 //
 //   struct SCSpecUDTStructFieldV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<30>;
 //       SCSpecTypeDef type;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtStructFieldV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(30)],
   ["type", xdr.lookup("ScSpecTypeDef")],
 ]);
@@ -8972,6 +9005,7 @@ xdr.struct("ScSpecUdtStructFieldV0", [
 //
 //   struct SCSpecUDTStructV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTStructFieldV0 fields<40>;
@@ -8979,6 +9013,7 @@ xdr.struct("ScSpecUdtStructFieldV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtStructV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["fields", xdr.varArray(xdr.lookup("ScSpecUdtStructFieldV0"), 40)],
@@ -8986,22 +9021,77 @@ xdr.struct("ScSpecUdtStructV0", [
 
 // === xdr source ============================================================
 //
-//   struct SCSpecUDTUnionCaseV0
+//   struct SCSpecUDTUnionCaseVoidV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
-//       SCSpecTypeDef *type;
 //   };
 //
 // ===========================================================================
-xdr.struct("ScSpecUdtUnionCaseV0", [
+xdr.struct("ScSpecUdtUnionCaseVoidV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
-  ["type", xdr.option(xdr.lookup("ScSpecTypeDef"))],
 ]);
+
+// === xdr source ============================================================
+//
+//   struct SCSpecUDTUnionCaseTupleV0
+//   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
+//       string name<60>;
+//       SCSpecTypeDef type<12>;
+//   };
+//
+// ===========================================================================
+xdr.struct("ScSpecUdtUnionCaseTupleV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
+  ["name", xdr.string(60)],
+  ["type", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 12)],
+]);
+
+// === xdr source ============================================================
+//
+//   enum SCSpecUDTUnionCaseV0Kind
+//   {
+//       SC_SPEC_UDT_UNION_CASE_VOID_V0 = 0,
+//       SC_SPEC_UDT_UNION_CASE_TUPLE_V0 = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("ScSpecUdtUnionCaseV0Kind", {
+  scSpecUdtUnionCaseVoidV0: 0,
+  scSpecUdtUnionCaseTupleV0: 1,
+});
+
+// === xdr source ============================================================
+//
+//   union SCSpecUDTUnionCaseV0 switch (SCSpecUDTUnionCaseV0Kind kind)
+//   {
+//   case SC_SPEC_UDT_UNION_CASE_VOID_V0:
+//       SCSpecUDTUnionCaseVoidV0 voidCase;
+//   case SC_SPEC_UDT_UNION_CASE_TUPLE_V0:
+//       SCSpecUDTUnionCaseTupleV0 tupleCase;
+//   };
+//
+// ===========================================================================
+xdr.union("ScSpecUdtUnionCaseV0", {
+  switchOn: xdr.lookup("ScSpecUdtUnionCaseV0Kind"),
+  switchName: "kind",
+  switches: [
+    ["scSpecUdtUnionCaseVoidV0", "voidCase"],
+    ["scSpecUdtUnionCaseTupleV0", "tupleCase"],
+  ],
+  arms: {
+    voidCase: xdr.lookup("ScSpecUdtUnionCaseVoidV0"),
+    tupleCase: xdr.lookup("ScSpecUdtUnionCaseTupleV0"),
+  },
+});
 
 // === xdr source ============================================================
 //
 //   struct SCSpecUDTUnionV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTUnionCaseV0 cases<50>;
@@ -9009,6 +9099,7 @@ xdr.struct("ScSpecUdtUnionCaseV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtUnionV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["cases", xdr.varArray(xdr.lookup("ScSpecUdtUnionCaseV0"), 50)],
@@ -9018,12 +9109,14 @@ xdr.struct("ScSpecUdtUnionV0", [
 //
 //   struct SCSpecUDTEnumCaseV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
 //       uint32 value;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtEnumCaseV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
   ["value", xdr.lookup("Uint32")],
 ]);
@@ -9032,6 +9125,7 @@ xdr.struct("ScSpecUdtEnumCaseV0", [
 //
 //   struct SCSpecUDTEnumV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTEnumCaseV0 cases<50>;
@@ -9039,6 +9133,7 @@ xdr.struct("ScSpecUdtEnumCaseV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtEnumV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["cases", xdr.varArray(xdr.lookup("ScSpecUdtEnumCaseV0"), 50)],
@@ -9048,12 +9143,14 @@ xdr.struct("ScSpecUdtEnumV0", [
 //
 //   struct SCSpecUDTErrorEnumCaseV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
 //       uint32 value;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtErrorEnumCaseV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
   ["value", xdr.lookup("Uint32")],
 ]);
@@ -9062,6 +9159,7 @@ xdr.struct("ScSpecUdtErrorEnumCaseV0", [
 //
 //   struct SCSpecUDTErrorEnumV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTErrorEnumCaseV0 cases<50>;
@@ -9069,6 +9167,7 @@ xdr.struct("ScSpecUdtErrorEnumCaseV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtErrorEnumV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["cases", xdr.varArray(xdr.lookup("ScSpecUdtErrorEnumCaseV0"), 50)],
@@ -9078,12 +9177,14 @@ xdr.struct("ScSpecUdtErrorEnumV0", [
 //
 //   struct SCSpecFunctionInputV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<30>;
 //       SCSpecTypeDef type;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecFunctionInputV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(30)],
   ["type", xdr.lookup("ScSpecTypeDef")],
 ]);
@@ -9092,6 +9193,7 @@ xdr.struct("ScSpecFunctionInputV0", [
 //
 //   struct SCSpecFunctionV0
 //   {
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       SCSymbol name;
 //       SCSpecFunctionInputV0 inputs<10>;
 //       SCSpecTypeDef outputs<1>;
@@ -9099,6 +9201,7 @@ xdr.struct("ScSpecFunctionInputV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecFunctionV0", [
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.lookup("ScSymbol")],
   ["inputs", xdr.varArray(xdr.lookup("ScSpecFunctionInputV0"), 10)],
   ["outputs", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 1)],

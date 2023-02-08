@@ -1850,9 +1850,10 @@ export namespace xdr {
       | 'sstHostStorageError'
       | 'sstHostContextError'
       | 'sstVmError'
-      | 'sstContractError';
+      | 'sstContractError'
+      | 'sstHostAuthError';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     static sstOk(): ScStatusType;
 
@@ -1871,6 +1872,8 @@ export namespace xdr {
     static sstVmError(): ScStatusType;
 
     static sstContractError(): ScStatusType;
+
+    static sstHostAuthError(): ScStatusType;
   }
 
   class ScHostValErrorCode {
@@ -1985,6 +1988,24 @@ export namespace xdr {
     static hostStorageMissingKeyInGet(): ScHostStorageErrorCode;
 
     static hostStorageGetOnDeletedKey(): ScHostStorageErrorCode;
+  }
+
+  class ScHostAuthErrorCode {
+    readonly name:
+      | 'hostAuthUnknownError'
+      | 'hostAuthNonceError'
+      | 'hostAuthDuplicateAuthorization'
+      | 'hostAuthNotAuthorized';
+
+    readonly value: 0 | 1 | 2 | 3;
+
+    static hostAuthUnknownError(): ScHostAuthErrorCode;
+
+    static hostAuthNonceError(): ScHostAuthErrorCode;
+
+    static hostAuthDuplicateAuthorization(): ScHostAuthErrorCode;
+
+    static hostAuthNotAuthorized(): ScHostAuthErrorCode;
   }
 
   class ScHostContextErrorCode {
@@ -2245,6 +2266,16 @@ export namespace xdr {
     static scSpecTypeBytesN(): ScSpecType;
 
     static scSpecTypeUdt(): ScSpecType;
+  }
+
+  class ScSpecUdtUnionCaseV0Kind {
+    readonly name: 'scSpecUdtUnionCaseVoidV0' | 'scSpecUdtUnionCaseTupleV0';
+
+    readonly value: 0 | 1;
+
+    static scSpecUdtUnionCaseVoidV0(): ScSpecUdtUnionCaseV0Kind;
+
+    static scSpecUdtUnionCaseTupleV0(): ScSpecUdtUnionCaseV0Kind;
   }
 
   class ScSpecEntryKind {
@@ -8115,7 +8146,13 @@ export namespace xdr {
   }
 
   class ScSpecUdtStructFieldV0 {
-    constructor(attributes: { name: string | Buffer; type: ScSpecTypeDef });
+    constructor(attributes: {
+      doc: string | Buffer;
+      name: string | Buffer;
+      type: ScSpecTypeDef;
+    });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     name(value?: string | Buffer): string | Buffer;
 
@@ -8147,10 +8184,13 @@ export namespace xdr {
 
   class ScSpecUdtStructV0 {
     constructor(attributes: {
+      doc: string | Buffer;
       lib: string | Buffer;
       name: string | Buffer;
       fields: ScSpecUdtStructFieldV0[];
     });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     lib(value?: string | Buffer): string | Buffer;
 
@@ -8179,34 +8219,68 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ScSpecUdtUnionCaseV0 {
-    constructor(attributes: {
-      name: string | Buffer;
-      type: null | ScSpecTypeDef;
-    });
+  class ScSpecUdtUnionCaseVoidV0 {
+    constructor(attributes: { doc: string | Buffer; name: string | Buffer });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     name(value?: string | Buffer): string | Buffer;
-
-    type(value?: null | ScSpecTypeDef): null | ScSpecTypeDef;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): ScSpecUdtUnionCaseV0;
+    static read(io: Buffer): ScSpecUdtUnionCaseVoidV0;
 
-    static write(value: ScSpecUdtUnionCaseV0, io: Buffer): void;
+    static write(value: ScSpecUdtUnionCaseVoidV0, io: Buffer): void;
 
-    static isValid(value: ScSpecUdtUnionCaseV0): boolean;
+    static isValid(value: ScSpecUdtUnionCaseVoidV0): boolean;
 
-    static toXDR(value: ScSpecUdtUnionCaseV0): Buffer;
+    static toXDR(value: ScSpecUdtUnionCaseVoidV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseVoidV0;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64'
-    ): ScSpecUdtUnionCaseV0;
+    ): ScSpecUdtUnionCaseVoidV0;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ScSpecUdtUnionCaseTupleV0 {
+    constructor(attributes: {
+      doc: string | Buffer;
+      name: string | Buffer;
+      type: ScSpecTypeDef[];
+    });
+
+    doc(value?: string | Buffer): string | Buffer;
+
+    name(value?: string | Buffer): string | Buffer;
+
+    type(value?: ScSpecTypeDef[]): ScSpecTypeDef[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScSpecUdtUnionCaseTupleV0;
+
+    static write(value: ScSpecUdtUnionCaseTupleV0, io: Buffer): void;
+
+    static isValid(value: ScSpecUdtUnionCaseTupleV0): boolean;
+
+    static toXDR(value: ScSpecUdtUnionCaseTupleV0): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseTupleV0;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScSpecUdtUnionCaseTupleV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -8215,10 +8289,13 @@ export namespace xdr {
 
   class ScSpecUdtUnionV0 {
     constructor(attributes: {
+      doc: string | Buffer;
       lib: string | Buffer;
       name: string | Buffer;
       cases: ScSpecUdtUnionCaseV0[];
     });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     lib(value?: string | Buffer): string | Buffer;
 
@@ -8248,7 +8325,13 @@ export namespace xdr {
   }
 
   class ScSpecUdtEnumCaseV0 {
-    constructor(attributes: { name: string | Buffer; value: number });
+    constructor(attributes: {
+      doc: string | Buffer;
+      name: string | Buffer;
+      value: number;
+    });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     name(value?: string | Buffer): string | Buffer;
 
@@ -8280,10 +8363,13 @@ export namespace xdr {
 
   class ScSpecUdtEnumV0 {
     constructor(attributes: {
+      doc: string | Buffer;
       lib: string | Buffer;
       name: string | Buffer;
       cases: ScSpecUdtEnumCaseV0[];
     });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     lib(value?: string | Buffer): string | Buffer;
 
@@ -8313,7 +8399,13 @@ export namespace xdr {
   }
 
   class ScSpecUdtErrorEnumCaseV0 {
-    constructor(attributes: { name: string | Buffer; value: number });
+    constructor(attributes: {
+      doc: string | Buffer;
+      name: string | Buffer;
+      value: number;
+    });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     name(value?: string | Buffer): string | Buffer;
 
@@ -8345,10 +8437,13 @@ export namespace xdr {
 
   class ScSpecUdtErrorEnumV0 {
     constructor(attributes: {
+      doc: string | Buffer;
       lib: string | Buffer;
       name: string | Buffer;
       cases: ScSpecUdtErrorEnumCaseV0[];
     });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     lib(value?: string | Buffer): string | Buffer;
 
@@ -8381,7 +8476,13 @@ export namespace xdr {
   }
 
   class ScSpecFunctionInputV0 {
-    constructor(attributes: { name: string | Buffer; type: ScSpecTypeDef });
+    constructor(attributes: {
+      doc: string | Buffer;
+      name: string | Buffer;
+      type: ScSpecTypeDef;
+    });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     name(value?: string | Buffer): string | Buffer;
 
@@ -8413,10 +8514,13 @@ export namespace xdr {
 
   class ScSpecFunctionV0 {
     constructor(attributes: {
+      doc: string | Buffer;
       name: string | Buffer;
       inputs: ScSpecFunctionInputV0[];
       outputs: ScSpecTypeDef[];
     });
+
+    doc(value?: string | Buffer): string | Buffer;
 
     name(value?: string | Buffer): string | Buffer;
 
@@ -12723,6 +12827,8 @@ export namespace xdr {
 
     contractCode(value?: number): number;
 
+    authCode(value?: ScHostAuthErrorCode): ScHostAuthErrorCode;
+
     static sstOk(): ScStatus;
 
     static sstUnknownError(value: ScUnknownErrorCode): ScStatus;
@@ -12741,6 +12847,8 @@ export namespace xdr {
 
     static sstContractError(value: number): ScStatus;
 
+    static sstHostAuthError(value: ScHostAuthErrorCode): ScStatus;
+
     value():
       | ScUnknownErrorCode
       | ScHostValErrorCode
@@ -12750,6 +12858,7 @@ export namespace xdr {
       | ScHostContextErrorCode
       | ScVmErrorCode
       | number
+      | ScHostAuthErrorCode
       | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -13100,6 +13209,47 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeDef;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeDef;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ScSpecUdtUnionCaseV0 {
+    switch(): ScSpecUdtUnionCaseV0Kind;
+
+    voidCase(value?: ScSpecUdtUnionCaseVoidV0): ScSpecUdtUnionCaseVoidV0;
+
+    tupleCase(value?: ScSpecUdtUnionCaseTupleV0): ScSpecUdtUnionCaseTupleV0;
+
+    static scSpecUdtUnionCaseVoidV0(
+      value: ScSpecUdtUnionCaseVoidV0
+    ): ScSpecUdtUnionCaseV0;
+
+    static scSpecUdtUnionCaseTupleV0(
+      value: ScSpecUdtUnionCaseTupleV0
+    ): ScSpecUdtUnionCaseV0;
+
+    value(): ScSpecUdtUnionCaseVoidV0 | ScSpecUdtUnionCaseTupleV0;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScSpecUdtUnionCaseV0;
+
+    static write(value: ScSpecUdtUnionCaseV0, io: Buffer): void;
+
+    static isValid(value: ScSpecUdtUnionCaseV0): boolean;
+
+    static toXDR(value: ScSpecUdtUnionCaseV0): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseV0;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScSpecUdtUnionCaseV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
