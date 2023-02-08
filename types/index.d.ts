@@ -12,6 +12,16 @@ export class Account {
   incrementSequenceNumber(): void;
 }
 
+export class Address {
+  constructor(address: string);
+  static fromString(address: string): Address;
+  static account(buffer: Buffer): Address;
+  static contract(buffer: Buffer): Address;
+  toString(): string;
+  toScVal(): xdr.ScVal;
+  toScAddress(): xdr.ScAddress;
+}
+
 export class Contract {
   constructor(contractId: string);
   contractId(): string;

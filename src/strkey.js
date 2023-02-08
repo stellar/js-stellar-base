@@ -13,7 +13,8 @@ const versionBytes = {
   med25519PublicKey: 12 << 3, // M
   preAuthTx: 19 << 3, // T
   sha256Hash: 23 << 3, // X
-  signedPayload: 15 << 3 // P
+  signedPayload: 15 << 3, // P
+  contract: 2 << 3 // C
 };
 
 const strkeyTypes = {
@@ -22,7 +23,8 @@ const strkeyTypes = {
   M: 'med25519PublicKey',
   T: 'preAuthTx',
   X: 'sha256Hash',
-  P: 'signedPayload'
+  P: 'signedPayload',
+  C: 'contract'
 };
 
 /**
@@ -180,6 +182,33 @@ export class StrKey {
     return isValid('signedPayload', address);
   }
 
+  /**
+   * Encodes raw data to strkey contract (C...).
+   * @param   {Buffer} data  data to encode
+   * @returns {string}
+   */
+  static encodeContract(data) {
+    return encodeCheck('contract', data);
+  }
+
+  /**
+   * Decodes strkey contract (C...) to raw data.
+   * @param   {string} address  address to decode
+   * @returns {Buffer}
+   */
+  static decodeContract(address) {
+    return decodeCheck('contract', address);
+  }
+
+  /**
+   * Checks validity of alleged contract (C...) strkey address.
+   * @param   {string} address  signer key to check
+   * @returns {boolean}
+   */
+  static isValidContract(address) {
+    return isValid('contract', address);
+  }
+
   static getVersionByteForPrefix(address) {
     return strkeyTypes[address[0]];
   }
@@ -208,7 +237,8 @@ function isValid(versionByteName, encoded) {
     case 'ed25519PublicKey': // falls through
     case 'ed25519SecretSeed': // falls through
     case 'preAuthTx': // falls through
-    case 'sha256Hash':
+    case 'sha256Hash': // falls through
+    case 'contract':
       if (encoded.length !== 56) {
         return false;
       }
@@ -242,7 +272,8 @@ function isValid(versionByteName, encoded) {
     case 'ed25519PublicKey': // falls through
     case 'ed25519SecretSeed': // falls through
     case 'preAuthTx': // falls through
-    case 'sha256Hash':
+    case 'sha256Hash': // falls through
+    case 'contract':
       return decoded.length === 32;
 
     case 'med25519PublicKey':
