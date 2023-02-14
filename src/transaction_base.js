@@ -69,6 +69,17 @@ export class TransactionBase {
    * @returns {void}
    */
   sign(...keypairs) {
+    // Temporary warning for contract auth-next signatures not being supported.
+    const requiresContractSignatures = (this.operations || []).some(
+      (op) =>
+        op.type === 'invokeHostFunction' &&
+        op.auth.some((a) => a.addressWithNonce())
+    );
+    if (requiresContractSignatures) {
+      throw new Error(
+        'Soroban contract signatures are not supported in this version of the SDK.'
+      );
+    }
     const txHash = this.hash();
     keypairs.forEach((kp) => {
       const sig = kp.signDecorated(txHash);
