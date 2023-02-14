@@ -283,7 +283,7 @@ describe('Transaction', function() {
                 nonce: StellarBase.xdr.Uint64.fromString('0')
               }),
               // Rest of params are irrelevant
-              rootInvocation: StellarBase.xdr.AuthorizedInvocation({
+              rootInvocation: new StellarBase.xdr.AuthorizedInvocation({
                 contractId: new Buffer(32),
                 functionName: 'test',
                 args: [],

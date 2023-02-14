@@ -70,7 +70,7 @@ export class TransactionBase {
    */
   sign(...keypairs) {
     // Temporary warning for contract auth-next signatures not being supported.
-    const requiresContractSignatures = (this._tx.operations || []).some(
+    const requiresContractSignatures = (this.operations || []).some(
       (op) =>
         op.type === 'invokeHostFunction' &&
         op.auth.some((a) => a.addressWithNonce())
