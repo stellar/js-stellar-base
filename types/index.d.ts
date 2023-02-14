@@ -856,6 +856,7 @@ export namespace Operation {
     function: xdr.HostFunction;
     parameters: xdr.ScVal[];
     footprint: xdr.LedgerFootprint;
+    auth: xdr.ContractAuth[];
   }
   function invokeHostFunction(
     options: OperationOptions.InvokeHostFunction
