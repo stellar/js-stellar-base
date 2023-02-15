@@ -5023,12 +5023,14 @@ xdr.struct("HashIdPreimageCreateContractArgs", [
 //   struct
 //       {
 //           Hash networkID;
+//           uint64 nonce;
 //           AuthorizedInvocation invocation;
 //       }
 //
 // ===========================================================================
 xdr.struct("HashIdPreimageContractAuth", [
   ["networkId", xdr.lookup("Hash")],
+  ["nonce", xdr.lookup("Uint64")],
   ["invocation", xdr.lookup("AuthorizedInvocation")],
 ]);
 
@@ -5090,6 +5092,7 @@ xdr.struct("HashIdPreimageContractAuth", [
 //       struct
 //       {
 //           Hash networkID;
+//           uint64 nonce;
 //           AuthorizedInvocation invocation;
 //       } contractAuth;
 //   };

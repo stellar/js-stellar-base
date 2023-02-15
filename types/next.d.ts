@@ -1,4 +1,4 @@
-// Automatically generated on 2023-02-02T13:12:00Z
+// Automatically generated on 2023-02-15T10:28:00Z
 import { Operation } from './index';
 
 export {};
@@ -6935,10 +6935,13 @@ export namespace xdr {
   class HashIdPreimageContractAuth {
     constructor(attributes: {
       networkId: Buffer;
+      nonce: Uint64;
       invocation: AuthorizedInvocation;
     });
 
     networkId(value?: Buffer): Buffer;
+
+    nonce(value?: Uint64): Uint64;
 
     invocation(value?: AuthorizedInvocation): AuthorizedInvocation;
 
