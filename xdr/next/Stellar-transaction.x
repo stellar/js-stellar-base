@@ -682,6 +682,7 @@ case ENVELOPE_TYPE_CONTRACT_AUTH:
     struct
     {
         Hash networkID;
+        uint64 nonce;
         AuthorizedInvocation invocation;
     } contractAuth;
 };
