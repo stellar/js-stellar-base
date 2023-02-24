@@ -77,4 +77,20 @@ describe('Address', function() {
       expect(s.obj().address()).to.deep.equal(a.toScAddress());
     });
   });
+
+  describe('.toBuffer', function() {
+    it('returns the raw public key bytes for accounts', function() {
+      const a = new StellarBase.Address(ACCOUNT);
+      const b = a.toBuffer();
+      expect(b).to.deep.equal(
+        StellarBase.StrKey.decodeEd25519PublicKey(ACCOUNT)
+      );
+    });
+
+    it('returns the raw public key bytes for contracts', function() {
+      const a = new StellarBase.Address(CONTRACT);
+      const b = a.toBuffer();
+      expect(b).to.deep.equal(StellarBase.StrKey.decodeContract(CONTRACT));
+    });
+  });
 });
