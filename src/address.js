@@ -99,4 +99,13 @@ export class Address {
         throw new Error('Unsupported address type');
     }
   }
+
+  /**
+   * Return the raw public key bytes for this address.
+   *
+   * @returns {Buffer}
+   */
+  toBuffer() {
+    return this._key;
+  }
 }
