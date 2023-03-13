@@ -47,6 +47,50 @@ describe('Address', function() {
         'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4'
       );
     });
+
+    describe('.fromScAddress', function() {
+      it('creates an Address object for accounts', function() {
+        let scAddress = StellarBase.xdr.ScAddress.scAddressTypeAccount(
+          StellarBase.xdr.PublicKey.publicKeyTypeEd25519(
+            StellarBase.StrKey.decodeEd25519PublicKey(ACCOUNT)
+          )
+        );
+        let account = StellarBase.Address.fromScAddress(scAddress);
+        expect(account.toString()).to.equal(ACCOUNT);
+      });
+
+      it('creates an Address object for contracts', function() {
+        let scAddress = StellarBase.xdr.ScAddress.scAddressTypeContract(
+          StellarBase.StrKey.decodeContract(CONTRACT)
+        );
+        let contract = StellarBase.Address.fromScAddress(scAddress);
+        expect(contract.toString()).to.equal(CONTRACT);
+      });
+    });
+
+    describe('.fromScVal', function() {
+      it('creates an Address object for accounts', function() {
+        let scVal = StellarBase.xdr.ScVal.scvAddress(
+          StellarBase.xdr.ScAddress.scAddressTypeAccount(
+            StellarBase.xdr.PublicKey.publicKeyTypeEd25519(
+              StellarBase.StrKey.decodeEd25519PublicKey(ACCOUNT)
+            )
+          )
+        );
+        let account = StellarBase.Address.fromScVal(scVal);
+        expect(account.toString()).to.equal(ACCOUNT);
+      });
+
+      it('creates an Address object for contracts', function() {
+        let scVal = StellarBase.xdr.ScVal.scvAddress(
+          StellarBase.xdr.ScAddress.scAddressTypeContract(
+            StellarBase.StrKey.decodeContract(CONTRACT)
+          )
+        );
+        let contract = StellarBase.Address.fromScVal(scVal);
+        expect(contract.toString()).to.equal(CONTRACT);
+      });
+    });
   });
 
   describe('.toScAddress', function() {
@@ -74,7 +118,7 @@ describe('Address', function() {
       const a = new StellarBase.Address(ACCOUNT);
       const s = a.toScVal();
       expect(s).to.be.instanceof(StellarBase.xdr.ScVal);
-      expect(s.obj().address()).to.deep.equal(a.toScAddress());
+      expect(s.address()).to.deep.equal(a.toScAddress());
     });
   });
 

@@ -58,6 +58,33 @@ export class Address {
   }
 
   /**
+   * Convert this from an xdr.ScVal type
+   *
+   * @param {xdr.ScVal} scVal - The xdr.ScVal type to parse
+   * @returns {Address}
+   */
+  static fromScVal(scVal) {
+    return Address.fromScAddress(scVal.address());
+  }
+
+  /**
+   * Convert this from an xdr.ScAddress type
+   *
+   * @param {xdr.ScAddress} scAddress - The xdr.ScAddress type to parse
+   * @returns {Address}
+   */
+  static fromScAddress(scAddress) {
+    switch (scAddress.switch()) {
+      case xdr.ScAddressType.scAddressTypeAccount():
+        return Address.account(scAddress.accountId().ed25519());
+      case xdr.ScAddressType.scAddressTypeContract():
+        return Address.contract(scAddress.contractId());
+      default:
+        throw new Error('Unsupported address type');
+    }
+  }
+
+  /**
    * Serialize an address to string.
    *
    * @returns {string}
@@ -79,7 +106,7 @@ export class Address {
    * @returns {xdr.ScVal}
    */
   toScVal() {
-    return xdr.ScVal.scvObject(xdr.ScObject.scoAddress(this.toScAddress()));
+    return xdr.ScVal.scvAddress(this.toScAddress());
   }
 
   /**
