@@ -282,20 +282,6 @@ xdr.typedef("SequenceNumber", xdr.lookup("Int64"));
 
 // === xdr source ============================================================
 //
-//   typedef uint64 TimePoint;
-//
-// ===========================================================================
-xdr.typedef("TimePoint", xdr.lookup("Uint64"));
-
-// === xdr source ============================================================
-//
-//   typedef uint64 Duration;
-//
-// ===========================================================================
-xdr.typedef("Duration", xdr.lookup("Uint64"));
-
-// === xdr source ============================================================
-//
 //   typedef opaque DataValue<64>;
 //
 // ===========================================================================
@@ -4614,13 +4600,13 @@ xdr.union("ContractId", {
 //   struct CreateContractArgs
 //   {
 //       ContractID contractID;
-//       SCContractCode source;
+//       SCContractExecutable source;
 //   };
 //
 // ===========================================================================
 xdr.struct("CreateContractArgs", [
   ["contractId", xdr.lookup("ContractId")],
-  ["source", xdr.lookup("ScContractCode")],
+  ["source", xdr.lookup("ScContractExecutable")],
 ]);
 
 // === xdr source ============================================================
@@ -5007,14 +4993,14 @@ xdr.struct("HashIdPreimageSourceAccountContractId", [
 //   struct
 //       {
 //           Hash networkID;
-//           SCContractCode source;
+//           SCContractExecutable source;
 //           uint256 salt;
 //       }
 //
 // ===========================================================================
 xdr.struct("HashIdPreimageCreateContractArgs", [
   ["networkId", xdr.lookup("Hash")],
-  ["source", xdr.lookup("ScContractCode")],
+  ["source", xdr.lookup("ScContractExecutable")],
   ["salt", xdr.lookup("Uint256")],
 ]);
 
@@ -5085,7 +5071,7 @@ xdr.struct("HashIdPreimageContractAuth", [
 //       struct
 //       {
 //           Hash networkID;
-//           SCContractCode source;
+//           SCContractExecutable source;
 //           uint256 salt;
 //       } createContractArgs;
 //   case ENVELOPE_TYPE_CONTRACT_AUTH:
@@ -7898,6 +7884,20 @@ xdr.typedef("Int64", xdr.hyper());
 
 // === xdr source ============================================================
 //
+//   typedef uint64 TimePoint;
+//
+// ===========================================================================
+xdr.typedef("TimePoint", xdr.lookup("Uint64"));
+
+// === xdr source ============================================================
+//
+//   typedef uint64 Duration;
+//
+// ===========================================================================
+xdr.typedef("Duration", xdr.lookup("Uint64"));
+
+// === xdr source ============================================================
+//
 //   union ExtensionPoint switch (int v)
 //   {
 //   case 0:
@@ -8121,53 +8121,86 @@ xdr.struct("HmacSha256Mac", [
 
 // === xdr source ============================================================
 //
-//   typedef string SCSymbol<10>;
-//
-// ===========================================================================
-xdr.typedef("ScSymbol", xdr.string(10));
-
-// === xdr source ============================================================
-//
 //   enum SCValType
 //   {
-//       SCV_U63 = 0,
-//       SCV_U32 = 1,
-//       SCV_I32 = 2,
-//       SCV_STATIC = 3,
-//       SCV_OBJECT = 4,
-//       SCV_SYMBOL = 5,
-//       SCV_BITSET = 6,
-//       SCV_STATUS = 7
+//       SCV_BOOL = 0,
+//       SCV_VOID = 1,
+//       SCV_STATUS = 2,
+//   
+//       // 32 bits is the smallest type in WASM or XDR; no need for u8/u16.
+//       SCV_U32 = 3,
+//       SCV_I32 = 4,
+//   
+//       // 64 bits is naturally supported by both WASM and XDR also.
+//       SCV_U64 = 5,
+//       SCV_I64 = 6,
+//   
+//       // Time-related u64 subtypes with their own functions and formatting.
+//       SCV_TIMEPOINT = 7,
+//       SCV_DURATION = 8,
+//   
+//       // 128 bits is naturally supported by Rust and we use it for Soroban
+//       // fixed-point arithmetic prices / balances / similar "quantities". These
+//       // are represented in XDR as a pair of 2 u64s, unlike {u,i}256 which is
+//       // represented as an array of 32 bytes.
+//       SCV_U128 = 9,
+//       SCV_I128 = 10,
+//   
+//       // 256 bits is the size of sha256 output, ed25519 keys, and the EVM machine
+//       // word, so for interop use we include this even though it requires a small
+//       // amount of Rust guest and/or host library code.
+//       SCV_U256 = 11,
+//       SCV_I256 = 12,
+//   
+//       // TODO: possibly allocate subtypes of i64, i128 and/or u256 for
+//       // fixed-precision with a specific number of decimals.
+//   
+//       // Bytes come in 3 flavors, 2 of which have meaningfully different
+//       // formatting and validity-checking / domain-restriction.
+//       SCV_BYTES = 13,
+//       SCV_STRING = 14,
+//       SCV_SYMBOL = 15,
+//   
+//       // Vecs and maps are just polymorphic containers of other ScVals.
+//       SCV_VEC = 16,
+//       SCV_MAP = 17,
+//   
+//       // SCContractExecutable and SCAddressType are types that gets used separately from
+//       // SCVal so we do not flatten their structures into separate SCVal cases.
+//       SCV_CONTRACT_EXECUTABLE = 18,
+//       SCV_ADDRESS = 19,
+//   
+//       // SCV_LEDGER_KEY_CONTRACT_EXECUTABLE and SCV_LEDGER_KEY_NONCE are unique
+//       // symbolic SCVals used as the key for ledger entries for a contract's code
+//       // and an address' nonce, respectively.
+//       SCV_LEDGER_KEY_CONTRACT_EXECUTABLE = 20,
+//       SCV_LEDGER_KEY_NONCE = 21
 //   };
 //
 // ===========================================================================
 xdr.enum("ScValType", {
-  scvU63: 0,
-  scvU32: 1,
-  scvI32: 2,
-  scvStatic: 3,
-  scvObject: 4,
-  scvSymbol: 5,
-  scvBitset: 6,
-  scvStatus: 7,
-});
-
-// === xdr source ============================================================
-//
-//   enum SCStatic
-//   {
-//       SCS_VOID = 0,
-//       SCS_TRUE = 1,
-//       SCS_FALSE = 2,
-//       SCS_LEDGER_KEY_CONTRACT_CODE = 3
-//   };
-//
-// ===========================================================================
-xdr.enum("ScStatic", {
-  scsVoid: 0,
-  scsTrue: 1,
-  scsFalse: 2,
-  scsLedgerKeyContractCode: 3,
+  scvBool: 0,
+  scvVoid: 1,
+  scvStatus: 2,
+  scvU32: 3,
+  scvI32: 4,
+  scvU64: 5,
+  scvI64: 6,
+  scvTimepoint: 7,
+  scvDuration: 8,
+  scvU128: 9,
+  scvI128: 10,
+  scvU256: 11,
+  scvI256: 12,
+  scvBytes: 13,
+  scvString: 14,
+  scvSymbol: 15,
+  scvVec: 16,
+  scvMap: 17,
+  scvContractExecutable: 18,
+  scvAddress: 19,
+  scvLedgerKeyContractExecutable: 20,
+  scvLedgerKeyNonce: 21,
 });
 
 // === xdr source ============================================================
@@ -8451,161 +8484,6 @@ xdr.union("ScStatus", {
 
 // === xdr source ============================================================
 //
-//   union SCVal switch (SCValType type)
-//   {
-//   case SCV_U63:
-//       int64 u63;
-//   case SCV_U32:
-//       uint32 u32;
-//   case SCV_I32:
-//       int32 i32;
-//   case SCV_STATIC:
-//       SCStatic ic;
-//   case SCV_OBJECT:
-//       SCObject* obj;
-//   case SCV_SYMBOL:
-//       SCSymbol sym;
-//   case SCV_BITSET:
-//       uint64 bits;
-//   case SCV_STATUS:
-//       SCStatus status;
-//   };
-//
-// ===========================================================================
-xdr.union("ScVal", {
-  switchOn: xdr.lookup("ScValType"),
-  switchName: "type",
-  switches: [
-    ["scvU63", "u63"],
-    ["scvU32", "u32"],
-    ["scvI32", "i32"],
-    ["scvStatic", "ic"],
-    ["scvObject", "obj"],
-    ["scvSymbol", "sym"],
-    ["scvBitset", "bits"],
-    ["scvStatus", "status"],
-  ],
-  arms: {
-    u63: xdr.lookup("Int64"),
-    u32: xdr.lookup("Uint32"),
-    i32: xdr.lookup("Int32"),
-    ic: xdr.lookup("ScStatic"),
-    obj: xdr.option(xdr.lookup("ScObject")),
-    sym: xdr.lookup("ScSymbol"),
-    bits: xdr.lookup("Uint64"),
-    status: xdr.lookup("ScStatus"),
-  },
-});
-
-// === xdr source ============================================================
-//
-//   enum SCObjectType
-//   {
-//       // We have a few objects that represent non-stellar-specific concepts
-//       // like general-purpose maps, vectors, numbers, blobs.
-//   
-//       SCO_VEC = 0,
-//       SCO_MAP = 1,
-//       SCO_U64 = 2,
-//       SCO_I64 = 3,
-//       SCO_U128 = 4,
-//       SCO_I128 = 5,
-//       SCO_BYTES = 6,
-//       SCO_CONTRACT_CODE = 7,
-//       SCO_ADDRESS = 8,
-//       SCO_NONCE_KEY = 9
-//   
-//       // TODO: add more
-//   };
-//
-// ===========================================================================
-xdr.enum("ScObjectType", {
-  scoVec: 0,
-  scoMap: 1,
-  scoU64: 2,
-  scoI64: 3,
-  scoU128: 4,
-  scoI128: 5,
-  scoBytes: 6,
-  scoContractCode: 7,
-  scoAddress: 8,
-  scoNonceKey: 9,
-});
-
-// === xdr source ============================================================
-//
-//   struct SCMapEntry
-//   {
-//       SCVal key;
-//       SCVal val;
-//   };
-//
-// ===========================================================================
-xdr.struct("ScMapEntry", [
-  ["key", xdr.lookup("ScVal")],
-  ["val", xdr.lookup("ScVal")],
-]);
-
-// === xdr source ============================================================
-//
-const SCVAL_LIMIT = 256000;
-//
-// ===========================================================================
-xdr.const("SCVAL_LIMIT", 256000);
-
-// === xdr source ============================================================
-//
-//   typedef SCVal SCVec<SCVAL_LIMIT>;
-//
-// ===========================================================================
-xdr.typedef("ScVec", xdr.varArray(xdr.lookup("ScVal"), xdr.lookup("SCVAL_LIMIT")));
-
-// === xdr source ============================================================
-//
-//   typedef SCMapEntry SCMap<SCVAL_LIMIT>;
-//
-// ===========================================================================
-xdr.typedef("ScMap", xdr.varArray(xdr.lookup("ScMapEntry"), xdr.lookup("SCVAL_LIMIT")));
-
-// === xdr source ============================================================
-//
-//   enum SCContractCodeType
-//   {
-//       SCCONTRACT_CODE_WASM_REF = 0,
-//       SCCONTRACT_CODE_TOKEN = 1
-//   };
-//
-// ===========================================================================
-xdr.enum("ScContractCodeType", {
-  sccontractCodeWasmRef: 0,
-  sccontractCodeToken: 1,
-});
-
-// === xdr source ============================================================
-//
-//   union SCContractCode switch (SCContractCodeType type)
-//   {
-//   case SCCONTRACT_CODE_WASM_REF:
-//       Hash wasm_id;
-//   case SCCONTRACT_CODE_TOKEN:
-//       void;
-//   };
-//
-// ===========================================================================
-xdr.union("ScContractCode", {
-  switchOn: xdr.lookup("ScContractCodeType"),
-  switchName: "type",
-  switches: [
-    ["sccontractCodeWasmRef", "wasmId"],
-    ["sccontractCodeToken", xdr.void()],
-  ],
-  arms: {
-    wasmId: xdr.lookup("Hash"),
-  },
-});
-
-// === xdr source ============================================================
-//
 //   struct Int128Parts {
 //       // Both signed and unsigned 128-bit ints
 //       // are transported in a pair of uint64s
@@ -8619,6 +8497,43 @@ xdr.struct("Int128Parts", [
   ["lo", xdr.lookup("Uint64")],
   ["hi", xdr.lookup("Uint64")],
 ]);
+
+// === xdr source ============================================================
+//
+//   enum SCContractExecutableType
+//   {
+//       SCCONTRACT_EXECUTABLE_WASM_REF = 0,
+//       SCCONTRACT_EXECUTABLE_TOKEN = 1
+//   };
+//
+// ===========================================================================
+xdr.enum("ScContractExecutableType", {
+  sccontractExecutableWasmRef: 0,
+  sccontractExecutableToken: 1,
+});
+
+// === xdr source ============================================================
+//
+//   union SCContractExecutable switch (SCContractExecutableType type)
+//   {
+//   case SCCONTRACT_EXECUTABLE_WASM_REF:
+//       Hash wasm_id;
+//   case SCCONTRACT_EXECUTABLE_TOKEN:
+//       void;
+//   };
+//
+// ===========================================================================
+xdr.union("ScContractExecutable", {
+  switchOn: xdr.lookup("ScContractExecutableType"),
+  switchName: "type",
+  switches: [
+    ["sccontractExecutableWasmRef", "wasmId"],
+    ["sccontractExecutableToken", xdr.void()],
+  ],
+  arms: {
+    wasmId: xdr.lookup("Hash"),
+  },
+});
 
 // === xdr source ============================================================
 //
@@ -8660,59 +8575,192 @@ xdr.union("ScAddress", {
 
 // === xdr source ============================================================
 //
-//   union SCObject switch (SCObjectType type)
-//   {
-//   case SCO_VEC:
-//       SCVec vec;
-//   case SCO_MAP:
-//       SCMap map;
-//   case SCO_U64:
-//       uint64 u64;
-//   case SCO_I64:
-//       int64 i64;
-//   case SCO_U128:
-//       Int128Parts u128;
-//   case SCO_I128:
-//       Int128Parts i128;
-//   case SCO_BYTES:
-//       opaque bin<SCVAL_LIMIT>;
-//   case SCO_CONTRACT_CODE:
-//       SCContractCode contractCode;
-//   case SCO_ADDRESS:
-//       SCAddress address;
-//   case SCO_NONCE_KEY:
-//       SCAddress nonceAddress;
+//   const SCVAL_LIMIT = 256000;
+//
+// ===========================================================================
+xdr.const("SCVAL_LIMIT", 256000);
+
+// === xdr source ============================================================
+//
+//   const SCSYMBOL_LIMIT = 32;
+//
+// ===========================================================================
+xdr.const("SCSYMBOL_LIMIT", 32);
+
+// === xdr source ============================================================
+//
+//   typedef SCVal SCVec<SCVAL_LIMIT>;
+//
+// ===========================================================================
+xdr.typedef("ScVec", xdr.varArray(xdr.lookup("ScVal"), xdr.lookup("SCVAL_LIMIT")));
+
+// === xdr source ============================================================
+//
+//   typedef SCMapEntry SCMap<SCVAL_LIMIT>;
+//
+// ===========================================================================
+xdr.typedef("ScMap", xdr.varArray(xdr.lookup("ScMapEntry"), xdr.lookup("SCVAL_LIMIT")));
+
+// === xdr source ============================================================
+//
+//   typedef opaque SCBytes<SCVAL_LIMIT>;
+//
+// ===========================================================================
+xdr.typedef("ScBytes", xdr.varOpaque(SCVAL_LIMIT));
+
+// === xdr source ============================================================
+//
+//   typedef string SCString<SCVAL_LIMIT>;
+//
+// ===========================================================================
+xdr.typedef("ScString", xdr.string(SCVAL_LIMIT));
+
+// === xdr source ============================================================
+//
+//   typedef string SCSymbol<SCSYMBOL_LIMIT>;
+//
+// ===========================================================================
+xdr.typedef("ScSymbol", xdr.string(SCSYMBOL_LIMIT));
+
+// === xdr source ============================================================
+//
+//   struct SCNonceKey {
+//       SCAddress nonce_address;
 //   };
 //
 // ===========================================================================
-xdr.union("ScObject", {
-  switchOn: xdr.lookup("ScObjectType"),
+xdr.struct("ScNonceKey", [
+  ["nonceAddress", xdr.lookup("ScAddress")],
+]);
+
+// === xdr source ============================================================
+//
+//   union SCVal switch (SCValType type)
+//   {
+//   
+//   case SCV_BOOL:
+//       bool b;
+//   case SCV_VOID:
+//       void;
+//   case SCV_STATUS:
+//       SCStatus error;
+//   
+//   case SCV_U32:
+//       uint32 u32;
+//   case SCV_I32:
+//       int32 i32;
+//   
+//   case SCV_U64:
+//       uint64 u64;
+//   case SCV_I64:
+//       int64 i64;
+//   case SCV_TIMEPOINT:
+//       TimePoint timepoint;
+//   case SCV_DURATION:
+//       Duration duration;
+//   
+//   case SCV_U128:
+//       Int128Parts u128;
+//   case SCV_I128:
+//       Int128Parts i128;
+//   
+//   case SCV_U256:
+//       uint256 u256;
+//   case SCV_I256:
+//       uint256 i256;
+//   
+//   case SCV_BYTES:
+//       SCBytes bytes;
+//   case SCV_STRING:
+//       SCString str;
+//   case SCV_SYMBOL:
+//       SCSymbol sym;
+//   
+//   // Vec and Map are recursive so need to live
+//   // behind an option, due to xdrpp limitations.
+//   case SCV_VEC:
+//       SCVec *vec;
+//   case SCV_MAP:
+//       SCMap *map;
+//   
+//   case SCV_CONTRACT_EXECUTABLE:
+//       SCContractExecutable exec;
+//   case SCV_ADDRESS:
+//       SCAddress address;
+//   
+//   // Special SCVals reserved for system-constructed contract-data
+//   // ledger keys, not generally usable elsewhere.
+//   case SCV_LEDGER_KEY_CONTRACT_EXECUTABLE:
+//       void;
+//   case SCV_LEDGER_KEY_NONCE:
+//       SCNonceKey nonce_key;
+//   };
+//
+// ===========================================================================
+xdr.union("ScVal", {
+  switchOn: xdr.lookup("ScValType"),
   switchName: "type",
   switches: [
-    ["scoVec", "vec"],
-    ["scoMap", "map"],
-    ["scoU64", "u64"],
-    ["scoI64", "i64"],
-    ["scoU128", "u128"],
-    ["scoI128", "i128"],
-    ["scoBytes", "bin"],
-    ["scoContractCode", "contractCode"],
-    ["scoAddress", "address"],
-    ["scoNonceKey", "nonceAddress"],
+    ["scvBool", "b"],
+    ["scvVoid", xdr.void()],
+    ["scvStatus", "error"],
+    ["scvU32", "u32"],
+    ["scvI32", "i32"],
+    ["scvU64", "u64"],
+    ["scvI64", "i64"],
+    ["scvTimepoint", "timepoint"],
+    ["scvDuration", "duration"],
+    ["scvU128", "u128"],
+    ["scvI128", "i128"],
+    ["scvU256", "u256"],
+    ["scvI256", "i256"],
+    ["scvBytes", "bytes"],
+    ["scvString", "str"],
+    ["scvSymbol", "sym"],
+    ["scvVec", "vec"],
+    ["scvMap", "map"],
+    ["scvContractExecutable", "exec"],
+    ["scvAddress", "address"],
+    ["scvLedgerKeyContractExecutable", xdr.void()],
+    ["scvLedgerKeyNonce", "nonceKey"],
   ],
   arms: {
-    vec: xdr.lookup("ScVec"),
-    map: xdr.lookup("ScMap"),
+    b: xdr.bool(),
+    error: xdr.lookup("ScStatus"),
+    u32: xdr.lookup("Uint32"),
+    i32: xdr.lookup("Int32"),
     u64: xdr.lookup("Uint64"),
     i64: xdr.lookup("Int64"),
+    timepoint: xdr.lookup("TimePoint"),
+    duration: xdr.lookup("Duration"),
     u128: xdr.lookup("Int128Parts"),
     i128: xdr.lookup("Int128Parts"),
-    bin: xdr.varOpaque(SCVAL_LIMIT),
-    contractCode: xdr.lookup("ScContractCode"),
+    u256: xdr.lookup("Uint256"),
+    i256: xdr.lookup("Uint256"),
+    bytes: xdr.lookup("ScBytes"),
+    str: xdr.lookup("ScString"),
+    sym: xdr.lookup("ScSymbol"),
+    vec: xdr.option(xdr.lookup("ScVec")),
+    map: xdr.option(xdr.lookup("ScMap")),
+    exec: xdr.lookup("ScContractExecutable"),
     address: xdr.lookup("ScAddress"),
-    nonceAddress: xdr.lookup("ScAddress"),
+    nonceKey: xdr.lookup("ScNonceKey"),
   },
 });
+
+// === xdr source ============================================================
+//
+//   struct SCMapEntry
+//   {
+//       SCVal key;
+//       SCVal val;
+//   };
+//
+// ===========================================================================
+xdr.struct("ScMapEntry", [
+  ["key", xdr.lookup("ScVal")],
+  ["val", xdr.lookup("ScVal")],
+]);
 
 // === xdr source ============================================================
 //
@@ -8748,7 +8796,7 @@ xdr.union("ScEnvMetaEntry", {
 
 // === xdr source ============================================================
 //
-const SC_SPEC_DOC_LIMIT = 1024;
+//   const SC_SPEC_DOC_LIMIT = 1024;
 //
 // ===========================================================================
 xdr.const("SC_SPEC_DOC_LIMIT", 1024);
@@ -8760,19 +8808,23 @@ xdr.const("SC_SPEC_DOC_LIMIT", 1024);
 //       SC_SPEC_TYPE_VAL = 0,
 //   
 //       // Types with no parameters.
-//       SC_SPEC_TYPE_U32 = 1,
-//       SC_SPEC_TYPE_I32 = 2,
-//       SC_SPEC_TYPE_U64 = 3,
-//       SC_SPEC_TYPE_I64 = 4,
-//       SC_SPEC_TYPE_U128 = 5,
-//       SC_SPEC_TYPE_I128 = 6,
-//       SC_SPEC_TYPE_BOOL = 7,
-//       SC_SPEC_TYPE_SYMBOL = 8,
-//       SC_SPEC_TYPE_BITSET = 9,
-//       SC_SPEC_TYPE_STATUS = 10,
-//       SC_SPEC_TYPE_BYTES = 11,
-//       SC_SPEC_TYPE_INVOKER = 12,
-//       SC_SPEC_TYPE_ADDRESS = 13,
+//       SC_SPEC_TYPE_BOOL = 1,
+//       SC_SPEC_TYPE_VOID = 2,
+//       SC_SPEC_TYPE_STATUS = 3,
+//       SC_SPEC_TYPE_U32 = 4,
+//       SC_SPEC_TYPE_I32 = 5,
+//       SC_SPEC_TYPE_U64 = 6,
+//       SC_SPEC_TYPE_I64 = 7,
+//       SC_SPEC_TYPE_TIMEPOINT = 8,
+//       SC_SPEC_TYPE_DURATION = 9,
+//       SC_SPEC_TYPE_U128 = 10,
+//       SC_SPEC_TYPE_I128 = 11,
+//       SC_SPEC_TYPE_U256 = 12,
+//       SC_SPEC_TYPE_I256 = 13,
+//       SC_SPEC_TYPE_BYTES = 14,
+//       SC_SPEC_TYPE_STRING = 16,
+//       SC_SPEC_TYPE_SYMBOL = 17,
+//       SC_SPEC_TYPE_ADDRESS = 19,
 //   
 //       // Types with parameters.
 //       SC_SPEC_TYPE_OPTION = 1000,
@@ -8790,19 +8842,23 @@ xdr.const("SC_SPEC_DOC_LIMIT", 1024);
 // ===========================================================================
 xdr.enum("ScSpecType", {
   scSpecTypeVal: 0,
-  scSpecTypeU32: 1,
-  scSpecTypeI32: 2,
-  scSpecTypeU64: 3,
-  scSpecTypeI64: 4,
-  scSpecTypeU128: 5,
-  scSpecTypeI128: 6,
-  scSpecTypeBool: 7,
-  scSpecTypeSymbol: 8,
-  scSpecTypeBitset: 9,
-  scSpecTypeStatus: 10,
-  scSpecTypeBytes: 11,
-  scSpecTypeInvoker: 12,
-  scSpecTypeAddress: 13,
+  scSpecTypeBool: 1,
+  scSpecTypeVoid: 2,
+  scSpecTypeStatus: 3,
+  scSpecTypeU32: 4,
+  scSpecTypeI32: 5,
+  scSpecTypeU64: 6,
+  scSpecTypeI64: 7,
+  scSpecTypeTimepoint: 8,
+  scSpecTypeDuration: 9,
+  scSpecTypeU128: 10,
+  scSpecTypeI128: 11,
+  scSpecTypeU256: 12,
+  scSpecTypeI256: 13,
+  scSpecTypeBytes: 14,
+  scSpecTypeString: 16,
+  scSpecTypeSymbol: 17,
+  scSpecTypeAddress: 19,
   scSpecTypeOption: 1000,
   scSpecTypeResult: 1001,
   scSpecTypeVec: 1002,
@@ -8918,17 +8974,22 @@ xdr.struct("ScSpecTypeUdt", [
 //   union SCSpecTypeDef switch (SCSpecType type)
 //   {
 //   case SC_SPEC_TYPE_VAL:
-//   case SC_SPEC_TYPE_U64:
-//   case SC_SPEC_TYPE_I64:
-//   case SC_SPEC_TYPE_U128:
-//   case SC_SPEC_TYPE_I128:
+//   case SC_SPEC_TYPE_BOOL:
+//   case SC_SPEC_TYPE_VOID:
+//   case SC_SPEC_TYPE_STATUS:
 //   case SC_SPEC_TYPE_U32:
 //   case SC_SPEC_TYPE_I32:
-//   case SC_SPEC_TYPE_BOOL:
-//   case SC_SPEC_TYPE_SYMBOL:
-//   case SC_SPEC_TYPE_BITSET:
-//   case SC_SPEC_TYPE_STATUS:
+//   case SC_SPEC_TYPE_U64:
+//   case SC_SPEC_TYPE_I64:
+//   case SC_SPEC_TYPE_TIMEPOINT:
+//   case SC_SPEC_TYPE_DURATION:
+//   case SC_SPEC_TYPE_U128:
+//   case SC_SPEC_TYPE_I128:
+//   case SC_SPEC_TYPE_U256:
+//   case SC_SPEC_TYPE_I256:
 //   case SC_SPEC_TYPE_BYTES:
+//   case SC_SPEC_TYPE_STRING:
+//   case SC_SPEC_TYPE_SYMBOL:
 //   case SC_SPEC_TYPE_ADDRESS:
 //       void;
 //   case SC_SPEC_TYPE_OPTION:
@@ -8955,17 +9016,22 @@ xdr.union("ScSpecTypeDef", {
   switchName: "type",
   switches: [
     ["scSpecTypeVal", xdr.void()],
-    ["scSpecTypeU64", xdr.void()],
-    ["scSpecTypeI64", xdr.void()],
-    ["scSpecTypeU128", xdr.void()],
-    ["scSpecTypeI128", xdr.void()],
+    ["scSpecTypeBool", xdr.void()],
+    ["scSpecTypeVoid", xdr.void()],
+    ["scSpecTypeStatus", xdr.void()],
     ["scSpecTypeU32", xdr.void()],
     ["scSpecTypeI32", xdr.void()],
-    ["scSpecTypeBool", xdr.void()],
-    ["scSpecTypeSymbol", xdr.void()],
-    ["scSpecTypeBitset", xdr.void()],
-    ["scSpecTypeStatus", xdr.void()],
+    ["scSpecTypeU64", xdr.void()],
+    ["scSpecTypeI64", xdr.void()],
+    ["scSpecTypeTimepoint", xdr.void()],
+    ["scSpecTypeDuration", xdr.void()],
+    ["scSpecTypeU128", xdr.void()],
+    ["scSpecTypeI128", xdr.void()],
+    ["scSpecTypeU256", xdr.void()],
+    ["scSpecTypeI256", xdr.void()],
     ["scSpecTypeBytes", xdr.void()],
+    ["scSpecTypeString", xdr.void()],
+    ["scSpecTypeSymbol", xdr.void()],
     ["scSpecTypeAddress", xdr.void()],
     ["scSpecTypeOption", "option"],
     ["scSpecTypeResult", "result"],
