@@ -39,7 +39,7 @@ export class Contract {
     const contractId = Buffer.from(this._id, 'hex');
     return Operation.invokeHostFunction({
       function: xdr.HostFunction.hostFunctionTypeInvokeContract([
-        xdr.ScVal.scvObject(xdr.ScObject.scoBytes(contractId)),
+        xdr.ScVal.scvBytes(contractId),
         xdr.ScVal.scvSymbol(method),
         ...params
       ]),
@@ -49,7 +49,7 @@ export class Contract {
           xdr.LedgerKey.contractData(
             new xdr.LedgerKeyContractData({
               contractId,
-              key: xdr.ScVal.scvStatic(xdr.ScStatic.scsLedgerKeyContractCode())
+              key: xdr.ScVal.scvLedgerKeyContractExecutable()
             })
           )
         ],

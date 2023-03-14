@@ -17,9 +17,12 @@ export class Address {
   static fromString(address: string): Address;
   static account(buffer: Buffer): Address;
   static contract(buffer: Buffer): Address;
+  static fromScVal(scVal: xdr.ScVal): Address;
+  static fromScAddress(scAddress: xdr.ScAddress): Address;
   toString(): string;
   toScVal(): xdr.ScVal;
   toScAddress(): xdr.ScAddress;
+  toBuffer(): Buffer;
 }
 
 export class Contract {

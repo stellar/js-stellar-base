@@ -1794,50 +1794,96 @@ export namespace xdr {
 
   class ScValType {
     readonly name:
-      | 'scvU63'
+      | 'scvBool'
+      | 'scvVoid'
+      | 'scvStatus'
       | 'scvU32'
       | 'scvI32'
-      | 'scvStatic'
-      | 'scvObject'
+      | 'scvU64'
+      | 'scvI64'
+      | 'scvTimepoint'
+      | 'scvDuration'
+      | 'scvU128'
+      | 'scvI128'
+      | 'scvU256'
+      | 'scvI256'
+      | 'scvBytes'
+      | 'scvString'
       | 'scvSymbol'
-      | 'scvBitset'
-      | 'scvStatus';
+      | 'scvVec'
+      | 'scvMap'
+      | 'scvContractExecutable'
+      | 'scvAddress'
+      | 'scvLedgerKeyContractExecutable'
+      | 'scvLedgerKeyNonce';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    readonly value:
+      | 0
+      | 1
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7
+      | 8
+      | 9
+      | 10
+      | 11
+      | 12
+      | 13
+      | 14
+      | 15
+      | 16
+      | 17
+      | 18
+      | 19
+      | 20
+      | 21;
 
-    static scvU63(): ScValType;
+    static scvBool(): ScValType;
+
+    static scvVoid(): ScValType;
+
+    static scvStatus(): ScValType;
 
     static scvU32(): ScValType;
 
     static scvI32(): ScValType;
 
-    static scvStatic(): ScValType;
+    static scvU64(): ScValType;
 
-    static scvObject(): ScValType;
+    static scvI64(): ScValType;
+
+    static scvTimepoint(): ScValType;
+
+    static scvDuration(): ScValType;
+
+    static scvU128(): ScValType;
+
+    static scvI128(): ScValType;
+
+    static scvU256(): ScValType;
+
+    static scvI256(): ScValType;
+
+    static scvBytes(): ScValType;
+
+    static scvString(): ScValType;
 
     static scvSymbol(): ScValType;
 
-    static scvBitset(): ScValType;
+    static scvVec(): ScValType;
 
-    static scvStatus(): ScValType;
-  }
+    static scvMap(): ScValType;
 
-  class ScStatic {
-    readonly name:
-      | 'scsVoid'
-      | 'scsTrue'
-      | 'scsFalse'
-      | 'scsLedgerKeyContractCode';
+    static scvContractExecutable(): ScValType;
 
-    readonly value: 0 | 1 | 2 | 3;
+    static scvAddress(): ScValType;
 
-    static scsVoid(): ScStatic;
+    static scvLedgerKeyContractExecutable(): ScValType;
 
-    static scsTrue(): ScStatic;
-
-    static scsFalse(): ScStatic;
-
-    static scsLedgerKeyContractCode(): ScStatic;
+    static scvLedgerKeyNonce(): ScValType;
   }
 
   class ScStatusType {
@@ -2110,50 +2156,14 @@ export namespace xdr {
     static unknownErrorXdr(): ScUnknownErrorCode;
   }
 
-  class ScObjectType {
-    readonly name:
-      | 'scoVec'
-      | 'scoMap'
-      | 'scoU64'
-      | 'scoI64'
-      | 'scoU128'
-      | 'scoI128'
-      | 'scoBytes'
-      | 'scoContractCode'
-      | 'scoAddress'
-      | 'scoNonceKey';
-
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-
-    static scoVec(): ScObjectType;
-
-    static scoMap(): ScObjectType;
-
-    static scoU64(): ScObjectType;
-
-    static scoI64(): ScObjectType;
-
-    static scoU128(): ScObjectType;
-
-    static scoI128(): ScObjectType;
-
-    static scoBytes(): ScObjectType;
-
-    static scoContractCode(): ScObjectType;
-
-    static scoAddress(): ScObjectType;
-
-    static scoNonceKey(): ScObjectType;
-  }
-
-  class ScContractCodeType {
-    readonly name: 'sccontractCodeWasmRef' | 'sccontractCodeToken';
+  class ScContractExecutableType {
+    readonly name: 'sccontractExecutableWasmRef' | 'sccontractExecutableToken';
 
     readonly value: 0 | 1;
 
-    static sccontractCodeWasmRef(): ScContractCodeType;
+    static sccontractExecutableWasmRef(): ScContractExecutableType;
 
-    static sccontractCodeToken(): ScContractCodeType;
+    static sccontractExecutableToken(): ScContractExecutableType;
   }
 
   class ScAddressType {
@@ -2177,18 +2187,22 @@ export namespace xdr {
   class ScSpecType {
     readonly name:
       | 'scSpecTypeVal'
+      | 'scSpecTypeBool'
+      | 'scSpecTypeVoid'
+      | 'scSpecTypeStatus'
       | 'scSpecTypeU32'
       | 'scSpecTypeI32'
       | 'scSpecTypeU64'
       | 'scSpecTypeI64'
+      | 'scSpecTypeTimepoint'
+      | 'scSpecTypeDuration'
       | 'scSpecTypeU128'
       | 'scSpecTypeI128'
-      | 'scSpecTypeBool'
-      | 'scSpecTypeSymbol'
-      | 'scSpecTypeBitset'
-      | 'scSpecTypeStatus'
+      | 'scSpecTypeU256'
+      | 'scSpecTypeI256'
       | 'scSpecTypeBytes'
-      | 'scSpecTypeInvoker'
+      | 'scSpecTypeString'
+      | 'scSpecTypeSymbol'
       | 'scSpecTypeAddress'
       | 'scSpecTypeOption'
       | 'scSpecTypeResult'
@@ -2214,6 +2228,10 @@ export namespace xdr {
       | 11
       | 12
       | 13
+      | 14
+      | 16
+      | 17
+      | 19
       | 1000
       | 1001
       | 1002
@@ -2225,6 +2243,12 @@ export namespace xdr {
 
     static scSpecTypeVal(): ScSpecType;
 
+    static scSpecTypeBool(): ScSpecType;
+
+    static scSpecTypeVoid(): ScSpecType;
+
+    static scSpecTypeStatus(): ScSpecType;
+
     static scSpecTypeU32(): ScSpecType;
 
     static scSpecTypeI32(): ScSpecType;
@@ -2233,21 +2257,23 @@ export namespace xdr {
 
     static scSpecTypeI64(): ScSpecType;
 
+    static scSpecTypeTimepoint(): ScSpecType;
+
+    static scSpecTypeDuration(): ScSpecType;
+
     static scSpecTypeU128(): ScSpecType;
 
     static scSpecTypeI128(): ScSpecType;
 
-    static scSpecTypeBool(): ScSpecType;
+    static scSpecTypeU256(): ScSpecType;
 
-    static scSpecTypeSymbol(): ScSpecType;
-
-    static scSpecTypeBitset(): ScSpecType;
-
-    static scSpecTypeStatus(): ScSpecType;
+    static scSpecTypeI256(): ScSpecType;
 
     static scSpecTypeBytes(): ScSpecType;
 
-    static scSpecTypeInvoker(): ScSpecType;
+    static scSpecTypeString(): ScSpecType;
+
+    static scSpecTypeSymbol(): ScSpecType;
 
     static scSpecTypeAddress(): ScSpecType;
 
@@ -2309,10 +2335,6 @@ export namespace xdr {
 
   type SequenceNumber = Int64;
 
-  type TimePoint = Uint64;
-
-  type Duration = Uint64;
-
   const DataValue: VarOpaque;
 
   type PoolId = typeof Hash;
@@ -2347,6 +2369,10 @@ export namespace xdr {
 
   class Int64 extends Hyper {}
 
+  type TimePoint = Uint64;
+
+  type Duration = Uint64;
+
   const Signature: VarOpaque;
 
   const SignatureHint: Opaque;
@@ -2355,11 +2381,15 @@ export namespace xdr {
 
   type AccountId = PublicKey;
 
-  const ScSymbol: XDRString;
-
   const ScVec: XDRArray<ScVal>;
 
   const ScMap: XDRArray<ScMapEntry>;
+
+  const ScBytes: VarOpaque;
+
+  const ScString: XDRString;
+
+  const ScSymbol: XDRString;
 
   class ScpBallot {
     constructor(attributes: { counter: number; value: Buffer });
@@ -6464,11 +6494,14 @@ export namespace xdr {
   }
 
   class CreateContractArgs {
-    constructor(attributes: { contractId: ContractId; source: ScContractCode });
+    constructor(attributes: {
+      contractId: ContractId;
+      source: ScContractExecutable;
+    });
 
     contractId(value?: ContractId): ContractId;
 
-    source(value?: ScContractCode): ScContractCode;
+    source(value?: ScContractExecutable): ScContractExecutable;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6895,13 +6928,13 @@ export namespace xdr {
   class HashIdPreimageCreateContractArgs {
     constructor(attributes: {
       networkId: Buffer;
-      source: ScContractCode;
+      source: ScContractExecutable;
       salt: Buffer;
     });
 
     networkId(value?: Buffer): Buffer;
 
-    source(value?: ScContractCode): ScContractCode;
+    source(value?: ScContractExecutable): ScContractExecutable;
 
     salt(value?: Buffer): Buffer;
 
@@ -7874,34 +7907,6 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ScMapEntry {
-    constructor(attributes: { key: ScVal; val: ScVal });
-
-    key(value?: ScVal): ScVal;
-
-    val(value?: ScVal): ScVal;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScMapEntry;
-
-    static write(value: ScMapEntry, io: Buffer): void;
-
-    static isValid(value: ScMapEntry): boolean;
-
-    static toXDR(value: ScMapEntry): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScMapEntry;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScMapEntry;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
   class Int128Parts {
     constructor(attributes: { lo: Uint64; hi: Uint64 });
 
@@ -7924,6 +7929,60 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Int128Parts;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Int128Parts;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ScNonceKey {
+    constructor(attributes: { nonceAddress: ScAddress });
+
+    nonceAddress(value?: ScAddress): ScAddress;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScNonceKey;
+
+    static write(value: ScNonceKey, io: Buffer): void;
+
+    static isValid(value: ScNonceKey): boolean;
+
+    static toXDR(value: ScNonceKey): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScNonceKey;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScNonceKey;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ScMapEntry {
+    constructor(attributes: { key: ScVal; val: ScVal });
+
+    key(value?: ScVal): ScVal;
+
+    val(value?: ScVal): ScVal;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScMapEntry;
+
+    static write(value: ScMapEntry, io: Buffer): void;
+
+    static isValid(value: ScMapEntry): boolean;
+
+    static toXDR(value: ScMapEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScMapEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScMapEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -12885,82 +12944,14 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ScVal {
-    switch(): ScValType;
-
-    u63(value?: Int64): Int64;
-
-    u32(value?: number): number;
-
-    i32(value?: number): number;
-
-    ic(value?: ScStatic): ScStatic;
-
-    obj(value?: null | ScObject): null | ScObject;
-
-    sym(value?: string | Buffer): string | Buffer;
-
-    bits(value?: Uint64): Uint64;
-
-    status(value?: ScStatus): ScStatus;
-
-    static scvU63(value: Int64): ScVal;
-
-    static scvU32(value: number): ScVal;
-
-    static scvI32(value: number): ScVal;
-
-    static scvStatic(value: ScStatic): ScVal;
-
-    static scvObject(value: null | ScObject): ScVal;
-
-    static scvSymbol(value: string | Buffer): ScVal;
-
-    static scvBitset(value: Uint64): ScVal;
-
-    static scvStatus(value: ScStatus): ScVal;
-
-    value():
-      | Int64
-      | number
-      | number
-      | ScStatic
-      | null
-      | ScObject
-      | string
-      | Buffer
-      | Uint64
-      | ScStatus;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScVal;
-
-    static write(value: ScVal, io: Buffer): void;
-
-    static isValid(value: ScVal): boolean;
-
-    static toXDR(value: ScVal): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScVal;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScVal;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class ScContractCode {
-    switch(): ScContractCodeType;
+  class ScContractExecutable {
+    switch(): ScContractExecutableType;
 
     wasmId(value?: Buffer): Buffer;
 
-    static sccontractCodeWasmRef(value: Buffer): ScContractCode;
+    static sccontractExecutableWasmRef(value: Buffer): ScContractExecutable;
 
-    static sccontractCodeToken(): ScContractCode;
+    static sccontractExecutableToken(): ScContractExecutable;
 
     value(): Buffer | void;
 
@@ -12968,17 +12959,20 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): ScContractCode;
+    static read(io: Buffer): ScContractExecutable;
 
-    static write(value: ScContractCode, io: Buffer): void;
+    static write(value: ScContractExecutable, io: Buffer): void;
 
-    static isValid(value: ScContractCode): boolean;
+    static isValid(value: ScContractExecutable): boolean;
 
-    static toXDR(value: ScContractCode): Buffer;
+    static toXDR(value: ScContractExecutable): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ScContractCode;
+    static fromXDR(input: Buffer, format?: 'raw'): ScContractExecutable;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScContractCode;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ScContractExecutable;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -13019,76 +13013,135 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ScObject {
-    switch(): ScObjectType;
+  class ScVal {
+    switch(): ScValType;
 
-    vec(value?: ScVal[]): ScVal[];
+    b(value?: boolean): boolean;
 
-    map(value?: ScMapEntry[]): ScMapEntry[];
+    error(value?: ScStatus): ScStatus;
+
+    u32(value?: number): number;
+
+    i32(value?: number): number;
 
     u64(value?: Uint64): Uint64;
 
     i64(value?: Int64): Int64;
 
+    timepoint(value?: TimePoint): TimePoint;
+
+    duration(value?: Duration): Duration;
+
     u128(value?: Int128Parts): Int128Parts;
 
     i128(value?: Int128Parts): Int128Parts;
 
-    bin(value?: Buffer): Buffer;
+    u256(value?: Buffer): Buffer;
 
-    contractCode(value?: ScContractCode): ScContractCode;
+    i256(value?: Buffer): Buffer;
+
+    bytes(value?: Buffer): Buffer;
+
+    str(value?: string | Buffer): string | Buffer;
+
+    sym(value?: string | Buffer): string | Buffer;
+
+    vec(value?: null | ScVal[]): null | ScVal[];
+
+    map(value?: null | ScMapEntry[]): null | ScMapEntry[];
+
+    exec(value?: ScContractExecutable): ScContractExecutable;
 
     address(value?: ScAddress): ScAddress;
 
-    nonceAddress(value?: ScAddress): ScAddress;
+    nonceKey(value?: ScNonceKey): ScNonceKey;
 
-    static scoVec(value: ScVal[]): ScObject;
+    static scvBool(value: boolean): ScVal;
 
-    static scoMap(value: ScMapEntry[]): ScObject;
+    static scvVoid(): ScVal;
 
-    static scoU64(value: Uint64): ScObject;
+    static scvStatus(value: ScStatus): ScVal;
 
-    static scoI64(value: Int64): ScObject;
+    static scvU32(value: number): ScVal;
 
-    static scoU128(value: Int128Parts): ScObject;
+    static scvI32(value: number): ScVal;
 
-    static scoI128(value: Int128Parts): ScObject;
+    static scvU64(value: Uint64): ScVal;
 
-    static scoBytes(value: Buffer): ScObject;
+    static scvI64(value: Int64): ScVal;
 
-    static scoContractCode(value: ScContractCode): ScObject;
+    static scvTimepoint(value: TimePoint): ScVal;
 
-    static scoAddress(value: ScAddress): ScObject;
+    static scvDuration(value: Duration): ScVal;
 
-    static scoNonceKey(value: ScAddress): ScObject;
+    static scvU128(value: Int128Parts): ScVal;
+
+    static scvI128(value: Int128Parts): ScVal;
+
+    static scvU256(value: Buffer): ScVal;
+
+    static scvI256(value: Buffer): ScVal;
+
+    static scvBytes(value: Buffer): ScVal;
+
+    static scvString(value: string | Buffer): ScVal;
+
+    static scvSymbol(value: string | Buffer): ScVal;
+
+    static scvVec(value: null | ScVal[]): ScVal;
+
+    static scvMap(value: null | ScMapEntry[]): ScVal;
+
+    static scvContractExecutable(value: ScContractExecutable): ScVal;
+
+    static scvAddress(value: ScAddress): ScVal;
+
+    static scvLedgerKeyContractExecutable(): ScVal;
+
+    static scvLedgerKeyNonce(value: ScNonceKey): ScVal;
 
     value():
-      | ScVal[]
-      | ScMapEntry[]
+      | boolean
+      | ScStatus
+      | number
+      | number
       | Uint64
       | Int64
+      | TimePoint
+      | Duration
       | Int128Parts
       | Int128Parts
       | Buffer
-      | ScContractCode
+      | Buffer
+      | Buffer
+      | string
+      | Buffer
+      | string
+      | Buffer
+      | null
+      | ScVal[]
+      | null
+      | ScMapEntry[]
+      | ScContractExecutable
       | ScAddress
-      | ScAddress;
+      | ScNonceKey
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): ScObject;
+    static read(io: Buffer): ScVal;
 
-    static write(value: ScObject, io: Buffer): void;
+    static write(value: ScVal, io: Buffer): void;
 
-    static isValid(value: ScObject): boolean;
+    static isValid(value: ScVal): boolean;
 
-    static toXDR(value: ScObject): Buffer;
+    static toXDR(value: ScVal): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ScObject;
+    static fromXDR(input: Buffer, format?: 'raw'): ScVal;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScObject;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScVal;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -13146,27 +13199,37 @@ export namespace xdr {
 
     static scSpecTypeVal(): ScSpecTypeDef;
 
-    static scSpecTypeU64(): ScSpecTypeDef;
+    static scSpecTypeBool(): ScSpecTypeDef;
 
-    static scSpecTypeI64(): ScSpecTypeDef;
+    static scSpecTypeVoid(): ScSpecTypeDef;
 
-    static scSpecTypeU128(): ScSpecTypeDef;
-
-    static scSpecTypeI128(): ScSpecTypeDef;
+    static scSpecTypeStatus(): ScSpecTypeDef;
 
     static scSpecTypeU32(): ScSpecTypeDef;
 
     static scSpecTypeI32(): ScSpecTypeDef;
 
-    static scSpecTypeBool(): ScSpecTypeDef;
+    static scSpecTypeU64(): ScSpecTypeDef;
 
-    static scSpecTypeSymbol(): ScSpecTypeDef;
+    static scSpecTypeI64(): ScSpecTypeDef;
 
-    static scSpecTypeBitset(): ScSpecTypeDef;
+    static scSpecTypeTimepoint(): ScSpecTypeDef;
 
-    static scSpecTypeStatus(): ScSpecTypeDef;
+    static scSpecTypeDuration(): ScSpecTypeDef;
+
+    static scSpecTypeU128(): ScSpecTypeDef;
+
+    static scSpecTypeI128(): ScSpecTypeDef;
+
+    static scSpecTypeU256(): ScSpecTypeDef;
+
+    static scSpecTypeI256(): ScSpecTypeDef;
 
     static scSpecTypeBytes(): ScSpecTypeDef;
+
+    static scSpecTypeString(): ScSpecTypeDef;
+
+    static scSpecTypeSymbol(): ScSpecTypeDef;
 
     static scSpecTypeAddress(): ScSpecTypeDef;
 
