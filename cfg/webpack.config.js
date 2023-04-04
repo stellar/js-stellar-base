@@ -52,15 +52,16 @@ const config = {
     ]
   },
   plugins: [
+    // this must be first for karma to work (see line 5 of karma.conf.js)
     new ESLintPlugin({
       overrideConfigFile: path.resolve(__dirname, './.eslintrc.js')
     }),
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer']
-    }),
     // Ignore native modules (sodium-native)
     new webpack.IgnorePlugin({ resourceRegExp: /sodium-native/ }),
-    new NodePolyfillPlugin()
+    new NodePolyfillPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer']
+    })
   ],
   watchOptions: {
     ignored: /(node_modules|coverage)/

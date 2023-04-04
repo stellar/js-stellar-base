@@ -7,14 +7,14 @@
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack -c ./cfg/webpack.config.js",
     "test": "yarn build && yarn test:node",
-    "test:node": "nyc mocha --recursive",
+    "test:node": "nyc --nycrc-path ./cfg/.nycrc mocha --recursive",
     "test:browser": "karma start ./cfg/karma.conf.js",
     "test:all": "yarn test:node && yarn test:browser && yarn tslint",
     "docs": "jsdoc -c ./cfg/.jsdoc.json --verbose",
     "tslint": "dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "yarn clean && yarn cross-env NODE_ENV=production webpack -c ./cfg/webpack.config.js && yarn test:all",
     "pretty": "prettier --config ./cfg/prettier.config.js --write './**/*.js'",
-    "clean": "rm -rf dist/ coverage/"
+    "clean": "rm -rf dist/ coverage/ .nyc_output/"
   },
   "mocha": {
     "require": [
@@ -24,8 +24,13 @@
     "reporter": "dot",
     "timeout": 5000
   },
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false,
+    "reporter": "text-summary"
+  },
   "files": [
-    "/dist",
+    "/dist/*.js",
     "/types/*.d.ts"
   ],
   "husky": {
@@ -108,6 +113,7 @@
     "crypto-browserify": "^3.12.0",
     "ghooks": "^2.0.4",
     "js-xdr": "^1.1.3",
+    "karma-coverage": "^2.2.0",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3",

@@ -1,6 +1,7 @@
-var webpackConfig = require('./webpack.config.browser.js');
+var webpackConfig = require('./webpack.config.js');
 delete webpackConfig.output;
 webpackConfig.entry = {}; // karma fills these in
+webpackConfig.plugins.shift(); // drop eslinter plugin
 
 module.exports = function(config) {
   config.set({
@@ -27,6 +28,12 @@ module.exports = function(config) {
     colors: true,
     singleRun: true,
 
-    reporters: ['dots']
+    reporters: ['dots', 'coverage'],
+    coverageReporter: {
+      type: 'text-summary',
+      instrumenterOptions: {
+        istanbul: { noCompact: true }
+      }
+    }
   });
 };
