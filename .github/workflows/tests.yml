@@ -27,7 +27,7 @@ jobs:
       run: yarn install
 
     - name: Build
-      run: yarn build
+      run: yarn build:prod
 
     - name: Run Node Tests
       run: yarn test:node

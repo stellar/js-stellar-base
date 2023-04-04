@@ -20,8 +20,8 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Build
-        run: yarn run version
+      - name: Build & Test
+        run: yarn preversion
 
       - name: Checkout GH pages
         uses: actions/checkout@v2

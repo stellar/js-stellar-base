@@ -6,6 +6,7 @@ var TerserPlugin = require('terser-webpack-plugin');
 var NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const config = {
+  // https://stackoverflow.com/a/34018909
   entry: {
     'stellar-base': path.resolve(__dirname, '../src/index.js'),
     'stellar-base.min': path.resolve(__dirname, '../src/index.js')

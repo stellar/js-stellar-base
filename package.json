@@ -6,13 +6,14 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack -c ./cfg/webpack.config.js",
+    "build:prod": "cross-env NODE_ENV=production webpack -c ./cfg/webpack.config.js",
     "test": "yarn build && yarn test:node",
     "test:node": "nyc --nycrc-path ./cfg/.nycrc mocha --recursive",
     "test:browser": "karma start ./cfg/karma.conf.js",
     "test:all": "yarn test:node && yarn test:browser && yarn tslint",
     "docs": "jsdoc -c ./cfg/.jsdoc.json --verbose",
     "tslint": "dtslint --localTs node_modules/typescript/lib types/",
-    "preversion": "yarn clean && yarn pretty && yarn cross-env NODE_ENV=production webpack -c ./cfg/webpack.config.js && yarn test:all",
+    "preversion": "yarn clean && yarn pretty && yarn build:prod && yarn test:all",
     "pretty": "prettier --config ./cfg/prettier.config.js --ignore-path ./cfg/.prettierignore --write './**/*.js'",
     "clean": "rm -rf dist/ coverage/ .nyc_output/"
   },
