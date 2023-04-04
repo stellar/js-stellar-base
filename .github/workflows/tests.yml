@@ -26,14 +26,11 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Build
-      run: gulp
-
     - name: Run Node Tests
       run: yarn test
 
     - name: Run Browser Tests
-      run: gulp test:browser
+      run: yarn test:browser
 
     - name: Run Linter
-      run: yarn dtslint
+      run: yarn tslint

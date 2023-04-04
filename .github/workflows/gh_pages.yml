@@ -21,7 +21,7 @@ jobs:
         run: yarn install
 
       - name: Build
-        run: gulp
+        run: yarn run version
 
       - name: Checkout GH pages
         uses: actions/checkout@v2
