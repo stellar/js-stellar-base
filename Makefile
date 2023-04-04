@@ -1,4 +1,4 @@
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-core/raw/master/src/protocol-curr/xdr
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/curr
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FILES_CURR= \
 	Stellar-SCP.x \
@@ -9,7 +9,7 @@ XDR_FILES_CURR= \
 	Stellar-types.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr-next/raw/main
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/next
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \

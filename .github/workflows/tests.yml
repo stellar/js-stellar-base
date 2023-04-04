@@ -11,9 +11,9 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 2
+      max-parallel: 4
       matrix:
-        node-version: [14, 16]
+        node-version: [14, 16, 18]
 
     steps:
     - uses: actions/checkout@v2
@@ -26,14 +26,14 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Build
-      run: yarn build:prod
+    - name: Build Node
+      run: yarn build && yarn build:prod
 
     - name: Run Node Tests
       run: yarn test:node
 
     - name: Run Browser Tests
-      run: yarn test:browser
+      run: yarn build:browser:prod && yarn test:browser
 
     - name: Run Linter
       run: yarn tslint

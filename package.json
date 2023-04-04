@@ -18,7 +18,7 @@
     "test:all": "yarn test && yarn test:browser && yarn tslint",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "tslint": "dtslint --localTs node_modules/typescript/lib types/",
-    "preversion": "yarn clean && yarn pretty && yarn build:all && yarn test:all",
+    "preversion": "yarn clean && yarn pretty && yarn build:all:prod && yarn test:all",
     "pretty": "prettier --config ./config/prettier.config.js --ignore-path ./config/.prettierignore --write './**/*.js'",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/"
   },
