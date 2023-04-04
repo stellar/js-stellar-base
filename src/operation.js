@@ -186,10 +186,7 @@ export class Operation {
       case 'allowTrust': {
         result.type = 'allowTrust';
         result.trustor = accountIdtoAddress(attrs.trustor());
-        result.assetCode = attrs
-          .asset()
-          .value()
-          .toString();
+        result.assetCode = attrs.asset().value().toString();
         result.assetCode = trimEnd(result.assetCode, '\0');
         result.authorize = attrs.authorize();
         break;
@@ -214,27 +211,15 @@ export class Operation {
 
         if (attrs.signer()) {
           const signer = {};
-          const arm = attrs
-            .signer()
-            .key()
-            .arm();
+          const arm = attrs.signer().key().arm();
           if (arm === 'ed25519') {
             signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
           } else if (arm === 'preAuthTx') {
-            signer.preAuthTx = attrs
-              .signer()
-              .key()
-              .preAuthTx();
+            signer.preAuthTx = attrs.signer().key().preAuthTx();
           } else if (arm === 'hashX') {
-            signer.sha256Hash = attrs
-              .signer()
-              .key()
-              .hashX();
+            signer.sha256Hash = attrs.signer().key().hashX();
           } else if (arm === 'ed25519SignedPayload') {
-            const signedPayload = attrs
-              .signer()
-              .key()
-              .ed25519SignedPayload();
+            const signedPayload = attrs.signer().key().ed25519SignedPayload();
             signer.ed25519SignedPayload = StrKey.encodeSignedPayload(
               signedPayload.toXDR()
             );
@@ -348,7 +333,8 @@ export class Operation {
 
         const mapping = {
           authorized: xdr.TrustLineFlags.authorizedFlag(),
-          authorizedToMaintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+          authorizedToMaintainLiabilities:
+            xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
           clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
         };
 
@@ -547,19 +533,13 @@ function extractRevokeSponshipDetails(attrs, result) {
         case xdr.LedgerEntryType.offer().name: {
           result.type = 'revokeOfferSponsorship';
           result.seller = accountIdtoAddress(ledgerKey.offer().sellerId());
-          result.offerId = ledgerKey
-            .offer()
-            .offerId()
-            .toString();
+          result.offerId = ledgerKey.offer().offerId().toString();
           break;
         }
         case xdr.LedgerEntryType.data().name: {
           result.type = 'revokeDataSponsorship';
           result.account = accountIdtoAddress(ledgerKey.data().accountId());
-          result.name = ledgerKey
-            .data()
-            .dataName()
-            .toString('ascii');
+          result.name = ledgerKey.data().dataName().toString('ascii');
           break;
         }
         case xdr.LedgerEntryType.claimableBalance().name: {

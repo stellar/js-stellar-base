@@ -1,8 +1,8 @@
 import { best_r } from '../../../src/util/continued_fraction.js';
 import BigNumber from 'bignumber.js';
 
-describe('best_r', function() {
-  it('correctly calculates the best rational approximation', function() {
+describe('best_r', function () {
+  it('correctly calculates the best rational approximation', function () {
     var tests = [
       ['1,10', '0.1'],
       ['1,100', '0.01'],
@@ -31,7 +31,7 @@ describe('best_r', function() {
     }
   });
 
-  it('throws an error when best rational approximation cannot be found', function() {
+  it('throws an error when best rational approximation cannot be found', function () {
     expect(() => best_r('0.0000000003')).to.throw(
       /Couldn't find approximation/
     );

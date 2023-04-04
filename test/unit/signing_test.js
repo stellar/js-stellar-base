@@ -12,30 +12,30 @@ let secretKey = Buffer.from(
   'hex'
 );
 
-describe('StellarBase#sign', function() {
+describe('StellarBase#sign', function () {
   let expectedSig =
     '587d4b472eeef7d07aafcd0b049640b0bb3f39784118c2e2b73a04fa2f64c9c538b4b2d0f5335e968a480021fdc23e98c0ddf424cb15d8131df8cb6c4bb58309';
 
-  it('can sign an string properly', function() {
+  it('can sign an string properly', function () {
     let data = 'hello world';
     let actualSig = StellarBase.sign(data, secretKey).toString('hex');
     expect(actualSig).to.eql(expectedSig);
   });
 
-  it('can sign an buffer properly', function() {
+  it('can sign an buffer properly', function () {
     let data = Buffer.from('hello world', 'utf8');
     let actualSig = StellarBase.sign(data, secretKey).toString('hex');
     expect(actualSig).to.eql(expectedSig);
   });
 
-  it('can sign an array of bytes properly', function() {
+  it('can sign an array of bytes properly', function () {
     let data = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
     let actualSig = StellarBase.sign(data, secretKey).toString('hex');
     expect(actualSig).to.eql(expectedSig);
   });
 });
 
-describe('StellarBase#verify', function() {
+describe('StellarBase#verify', function () {
   let sig = Buffer.from(
     '587d4b472eeef7d07aafcd0b049640b0bb3f39784118c2e2b73a04fa2f64c9c538b4b2d0f5335e968a480021fdc23e98c0ddf424cb15d8131df8cb6c4bb58309',
     'hex'
@@ -45,21 +45,21 @@ describe('StellarBase#verify', function() {
     'hex'
   );
 
-  it('can verify an string properly', function() {
+  it('can verify an string properly', function () {
     let data = 'hello world';
     expect(StellarBase.verify(data, sig, publicKey)).to.be.ok;
     expect(StellarBase.verify('corrupted', sig, publicKey)).to.not.be.ok;
     expect(StellarBase.verify(data, badSig, publicKey)).to.not.be.ok;
   });
 
-  it('can verify an buffer properly', function() {
+  it('can verify an buffer properly', function () {
     let data = Buffer.from('hello world', 'utf8');
     expect(StellarBase.verify(data, sig, publicKey)).to.be.ok;
     expect(StellarBase.verify('corrupted', sig, publicKey)).to.not.be.ok;
     expect(StellarBase.verify(data, badSig, publicKey)).to.not.be.ok;
   });
 
-  it('can verify an array of bytes properly', function() {
+  it('can verify an array of bytes properly', function () {
     let data = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
     expect(StellarBase.verify(data, sig, publicKey)).to.be.ok;
     expect(StellarBase.verify('corrupted', sig, publicKey)).to.not.be.ok;

@@ -273,9 +273,8 @@ export class Transaction extends TransactionBase {
       );
     }
 
-    const taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
-      tx
-    );
+    const taggedTransaction =
+      new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(tx);
 
     const txSignature = new xdr.TransactionSignaturePayload({
       networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),

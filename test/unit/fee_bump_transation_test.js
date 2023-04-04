@@ -1,8 +1,8 @@
 import randomBytes from 'randombytes';
 import { encodeMuxedAccountToAddress } from '../../src/util/decode_encode_muxed_account';
 
-describe('FeeBumpTransaction', function() {
-  beforeEach(function() {
+describe('FeeBumpTransaction', function () {
+  beforeEach(function () {
     this.baseFee = '100';
     this.networkPassphrase = 'Standalone Network ; February 2017';
     this.innerSource = StellarBase.Keypair.master(this.networkPassphrase);
@@ -44,7 +44,7 @@ describe('FeeBumpTransaction', function() {
     );
   });
 
-  it('constructs a FeeBumpTransaction object from a TransactionEnvelope', function() {
+  it('constructs a FeeBumpTransaction object from a TransactionEnvelope', function () {
     const transaction = this.transaction;
     transaction.sign(this.feeSource);
 
@@ -68,12 +68,9 @@ describe('FeeBumpTransaction', function() {
     const expectedXDR =
       'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
 
-    expect(
-      transaction
-        .toEnvelope()
-        .toXDR()
-        .toString('base64')
-    ).to.be.equal(expectedXDR);
+    expect(transaction.toEnvelope().toXDR().toString('base64')).to.be.equal(
+      expectedXDR
+    );
     const expectedTxEnvelope = StellarBase.xdr.TransactionEnvelope.fromXDR(
       expectedXDR,
       'base64'
@@ -81,39 +78,19 @@ describe('FeeBumpTransaction', function() {
 
     expect(innerTransaction.source).to.equal(
       StellarBase.StrKey.encodeEd25519PublicKey(
-        expectedTxEnvelope
-          .tx()
-          .innerTx()
-          .value()
-          .tx()
-          .sourceAccount()
-          .ed25519()
+        expectedTxEnvelope.tx().innerTx().value().tx().sourceAccount().ed25519()
       )
     );
     expect(transaction.feeSource).to.equal(
       StellarBase.StrKey.encodeEd25519PublicKey(
-        expectedTxEnvelope
-          .tx()
-          .feeSource()
-          .ed25519()
+        expectedTxEnvelope.tx().feeSource().ed25519()
       )
     );
 
     expect(transaction.innerTransaction.fee).to.equal(
-      expectedTxEnvelope
-        .tx()
-        .innerTx()
-        .value()
-        .tx()
-        .fee()
-        .toString()
+      expectedTxEnvelope.tx().innerTx().value().tx().fee().toString()
     );
-    expect(transaction.fee).to.equal(
-      expectedTxEnvelope
-        .tx()
-        .fee()
-        .toString()
-    );
+    expect(transaction.fee).to.equal(expectedTxEnvelope.tx().fee().toString());
 
     expect(innerTransaction.signatures.length).to.equal(1);
     expect(innerTransaction.signatures[0].toXDR().toString('base64')).to.equal(
@@ -128,14 +105,11 @@ describe('FeeBumpTransaction', function() {
 
     expect(transaction.signatures.length).to.equal(1);
     expect(transaction.signatures[0].toXDR().toString('base64')).to.equal(
-      expectedTxEnvelope
-        .signatures()[0]
-        .toXDR()
-        .toString('base64')
+      expectedTxEnvelope.signatures()[0].toXDR().toString('base64')
     );
   });
 
-  it('throws when a garbage Network is selected', function() {
+  it('throws when a garbage Network is selected', function () {
     const input = this.transaction.toEnvelope();
 
     expect(() => {
@@ -147,18 +121,14 @@ describe('FeeBumpTransaction', function() {
     }).to.throw(/expected a string/);
   });
 
-  it('signs correctly', function() {
+  it('signs correctly', function () {
     const tx = this.transaction;
     tx.sign(this.feeSource);
-    const rawSig = tx
-      .toEnvelope()
-      .feeBump()
-      .signatures()[0]
-      .signature();
+    const rawSig = tx.toEnvelope().feeBump().signatures()[0].signature();
     expect(this.feeSource.verify(tx.hash(), rawSig)).to.equal(true);
   });
 
-  it('signs using hash preimage', function() {
+  it('signs using hash preimage', function () {
     let preimage = randomBytes(64);
     let hash = StellarBase.hash(preimage);
     let tx = this.transaction;
@@ -171,7 +141,7 @@ describe('FeeBumpTransaction', function() {
     );
   });
 
-  it('returns error when signing using hash preimage that is too long', function() {
+  it('returns error when signing using hash preimage that is too long', function () {
     let preimage = randomBytes(2 * 64);
     let tx = this.transaction;
     expect(() => tx.signHashX(preimage)).to.throw(
@@ -179,15 +149,15 @@ describe('FeeBumpTransaction', function() {
     );
   });
 
-  describe('toEnvelope', function() {
-    it('does not return a reference to source signatures', function() {
+  describe('toEnvelope', function () {
+    it('does not return a reference to source signatures', function () {
       const transaction = this.transaction;
       const envelope = transaction.toEnvelope().value();
       envelope.signatures().push({});
 
       expect(transaction.signatures.length).to.equal(0);
     });
-    it('does not return a reference to the source transaction', function() {
+    it('does not return a reference to the source transaction', function () {
       const transaction = this.transaction;
       const envelope = transaction.toEnvelope().value();
       envelope.tx().fee(StellarBase.xdr.Int64.fromString('300'));
@@ -196,7 +166,7 @@ describe('FeeBumpTransaction', function() {
     });
   });
 
-  it('adds signature correctly', function() {
+  it('adds signature correctly', function () {
     const transaction = this.transaction;
     const signer = this.feeSource;
     const presignHash = transaction.hash();
@@ -235,7 +205,7 @@ describe('FeeBumpTransaction', function() {
     expectBuffersToBeEqual(addedSignatureTx.hash(), transaction.hash());
   });
 
-  it('adds signature generated by getKeypairSignature', function() {
+  it('adds signature generated by getKeypairSignature', function () {
     const transaction = this.transaction;
     const presignHash = transaction.hash();
     const signer = this.feeSource;
@@ -281,7 +251,7 @@ describe('FeeBumpTransaction', function() {
     expectBuffersToBeEqual(addedSignatureTx.hash(), transaction.hash());
   });
 
-  it('does not add invalid signature', function() {
+  it('does not add invalid signature', function () {
     const transaction = this.transaction;
     const signer = this.feeSource;
 
@@ -302,7 +272,7 @@ describe('FeeBumpTransaction', function() {
     }).to.throw('Invalid signature');
   });
 
-  it('outputs xdr as a string', function() {
+  it('outputs xdr as a string', function () {
     const xdrString =
       'AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==';
     const transaction = new StellarBase.FeeBumpTransaction(
@@ -313,15 +283,12 @@ describe('FeeBumpTransaction', function() {
     expect(transaction.toXDR()).to.be.equal(xdrString);
   });
 
-  it('decodes muxed addresses correctly', function() {
+  it('decodes muxed addresses correctly', function () {
     const muxedFeeSource = this.feeSource.xdrMuxedAccount('0');
     const muxedAddress = encodeMuxedAccountToAddress(muxedFeeSource);
 
     const envelope = this.transaction.toEnvelope();
-    envelope
-      .feeBump()
-      .tx()
-      .feeSource(muxedFeeSource);
+    envelope.feeBump().tx().feeSource(muxedFeeSource);
 
     const txWithMuxedAccount = new StellarBase.FeeBumpTransaction(
       envelope,

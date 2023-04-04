@@ -6,9 +6,9 @@ import {
   encodeMuxedAccount
 } from '../../src/util/decode_encode_muxed_account.js';
 
-describe('Operation', function() {
-  describe('.createAccount()', function() {
-    it('creates a createAccountOp', function() {
+describe('Operation', function () {
+  describe('.createAccount()', function () {
+    it('creates a createAccountOp', function () {
       var destination =
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
       var startingBalance = '1000.0000000';
@@ -23,16 +23,12 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('createAccount');
       expect(obj.destination).to.be.equal(destination);
-      expect(
-        operation
-          .body()
-          .value()
-          .startingBalance()
-          .toString()
-      ).to.be.equal('10000000000');
+      expect(operation.body().value().startingBalance().toString()).to.be.equal(
+        '10000000000'
+      );
       expect(obj.startingBalance).to.be.equal(startingBalance);
     });
-    it('fails to create createAccount operation with an invalid destination address', function() {
+    it('fails to create createAccount operation with an invalid destination address', function () {
       let opts = {
         destination: 'GCEZW',
         startingBalance: '20',
@@ -43,7 +39,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates a createAccount operation with startingBalance equal to 0', function() {
+    it('creates a createAccount operation with startingBalance equal to 0', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         startingBalance: '0',
@@ -54,7 +50,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create createAccount operation with an invalid startingBalance', function() {
+    it('fails to create createAccount operation with an invalid startingBalance', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         startingBalance: 20,
@@ -65,7 +61,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create createAccount operation with an invalid source address', function() {
+    it('fails to create createAccount operation with an invalid source address', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         startingBalance: '20',
@@ -77,8 +73,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.payment()', function() {
-    it('creates a paymentOp', function() {
+  describe('.payment()', function () {
+    it('creates a paymentOp', function () {
       var destination =
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
       var amount = '1000.0000000';
@@ -131,12 +127,12 @@ describe('Operation', function() {
 
     let opts = { destination, asset, amount, source };
 
-    it('supports muxed accounts', function() {
+    it('supports muxed accounts', function () {
       opts.source = opts.destination = base;
       paymentPacksCorrectly(opts);
     });
 
-    it('supports mixing muxed and unmuxed properties', function() {
+    it('supports mixing muxed and unmuxed properties', function () {
       opts.source = base;
       opts.destination = destination;
       paymentPacksCorrectly(opts);
@@ -146,7 +142,7 @@ describe('Operation', function() {
       paymentPacksCorrectly(opts);
     });
 
-    it('fails to create payment operation with an invalid destination address', function() {
+    it('fails to create payment operation with an invalid destination address', function () {
       let opts = {
         destination: 'GCEZW',
         asset: StellarBase.Asset.native(),
@@ -157,7 +153,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create payment operation with an invalid amount', function() {
+    it('fails to create payment operation with an invalid amount', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         asset: StellarBase.Asset.native(),
@@ -169,8 +165,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.pathPaymentStrictReceive()', function() {
-    it('creates a pathPaymentStrictReceiveOp', function() {
+  describe('.pathPaymentStrictReceive()', function () {
+    it('creates a pathPaymentStrictReceiveOp', function () {
       var sendAsset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -208,23 +204,15 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('pathPaymentStrictReceive');
       expect(obj.sendAsset.equals(sendAsset)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .sendMax()
-          .toString()
-      ).to.be.equal('30070000');
+      expect(operation.body().value().sendMax().toString()).to.be.equal(
+        '30070000'
+      );
       expect(obj.sendMax).to.be.equal(sendMax);
       expect(obj.destination).to.be.equal(destination);
       expect(obj.destAsset.equals(destAsset)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .destAmount()
-          .toString()
-      ).to.be.equal('31415000');
+      expect(operation.body().value().destAmount().toString()).to.be.equal(
+        '31415000'
+      );
       expect(obj.destAmount).to.be.equal(destAmount);
       expect(obj.path[0].getCode()).to.be.equal('USD');
       expect(obj.path[0].getIssuer()).to.be.equal(
@@ -269,7 +257,7 @@ describe('Operation', function() {
       source
     };
 
-    it('supports muxed accounts', function() {
+    it('supports muxed accounts', function () {
       const packed = StellarBase.Operation.pathPaymentStrictReceive(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -284,21 +272,21 @@ describe('Operation', function() {
       expect(unpacked.destination).to.equal(opts.destination);
     });
 
-    it('fails to create path payment operation with an invalid destination address', function() {
+    it('fails to create path payment operation with an invalid destination address', function () {
       opts.destination = 'GCEZW';
       expect(() =>
         StellarBase.Operation.pathPaymentStrictReceive(opts)
       ).to.throw(/destination is invalid/);
     });
 
-    it('fails to create path payment operation with an invalid sendMax', function() {
+    it('fails to create path payment operation with an invalid sendMax', function () {
       opts.sendMax = 20;
       expect(() =>
         StellarBase.Operation.pathPaymentStrictReceive(opts)
       ).to.throw(/sendMax argument must be of type String/);
     });
 
-    it('fails to create path payment operation with an invalid destAmount', function() {
+    it('fails to create path payment operation with an invalid destAmount', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         sendMax: '20',
@@ -315,8 +303,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.pathPaymentStrictSend()', function() {
-    it('creates a pathPaymentStrictSendOp', function() {
+  describe('.pathPaymentStrictSend()', function () {
+    it('creates a pathPaymentStrictSendOp', function () {
       var sendAsset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -354,23 +342,15 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('pathPaymentStrictSend');
       expect(obj.sendAsset.equals(sendAsset)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .sendAmount()
-          .toString()
-      ).to.be.equal('30070000');
+      expect(operation.body().value().sendAmount().toString()).to.be.equal(
+        '30070000'
+      );
       expect(obj.sendAmount).to.be.equal(sendAmount);
       expect(obj.destination).to.be.equal(destination);
       expect(obj.destAsset.equals(destAsset)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .destMin()
-          .toString()
-      ).to.be.equal('31415000');
+      expect(operation.body().value().destMin().toString()).to.be.equal(
+        '31415000'
+      );
       expect(obj.destMin).to.be.equal(destMin);
       expect(obj.path[0].getCode()).to.be.equal('USD');
       expect(obj.path[0].getIssuer()).to.be.equal(
@@ -402,7 +382,7 @@ describe('Operation', function() {
       )
     ];
 
-    it('supports muxed accounts', function() {
+    it('supports muxed accounts', function () {
       const packed = StellarBase.Operation.pathPaymentStrictSend(opts);
 
       // Ensure we can convert to and from the raw XDR:
@@ -417,7 +397,7 @@ describe('Operation', function() {
       expect(unpacked.destination).to.equal(opts.destination);
     });
 
-    it('fails to create path payment operation with an invalid destination address', function() {
+    it('fails to create path payment operation with an invalid destination address', function () {
       let opts = {
         destination: 'GCEZW',
         sendAmount: '20',
@@ -433,7 +413,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create path payment operation with an invalid sendAmount', function() {
+    it('fails to create path payment operation with an invalid sendAmount', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         sendAmount: 20,
@@ -449,7 +429,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create path payment operation with an invalid destMin', function() {
+    it('fails to create path payment operation with an invalid destMin', function () {
       let opts = {
         destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         sendAmount: '20',
@@ -466,8 +446,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.changeTrust()', function() {
-    it('creates a changeTrustOp with Asset', function() {
+  describe('.changeTrust()', function () {
+    it('creates a changeTrustOp with Asset', function () {
       let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -480,17 +460,13 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('changeTrust');
       expect(obj.line).to.be.deep.equal(asset);
-      expect(
-        operation
-          .body()
-          .value()
-          .limit()
-          .toString()
-      ).to.be.equal('9223372036854775807'); // MAX_INT64
+      expect(operation.body().value().limit().toString()).to.be.equal(
+        '9223372036854775807'
+      ); // MAX_INT64
       expect(obj.limit).to.be.equal('922337203685.4775807');
     });
 
-    it('creates a changeTrustOp with Asset and limit', function() {
+    it('creates a changeTrustOp with Asset and limit', function () {
       let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -506,17 +482,13 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('changeTrust');
       expect(obj.line).to.be.deep.equal(asset);
-      expect(
-        operation
-          .body()
-          .value()
-          .limit()
-          .toString()
-      ).to.be.equal('500000000');
+      expect(operation.body().value().limit().toString()).to.be.equal(
+        '500000000'
+      );
       expect(obj.limit).to.be.equal('50.0000000');
     });
 
-    it('creates a changeTrustOp to a liquidity pool', function() {
+    it('creates a changeTrustOp to a liquidity pool', function () {
       const assetA = new StellarBase.Asset(
         'ARST',
         'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
@@ -536,17 +508,13 @@ describe('Operation', function() {
 
       expect(operation.type).to.be.equal('changeTrust');
       expect(operation.line).to.be.deep.equal(asset);
-      expect(
-        opXdrObj
-          .body()
-          .value()
-          .limit()
-          .toString()
-      ).to.be.equal('9223372036854775807'); // MAX_INT64
+      expect(opXdrObj.body().value().limit().toString()).to.be.equal(
+        '9223372036854775807'
+      ); // MAX_INT64
       expect(operation.limit).to.be.equal('922337203685.4775807');
     });
 
-    it('deletes an Asset trustline', function() {
+    it('deletes an Asset trustline', function () {
       let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -565,7 +533,7 @@ describe('Operation', function() {
       expect(obj.limit).to.be.equal('0.0000000');
     });
 
-    it('deletes a LiquidityPoolAsset trustline', function() {
+    it('deletes a LiquidityPoolAsset trustline', function () {
       const assetA = new StellarBase.Asset(
         'ARST',
         'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
@@ -590,7 +558,7 @@ describe('Operation', function() {
       expect(obj.limit).to.be.equal('0.0000000');
     });
 
-    it('throws TypeError for incorrect limit argument', function() {
+    it('throws TypeError for incorrect limit argument', function () {
       let asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -601,8 +569,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.allowTrust()', function() {
-    it('creates an allowTrustOp', function() {
+  describe('.allowTrust()', function () {
+    it('creates an allowTrustOp', function () {
       let trustor = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let assetCode = 'USD';
       let authorize = true;
@@ -622,7 +590,7 @@ describe('Operation', function() {
       expect(obj.authorize).to.be.equal(1);
     });
 
-    it('fails to create allowTrust operation with an invalid trustor address', function() {
+    it('fails to create allowTrust operation with an invalid trustor address', function () {
       let opts = {
         trustor: 'GCEZW'
       };
@@ -632,15 +600,15 @@ describe('Operation', function() {
     });
   });
 
-  describe('.setOptions()', function() {
-    it('auth flags are set correctly', function() {
+  describe('.setOptions()', function () {
+    it('auth flags are set correctly', function () {
       expect(StellarBase.AuthRequiredFlag).to.be.equal(1);
       expect(StellarBase.AuthRevocableFlag).to.be.equal(2);
       expect(StellarBase.AuthImmutableFlag).to.be.equal(4);
       expect(StellarBase.AuthClawbackEnabledFlag).to.be.equal(8);
     });
 
-    it('creates a setOptionsOp', function() {
+    it('creates a setOptionsOp', function () {
       var opts = {};
       opts.inflationDest =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
@@ -682,7 +650,7 @@ describe('Operation', function() {
       expect(obj.homeDomain.toString()).to.be.equal(opts.homeDomain);
     });
 
-    it('creates a setOptionsOp with preAuthTx signer', function() {
+    it('creates a setOptionsOp with preAuthTx signer', function () {
       var opts = {};
 
       var hash = StellarBase.hash('Tx hash');
@@ -703,7 +671,7 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
-    it('creates a setOptionsOp with preAuthTx signer from a hex string', function() {
+    it('creates a setOptionsOp with preAuthTx signer from a hex string', function () {
       var opts = {};
 
       var hash = StellarBase.hash('Tx hash').toString('hex');
@@ -725,7 +693,7 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
-    it('creates a setOptionsOp with hash signer', function() {
+    it('creates a setOptionsOp with hash signer', function () {
       var opts = {};
 
       var hash = StellarBase.hash('Hash Preimage');
@@ -746,7 +714,7 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
-    it('creates a setOptionsOp with hash signer from a hex string', function() {
+    it('creates a setOptionsOp with hash signer from a hex string', function () {
       var opts = {};
 
       var hash = StellarBase.hash('Hash Preimage').toString('hex');
@@ -768,7 +736,7 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
-    it('creates a setOptionsOp with signed payload signer', function() {
+    it('creates a setOptionsOp with signed payload signer', function () {
       var opts = {};
 
       var pubkey = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
@@ -776,9 +744,10 @@ describe('Operation', function() {
         ed25519: StellarBase.StrKey.decodeEd25519PublicKey(pubkey),
         payload: Buffer.from('test')
       });
-      var xdrSignerKey = StellarBase.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
-        signedPayload
-      );
+      var xdrSignerKey =
+        StellarBase.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
+          signedPayload
+        );
       var payloadKey = StellarBase.SignerKey.encodeSignerKey(xdrSignerKey);
 
       //var rawSignedPayload = Buffer.concat([StellarBase.StrKey.decodeEd25519PublicKey(pubkey), Buffer.from('test')]);
@@ -800,7 +769,7 @@ describe('Operation', function() {
       expect(obj.signer.weight).to.be.equal(opts.signer.weight);
     });
 
-    it('empty homeDomain is decoded correctly', function() {
+    it('empty homeDomain is decoded correctly', function () {
       const keypair = StellarBase.Keypair.random();
       const account = new StellarBase.Account(keypair.publicKey(), '0');
 
@@ -826,7 +795,7 @@ describe('Operation', function() {
       expect(tx2.operations[0].homeDomain).to.be.equal('');
     });
 
-    it('string setFlags', function() {
+    it('string setFlags', function () {
       let opts = {
         setFlags: '4'
       };
@@ -841,14 +810,14 @@ describe('Operation', function() {
       expect(obj.setFlags).to.be.equal(4);
     });
 
-    it('fails to create setOptions operation with an invalid setFlags', function() {
+    it('fails to create setOptions operation with an invalid setFlags', function () {
       let opts = {
         setFlags: {}
       };
       expect(() => StellarBase.Operation.setOptions(opts)).to.throw();
     });
 
-    it('string clearFlags', function() {
+    it('string clearFlags', function () {
       let opts = {
         clearFlags: '4'
       };
@@ -863,14 +832,14 @@ describe('Operation', function() {
       expect(obj.clearFlags).to.be.equal(4);
     });
 
-    it('fails to create setOptions operation with an invalid clearFlags', function() {
+    it('fails to create setOptions operation with an invalid clearFlags', function () {
       let opts = {
         clearFlags: {}
       };
       expect(() => StellarBase.Operation.setOptions(opts)).to.throw();
     });
 
-    it('fails to create setOptions operation with an invalid inflationDest address', function() {
+    it('fails to create setOptions operation with an invalid inflationDest address', function () {
       let opts = {
         inflationDest: 'GCEZW'
       };
@@ -879,7 +848,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with an invalid signer address', function() {
+    it('fails to create setOptions operation with an invalid signer address', function () {
       let opts = {
         signer: {
           ed25519PublicKey: 'GDGU5OAPHNPU5UCL',
@@ -891,7 +860,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with multiple signer values', function() {
+    it('fails to create setOptions operation with multiple signer values', function () {
       let opts = {
         signer: {
           ed25519PublicKey:
@@ -905,7 +874,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with an invalid masterWeight', function() {
+    it('fails to create setOptions operation with an invalid masterWeight', function () {
       let opts = {
         masterWeight: 400
       };
@@ -914,7 +883,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with an invalid lowThreshold', function() {
+    it('fails to create setOptions operation with an invalid lowThreshold', function () {
       let opts = {
         lowThreshold: 400
       };
@@ -923,7 +892,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with an invalid medThreshold', function() {
+    it('fails to create setOptions operation with an invalid medThreshold', function () {
       let opts = {
         medThreshold: 400
       };
@@ -932,7 +901,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with an invalid highThreshold', function() {
+    it('fails to create setOptions operation with an invalid highThreshold', function () {
       let opts = {
         highThreshold: 400
       };
@@ -941,7 +910,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create setOptions operation with an invalid homeDomain', function() {
+    it('fails to create setOptions operation with an invalid homeDomain', function () {
       let opts = {
         homeDomain: 67238
       };
@@ -951,8 +920,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.manageSellOffer', function() {
-    it('creates a manageSellOfferOp (string price)', function() {
+  describe('.manageSellOffer', function () {
+    it('creates a manageSellOfferOp (string price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -974,19 +943,15 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('manageSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('31234560');
+      expect(operation.body().value().amount().toString()).to.be.equal(
+        '31234560'
+      );
       expect(obj.amount).to.be.equal(opts.amount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal(opts.offerId);
     });
 
-    it('creates a manageSellOfferOp (price fraction)', function() {
+    it('creates a manageSellOfferOp (price fraction)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1013,7 +978,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates an invalid manageSellOfferOp (price fraction)', function() {
+    it('creates an invalid manageSellOfferOp (price fraction)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1034,7 +999,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates a manageSellOfferOp (number price)', function() {
+    it('creates a manageSellOfferOp (number price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1057,7 +1022,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal(opts.price.toString());
     });
 
-    it('creates a manageSellOfferOp (BigNumber price)', function() {
+    it('creates a manageSellOfferOp (BigNumber price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1080,7 +1045,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal('1.25');
     });
 
-    it('creates a manageSellOfferOp with no offerId', function() {
+    it('creates a manageSellOfferOp with no offerId', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1101,19 +1066,15 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('manageSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('10000000000');
+      expect(operation.body().value().amount().toString()).to.be.equal(
+        '10000000000'
+      );
       expect(obj.amount).to.be.equal(opts.amount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal('0'); // 0=create a new offer, otherwise edit an existing offer
     });
 
-    it('cancels offer', function() {
+    it('cancels offer', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1135,19 +1096,13 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('manageSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('0');
+      expect(operation.body().value().amount().toString()).to.be.equal('0');
       expect(obj.amount).to.be.equal(opts.amount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal('1'); // 0=create a new offer, otherwise edit an existing offer
     });
 
-    it('fails to create manageSellOffer operation with an invalid amount', function() {
+    it('fails to create manageSellOffer operation with an invalid amount', function () {
       let opts = {
         amount: 20,
         price: '10',
@@ -1165,7 +1120,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create manageSellOffer operation with missing price', function() {
+    it('fails to create manageSellOffer operation with missing price', function () {
       let opts = {
         amount: '20',
         selling: new StellarBase.Asset(
@@ -1182,7 +1137,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create manageSellOffer operation with negative price', function() {
+    it('fails to create manageSellOffer operation with negative price', function () {
       let opts = {
         amount: '20',
         price: '-1',
@@ -1200,7 +1155,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create manageSellOffer operation with invalid price', function() {
+    it('fails to create manageSellOffer operation with invalid price', function () {
       let opts = {
         amount: '20',
         price: 'test',
@@ -1219,8 +1174,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.manageBuyOffer', function() {
-    it('creates a manageBuyOfferOp (string price)', function() {
+  describe('.manageBuyOffer', function () {
+    it('creates a manageBuyOfferOp (string price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1242,19 +1197,15 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('manageBuyOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .buyAmount()
-          .toString()
-      ).to.be.equal('31234560');
+      expect(operation.body().value().buyAmount().toString()).to.be.equal(
+        '31234560'
+      );
       expect(obj.buyAmount).to.be.equal(opts.buyAmount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal(opts.offerId);
     });
 
-    it('creates a manageBuyOfferOp (price fraction)', function() {
+    it('creates a manageBuyOfferOp (price fraction)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1281,7 +1232,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates an invalid manageBuyOfferOp (price fraction)', function() {
+    it('creates an invalid manageBuyOfferOp (price fraction)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1302,7 +1253,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates a manageBuyOfferOp (number price)', function() {
+    it('creates a manageBuyOfferOp (number price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1325,7 +1276,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal(opts.price.toString());
     });
 
-    it('creates a manageBuyOfferOp (BigNumber price)', function() {
+    it('creates a manageBuyOfferOp (BigNumber price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1348,7 +1299,7 @@ describe('Operation', function() {
       expect(obj.price).to.be.equal('1.25');
     });
 
-    it('creates a manageBuyOfferOp with no offerId', function() {
+    it('creates a manageBuyOfferOp with no offerId', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1369,19 +1320,15 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('manageBuyOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .buyAmount()
-          .toString()
-      ).to.be.equal('10000000000');
+      expect(operation.body().value().buyAmount().toString()).to.be.equal(
+        '10000000000'
+      );
       expect(obj.buyAmount).to.be.equal(opts.buyAmount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal('0'); // 0=create a new offer, otherwise edit an existing offer
     });
 
-    it('cancels offer', function() {
+    it('cancels offer', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1403,19 +1350,13 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('manageBuyOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .buyAmount()
-          .toString()
-      ).to.be.equal('0');
+      expect(operation.body().value().buyAmount().toString()).to.be.equal('0');
       expect(obj.buyAmount).to.be.equal(opts.buyAmount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal('1'); // 0=create a new offer, otherwise edit an existing offer
     });
 
-    it('fails to create manageBuyOffer operation with an invalid amount', function() {
+    it('fails to create manageBuyOffer operation with an invalid amount', function () {
       let opts = {
         buyAmount: 20,
         price: '10',
@@ -1433,7 +1374,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create manageBuyOffer operation with missing price', function() {
+    it('fails to create manageBuyOffer operation with missing price', function () {
       let opts = {
         buyAmount: '20',
         selling: new StellarBase.Asset(
@@ -1450,7 +1391,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create manageBuyOffer operation with negative price', function() {
+    it('fails to create manageBuyOffer operation with negative price', function () {
       let opts = {
         buyAmount: '20',
         price: '-1',
@@ -1468,7 +1409,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create manageBuyOffer operation with invalid price', function() {
+    it('fails to create manageBuyOffer operation with invalid price', function () {
       let opts = {
         buyAmount: '20',
         price: 'test',
@@ -1487,8 +1428,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.createPassiveSellOffer', function() {
-    it('creates a createPassiveSellOfferOp (string price)', function() {
+  describe('.createPassiveSellOffer', function () {
+    it('creates a createPassiveSellOfferOp (string price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1509,18 +1450,14 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('createPassiveSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('112782700');
+      expect(operation.body().value().amount().toString()).to.be.equal(
+        '112782700'
+      );
       expect(obj.amount).to.be.equal(opts.amount);
       expect(obj.price).to.be.equal(opts.price);
     });
 
-    it('creates a createPassiveSellOfferOp (number price)', function() {
+    it('creates a createPassiveSellOfferOp (number price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1541,18 +1478,14 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('createPassiveSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('112782700');
+      expect(operation.body().value().amount().toString()).to.be.equal(
+        '112782700'
+      );
       expect(obj.amount).to.be.equal(opts.amount);
       expect(obj.price).to.be.equal(opts.price.toString());
     });
 
-    it('creates a createPassiveSellOfferOp (BigNumber price)', function() {
+    it('creates a createPassiveSellOfferOp (BigNumber price)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
         'USD',
@@ -1573,18 +1506,14 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('createPassiveSellOffer');
       expect(obj.selling.equals(opts.selling)).to.be.true;
       expect(obj.buying.equals(opts.buying)).to.be.true;
-      expect(
-        operation
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.be.equal('112782700');
+      expect(operation.body().value().amount().toString()).to.be.equal(
+        '112782700'
+      );
       expect(obj.amount).to.be.equal(opts.amount);
       expect(obj.price).to.be.equal('1.25');
     });
 
-    it('fails to create createPassiveSellOffer operation with an invalid amount', function() {
+    it('fails to create createPassiveSellOffer operation with an invalid amount', function () {
       let opts = {
         amount: 20,
         price: '10',
@@ -1602,7 +1531,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create createPassiveSellOffer operation with missing price', function() {
+    it('fails to create createPassiveSellOffer operation with missing price', function () {
       let opts = {
         amount: '20',
         selling: new StellarBase.Asset(
@@ -1619,7 +1548,7 @@ describe('Operation', function() {
       );
     });
 
-    it('fails to create createPassiveSellOffer operation with negative price', function() {
+    it('fails to create createPassiveSellOffer operation with negative price', function () {
       let opts = {
         amount: '20',
         price: '-2',
@@ -1638,10 +1567,10 @@ describe('Operation', function() {
     });
   });
 
-  describe('.accountMerge', function() {
+  describe('.accountMerge', function () {
     const base = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
 
-    const checkMergeOp = function(opts) {
+    const checkMergeOp = function (opts) {
       const xdr = StellarBase.Operation.accountMerge(opts).toXDR('hex');
       const op = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
       const obj = StellarBase.Operation.fromXDRObject(op);
@@ -1651,12 +1580,12 @@ describe('Operation', function() {
       return obj;
     };
 
-    it('creates an accountMergeOp', function() {
+    it('creates an accountMergeOp', function () {
       let opts = { destination: base };
       checkMergeOp(opts);
     });
 
-    it('supports muxed accounts', function() {
+    it('supports muxed accounts', function () {
       const dest = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '1'));
       const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, '2'));
 
@@ -1669,7 +1598,7 @@ describe('Operation', function() {
       expect(obj.source).to.equal(base);
     });
 
-    it('fails to create accountMergeOp with invalid destination', function() {
+    it('fails to create accountMergeOp with invalid destination', function () {
       let opts = { destination: 'GCEZW' };
       expect(() => StellarBase.Operation.accountMerge(opts)).to.throw(
         /destination is invalid/
@@ -1677,8 +1606,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.inflation', function() {
-    it('creates a inflationOp', function() {
+  describe('.inflation', function () {
+    it('creates a inflationOp', function () {
       let op = StellarBase.Operation.inflation();
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(
@@ -1689,8 +1618,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.manageData', function() {
-    it('creates a manageDataOp with string value', function() {
+  describe('.manageData', function () {
+    it('creates a manageDataOp with string value', function () {
       var opts = {
         name: 'name',
         value: 'value'
@@ -1706,7 +1635,7 @@ describe('Operation', function() {
       expect(obj.value.toString('ascii')).to.be.equal(opts.value);
     });
 
-    it('creates a manageDataOp with Buffer value', function() {
+    it('creates a manageDataOp with Buffer value', function () {
       var opts = {
         name: 'name',
         value: Buffer.from('value')
@@ -1722,7 +1651,7 @@ describe('Operation', function() {
       expect(obj.value.toString('hex')).to.be.equal(opts.value.toString('hex'));
     });
 
-    it('creates a manageDataOp with null dataValue', function() {
+    it('creates a manageDataOp with null dataValue', function () {
       var opts = {
         name: 'name',
         value: null
@@ -1738,20 +1667,20 @@ describe('Operation', function() {
       expect(obj.value).to.be.undefined;
     });
 
-    describe('fails to create manageData operation', function() {
-      it('name is not a string', function() {
+    describe('fails to create manageData operation', function () {
+      it('name is not a string', function () {
         expect(() =>
           StellarBase.Operation.manageData({ name: 123 })
         ).to.throw();
       });
 
-      it('name is too long', function() {
+      it('name is too long', function () {
         expect(() =>
           StellarBase.Operation.manageData({ name: 'a'.repeat(65) })
         ).to.throw();
       });
 
-      it('value is too long', function() {
+      it('value is too long', function () {
         expect(() =>
           StellarBase.Operation.manageData({
             name: 'a',
@@ -1762,8 +1691,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.bumpSequence', function() {
-    it('creates a bumpSequence', function() {
+  describe('.bumpSequence', function () {
+    it('creates a bumpSequence', function () {
       var opts = {
         bumpTo: '77833036561510299'
       };
@@ -1777,15 +1706,15 @@ describe('Operation', function() {
       expect(obj.bumpTo).to.be.equal(opts.bumpTo);
     });
 
-    it('fails when `bumpTo` is not string', function() {
+    it('fails when `bumpTo` is not string', function () {
       expect(() =>
         StellarBase.Operation.bumpSequence({ bumpTo: 1000 })
       ).to.throw();
     });
   });
 
-  describe('._checkUnsignedIntValue()', function() {
-    it('returns true for valid values', function() {
+  describe('._checkUnsignedIntValue()', function () {
+    it('returns true for valid values', function () {
       let values = [
         { value: 0, expected: 0 },
         { value: 10, expected: 10 },
@@ -1802,7 +1731,7 @@ describe('Operation', function() {
       }
     });
 
-    it('throws error for invalid values', function() {
+    it('throws error for invalid values', function () {
       let values = [
         {},
         [],
@@ -1825,7 +1754,7 @@ describe('Operation', function() {
       }
     });
 
-    it('return correct values when isValidFunction is set', function() {
+    it('return correct values when isValidFunction is set', function () {
       expect(
         StellarBase.Operation._checkUnsignedIntValue(
           'test',
@@ -1866,8 +1795,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('createClaimableBalance()', function() {
-    it('creates a CreateClaimableBalanceOp', function() {
+  describe('createClaimableBalance()', function () {
+    it('creates a CreateClaimableBalanceOp', function () {
       const asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -1897,7 +1826,7 @@ describe('Operation', function() {
         claimants[0].toXDRObject().toXDR('hex')
       );
     });
-    it('throws an error when asset is not present', function() {
+    it('throws an error when asset is not present', function () {
       const amount = '100.0000000';
       const claimants = [
         new StellarBase.Claimant(
@@ -1916,7 +1845,7 @@ describe('Operation', function() {
         /must provide an asset for create claimable balance operation/
       );
     });
-    it('throws an error when amount is not present', function() {
+    it('throws an error when amount is not present', function () {
       const asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -1938,7 +1867,7 @@ describe('Operation', function() {
         /amount argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
     });
-    it('throws an error when claimants is empty or not present', function() {
+    it('throws an error when claimants is empty or not present', function () {
       const asset = new StellarBase.Asset(
         'USD',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -1961,8 +1890,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('claimClaimableBalance()', function() {
-    it('creates a claimClaimableBalanceOp', function() {
+  describe('claimClaimableBalance()', function () {
+    it('creates a claimClaimableBalanceOp', function () {
       const balanceId =
         '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
 
@@ -1975,12 +1904,12 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('claimClaimableBalance');
       expect(obj.balanceId).to.equal(balanceId);
     });
-    it('throws an error when balanceId is not present', function() {
+    it('throws an error when balanceId is not present', function () {
       expect(() => StellarBase.Operation.claimClaimableBalance({})).to.throw(
         /must provide a valid claimable balance id/
       );
     });
-    it('throws an error for invalid balanceIds', function() {
+    it('throws an error for invalid balanceIds', function () {
       expect(() =>
         StellarBase.Operation.claimClaimableBalance({
           balanceId: 'badc0ffee'
@@ -1989,8 +1918,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('clawbackClaimableBalance()', function() {
-    it('creates a clawbackClaimableBalanceOp', function() {
+  describe('clawbackClaimableBalance()', function () {
+    it('creates a clawbackClaimableBalanceOp', function () {
       const balanceId =
         '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
 
@@ -2005,12 +1934,12 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('clawbackClaimableBalance');
       expect(obj.balanceId).to.equal(balanceId);
     });
-    it('throws an error when balanceId is not present', function() {
+    it('throws an error when balanceId is not present', function () {
       expect(() => StellarBase.Operation.clawbackClaimableBalance({})).to.throw(
         /must provide a valid claimable balance id/
       );
     });
-    it('throws an error for invalid balanceIds', function() {
+    it('throws an error for invalid balanceIds', function () {
       expect(() =>
         StellarBase.Operation.clawbackClaimableBalance({
           balanceId: 'badc0ffee'
@@ -2019,8 +1948,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('beginSponsoringFutureReserves()', function() {
-    it('creates a beginSponsoringFutureReservesOp', function() {
+  describe('beginSponsoringFutureReserves()', function () {
+    it('creates a beginSponsoringFutureReservesOp', function () {
       const sponsoredId =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
 
@@ -2037,7 +1966,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('beginSponsoringFutureReserves');
       expect(obj.sponsoredId).to.equal(sponsoredId);
     });
-    it('throws an error when sponsoredId is invalid', function() {
+    it('throws an error when sponsoredId is invalid', function () {
       expect(() =>
         StellarBase.Operation.beginSponsoringFutureReserves({})
       ).to.throw(/sponsoredId is invalid/);
@@ -2049,8 +1978,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('endSponsoringFutureReserves()', function() {
-    it('creates a endSponsoringFutureReservesOp', function() {
+  describe('endSponsoringFutureReserves()', function () {
+    it('creates a endSponsoringFutureReservesOp', function () {
       const op = StellarBase.Operation.endSponsoringFutureReserves();
       var xdr = op.toXDR('hex');
 
@@ -2063,8 +1992,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('revokeAccountSponsorship()', function() {
-    it('creates a revokeAccountSponsorshipOp', function() {
+  describe('revokeAccountSponsorship()', function () {
+    it('creates a revokeAccountSponsorshipOp', function () {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       const op = StellarBase.Operation.revokeAccountSponsorship({
@@ -2078,7 +2007,7 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('revokeAccountSponsorship');
       expect(obj.account).to.be.equal(account);
     });
-    it('throws an error when account is invalid', function() {
+    it('throws an error when account is invalid', function () {
       expect(() => StellarBase.Operation.revokeAccountSponsorship({})).to.throw(
         /account is invalid/
       );
@@ -2090,8 +2019,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('revokeTrustlineSponsorship()', function() {
-    it('creates a revokeTrustlineSponsorship', function() {
+  describe('revokeTrustlineSponsorship()', function () {
+    it('creates a revokeTrustlineSponsorship', function () {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       var asset = new StellarBase.Asset(
@@ -2109,7 +2038,7 @@ describe('Operation', function() {
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('revokeTrustlineSponsorship');
     });
-    it('creates a revokeTrustlineSponsorship for a liquidity pool', function() {
+    it('creates a revokeTrustlineSponsorship for a liquidity pool', function () {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       const asset = new StellarBase.LiquidityPoolId(
@@ -2126,7 +2055,7 @@ describe('Operation', function() {
       const obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('revokeTrustlineSponsorship');
     });
-    it('throws an error when account is invalid', function() {
+    it('throws an error when account is invalid', function () {
       expect(() =>
         StellarBase.Operation.revokeTrustlineSponsorship({})
       ).to.throw(/account is invalid/);
@@ -2136,7 +2065,7 @@ describe('Operation', function() {
         })
       ).to.throw(/account is invalid/);
     });
-    it('throws an error when asset is invalid', function() {
+    it('throws an error when asset is invalid', function () {
       expect(() =>
         StellarBase.Operation.revokeTrustlineSponsorship({
           account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -2145,8 +2074,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('revokeOfferSponsorship()', function() {
-    it('creates a revokeOfferSponsorship', function() {
+  describe('revokeOfferSponsorship()', function () {
+    it('creates a revokeOfferSponsorship', function () {
       const seller = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       var offerId = '1234';
       const op = StellarBase.Operation.revokeOfferSponsorship({
@@ -2162,7 +2091,7 @@ describe('Operation', function() {
       expect(obj.seller).to.be.equal(seller);
       expect(obj.offerId).to.be.equal(offerId);
     });
-    it('throws an error when seller is invalid', function() {
+    it('throws an error when seller is invalid', function () {
       expect(() => StellarBase.Operation.revokeOfferSponsorship({})).to.throw(
         /seller is invalid/
       );
@@ -2172,7 +2101,7 @@ describe('Operation', function() {
         })
       ).to.throw(/seller is invalid/);
     });
-    it('throws an error when asset offerId is not included', function() {
+    it('throws an error when asset offerId is not included', function () {
       expect(() =>
         StellarBase.Operation.revokeOfferSponsorship({
           seller: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -2181,8 +2110,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('revokeDataSponsorship()', function() {
-    it('creates a revokeDataSponsorship', function() {
+  describe('revokeDataSponsorship()', function () {
+    it('creates a revokeDataSponsorship', function () {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       var name = 'foo';
@@ -2199,7 +2128,7 @@ describe('Operation', function() {
       expect(obj.account).to.be.equal(account);
       expect(obj.name).to.be.equal(name);
     });
-    it('throws an error when account is invalid', function() {
+    it('throws an error when account is invalid', function () {
       expect(() => StellarBase.Operation.revokeDataSponsorship({})).to.throw(
         /account is invalid/
       );
@@ -2209,7 +2138,7 @@ describe('Operation', function() {
         })
       ).to.throw(/account is invalid/);
     });
-    it('throws an error when data name is not included', function() {
+    it('throws an error when data name is not included', function () {
       expect(() =>
         StellarBase.Operation.revokeDataSponsorship({
           account: 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -2218,8 +2147,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('revokeClaimableBalanceSponsorship()', function() {
-    it('creates a revokeClaimableBalanceSponsorship', function() {
+  describe('revokeClaimableBalanceSponsorship()', function () {
+    it('creates a revokeClaimableBalanceSponsorship', function () {
       const balanceId =
         '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be';
       const op = StellarBase.Operation.revokeClaimableBalanceSponsorship({
@@ -2233,15 +2162,15 @@ describe('Operation', function() {
       expect(obj.type).to.be.equal('revokeClaimableBalanceSponsorship');
       expect(obj.balanceId).to.be.equal(balanceId);
     });
-    it('throws an error when balanceId is invalid', function() {
+    it('throws an error when balanceId is invalid', function () {
       expect(() =>
         StellarBase.Operation.revokeClaimableBalanceSponsorship({})
       ).to.throw(/balanceId is invalid/);
     });
   });
 
-  describe('revokeLiquidityPoolSponsorship()', function() {
-    it('creates a revokeLiquidityPoolSponsorship', function() {
+  describe('revokeLiquidityPoolSponsorship()', function () {
+    it('creates a revokeLiquidityPoolSponsorship', function () {
       const liquidityPoolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       const op = StellarBase.Operation.revokeLiquidityPoolSponsorship({
@@ -2257,15 +2186,15 @@ describe('Operation', function() {
       expect(obj.liquidityPoolId).to.be.equal(liquidityPoolId);
     });
 
-    it('throws an error when liquidityPoolId is invalid', function() {
+    it('throws an error when liquidityPoolId is invalid', function () {
       expect(() =>
         StellarBase.Operation.revokeLiquidityPoolSponsorship({})
       ).to.throw(/liquidityPoolId is invalid/);
     });
   });
 
-  describe('revokeSignerSponsorship()', function() {
-    it('creates a revokeSignerSponsorship', function() {
+  describe('revokeSignerSponsorship()', function () {
+    it('creates a revokeSignerSponsorship', function () {
       const account =
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let signer = {
@@ -2313,7 +2242,7 @@ describe('Operation', function() {
       expect(obj.account).to.be.equal(account);
       expect(obj.signer.sha256Hash).to.be.equal(signer.sha256Hash);
     });
-    it('throws an error when account is invalid', function() {
+    it('throws an error when account is invalid', function () {
       const signer = {
         ed25519PublicKey:
           'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
@@ -2326,8 +2255,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('clawback()', function() {
-    it('requires asset, amount, account', function() {
+  describe('clawback()', function () {
+    it('requires asset, amount, account', function () {
       let asset = new StellarBase.Asset(
         'GCOIN',
         'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
@@ -2349,7 +2278,7 @@ describe('Operation', function() {
         StellarBase.Operation.clawback({});
       }).to.throw();
     });
-    it('returns a clawback()', function() {
+    it('returns a clawback()', function () {
       let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let asset = new StellarBase.Asset('GCOIN', account);
       const amount = '100.0000000';
@@ -2370,8 +2299,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('setTrustLineFlags()', function() {
-    it('creates a SetTrustLineFlagsOp', function() {
+  describe('setTrustLineFlags()', function () {
+    it('creates a SetTrustLineFlagsOp', function () {
       let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let asset = new StellarBase.Asset('GCOIN', account);
 
@@ -2400,7 +2329,7 @@ describe('Operation', function() {
       expect(obj.flags.authorizedToMaintainLiabilities).to.be.true;
       expect(obj.flags.clawbackEnabled).to.be.false;
     });
-    it('leaves unmodified flags as undefined', function() {
+    it('leaves unmodified flags as undefined', function () {
       let account = 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7';
       let asset = new StellarBase.Asset('GCOIN', account);
 
@@ -2440,7 +2369,7 @@ describe('Operation', function() {
       expect(obj.flags.authorizedToMaintainLiabilities).to.be.undefined;
       expect(obj.flags.clawbackEnabled).to.be.undefined;
     });
-    it('fails with invalid flags', function() {
+    it('fails with invalid flags', function () {
       expect(() => {
         StellarBase.Operation.setTrustLineFlags({
           trustor: account,
@@ -2452,15 +2381,15 @@ describe('Operation', function() {
         });
       }).to.throw();
     });
-    it('should require parameters', function() {
+    it('should require parameters', function () {
       expect(() => {
         StellarBase.Operation.setTrustLineFlags({});
       }).to.throw();
     });
   });
 
-  describe('liquidityPoolDeposit()', function() {
-    it('throws an error if a required parameter is missing', function() {
+  describe('liquidityPoolDeposit()', function () {
+    it('throws an error if a required parameter is missing', function () {
       expect(() => StellarBase.Operation.liquidityPoolDeposit()).to.throw(
         /liquidityPoolId argument is required/
       );
@@ -2496,7 +2425,7 @@ describe('Operation', function() {
         .throw;
     });
 
-    it('throws an error if prices are negative', function() {
+    it('throws an error if prices are negative', function () {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
@@ -2510,7 +2439,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates a liquidityPoolDeposit (string prices)', function() {
+    it('creates a liquidityPoolDeposit (string prices)', function () {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
@@ -2524,20 +2453,12 @@ describe('Operation', function() {
 
       const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
       expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountA()
-          .toString()
-      ).to.equal('100000000');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountB()
-          .toString()
-      ).to.equal('200000000');
+      expect(xdrObj.body().value().maxAmountA().toString()).to.equal(
+        '100000000'
+      );
+      expect(xdrObj.body().value().maxAmountB().toString()).to.equal(
+        '200000000'
+      );
 
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
@@ -2548,7 +2469,7 @@ describe('Operation', function() {
       expect(operation.maxPrice).to.be.equals(opts.maxPrice);
     });
 
-    it('creates a liquidityPoolDeposit (fraction prices)', function() {
+    it('creates a liquidityPoolDeposit (fraction prices)', function () {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
@@ -2568,20 +2489,12 @@ describe('Operation', function() {
 
       const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
       expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountA()
-          .toString()
-      ).to.equal('100000000');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountB()
-          .toString()
-      ).to.equal('200000000');
+      expect(xdrObj.body().value().maxAmountA().toString()).to.equal(
+        '100000000'
+      );
+      expect(xdrObj.body().value().maxAmountB().toString()).to.equal(
+        '200000000'
+      );
 
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
@@ -2596,7 +2509,7 @@ describe('Operation', function() {
       );
     });
 
-    it('creates a liquidityPoolDeposit (number prices)', function() {
+    it('creates a liquidityPoolDeposit (number prices)', function () {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
@@ -2610,20 +2523,12 @@ describe('Operation', function() {
 
       const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
       expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountA()
-          .toString()
-      ).to.equal('100000000');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountB()
-          .toString()
-      ).to.equal('200000000');
+      expect(xdrObj.body().value().maxAmountA().toString()).to.equal(
+        '100000000'
+      );
+      expect(xdrObj.body().value().maxAmountB().toString()).to.equal(
+        '200000000'
+      );
 
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
@@ -2634,7 +2539,7 @@ describe('Operation', function() {
       expect(operation.maxPrice).to.be.equals(opts.maxPrice.toString());
     });
 
-    it('creates a liquidityPoolDeposit (BigNumber prices)', function() {
+    it('creates a liquidityPoolDeposit (BigNumber prices)', function () {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
@@ -2648,20 +2553,12 @@ describe('Operation', function() {
 
       const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
       expect(xdrObj.body().switch().name).to.equal('liquidityPoolDeposit');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountA()
-          .toString()
-      ).to.equal('100000000');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .maxAmountB()
-          .toString()
-      ).to.equal('200000000');
+      expect(xdrObj.body().value().maxAmountA().toString()).to.equal(
+        '100000000'
+      );
+      expect(xdrObj.body().value().maxAmountB().toString()).to.equal(
+        '200000000'
+      );
 
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolDeposit');
@@ -2673,8 +2570,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('liquidityPoolWithdraw()', function() {
-    it('throws an error if a required parameter is missing', function() {
+  describe('liquidityPoolWithdraw()', function () {
+    it('throws an error if a required parameter is missing', function () {
       expect(() => StellarBase.Operation.liquidityPoolWithdraw()).to.throw(
         /liquidityPoolId argument is required/
       );
@@ -2705,7 +2602,7 @@ describe('Operation', function() {
         .throw;
     });
 
-    it('creates a liquidityPoolWithdraw', function() {
+    it('creates a liquidityPoolWithdraw', function () {
       const opts = {
         liquidityPoolId:
           'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7',
@@ -2718,27 +2615,13 @@ describe('Operation', function() {
 
       const xdrObj = StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'));
       expect(xdrObj.body().switch().name).to.equal('liquidityPoolWithdraw');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .amount()
-          .toString()
-      ).to.equal('50000000');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .minAmountA()
-          .toString()
-      ).to.equal('100000000');
-      expect(
-        xdrObj
-          .body()
-          .value()
-          .minAmountB()
-          .toString()
-      ).to.equal('200000000');
+      expect(xdrObj.body().value().amount().toString()).to.equal('50000000');
+      expect(xdrObj.body().value().minAmountA().toString()).to.equal(
+        '100000000'
+      );
+      expect(xdrObj.body().value().minAmountB().toString()).to.equal(
+        '200000000'
+      );
 
       const operation = StellarBase.Operation.fromXDRObject(xdrObj);
       expect(operation.type).to.be.equal('liquidityPoolWithdraw');
@@ -2749,8 +2632,8 @@ describe('Operation', function() {
     });
   });
 
-  describe('.isValidAmount()', function() {
-    it('returns true for valid amounts', function() {
+  describe('.isValidAmount()', function () {
+    it('returns true for valid amounts', function () {
       let amounts = [
         '10',
         '0.10',
@@ -2763,7 +2646,7 @@ describe('Operation', function() {
       }
     });
 
-    it('returns false for invalid amounts', function() {
+    it('returns false for invalid amounts', function () {
       let amounts = [
         100, // integer
         100.5, // float
@@ -2785,14 +2668,14 @@ describe('Operation', function() {
       }
     });
 
-    it('allows 0 only if allowZero argument is set to true', function() {
+    it('allows 0 only if allowZero argument is set to true', function () {
       expect(StellarBase.Operation.isValidAmount('0')).to.be.false;
       expect(StellarBase.Operation.isValidAmount('0', true)).to.be.true;
     });
   });
 
-  describe('._fromXDRAmount()', function() {
-    it('correctly parses the amount', function() {
+  describe('._fromXDRAmount()', function () {
+    it('correctly parses the amount', function () {
       expect(StellarBase.Operation._fromXDRAmount(1)).to.be.equal('0.0000001');
       expect(StellarBase.Operation._fromXDRAmount(10000000)).to.be.equal(
         '1.0000000'

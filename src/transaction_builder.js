@@ -586,7 +586,7 @@ export class TransactionBuilder {
     const minBaseFee = new BigNumber(BASE_FEE);
 
     // The fee rate is at least the minimum fee
-  if (base.lt(minBaseFee)) {
+    if (base.lt(minBaseFee)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
       );

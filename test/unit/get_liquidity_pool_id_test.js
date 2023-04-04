@@ -8,8 +8,8 @@ const assetB = new StellarBase.Asset(
 );
 const fee = StellarBase.LiquidityPoolFeeV18;
 
-describe('StellarBase#getLiquidityPoolId()', function() {
-  it('throws an error if the liquidity pool type is not `constant_product`', function() {
+describe('StellarBase#getLiquidityPoolId()', function () {
+  it('throws an error if the liquidity pool type is not `constant_product`', function () {
     expect(() => StellarBase.getLiquidityPoolId()).to.throw(
       /liquidityPoolType is invalid/
     );
@@ -23,7 +23,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     );
   });
 
-  it('throws an error if assetA is invalid', function() {
+  it('throws an error if assetA is invalid', function () {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {})
     ).to.throw(/assetA is invalid/);
@@ -33,7 +33,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     ).to.throw(/assetA is invalid/);
   });
 
-  it('throws an error if assetB is invalid', function() {
+  it('throws an error if assetB is invalid', function () {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
         assetA
@@ -48,7 +48,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     ).to.throw(/assetB is invalid/);
   });
 
-  it('throws an error if fee is invalid', function() {
+  it('throws an error if fee is invalid', function () {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
         assetA,
@@ -57,7 +57,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     ).to.throw(/fee is invalid/);
   });
 
-  it('returns poolId correctly', function() {
+  it('returns poolId correctly', function () {
     const poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA,
       assetB,
@@ -69,7 +69,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
     );
   });
 
-  it('throws an error if assets are not in lexicographic order', function() {
+  it('throws an error if assets are not in lexicographic order', function () {
     expect(() =>
       StellarBase.getLiquidityPoolId('constant_product', {
         assetA: assetB,
@@ -80,7 +80,7 @@ describe('StellarBase#getLiquidityPoolId()', function() {
   });
 });
 
-describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests', function() {
+describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests', function () {
   // The tests below were copied from https://github.com/stellar/stellar-core/blob/c5f6349b240818f716617ca6e0f08d295a6fad9a/src/transactions/test/LiquidityPoolTradeTests.cpp#L430-L526
   const issuer1 = StellarBase.StrKey.encodeEd25519PublicKey(
     Buffer.from(
@@ -95,7 +95,7 @@ describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
     )
   );
 
-  it('returns poolId correctly for native and alphaNum4 (short and full length)', function() {
+  it('returns poolId correctly for native and alphaNum4 (short and full length)', function () {
     let poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset.native(),
       assetB: new StellarBase.Asset('AbC', issuer1),
@@ -115,7 +115,7 @@ describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
     );
   });
 
-  it('returns poolId correctly for native and alphaNum12 (short and full length)', function() {
+  it('returns poolId correctly for native and alphaNum12 (short and full length)', function () {
     let poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset.native(),
       assetB: new StellarBase.Asset('AbCdEfGhIjK', issuer1),
@@ -134,7 +134,7 @@ describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
     );
   });
 
-  it('returns poolId correctly for alphaNum4 and alphaNum12, same code but different issuer', function() {
+  it('returns poolId correctly for alphaNum4 and alphaNum12, same code but different issuer', function () {
     let poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset('aBc', issuer1),
       assetB: new StellarBase.Asset('aBc', issuer2),
@@ -154,7 +154,7 @@ describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
     );
   });
 
-  it('returns poolId correctly for alphaNum4 and alphaNum12 do not depend on issuer or code', function() {
+  it('returns poolId correctly for alphaNum4 and alphaNum12 do not depend on issuer or code', function () {
     const poolId = StellarBase.getLiquidityPoolId('constant_product', {
       assetA: new StellarBase.Asset('aBc', issuer1),
       assetB: new StellarBase.Asset('aBcDeFgHiJk', issuer2),
@@ -166,8 +166,8 @@ describe('StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
   });
 });
 
-describe('StellarBase#LiquidityPoolFeeV18', function() {
-  it('throws an error if the input assets are invalid', function() {
+describe('StellarBase#LiquidityPoolFeeV18', function () {
+  it('throws an error if the input assets are invalid', function () {
     expect(StellarBase.LiquidityPoolFeeV18).to.equal(30);
   });
 });
