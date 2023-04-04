@@ -1,4 +1,3 @@
-/* eslint-disable import/no-import-module-exports */
 import xdr from './xdr';
 
 export { xdr };

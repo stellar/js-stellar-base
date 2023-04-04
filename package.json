@@ -2,13 +2,13 @@
   "name": "stellar-base",
   "version": "9.0.0",
   "description": "Low-level support library for the Stellar network.",
-  "main": "./lib/index.js",
+  "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack -c ./cfg/webpack.config.js",
     "test": "yarn build && yarn test:node",
     "test:node": "nyc mocha --recursive",
-    "test:browser": "yarn build && karma start ./cfg/karma.conf.js",
+    "test:browser": "karma start ./cfg/karma.conf.js",
     "test:all": "yarn test:node && yarn test:browser && yarn tslint",
     "docs": "jsdoc -c ./cfg/.jsdoc.json --verbose",
     "tslint": "dtslint --localTs node_modules/typescript/lib types/",
@@ -25,7 +25,6 @@
     "timeout": 5000
   },
   "files": [
-    "/lib",
     "/dist",
     "/types/*.d.ts"
   ],
@@ -96,6 +95,7 @@
     "randombytes": "^2.1.0",
     "sinon": "^15.0.3",
     "sinon-chai": "^3.7.0",
+    "taffydb": "^2.7.3",
     "terser-webpack-plugin": "^5.3.7",
     "ts-node": "^10.9.1",
     "webpack": "^5.77.0",

@@ -412,7 +412,7 @@ export class Operation {
       // < 0
       amount.isNegative() ||
       // > Max value
-      amount.times(ONE).isGreaterThan(new BigNumber(MAX_INT64).toString()) ||
+      amount.times(ONE).gt(new BigNumber(MAX_INT64).toString()) ||
       // Decimal places (max 7)
       amount.decimalPlaces() > 7 ||
       // NaN or Infinity

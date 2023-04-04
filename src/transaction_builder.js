@@ -577,7 +577,7 @@ export class TransactionBuilder {
     const base = new BigNumber(baseFee);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction
-    if (base.isLessThan(innerBaseFeeRate)) {
+    if (base.lt(innerBaseFeeRate)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
       );
@@ -586,7 +586,7 @@ export class TransactionBuilder {
     const minBaseFee = new BigNumber(BASE_FEE);
 
     // The fee rate is at least the minimum fee
-  if (base.isLessThan(minBaseFee)) {
+  if (base.lt(minBaseFee)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
       );
