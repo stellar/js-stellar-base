@@ -412,7 +412,7 @@ export class Operation {
       // < 0
       amount.isNegative() ||
       // > Max value
-      amount.times(ONE).greaterThan(new BigNumber(MAX_INT64).toString()) ||
+      amount.times(ONE).isGreaterThan(new BigNumber(MAX_INT64).toString()) ||
       // Decimal places (max 7)
       amount.decimalPlaces() > 7 ||
       // NaN or Infinity
@@ -466,7 +466,7 @@ export class Operation {
    * @returns {Hyper} XDR amount
    */
   static _toXDRAmount(value) {
-    const amount = new BigNumber(value).mul(ONE);
+    const amount = new BigNumber(value).times(ONE);
     return Hyper.fromString(amount.toString());
   }
 
@@ -503,7 +503,6 @@ export class Operation {
     if (price.n && price.d) {
       xdrObject = new xdr.Price(price);
     } else {
-      price = new BigNumber(price);
       const approx = best_r(price);
       xdrObject = new xdr.Price({
         n: parseInt(approx[0], 10),

@@ -1214,7 +1214,7 @@ describe('Operation', function() {
         )
       };
       expect(() => StellarBase.Operation.manageSellOffer(opts)).to.throw(
-        /not a number/
+        /not a number/i
       );
     });
   });
@@ -1482,7 +1482,7 @@ describe('Operation', function() {
         )
       };
       expect(() => StellarBase.Operation.manageBuyOffer(opts)).to.throw(
-        /not a number/
+        /not a number/i
       );
     });
   });
