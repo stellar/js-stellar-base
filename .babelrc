@@ -1,9 +1,10 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "ie": "11"
-      }
-    }]
-  ]
+    "@babel/preset-env"
+  ],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
 }

@@ -14,9 +14,9 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 
 > **Warning!** The Node version of this package uses the [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as an [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
 > This means that if for any reason installation of this package fails, `stellar-base` will fallback to the much slower implementation contained in [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
-> 
+>
 > If you'd explicitly prefer **not** to install the `sodium-native` package, pass the appropriate flag to skip optional dependencies when installing this package (e.g. `--no-optional` if using `npm install` or `--without-optional` using `yarn install`).
-> 
+>
 > If you are using `stellar-base` in a browser you can ignore this. However, for production backend deployments you should most likely be using `sodium-native`.
 > If `sodium-native` is successfully installed and working,
 > `StellarBase.FastSigning` variable will be equal `true`. Otherwise it will be
@@ -102,11 +102,11 @@ Make sure that you are using the latest version number. They can be found on the
 
 We support the oldest LTS release of Node, which is [currently 14.x](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 14 so you don't get surprised when your code works locally but breaks in CI.
 
-If you work on several projects that use different Node versions, you might find helpful to install a nodejs version manager.
+If you work on several projects that use different Node versions, you might find helpful to install a NodeJS version manager:
 
-- https://github.com/creationix/nvm
-- https://github.com/wbyoung/avn
-- https://github.com/asdf-vm/asdf
+  - https://github.com/creationix/nvm
+  - https://github.com/wbyoung/avn
+  - https://github.com/asdf-vm/asdf
 
 2. Install Yarn
 

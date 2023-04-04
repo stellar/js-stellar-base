@@ -9,7 +9,5 @@
     "template": "node_modules/minami",
     "readme": "./README.md"
   },
-  "plugins": [
-    "plugins/markdown"
-  ]
+  "plugins": ["plugins/markdown"]
 }

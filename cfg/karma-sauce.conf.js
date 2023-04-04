@@ -1,6 +1,4 @@
 var webpackConfig = require('./webpack.config.browser.js');
-delete webpackConfig.plugins;
-delete webpackConfig.output;
 
 module.exports = function(config) {
   var customLaunchers = {
@@ -21,6 +19,12 @@ module.exports = function(config) {
       browserName: 'internet explorer',
       platform: 'Windows 8.1',
       version: 'latest'
+    },
+    sl_edge: {
+      base: 'SauceLabs',
+      browserName: 'microsoft edge',
+      platform: 'Windows 8.1',
+      version: 'latest'
     }
   };
 
@@ -34,14 +38,13 @@ module.exports = function(config) {
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
 
-    files: ['dist/stellar-base.min.js', 'test/unit/**/*.js'],
+    files: ['../dist/stellar-base.min.js', '../test/unit/**/*.js'],
 
     preprocessors: {
-      'test/unit/**/*.js': ['webpack']
+      '../test/unit/**/*.js': ['webpack']
     },
 
     webpack: webpackConfig,
-
     webpackMiddleware: {
       noInfo: true
     },
