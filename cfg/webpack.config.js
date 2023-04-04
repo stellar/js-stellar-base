@@ -30,11 +30,6 @@ const config = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: ['babel-loader']
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules\/(?!(crc)\/).*/,
-        loader: 'babel-loader'
       }
     ]
   },
