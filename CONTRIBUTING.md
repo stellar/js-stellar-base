@@ -7,7 +7,7 @@ Then please [sign the Contributor License Agreement](https://docs.google.com/for
 
 
 # Releasing
-SDK maintainers should follow [semantic versioning](https://semver.org/) best practices for releasing the SDK. 
+SDK maintainers should follow [semantic versioning](https://semver.org/) best practices for releasing the SDK.
 
 Use your best judgement when deciding on when to craft a release: maybe enough changes have accumulated to warrant a release, maybe there's a high-urgency fix that needs to be published immediately, or maybe you can put it off for a particular feature. It's all dependent on what else is going on.
 
@@ -22,9 +22,9 @@ Once all of the PRs for a particular release are in, it's time to actually publi
 
  - [ ] Ensure that all of the PRs in this delta are accurately reflected in the [CHANGELOG](./CHANGELOG.md), broken down by impact and linking to the corresponding PRs. Update the file if necessary.
 
- - [ ] Update the top-level `"version"` field in the [package.json](./package.json) file to reflect the new version.
+ - [ ] Run `yarn preversion` to build and test an optimized bundle and ensure Typescript compatibility (one of the most common sources of bugs, since this library is written purely in JS but must be usable from TS).
 
- - [ ] Run the final sanity check to ensure the builds pass: `yarn dtslint && yarn test && yarn preversion`. The first command checks that you have Typescript compatibility (one of the most common sources of bugs, since this library is written purely in JS but must be usable from TS).
+ - [ ] Run `yarn version` to update the version number in the package.json (or modify the `"version"` field manually).
 
  - [ ] Commit & push your branch, then [create a PR](https://github.com/stellar/js-stellar-base/compare).
 

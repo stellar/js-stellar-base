@@ -27,7 +27,7 @@ jobs:
       run: yarn install
 
     - name: Run Node Tests
-      run: yarn test
+      run: yarn test:node
 
     - name: Run Browser Tests
       run: yarn test:browser

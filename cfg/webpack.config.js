@@ -23,7 +23,7 @@ const config = {
     path: path.resolve(__dirname, '../dist')
   },
   mode: process.env.NODE_ENV,
-  devtool: process.env.NODE_ENV === 'production' ? null : 'inline-source-map',
+  devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
   module: {
     rules: [
       {

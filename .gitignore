@@ -1,3 +1,5 @@
+.nvmrc
+.nyc_output/
 /node_modules/
 /tmp/
 /lib/
