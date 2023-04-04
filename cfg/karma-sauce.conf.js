@@ -1,4 +1,6 @@
 var webpackConfig = require('./webpack.config.browser.js');
+delete webpackConfig.output;
+webpackConfig.entry = {}; // karma fills these in
 
 module.exports = function(config) {
   var customLaunchers = {
@@ -17,12 +19,6 @@ module.exports = function(config) {
     sl_ie_11: {
       base: 'SauceLabs',
       browserName: 'internet explorer',
-      platform: 'Windows 8.1',
-      version: 'latest'
-    },
-    sl_edge: {
-      base: 'SauceLabs',
-      browserName: 'microsoft edge',
       platform: 'Windows 8.1',
       version: 'latest'
     }

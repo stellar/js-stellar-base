@@ -2,6 +2,7 @@
 /tmp/
 /lib/
 /dist/
+/cfg/dist/
 /coverage/
 /jsdoc/
 .DS_Store

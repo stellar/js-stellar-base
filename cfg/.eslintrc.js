@@ -5,13 +5,6 @@ module.exports = {
   extends: ['airbnb-base', 'prettier'],
   plugins: ['prettier', 'prefer-import'],
   rules: {
-    // DISABLED
-    'import/no-import-module-exports': [
-      'error',
-      {
-        exceptions: ['index.js']
-      }
-    ],
     // OFF
     'import/prefer-default-export': 0,
     'node/no-unsupported-features/es-syntax': 0,
