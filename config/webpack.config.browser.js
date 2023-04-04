@@ -6,6 +6,7 @@ var TerserPlugin = require('terser-webpack-plugin');
 var NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const config = {
+  target: 'web',
   // https://stackoverflow.com/a/34018909
   entry: {
     'stellar-base': path.resolve(__dirname, '../src/index.js'),
@@ -21,16 +22,22 @@ const config = {
   output: {
     clean: true,
     library: 'StellarBase',
+    compareBeforeEmit: true,
     path: path.resolve(__dirname, '../dist')
   },
-  mode: process.env.NODE_ENV,
+  mode: process.env.NODE_ENV ?? 'development',
   devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
         exclude: /node_modules/,
-        use: ['babel-loader']
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true
+          }
+        }
       }
     ]
   },

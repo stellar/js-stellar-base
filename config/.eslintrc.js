@@ -3,7 +3,8 @@ module.exports = {
     es6: true
   },
   extends: ['airbnb-base', 'prettier'],
-  plugins: ['prettier', 'prefer-import'],
+  plugins: ['@babel', 'prettier', 'prefer-import'],
+  parser: '@babel/eslint-parser',
   rules: {
     // OFF
     'import/prefer-default-export': 0,
@@ -37,6 +38,5 @@ module.exports = {
 
     // ERROR
     'no-unused-expressions': [2, { allowTaggedTemplates: true }]
-  },
-  parser: '@babel/eslint-parser'
+  }
 };
