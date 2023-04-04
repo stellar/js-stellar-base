@@ -3,13 +3,10 @@ delete webpackConfig.output;
 webpackConfig.entry = {}; // karma fills these in
 webpackConfig.plugins.shift(); // drop eslinter plugin
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
-    browsers: [
-      'FirefoxHeadless',
-      'ChromeHeadless',
-    ],
+    browsers: ['FirefoxHeadless', 'ChromeHeadless'],
 
     files: [
       '../dist/stellar-base.js', // webpack should build this first

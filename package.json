@@ -12,8 +12,8 @@
     "test:all": "yarn test:node && yarn test:browser && yarn tslint",
     "docs": "jsdoc -c ./cfg/.jsdoc.json --verbose",
     "tslint": "dtslint --localTs node_modules/typescript/lib types/",
-    "preversion": "yarn clean && yarn cross-env NODE_ENV=production webpack -c ./cfg/webpack.config.js && yarn test:all",
-    "pretty": "prettier --config ./cfg/prettier.config.js --write './**/*.js'",
+    "preversion": "yarn clean && yarn pretty && yarn cross-env NODE_ENV=production webpack -c ./cfg/webpack.config.js && yarn test:all",
+    "pretty": "prettier --config ./cfg/prettier.config.js --ignore-path ./cfg/.prettierignore --write './**/*.js'",
     "clean": "rm -rf dist/ coverage/ .nyc_output/"
   },
   "mocha": {
@@ -40,7 +40,7 @@
   },
   "lint-staged": {
     "**/*.{js,json}": [
-      "prettier --config ./cfg/prettier.config.js --write"
+      "prettier --config ./cfg/prettier.config.js --ignore-path ./cfg/.prettierignore --write"
     ]
   },
   "browser": {
