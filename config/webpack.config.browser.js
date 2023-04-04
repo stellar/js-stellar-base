@@ -17,7 +17,8 @@ const config = {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       buffer: require.resolve('buffer')
-    }
+    },
+    extensions: ['.ts', '.js']
   },
   output: {
     clean: true,
@@ -67,7 +68,7 @@ const config = {
     })
   ],
   watchOptions: {
-    ignored: /(node_modules|coverage)/
+    ignored: /(node_modules|coverage|lib|dist)/
   }
 };
 

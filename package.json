@@ -2,7 +2,7 @@
   "name": "stellar-base",
   "version": "8.2.2",
   "description": "Low-level support library for the Stellar network.",
-  "main": "./lib/index.js",
+  "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn build:node",
@@ -111,6 +111,8 @@
     "terser-webpack-plugin": "^5.3.7",
     "ts-node": "^10.9.1",
     "webpack": "^5.77.0",
+    "ghooks": "^2.0.4",
+    "typescript": "^5.0.3",
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
@@ -118,12 +120,10 @@
     "bignumber.js": "^9.1.1",
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
-    "ghooks": "^2.0.4",
     "js-xdr": "^1.1.3",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.3",
-    "typescript": "^5.0.3"
+    "tweetnacl": "^1.0.3"
   },
   "optionalDependencies": {
     "sodium-native": "^3.3.0"
