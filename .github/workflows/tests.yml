@@ -26,8 +26,8 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Build Node
-      run: yarn build && yarn build:prod
+    - name: Build All
+      run: yarn build:prod
 
     - name: Run Node Tests
       run: yarn test:node
@@ -36,4 +36,4 @@ jobs:
       run: yarn build:browser:prod && yarn test:browser
 
     - name: Run Linter
-      run: yarn tslint
+      run: yarn lint
