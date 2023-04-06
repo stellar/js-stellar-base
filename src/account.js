@@ -35,9 +35,6 @@ export class Account {
 
     this._accountId = accountId;
     this.sequence = new BigNumber(sequence);
-    if (this.sequence.isNaN()) {
-      throw new Error(`sequence number '${sequence}' is not valid`);
-    }
   }
 
   /**

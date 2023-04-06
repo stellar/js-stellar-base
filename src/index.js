@@ -1,5 +1,8 @@
 /* eslint-disable import/no-import-module-exports */
+import BigNumber from 'bignumber.js';
 import xdr from './xdr';
+
+BigNumber.DEBUG = true; // gives us exceptions on bad constructor values
 
 export { xdr };
 export { hash } from './hashing';

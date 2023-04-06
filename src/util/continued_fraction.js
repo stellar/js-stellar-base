@@ -11,8 +11,6 @@ const MAX_INT = ((1 << 31) >>> 0) - 1;
  * @returns {array} first element is n (numerator), second element is d (denominator)
  */
 export function best_r(rawNumber) {
-  BigNumber.DEBUG = true; // throws on bad number values
-
   let number = new BigNumber(rawNumber);
   let a;
   let f;
