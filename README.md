@@ -127,17 +127,22 @@ yarn
 
 5. Observe the project's code style
 
-While you're making changes, make sure to run the linter-watcher to catch any
+While you're making changes, make sure to regularly run the linter to catch any
 linting errors (in addition to making sure your text editor supports ESLint)
 
 ```shell
-node_modules/.bin/gulp watch
+yarn lint
+```
+
+as well as fixing any formatting errors with
+
+```shell
+yarn fmt
 ```
 
 If you're working on a file not in `src`, limit your code to Node 6.16 ES! See
-what's supported here: https://node.green/ (The reason is that our npm library
-must support earlier versions of Node, so the tests need to run on those
-versions.)
+what's supported here: https://node.green/. (Our npm library must support
+earlier versions of Node, so the tests need to run on those versions.)
 
 #### Updating XDR definitions
 
@@ -154,17 +159,15 @@ For information on how to use js-stellar-base, take a look at the docs in the
 To run all tests:
 
 ```shell
-gulp test
+yarn test
 ```
 
 To run a specific set of tests:
 
 ```shell
-gulp test:node
-gulp test:browser
+yarn test:node
+yarn test:browser
 ```
-
-You can also run `yarn test` for a simpler subset of the test cases.
 
 Tests are also run automatically in Github Actions for every master commit and
 pull request.
