@@ -46,7 +46,8 @@
   },
   "lint-staged": {
     "**/*.{js,json}": [
-      "prettier --config ./config/prettier.config.js --ignore-path ./config/.prettierignore --write"
+      "yarn fmt",
+      "yarn lint"
     ]
   },
   "browser": {
