@@ -7,9 +7,7 @@
     "destination": "./jsdoc/",
     "recurse": true,
     "template": "node_modules/minami",
-    "readme": "./README.md"
+    "readme": "README.md"
   },
-  "plugins": [
-    "plugins/markdown"
-  ]
+  "plugins": ["plugins/markdown"]
 }

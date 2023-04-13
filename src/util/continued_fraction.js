@@ -25,10 +25,10 @@ export function best_r(rawNumber) {
     if (number.gt(MAX_INT)) {
       break;
     }
-    a = number.floor();
-    f = number.sub(a);
-    const h = a.mul(fractions[i - 1][0]).add(fractions[i - 2][0]);
-    const k = a.mul(fractions[i - 1][1]).add(fractions[i - 2][1]);
+    a = number.integerValue(BigNumber.ROUND_FLOOR);
+    f = number.minus(a);
+    const h = a.times(fractions[i - 1][0]).plus(fractions[i - 2][0]);
+    const k = a.times(fractions[i - 1][1]).plus(fractions[i - 2][1]);
     if (h.gt(MAX_INT) || k.gt(MAX_INT)) {
       break;
     }

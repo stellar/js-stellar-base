@@ -87,9 +87,10 @@ export class FeeBumpTransaction extends TransactionBase {
    * @returns {Buffer}
    */
   signatureBase() {
-    const taggedTransaction = new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
-      this.tx
-    );
+    const taggedTransaction =
+      new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
+        this.tx
+      );
 
     const txSignature = new xdr.TransactionSignaturePayload({
       networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),

@@ -444,9 +444,9 @@ export class TransactionBuilder {
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
   build() {
-    const sequenceNumber = new BigNumber(this.source.sequenceNumber()).add(1);
+    const sequenceNumber = new BigNumber(this.source.sequenceNumber()).plus(1);
     const fee = new BigNumber(this.baseFee)
-      .mul(this.operations.length)
+      .times(this.operations.length)
       .toNumber();
     const attrs = {
       fee,
@@ -577,7 +577,7 @@ export class TransactionBuilder {
     const base = new BigNumber(baseFee);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction
-    if (base.lessThan(innerBaseFeeRate)) {
+    if (base.lt(innerBaseFeeRate)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
       );
@@ -586,7 +586,7 @@ export class TransactionBuilder {
     const minBaseFee = new BigNumber(BASE_FEE);
 
     // The fee rate is at least the minimum fee
-    if (base.lessThan(minBaseFee)) {
+    if (base.lt(minBaseFee)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
       );
@@ -623,7 +623,7 @@ export class TransactionBuilder {
 
     const tx = new xdr.FeeBumpTransaction({
       feeSource: feeSourceAccount,
-      fee: xdr.Int64.fromString(base.mul(innerOps + 1).toString()),
+      fee: xdr.Int64.fromString(base.times(innerOps + 1).toString()),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
       ),

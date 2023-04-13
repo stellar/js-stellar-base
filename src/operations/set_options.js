@@ -160,9 +160,8 @@ export function setOptions(opts) {
       const rawKey = StrKey.decodeSignedPayload(
         opts.signer.ed25519SignedPayload
       );
-      const signedPayloadXdr = xdr.SignerKeyEd25519SignedPayload.fromXDR(
-        rawKey
-      );
+      const signedPayloadXdr =
+        xdr.SignerKeyEd25519SignedPayload.fromXDR(rawKey);
 
       // eslint-disable-next-line new-cap
       key = xdr.SignerKey.signerKeyTypeEd25519SignedPayload(signedPayloadXdr);

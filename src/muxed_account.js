@@ -74,10 +74,7 @@ export class MuxedAccount {
   static fromAddress(mAddress, sequenceNum) {
     const muxedAccount = decodeAddressToMuxedAccount(mAddress);
     const gAddress = extractBaseAddress(mAddress);
-    const id = muxedAccount
-      .med25519()
-      .id()
-      .toString();
+    const id = muxedAccount.med25519().id().toString();
 
     return new MuxedAccount(new Account(gAddress, sequenceNum), id);
   }

@@ -58,6 +58,6 @@ export class Account {
    * @returns {void}
    */
   incrementSequenceNumber() {
-    this.sequence = this.sequence.add(1);
+    this.sequence = this.sequence.plus(1);
   }
 }

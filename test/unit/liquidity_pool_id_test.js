@@ -1,18 +1,18 @@
-describe('LiquidityPoolId', function() {
-  describe('constructor', function() {
-    it('throws an error when no parameter is provided', function() {
+describe('LiquidityPoolId', function () {
+  describe('constructor', function () {
+    it('throws an error when no parameter is provided', function () {
       expect(() => new StellarBase.LiquidityPoolId()).to.throw(
         /liquidityPoolId cannot be empty/
       );
     });
 
-    it('throws an error when pool ID is not a valid hash', function() {
+    it('throws an error when pool ID is not a valid hash', function () {
       expect(() => new StellarBase.LiquidityPoolId('abc')).to.throw(
         /Liquidity pool ID is not a valid hash/
       );
     });
 
-    it('throws an error when pool ID is not all lowercase', function() {
+    it('throws an error when pool ID is not all lowercase', function () {
       expect(
         () =>
           new StellarBase.LiquidityPoolId(
@@ -21,7 +21,7 @@ describe('LiquidityPoolId', function() {
       ).to.throw(/Liquidity pool ID is not a valid hash/);
     });
 
-    it('does not throw an error when pool ID is a valid hash', function() {
+    it('does not throw an error when pool ID is a valid hash', function () {
       expect(
         () =>
           new StellarBase.LiquidityPoolId(
@@ -31,8 +31,8 @@ describe('LiquidityPoolId', function() {
     });
   });
 
-  describe('getLiquidityPoolId()', function() {
-    it('returns liquidity pool ID of liquidity pool asset', function() {
+  describe('getLiquidityPoolId()', function () {
+    it('returns liquidity pool ID of liquidity pool asset', function () {
       const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
@@ -42,8 +42,8 @@ describe('LiquidityPoolId', function() {
     });
   });
 
-  describe('getAssetType()', function() {
-    it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function() {
+  describe('getAssetType()', function () {
+    it('returns "liquidity_pool_shares" if the trustline asset is a liquidity pool ID', function () {
       const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
@@ -51,8 +51,8 @@ describe('LiquidityPoolId', function() {
     });
   });
 
-  describe('toXDRObject()', function() {
-    it('parses a liquidity pool trustline asset object', function() {
+  describe('toXDRObject()', function () {
+    it('parses a liquidity pool trustline asset object', function () {
       const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );
@@ -69,15 +69,15 @@ describe('LiquidityPoolId', function() {
     });
   });
 
-  describe('fromOperation()', function() {
-    it('throws an error if asset type is "assetTypeNative"', function() {
+  describe('fromOperation()', function () {
+    it('throws an error if asset type is "assetTypeNative"', function () {
       const xdr = new StellarBase.xdr.TrustLineAsset.assetTypeNative();
       expect(() => StellarBase.LiquidityPoolAsset.fromOperation(xdr)).to.throw(
         /Invalid asset type: assetTypeNative/
       );
     });
 
-    it('throws an error if asset type is "assetTypeCreditAlphanum4"', function() {
+    it('throws an error if asset type is "assetTypeCreditAlphanum4"', function () {
       const issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
       const assetCode = 'KHL';
       const assetXdr = new StellarBase.xdr.AlphaNum4({
@@ -93,7 +93,7 @@ describe('LiquidityPoolId', function() {
       );
     });
 
-    it('throws an error if asset type is "assetTypeCreditAlphanum4" (full)', function() {
+    it('throws an error if asset type is "assetTypeCreditAlphanum4" (full)', function () {
       const issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
       const assetCode = 'KHL';
       const assetXdr = new StellarBase.xdr.AlphaNum4({
@@ -109,7 +109,7 @@ describe('LiquidityPoolId', function() {
       );
     });
 
-    it('throws an error if asset type is "assetTypeCreditAlphanum12"', function() {
+    it('throws an error if asset type is "assetTypeCreditAlphanum12"', function () {
       const issuer = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
       const assetCode = 'KHLTOKEN';
       const assetXdr = new StellarBase.xdr.AlphaNum12({
@@ -125,7 +125,7 @@ describe('LiquidityPoolId', function() {
       );
     });
 
-    it('parses a liquidityPoolId asset XDR', function() {
+    it('parses a liquidityPoolId asset XDR', function () {
       const poolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       const xdrPoolId = StellarBase.xdr.PoolId.fromXDR(poolId, 'hex');
@@ -141,8 +141,8 @@ describe('LiquidityPoolId', function() {
     });
   });
 
-  describe('toString()', function() {
-    it("returns 'liquidity_pool:<id>' for liquidity pool assets", function() {
+  describe('toString()', function () {
+    it("returns 'liquidity_pool:<id>' for liquidity pool assets", function () {
       const asset = new StellarBase.LiquidityPoolId(
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7'
       );

@@ -1,4 +1,4 @@
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-core/raw/master/src/protocol-curr/xdr
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/curr
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FILES_CURR= \
 	Stellar-SCP.x \

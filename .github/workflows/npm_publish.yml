@@ -21,8 +21,8 @@ jobs:
       - name: Install Depencencies
         run: yarn
 
-      - name: Build
-        run: gulp
+      - name: Test & Build
+        run: yarn preversion
 
       - name: Publish release npm package
         run: yarn publish --tag soroban

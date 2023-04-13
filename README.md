@@ -14,9 +14,9 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 
 > **Warning!** The Node version of this package uses the [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as an [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
 > This means that if for any reason installation of this package fails, `stellar-base` will fallback to the much slower implementation contained in [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
-> 
+>
 > If you'd explicitly prefer **not** to install the `sodium-native` package, pass the appropriate flag to skip optional dependencies when installing this package (e.g. `--no-optional` if using `npm install` or `--without-optional` using `yarn install`).
-> 
+>
 > If you are using `stellar-base` in a browser you can ignore this. However, for production backend deployments you should most likely be using `sodium-native`.
 > If `sodium-native` is successfully installed and working,
 > `StellarBase.FastSigning` variable will be equal `true`. Otherwise it will be
@@ -102,11 +102,11 @@ Make sure that you are using the latest version number. They can be found on the
 
 We support the oldest LTS release of Node, which is [currently 14.x](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 14 so you don't get surprised when your code works locally but breaks in CI.
 
-If you work on several projects that use different Node versions, you might find helpful to install a nodejs version manager.
+If you work on several projects that use different Node versions, you might find helpful to install a NodeJS version manager:
 
-- https://github.com/creationix/nvm
-- https://github.com/wbyoung/avn
-- https://github.com/asdf-vm/asdf
+  - https://github.com/creationix/nvm
+  - https://github.com/wbyoung/avn
+  - https://github.com/asdf-vm/asdf
 
 2. Install Yarn
 
@@ -127,17 +127,22 @@ yarn
 
 5. Observe the project's code style
 
-While you're making changes, make sure to run the linter-watcher to catch any
+While you're making changes, make sure to regularly run the linter to catch any
 linting errors (in addition to making sure your text editor supports ESLint)
 
 ```shell
-node_modules/.bin/gulp watch
+yarn lint
+```
+
+as well as fixing any formatting errors with
+
+```shell
+yarn fmt
 ```
 
 If you're working on a file not in `src`, limit your code to Node 6.16 ES! See
-what's supported here: https://node.green/ (The reason is that our npm library
-must support earlier versions of Node, so the tests need to run on those
-versions.)
+what's supported here: https://node.green/. (Our npm library must support
+earlier versions of Node, so the tests need to run on those versions.)
 
 #### Updating XDR definitions
 
@@ -154,17 +159,15 @@ For information on how to use js-stellar-base, take a look at the docs in the
 To run all tests:
 
 ```shell
-gulp test
+yarn test
 ```
 
 To run a specific set of tests:
 
 ```shell
-gulp test:node
-gulp test:browser
+yarn test:node
+yarn test:browser
 ```
-
-You can also run `yarn test` for a simpler subset of the test cases.
 
 Tests are also run automatically in Github Actions for every master commit and
 pull request.

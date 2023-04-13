@@ -223,8 +223,6 @@ export class TransactionBase {
    * @returns {string} XDR string
    */
   toXDR() {
-    return this.toEnvelope()
-      .toXDR()
-      .toString('base64');
+    return this.toEnvelope().toXDR().toString('base64');
   }
 }
