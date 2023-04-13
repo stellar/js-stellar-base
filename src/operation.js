@@ -92,6 +92,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.setTrustLineFlags}`
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
+ * * `{@link Operation.invokeHostFunction}`
  *
  * @class Operation
  */
@@ -373,6 +374,13 @@ export class Operation {
         result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
         break;
       }
+      case 'invokeHostFunction': {
+        result.type = 'invokeHostFunction';
+        result.function = attrs.function();
+        result.footprint = attrs.footprint();
+        result.auth = attrs.auth();
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -637,3 +645,4 @@ Operation.clawback = ops.clawback;
 Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
+Operation.invokeHostFunction = ops.invokeHostFunction;

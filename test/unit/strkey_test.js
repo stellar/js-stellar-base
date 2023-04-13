@@ -392,7 +392,28 @@ describe('StrKey', function () {
     });
   });
 
-  describe('#invalidStrKeys', function () {
+  describe('#contracts', function() {
+    it('valid w/ 32-byte payload', function() {
+      const strkey = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      const buf = StellarBase.StrKey.decodeContract(strkey);
+
+      expect(buf.toString('hex')).to.equal(
+        '363eaa3867841fbad0f4ed88c779e4fe66e56a2470dc98c0ec9c073d05c7b103'
+      );
+
+      expect(StellarBase.StrKey.encodeContract(buf)).to.equal(strkey);
+    });
+
+    it('isValid', function() {
+      const valid = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      expect(StellarBase.StrKey.isValidContract(valid)).to.be.true;
+      const invalid =
+        'GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      expect(StellarBase.StrKey.isValidContract(invalid)).to.be.false;
+    });
+  });
+
+  describe('#invalidStrKeys', function() {
     // From https://stellar.org/protocol/sep-23#invalid-test-cases
     const BAD_STRKEYS = [
       // The unused trailing bit must be zero in the encoding of the last three

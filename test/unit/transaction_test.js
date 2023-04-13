@@ -253,7 +253,56 @@ describe('Transaction', function () {
     );
   });
 
-  it('adds signature correctly', function () {
+  it('returns error when transaction includes soroban contract auth', function() {
+    let source = new StellarBase.Account(
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
+    );
+    let signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
+
+    let tx = new StellarBase.TransactionBuilder(source, {
+      fee: 100,
+      networkPassphrase: StellarBase.Networks.TESTNET
+    })
+      .addOperation(
+        StellarBase.Operation.invokeHostFunction({
+          function: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+            []
+          ),
+          footprint: new StellarBase.xdr.LedgerFootprint({
+            readOnly: [],
+            readWrite: []
+          }),
+          auth: [
+            new StellarBase.xdr.ContractAuth({
+              // Include an AddressWithNonce to trigger this
+              addressWithNonce: new StellarBase.xdr.AddressWithNonce({
+                address: new StellarBase.Address(
+                  source.accountId()
+                ).toScAddress(),
+                nonce: StellarBase.xdr.Uint64.fromString('0')
+              }),
+              // Rest of params are irrelevant
+              rootInvocation: new StellarBase.xdr.AuthorizedInvocation({
+                contractId: new Buffer(32),
+                functionName: 'test',
+                args: [],
+                subInvocations: []
+              }),
+              signatureArgs: []
+            })
+          ]
+        })
+      )
+      .setTimeout(StellarBase.TimeoutInfinite)
+      .build();
+
+    expect(() => tx.sign(signer)).to.throw(
+      /Soroban contract signatures are not supported in this version of the SDK./
+    );
+  });
+
+  it('adds signature correctly', function() {
     const sourceKey =
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
     // make two sources so they have the same seq number
