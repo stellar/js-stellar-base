@@ -1,11 +1,11 @@
-describe('muxed account abstraction works', function() {
+describe('muxed account abstraction works', function () {
   const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
   const MPUBKEY_ZERO =
     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ';
   const MPUBKEY_ID =
     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAABUTGI4';
 
-  it('generates addresses correctly', function() {
+  it('generates addresses correctly', function () {
     let baseAccount = new StellarBase.Account(PUBKEY, '1');
     const mux = new StellarBase.MuxedAccount(baseAccount, '0');
     expect(mux.baseAccount().accountId()).to.equal(PUBKEY);
@@ -33,7 +33,7 @@ describe('muxed account abstraction works', function() {
     );
   });
 
-  it('tracks sequence numbers correctly', function() {
+  it('tracks sequence numbers correctly', function () {
     let baseAccount = new StellarBase.Account(PUBKEY, '12345');
     const mux1 = new StellarBase.MuxedAccount(baseAccount, '1');
     const mux2 = new StellarBase.MuxedAccount(baseAccount, '2');
@@ -61,7 +61,7 @@ describe('muxed account abstraction works', function() {
     expect(mux2.sequenceNumber()).to.equal('12348');
   });
 
-  it('lets virtual accounts be created', function() {
+  it('lets virtual accounts be created', function () {
     let baseAccount = new StellarBase.Account(PUBKEY, '12345');
     const mux1 = new StellarBase.MuxedAccount(baseAccount, '1');
 
@@ -78,7 +78,7 @@ describe('muxed account abstraction works', function() {
     expect(mux3.sequenceNumber()).to.equal('12346');
   });
 
-  it('parses M-addresses', function() {
+  it('parses M-addresses', function () {
     const mux1 = new StellarBase.MuxedAccount.fromAddress(MPUBKEY_ZERO, '123');
     expect(mux1.id()).to.equal('0');
     expect(mux1.accountId()).to.equal(MPUBKEY_ZERO);

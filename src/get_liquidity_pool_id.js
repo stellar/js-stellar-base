@@ -42,7 +42,8 @@ export function getLiquidityPoolId(
     throw new Error('Assets are not in lexicographic order');
   }
 
-  const lpTypeData = xdr.LiquidityPoolType.liquidityPoolConstantProduct().toXDR();
+  const lpTypeData =
+    xdr.LiquidityPoolType.liquidityPoolConstantProduct().toXDR();
   const lpParamsData = new xdr.LiquidityPoolConstantProductParameters({
     assetA: assetA.toXDRObject(),
     assetB: assetB.toXDRObject(),

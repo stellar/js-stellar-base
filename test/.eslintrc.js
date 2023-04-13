@@ -2,6 +2,8 @@ module.exports = {
   env: {
     mocha: true
   },
+  parser: '@babel/eslint-parser',
+  plugins: ['@babel', 'prettier', 'prefer-import'],
   globals: {
     StellarBase: true,
     chai: true,

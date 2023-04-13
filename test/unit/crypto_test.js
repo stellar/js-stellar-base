@@ -17,10 +17,7 @@ function expectBuffersToBeEqual(left, right) {
 
 it('new hashing function behaves like crypto', () => {
   const input = 'I really hope this works';
-  const cryptoHash = crypto
-    .createHash('sha256')
-    .update(input)
-    .digest();
+  const cryptoHash = crypto.createHash('sha256').update(input).digest();
 
   const newHash = StellarBase.hash(input);
 

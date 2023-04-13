@@ -19,8 +19,8 @@ jobs:
       - name: Install Depencencies
         run: yarn
 
-      - name: Build
-        run: gulp
+      - name: Test & Build
+        run: yarn preversion
 
       - name: Publish npm package
         run: yarn publish

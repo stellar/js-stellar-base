@@ -1,5 +1,5 @@
-describe('SignerKey', function() {
-  describe('encode/decode roundtrip', function() {
+describe('SignerKey', function () {
+  describe('encode/decode roundtrip', function () {
     const TEST_CASES = [
       {
         strkey: 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ',
@@ -21,7 +21,7 @@ describe('SignerKey', function() {
     ];
 
     TEST_CASES.forEach((testCase) => {
-      it(`works for ${testCase.strkey.substring(0, 5)}...`, function() {
+      it(`works for ${testCase.strkey.substring(0, 5)}...`, function () {
         const skey = StellarBase.SignerKey.decodeAddress(testCase.strkey);
         expect(skey.switch()).to.eql(testCase.type);
 
@@ -35,7 +35,7 @@ describe('SignerKey', function() {
     });
   });
 
-  describe('error cases', function() {
+  describe('error cases', function () {
     [
       // these are valid strkeys, just not valid signers
       'SAB5556L5AN5KSR5WF7UOEFDCIODEWEO7H2UR4S5R62DFTQOGLKOVZDY',
@@ -43,14 +43,14 @@ describe('SignerKey', function() {
       // this is (literal) nonsense
       'NONSENSE'
     ].forEach((strkey) => {
-      it(`fails on ${strkey.substring(0, 5)}...`, function() {
+      it(`fails on ${strkey.substring(0, 5)}...`, function () {
         expect(() => {
           StellarBase.SignerKey.decodeAddress(strkey);
         }).to.throw(/invalid signer key type/i);
       });
     });
 
-    it('fails on invalid strkey', function() {
+    it('fails on invalid strkey', function () {
       expect(() =>
         // address taken from strkey_test.js#invalidStrKeys
         StellarBase.SignerKey.decodeAddress(

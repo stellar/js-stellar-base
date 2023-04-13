@@ -66,13 +66,12 @@ export class LiquidityPoolAsset {
    * @returns {xdr.ChangeTrustAsset} XDR ChangeTrustAsset object.
    */
   toXDRObject() {
-    const lpConstantProductParamsXdr = new xdr.LiquidityPoolConstantProductParameters(
-      {
+    const lpConstantProductParamsXdr =
+      new xdr.LiquidityPoolConstantProductParameters({
         assetA: this.assetA.toXDRObject(),
         assetB: this.assetB.toXDRObject(),
         fee: this.fee
-      }
-    );
+      });
     const lpParamsXdr = new xdr.LiquidityPoolParameters(
       'liquidityPoolConstantProduct',
       lpConstantProductParamsXdr

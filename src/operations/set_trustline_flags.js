@@ -47,7 +47,8 @@ export function setTrustLineFlags(opts = {}) {
 
   const mapping = {
     authorized: xdr.TrustLineFlags.authorizedFlag(),
-    authorizedToMaintainLiabilities: xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
+    authorizedToMaintainLiabilities:
+      xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
     clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
   };
 

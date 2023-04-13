@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        node-version: [14, 16]
+        node-version: [14, 16, 18]
 
     steps:
     - uses: actions/checkout@v2
@@ -26,14 +26,14 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Build
-      run: gulp
+    - name: Build All
+      run: yarn build:prod
 
     - name: Run Node Tests
-      run: yarn test
+      run: yarn test:node
 
     - name: Run Browser Tests
-      run: gulp test:browser
+      run: yarn build:browser:prod && yarn test:browser
 
     - name: Run Linter
-      run: yarn dtslint
+      run: yarn lint
