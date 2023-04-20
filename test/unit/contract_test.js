@@ -1,5 +1,5 @@
-describe('Contract.call', function() {
-  it('includes the contract code footprint', function() {
+describe('Contract.call', function () {
+  it('includes the contract code footprint', function () {
     let contractId =
       '0000000000000000000000000000000000000000000000000000000000000001';
     let contract = new StellarBase.Contract(contractId);
