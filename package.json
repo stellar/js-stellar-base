@@ -16,7 +16,7 @@
     "test:browser": "karma start ./config/karma.conf.js",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/.eslintrc.js src/ && dtslint --localTs node_modules/typescript/lib types/",
-    "preversion": "yarn clean && yarn pretty && yarn lint && yarn build:prod && yarn test",
+    "preversion": "yarn clean && yarn fmt && yarn lint && yarn build:prod && yarn test",
     "fmt": "prettier --config ./config/prettier.config.js --ignore-path ./config/.prettierignore --write './**/*.js'",
     "prepare": "yarn build:prod",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/"

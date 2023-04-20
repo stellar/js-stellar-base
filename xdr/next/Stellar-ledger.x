@@ -130,6 +130,11 @@ enum LedgerUpgradeType
     LEDGER_UPGRADE_CONFIG = 6
 };
 
+struct ConfigUpgradeSetKey {
+    Hash contractID;
+    Hash contentHash;
+};
+
 union LedgerUpgrade switch (LedgerUpgradeType type)
 {
 case LEDGER_UPGRADE_VERSION:
@@ -143,11 +148,11 @@ case LEDGER_UPGRADE_BASE_RESERVE:
 case LEDGER_UPGRADE_FLAGS:
     uint32 newFlags; // update flags
 case LEDGER_UPGRADE_CONFIG:
-    struct
-    {
-        ConfigSettingID id; // id to update
-        ConfigSetting setting; // new value
-    } configSetting;
+    ConfigUpgradeSetKey newConfig;
+};
+
+struct ConfigUpgradeSet {
+    ConfigSettingEntry updatedEntry<>;
 };
 
 /* Entries used to define the bucket list */
@@ -275,6 +280,32 @@ struct TransactionHistoryResultEntry
     ext;
 };
 
+struct TransactionResultPairV2
+{
+    Hash transactionHash;
+    Hash hashOfMetaHashes; // hash of hashes in TransactionMetaV3
+                           // TransactionResult is in the meta
+};
+
+struct TransactionResultSetV2
+{
+    TransactionResultPairV2 results<>;
+};
+
+struct TransactionHistoryResultEntryV2
+{
+    uint32 ledgerSeq;
+    TransactionResultSetV2 txResultSet;
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
+};
+
 struct LedgerHeaderHistoryEntry
 {
     Hash hash;
@@ -359,6 +390,70 @@ struct TransactionMetaV2
                                         // applied if any
 };
 
+enum ContractEventType
+{
+    SYSTEM = 0,
+    CONTRACT = 1,
+    DIAGNOSTIC = 2
+};
+
+struct ContractEvent
+{
+    // We can use this to add more fields, or because it
+    // is first, to change ContractEvent into a union.
+    ExtensionPoint ext;
+
+    Hash* contractID;
+    ContractEventType type;
+
+    union switch (int v)
+    {
+    case 0:
+        struct
+        {
+            SCVec topics;
+            SCVal data;
+        } v0;
+    }
+    body;
+};
+
+struct DiagnosticEvent
+{
+    bool inSuccessfulContractCall;
+    ContractEvent event;
+};
+
+struct OperationDiagnosticEvents
+{
+    DiagnosticEvent events<>;
+};
+
+struct OperationEvents
+{
+    ContractEvent events<>;
+};
+
+struct TransactionMetaV3
+{
+    LedgerEntryChanges txChangesBefore; // tx level changes before operations
+                                        // are applied if any
+    OperationMeta operations<>;         // meta for each operation
+    LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
+                                        // applied if any
+    OperationEvents events<>;           // custom events populated by the
+                                        // contracts themselves. One list per operation.
+    TransactionResult txResult;
+
+    Hash hashes[3];                     // stores sha256(txChangesBefore, operations, txChangesAfter),
+                                        // sha256(events), and sha256(txResult)
+
+    // Diagnostics events that are not hashed. One list per operation.
+    // This will contain all contract and diagnostic events. Even ones
+    // that were emitted in a failed contract call.
+    OperationDiagnosticEvents diagnosticEvents<>;
+};
+
 // this is the meta produced when applying transactions
 // it does not include pre-apply updates such as fees
 union TransactionMeta switch (int v)
@@ -369,6 +464,8 @@ case 1:
     TransactionMetaV1 v1;
 case 2:
     TransactionMetaV2 v2;
+case 3:
+    TransactionMetaV3 v3;
 };
 
 // This struct groups together changes on a per transaction basis
@@ -377,6 +474,13 @@ case 2:
 struct TransactionResultMeta
 {
     TransactionResultPair result;
+    LedgerEntryChanges feeProcessing;
+    TransactionMeta txApplyProcessing;
+};
+
+struct TransactionResultMetaV2
+{
+    TransactionResultPairV2 result;
     LedgerEntryChanges feeProcessing;
     TransactionMeta txApplyProcessing;
 };
@@ -425,11 +529,32 @@ struct LedgerCloseMetaV1
     SCPHistoryEntry scpInfo<>;
 };
 
+// only difference between V1 and V2 is this uses TransactionResultMetaV2
+struct LedgerCloseMetaV2
+{
+    LedgerHeaderHistoryEntry ledgerHeader;
+    
+    GeneralizedTransactionSet txSet;
+
+    // NB: transactions are sorted in apply order here
+    // fees for all transactions are processed first
+    // followed by applying transactions
+    TransactionResultMetaV2 txProcessing<>;
+
+    // upgrades are applied last
+    UpgradeEntryMeta upgradesProcessing<>;
+
+    // other misc information attached to the ledger close
+    SCPHistoryEntry scpInfo<>;
+};
+
 union LedgerCloseMeta switch (int v)
 {
 case 0:
     LedgerCloseMetaV0 v0;
 case 1:
     LedgerCloseMetaV1 v1;
+case 2:
+    LedgerCloseMetaV2 v2;
 };
 }
