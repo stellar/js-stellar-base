@@ -2849,16 +2849,21 @@ xdr.struct("Hello", [
 
 // === xdr source ============================================================
 //
+//   const AUTH_MSG_FLAG_PULL_MODE_REQUESTED = 100;
+//
+// ===========================================================================
+xdr.const("AUTH_MSG_FLAG_PULL_MODE_REQUESTED", 100);
+
+// === xdr source ============================================================
+//
 //   struct Auth
 //   {
-//       // Empty message, just to confirm
-//       // establishment of MAC keys.
-//       int unused;
+//       int flags;
 //   };
 //
 // ===========================================================================
 xdr.struct("Auth", [
-  ["unused", xdr.int()],
+  ["flags", xdr.int()],
 ]);
 
 // === xdr source ============================================================
@@ -2951,7 +2956,9 @@ xdr.struct("PeerAddress", [
 //       SURVEY_REQUEST = 14,
 //       SURVEY_RESPONSE = 15,
 //   
-//       SEND_MORE = 16
+//       SEND_MORE = 16,
+//       FLOOD_ADVERT = 18,
+//       FLOOD_DEMAND = 19
 //   };
 //
 // ===========================================================================
@@ -2973,6 +2980,8 @@ xdr.enum("MessageType", {
   surveyRequest: 14,
   surveyResponse: 15,
   sendMore: 16,
+  floodAdvert: 18,
+  floodDemand: 19,
 });
 
 // === xdr source ============================================================
@@ -3166,6 +3175,58 @@ xdr.union("SurveyResponseBody", {
 
 // === xdr source ============================================================
 //
+//   const TX_ADVERT_VECTOR_MAX_SIZE = 1000;
+//
+// ===========================================================================
+xdr.const("TX_ADVERT_VECTOR_MAX_SIZE", 1000);
+
+// === xdr source ============================================================
+//
+//   typedef Hash TxAdvertVector<TX_ADVERT_VECTOR_MAX_SIZE>;
+//
+// ===========================================================================
+xdr.typedef("TxAdvertVector", xdr.varArray(xdr.lookup("Hash"), xdr.lookup("TX_ADVERT_VECTOR_MAX_SIZE")));
+
+// === xdr source ============================================================
+//
+//   struct FloodAdvert
+//   {
+//       TxAdvertVector txHashes;
+//   };
+//
+// ===========================================================================
+xdr.struct("FloodAdvert", [
+  ["txHashes", xdr.lookup("TxAdvertVector")],
+]);
+
+// === xdr source ============================================================
+//
+//   const TX_DEMAND_VECTOR_MAX_SIZE = 1000;
+//
+// ===========================================================================
+xdr.const("TX_DEMAND_VECTOR_MAX_SIZE", 1000);
+
+// === xdr source ============================================================
+//
+//   typedef Hash TxDemandVector<TX_DEMAND_VECTOR_MAX_SIZE>;
+//
+// ===========================================================================
+xdr.typedef("TxDemandVector", xdr.varArray(xdr.lookup("Hash"), xdr.lookup("TX_DEMAND_VECTOR_MAX_SIZE")));
+
+// === xdr source ============================================================
+//
+//   struct FloodDemand
+//   {
+//       TxDemandVector txHashes;
+//   };
+//
+// ===========================================================================
+xdr.struct("FloodDemand", [
+  ["txHashes", xdr.lookup("TxDemandVector")],
+]);
+
+// === xdr source ============================================================
+//
 //   union StellarMessage switch (MessageType type)
 //   {
 //   case ERROR_MSG:
@@ -3208,6 +3269,12 @@ xdr.union("SurveyResponseBody", {
 //       uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 //   case SEND_MORE:
 //       SendMore sendMoreMessage;
+//   
+//   // Pull mode
+//   case FLOOD_ADVERT:
+//        FloodAdvert floodAdvert;
+//   case FLOOD_DEMAND:
+//        FloodDemand floodDemand;
 //   };
 //
 // ===========================================================================
@@ -3232,6 +3299,8 @@ xdr.union("StellarMessage", {
     ["scpMessage", "envelope"],
     ["getScpState", "getScpLedgerSeq"],
     ["sendMore", "sendMoreMessage"],
+    ["floodAdvert", "floodAdvert"],
+    ["floodDemand", "floodDemand"],
   ],
   arms: {
     error: xdr.lookup("Error"),
@@ -3250,6 +3319,8 @@ xdr.union("StellarMessage", {
     envelope: xdr.lookup("ScpEnvelope"),
     getScpLedgerSeq: xdr.lookup("Uint32"),
     sendMoreMessage: xdr.lookup("SendMore"),
+    floodAdvert: xdr.lookup("FloodAdvert"),
+    floodDemand: xdr.lookup("FloodDemand"),
   },
 });
 
