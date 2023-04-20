@@ -413,7 +413,7 @@ describe('StrKey', function () {
     });
   });
 
-  describe('#invalidStrKeys', function() {
+  describe('#invalidStrKeys', function () {
     // From https://stellar.org/protocol/sep-23#invalid-test-cases
     const BAD_STRKEYS = [
       // The unused trailing bit must be zero in the encoding of the last three
