@@ -1,6 +1,6 @@
 {
   "name": "stellar-base",
-  "version": "8.2.2",
+  "version": "9.0.0-beta.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
@@ -12,11 +12,11 @@
     "build:browser:prod": "cross-env NODE_ENV=production yarn build:browser",
     "build:prod": "cross-env NODE_ENV=production yarn build",
     "test": "yarn build && yarn test:node && yarn test:browser",
-    "test:node": "nyc --nycrc-path ./config/.nycrc mocha --recursive",
+    "test:node": "nyc --nycrc-path ./config/.nycrc mocha",
     "test:browser": "karma start ./config/karma.conf.js",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/.eslintrc.js src/ && dtslint --localTs node_modules/typescript/lib types/",
-    "preversion": "yarn clean && yarn pretty && yarn lint && yarn build:prod && yarn test",
+    "preversion": "yarn clean && yarn fmt && yarn lint && yarn build:prod && yarn test",
     "fmt": "prettier --config ./config/prettier.config.js --ignore-path ./config/.prettierignore --write './**/*.js'",
     "prepare": "yarn build:prod",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/"
@@ -27,6 +27,7 @@
       "./test/test-helper.js"
     ],
     "reporter": "dot",
+    "recursive": true,
     "timeout": 5000
   },
   "nyc": {
@@ -90,6 +91,7 @@
     "eslint-plugin-prefer-import": "^0.0.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-webpack-plugin": "^4.0.0",
+    "ghooks": "^2.0.4",
     "husky": "^8.0.3",
     "jsdoc": "^4.0.2",
     "karma": "^6.4.1",
@@ -111,9 +113,8 @@
     "taffydb": "^2.7.3",
     "terser-webpack-plugin": "^5.3.7",
     "ts-node": "^10.9.1",
-    "webpack": "^5.77.0",
-    "ghooks": "^2.0.4",
     "typescript": "^5.0.3",
+    "webpack": "^5.77.0",
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
@@ -121,12 +122,12 @@
     "bignumber.js": "^9.1.1",
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
-    "js-xdr": "^1.1.3",
+    "js-xdr": "1.3.0",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
   },
   "optionalDependencies": {
-    "sodium-native": "^3.3.0"
+    "sodium-native": "^4.0.1"
   }
 }
