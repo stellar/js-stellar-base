@@ -6968,37 +6968,6 @@ export namespace xdr {
     static validateXDR(input: string, format: "hex" | "base64"): boolean;
   }
 
-  class Operation {
-    constructor(attributes: {
-      sourceAccount: null | MuxedAccount;
-      body: OperationBody;
-    });
-
-    sourceAccount(value?: null | MuxedAccount): null | MuxedAccount;
-
-    body(value?: OperationBody): OperationBody;
-
-    toXDR(format?: "raw"): Buffer;
-
-    toXDR(format: "hex" | "base64"): string;
-
-    static read(io: Buffer): Operation;
-
-    static write(value: Operation, io: Buffer): void;
-
-    static isValid(value: Operation): boolean;
-
-    static toXDR(value: Operation): Buffer;
-
-    static fromXDR(input: Buffer, format?: "raw"): Operation;
-
-    static fromXDR(input: string, format: "hex" | "base64"): Operation;
-
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
-
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
-  }
-
   class HashIdPreimageOperationId {
     constructor(attributes: {
       sourceAccount: AccountId;
