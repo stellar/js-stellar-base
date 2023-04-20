@@ -3,7 +3,15 @@
 
 ## Unreleased
 
-## [v9.0.0-beta.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0)
+
+## [v9.0.0-beta.1](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.0..v9.0.0-beta.1)
+
+### Fix
+
+- Correct XDR type definition for raw `xdr.Operation`s ([#591](https://github.com/stellar/js-stellar-base/pull/591)).
+
+
+## [v9.0.0-beta.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0-beta.0)
 
 This version is marked by a major version bump because of the significant upgrades to underlying dependencies. While there should be no noticeable API changes from a downstream perspective, there may be breaking changes in the way that this library is bundled.
 
