@@ -4,6 +4,7 @@
 
 %#include "xdr/Stellar-types.h"
 %#include "xdr/Stellar-contract.h"
+%#include "xdr/Stellar-contract-config-setting.h"
 
 namespace stellar
 {
@@ -505,116 +506,6 @@ struct ContractCodeEntry {
     opaque code<SCVAL_LIMIT>;
 };
 
-// Identifiers of all the network settings.
-enum ConfigSettingID
-{
-    CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES = 0,
-    CONFIG_SETTING_CONTRACT_COMPUTE_V0 = 1,
-    CONFIG_SETTING_CONTRACT_LEDGER_COST_V0 = 2,
-    CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0 = 3,
-    CONFIG_SETTING_CONTRACT_META_DATA_V0 = 4,
-    CONFIG_SETTING_CONTRACT_BANDWIDTH_V0 = 5,
-    CONFIG_SETTING_CONTRACT_HOST_LOGIC_VERSION = 6
-};
-
-// "Compute" settings for contracts (instructions and memory).
-struct ConfigSettingContractComputeV0
-{
-    // Maximum instructions per ledger
-    int64 ledgerMaxInstructions;
-    // Maximum instructions per transaction
-    int64 txMaxInstructions;
-    // Cost of 10000 instructions
-    int64 feeRatePerInstructionsIncrement;
-
-    // Memory limit per contract/host function invocation. Unlike 
-    // instructions, there is no fee for memory and it's not
-    // accumulated between operations - the same limit is applied 
-    // to every operation.
-    uint32 memoryLimit;
-};
-
-// Ledger access settings for contracts.
-struct ConfigSettingContractLedgerCostV0
-{
-    // Maximum number of ledger entry read operations per ledger
-    uint32 ledgerMaxReadLedgerEntries;
-    // Maximum number of bytes that can be read per ledger
-    uint32 ledgerMaxReadBytes;
-    // Maximum number of ledger entry write operations per ledger
-    uint32 ledgerMaxWriteLedgerEntries;
-    // Maximum number of bytes that can be written per ledger
-    uint32 ledgerMaxWriteBytes;
-
-    // Maximum number of ledger entry read operations per transaction
-    uint32 txMaxReadLedgerEntries;
-    // Maximum number of bytes that can be read per transaction
-    uint32 txMaxReadBytes;
-    // Maximum number of ledger entry write operations per transaction
-    uint32 txMaxWriteLedgerEntries;
-    // Maximum number of bytes that can be written per transaction
-    uint32 txMaxWriteBytes;
-
-    int64 feeReadLedgerEntry;  // Fee per ledger entry read
-    int64 feeWriteLedgerEntry; // Fee per ledger entry write
-
-    int64 feeRead1KB;  // Fee for reading 1KB    
-    int64 feeWrite1KB; // Fee for writing 1KB
-
-    // Bucket list fees grow slowly up to that size
-    int64 bucketListSizeBytes;
-    // Fee rate in stroops when the bucket list is empty
-    int64 bucketListFeeRateLow;
-    // Fee rate in stroops when the bucket list reached bucketListSizeBytes
-    int64 bucketListFeeRateHigh;
-    // Rate multiplier for any additional data past the first bucketListSizeBytes
-    uint32 bucketListGrowthFactor;
-};
-
-// Historical data (pushed to core archives) settings for contracts.
-struct ConfigSettingContractHistoricalDataV0
-{
-    int64 feeHistorical1KB; // Fee for storing 1KB in archives
-};
-
-// Meta data (pushed to downstream systems) settings for contracts.
-struct ConfigSettingContractMetaDataV0
-{
-    // Maximum size of extended meta data produced by a transaction
-    uint32 txMaxExtendedMetaDataSizeBytes;
-    // Fee for generating 1KB of extended meta data
-    int64 feeExtendedMetaData1KB;
-};
-
-// Bandwidth related data settings for contracts
-struct ConfigSettingContractBandwidthV0
-{
-    // Maximum size in bytes to propagate per ledger
-    uint32 ledgerMaxPropagateSizeBytes;
-    // Maximum size in bytes for a transaction
-    uint32 txMaxSizeBytes;
-
-    // Fee for propagating 1KB of data
-    int64 feePropagateData1KB;
-};
-
-union ConfigSettingEntry switch (ConfigSettingID configSettingID)
-{
-case CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES:
-    uint32 contractMaxSizeBytes;
-case CONFIG_SETTING_CONTRACT_COMPUTE_V0:
-    ConfigSettingContractComputeV0 contractCompute;
-case CONFIG_SETTING_CONTRACT_LEDGER_COST_V0:
-    ConfigSettingContractLedgerCostV0 contractLedgerCost;
-case CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0:
-    ConfigSettingContractHistoricalDataV0 contractHistoricalData;
-case CONFIG_SETTING_CONTRACT_META_DATA_V0:
-    ConfigSettingContractMetaDataV0 contractMetaData;
-case CONFIG_SETTING_CONTRACT_BANDWIDTH_V0:
-    ConfigSettingContractBandwidthV0 contractBandwidth;
-case CONFIG_SETTING_CONTRACT_HOST_LOGIC_VERSION:
-    uint32 contractHostLogicVersion;
-};
 
 struct LedgerEntryExtensionV1
 {

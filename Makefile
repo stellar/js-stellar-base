@@ -20,7 +20,10 @@ XDR_FILES_NEXT= \
 	Stellar-types.x \
 	Stellar-contract.x \
 	Stellar-contract-env-meta.x \
-	Stellar-contract-spec.x
+	Stellar-contract-meta.x \
+	Stellar-contract-spec.x \
+	Stellar-contract-config-setting.x \
+
 XDR_FILES_LOCAL_NEXT=$(addprefix xdr/next/,$(XDR_FILES_NEXT))
 
 XDRGEN_COMMIT=master
@@ -33,8 +36,8 @@ generate: src/generated/curr_generated.js types/curr.d.ts src/generated/next_gen
 src/generated/curr_generated.js: $(XDR_FILES_LOCAL_CURR)
 	mkdir -p $(dir $@)
 	> $@
-	docker run -it --rm -v $$PWD:/wd -w /wd ruby /bin/bash -c '\
-		gem install specific_install -v 0.3.7 && \
+	docker run -it --rm -v $$PWD:/wd -w /wd ruby:3.1 /bin/bash -c '\
+		gem install specific_install -v 0.3.8 && \
 		gem specific_install https://github.com/stellar/xdrgen.git -b $(XDRGEN_COMMIT) && \
 		xdrgen --language javascript --namespace curr --output src/generated $^ \
 		'
@@ -42,8 +45,8 @@ src/generated/curr_generated.js: $(XDR_FILES_LOCAL_CURR)
 src/generated/next_generated.js: $(XDR_FILES_LOCAL_NEXT)
 	mkdir -p $(dir $@)
 	> $@
-	docker run -it --rm -v $$PWD:/wd -w /wd ruby /bin/bash -c '\
-		gem install specific_install -v 0.3.7 && \
+	docker run -it --rm -v $$PWD:/wd -w /wd ruby:3.1 /bin/bash -c '\
+		gem install specific_install -v 0.3.8 && \
 		gem specific_install https://github.com/stellar/xdrgen.git -b $(XDRGEN_COMMIT) && \
 		xdrgen --language javascript --namespace next --output src/generated $^ \
 		'
