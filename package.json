@@ -122,7 +122,7 @@
     "bignumber.js": "^9.1.1",
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
-    "js-xdr": "1.3.0",
+    "js-xdr": "2.0.0",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
