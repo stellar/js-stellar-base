@@ -4,6 +4,13 @@
 ## Unreleased
 
 
+## [v9.0.0-beta.2](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
+
+### Update
+
+- Upgrades the `js-xdr` dependency (major performance improvements, see [`js-xdr@v2.0.0`](https://github.com/stellar/js-xdr/releases/tag/v2.0.0)) and other dependencies to their latest versions ([#592](https://github.com/stellar/js-stellar-base/pull/592)).
+
+
 ## [v9.0.0-beta.1](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.0..v9.0.0-beta.1)
 
 ### Fix
