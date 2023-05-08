@@ -2547,6 +2547,75 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
+  //   struct TransactionResultPairV2
+  //   {
+  //       Hash transactionHash;
+  //       Hash hashOfMetaHashes; // hash of hashes in TransactionMetaV3
+  //                              // TransactionResult is in the meta
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("TransactionResultPairV2", [
+    ["transactionHash", xdr.lookup("Hash")],
+    ["hashOfMetaHashes", xdr.lookup("Hash")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct TransactionResultSetV2
+  //   {
+  //       TransactionResultPairV2 results<>;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("TransactionResultSetV2", [
+    [
+      "results",
+      xdr.varArray(xdr.lookup("TransactionResultPairV2"), 2147483647),
+    ],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   union switch (int v)
+  //       {
+  //       case 0:
+  //           void;
+  //       }
+  //
+  // ===========================================================================
+  xdr.union("TransactionHistoryResultEntryV2Ext", {
+    switchOn: xdr.int(),
+    switchName: "v",
+    switches: [[0, xdr.void()]],
+    arms: {},
+  });
+
+  // === xdr source ============================================================
+  //
+  //   struct TransactionHistoryResultEntryV2
+  //   {
+  //       uint32 ledgerSeq;
+  //       TransactionResultSetV2 txResultSet;
+  //
+  //       // reserved for future use
+  //       union switch (int v)
+  //       {
+  //       case 0:
+  //           void;
+  //       }
+  //       ext;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("TransactionHistoryResultEntryV2", [
+    ["ledgerSeq", xdr.lookup("Uint32")],
+    ["txResultSet", xdr.lookup("TransactionResultSetV2")],
+    ["ext", xdr.lookup("TransactionHistoryResultEntryV2Ext")],
+  ]);
+
+  // === xdr source ============================================================
+  //
   //   union switch (int v)
   //       {
   //       case 0:
@@ -2831,6 +2900,30 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
+  //   struct OperationDiagnosticEvents
+  //   {
+  //       DiagnosticEvent events<>;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("OperationDiagnosticEvents", [
+    ["events", xdr.varArray(xdr.lookup("DiagnosticEvent"), 2147483647)],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct OperationEvents
+  //   {
+  //       ContractEvent events<>;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("OperationEvents", [
+    ["events", xdr.varArray(xdr.lookup("ContractEvent"), 2147483647)],
+  ]);
+
+  // === xdr source ============================================================
+  //
   //   struct TransactionMetaV3
   //   {
   //       LedgerEntryChanges txChangesBefore; // tx level changes before operations
@@ -2838,14 +2931,17 @@ var types = XDR.config((xdr) => {
   //       OperationMeta operations<>;         // meta for each operation
   //       LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
   //                                           // applied if any
-  //       ContractEvent events<>;           // custom events populated by the
-  //                                           // contracts themselves.
-  //       SCVal returnValues<MAX_OPS_PER_TX>;    // return values of each invocation.
+  //       OperationEvents events<>;           // custom events populated by the
+  //                                           // contracts themselves. One list per operation.
+  //       TransactionResult txResult;
   //
-  //       // Diagnostics events that are not hashed.
+  //       Hash hashes[3];                     // stores sha256(txChangesBefore, operations, txChangesAfter),
+  //                                           // sha256(events), and sha256(txResult)
+  //
+  //       // Diagnostics events that are not hashed. One list per operation.
   //       // This will contain all contract and diagnostic events. Even ones
   //       // that were emitted in a failed contract call.
-  //       DiagnosticEvent diagnosticEvents<>;
+  //       OperationDiagnosticEvents diagnosticEvents<>;
   //   };
   //
   // ===========================================================================
@@ -2853,32 +2949,13 @@ var types = XDR.config((xdr) => {
     ["txChangesBefore", xdr.lookup("LedgerEntryChanges")],
     ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
     ["txChangesAfter", xdr.lookup("LedgerEntryChanges")],
-    ["events", xdr.varArray(xdr.lookup("ContractEvent"), 2147483647)],
-    [
-      "returnValues",
-      xdr.varArray(xdr.lookup("ScVal"), xdr.lookup("MAX_OPS_PER_TX")),
-    ],
+    ["events", xdr.varArray(xdr.lookup("OperationEvents"), 2147483647)],
+    ["txResult", xdr.lookup("TransactionResult")],
+    ["hashes", xdr.array(xdr.lookup("Hash"), 3)],
     [
       "diagnosticEvents",
-      xdr.varArray(xdr.lookup("DiagnosticEvent"), 2147483647),
+      xdr.varArray(xdr.lookup("OperationDiagnosticEvents"), 2147483647),
     ],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct InvokeHostFunctionSuccessPreImage
-  //   {
-  //       SCVal returnValues<MAX_OPS_PER_TX>;
-  //       ContractEvent events<>;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("InvokeHostFunctionSuccessPreImage", [
-    [
-      "returnValues",
-      xdr.varArray(xdr.lookup("ScVal"), xdr.lookup("MAX_OPS_PER_TX")),
-    ],
-    ["events", xdr.varArray(xdr.lookup("ContractEvent"), 2147483647)],
   ]);
 
   // === xdr source ============================================================
@@ -2925,6 +3002,22 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionResultMeta", [
     ["result", xdr.lookup("TransactionResultPair")],
+    ["feeProcessing", xdr.lookup("LedgerEntryChanges")],
+    ["txApplyProcessing", xdr.lookup("TransactionMeta")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct TransactionResultMetaV2
+  //   {
+  //       TransactionResultPairV2 result;
+  //       LedgerEntryChanges feeProcessing;
+  //       TransactionMeta txApplyProcessing;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("TransactionResultMetaV2", [
+    ["result", xdr.lookup("TransactionResultPairV2")],
     ["feeProcessing", xdr.lookup("LedgerEntryChanges")],
     ["txApplyProcessing", xdr.lookup("TransactionMeta")],
   ]);
@@ -3015,12 +3108,49 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
+  //   struct LedgerCloseMetaV2
+  //   {
+  //       LedgerHeaderHistoryEntry ledgerHeader;
+  //
+  //       GeneralizedTransactionSet txSet;
+  //
+  //       // NB: transactions are sorted in apply order here
+  //       // fees for all transactions are processed first
+  //       // followed by applying transactions
+  //       TransactionResultMetaV2 txProcessing<>;
+  //
+  //       // upgrades are applied last
+  //       UpgradeEntryMeta upgradesProcessing<>;
+  //
+  //       // other misc information attached to the ledger close
+  //       SCPHistoryEntry scpInfo<>;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("LedgerCloseMetaV2", [
+    ["ledgerHeader", xdr.lookup("LedgerHeaderHistoryEntry")],
+    ["txSet", xdr.lookup("GeneralizedTransactionSet")],
+    [
+      "txProcessing",
+      xdr.varArray(xdr.lookup("TransactionResultMetaV2"), 2147483647),
+    ],
+    [
+      "upgradesProcessing",
+      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647),
+    ],
+    ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
+  ]);
+
+  // === xdr source ============================================================
+  //
   //   union LedgerCloseMeta switch (int v)
   //   {
   //   case 0:
   //       LedgerCloseMetaV0 v0;
   //   case 1:
   //       LedgerCloseMetaV1 v1;
+  //   case 2:
+  //       LedgerCloseMetaV2 v2;
   //   };
   //
   // ===========================================================================
@@ -3030,10 +3160,12 @@ var types = XDR.config((xdr) => {
     switches: [
       [0, "v0"],
       [1, "v1"],
+      [2, "v2"],
     ],
     arms: {
       v0: xdr.lookup("LedgerCloseMetaV0"),
       v1: xdr.lookup("LedgerCloseMetaV1"),
+      v2: xdr.lookup("LedgerCloseMetaV2"),
     },
   });
 
@@ -7146,7 +7278,7 @@ var types = XDR.config((xdr) => {
   //   union InvokeHostFunctionResult switch (InvokeHostFunctionResultCode code)
   //   {
   //   case INVOKE_HOST_FUNCTION_SUCCESS:
-  //       Hash success; // sha256(InvokeHostFunctionSuccessPreImage)
+  //       SCVal success<MAX_OPS_PER_TX>;
   //   case INVOKE_HOST_FUNCTION_MALFORMED:
   //   case INVOKE_HOST_FUNCTION_TRAPPED:
   //   case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
@@ -7164,7 +7296,7 @@ var types = XDR.config((xdr) => {
       ["invokeHostFunctionResourceLimitExceeded", xdr.void()],
     ],
     arms: {
-      success: xdr.lookup("Hash"),
+      success: xdr.varArray(xdr.lookup("ScVal"), xdr.lookup("MAX_OPS_PER_TX")),
     },
   });
 

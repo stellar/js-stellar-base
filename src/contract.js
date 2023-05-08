@@ -68,7 +68,6 @@ export class Contract {
     });
   }
 
-
   /**
    * Returns the read-only footprint entry necessary for any invocations to this
    * contract, for convenience when adding it to your transaction's overall
@@ -79,9 +78,11 @@ export class Contract {
   getFootprint() {
     const contractId = Buffer.from(this._id, 'hex');
 
-    return xdr.LedgerKey.contractData(new xdr.LedgerKeyContractData({
-      contractId,
-      key: xdr.ScVal.scvLedgerKeyContractExecutable(),
-    }));
+    return xdr.LedgerKey.contractData(
+      new xdr.LedgerKeyContractData({
+        contractId,
+        key: xdr.ScVal.scvLedgerKeyContractExecutable()
+      })
+    );
   }
 }

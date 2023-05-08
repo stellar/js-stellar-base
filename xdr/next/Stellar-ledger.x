@@ -280,6 +280,32 @@ struct TransactionHistoryResultEntry
     ext;
 };
 
+struct TransactionResultPairV2
+{
+    Hash transactionHash;
+    Hash hashOfMetaHashes; // hash of hashes in TransactionMetaV3
+                           // TransactionResult is in the meta
+};
+
+struct TransactionResultSetV2
+{
+    TransactionResultPairV2 results<>;
+};
+
+struct TransactionHistoryResultEntryV2
+{
+    uint32 ledgerSeq;
+    TransactionResultSetV2 txResultSet;
+
+    // reserved for future use
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
+};
+
 struct LedgerHeaderHistoryEntry
 {
     Hash hash;
@@ -398,6 +424,16 @@ struct DiagnosticEvent
     ContractEvent event;
 };
 
+struct OperationDiagnosticEvents
+{
+    DiagnosticEvent events<>;
+};
+
+struct OperationEvents
+{
+    ContractEvent events<>;
+};
+
 struct TransactionMetaV3
 {
     LedgerEntryChanges txChangesBefore; // tx level changes before operations
@@ -405,21 +441,17 @@ struct TransactionMetaV3
     OperationMeta operations<>;         // meta for each operation
     LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
                                         // applied if any
-    ContractEvent events<>;           // custom events populated by the
-                                        // contracts themselves.
-    SCVal returnValues<MAX_OPS_PER_TX>;    // return values of each invocation.
+    OperationEvents events<>;           // custom events populated by the
+                                        // contracts themselves. One list per operation.
+    TransactionResult txResult;
 
-    // Diagnostics events that are not hashed.
+    Hash hashes[3];                     // stores sha256(txChangesBefore, operations, txChangesAfter),
+                                        // sha256(events), and sha256(txResult)
+
+    // Diagnostics events that are not hashed. One list per operation.
     // This will contain all contract and diagnostic events. Even ones
     // that were emitted in a failed contract call.
-    DiagnosticEvent diagnosticEvents<>;
-};
-
-// This is in Stellar-ledger.x to due to a circular dependency 
-struct InvokeHostFunctionSuccessPreImage
-{
-    SCVal returnValues<MAX_OPS_PER_TX>;
-    ContractEvent events<>;
+    OperationDiagnosticEvents diagnosticEvents<>;
 };
 
 // this is the meta produced when applying transactions
@@ -442,6 +474,13 @@ case 3:
 struct TransactionResultMeta
 {
     TransactionResultPair result;
+    LedgerEntryChanges feeProcessing;
+    TransactionMeta txApplyProcessing;
+};
+
+struct TransactionResultMetaV2
+{
+    TransactionResultPairV2 result;
     LedgerEntryChanges feeProcessing;
     TransactionMeta txApplyProcessing;
 };
@@ -490,11 +529,32 @@ struct LedgerCloseMetaV1
     SCPHistoryEntry scpInfo<>;
 };
 
+// only difference between V1 and V2 is this uses TransactionResultMetaV2
+struct LedgerCloseMetaV2
+{
+    LedgerHeaderHistoryEntry ledgerHeader;
+    
+    GeneralizedTransactionSet txSet;
+
+    // NB: transactions are sorted in apply order here
+    // fees for all transactions are processed first
+    // followed by applying transactions
+    TransactionResultMetaV2 txProcessing<>;
+
+    // upgrades are applied last
+    UpgradeEntryMeta upgradesProcessing<>;
+
+    // other misc information attached to the ledger close
+    SCPHistoryEntry scpInfo<>;
+};
+
 union LedgerCloseMeta switch (int v)
 {
 case 0:
     LedgerCloseMetaV0 v0;
 case 1:
     LedgerCloseMetaV1 v1;
+case 2:
+    LedgerCloseMetaV2 v2;
 };
 }

@@ -1779,7 +1779,7 @@ enum InvokeHostFunctionResultCode
 union InvokeHostFunctionResult switch (InvokeHostFunctionResultCode code)
 {
 case INVOKE_HOST_FUNCTION_SUCCESS:
-    Hash success; // sha256(InvokeHostFunctionSuccessPreImage)
+    SCVal success<MAX_OPS_PER_TX>;
 case INVOKE_HOST_FUNCTION_MALFORMED:
 case INVOKE_HOST_FUNCTION_TRAPPED:
 case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:

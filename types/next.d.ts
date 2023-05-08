@@ -41,8 +41,6 @@ declare namespace xdrHidden {
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
 
-  type Hash = Opaque[]; // workaround, cause unknown
-
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -215,6 +213,8 @@ export namespace xdr {
 
     validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
+
+  type Hash = Opaque[]; // workaround, cause unknown
 
   class VarOpaque extends Opaque {}
 
@@ -4425,6 +4425,111 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class TransactionResultPairV2 {
+    constructor(attributes: {
+      transactionHash: Buffer;
+      hashOfMetaHashes: Buffer;
+    });
+
+    transactionHash(value?: Buffer): Buffer;
+
+    hashOfMetaHashes(value?: Buffer): Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResultPairV2;
+
+    static write(value: TransactionResultPairV2, io: Buffer): void;
+
+    static isValid(value: TransactionResultPairV2): boolean;
+
+    static toXDR(value: TransactionResultPairV2): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultPairV2;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultPairV2;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class TransactionResultSetV2 {
+    constructor(attributes: { results: TransactionResultPairV2[] });
+
+    results(value?: TransactionResultPairV2[]): TransactionResultPairV2[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResultSetV2;
+
+    static write(value: TransactionResultSetV2, io: Buffer): void;
+
+    static isValid(value: TransactionResultSetV2): boolean;
+
+    static toXDR(value: TransactionResultSetV2): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultSetV2;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultSetV2;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class TransactionHistoryResultEntryV2 {
+    constructor(attributes: {
+      ledgerSeq: number;
+      txResultSet: TransactionResultSetV2;
+      ext: TransactionHistoryResultEntryV2Ext;
+    });
+
+    ledgerSeq(value?: number): number;
+
+    txResultSet(value?: TransactionResultSetV2): TransactionResultSetV2;
+
+    ext(
+      value?: TransactionHistoryResultEntryV2Ext
+    ): TransactionHistoryResultEntryV2Ext;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionHistoryResultEntryV2;
+
+    static write(value: TransactionHistoryResultEntryV2, io: Buffer): void;
+
+    static isValid(value: TransactionHistoryResultEntryV2): boolean;
+
+    static toXDR(value: TransactionHistoryResultEntryV2): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): TransactionHistoryResultEntryV2;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryResultEntryV2;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class LedgerHeaderHistoryEntry {
     constructor(attributes: {
       hash: Buffer;
@@ -4708,14 +4813,70 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class OperationDiagnosticEvents {
+    constructor(attributes: { events: DiagnosticEvent[] });
+
+    events(value?: DiagnosticEvent[]): DiagnosticEvent[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OperationDiagnosticEvents;
+
+    static write(value: OperationDiagnosticEvents, io: Buffer): void;
+
+    static isValid(value: OperationDiagnosticEvents): boolean;
+
+    static toXDR(value: OperationDiagnosticEvents): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OperationDiagnosticEvents;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): OperationDiagnosticEvents;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class OperationEvents {
+    constructor(attributes: { events: ContractEvent[] });
+
+    events(value?: ContractEvent[]): ContractEvent[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OperationEvents;
+
+    static write(value: OperationEvents, io: Buffer): void;
+
+    static isValid(value: OperationEvents): boolean;
+
+    static toXDR(value: OperationEvents): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OperationEvents;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationEvents;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class TransactionMetaV3 {
     constructor(attributes: {
       txChangesBefore: LedgerEntryChange[];
       operations: OperationMeta[];
       txChangesAfter: LedgerEntryChange[];
-      events: ContractEvent[];
-      returnValues: ScVal[];
-      diagnosticEvents: DiagnosticEvent[];
+      events: OperationEvents[];
+      txResult: TransactionResult;
+      hashes: Buffer[];
+      diagnosticEvents: OperationDiagnosticEvents[];
     });
 
     txChangesBefore(value?: LedgerEntryChange[]): LedgerEntryChange[];
@@ -4724,11 +4885,15 @@ export namespace xdr {
 
     txChangesAfter(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
-    events(value?: ContractEvent[]): ContractEvent[];
+    events(value?: OperationEvents[]): OperationEvents[];
 
-    returnValues(value?: ScVal[]): ScVal[];
+    txResult(value?: TransactionResult): TransactionResult;
 
-    diagnosticEvents(value?: DiagnosticEvent[]): DiagnosticEvent[];
+    hashes(value?: Buffer[]): Buffer[];
+
+    diagnosticEvents(
+      value?: OperationDiagnosticEvents[]
+    ): OperationDiagnosticEvents[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4745,40 +4910,6 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV3;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV3;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class InvokeHostFunctionSuccessPreImage {
-    constructor(attributes: { returnValues: ScVal[]; events: ContractEvent[] });
-
-    returnValues(value?: ScVal[]): ScVal[];
-
-    events(value?: ContractEvent[]): ContractEvent[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): InvokeHostFunctionSuccessPreImage;
-
-    static write(value: InvokeHostFunctionSuccessPreImage, io: Buffer): void;
-
-    static isValid(value: InvokeHostFunctionSuccessPreImage): boolean;
-
-    static toXDR(value: InvokeHostFunctionSuccessPreImage): Buffer;
-
-    static fromXDR(
-      input: Buffer,
-      format?: 'raw'
-    ): InvokeHostFunctionSuccessPreImage;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): InvokeHostFunctionSuccessPreImage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4816,6 +4947,43 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): TransactionResultMeta;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class TransactionResultMetaV2 {
+    constructor(attributes: {
+      result: TransactionResultPairV2;
+      feeProcessing: LedgerEntryChange[];
+      txApplyProcessing: TransactionMeta;
+    });
+
+    result(value?: TransactionResultPairV2): TransactionResultPairV2;
+
+    feeProcessing(value?: LedgerEntryChange[]): LedgerEntryChange[];
+
+    txApplyProcessing(value?: TransactionMeta): TransactionMeta;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionResultMetaV2;
+
+    static write(value: TransactionResultMetaV2, io: Buffer): void;
+
+    static isValid(value: TransactionResultMetaV2): boolean;
+
+    static toXDR(value: TransactionResultMetaV2): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultMetaV2;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionResultMetaV2;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4927,6 +5095,46 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV1;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV1;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class LedgerCloseMetaV2 {
+    constructor(attributes: {
+      ledgerHeader: LedgerHeaderHistoryEntry;
+      txSet: GeneralizedTransactionSet;
+      txProcessing: TransactionResultMetaV2[];
+      upgradesProcessing: UpgradeEntryMeta[];
+      scpInfo: ScpHistoryEntry[];
+    });
+
+    ledgerHeader(value?: LedgerHeaderHistoryEntry): LedgerHeaderHistoryEntry;
+
+    txSet(value?: GeneralizedTransactionSet): GeneralizedTransactionSet;
+
+    txProcessing(value?: TransactionResultMetaV2[]): TransactionResultMetaV2[];
+
+    upgradesProcessing(value?: UpgradeEntryMeta[]): UpgradeEntryMeta[];
+
+    scpInfo(value?: ScpHistoryEntry[]): ScpHistoryEntry[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerCloseMetaV2;
+
+    static write(value: LedgerCloseMetaV2, io: Buffer): void;
+
+    static isValid(value: LedgerCloseMetaV2): boolean;
+
+    static toXDR(value: LedgerCloseMetaV2): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV2;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV2;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -10289,6 +10497,40 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class TransactionHistoryResultEntryV2Ext {
+    switch(): number;
+
+    static 0(): TransactionHistoryResultEntryV2Ext;
+
+    value(): void;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): TransactionHistoryResultEntryV2Ext;
+
+    static write(value: TransactionHistoryResultEntryV2Ext, io: Buffer): void;
+
+    static isValid(value: TransactionHistoryResultEntryV2Ext): boolean;
+
+    static toXDR(value: TransactionHistoryResultEntryV2Ext): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): TransactionHistoryResultEntryV2Ext;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): TransactionHistoryResultEntryV2Ext;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class LedgerHeaderHistoryEntryExt {
     switch(): number;
 
@@ -10475,11 +10717,15 @@ export namespace xdr {
 
     v1(value?: LedgerCloseMetaV1): LedgerCloseMetaV1;
 
+    v2(value?: LedgerCloseMetaV2): LedgerCloseMetaV2;
+
     static 0(value: LedgerCloseMetaV0): LedgerCloseMeta;
 
     static 1(value: LedgerCloseMetaV1): LedgerCloseMeta;
 
-    value(): LedgerCloseMetaV0 | LedgerCloseMetaV1;
+    static 2(value: LedgerCloseMetaV2): LedgerCloseMeta;
+
+    value(): LedgerCloseMetaV0 | LedgerCloseMetaV1 | LedgerCloseMetaV2;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -12630,9 +12876,9 @@ export namespace xdr {
   class InvokeHostFunctionResult {
     switch(): InvokeHostFunctionResultCode;
 
-    success(value?: Buffer): Buffer;
+    success(value?: ScVal[]): ScVal[];
 
-    static invokeHostFunctionSuccess(value: Buffer): InvokeHostFunctionResult;
+    static invokeHostFunctionSuccess(value: ScVal[]): InvokeHostFunctionResult;
 
     static invokeHostFunctionMalformed(): InvokeHostFunctionResult;
 
@@ -12640,7 +12886,7 @@ export namespace xdr {
 
     static invokeHostFunctionResourceLimitExceeded(): InvokeHostFunctionResult;
 
-    value(): Buffer | void;
+    value(): ScVal[] | void;
 
     toXDR(format?: 'raw'): Buffer;
 
