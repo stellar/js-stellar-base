@@ -1,4 +1,4 @@
-// Automatically generated on 2023-02-15T10:28:00Z
+// Automatically generated on 2023-04-20T14:53:00-08:00
 import { Operation } from './index';
 
 export {};
@@ -40,7 +40,6 @@ declare namespace xdrHidden {
 
 export namespace xdr {
   export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
-  const SCVAL_LIMIT = 256000;
 
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;
@@ -425,20 +424,31 @@ export namespace xdr {
     static claimableBalanceClawbackEnabledFlag(): ClaimableBalanceFlags;
   }
 
-  class ConfigSettingType {
-    readonly name: 'configSettingTypeUint32';
-
-    readonly value: 0;
-
-    static configSettingTypeUint32(): ConfigSettingType;
-  }
-
   class ConfigSettingId {
-    readonly name: 'configSettingContractMaxSize';
+    readonly name:
+      | 'configSettingContractMaxSizeBytes'
+      | 'configSettingContractComputeV0'
+      | 'configSettingContractLedgerCostV0'
+      | 'configSettingContractHistoricalDataV0'
+      | 'configSettingContractMetaDataV0'
+      | 'configSettingContractBandwidthV0'
+      | 'configSettingContractHostLogicVersion';
 
-    readonly value: 0;
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-    static configSettingContractMaxSize(): ConfigSettingId;
+    static configSettingContractMaxSizeBytes(): ConfigSettingId;
+
+    static configSettingContractComputeV0(): ConfigSettingId;
+
+    static configSettingContractLedgerCostV0(): ConfigSettingId;
+
+    static configSettingContractHistoricalDataV0(): ConfigSettingId;
+
+    static configSettingContractMetaDataV0(): ConfigSettingId;
+
+    static configSettingContractBandwidthV0(): ConfigSettingId;
+
+    static configSettingContractHostLogicVersion(): ConfigSettingId;
   }
 
   class EnvelopeType {
@@ -591,13 +601,15 @@ export namespace xdr {
   }
 
   class ContractEventType {
-    readonly name: 'system' | 'contract';
+    readonly name: 'system' | 'contract' | 'diagnostic';
 
-    readonly value: 0 | 1;
+    readonly value: 0 | 1 | 2;
 
     static system(): ContractEventType;
 
     static contract(): ContractEventType;
+
+    static diagnostic(): ContractEventType;
   }
 
   class ErrorCode {
@@ -2337,7 +2349,9 @@ export namespace xdr {
 
   const DataValue: VarOpaque;
 
-  type PoolId = typeof Hash;
+  type Hash = Opaque[];
+
+  type PoolId = Hash;
 
   const AssetCode4: Opaque;
 
@@ -2353,9 +2367,9 @@ export namespace xdr {
 
   const PeerStatList: XDRArray<PeerStats>;
 
-  const TxAdvertVector: XDRArray<typeof Hash>;
+  const TxAdvertVector: XDRArray<Hash>;
 
-  const TxDemandVector: XDRArray<typeof Hash>;
+  const TxDemandVector: XDRArray<Hash>;
 
   const Hash: Opaque;
 
@@ -3472,34 +3486,234 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ConfigSettingEntry {
+  class ConfigSettingContractComputeV0 {
     constructor(attributes: {
-      ext: ConfigSettingEntryExt;
-      configSettingId: ConfigSettingId;
-      setting: ConfigSetting;
+      ledgerMaxInstructions: Int64;
+      txMaxInstructions: Int64;
+      feeRatePerInstructionsIncrement: Int64;
+      memoryLimit: number;
     });
 
-    ext(value?: ConfigSettingEntryExt): ConfigSettingEntryExt;
+    ledgerMaxInstructions(value?: Int64): Int64;
 
-    configSettingId(value?: ConfigSettingId): ConfigSettingId;
+    txMaxInstructions(value?: Int64): Int64;
 
-    setting(value?: ConfigSetting): ConfigSetting;
+    feeRatePerInstructionsIncrement(value?: Int64): Int64;
+
+    memoryLimit(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): ConfigSettingEntry;
+    static read(io: Buffer): ConfigSettingContractComputeV0;
 
-    static write(value: ConfigSettingEntry, io: Buffer): void;
+    static write(value: ConfigSettingContractComputeV0, io: Buffer): void;
 
-    static isValid(value: ConfigSettingEntry): boolean;
+    static isValid(value: ConfigSettingContractComputeV0): boolean;
 
-    static toXDR(value: ConfigSettingEntry): Buffer;
+    static toXDR(value: ConfigSettingContractComputeV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ConfigSettingEntry;
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ConfigSettingContractComputeV0;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ConfigSettingEntry;
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ConfigSettingContractComputeV0;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ConfigSettingContractLedgerCostV0 {
+    constructor(attributes: {
+      ledgerMaxReadLedgerEntries: number;
+      ledgerMaxReadBytes: number;
+      ledgerMaxWriteLedgerEntries: number;
+      ledgerMaxWriteBytes: number;
+      txMaxReadLedgerEntries: number;
+      txMaxReadBytes: number;
+      txMaxWriteLedgerEntries: number;
+      txMaxWriteBytes: number;
+      feeReadLedgerEntry: Int64;
+      feeWriteLedgerEntry: Int64;
+      feeRead1Kb: Int64;
+      feeWrite1Kb: Int64;
+      bucketListSizeBytes: Int64;
+      bucketListFeeRateLow: Int64;
+      bucketListFeeRateHigh: Int64;
+      bucketListGrowthFactor: number;
+    });
+
+    ledgerMaxReadLedgerEntries(value?: number): number;
+
+    ledgerMaxReadBytes(value?: number): number;
+
+    ledgerMaxWriteLedgerEntries(value?: number): number;
+
+    ledgerMaxWriteBytes(value?: number): number;
+
+    txMaxReadLedgerEntries(value?: number): number;
+
+    txMaxReadBytes(value?: number): number;
+
+    txMaxWriteLedgerEntries(value?: number): number;
+
+    txMaxWriteBytes(value?: number): number;
+
+    feeReadLedgerEntry(value?: Int64): Int64;
+
+    feeWriteLedgerEntry(value?: Int64): Int64;
+
+    feeRead1Kb(value?: Int64): Int64;
+
+    feeWrite1Kb(value?: Int64): Int64;
+
+    bucketListSizeBytes(value?: Int64): Int64;
+
+    bucketListFeeRateLow(value?: Int64): Int64;
+
+    bucketListFeeRateHigh(value?: Int64): Int64;
+
+    bucketListGrowthFactor(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ConfigSettingContractLedgerCostV0;
+
+    static write(value: ConfigSettingContractLedgerCostV0, io: Buffer): void;
+
+    static isValid(value: ConfigSettingContractLedgerCostV0): boolean;
+
+    static toXDR(value: ConfigSettingContractLedgerCostV0): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ConfigSettingContractLedgerCostV0;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ConfigSettingContractLedgerCostV0;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ConfigSettingContractHistoricalDataV0 {
+    constructor(attributes: { feeHistorical1Kb: Int64 });
+
+    feeHistorical1Kb(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ConfigSettingContractHistoricalDataV0;
+
+    static write(
+      value: ConfigSettingContractHistoricalDataV0,
+      io: Buffer
+    ): void;
+
+    static isValid(value: ConfigSettingContractHistoricalDataV0): boolean;
+
+    static toXDR(value: ConfigSettingContractHistoricalDataV0): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ConfigSettingContractHistoricalDataV0;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ConfigSettingContractHistoricalDataV0;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ConfigSettingContractMetaDataV0 {
+    constructor(attributes: {
+      txMaxExtendedMetaDataSizeBytes: number;
+      feeExtendedMetaData1Kb: Int64;
+    });
+
+    txMaxExtendedMetaDataSizeBytes(value?: number): number;
+
+    feeExtendedMetaData1Kb(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ConfigSettingContractMetaDataV0;
+
+    static write(value: ConfigSettingContractMetaDataV0, io: Buffer): void;
+
+    static isValid(value: ConfigSettingContractMetaDataV0): boolean;
+
+    static toXDR(value: ConfigSettingContractMetaDataV0): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ConfigSettingContractMetaDataV0;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ConfigSettingContractMetaDataV0;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ConfigSettingContractBandwidthV0 {
+    constructor(attributes: {
+      ledgerMaxPropagateSizeBytes: number;
+      txMaxSizeBytes: number;
+      feePropagateData1Kb: Int64;
+    });
+
+    ledgerMaxPropagateSizeBytes(value?: number): number;
+
+    txMaxSizeBytes(value?: number): number;
+
+    feePropagateData1Kb(value?: Int64): Int64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ConfigSettingContractBandwidthV0;
+
+    static write(value: ConfigSettingContractBandwidthV0, io: Buffer): void;
+
+    static isValid(value: ConfigSettingContractBandwidthV0): boolean;
+
+    static toXDR(value: ConfigSettingContractBandwidthV0): Buffer;
+
+    static fromXDR(
+      input: Buffer,
+      format?: 'raw'
+    ): ConfigSettingContractBandwidthV0;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): ConfigSettingContractBandwidthV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4003,31 +4217,57 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class LedgerUpgradeConfigSetting {
-    constructor(attributes: { id: ConfigSettingId; setting: ConfigSetting });
+  class ConfigUpgradeSetKey {
+    constructor(attributes: { contractId: Buffer; contentHash: Buffer });
 
-    id(value?: ConfigSettingId): ConfigSettingId;
+    contractId(value?: Buffer): Buffer;
 
-    setting(value?: ConfigSetting): ConfigSetting;
+    contentHash(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): LedgerUpgradeConfigSetting;
+    static read(io: Buffer): ConfigUpgradeSetKey;
 
-    static write(value: LedgerUpgradeConfigSetting, io: Buffer): void;
+    static write(value: ConfigUpgradeSetKey, io: Buffer): void;
 
-    static isValid(value: LedgerUpgradeConfigSetting): boolean;
+    static isValid(value: ConfigUpgradeSetKey): boolean;
 
-    static toXDR(value: LedgerUpgradeConfigSetting): Buffer;
+    static toXDR(value: ConfigUpgradeSetKey): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerUpgradeConfigSetting;
+    static fromXDR(input: Buffer, format?: 'raw'): ConfigUpgradeSetKey;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64'
-    ): LedgerUpgradeConfigSetting;
+    ): ConfigUpgradeSetKey;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ConfigUpgradeSet {
+    constructor(attributes: { updatedEntry: ConfigSettingEntry[] });
+
+    updatedEntry(value?: ConfigSettingEntry[]): ConfigSettingEntry[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ConfigUpgradeSet;
+
+    static write(value: ConfigUpgradeSet, io: Buffer): void;
+
+    static isValid(value: ConfigUpgradeSet): boolean;
+
+    static toXDR(value: ConfigUpgradeSet): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ConfigUpgradeSet;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ConfigUpgradeSet;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4660,6 +4900,66 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class DiagnosticEvent {
+    constructor(attributes: {
+      inSuccessfulContractCall: boolean;
+      event: ContractEvent;
+    });
+
+    inSuccessfulContractCall(value?: boolean): boolean;
+
+    event(value?: ContractEvent): ContractEvent;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): DiagnosticEvent;
+
+    static write(value: DiagnosticEvent, io: Buffer): void;
+
+    static isValid(value: DiagnosticEvent): boolean;
+
+    static toXDR(value: DiagnosticEvent): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): DiagnosticEvent;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): DiagnosticEvent;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class OperationDiagnosticEvents {
+    constructor(attributes: { events: DiagnosticEvent[] });
+
+    events(value?: DiagnosticEvent[]): DiagnosticEvent[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): OperationDiagnosticEvents;
+
+    static write(value: OperationDiagnosticEvents, io: Buffer): void;
+
+    static isValid(value: OperationDiagnosticEvents): boolean;
+
+    static toXDR(value: OperationDiagnosticEvents): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): OperationDiagnosticEvents;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64'
+    ): OperationDiagnosticEvents;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class OperationEvents {
     constructor(attributes: { events: ContractEvent[] });
 
@@ -4694,6 +4994,7 @@ export namespace xdr {
       events: OperationEvents[];
       txResult: TransactionResult;
       hashes: Buffer[];
+      diagnosticEvents: OperationDiagnosticEvents[];
     });
 
     txChangesBefore(value?: LedgerEntryChange[]): LedgerEntryChange[];
@@ -4707,6 +5008,10 @@ export namespace xdr {
     txResult(value?: TransactionResult): TransactionResult;
 
     hashes(value?: Buffer[]): Buffer[];
+
+    diagnosticEvents(
+      value?: OperationDiagnosticEvents[]
+    ): OperationDiagnosticEvents[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5493,9 +5798,9 @@ export namespace xdr {
   }
 
   class FloodAdvert {
-    constructor(attributes: { txHashes: Array<typeof Hash> });
+    constructor(attributes: { txHashes: Hash[] });
 
-    txHashes(value?: Array<typeof Hash>): Array<typeof Hash>;
+    txHashes(value?: Hash[]): Hash[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -5519,9 +5824,9 @@ export namespace xdr {
   }
 
   class FloodDemand {
-    constructor(attributes: { txHashes: Array<typeof Hash> });
+    constructor(attributes: { txHashes: Hash[] });
 
-    txHashes(value?: Array<typeof Hash>): Array<typeof Hash>;
+    txHashes(value?: Hash[]): Hash[];
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -6657,37 +6962,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): InvokeHostFunctionOp;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class Operation2 {
-    constructor(attributes: {
-      sourceAccount: null | MuxedAccount;
-      body: OperationBody;
-    });
-
-    sourceAccount(value?: null | MuxedAccount): null | MuxedAccount;
-
-    body(value?: OperationBody): OperationBody;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Operation;
-
-    static write(value: Operation, io: Buffer): void;
-
-    static isValid(value: Operation): boolean;
-
-    static toXDR(value: Operation): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Operation;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Operation;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7907,12 +8181,40 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class Int128Parts {
-    constructor(attributes: { lo: Uint64; hi: Uint64 });
+  class UInt128Parts {
+    constructor(attributes: { hi: Uint64; lo: Uint64 });
+
+    hi(value?: Uint64): Uint64;
 
     lo(value?: Uint64): Uint64;
 
-    hi(value?: Uint64): Uint64;
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): UInt128Parts;
+
+    static write(value: UInt128Parts, io: Buffer): void;
+
+    static isValid(value: UInt128Parts): boolean;
+
+    static toXDR(value: UInt128Parts): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): UInt128Parts;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): UInt128Parts;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class Int128Parts {
+    constructor(attributes: { hi: Int64; lo: Uint64 });
+
+    hi(value?: Int64): Int64;
+
+    lo(value?: Uint64): Uint64;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -7929,6 +8231,80 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): Int128Parts;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): Int128Parts;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class UInt256Parts {
+    constructor(attributes: {
+      hiHi: Uint64;
+      hiLo: Uint64;
+      loHi: Uint64;
+      loLo: Uint64;
+    });
+
+    hiHi(value?: Uint64): Uint64;
+
+    hiLo(value?: Uint64): Uint64;
+
+    loHi(value?: Uint64): Uint64;
+
+    loLo(value?: Uint64): Uint64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): UInt256Parts;
+
+    static write(value: UInt256Parts, io: Buffer): void;
+
+    static isValid(value: UInt256Parts): boolean;
+
+    static toXDR(value: UInt256Parts): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): UInt256Parts;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): UInt256Parts;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class Int256Parts {
+    constructor(attributes: {
+      hiHi: Int64;
+      hiLo: Uint64;
+      loHi: Uint64;
+      loLo: Uint64;
+    });
+
+    hiHi(value?: Int64): Int64;
+
+    hiLo(value?: Uint64): Uint64;
+
+    loHi(value?: Uint64): Uint64;
+
+    loLo(value?: Uint64): Uint64;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): Int256Parts;
+
+    static write(value: Int256Parts, io: Buffer): void;
+
+    static isValid(value: Int256Parts): boolean;
+
+    static toXDR(value: Int256Parts): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): Int256Parts;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): Int256Parts;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -9251,61 +9627,83 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ConfigSetting {
-    switch(): ConfigSettingType;
+  class ConfigSettingEntry {
+    switch(): ConfigSettingId;
 
-    uint32Val(value?: number): number;
+    contractMaxSizeBytes(value?: number): number;
 
-    static configSettingTypeUint32(value: number): ConfigSetting;
+    contractCompute(
+      value?: ConfigSettingContractComputeV0
+    ): ConfigSettingContractComputeV0;
 
-    value(): number;
+    contractLedgerCost(
+      value?: ConfigSettingContractLedgerCostV0
+    ): ConfigSettingContractLedgerCostV0;
+
+    contractHistoricalData(
+      value?: ConfigSettingContractHistoricalDataV0
+    ): ConfigSettingContractHistoricalDataV0;
+
+    contractMetaData(
+      value?: ConfigSettingContractMetaDataV0
+    ): ConfigSettingContractMetaDataV0;
+
+    contractBandwidth(
+      value?: ConfigSettingContractBandwidthV0
+    ): ConfigSettingContractBandwidthV0;
+
+    contractHostLogicVersion(value?: number): number;
+
+    static configSettingContractMaxSizeBytes(value: number): ConfigSettingEntry;
+
+    static configSettingContractComputeV0(
+      value: ConfigSettingContractComputeV0
+    ): ConfigSettingEntry;
+
+    static configSettingContractLedgerCostV0(
+      value: ConfigSettingContractLedgerCostV0
+    ): ConfigSettingEntry;
+
+    static configSettingContractHistoricalDataV0(
+      value: ConfigSettingContractHistoricalDataV0
+    ): ConfigSettingEntry;
+
+    static configSettingContractMetaDataV0(
+      value: ConfigSettingContractMetaDataV0
+    ): ConfigSettingEntry;
+
+    static configSettingContractBandwidthV0(
+      value: ConfigSettingContractBandwidthV0
+    ): ConfigSettingEntry;
+
+    static configSettingContractHostLogicVersion(
+      value: number
+    ): ConfigSettingEntry;
+
+    value():
+      | number
+      | ConfigSettingContractComputeV0
+      | ConfigSettingContractLedgerCostV0
+      | ConfigSettingContractHistoricalDataV0
+      | ConfigSettingContractMetaDataV0
+      | ConfigSettingContractBandwidthV0
+      | number;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): ConfigSetting;
+    static read(io: Buffer): ConfigSettingEntry;
 
-    static write(value: ConfigSetting, io: Buffer): void;
+    static write(value: ConfigSettingEntry, io: Buffer): void;
 
-    static isValid(value: ConfigSetting): boolean;
+    static isValid(value: ConfigSettingEntry): boolean;
 
-    static toXDR(value: ConfigSetting): Buffer;
+    static toXDR(value: ConfigSettingEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ConfigSetting;
+    static fromXDR(input: Buffer, format?: 'raw'): ConfigSettingEntry;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ConfigSetting;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class ConfigSettingEntryExt {
-    switch(): number;
-
-    static 0(): ConfigSettingEntryExt;
-
-    value(): void;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ConfigSettingEntryExt;
-
-    static write(value: ConfigSettingEntryExt, io: Buffer): void;
-
-    static isValid(value: ConfigSettingEntryExt): boolean;
-
-    static toXDR(value: ConfigSettingEntryExt): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ConfigSettingEntryExt;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64'
-    ): ConfigSettingEntryExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ConfigSettingEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -9631,9 +10029,7 @@ export namespace xdr {
 
     newFlags(value?: number): number;
 
-    configSetting(
-      value?: LedgerUpgradeConfigSetting
-    ): LedgerUpgradeConfigSetting;
+    newConfig(value?: ConfigUpgradeSetKey): ConfigUpgradeSetKey;
 
     static ledgerUpgradeVersion(value: number): LedgerUpgrade;
 
@@ -9645,17 +10041,9 @@ export namespace xdr {
 
     static ledgerUpgradeFlags(value: number): LedgerUpgrade;
 
-    static ledgerUpgradeConfig(
-      value: LedgerUpgradeConfigSetting
-    ): LedgerUpgrade;
+    static ledgerUpgradeConfig(value: ConfigUpgradeSetKey): LedgerUpgrade;
 
-    value():
-      | number
-      | number
-      | number
-      | number
-      | number
-      | LedgerUpgradeConfigSetting;
+    value(): number | number | number | number | number | ConfigUpgradeSetKey;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -13032,13 +13420,13 @@ export namespace xdr {
 
     duration(value?: Duration): Duration;
 
-    u128(value?: Int128Parts): Int128Parts;
+    u128(value?: UInt128Parts): UInt128Parts;
 
     i128(value?: Int128Parts): Int128Parts;
 
-    u256(value?: Buffer): Buffer;
+    u256(value?: UInt256Parts): UInt256Parts;
 
-    i256(value?: Buffer): Buffer;
+    i256(value?: Int256Parts): Int256Parts;
 
     bytes(value?: Buffer): Buffer;
 
@@ -13074,13 +13462,13 @@ export namespace xdr {
 
     static scvDuration(value: Duration): ScVal;
 
-    static scvU128(value: Int128Parts): ScVal;
+    static scvU128(value: UInt128Parts): ScVal;
 
     static scvI128(value: Int128Parts): ScVal;
 
-    static scvU256(value: Buffer): ScVal;
+    static scvU256(value: UInt256Parts): ScVal;
 
-    static scvI256(value: Buffer): ScVal;
+    static scvI256(value: Int256Parts): ScVal;
 
     static scvBytes(value: Buffer): ScVal;
 
@@ -13109,10 +13497,10 @@ export namespace xdr {
       | Int64
       | TimePoint
       | Duration
+      | UInt128Parts
       | Int128Parts
-      | Int128Parts
-      | Buffer
-      | Buffer
+      | UInt256Parts
+      | Int256Parts
       | Buffer
       | string
       | Buffer

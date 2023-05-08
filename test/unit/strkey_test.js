@@ -392,8 +392,8 @@ describe('StrKey', function () {
     });
   });
 
-  describe('#contracts', function() {
-    it('valid w/ 32-byte payload', function() {
+  describe('#contracts', function () {
+    it('valid w/ 32-byte payload', function () {
       const strkey = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
       const buf = StellarBase.StrKey.decodeContract(strkey);
 
@@ -404,7 +404,7 @@ describe('StrKey', function () {
       expect(StellarBase.StrKey.encodeContract(buf)).to.equal(strkey);
     });
 
-    it('isValid', function() {
+    it('isValid', function () {
       const valid = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
       expect(StellarBase.StrKey.isValidContract(valid)).to.be.true;
       const invalid =
@@ -413,7 +413,7 @@ describe('StrKey', function () {
     });
   });
 
-  describe('#invalidStrKeys', function() {
+  describe('#invalidStrKeys', function () {
     // From https://stellar.org/protocol/sep-23#invalid-test-cases
     const BAD_STRKEYS = [
       // The unused trailing bit must be zero in the encoding of the last three

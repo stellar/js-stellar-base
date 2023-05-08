@@ -253,7 +253,7 @@ describe('Transaction', function () {
     );
   });
 
-  it('returns error when transaction includes soroban contract auth', function() {
+  it('returns error when transaction includes soroban contract auth', function () {
     let source = new StellarBase.Account(
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
       '0'
@@ -302,7 +302,7 @@ describe('Transaction', function () {
     );
   });
 
-  it('adds signature correctly', function() {
+  it('adds signature correctly', function () {
     const sourceKey =
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
     // make two sources so they have the same seq number

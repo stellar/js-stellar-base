@@ -1,4 +1,4 @@
-// Automatically generated on 2022-08-12T12:40:00+01:00
+// Automatically generated on 2023-04-20T14:53:00-08:00
 import { Operation } from './index';
 
 export {};
@@ -575,7 +575,9 @@ export namespace xdr {
       | 'hello'
       | 'surveyRequest'
       | 'surveyResponse'
-      | 'sendMore';
+      | 'sendMore'
+      | 'floodAdvert'
+      | 'floodDemand';
 
     readonly value:
       | 0
@@ -594,7 +596,9 @@ export namespace xdr {
       | 13
       | 14
       | 15
-      | 16;
+      | 16
+      | 18
+      | 19;
 
     static errorMsg(): MessageType;
 
@@ -629,6 +633,10 @@ export namespace xdr {
     static surveyResponse(): MessageType;
 
     static sendMore(): MessageType;
+
+    static floodAdvert(): MessageType;
+
+    static floodDemand(): MessageType;
   }
 
   class SurveyMessageCommandType {
@@ -1662,7 +1670,9 @@ export namespace xdr {
 
   const DataValue: VarOpaque;
 
-  type PoolId = typeof Hash;
+  type Hash = Opaque[];
+
+  type PoolId = Hash;
 
   const AssetCode4: Opaque;
 
@@ -1677,6 +1687,10 @@ export namespace xdr {
   const EncryptedBody: VarOpaque;
 
   const PeerStatList: XDRArray<PeerStats>;
+
+  const TxAdvertVector: XDRArray<Hash>;
+
+  const TxDemandVector: XDRArray<Hash>;
 
   const Hash: Opaque;
 
@@ -3866,9 +3880,9 @@ export namespace xdr {
   }
 
   class Auth {
-    constructor(attributes: { unused: number });
+    constructor(attributes: { flags: number });
 
-    unused(value?: number): number;
+    flags(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -4211,6 +4225,58 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): TopologyResponseBody;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class FloodAdvert {
+    constructor(attributes: { txHashes: Hash[] });
+
+    txHashes(value?: Hash[]): Hash[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): FloodAdvert;
+
+    static write(value: FloodAdvert, io: Buffer): void;
+
+    static isValid(value: FloodAdvert): boolean;
+
+    static toXDR(value: FloodAdvert): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): FloodAdvert;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): FloodAdvert;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class FloodDemand {
+    constructor(attributes: { txHashes: Hash[] });
+
+    txHashes(value?: Hash[]): Hash[];
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): FloodDemand;
+
+    static write(value: FloodDemand, io: Buffer): void;
+
+    static isValid(value: FloodDemand): boolean;
+
+    static toXDR(value: FloodDemand): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): FloodDemand;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): FloodDemand;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -5067,37 +5133,6 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64'
     ): LiquidityPoolWithdrawOp;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class Operation2 {
-    constructor(attributes: {
-      sourceAccount: null | MuxedAccount;
-      body: OperationBody;
-    });
-
-    sourceAccount(value?: null | MuxedAccount): null | MuxedAccount;
-
-    body(value?: OperationBody): OperationBody;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): Operation;
-
-    static write(value: Operation, io: Buffer): void;
-
-    static isValid(value: Operation): boolean;
-
-    static toXDR(value: Operation): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): Operation;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): Operation;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7567,6 +7602,10 @@ export namespace xdr {
 
     sendMoreMessage(value?: SendMore): SendMore;
 
+    floodAdvert(value?: FloodAdvert): FloodAdvert;
+
+    floodDemand(value?: FloodDemand): FloodDemand;
+
     static errorMsg(value: Error): StellarMessage;
 
     static hello(value: Hello): StellarMessage;
@@ -7601,6 +7640,10 @@ export namespace xdr {
 
     static sendMore(value: SendMore): StellarMessage;
 
+    static floodAdvert(value: FloodAdvert): StellarMessage;
+
+    static floodDemand(value: FloodDemand): StellarMessage;
+
     value():
       | Error
       | Hello
@@ -7618,6 +7661,8 @@ export namespace xdr {
       | ScpEnvelope
       | number
       | SendMore
+      | FloodAdvert
+      | FloodDemand
       | void;
 
     toXDR(format?: 'raw'): Buffer;

@@ -3,6 +3,25 @@
 
 ## Unreleased
 
+
+## [v9.0.0-beta.1](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.0..v9.0.0-beta.1)
+
+### Fix
+
+- Correct XDR type definition for raw `xdr.Operation`s ([#591](https://github.com/stellar/js-stellar-base/pull/591)).
+
+
+## [v9.0.0-beta.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0-beta.0)
+
+This version is marked by a major version bump because of the significant upgrades to underlying dependencies. While there should be no noticeable API changes from a downstream perspective, there may be breaking changes in the way that this library is bundled.
+
+### Fix
+
+- Build system has been overhauled to support Webpack 5 ([#585](https://github.com/stellar/js-stellar-base/pull/585)).
+
+- Current and vNext XDR updated to latest versions ([#587](https://github.com/stellar/js-stellar-base/pull/587)).
+
+
 ## [v8.2.2](https://github.com/stellar/js-stellar-base/compare/v8.2.1..v8.2.2)
 
 ### Fix
@@ -25,7 +44,7 @@
 
 ## [v8.1.0](https://github.com/stellar/js-stellar-base/compare/v8.0.1..v8.1.0)
 
-### Add 
+### Add
 
 * `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array ([#535](https://github.com/stellar/js-stellar-base/pull/535)).
 
@@ -231,7 +250,7 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
 ## [v5.3.1](https://github.com/stellar/js-stellar-base/compare/v5.3.0..v5.3.1)
 
 ### Fix
-- Creating operations with both muxed and unmuxed properties resulted in unintuitive XDR. Specifically, the unmuxed property would be transformed into the equivalent property with an ID of 0 ([#441](https://github.com/stellar/js-stellar-base/pull/441)). 
+- Creating operations with both muxed and unmuxed properties resulted in unintuitive XDR. Specifically, the unmuxed property would be transformed into the equivalent property with an ID of 0 ([#441](https://github.com/stellar/js-stellar-base/pull/441)).
 
 
 ## [v5.3.0](https://github.com/stellar/js-stellar-base/compare/v5.2.1..v5.3.0)
@@ -268,13 +287,13 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
   // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAD5DTGC 1000
 
   const mux2 = ACC.createSubaccount('2000');
-  console.log("Parent relationship preserved:", 
+  console.log("Parent relationship preserved:",
               mux2.baseAccount().accountId() === mux1.baseAccount().accountId());
   console.log(mux2.accountId(), mux2.id());
   // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAH2B4RU 2000
 
   mux1.setID('3000');
-  console.log("Underlying account unchanged:", 
+  console.log("Underlying account unchanged:",
               ACC.accountId() === mux1.baseAccount().accountId());
   console.log(mux1.accountId(), mux1.id());
   // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
@@ -293,7 +312,7 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
 
 ### Update
 
-- The Typescript definitions have been updated to support CAP-35 ([#407](https://github.com/stellar/js-stellar-base/pull/407)). 
+- The Typescript definitions have been updated to support CAP-35 ([#407](https://github.com/stellar/js-stellar-base/pull/407)).
 
 ## [v5.0.0](https://github.com/stellar/js-stellar-base/compare/v4.0.3..v5.0.0)
 
