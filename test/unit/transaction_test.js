@@ -266,13 +266,9 @@ describe('Transaction', function () {
     })
       .addOperation(
         StellarBase.Operation.invokeHostFunction({
-          function: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+          args: StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
             []
           ),
-          footprint: new StellarBase.xdr.LedgerFootprint({
-            readOnly: [],
-            readWrite: []
-          }),
           auth: [
             new StellarBase.xdr.ContractAuth({
               // Include an AddressWithNonce to trigger this
@@ -284,7 +280,7 @@ describe('Transaction', function () {
               }),
               // Rest of params are irrelevant
               rootInvocation: new StellarBase.xdr.AuthorizedInvocation({
-                contractId: new Buffer(32),
+                contractId: Buffer.alloc(32),
                 functionName: 'test',
                 args: [],
                 subInvocations: []

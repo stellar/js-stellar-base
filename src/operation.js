@@ -60,7 +60,10 @@ export const AuthImmutableFlag = 1 << 2;
 export const AuthClawbackEnabledFlag = 1 << 3;
 
 /**
- * `Operation` class represents [operations](https://developers.stellar.org/docs/glossary/operations/) in Stellar network.
+ * `Operation` class represents
+ * [operations](https://developers.stellar.org/docs/glossary/operations/) in
+ * Stellar network.
+ *
  * Use one of static methods to create operations:
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`
@@ -93,6 +96,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
  * * `{@link Operation.invokeHostFunction}`
+ * * `{@link Operation.invokeHostFunctions}`
  *
  * @class Operation
  */
@@ -376,9 +380,9 @@ export class Operation {
       }
       case 'invokeHostFunction': {
         result.type = 'invokeHostFunction';
-        result.function = attrs.function();
-        result.footprint = attrs.footprint();
-        result.auth = attrs.auth();
+        // TODO: Unpack each of the xdr.HostFunction instances into friendlier
+        // objects?
+        result.functions = attrs.functions();
         break;
       }
       default: {
@@ -646,3 +650,4 @@ Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
+Operation.invokeHostFunctions = ops.invokeHostFunctions;
