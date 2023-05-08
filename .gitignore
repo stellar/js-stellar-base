@@ -3,6 +3,7 @@
 /node_modules/
 /tmp/
 /dist/
+/lib/
 /config/dist/
 /coverage/
 /jsdoc/
