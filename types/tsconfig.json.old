@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "lib": ["es6"],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "baseUrl": ".",
+    "types": [],
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": { "stellar-base": ["../"] }
+  },
+  "files": ["index.d.ts", "test.ts"]
+}
