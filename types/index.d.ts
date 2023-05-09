@@ -538,10 +538,7 @@ export namespace OperationOptions {
     minAmountB: string;
   }
   interface InvokeHostFunction extends BaseOptions {
-    function: xdr.HostFunction;
-    parameters: xdr.ScVal[];
-    footprint: xdr.LedgerFootprint;
-    auth: xdr.ContractAuth[];
+    functions: xdr.HostFunction[];
   }
 }
 export type OperationOptions =
@@ -856,10 +853,7 @@ export namespace Operation {
     options: OperationOptions.LiquidityPoolWithdraw
   ): xdr.Operation<LiquidityPoolWithdraw>;
   interface InvokeHostFunction extends BaseOperation<OperationType.InvokeHostFunction> {
-    function: xdr.HostFunction;
-    parameters: xdr.ScVal[];
-    footprint: xdr.LedgerFootprint;
-    auth: xdr.ContractAuth[];
+    functions: xdr.HostFunction[];
   }
   function invokeHostFunction(
     options: OperationOptions.InvokeHostFunction
@@ -1001,6 +995,7 @@ export class TransactionBuilder {
   setMinAccountSequenceAge(durationInSeconds: number): this;
   setMinAccountSequenceLedgerGap(gap: number): this;
   setExtraSigners(extraSigners: string[]): this;
+  setExt(ext: string | xdr.TransactionExt): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(

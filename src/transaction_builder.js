@@ -110,6 +110,7 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
+ * @param {object}              [opts.ext] - the optional xdr Ext to set on transaction
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -133,6 +134,7 @@ export class TransactionBuilder {
     this.extraSigners = clone(opts.extraSigners) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
+    this.ext = opts.ext || null;
   }
 
   /**
@@ -438,6 +440,23 @@ export class TransactionBuilder {
     return this;
   }
 
+   /**
+   * Set optional Transaction Ext  
+   *
+   * @param {object} ext    the Ext as xdr object or base64 string
+   *                        to be set as the Transaction's Ext.
+   *
+   * @returns {TransactionBuilder}
+   */
+  setExt(ext) {
+    if (typeof ext === 'string') {
+      const buffer = Buffer.from(ext, 'base64');
+      ext = xdr.TransactionExt.fromXDR(buffer);
+    }
+    this.ext = ext;
+    return this;
+  }
+
   /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
@@ -517,7 +536,7 @@ export class TransactionBuilder {
     }
 
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
-    attrs.ext = new xdr.TransactionExt(0);
+    attrs.ext = this.ext || new xdr.TransactionExt(0);
 
     const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
