@@ -7,6 +7,14 @@
 import * as XDR from "js-xdr";
 
 var types = XDR.config((xdr) => {
+  // Workaround for https://github.com/stellar/xdrgen/issues/152
+  //
+  // The "correct" way would be to replace bare instances of each constant with
+  // xdr.lookup("..."), but that's more error-prone.
+  const SCVAL_LIMIT = 256000;
+  const SCSYMBOL_LIMIT = 256000;
+  const SC_SPEC_DOC_LIMIT = 1024;
+
   // === xdr source ============================================================
   //
   //   typedef opaque Value<>;
@@ -1490,210 +1498,8 @@ var types = XDR.config((xdr) => {
   xdr.struct("ContractCodeEntry", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["hash", xdr.lookup("Hash")],
-    ["code", xdr.varOpaque(xdr.lookup("SCVAL_LIMIT"))],
+    ["code", xdr.varOpaque(SCVAL_LIMIT)],
   ]);
-
-  // === xdr source ============================================================
-  //
-  //   enum ConfigSettingID
-  //   {
-  //       CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES = 0,
-  //       CONFIG_SETTING_CONTRACT_COMPUTE_V0 = 1,
-  //       CONFIG_SETTING_CONTRACT_LEDGER_COST_V0 = 2,
-  //       CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0 = 3,
-  //       CONFIG_SETTING_CONTRACT_META_DATA_V0 = 4,
-  //       CONFIG_SETTING_CONTRACT_BANDWIDTH_V0 = 5,
-  //       CONFIG_SETTING_CONTRACT_HOST_LOGIC_VERSION = 6
-  //   };
-  //
-  // ===========================================================================
-  xdr.enum("ConfigSettingId", {
-    configSettingContractMaxSizeBytes: 0,
-    configSettingContractComputeV0: 1,
-    configSettingContractLedgerCostV0: 2,
-    configSettingContractHistoricalDataV0: 3,
-    configSettingContractMetaDataV0: 4,
-    configSettingContractBandwidthV0: 5,
-    configSettingContractHostLogicVersion: 6,
-  });
-
-  // === xdr source ============================================================
-  //
-  //   struct ConfigSettingContractComputeV0
-  //   {
-  //       // Maximum instructions per ledger
-  //       int64 ledgerMaxInstructions;
-  //       // Maximum instructions per transaction
-  //       int64 txMaxInstructions;
-  //       // Cost of 10000 instructions
-  //       int64 feeRatePerInstructionsIncrement;
-  //
-  //       // Memory limit per contract/host function invocation. Unlike
-  //       // instructions, there is no fee for memory and it's not
-  //       // accumulated between operations - the same limit is applied
-  //       // to every operation.
-  //       uint32 memoryLimit;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ConfigSettingContractComputeV0", [
-    ["ledgerMaxInstructions", xdr.lookup("Int64")],
-    ["txMaxInstructions", xdr.lookup("Int64")],
-    ["feeRatePerInstructionsIncrement", xdr.lookup("Int64")],
-    ["memoryLimit", xdr.lookup("Uint32")],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct ConfigSettingContractLedgerCostV0
-  //   {
-  //       // Maximum number of ledger entry read operations per ledger
-  //       uint32 ledgerMaxReadLedgerEntries;
-  //       // Maximum number of bytes that can be read per ledger
-  //       uint32 ledgerMaxReadBytes;
-  //       // Maximum number of ledger entry write operations per ledger
-  //       uint32 ledgerMaxWriteLedgerEntries;
-  //       // Maximum number of bytes that can be written per ledger
-  //       uint32 ledgerMaxWriteBytes;
-  //
-  //       // Maximum number of ledger entry read operations per transaction
-  //       uint32 txMaxReadLedgerEntries;
-  //       // Maximum number of bytes that can be read per transaction
-  //       uint32 txMaxReadBytes;
-  //       // Maximum number of ledger entry write operations per transaction
-  //       uint32 txMaxWriteLedgerEntries;
-  //       // Maximum number of bytes that can be written per transaction
-  //       uint32 txMaxWriteBytes;
-  //
-  //       int64 feeReadLedgerEntry;  // Fee per ledger entry read
-  //       int64 feeWriteLedgerEntry; // Fee per ledger entry write
-  //
-  //       int64 feeRead1KB;  // Fee for reading 1KB
-  //       int64 feeWrite1KB; // Fee for writing 1KB
-  //
-  //       // Bucket list fees grow slowly up to that size
-  //       int64 bucketListSizeBytes;
-  //       // Fee rate in stroops when the bucket list is empty
-  //       int64 bucketListFeeRateLow;
-  //       // Fee rate in stroops when the bucket list reached bucketListSizeBytes
-  //       int64 bucketListFeeRateHigh;
-  //       // Rate multiplier for any additional data past the first bucketListSizeBytes
-  //       uint32 bucketListGrowthFactor;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ConfigSettingContractLedgerCostV0", [
-    ["ledgerMaxReadLedgerEntries", xdr.lookup("Uint32")],
-    ["ledgerMaxReadBytes", xdr.lookup("Uint32")],
-    ["ledgerMaxWriteLedgerEntries", xdr.lookup("Uint32")],
-    ["ledgerMaxWriteBytes", xdr.lookup("Uint32")],
-    ["txMaxReadLedgerEntries", xdr.lookup("Uint32")],
-    ["txMaxReadBytes", xdr.lookup("Uint32")],
-    ["txMaxWriteLedgerEntries", xdr.lookup("Uint32")],
-    ["txMaxWriteBytes", xdr.lookup("Uint32")],
-    ["feeReadLedgerEntry", xdr.lookup("Int64")],
-    ["feeWriteLedgerEntry", xdr.lookup("Int64")],
-    ["feeRead1Kb", xdr.lookup("Int64")],
-    ["feeWrite1Kb", xdr.lookup("Int64")],
-    ["bucketListSizeBytes", xdr.lookup("Int64")],
-    ["bucketListFeeRateLow", xdr.lookup("Int64")],
-    ["bucketListFeeRateHigh", xdr.lookup("Int64")],
-    ["bucketListGrowthFactor", xdr.lookup("Uint32")],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct ConfigSettingContractHistoricalDataV0
-  //   {
-  //       int64 feeHistorical1KB; // Fee for storing 1KB in archives
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ConfigSettingContractHistoricalDataV0", [
-    ["feeHistorical1Kb", xdr.lookup("Int64")],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct ConfigSettingContractMetaDataV0
-  //   {
-  //       // Maximum size of extended meta data produced by a transaction
-  //       uint32 txMaxExtendedMetaDataSizeBytes;
-  //       // Fee for generating 1KB of extended meta data
-  //       int64 feeExtendedMetaData1KB;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ConfigSettingContractMetaDataV0", [
-    ["txMaxExtendedMetaDataSizeBytes", xdr.lookup("Uint32")],
-    ["feeExtendedMetaData1Kb", xdr.lookup("Int64")],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct ConfigSettingContractBandwidthV0
-  //   {
-  //       // Maximum size in bytes to propagate per ledger
-  //       uint32 ledgerMaxPropagateSizeBytes;
-  //       // Maximum size in bytes for a transaction
-  //       uint32 txMaxSizeBytes;
-  //
-  //       // Fee for propagating 1KB of data
-  //       int64 feePropagateData1KB;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ConfigSettingContractBandwidthV0", [
-    ["ledgerMaxPropagateSizeBytes", xdr.lookup("Uint32")],
-    ["txMaxSizeBytes", xdr.lookup("Uint32")],
-    ["feePropagateData1Kb", xdr.lookup("Int64")],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   union ConfigSettingEntry switch (ConfigSettingID configSettingID)
-  //   {
-  //   case CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES:
-  //       uint32 contractMaxSizeBytes;
-  //   case CONFIG_SETTING_CONTRACT_COMPUTE_V0:
-  //       ConfigSettingContractComputeV0 contractCompute;
-  //   case CONFIG_SETTING_CONTRACT_LEDGER_COST_V0:
-  //       ConfigSettingContractLedgerCostV0 contractLedgerCost;
-  //   case CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0:
-  //       ConfigSettingContractHistoricalDataV0 contractHistoricalData;
-  //   case CONFIG_SETTING_CONTRACT_META_DATA_V0:
-  //       ConfigSettingContractMetaDataV0 contractMetaData;
-  //   case CONFIG_SETTING_CONTRACT_BANDWIDTH_V0:
-  //       ConfigSettingContractBandwidthV0 contractBandwidth;
-  //   case CONFIG_SETTING_CONTRACT_HOST_LOGIC_VERSION:
-  //       uint32 contractHostLogicVersion;
-  //   };
-  //
-  // ===========================================================================
-  xdr.union("ConfigSettingEntry", {
-    switchOn: xdr.lookup("ConfigSettingId"),
-    switchName: "configSettingId",
-    switches: [
-      ["configSettingContractMaxSizeBytes", "contractMaxSizeBytes"],
-      ["configSettingContractComputeV0", "contractCompute"],
-      ["configSettingContractLedgerCostV0", "contractLedgerCost"],
-      ["configSettingContractHistoricalDataV0", "contractHistoricalData"],
-      ["configSettingContractMetaDataV0", "contractMetaData"],
-      ["configSettingContractBandwidthV0", "contractBandwidth"],
-      ["configSettingContractHostLogicVersion", "contractHostLogicVersion"],
-    ],
-    arms: {
-      contractMaxSizeBytes: xdr.lookup("Uint32"),
-      contractCompute: xdr.lookup("ConfigSettingContractComputeV0"),
-      contractLedgerCost: xdr.lookup("ConfigSettingContractLedgerCostV0"),
-      contractHistoricalData: xdr.lookup(
-        "ConfigSettingContractHistoricalDataV0"
-      ),
-      contractMetaData: xdr.lookup("ConfigSettingContractMetaDataV0"),
-      contractBandwidth: xdr.lookup("ConfigSettingContractBandwidthV0"),
-      contractHostLogicVersion: xdr.lookup("Uint32"),
-    },
-  });
 
   // === xdr source ============================================================
   //
@@ -4011,6 +3817,13 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
+  //   const MAX_OPS_PER_TX = 100;
+  //
+  // ===========================================================================
+  xdr.const("MAX_OPS_PER_TX", 100);
+
+  // === xdr source ============================================================
+  //
   //   union LiquidityPoolParameters switch (LiquidityPoolType type)
   //   {
   //   case LIQUIDITY_POOL_CONSTANT_PRODUCT:
@@ -4081,20 +3894,6 @@ var types = XDR.config((xdr) => {
   xdr.struct("DecoratedSignature", [
     ["hint", xdr.lookup("SignatureHint")],
     ["signature", xdr.lookup("Signature")],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct LedgerFootprint
-  //   {
-  //       LedgerKey readOnly<>;
-  //       LedgerKey readWrite<>;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("LedgerFootprint", [
-    ["readOnly", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)],
-    ["readWrite", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)],
   ]);
 
   // === xdr source ============================================================
@@ -4625,14 +4424,14 @@ var types = XDR.config((xdr) => {
   //   {
   //       HOST_FUNCTION_TYPE_INVOKE_CONTRACT = 0,
   //       HOST_FUNCTION_TYPE_CREATE_CONTRACT = 1,
-  //       HOST_FUNCTION_TYPE_INSTALL_CONTRACT_CODE = 2
+  //       HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM = 2
   //   };
   //
   // ===========================================================================
   xdr.enum("HostFunctionType", {
     hostFunctionTypeInvokeContract: 0,
     hostFunctionTypeCreateContract: 1,
-    hostFunctionTypeInstallContractCode: 2,
+    hostFunctionTypeUploadContractWasm: 2,
   });
 
   // === xdr source ============================================================
@@ -4667,15 +4466,13 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   struct InstallContractCodeArgs
+  //   struct UploadContractWasmArgs
   //   {
   //       opaque code<SCVAL_LIMIT>;
   //   };
   //
   // ===========================================================================
-  xdr.struct("InstallContractCodeArgs", [
-    ["code", xdr.varOpaque(xdr.lookup("SCVAL_LIMIT"))],
-  ]);
+  xdr.struct("UploadContractWasmArgs", [["code", xdr.varOpaque(SCVAL_LIMIT)]]);
 
   // === xdr source ============================================================
   //
@@ -4731,40 +4528,40 @@ var types = XDR.config((xdr) => {
   //   struct CreateContractArgs
   //   {
   //       ContractID contractID;
-  //       SCContractExecutable source;
+  //       SCContractExecutable executable;
   //   };
   //
   // ===========================================================================
   xdr.struct("CreateContractArgs", [
     ["contractId", xdr.lookup("ContractId")],
-    ["source", xdr.lookup("ScContractExecutable")],
+    ["executable", xdr.lookup("ScContractExecutable")],
   ]);
 
   // === xdr source ============================================================
   //
-  //   union HostFunction switch (HostFunctionType type)
+  //   union HostFunctionArgs switch (HostFunctionType type)
   //   {
   //   case HOST_FUNCTION_TYPE_INVOKE_CONTRACT:
-  //       SCVec invokeArgs;
+  //       SCVec invokeContract;
   //   case HOST_FUNCTION_TYPE_CREATE_CONTRACT:
-  //       CreateContractArgs createContractArgs;
-  //   case HOST_FUNCTION_TYPE_INSTALL_CONTRACT_CODE:
-  //       InstallContractCodeArgs installContractCodeArgs;
+  //       CreateContractArgs createContract;
+  //   case HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM:
+  //       UploadContractWasmArgs uploadContractWasm;
   //   };
   //
   // ===========================================================================
-  xdr.union("HostFunction", {
+  xdr.union("HostFunctionArgs", {
     switchOn: xdr.lookup("HostFunctionType"),
     switchName: "type",
     switches: [
-      ["hostFunctionTypeInvokeContract", "invokeArgs"],
-      ["hostFunctionTypeCreateContract", "createContractArgs"],
-      ["hostFunctionTypeInstallContractCode", "installContractCodeArgs"],
+      ["hostFunctionTypeInvokeContract", "invokeContract"],
+      ["hostFunctionTypeCreateContract", "createContract"],
+      ["hostFunctionTypeUploadContractWasm", "uploadContractWasm"],
     ],
     arms: {
-      invokeArgs: xdr.lookup("ScVec"),
-      createContractArgs: xdr.lookup("CreateContractArgs"),
-      installContractCodeArgs: xdr.lookup("InstallContractCodeArgs"),
+      invokeContract: xdr.lookup("ScVec"),
+      createContract: xdr.lookup("CreateContractArgs"),
+      uploadContractWasm: xdr.lookup("UploadContractWasmArgs"),
     },
   });
 
@@ -4821,22 +4618,38 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   struct InvokeHostFunctionOp
-  //   {
-  //       // The host function to invoke
-  //       HostFunction function;
-  //       // The footprint for this invocation
-  //       LedgerFootprint footprint;
+  //   struct HostFunction {
+  //       // Arguments of the function to call defined by the function
+  //       // type.
+  //       HostFunctionArgs args;
   //       // Per-address authorizations for this host fn
   //       // Currently only supported for INVOKE_CONTRACT function
   //       ContractAuth auth<>;
   //   };
   //
   // ===========================================================================
-  xdr.struct("InvokeHostFunctionOp", [
-    ["function", xdr.lookup("HostFunction")],
-    ["footprint", xdr.lookup("LedgerFootprint")],
+  xdr.struct("HostFunction", [
+    ["args", xdr.lookup("HostFunctionArgs")],
     ["auth", xdr.varArray(xdr.lookup("ContractAuth"), 2147483647)],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct InvokeHostFunctionOp
+  //   {
+  //       // The host functions to invoke. The functions will be executed
+  //       // in the same fashion as operations: either all functions will
+  //       // be successfully applied or all fail if at least one of them
+  //       // fails.
+  //       HostFunction functions<MAX_OPS_PER_TX>;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("InvokeHostFunctionOp", [
+    [
+      "functions",
+      xdr.varArray(xdr.lookup("HostFunction"), xdr.lookup("MAX_OPS_PER_TX")),
+    ],
   ]);
 
   // === xdr source ============================================================
@@ -5129,14 +4942,14 @@ var types = XDR.config((xdr) => {
   //   struct
   //       {
   //           Hash networkID;
-  //           SCContractExecutable source;
+  //           SCContractExecutable executable;
   //           uint256 salt;
   //       }
   //
   // ===========================================================================
   xdr.struct("HashIdPreimageCreateContractArgs", [
     ["networkId", xdr.lookup("Hash")],
-    ["source", xdr.lookup("ScContractExecutable")],
+    ["executable", xdr.lookup("ScContractExecutable")],
     ["salt", xdr.lookup("Uint256")],
   ]);
 
@@ -5207,7 +5020,7 @@ var types = XDR.config((xdr) => {
   //       struct
   //       {
   //           Hash networkID;
-  //           SCContractExecutable source;
+  //           SCContractExecutable executable;
   //           uint256 salt;
   //       } createContractArgs;
   //   case ENVELOPE_TYPE_CONTRACT_AUTH:
@@ -5420,10 +5233,62 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   const MAX_OPS_PER_TX = 100;
+  //   struct LedgerFootprint
+  //   {
+  //       LedgerKey readOnly<>;
+  //       LedgerKey readWrite<>;
+  //   };
   //
   // ===========================================================================
-  xdr.const("MAX_OPS_PER_TX", 100);
+  xdr.struct("LedgerFootprint", [
+    ["readOnly", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)],
+    ["readWrite", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct SorobanResources
+  //   {
+  //       // The ledger footprint of the transaction.
+  //       LedgerFootprint footprint;
+  //       // The maximum number of instructions this transaction can use
+  //       uint32 instructions;
+  //
+  //       // The maximum number of bytes this transaction can read from ledger
+  //       uint32 readBytes;
+  //       // The maximum number of bytes this transaction can write to ledger
+  //       uint32 writeBytes;
+  //
+  //       // Maximum size of dynamic metadata produced by this contract (
+  //       // currently only includes the events).
+  //       uint32 extendedMetaDataSizeBytes;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("SorobanResources", [
+    ["footprint", xdr.lookup("LedgerFootprint")],
+    ["instructions", xdr.lookup("Uint32")],
+    ["readBytes", xdr.lookup("Uint32")],
+    ["writeBytes", xdr.lookup("Uint32")],
+    ["extendedMetaDataSizeBytes", xdr.lookup("Uint32")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct SorobanTransactionData
+  //   {
+  //       SorobanResources resources;
+  //       // Portion of transaction `fee` allocated to refundable fees.
+  //       int64 refundableFee;
+  //       ExtensionPoint ext;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("SorobanTransactionData", [
+    ["resources", xdr.lookup("SorobanResources")],
+    ["refundableFee", xdr.lookup("Int64")],
+    ["ext", xdr.lookup("ExtensionPoint")],
+  ]);
 
   // === xdr source ============================================================
   //
@@ -5495,14 +5360,21 @@ var types = XDR.config((xdr) => {
   //       {
   //       case 0:
   //           void;
+  //       case 1:
+  //           SorobanTransactionData sorobanData;
   //       }
   //
   // ===========================================================================
   xdr.union("TransactionExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
-    arms: {},
+    switches: [
+      [0, xdr.void()],
+      [1, "sorobanData"],
+    ],
+    arms: {
+      sorobanData: xdr.lookup("SorobanTransactionData"),
+    },
   });
 
   // === xdr source ============================================================
@@ -5530,6 +5402,8 @@ var types = XDR.config((xdr) => {
   //       {
   //       case 0:
   //           void;
+  //       case 1:
+  //           SorobanTransactionData sorobanData;
   //       }
   //       ext;
   //   };
@@ -7387,7 +7261,8 @@ var types = XDR.config((xdr) => {
   //
   //       // codes considered as "failure" for the operation
   //       INVOKE_HOST_FUNCTION_MALFORMED = -1,
-  //       INVOKE_HOST_FUNCTION_TRAPPED = -2
+  //       INVOKE_HOST_FUNCTION_TRAPPED = -2,
+  //       INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3
   //   };
   //
   // ===========================================================================
@@ -7395,6 +7270,7 @@ var types = XDR.config((xdr) => {
     invokeHostFunctionSuccess: 0,
     invokeHostFunctionMalformed: -1,
     invokeHostFunctionTrapped: -2,
+    invokeHostFunctionResourceLimitExceeded: -3,
   });
 
   // === xdr source ============================================================
@@ -7402,9 +7278,10 @@ var types = XDR.config((xdr) => {
   //   union InvokeHostFunctionResult switch (InvokeHostFunctionResultCode code)
   //   {
   //   case INVOKE_HOST_FUNCTION_SUCCESS:
-  //       SCVal success;
+  //       SCVal success<MAX_OPS_PER_TX>;
   //   case INVOKE_HOST_FUNCTION_MALFORMED:
   //   case INVOKE_HOST_FUNCTION_TRAPPED:
+  //   case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
   //       void;
   //   };
   //
@@ -7416,9 +7293,10 @@ var types = XDR.config((xdr) => {
       ["invokeHostFunctionSuccess", "success"],
       ["invokeHostFunctionMalformed", xdr.void()],
       ["invokeHostFunctionTrapped", xdr.void()],
+      ["invokeHostFunctionResourceLimitExceeded", xdr.void()],
     ],
     arms: {
-      success: xdr.lookup("ScVal"),
+      success: xdr.varArray(xdr.lookup("ScVal"), xdr.lookup("MAX_OPS_PER_TX")),
     },
   });
 
@@ -7683,7 +7561,9 @@ var types = XDR.config((xdr) => {
   //       txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
   //       txBAD_MIN_SEQ_AGE_OR_GAP =
   //           -15, // minSeqAge or minSeqLedgerGap conditions not met
-  //       txMALFORMED = -16 // precondition is invalid
+  //       txMALFORMED = -16, // precondition is invalid
+  //       // declared Soroban resource usage exceeds the network limit
+  //       txSOROBAN_RESOURCE_LIMIT_EXCEEDED = -17
   //   };
   //
   // ===========================================================================
@@ -7706,6 +7586,7 @@ var types = XDR.config((xdr) => {
     txBadSponsorship: -14,
     txBadMinSeqAgeOrGap: -15,
     txMalformed: -16,
+    txSorobanResourceLimitExceeded: -17,
   });
 
   // === xdr source ============================================================
@@ -7731,6 +7612,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
+  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
   //           void;
   //       }
   //
@@ -7755,6 +7637,7 @@ var types = XDR.config((xdr) => {
       ["txBadSponsorship", xdr.void()],
       ["txBadMinSeqAgeOrGap", xdr.void()],
       ["txMalformed", xdr.void()],
+      ["txSorobanResourceLimitExceeded", xdr.void()],
     ],
     arms: {
       results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
@@ -7805,6 +7688,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
+  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
   //           void;
   //       }
   //       result;
@@ -7864,6 +7748,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
+  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
   //           void;
   //       }
   //
@@ -7890,6 +7775,7 @@ var types = XDR.config((xdr) => {
       ["txBadSponsorship", xdr.void()],
       ["txBadMinSeqAgeOrGap", xdr.void()],
       ["txMalformed", xdr.void()],
+      ["txSorobanResourceLimitExceeded", xdr.void()],
     ],
     arms: {
       innerResultPair: xdr.lookup("InnerTransactionResultPair"),
@@ -7942,6 +7828,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
+  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
   //           void;
   //       }
   //       result;
@@ -8765,21 +8652,21 @@ var types = XDR.config((xdr) => {
   //   typedef opaque SCBytes<SCVAL_LIMIT>;
   //
   // ===========================================================================
-  xdr.typedef("ScBytes", xdr.varOpaque(xdr.lookup("SCVAL_LIMIT")));
+  xdr.typedef("ScBytes", xdr.varOpaque(SCVAL_LIMIT));
 
   // === xdr source ============================================================
   //
   //   typedef string SCString<SCVAL_LIMIT>;
   //
   // ===========================================================================
-  xdr.typedef("ScString", xdr.string(xdr.lookup("SCVAL_LIMIT")));
+  xdr.typedef("ScString", xdr.string(SCVAL_LIMIT));
 
   // === xdr source ============================================================
   //
   //   typedef string SCSymbol<SCSYMBOL_LIMIT>;
   //
   // ===========================================================================
-  xdr.typedef("ScSymbol", xdr.string(xdr.lookup("SCSYMBOL_LIMIT")));
+  xdr.typedef("ScSymbol", xdr.string(SCSYMBOL_LIMIT));
 
   // === xdr source ============================================================
   //
@@ -8946,6 +8833,50 @@ var types = XDR.config((xdr) => {
     switches: [["scEnvMetaKindInterfaceVersion", "interfaceVersion"]],
     arms: {
       interfaceVersion: xdr.lookup("Uint64"),
+    },
+  });
+
+  // === xdr source ============================================================
+  //
+  //   struct SCMetaV0
+  //   {
+  //       string key<>;
+  //       string val<>;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ScMetaV0", [
+    ["key", xdr.string()],
+    ["val", xdr.string()],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   enum SCMetaKind
+  //   {
+  //       SC_META_V0 = 0
+  //   };
+  //
+  // ===========================================================================
+  xdr.enum("ScMetaKind", {
+    scMetaV0: 0,
+  });
+
+  // === xdr source ============================================================
+  //
+  //   union SCMetaEntry switch (SCMetaKind kind)
+  //   {
+  //   case SC_META_V0:
+  //       SCMetaV0 v0;
+  //   };
+  //
+  // ===========================================================================
+  xdr.union("ScMetaEntry", {
+    switchOn: xdr.lookup("ScMetaKind"),
+    switchName: "kind",
+    switches: [["scMetaV0", "v0"]],
+    arms: {
+      v0: xdr.lookup("ScMetaV0"),
     },
   });
 
@@ -9210,7 +9141,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtStructFieldV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(30)],
     ["type", xdr.lookup("ScSpecTypeDef")],
   ]);
@@ -9227,7 +9158,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtStructV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
     ["fields", xdr.varArray(xdr.lookup("ScSpecUdtStructFieldV0"), 40)],
@@ -9243,7 +9174,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtUnionCaseVoidV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
   ]);
 
@@ -9258,7 +9189,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtUnionCaseTupleV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
     ["type", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 12)],
   ]);
@@ -9313,7 +9244,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtUnionV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
     ["cases", xdr.varArray(xdr.lookup("ScSpecUdtUnionCaseV0"), 50)],
@@ -9330,7 +9261,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtEnumCaseV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
     ["value", xdr.lookup("Uint32")],
   ]);
@@ -9347,7 +9278,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtEnumV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
     ["cases", xdr.varArray(xdr.lookup("ScSpecUdtEnumCaseV0"), 50)],
@@ -9364,7 +9295,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtErrorEnumCaseV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
     ["value", xdr.lookup("Uint32")],
   ]);
@@ -9381,7 +9312,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecUdtErrorEnumV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
     ["cases", xdr.varArray(xdr.lookup("ScSpecUdtErrorEnumCaseV0"), 50)],
@@ -9398,7 +9329,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecFunctionInputV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(30)],
     ["type", xdr.lookup("ScSpecTypeDef")],
   ]);
@@ -9415,7 +9346,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecFunctionV0", [
-    ["doc", xdr.string(xdr.lookup("SC_SPEC_DOC_LIMIT"))],
+    ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.lookup("ScSymbol")],
     ["inputs", xdr.varArray(xdr.lookup("ScSpecFunctionInputV0"), 10)],
     ["outputs", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 1)],
@@ -9474,6 +9405,341 @@ var types = XDR.config((xdr) => {
       udtUnionV0: xdr.lookup("ScSpecUdtUnionV0"),
       udtEnumV0: xdr.lookup("ScSpecUdtEnumV0"),
       udtErrorEnumV0: xdr.lookup("ScSpecUdtErrorEnumV0"),
+    },
+  });
+
+  // === xdr source ============================================================
+  //
+  //   struct ConfigSettingContractComputeV0
+  //   {
+  //       // Maximum instructions per ledger
+  //       int64 ledgerMaxInstructions;
+  //       // Maximum instructions per transaction
+  //       int64 txMaxInstructions;
+  //       // Cost of 10000 instructions
+  //       int64 feeRatePerInstructionsIncrement;
+  //
+  //       // Memory limit per transaction. Unlike instructions, there is no fee
+  //       // for memory, just the limit.
+  //       uint32 txMemoryLimit;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ConfigSettingContractComputeV0", [
+    ["ledgerMaxInstructions", xdr.lookup("Int64")],
+    ["txMaxInstructions", xdr.lookup("Int64")],
+    ["feeRatePerInstructionsIncrement", xdr.lookup("Int64")],
+    ["txMemoryLimit", xdr.lookup("Uint32")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct ConfigSettingContractLedgerCostV0
+  //   {
+  //       // Maximum number of ledger entry read operations per ledger
+  //       uint32 ledgerMaxReadLedgerEntries;
+  //       // Maximum number of bytes that can be read per ledger
+  //       uint32 ledgerMaxReadBytes;
+  //       // Maximum number of ledger entry write operations per ledger
+  //       uint32 ledgerMaxWriteLedgerEntries;
+  //       // Maximum number of bytes that can be written per ledger
+  //       uint32 ledgerMaxWriteBytes;
+  //
+  //       // Maximum number of ledger entry read operations per transaction
+  //       uint32 txMaxReadLedgerEntries;
+  //       // Maximum number of bytes that can be read per transaction
+  //       uint32 txMaxReadBytes;
+  //       // Maximum number of ledger entry write operations per transaction
+  //       uint32 txMaxWriteLedgerEntries;
+  //       // Maximum number of bytes that can be written per transaction
+  //       uint32 txMaxWriteBytes;
+  //
+  //       int64 feeReadLedgerEntry;  // Fee per ledger entry read
+  //       int64 feeWriteLedgerEntry; // Fee per ledger entry write
+  //
+  //       int64 feeRead1KB;  // Fee for reading 1KB
+  //       int64 feeWrite1KB; // Fee for writing 1KB
+  //
+  //       // Bucket list fees grow slowly up to that size
+  //       int64 bucketListSizeBytes;
+  //       // Fee rate in stroops when the bucket list is empty
+  //       int64 bucketListFeeRateLow;
+  //       // Fee rate in stroops when the bucket list reached bucketListSizeBytes
+  //       int64 bucketListFeeRateHigh;
+  //       // Rate multiplier for any additional data past the first bucketListSizeBytes
+  //       uint32 bucketListGrowthFactor;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ConfigSettingContractLedgerCostV0", [
+    ["ledgerMaxReadLedgerEntries", xdr.lookup("Uint32")],
+    ["ledgerMaxReadBytes", xdr.lookup("Uint32")],
+    ["ledgerMaxWriteLedgerEntries", xdr.lookup("Uint32")],
+    ["ledgerMaxWriteBytes", xdr.lookup("Uint32")],
+    ["txMaxReadLedgerEntries", xdr.lookup("Uint32")],
+    ["txMaxReadBytes", xdr.lookup("Uint32")],
+    ["txMaxWriteLedgerEntries", xdr.lookup("Uint32")],
+    ["txMaxWriteBytes", xdr.lookup("Uint32")],
+    ["feeReadLedgerEntry", xdr.lookup("Int64")],
+    ["feeWriteLedgerEntry", xdr.lookup("Int64")],
+    ["feeRead1Kb", xdr.lookup("Int64")],
+    ["feeWrite1Kb", xdr.lookup("Int64")],
+    ["bucketListSizeBytes", xdr.lookup("Int64")],
+    ["bucketListFeeRateLow", xdr.lookup("Int64")],
+    ["bucketListFeeRateHigh", xdr.lookup("Int64")],
+    ["bucketListGrowthFactor", xdr.lookup("Uint32")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct ConfigSettingContractHistoricalDataV0
+  //   {
+  //       int64 feeHistorical1KB; // Fee for storing 1KB in archives
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ConfigSettingContractHistoricalDataV0", [
+    ["feeHistorical1Kb", xdr.lookup("Int64")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct ConfigSettingContractMetaDataV0
+  //   {
+  //       // Maximum size of extended meta data produced by a transaction
+  //       uint32 txMaxExtendedMetaDataSizeBytes;
+  //       // Fee for generating 1KB of extended meta data
+  //       int64 feeExtendedMetaData1KB;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ConfigSettingContractMetaDataV0", [
+    ["txMaxExtendedMetaDataSizeBytes", xdr.lookup("Uint32")],
+    ["feeExtendedMetaData1Kb", xdr.lookup("Int64")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct ConfigSettingContractBandwidthV0
+  //   {
+  //       // Maximum size in bytes to propagate per ledger
+  //       uint32 ledgerMaxPropagateSizeBytes;
+  //       // Maximum size in bytes for a transaction
+  //       uint32 txMaxSizeBytes;
+  //
+  //       // Fee for propagating 1KB of data
+  //       int64 feePropagateData1KB;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ConfigSettingContractBandwidthV0", [
+    ["ledgerMaxPropagateSizeBytes", xdr.lookup("Uint32")],
+    ["txMaxSizeBytes", xdr.lookup("Uint32")],
+    ["feePropagateData1Kb", xdr.lookup("Int64")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   enum ContractCostType {
+  //       // Cost of running 1 wasm instruction
+  //       WasmInsnExec = 0,
+  //       // Cost of growing wasm linear memory by 1 page
+  //       WasmMemAlloc = 1,
+  //       // Cost of allocating a chuck of host memory (in bytes)
+  //       HostMemAlloc = 2,
+  //       // Cost of copying a chuck of bytes into a pre-allocated host memory
+  //       HostMemCpy = 3,
+  //       // Cost of comparing two slices of host memory
+  //       HostMemCmp = 4,
+  //       // Cost of a host function invocation, not including the actual work done by the function
+  //       InvokeHostFunction = 5,
+  //       // Cost of visiting a host object from the host object storage
+  //       // Only thing to make sure is the guest can't visitObject repeatly without incurring some charges elsewhere.
+  //       VisitObject = 6,
+  //       // Tracks a single Val (RawVal or primative Object like U64) <=> ScVal
+  //       // conversion cost. Most of these Val counterparts in ScVal (except e.g.
+  //       // Symbol) consumes a single int64 and therefore is a constant overhead.
+  //       ValXdrConv = 7,
+  //       // Cost of serializing an xdr object to bytes
+  //       ValSer = 8,
+  //       // Cost of deserializing an xdr object from bytes
+  //       ValDeser = 9,
+  //       // Cost of computing the sha256 hash from bytes
+  //       ComputeSha256Hash = 10,
+  //       // Cost of computing the ed25519 pubkey from bytes
+  //       ComputeEd25519PubKey = 11,
+  //       // Cost of accessing an entry in a Map.
+  //       MapEntry = 12,
+  //       // Cost of accessing an entry in a Vec
+  //       VecEntry = 13,
+  //       // Cost of guarding a frame, which involves pushing and poping a frame and capturing a rollback point.
+  //       GuardFrame = 14,
+  //       // Cost of verifying ed25519 signature of a payload.
+  //       VerifyEd25519Sig = 15,
+  //       // Cost of reading a slice of vm linear memory
+  //       VmMemRead = 16,
+  //       // Cost of writing to a slice of vm linear memory
+  //       VmMemWrite = 17,
+  //       // Cost of instantiation a VM from wasm bytes code.
+  //       VmInstantiation = 18,
+  //       // Roundtrip cost of invoking a VM function from the host.
+  //       InvokeVmFunction = 19,
+  //       // Cost of charging a value to the budgeting system.
+  //       ChargeBudget = 20
+  //   };
+  //
+  // ===========================================================================
+  xdr.enum("ContractCostType", {
+    wasmInsnExec: 0,
+    wasmMemAlloc: 1,
+    hostMemAlloc: 2,
+    hostMemCpy: 3,
+    hostMemCmp: 4,
+    invokeHostFunction: 5,
+    visitObject: 6,
+    valXdrConv: 7,
+    valSer: 8,
+    valDeser: 9,
+    computeSha256Hash: 10,
+    computeEd25519PubKey: 11,
+    mapEntry: 12,
+    vecEntry: 13,
+    guardFrame: 14,
+    verifyEd25519Sig: 15,
+    vmMemRead: 16,
+    vmMemWrite: 17,
+    vmInstantiation: 18,
+    invokeVmFunction: 19,
+    chargeBudget: 20,
+  });
+
+  // === xdr source ============================================================
+  //
+  //   struct ContractCostParamEntry {
+  //       int64 constTerm;
+  //       int64 linearTerm;
+  //       // use `ext` to add more terms (e.g. higher order polynomials) in the future
+  //       ExtensionPoint ext;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ContractCostParamEntry", [
+    ["constTerm", xdr.lookup("Int64")],
+    ["linearTerm", xdr.lookup("Int64")],
+    ["ext", xdr.lookup("ExtensionPoint")],
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   const CONTRACT_COST_COUNT_LIMIT = 1024;
+  //
+  // ===========================================================================
+  xdr.const("CONTRACT_COST_COUNT_LIMIT", 1024);
+
+  // === xdr source ============================================================
+  //
+  //   typedef ContractCostParamEntry ContractCostParams<CONTRACT_COST_COUNT_LIMIT>;
+  //
+  // ===========================================================================
+  xdr.typedef(
+    "ContractCostParams",
+    xdr.varArray(
+      xdr.lookup("ContractCostParamEntry"),
+      xdr.lookup("CONTRACT_COST_COUNT_LIMIT")
+    )
+  );
+
+  // === xdr source ============================================================
+  //
+  //   enum ConfigSettingID
+  //   {
+  //       CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES = 0,
+  //       CONFIG_SETTING_CONTRACT_COMPUTE_V0 = 1,
+  //       CONFIG_SETTING_CONTRACT_LEDGER_COST_V0 = 2,
+  //       CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0 = 3,
+  //       CONFIG_SETTING_CONTRACT_META_DATA_V0 = 4,
+  //       CONFIG_SETTING_CONTRACT_BANDWIDTH_V0 = 5,
+  //       CONFIG_SETTING_CONTRACT_COST_PARAMS_CPU_INSTRUCTIONS = 6,
+  //       CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES = 7,
+  //       CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES = 8,
+  //       CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES = 9
+  //   };
+  //
+  // ===========================================================================
+  xdr.enum("ConfigSettingId", {
+    configSettingContractMaxSizeBytes: 0,
+    configSettingContractComputeV0: 1,
+    configSettingContractLedgerCostV0: 2,
+    configSettingContractHistoricalDataV0: 3,
+    configSettingContractMetaDataV0: 4,
+    configSettingContractBandwidthV0: 5,
+    configSettingContractCostParamsCpuInstructions: 6,
+    configSettingContractCostParamsMemoryBytes: 7,
+    configSettingContractDataKeySizeBytes: 8,
+    configSettingContractDataEntrySizeBytes: 9,
+  });
+
+  // === xdr source ============================================================
+  //
+  //   union ConfigSettingEntry switch (ConfigSettingID configSettingID)
+  //   {
+  //   case CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES:
+  //       uint32 contractMaxSizeBytes;
+  //   case CONFIG_SETTING_CONTRACT_COMPUTE_V0:
+  //       ConfigSettingContractComputeV0 contractCompute;
+  //   case CONFIG_SETTING_CONTRACT_LEDGER_COST_V0:
+  //       ConfigSettingContractLedgerCostV0 contractLedgerCost;
+  //   case CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0:
+  //       ConfigSettingContractHistoricalDataV0 contractHistoricalData;
+  //   case CONFIG_SETTING_CONTRACT_META_DATA_V0:
+  //       ConfigSettingContractMetaDataV0 contractMetaData;
+  //   case CONFIG_SETTING_CONTRACT_BANDWIDTH_V0:
+  //       ConfigSettingContractBandwidthV0 contractBandwidth;
+  //   case CONFIG_SETTING_CONTRACT_COST_PARAMS_CPU_INSTRUCTIONS:
+  //       ContractCostParams contractCostParamsCpuInsns;
+  //   case CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES:
+  //       ContractCostParams contractCostParamsMemBytes;
+  //   case CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES:
+  //       uint32 contractDataKeySizeBytes;
+  //   case CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES:
+  //       uint32 contractDataEntrySizeBytes;
+  //   };
+  //
+  // ===========================================================================
+  xdr.union("ConfigSettingEntry", {
+    switchOn: xdr.lookup("ConfigSettingId"),
+    switchName: "configSettingId",
+    switches: [
+      ["configSettingContractMaxSizeBytes", "contractMaxSizeBytes"],
+      ["configSettingContractComputeV0", "contractCompute"],
+      ["configSettingContractLedgerCostV0", "contractLedgerCost"],
+      ["configSettingContractHistoricalDataV0", "contractHistoricalData"],
+      ["configSettingContractMetaDataV0", "contractMetaData"],
+      ["configSettingContractBandwidthV0", "contractBandwidth"],
+      [
+        "configSettingContractCostParamsCpuInstructions",
+        "contractCostParamsCpuInsns",
+      ],
+      [
+        "configSettingContractCostParamsMemoryBytes",
+        "contractCostParamsMemBytes",
+      ],
+      ["configSettingContractDataKeySizeBytes", "contractDataKeySizeBytes"],
+      ["configSettingContractDataEntrySizeBytes", "contractDataEntrySizeBytes"],
+    ],
+    arms: {
+      contractMaxSizeBytes: xdr.lookup("Uint32"),
+      contractCompute: xdr.lookup("ConfigSettingContractComputeV0"),
+      contractLedgerCost: xdr.lookup("ConfigSettingContractLedgerCostV0"),
+      contractHistoricalData: xdr.lookup(
+        "ConfigSettingContractHistoricalDataV0"
+      ),
+      contractMetaData: xdr.lookup("ConfigSettingContractMetaDataV0"),
+      contractBandwidth: xdr.lookup("ConfigSettingContractBandwidthV0"),
+      contractCostParamsCpuInsns: xdr.lookup("ContractCostParams"),
+      contractCostParamsMemBytes: xdr.lookup("ContractCostParams"),
+      contractDataKeySizeBytes: xdr.lookup("Uint32"),
+      contractDataEntrySizeBytes: xdr.lookup("Uint32"),
     },
   });
 });

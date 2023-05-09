@@ -1,13 +1,12 @@
-describe('Contract.call', function () {
-  it('includes the contract code footprint', function () {
-    let contractId =
-      '0000000000000000000000000000000000000000000000000000000000000001';
+describe('Contract.getFootprint', function () {
+  it('includes the correct contract code footprint', function () {
+    let contractId = '0'.repeat(63) + '1';
+
     let contract = new StellarBase.Contract(contractId);
     expect(contract.contractId()).to.equal(contractId);
-    let call = contract.call('foo');
-    let op = call.body().invokeHostFunctionOp();
-    let readOnly = op.footprint().readOnly();
-    expect(readOnly.length).to.equal(1);
+
+    const fp = contract.getFootprint();
+
     let expected = new StellarBase.xdr.LedgerKey.contractData(
       new StellarBase.xdr.LedgerKeyContractData({
         contractId: Buffer.from(contractId, 'hex'),
@@ -16,6 +15,6 @@ describe('Contract.call', function () {
     )
       .toXDR()
       .toString('base64');
-    expect(readOnly[0].toXDR().toString('base64')).to.equal(expected);
+    expect(fp.toXDR().toString('base64')).to.equal(expected);
   });
 });
