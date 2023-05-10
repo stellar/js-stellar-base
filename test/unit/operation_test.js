@@ -2019,6 +2019,44 @@ describe('Operation', function () {
     });
   });
 
+  describe('invokeHostFunction()', function () {
+    it('creates single invokeHostFunction', function () {
+      const op = StellarBase.Operation.invokeHostFunction({   
+          args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
+          auth: []
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      
+      expect(operation.body().switch().name).to.equal('invokeHostFunction');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('invokeHostFunction');
+      expect(obj.functions).to.have.lengthOf(1);
+    });
+    it('creates multiple invokeHostFunctions', function () {
+      const op = StellarBase.Operation.invokeHostFunctions({
+        functions: [
+          new StellarBase.xdr.HostFunction( 
+            {
+              args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
+              auth: []
+            }),
+          new StellarBase.xdr.HostFunction( 
+            {
+              args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
+              auth: []
+            })
+        ]
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      
+      expect(operation.body().switch().name).to.equal('invokeHostFunction');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('invokeHostFunction');
+      expect(obj.functions).to.have.lengthOf(2);
+    });
+  });
   describe('revokeTrustlineSponsorship()', function () {
     it('creates a revokeTrustlineSponsorship', function () {
       const account =
