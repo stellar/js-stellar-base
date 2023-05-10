@@ -263,27 +263,28 @@ export class Asset {
 function asciiCompare(a, b) {
   if (a==b) return 0;
   for (each in a) {
+    let letterpos = parseInt(each)
     //example if the letters position being compared is in the 4th position, and it hasn't been sorted yet,
     //and the b string doesnot have a letter in that position, well then... return -1 because a goes first.
-    if((each + 1) > b.length){
+    if((letterpos + 1) > b.length){
         return -1
     }
     //if all the characters are the same and string b is longer, b goes first.
-    if( ( (each +1) == a.length && b.length > a.length ) ){
+    if( ( (letterpos +1) == a.length && b.length > a.length ) ){
         return 1
         }
     //if they're both the same letter go to the next letter.
-    if(a[each] == b[each]){continue};
+    if(a[letterpos] == b[letterpos]){continue};
     //if a is upper case and b is not, return -1 to indicate 'a' goes first.
-    if( (a[each].toUpperCase()  == a[each] && b[each].toUpperCase() != b[each]) ){
+    if( (a[letterpos].toUpperCase()  == a[letterpos] && b[letterpos].toUpperCase() != b[letterpos]) ){
         return -1 
         }
-    if( (b[each].toUpperCase()  == b[each] && a[each].toUpperCase() != a[each]) ){
+    if( (b[letterpos].toUpperCase()  == b[letterpos] && a[letterpos].toUpperCase() != a[letterpos]) ){
         return 1
         }    
-    if(( a[each].toUpperCase()==a[each] && b[each].toUpperCase() == b[each] ) ||
-        ( a[each].toLowerCase()==a[each] && b[each].toLowerCase() == b[each] ) ) {
-        return a[each].localeCompare(b[each], 'en', { caseFirst: 'upper' });
+    if(( a[letterpos].toUpperCase()==a[letterpos] && b[letterpos].toUpperCase() == b[letterpos] ) ||
+        ( a[letterpos].toLowerCase()==a[letterpos] && b[letterpos].toLowerCase() == b[letterpos] ) ) {
+        return a[letterpos].localeCompare(b[letterpos], 'en', { caseFirst: 'upper' });
       }
     }
 }
