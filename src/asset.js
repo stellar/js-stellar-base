@@ -261,30 +261,47 @@ export class Asset {
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
  */
 function asciiCompare(a, b) {
-  if (a==b) return 0;
-  for (each in a) {
-    let letterpos = parseInt(each)
+  if (a === b) {
+    return 0;
+  }
+
+  for (let each in a) {
+    let letterpos = parseInt(each);
     //example if the letters position being compared is in the 4th position, and it hasn't been sorted yet,
     //and the b string doesnot have a letter in that position, well then... return -1 because a goes first.
-    if((letterpos + 1) > b.length){
-        return -1
+    if (letterpos + 1 > b.length) {
+      return -1;
     }
     //if all the characters are the same and string b is longer, b goes first.
-    if( ( (letterpos +1) == a.length && b.length > a.length ) ){
-        return 1
-        }
-    //if they're both the same letter go to the next letter.
-    if(a[letterpos] == b[letterpos]){continue};
-    //if a is upper case and b is not, return -1 to indicate 'a' goes first.
-    if( (a[letterpos].toUpperCase()  == a[letterpos] && b[letterpos].toUpperCase() != b[letterpos]) ){
-        return -1 
-        }
-    if( (b[letterpos].toUpperCase()  == b[letterpos] && a[letterpos].toUpperCase() != a[letterpos]) ){
-        return 1
-        }    
-    if(( a[letterpos].toUpperCase()==a[letterpos] && b[letterpos].toUpperCase() == b[letterpos] ) ||
-        ( a[letterpos].toLowerCase()==a[letterpos] && b[letterpos].toLowerCase() == b[letterpos] ) ) {
-        return a[letterpos].localeCompare(b[letterpos], 'en', { caseFirst: 'upper' });
-      }
+    if (letterpos + 1 == a.length && b.length > a.length) {
+      return 1;
     }
+    //if they're both the same letter go to the next letter.
+    if (a[letterpos] == b[letterpos]) {
+      continue;
+    }
+    //if a is upper case and b is not, return -1 to indicate 'a' goes first.
+    if (
+      a[letterpos].toUpperCase() == a[letterpos] &&
+      b[letterpos].toUpperCase() != b[letterpos]
+    ) {
+      return -1;
+    }
+    if (
+      b[letterpos].toUpperCase() == b[letterpos] &&
+      a[letterpos].toUpperCase() != a[letterpos]
+    ) {
+      return 1;
+    }
+    if (
+      (a[letterpos].toUpperCase() == a[letterpos] &&
+        b[letterpos].toUpperCase() == b[letterpos]) ||
+      (a[letterpos].toLowerCase() == a[letterpos] &&
+        b[letterpos].toLowerCase() == b[letterpos])
+    ) {
+      return a[letterpos].localeCompare(b[letterpos], 'en', {
+        caseFirst: 'upper'
+      });
+    }
+  }
 }
