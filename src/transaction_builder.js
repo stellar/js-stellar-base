@@ -110,8 +110,9 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {xdr.TransactionExt}  [opts.ext] - an optional xdr instance of TransactionExt 
- * to be set as Ext on {Transaction}. For non-contract(non-Soroban) transactions, 
+ * @param {xdr.TransactionExt | string}  [opts.ext] - an optional xdr instance of TransactionExt 
+ * to be set as Ext on {Transaction}. It can be xdr object or base64 string.
+ * For non-contract(non-Soroban) transactions, 
  * Ext is defined but is unused and setting this has no effect. 
  * In the case of Soroban transactions, Ext should be set to an instance of the 
  * TransactionExt version 1, with SorobanTransactionData set in the instance.
@@ -141,7 +142,7 @@ export class TransactionBuilder {
     this.extraSigners = clone(opts.extraSigners) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
-    this.ext = opts.ext || null;
+    this.ext = unmarshalExt(opts.ext);
   }
 
   /**
@@ -448,19 +449,20 @@ export class TransactionBuilder {
   }
 
    /**
-   * Set optional Transaction Ext  
-   *
-   * @param {object} ext    the Ext as xdr object or base64 string
-   *                        to be set as the Transaction's Ext.
-   *
-   * @returns {TransactionBuilder}
-   */
+    * Set the {Transaction} Ext. For non-contract(non-Soroban) transactions, 
+    * Ext is defined but is unused and setting this has no effect. 
+    * In the case of Soroban transactions, Ext should be set to an instance of the 
+    * TransactionExt version 1, with SorobanTransactionData set in the instance.
+    * TransactionExt.SorobanTransactionData is obtained from a prior simulation of 
+    * the contract invocation and provides necessary resource estimations. 
+    * 
+    * @param {xdr.TransactionExt | string} ext    the Ext as xdr object or base64 string
+    * to be set as the Transaction's Ext.
+    *
+    * @returns {TransactionBuilder}
+    */
   setExt(ext) {
-    if (typeof ext === 'string') {
-      const buffer = Buffer.from(ext, 'base64');
-      ext = xdr.TransactionExt.fromXDR(buffer);
-    }
-    this.ext = ext;
+    this.ext = unmarshalExt(ext);
     return this;
   }
 
@@ -701,3 +703,17 @@ export function isValidDate(d) {
   // eslint-disable-next-line no-restricted-globals
   return d instanceof Date && !isNaN(d);
 }
+
+/**
+ * local helper function to convert Transaction.Ext from 
+ * base64 string or xdr object.
+ * @argument {string | xdr.TransactionExt} ext a transaction ext expression
+ * @returns {xdr.TransactionExt}
+ */
+function unmarshalExt(ext) {
+    if (typeof ext === 'string') {
+      const buffer = Buffer.from(ext, 'base64');
+      ext = xdr.TransactionExt.fromXDR(buffer);
+    }
+    return ext;
+  }

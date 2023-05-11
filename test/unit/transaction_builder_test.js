@@ -62,6 +62,77 @@ describe('TransactionBuilder', function () {
     });
   });
 
+  describe('constructs a soroban contract transaction', function () {
+    var ext;
+    var source;
+    var transactionData;
+    beforeEach(function () {
+      ext = new StellarBase.xdr.TransactionExt(1);
+      source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      transactionData = new StellarBase.xdr.SorobanTransactionData({
+        resources: new StellarBase.xdr.SorobanResources({
+          footprint: new StellarBase.xdr.LedgerFootprint({
+            readOnly: [],
+            readWrite: [],
+          }),
+          instructions: 0,
+          readBytes: 5,
+          writeBytes: 0,
+          extendedMetaDataSizeBytes: 0,
+        }),
+        refundableFee: StellarBase.xdr.Int64.fromString("0"),
+        ext: new StellarBase.xdr.ExtensionPoint(0),
+      });
+      ext.sorobanData(transactionData);
+    });
+
+    it('should set the transaction Ext from object', function (done) {
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+            StellarBase.Operation.invokeHostFunction({   
+            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
+            auth: []
+          })
+        )
+        .setExt(ext)
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(transaction
+        .toEnvelope()
+        .tx()
+        .ext()).to.be.equal(ext);
+      done();
+    });
+    it('should set the transaction Ext from xdr string', function (done) {
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+            StellarBase.Operation.invokeHostFunction({   
+            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
+            auth: []
+          })
+        )
+        .setExt(ext.toXDR("base64"))
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(transaction
+        .toEnvelope()
+        .tx()
+        .ext()).to.be.equal(ext);
+      done();
+    });
+  });
+
   describe('constructs a native payment transaction with two operations', function () {
     var source;
     var destination1;
