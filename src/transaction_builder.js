@@ -110,7 +110,14 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {object}              [opts.ext] - the optional xdr Ext to set on transaction
+ * @param {xdr.TransactionExt}  [opts.ext] - an optional xdr instance of TransactionExt 
+ * to be set as Ext on {Transaction}. For non-contract(non-Soroban) transactions, 
+ * Ext is defined but is unused and setting this has no effect. 
+ * In the case of Soroban transactions, Ext should be set to an instance of the 
+ * TransactionExt version 1, with SorobanTransactionData set in the instance.
+ * TransactionExt.SorobanTransactionData is obtained from a prior simulation of 
+ * the contract invocation and provides necessary resource estimations. 
+ *     
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {

@@ -2033,6 +2033,12 @@ describe('Operation', function () {
       expect(obj.type).to.be.equal('invokeHostFunction');
       expect(obj.functions).to.have.lengthOf(1);
     });
+    it('throws when single invokeHostFunction and no args passed', function () {
+      expect(() =>
+        StellarBase.Operation.invokeHostFunction({   
+          auth: []
+      })).to.throw(/function arguments \('args'\) required/); 
+    });
     it('creates multiple invokeHostFunctions', function () {
       const op = StellarBase.Operation.invokeHostFunctions({
         functions: [

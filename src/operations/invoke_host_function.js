@@ -41,7 +41,6 @@ export function invokeHostFunction(opts) {
  *    (xdr.InvokeHostFunctionOp) with xdr.HostFunction instances corresponding
  *    to each invocation
  *
- * @warning This function does not support setting a different source account.
  */
 export function invokeHostFunctions(opts) {
   
