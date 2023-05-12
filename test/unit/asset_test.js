@@ -364,5 +364,13 @@ describe('Asset', function () {
       expect(StellarBase.Asset.compare(assetIssuerB, assetIssuerA)).to.eq(1);
       expect(StellarBase.Asset.compare(assetIssuerB, assetIssuerB)).to.eq(0);
     });
+
+    it('test if codes with upper-case letters are sorted before lower-case letters', function () {
+      // All upper-case letters should come before any lower-case ones
+      const assetA = new StellarBase.Asset('B', 'GA7NLOF4EHWMJF6DBXXV2H6AYI7IHYWNFZR6R52BYBLY7TE5Q74AIDRA');
+      const assetB = new StellarBase.Asset('a', 'GA7NLOF4EHWMJF6DBXXV2H6AYI7IHYWNFZR6R52BYBLY7TE5Q74AIDRA');
+
+      expect(StellarBase.Asset.compare(assetA, assetB)).to.eq(-1);
+    });
   });
 });
