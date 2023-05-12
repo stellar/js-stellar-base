@@ -257,8 +257,6 @@ export class Asset {
  *     -1 if `a < b`, 0 if `a == b`, and 1 if `a > b`
  *
  * @warning No type-checks are done on the parameters
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
  */
 function asciiCompare(a, b) {
   return Buffer.compare(Buffer.from(a, 'ascii'), Buffer.from(b, 'ascii'));
