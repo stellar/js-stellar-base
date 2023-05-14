@@ -67,9 +67,9 @@ describe('TransactionBuilder', function () {
     var source;
     var transactionData;
     beforeEach(function () {
-      // TODO - remove this workaround with hardcoded 'v1' TransactionExt union xdr
+      // TODO - remove this workaround for TransactionExt union xdr
       //       and use the typescript generated static factory method once fixed
-      //       https://github.com/stellar/xdrgen/issues/157
+      //       https://github.com/stellar/dts-xdr/issues/5
       ext = StellarBase.xdr.TransactionExt.fromXDR("AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA==", "base64");
       source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
@@ -150,9 +150,9 @@ describe('TransactionBuilder', function () {
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
 
-      // TODO - remove this workaround with hardcoded 'v0' TransactionExt union xdr
+      // TODO - remove this workaround for TransactionExt union xdr
       //       and use the typescript generated static factory method once fixed
-      //       https://github.com/stellar/xdrgen/issues/157
+      //       https://github.com/stellar/dts-xdr/issues/5
       const defaultV0Ext = StellarBase.xdr.TransactionExt.fromXDR("AAAAAA==", "base64");
       expect(transaction
         .toEnvelope()
