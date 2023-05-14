@@ -545,7 +545,11 @@ export class TransactionBuilder {
     }
 
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
-    attrs.ext = this.ext || new xdr.TransactionExt(0);
+    
+    // TODO - remove this workaround with hardcoded xdr for empty 'v0' TransactionExt 
+    //       and use the typescript generated static factory method once fixed
+    //       https://github.com/stellar/xdrgen/issues/157
+    attrs.ext = this.ext || xdr.TransactionExt.fromXDR("AAAAAA==", "base64"); 
 
     const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);

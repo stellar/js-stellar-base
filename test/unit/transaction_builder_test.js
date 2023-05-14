@@ -62,12 +62,15 @@ describe('TransactionBuilder', function () {
     });
   });
 
-  describe('constructs a soroban contract transaction', function () {
+  describe('constructs a transaction with ext', function () {
     var ext;
     var source;
     var transactionData;
     beforeEach(function () {
-      ext = new StellarBase.xdr.TransactionExt(1);
+      // TODO - remove this workaround with hardcoded 'v1' TransactionExt union xdr
+      //       and use the typescript generated static factory method once fixed
+      //       https://github.com/stellar/xdrgen/issues/157
+      ext = StellarBase.xdr.TransactionExt.fromXDR("AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA==", "base64");
       source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -83,7 +86,7 @@ describe('TransactionBuilder', function () {
           writeBytes: 0,
           extendedMetaDataSizeBytes: 0,
         }),
-        refundableFee: StellarBase.xdr.Int64.fromString("0"),
+        refundableFee: StellarBase.xdr.Int64.fromString("1"),
         ext: new StellarBase.xdr.ExtensionPoint(0),
       });
       ext.sorobanData(transactionData);
@@ -106,8 +109,9 @@ describe('TransactionBuilder', function () {
 
       expect(transaction
         .toEnvelope()
+        .v1()
         .tx()
-        .ext()).to.be.equal(ext);
+        .ext()).to.deep.equal(ext);
       done();
     });
     it('should set the transaction Ext from xdr string', function (done) {
@@ -127,8 +131,34 @@ describe('TransactionBuilder', function () {
 
       expect(transaction
         .toEnvelope()
+        .v1()
         .tx()
-        .ext()).to.be.equal(ext);
+        .ext()).to.deep.equal(ext);
+      done();
+    });
+    it('should set the transaction Ext to default when not present', function (done) {
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+            StellarBase.Operation.invokeHostFunction({   
+            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
+            auth: []
+          })
+        )
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      // TODO - remove this workaround with hardcoded 'v0' TransactionExt union xdr
+      //       and use the typescript generated static factory method once fixed
+      //       https://github.com/stellar/xdrgen/issues/157
+      const defaultV0Ext = StellarBase.xdr.TransactionExt.fromXDR("AAAAAA==", "base64");
+      expect(transaction
+        .toEnvelope()
+        .v1()
+        .tx()
+        .ext()).to.deep.equal(defaultV0Ext);
       done();
     });
   });
