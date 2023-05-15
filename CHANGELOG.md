@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+### Update
+- Migrates code to use the native `BigInt` wherever possible over the `BigNumber` dependency ([#607](https://github.com/stellar/js-stellar-base/pull/607)).
+
 
 ## [v9.0.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0)
 
