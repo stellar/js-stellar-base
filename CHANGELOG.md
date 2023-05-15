@@ -6,6 +6,8 @@
 - Fix bug in asset sorting. We were not correctly sorting in ascii bytes
   ([#606](https://github.com/stellar/js-stellar-base/pull/606))
 
+- Various dependency updates ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
+
 
 ## [v9.0.0-beta.2](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
