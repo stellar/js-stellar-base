@@ -1,5 +1,4 @@
 import { UnsignedHyper } from 'js-xdr';
-import BigNumber from 'bignumber.js';
 
 import xdr from './xdr';
 import { Transaction } from './transaction';
@@ -440,10 +439,10 @@ export class TransactionBuilder {
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
   build() {
-    const sequenceNumber = new BigNumber(this.source.sequenceNumber()).plus(1);
-    const fee = new BigNumber(this.baseFee)
-      .times(this.operations.length)
-      .toNumber();
+    const sequenceNumber = BigInt(this.source.sequenceNumber()) + 1n;
+    const fee = Number(
+      BigInt.asIntN(32, BigInt(this.baseFee) * BigInt(this.operations.length))
+    ); // base tx is int32 in XDR, feebump is int64
     const attrs = {
       fee,
       seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
@@ -568,23 +567,23 @@ export class TransactionBuilder {
     innerTx,
     networkPassphrase
   ) {
-    const innerOps = innerTx.operations.length;
-    const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
-    const base = new BigNumber(baseFee);
+    const innerOps = BigInt(innerTx.operations.length);
+    const innerBaseFeeRate = BigInt(innerTx.fee) / innerOps; // truncates
+    const base = BigInt(baseFee);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction
-    if (base.lt(innerBaseFeeRate)) {
+    if (base < innerBaseFeeRate) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
+        `Invalid baseFee (${baseFee}), it should be at least ${innerBaseFeeRate} stroops.`
       );
     }
 
-    const minBaseFee = new BigNumber(BASE_FEE);
+    const minBaseFee = BigInt(BASE_FEE);
 
     // The fee rate is at least the minimum fee
-    if (base.lt(minBaseFee)) {
+    if (base < minBaseFee) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
+        `Invalid baseFee (${baseFee}), it should be at least ${minBaseFee} stroops.`
       );
     }
 
@@ -619,7 +618,7 @@ export class TransactionBuilder {
 
     const tx = new xdr.FeeBumpTransaction({
       feeSource: feeSourceAccount,
-      fee: xdr.Int64.fromString(base.times(innerOps + 1).toString()),
+      fee: xdr.Int64.fromString(BigInt.asIntN(64, (base * (innerOps + 1n)).toString())),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
       ),
