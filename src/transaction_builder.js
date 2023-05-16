@@ -110,6 +110,12 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
+ * @param {xdr.SorobanTransactionData | string}  [opts.sorobanData] - an optional xdr instance of SorobanTransactionData 
+ * to be set as .Transaction.Ext.SorobanData. It can be xdr object or base64 string.
+ * For non-contract(non-Soroban) transactions, this has no effect. 
+ * In the case of Soroban transactions, SorobanTransactionData can be obtained from a prior simulation of 
+ * the transaction with a contract invocation and provides necessary resource estimations. 
+ *     
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -133,6 +139,7 @@ export class TransactionBuilder {
     this.extraSigners = clone(opts.extraSigners) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
+    this.sorobanData = unmarshalSorobanData(opts.sorobanData);
   }
 
   /**
@@ -438,6 +445,24 @@ export class TransactionBuilder {
     return this;
   }
 
+   /**
+    * Set the {SorobanTransactionData}. For non-contract(non-Soroban) transactions, 
+    * this setting has no effect. 
+    * In the case of Soroban transactions, set to an instance of 
+    * SorobanTransactionData. This can typically be obtained from the simulation 
+    * response based on a transaction with a InvokeHostFunctionOp. 
+    * It provides necessary resource estimations for contract invocation.
+    * 
+    * @param {xdr.SorobanTransactionData | string} sorobanData    the SorobanTransactionData as xdr object or base64 string
+    * to be set as Transaction.Ext.SorobanData.
+    *
+    * @returns {TransactionBuilder}
+    */
+  setSorobanData(sorobanData) {
+    this.sorobanData = unmarshalSorobanData(sorobanData);
+    return this;
+  }
+
   /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
@@ -517,7 +542,18 @@ export class TransactionBuilder {
     }
 
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
-    attrs.ext = new xdr.TransactionExt(0);
+    
+       
+    // TODO - remove this workaround for TransactionExt ts constructor
+    //       and use the typescript generated static factory method once fixed
+    //       https://github.com/stellar/dts-xdr/issues/5
+    if (this.sorobanData) {
+      // @ts-ignore
+      attrs.ext = new xdr.TransactionExt(1, this.sorobanData);
+    } else {
+      // @ts-ignore
+      attrs.ext = new xdr.TransactionExt(0, xdr.Void);
+    }
 
     const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
@@ -675,3 +711,17 @@ export function isValidDate(d) {
   // eslint-disable-next-line no-restricted-globals
   return d instanceof Date && !isNaN(d);
 }
+
+/**
+ * local helper function to convert SorobanTransactionData from 
+ * base64 string or xdr object.
+ * @param {string | xdr.SorobanTransactionData} sorobanData  the soroban transaction data
+ * @returns {xdr.SorobanTransactionData}
+ */
+function unmarshalSorobanData(sorobanData) {
+    if (typeof sorobanData === 'string') {
+      const buffer = Buffer.from(sorobanData, 'base64');
+      sorobanData = xdr.SorobanTransactionData.fromXDR(buffer);
+    }
+    return sorobanData;
+  }
