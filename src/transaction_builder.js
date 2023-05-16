@@ -110,14 +110,11 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {xdr.TransactionExt | string}  [opts.ext] - an optional xdr instance of TransactionExt 
- * to be set as Ext on {Transaction}. It can be xdr object or base64 string.
- * For non-contract(non-Soroban) transactions, 
- * Ext is defined but is unused and setting this has no effect. 
- * In the case of Soroban transactions, Ext should be set to an instance of the 
- * TransactionExt version 1, with SorobanTransactionData set in the instance.
- * TransactionExt.SorobanTransactionData is obtained from a prior simulation of 
- * the contract invocation and provides necessary resource estimations. 
+ * @param {xdr.SorobanTransactionData | string}  [opts.sorobanData] - an optional xdr instance of SorobanTransactionData 
+ * to be set as .Transaction.Ext.SorobanData. It can be xdr object or base64 string.
+ * For non-contract(non-Soroban) transactions, this has no effect. 
+ * In the case of Soroban transactions, SorobanTransactionData can be obtained from a prior simulation of 
+ * the transaction with a contract invocation and provides necessary resource estimations. 
  *     
  */
 export class TransactionBuilder {
@@ -142,7 +139,7 @@ export class TransactionBuilder {
     this.extraSigners = clone(opts.extraSigners) || null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
-    this.ext = unmarshalExt(opts.ext);
+    this.sorobanData = unmarshalSorobanData(opts.sorobanData);
   }
 
   /**
@@ -449,20 +446,20 @@ export class TransactionBuilder {
   }
 
    /**
-    * Set the {Transaction} Ext. For non-contract(non-Soroban) transactions, 
-    * Ext is defined but is unused and setting this has no effect. 
-    * In the case of Soroban transactions, Ext should be set to an instance of the 
-    * TransactionExt version 1, with SorobanTransactionData set in the instance.
-    * TransactionExt.SorobanTransactionData is obtained from a prior simulation of 
-    * the contract invocation and provides necessary resource estimations. 
+    * Set the {SorobanTransactionData}. For non-contract(non-Soroban) transactions, 
+    * this setting has no effect. 
+    * In the case of Soroban transactions, set to an instance of 
+    * SorobanTransactionData. This can typically be obtained from the simulation 
+    * response based on a transaction with a InvokeHostFunctionOp. 
+    * It provides necessary resource estimations for contract invocation.
     * 
-    * @param {xdr.TransactionExt | string} ext    the Ext as xdr object or base64 string
-    * to be set as the Transaction's Ext.
+    * @param {xdr.SorobanTransactionData | string} sorobanData    the SorobanTransactionData as xdr object or base64 string
+    * to be set as Transaction.Ext.SorobanData.
     *
     * @returns {TransactionBuilder}
     */
-  setExt(ext) {
-    this.ext = unmarshalExt(ext);
+  setSorobanData(sorobanData) {
+    this.sorobanData = unmarshalSorobanData(sorobanData);
     return this;
   }
 
@@ -546,11 +543,17 @@ export class TransactionBuilder {
 
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
     
+       
     // TODO - remove this workaround for TransactionExt ts constructor
     //       and use the typescript generated static factory method once fixed
     //       https://github.com/stellar/dts-xdr/issues/5
-    // @ts-ignore
-    attrs.ext = this.ext || new xdr.TransactionExt(0, xdr.Void); 
+    if (this.sorobanData) {
+      // @ts-ignore
+      attrs.ext = new xdr.TransactionExt(1, this.sorobanData);
+    } else {
+      // @ts-ignore
+      attrs.ext = new xdr.TransactionExt(0, xdr.Void);
+    }
 
     const xtx = new xdr.Transaction(attrs);
     xtx.operations(this.operations);
@@ -710,15 +713,15 @@ export function isValidDate(d) {
 }
 
 /**
- * local helper function to convert Transaction.Ext from 
+ * local helper function to convert SorobanTransactionData from 
  * base64 string or xdr object.
- * @argument {string | xdr.TransactionExt} ext a transaction ext expression
- * @returns {xdr.TransactionExt}
+ * @param {string | xdr.SorobanTransactionData} sorobanData  the soroban transaction data
+ * @returns {xdr.SorobanTransactionData}
  */
-function unmarshalExt(ext) {
-    if (typeof ext === 'string') {
-      const buffer = Buffer.from(ext, 'base64');
-      ext = xdr.TransactionExt.fromXDR(buffer);
+function unmarshalSorobanData(sorobanData) {
+    if (typeof sorobanData === 'string') {
+      const buffer = Buffer.from(sorobanData, 'base64');
+      sorobanData = xdr.SorobanTransactionData.fromXDR(buffer);
     }
-    return ext;
+    return sorobanData;
   }

@@ -1002,7 +1002,7 @@ export class TransactionBuilder {
   setMinAccountSequenceAge(durationInSeconds: number): this;
   setMinAccountSequenceLedgerGap(gap: number): this;
   setExtraSigners(extraSigners: string[]): this;
-  setExt(ext: string | xdr.TransactionExt): this;
+  setSorobanData(sorobanData: string | xdr.SorobanTransactionData): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
   static buildFeeBumpTransaction(
@@ -1035,6 +1035,7 @@ export namespace TransactionBuilder {
     minAccountSequenceAge?: number;
     minAccountSequenceLedgerGap?: number;
     extraSigners?: string[];
+    sorobanData?: string | xdr.SorobanTransactionData;
   }
 }
 
