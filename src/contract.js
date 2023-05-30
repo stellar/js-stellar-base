@@ -26,7 +26,7 @@ export class Contract {
     } catch (_) {
       // If that fails, try it as a hex string
       // TODO: Add methods based on the contractSpec (or do that elsewhere?)
-      let b = Buffer.from(contractId, 'hex');
+      const b = Buffer.from(contractId, 'hex');
       if (b.length !== 32) {
         throw new Error('Invalid contract ID');
       }
