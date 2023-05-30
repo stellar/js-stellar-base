@@ -27,7 +27,7 @@ export class Address {
 
 export class Contract {
   constructor(contractId: string);
-  contractId(): string;
+  contractId(format?: 'hex' | 'strkey'): string;
   call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
 }
 
