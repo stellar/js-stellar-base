@@ -28,7 +28,9 @@ export class Address {
 export class Contract {
   constructor(contractId: string);
   contractId(format?: 'hex' | 'strkey'): string;
+  address(): Address;
   call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
+  getFootprint(): xdr.LedgerKey;
 }
 
 export class MuxedAccount {
