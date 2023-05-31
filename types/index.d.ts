@@ -925,6 +925,9 @@ export namespace StrKey {
 
   function encodeSha256Hash(data: Buffer): string;
   function decodeSha256Hash(address: string): Buffer;
+
+  function encodeContract(data: Buffer): string;
+  function decodeContract(address: string): Buffer;
 }
 
 export namespace SignerKey {
