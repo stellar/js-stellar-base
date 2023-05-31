@@ -80,7 +80,6 @@
     "@typescript-eslint/parser": "^5.59.5",
     "babel-loader": "^9.1.2",
     "babel-plugin-istanbul": "^6.1.1",
-    "buffer": "^6.0.3",
     "chai": "^4.3.7",
     "cross-env": "^7.0.3",
     "eslint": "^8.40.0",
@@ -120,9 +119,10 @@
   "dependencies": {
     "base32.js": "^0.1.0",
     "bignumber.js": "^9.1.1",
+    "buffer": "^6.0.3",
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
-    "js-xdr": "^2.0.0",
+    "js-xdr": "git+https://github.com/stellar/js-xdr#5749f38",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
