@@ -19,6 +19,14 @@ describe('Contract', function () {
     });
   });
 
+  describe('address', function () {
+    it('returns the contract address', function () {
+      let contractId = '0'.repeat(63) + '1';
+      let contract = new StellarBase.Contract(contractId);
+      expect(contract.address().toBuffer().toString('hex')).to.equal(contractId);
+    });
+  });
+
   describe('getFootprint', function () {
     it('includes the correct contract code footprint', function () {
       let contractId = '0'.repeat(63) + '1';
