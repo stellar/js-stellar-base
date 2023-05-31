@@ -1,3 +1,4 @@
+import { Address } from './address';
 import { Operation } from './operation';
 import xdr from './xdr';
 import { StrKey } from './strkey';
@@ -49,6 +50,14 @@ export class Contract {
     default:
       throw new Error(`Invalid format: ${format}`);
     }
+  }
+
+  /**
+   * Returns the address of this contract as an Address type.
+   * @returns {Address}
+   */
+  address() {
+    return Address.contract(this._id);
   }
 
   /**
