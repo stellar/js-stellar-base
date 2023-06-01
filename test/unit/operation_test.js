@@ -2021,13 +2021,15 @@ describe('Operation', function () {
 
   describe('invokeHostFunction()', function () {
     it('creates single invokeHostFunction', function () {
-      const op = StellarBase.Operation.invokeHostFunction({   
-          args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
-          auth: []
+      const op = StellarBase.Operation.invokeHostFunction({
+        args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
+          []
+        ),
+        auth: []
       });
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
-      
+
       expect(operation.body().switch().name).to.equal('invokeHostFunction');
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('invokeHostFunction');
@@ -2035,28 +2037,31 @@ describe('Operation', function () {
     });
     it('throws when single invokeHostFunction and no args passed', function () {
       expect(() =>
-        StellarBase.Operation.invokeHostFunction({   
+        StellarBase.Operation.invokeHostFunction({
           auth: []
-      })).to.throw(/function arguments \('args'\) required/); 
+        })
+      ).to.throw(/function arguments \('args'\) required/);
     });
     it('creates multiple invokeHostFunctions', function () {
       const op = StellarBase.Operation.invokeHostFunctions({
         functions: [
-          new StellarBase.xdr.HostFunction( 
-            {
-              args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
-              auth: []
-            }),
-          new StellarBase.xdr.HostFunction( 
-            {
-              args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([]),
-              auth: []
-            })
+          new StellarBase.xdr.HostFunction({
+            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
+              []
+            ),
+            auth: []
+          }),
+          new StellarBase.xdr.HostFunction({
+            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
+              []
+            ),
+            auth: []
+          })
         ]
       });
       var xdr = op.toXDR('hex');
       var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
-      
+
       expect(operation.body().switch().name).to.equal('invokeHostFunction');
       var obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('invokeHostFunction');
