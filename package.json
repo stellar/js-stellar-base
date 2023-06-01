@@ -12,14 +12,15 @@
     "build:browser:prod": "cross-env NODE_ENV=production yarn build:browser",
     "build:prod": "cross-env NODE_ENV=production yarn build",
     "test": "yarn build && yarn test:node && yarn test:browser",
-    "test:node": "nyc --nycrc-path ./config/.nycrc mocha",
+    "test:node": "yarn _nyc mocha",
     "test:browser": "karma start ./config/karma.conf.js",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/.eslintrc.js src/ && dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "yarn clean && yarn fmt && yarn lint && yarn build:prod && yarn test",
     "fmt": "prettier --config ./config/prettier.config.js --ignore-path ./config/.prettierignore --write './**/*.js'",
     "prepare": "yarn build:prod",
-    "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/"
+    "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
+    "_nyc": "nyc --nycrc-path ./config/.nycrc"
   },
   "mocha": {
     "require": [
@@ -122,7 +123,7 @@
     "buffer": "^6.0.3",
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
-    "js-xdr": "git+https://github.com/stellar/js-xdr#5749f38",
+    "js-xdr": "git+https://github.com/stellar/js-xdr#a3eb0e6",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
