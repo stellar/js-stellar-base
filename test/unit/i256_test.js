@@ -1,58 +1,91 @@
 import { BigInteger } from '../../src/numbers/generic';
+import { I128, U128 } from '../../src/numbers/generic';
 
 describe('creating large integers', function () {
   describe('picks the right types', function () {
-    [
-      [[1, 1], 'u64'],
-      [[1, -1], 'i64'],
-      [[1, 1, 1, 1], 'u128'],
-      [[1, 1, 1, -1], 'i128'],
-      [[1, 1, 1, 1, 1, 1, 1, -1], 'i256'],
-      [[1, 1, 1, 1, 1, 1, 1, 1], 'u256'],
-      [[1n << 65n], 'u128'],
-      [[-(1n << 65n)], 'i128'],
-      [[1n << 65n, 1n << 65n], 'u256'],
-      [[1n << 129n], 'u256'],
-      [[-(1n << 129n)], 'i256'],
-      [new Array(8).fill(-1), 'i256'],
-      [new Array(8).fill(1), 'u256'],
-    ].forEach(([parts, type]) => {
-      it(`picks ${type} for ${parts}`, function () {
-        expect(new BigInteger(parts).type).to.equal(type);
+    Object.entries({
+      u64: [1, '1', 0xdeadbeef, (1n << 64n) - 1n],
+      u128: [1n << 64n, (1n << 128n) - 1n],
+      u256: [1n << 128n, (1n << 256n) - 1n]
+    }).forEach(([type, values]) => {
+      values.forEach((value) => {
+        it(`picks ${type} for ${value}`, function () {
+          const bi = new BigInteger(value);
+          expect(bi.type).to.equal(type);
+          expect(bi.toBigInt()).to.equal(BigInt(value));
+        });
       });
     });
   });
 
-  it('handles 64 bits', function () {
-    const b = new StellarBase.BigInteger([1, -2]);
-    const expected = -(2n << 32n) | 1n;
+  describe('64 bit inputs', function () {
+    const sentinel = 85n;
 
-    expect(b.toBigInt()).to.eql(expected);
+    it('handles 64 bits', function () {
+      let b = new StellarBase.BigInteger(sentinel);
+      expect(b.toBigInt()).to.eql(sentinel);
 
-    const i128 = b.toI128().i128();
-    console.log(i128.lo())
-    expect(i128.lo().toBigInt()).to.equal(expected);
-    expect(i128.hi().toBigInt()).to.equal(0n);
+      b = new StellarBase.BigInteger(-sentinel);
+      expect(b.toBigInt()).to.eql(-sentinel);
+    });
 
-    const u128 = b.toU128().u128();
-    expect(u128.hi().toBigInt()).to.equal(0n);
-    expect(u128.lo().toBigInt()).to.equal(-expected);
+    it(`upscales + to 128`, function () {
+      const b = new StellarBase.BigInteger(sentinel);
+      const i128 = b.toI128().i128();
+      expect(i128.lo().toBigInt()).to.equal(sentinel);
+      expect(i128.hi().toBigInt()).to.equal(0n);
+    });
+
+    it(`upscales - to 128`, function () {
+      const b = new StellarBase.BigInteger(-sentinel);
+      const i128 = b.toI128().i128();
+      const hi = i128.hi().toBigInt();
+      const lo = i128.lo().toBigInt();
+
+      const assembled = new I128([lo, hi]).toBigInt();
+      expect(assembled).to.equal(-sentinel);
+    });
+
+    it(`upscales + to 256`, function () {
+      const b = new StellarBase.BigInteger(sentinel);
+      const i = b.toI256().i256();
+
+      const hiHi = i.hiHi().toBigInt();
+      const hiLo = i.hiLo().toBigInt();
+      const loHi = i.loHi().toBigInt();
+      const loLo = i.loLo().toBigInt();
+
+      expect(hiHi).to.equal(0n);
+      expect(hiLo).to.equal(0n);
+      expect(loHi).to.equal(0n);
+      expect(loLo).to.equal(sentinel);
+
+      const assembled = new I256([loLo, loHi, hiLo, hiHi]).toBigInt();
+      expect(assembled).to.equal(sentinel);
+    });
+
+    it(`upscales - to 256`, function () {
+      const b = new StellarBase.BigInteger(-sentinel);
+      const i128 = b.toI128().i128();
+      const hi = i128.hi().toBigInt();
+      const lo = i128.lo().toBigInt();
+
+      const assembled = new I128([lo, hi]).toBigInt();
+      expect(assembled).to.equal(-sentinel);
+    });
   });
 
   describe('error handling', function () {
     ['u64', 'u128', 'u256'].forEach((type) => {
       it(`throws when signed parts and {type: '${type}'}`, function () {
-        expect(
-          () => new StellarBase.BigInteger([1n, -2n], { type })
-        ).to.throw(/negative/i);
-        expect(
-          () => new StellarBase.BigInteger([-1n, -2n], { type })
-        ).to.throw(/negative/i);
+        expect(() => new StellarBase.BigInteger(-2, { type })).to.throw(
+          /negative/i
+        );
       });
     });
 
-    it('throws when too many parts', function () {
-      expect(() => new StellarBase.BigInteger(new Array(9).fill(42n))).to.throw(
+    it('throws when too big', function () {
+      expect(() => new StellarBase.BigInteger(1n << 400n)).to.throw(
         /expected/i
       );
     });
@@ -60,29 +93,23 @@ describe('creating large integers', function () {
     it('throws when big interpreted as small', function () {
       let big;
 
-      big = new StellarBase.BigInteger([1, 2]);
+      big = new StellarBase.BigInteger(1n << 64n);
       expect(() => big.toNumber()).to.throw(/too large/i);
 
-      big = new StellarBase.BigInteger([1n << 33n]);
+      big = new StellarBase.BigInteger(Number.MAX_SAFE_INTEGER + 1);
       expect(() => big.toNumber()).to.throw(/too large/i);
 
-      big = new StellarBase.BigInteger([1], { type: 'i128' });
+      big = new StellarBase.BigInteger(1, { type: 'i128' });
       expect(() => big.toNumber()).to.throw(/too large/i);
       expect(() => big.toU64()).to.throw(/too large/i);
       expect(() => big.toI64()).to.throw(/too large/i);
 
-      big = new StellarBase.BigInteger([1], { type: 'i256' });
+      big = new StellarBase.BigInteger(1, { type: 'i256' });
       expect(() => big.toNumber()).to.throw(/too large/i);
       expect(() => big.toU64()).to.throw(/too large/i);
       expect(() => big.toI64()).to.throw(/too large/i);
       expect(() => big.toI128()).to.throw(/too large/i);
       expect(() => big.toU128()).to.throw(/too large/i);
-    });
-
-    it('throws when there are inconsistent negative parts', function () {
-      expect(() => new StellarBase.BigInteger([1n, -3n, -4n, 5n])).to.throw(
-        /negative/i
-      );
     });
   });
 });

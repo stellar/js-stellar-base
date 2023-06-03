@@ -8,13 +8,14 @@ import { U256 } from './u256';
 
 import xdr from '../xdr';
 
-// const MAX_32  = (1n << 32) - 1;
-const MAX_64 = (1n << 64n) - 1n;
-const MAX_128 = (1n << 28n) - 1n;
-// const MAX_256 = (1n << 56) - 1;
+const MASK_64 = (1n << 64n) - 1n;
 
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
+ *
+ * You can instantiate this value either from bigints, strings, or numbers
+ * (whole numbers, or this will throw). Support for byte arrays may come in the
+ * future.
  *
  * @example
  * ```js
@@ -24,9 +25,13 @@ const MAX_128 = (1n << 28n) - 1n;
  * const value = sdk.xdr.ScVal.fromXDR(someXdr, "base64");
  * let bigi = sdk.BigInteger.fromScVal(value);
  *
+ * bigi.toNumber(); // gives native JS type (w/ size check)
+ * bigi.toBigInt(); // gives the native BigInt value
+ * bigi.toU64();    // gives ScValType-specific XDR constructs (with size checks)
+ *
  * // You have a number and want to shove it into a contract.
- * bigi = sdk.BigInteger([1234, 5678, 9012, 3456]);
- * bigi.toBigInt() // returns (3456 << 96) | (9012 << 64) |
+ * bigi = sdk.BigInteger(0xdeadcafebabe);
+ * bigi.toBigInt() // returns 244838016400062n
  * bigi.toNumber() // will throw: too large
  *
  * // Pass any to e.g. a Contract.call(), conversion happens automatically.
@@ -36,59 +41,52 @@ const MAX_128 = (1n << 28n) - 1n;
  *
  * // Lots of ways to initialize:
  * sdk.BigInteger("123456789123456789")
- * sdk.BigInteger(123456789123456789n)
- * sdk.BigInteger(["1234", "5678"])
- * sdk.BigInteger([1234, "5678", 9012n, -1])
+ * sdk.BigInteger(123456789123456789n);
+ * sdk.BigInteger(1n << 140n);
+ * sdk.BigInteger(-42);
  *
  * // If you are confident in what you're doing and want to access `.raw`
  * // directly (which is faster than conversions), you can specify the type
  * // (otherwise, it's interpreted from the numbers you pass in):
- * const i = sdk.BigInteger([1234, 5678, 9012, 3456], {type: "u256"})
- *
- * i.raw            // an sdk.U256, which can be converted to an ScVal directly
- * i.raw.toScVal()  // an xdr.ScVal with ScValType = "scvU256"
+ * const i = sdk.BigInteger(
+ *    123456789123456789n,
+ *    { type: "u256" }
+ * );
+ * i.raw;            // an sdk.U256, which can be converted to an ScVal directly
+ * i.raw.toScVal();  // an xdr.ScVal with ScValType = "scvU256"
  * ```
  *
- * @param {Number|BigInt|String|Array<Number|BigInt|String>} parts - either a
- *    single integer-like value, or an arbitrary set of "pieces" of an integer
- *    to assemble into a single "big integer" value supported by Stellar (64,
- *    128, or 256 bit values), where the later values represent higher bits of
- *    the final integer. to use signed values, either pass a signed type to
- *    `opts.type`, or pass a negative value in ONLY as the last "piece" (to
- *    represent the top bits)
+ * @param {Number|BigInt|String} value - a single, integer-like value which will
+ *    be interpreted in the smallest appropriate XDR type supported by Stellar
+ *    (32, 64, 128, or 256 bit integer values). signed values are supported,
+ *    though they are sanity-checked against `opts.type`
  *
  * @param {object}    [opts] - an object holding optional options for parsing
- * @param {string}    [opts.type] - force a specific data type, rather than
- *    relying on the input length to determine bit width. options are: i64, u64,
- *    i128, u128, i256, and u256 (default: determined by the largest element of
- *    `parts` and the slice's length)
+ * @param {string}    [opts.type] - force a specific data type. options are:
+ *    'i32', u32', i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (default: the
+ *    smallest one that fits the `value`)
  *
- * @throws {RangeError} if the number of parts is too large (i.e. exceeds a
- *    256-bit value), too small (i.e. a basic integer that doesn't need to be
- *    "large"), doesn't fit in the `opts.type`, or doesn't have an appropriate
- *    XDR type (e.g. 48 bits)
+ * @throws {RangeError} if the `value` is invalid (e.g. floating point), too
+ *    large (i.e. exceeds a 256-bit value), or doesn't fit in the `opts.type`
  *
  * @throws {TypeError} if the "signedness" of `opts` doesn't match the input
- *    value, e.g. passing `{type: 'u64'}` yet including negative parts in the
- *    input
+ *    `value`, e.g. passing `{type: 'u64'}` yet passing -1n
+ *
+ * @throws {SyntaxError} if a string `value` can't be parsed as a big integer
  */
 export class BigInteger {
   raw; // child class of a jsXdr.LargeInt
   type; // string, one of i64, u64, i128, u128, i256, or u256
 
   /**
-   * Transforms an opaque {@link xdr.ScVal} into a {@link BigInteger}, if
-   * possible. To get the underlying native BigInt value, call {@link
-   * BigInteger.toBigInt} on the return value.
-   *
-   * @throws {TypeError} if the input value doesn't represent an integer.
+   * Transforms an opaque {@link xdr.ScVal} into a native BigInt, if possible.
+   * @throws {TypeError} if the input value doesn't represent an integer
    */
   static fromScVal(scv) {
     switch (scv.switch()) {
       case 'scvU32':
       case 'scvI32':
-        // FIXME: Should we handle 32-bit values, or is that not our job?
-        throw TypeError('FIXME');
+        return BigInt(scv.value());
 
       case 'scvU64':
       case 'scvI64':
@@ -96,46 +94,33 @@ export class BigInteger {
       case 'scvI128':
       case 'scvU256':
       case 'scvI256':
-        return new BigInteger(scv.value().slice());
+        // FIXME: This isn't right, we need a "value to BigInteger" converter
+        // that breaks down the hiHi, loLo, etc.
+        return scv.value().toBigInt();
 
       default:
         throw TypeError(`expected integer type, got ${scv.switch()}`);
     }
   }
 
-  constructor(parts, opts = {}) {
-    // allow a single, non-array input parameter
-    if (!(parts instanceof Array)) {
-      parts = [parts];
-    }
+  static fromParts(...values) {
+    values.map();
+  }
 
-    parts = parts.map((i) => BigInt(i)); // normalize
-    const hasSignedParts = parts.some((i) => i < 0n);
+  constructor(value, opts = {}) {
+    value = BigInt(value); // normalize
+    const signed = value < 0;
     let iType = opts.type ?? '';
 
-    if (hasSignedParts && parts[parts.length - 1] > 0) {
-      throw TypeError(`only last chunk must be negative, got ${parts}`);
+    if (iType.startsWith('u') && signed) {
+      throw TypeError(`specified type ${opts.type} yet negative (${value})`);
     }
 
-    if (iType.startsWith('u') && hasSignedParts) {
-      throw TypeError(
-        `specified type ${opts.type} yet provided negative values: ${parts}`
-      );
-    }
-
-    // If unspecified, we make a best guess at the type based on:
-    //
-    //  - the bit length of each element in the slice
-    //  - the number of elements in the slice
-    //
-    // the equation is:
-    //
-    //    len(slice) * max(dwordSize(elem) for elem in slice)
-    //
-    // and this must be one of 64, 128, or 256 bits.
+    // If unspecified, we make a best guess at the type based on the bit length
+    // of the value, treating 64 as a minimum and 256 as a maximum.
     if (iType === '') {
-      iType = !hasSignedParts ? 'u' : 'i';
-      const bitlen = parts.length * Math.max(...parts.map(nearestInt));
+      iType = signed ? 'i' : 'u';
+      const bitlen = nearestBigIntSize(value);
 
       switch (bitlen) {
         case 64:
@@ -146,32 +131,32 @@ export class BigInteger {
 
         default:
           throw RangeError(
-            `expected 64/128/256 bits for parts (${parts}), got ${bitlen}`
+            `expected 64/128/256 bits for parts (${value}), got ${bitlen}`
           );
       }
     }
 
     switch (iType) {
       case 'i64':
-        this.raw = new Hyper(parts);
+        this.raw = new Hyper(value);
         break;
       case 'i128':
-        this.raw = new I128(parts);
+        this.raw = new I128(value);
         break;
       case 'i256':
-        this.raw = new I256(parts);
+        this.raw = new I256(value);
         break;
       case 'u64':
-        this.raw = new UnsignedHyper(parts);
+        this.raw = new UnsignedHyper(value);
         break;
       case 'u128':
-        this.raw = new U128(parts);
+        this.raw = new U128(value);
         break;
       case 'u256':
-        this.raw = new U256(parts);
+        this.raw = new U256(value);
         break;
       default:
-        throw TypeError(`invalid type: ${parts.type}`);
+        throw TypeError(`invalid type: ${iType}`);
     }
 
     this.type = iType;
@@ -197,12 +182,20 @@ export class BigInteger {
     return this.raw.toBigInt();
   }
 
+  /**
+   * @returns {xdr.ScVal} the integer encoded with `ScValType = I64`
+   */
   toI64() {
     this._sizeCheck(64);
+    return xdr.ScVal.scvI64(new xdr.Int64(this.toBigInt()));
   }
 
+  /**
+   * @returns {xdr.ScVal} the integer encoded with `ScValType = U64`
+   */
   toU64() {
     this._sizeCheck(64);
+    return xdr.ScVal.scvU64(new xdr.Uint64(this.toBigInt()));
   }
 
   /**
@@ -213,17 +206,14 @@ export class BigInteger {
     this._sizeCheck(128);
 
     const v = this.raw.toBigInt();
-    const neg = v < 0n;
-    let hi64 = 0n, lo64 = 0n;
+    let hi64 = 0n;
 
-    if (this.raw.size < 128 && neg) {
-      hi64 |= (1n << 63n);  // set top (sign) bit
-      lo64 = v ^ hi64;      // keep all but unset sign
-      console.log(hi64, v, lo64)
+    if (v < 0n && this.raw.size <= 64) {
+      hi64 = -1n;
     } else {
-      hi64 = v >> 64n;    // grab only top 64
-      lo64 = v & MAX_64;  // grab btm 64
+      hi64 = BigInt.asIntN(64, v >> 64n);
     }
+    const lo64 = BigInt.asUintN(64, v & MASK_64); // grab btm 64
 
     return xdr.ScVal.scvI128(
       new xdr.Int128Parts({
@@ -239,17 +229,6 @@ export class BigInteger {
    */
   toU128() {
     this._sizeCheck(128);
-
-    const v = this.raw.toBigInt();
-    const hi64 = v >> 64n;
-    const lo64 = v & MAX_64;
-
-    return xdr.ScVal.scvU128(
-      new xdr.UInt128Parts({
-        hi: xdr.UInt64(hi64),
-        lo: xdr.Uint64(lo64)
-      })
-    );
   }
 
   /**
@@ -257,14 +236,20 @@ export class BigInteger {
    * @throws {RangeError} if the value cannot fit in 256 bits
    */
   toI256() {
-    this._sizeCheck(256);
-
     const v = this.raw.toBigInt();
-    const hi128 = v >> 128n;
-    const lo128 = v & MAX_128;
+    const hiHi64 = 0n;
+    const hiLo64 = 0n;
+    const loHi64 = 0n;
+    const loLo64 = 0n;
 
-    // TODO
-    return;
+    return xdr.ScVal.scvI256(
+      new xdr.UInt256Parts({
+        hiHi: new xdr.Int64(hiHi64),
+        hiLo: new xdr.Uint64(hiLo64),
+        loHi: new xdr.Uint64(loHi64),
+        loLo: new xdr.Uint64(loLo64)
+      })
+    );
   }
 
   /**
@@ -273,13 +258,6 @@ export class BigInteger {
    */
   toU256() {
     this._sizeCheck(256);
-
-    const v = this.raw.toBigInt();
-    const hi128 = v >>> 128n;
-    const lo128 = v & MAX_128;
-
-    // TODO
-    return;
   }
 
   _sizeCheck(bits) {
@@ -289,7 +267,16 @@ export class BigInteger {
   }
 }
 
-function nearestInt(bigI) {
-  const bitlen = bigI.toString(2).length - 1;
-  return [32, 64, 128, 256].find((len) => bitlen <= len) ?? bitlen;
+function nearestBigIntSize(bigI) {
+  // Note: Even though BigInt.toString(2) includes the negative sign for
+  // negative values (???), the following is still accurate, because the
+  // negative sign would be represented by a sign bit.
+  const bitlen = bigI.toString(2).length;
+  return [64, 128, 256].find((len) => bitlen <= len) ?? bitlen;
 }
+
+function makeMask(bits) {
+  return (1n << BigInt(bits)) - 1n;
+}
+
+export { U128, I128, U256, I256 };
