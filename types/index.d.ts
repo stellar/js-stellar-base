@@ -1053,3 +1053,26 @@ export function decodeAddressToMuxedAccount(address: string, supportMuxing: bool
 export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
 export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 export function extractBaseAddress(address: string): string;
+
+export type ScIntType = 'i32' | 'u32' | 'i64' | 'u64' | 'i128' | 'u128' | 'i256' | 'u256';
+export class ScInt {
+  constructor(value: number|bigint|string|ScInt, opts: { type: ScIntType });
+  static fromScVal(scv: xdr.ScVal): bigint;
+
+  toNumber(): number;
+  toBigInt(): bigint;
+
+  toI64(): xdr.ScVal;
+  toU64(): xdr.ScVal;
+  toI128(): xdr.ScVal;
+  toU128(): xdr.ScVal;
+  toI256(): xdr.ScVal;
+  toU256(): xdr.ScVal;
+
+  valueOf(): any; // FIXME
+  toString(): string;
+  toJSON(): {
+    value: string;
+    type: ScIntType;
+  }
+}

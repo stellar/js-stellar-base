@@ -63,7 +63,7 @@ import xdr from '../xdr';
  * const scv = i.toI64();
  * ```
  *
- * @param {Number|BigInt|String|ScInt} value - a single, integer-like value
+ * @param {number|bigint|string|ScInt} value - a single, integer-like value
  *    which will be interpreted in the smallest appropriate XDR type supported
  *    by Stellar (32, 64, 128, or 256 bit integer values). signed values are
  *    supported, though they are sanity-checked against `opts.type`.
@@ -93,7 +93,7 @@ export class ScInt {
    * useful.
    *
    * @param {xdr.ScVal} scv - the raw XDR value to parse into an integer
-   * @returns {BigInt} the integer value, regardless of size (even 32-bit)
+   * @returns {bigint} the integer value, regardless of size (even 32-bit)
    * @throws {TypeError} if the input value doesn't represent an integer
    */
   static fromScVal(scv) {
@@ -219,7 +219,7 @@ export class ScInt {
   }
 
   /**
-   * @returns {BigInt}
+   * @returns {bigint}
    */
   toBigInt() {
     return this.raw.toBigInt();
