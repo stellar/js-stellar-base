@@ -49,34 +49,4 @@ describe('Contract', function () {
       expect(fp.toXDR().toString('base64')).to.equal(expected);
     });
   });
-
-  // describe('call', function() {
-  //   it('should create an XDR operation', function() {
-  //     const kp = StellarBase.Keypair.random();
-  //     const account = new StellarBase.Account(kp.publicKey(), "1");
-  //     const contractId = '0'.repeat(63) + '1';
-
-  //     let contract = new StellarBase.Contract(contractId);
-
-  //     const callOp = contract.call("balance", ...[
-  //       new StellarBase.Address(kp.publicKey()).toScVal()
-  //     ]);
-  //     console.log(callOp);
-  //     console.log(callOp.toXDR());
-
-  //     let builder = new StellarBase.TransactionBuilder(account, {
-  //       fee: "1000",
-  //       timebounds: { minTime: 0, maxTime: 0 },
-  //       networkPassphrase: StellarBase.Networks.FUTURENET,
-  //     });
-
-  //     const txXdr = builder.addOperation(callOp).build();
-  //     const txB64 = txXdr.toXDR();
-  //     console.log(txB64);
-
-  //     const txRt = StellarBase.TransactionBuilder.fromXDR(txB64,
-  //       StellarBase.Networks.FUTURENET);
-  //     console.log(txRt);
-  //   });
-  // });
 });

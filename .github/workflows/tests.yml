@@ -24,7 +24,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install Dependencies
-      run: yarn install
+      run: yarn install --network-concurrency 1
 
     - name: Build All
       run: yarn build:prod
