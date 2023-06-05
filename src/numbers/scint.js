@@ -206,7 +206,7 @@ export class ScInt {
   }
 
   /**
-   * @returns {Number}
+   * @returns {number}
    * @throws {RangeError} if the value can't fit into a Number
    */
   toNumber() {
