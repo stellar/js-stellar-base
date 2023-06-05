@@ -9,7 +9,7 @@ XDR_FILES_CURR= \
 	Stellar-types.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/2f16687fdf6f4bcfb56805e2035f69997f4b34c4
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/956da0a0d6020efd539f3adbc6f7a0d4876478e4
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \

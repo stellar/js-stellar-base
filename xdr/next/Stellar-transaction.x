@@ -477,92 +477,105 @@ enum HostFunctionType
     HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM = 2
 };
 
-enum ContractIDType
+enum ContractIDPreimageType
 {
-    CONTRACT_ID_FROM_SOURCE_ACCOUNT = 0,
-    CONTRACT_ID_FROM_ED25519_PUBLIC_KEY = 1,
-    CONTRACT_ID_FROM_ASSET = 2
+    CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
+    CONTRACT_ID_PREIMAGE_FROM_ASSET = 1
 };
  
-enum ContractIDPublicKeyType
+union ContractIDPreimage switch (ContractIDPreimageType type)
 {
-    CONTRACT_ID_PUBLIC_KEY_SOURCE_ACCOUNT = 0,
-    CONTRACT_ID_PUBLIC_KEY_ED25519 = 1
-};
-
-struct UploadContractWasmArgs
-{
-    opaque code<SCVAL_LIMIT>;
-};
-
-union ContractID switch (ContractIDType type)
-{
-case CONTRACT_ID_FROM_SOURCE_ACCOUNT:
-    uint256 salt;
-case CONTRACT_ID_FROM_ED25519_PUBLIC_KEY:
-    struct 
+case CONTRACT_ID_PREIMAGE_FROM_ADDRESS:
+    struct
     {
-        uint256 key;
-        Signature signature;
+        SCAddress address;
         uint256 salt;
-    } fromEd25519PublicKey;
-case CONTRACT_ID_FROM_ASSET:
-    Asset asset;
+    } fromAddress;
+case CONTRACT_ID_PREIMAGE_FROM_ASSET:
+    Asset fromAsset;
 };
 
 struct CreateContractArgs
 {
-    ContractID contractID;
+    ContractIDPreimage contractIDPreimage;
     SCContractExecutable executable;
 };
 
-union HostFunctionArgs switch (HostFunctionType type)
+union HostFunction switch (HostFunctionType type)
 {
 case HOST_FUNCTION_TYPE_INVOKE_CONTRACT:
     SCVec invokeContract;
 case HOST_FUNCTION_TYPE_CREATE_CONTRACT:
     CreateContractArgs createContract;
 case HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM:
-    UploadContractWasmArgs uploadContractWasm;
+    opaque wasm<>;
 };
 
-struct AuthorizedInvocation
+enum SorobanAuthorizedFunctionType
 {
-    Hash contractID;
+    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN = 0,
+    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN = 1
+};
+
+struct SorobanAuthorizedContractFunction 
+{
+    SCAddress contractAddress;
     SCSymbol functionName;
     SCVec args;
-    AuthorizedInvocation subInvocations<>;
 };
 
-struct AddressWithNonce
+union SorobanAuthorizedFunction switch (SorobanAuthorizedFunctionType type)
+{
+case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN:
+    SorobanAuthorizedContractFunction contractFn;
+case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN:
+    CreateContractArgs createContractHostFn;
+};
+
+struct SorobanAuthorizedInvocation
+{
+    SorobanAuthorizedFunction function;
+    SorobanAuthorizedInvocation subInvocations<>;
+};
+
+struct SorobanAddressCredentials
 {
     SCAddress address;
     uint64 nonce;
-};
-
-struct ContractAuth
-{
-    AddressWithNonce* addressWithNonce; // not present for invoker
-    AuthorizedInvocation rootInvocation;
     SCVec signatureArgs;
 };
 
-struct HostFunction {
-    // Arguments of the function to call defined by the function
-    // type.
-    HostFunctionArgs args;
-    // Per-address authorizations for this host fn
-    // Currently only supported for INVOKE_CONTRACT function
-    ContractAuth auth<>;
+enum SorobanCredentialsType
+{
+    SOROBAN_CREDENTIALS_SOURCE_ACCOUNT = 0,
+    SOROBAN_CREDENTIALS_ADDRESS = 1
+};
+
+union SorobanCredentials switch (SorobanCredentialsType type)
+{
+case SOROBAN_CREDENTIALS_SOURCE_ACCOUNT:
+    void;
+case SOROBAN_CREDENTIALS_ADDRESS:
+    SorobanAddressCredentials address;
+};
+
+/* Unit of authorization data for Soroban.
+
+   Represents an authorization for executing the tree of authorized contract 
+   and/or host function calls by the user defined by `credentials`.
+*/
+struct SorobanAuthorizationEntry
+{
+    SorobanCredentials credentials;
+    SorobanAuthorizedInvocation rootInvocation;
 };
 
 struct InvokeHostFunctionOp
 {
-    // The host functions to invoke. The functions will be executed
-    // in the same fashion as operations: either all functions will
-    // be successfully applied or all fail if at least one of them
-    // fails.
-    HostFunction functions<MAX_OPS_PER_TX>;
+    // Host function to invoke.
+    HostFunction hostFunction;
+    // Per-address authorizations for this host function.
+    SorobanAuthorizationEntry auth<>;
 };
 
 /* An operation is the lowest unit of work that a transaction does */
@@ -642,52 +655,24 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
         AccountID sourceAccount;
-        SequenceNumber seqNum;
+        SequenceNumber seqNum; 
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
     } revokeID;
-case ENVELOPE_TYPE_CONTRACT_ID_FROM_ED25519:
+case ENVELOPE_TYPE_CONTRACT_ID:
     struct
     {
         Hash networkID;
-        uint256 ed25519;
-        uint256 salt;
-    } ed25519ContractID;
-case ENVELOPE_TYPE_CONTRACT_ID_FROM_CONTRACT:
-    struct
-    {
-        Hash networkID;
-        Hash contractID;
-        uint256 salt;
+        ContractIDPreimage contractIDPreimage;
     } contractID;
-case ENVELOPE_TYPE_CONTRACT_ID_FROM_ASSET:
-    struct
-    {
-        Hash networkID;
-        Asset asset;
-    } fromAsset;
-case ENVELOPE_TYPE_CONTRACT_ID_FROM_SOURCE_ACCOUNT:
-    struct
-    {
-        Hash networkID;
-        AccountID sourceAccount;
-        uint256 salt;
-    } sourceAccountContractID;
-case ENVELOPE_TYPE_CREATE_CONTRACT_ARGS:
-    struct
-    {
-        Hash networkID;
-        SCContractExecutable executable;
-        uint256 salt;
-    } createContractArgs;
-case ENVELOPE_TYPE_CONTRACT_AUTH:
+case ENVELOPE_TYPE_SOROBAN_AUTHORIZATION:
     struct
     {
         Hash networkID;
         uint64 nonce;
-        AuthorizedInvocation invocation;
-    } contractAuth;
+        SorobanAuthorizedInvocation invocation;
+    } sorobanAuthorization;
 };
 
 enum MemoType
@@ -1779,7 +1764,7 @@ enum InvokeHostFunctionResultCode
 union InvokeHostFunctionResult switch (InvokeHostFunctionResultCode code)
 {
 case INVOKE_HOST_FUNCTION_SUCCESS:
-    SCVal success<MAX_OPS_PER_TX>;
+    Hash success; // sha256(InvokeHostFunctionSuccessPreImage)
 case INVOKE_HOST_FUNCTION_MALFORMED:
 case INVOKE_HOST_FUNCTION_TRAPPED:
 case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
