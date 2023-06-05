@@ -1,5 +1,6 @@
 import { ScInt } from '../../src/numbers/scint';
 import { I128, U128, I256, U256 } from '../../src/numbers/scint';
+import xdr from '../../src/xdr';
 
 describe('creating large integers', function () {
   describe('picks the right types', function () {
@@ -109,6 +110,46 @@ describe('creating large integers', function () {
 
       assembled = new U256([loLo, loHi, hiLo, hiHi]).toBigInt();
       expect(assembled).to.equal(BigInt.asUintN(256, -sentinel));
+    });
+  });
+
+  describe('conversion to/from ScVals', function () {
+    const v = 80000085n;
+    const i = new ScInt(v);
+
+    [
+      [i.toI64(), 'i64'],
+      [i.toU64(), 'u64'],
+      [i.toI128(), 'i128'],
+      [i.toU128(), 'u128'],
+      [i.toI256(), 'i256'],
+      [i.toU256(), 'u256']
+    ].forEach(([scv, type]) => {
+      it(`works for ${type}`, function () {
+        expect(scv.switch().name).to.equal(`scv${type.toUpperCase()}`);
+        expect(typeof scv.toXDR('base64')).to.be.equal('string');
+
+        const bigi = ScInt.fromScVal(scv);
+        expect(bigi).to.equal(v);
+        expect(new ScInt(bigi, { type }).toJSON()).to.eql({
+          ...i.toJSON(),
+          type
+        });
+      });
+    });
+
+    it('works for 32-bit', function () {
+      const i32 = new xdr.ScVal.scvI32(Number(v));
+      const u32 = new xdr.ScVal.scvU32(Number(v));
+
+      expect(ScInt.fromScVal(i32)).to.equal(v);
+      expect(ScInt.fromScVal(u32)).to.equal(v);
+    });
+
+    it('throws for non-integers', function () {
+      expect(() => ScInt.fromScVal(new xdr.ScVal.scvString('hello'))).to.throw(
+        /integer/i
+      );
     });
   });
 

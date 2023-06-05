@@ -123,7 +123,7 @@
     "buffer": "^6.0.3",
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
-    "js-xdr": "git+https://github.com/stellar/js-xdr#a3eb0e6",
+    "js-xdr": "git+https://github.com/stellar/js-xdr#ad2e43e",
     "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"

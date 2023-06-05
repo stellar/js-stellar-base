@@ -12,52 +12,61 @@ import xdr from '../xdr';
  * Provides an easier way to manipulate large numbers for Stellar operations.
  *
  * You can instantiate this value either from bigints, strings, or numbers
- * (whole numbers, or this will throw). Support for byte arrays may come in the
- * future.
+ * (whole numbers, or this will throw).
+ *
+ * If you need to create a native BigInt from a list of integer "parts" (for
+ * example, you have a series of encoded 32-bit integers that represent a larger
+ * value), you should use the specific XDR type, like {@link U128}. For example,
+ * you could do `new U128(values...).toBigInt()`.
  *
  * @example
  * ```js
- * import * as sdk from "stellar-base";
+ * import sdk from "stellar-base";
  *
  * // You have an ScVal from a contract and want to parse it into JS native.
  * const value = sdk.xdr.ScVal.fromXDR(someXdr, "base64");
- * let bigi = sdk.ScInt.fromScVal(value);
+ * const bigi = sdk.ScInt.fromScVal(value); // grab it as a BigInt
+ * let sci = new ScInt(bigi);
  *
- * bigi.toNumber(); // gives native JS type (w/ size check)
- * bigi.toBigInt(); // gives the native BigInt value
- * bigi.toU64();    // gives ScValType-specific XDR constructs (with size checks)
+ * sci.toNumber(); // gives native JS type (w/ size check)
+ * sci.toBigInt(); // gives the native BigInt value
+ * sci.toU64();    // gives ScValType-specific XDR constructs (with size checks)
  *
  * // You have a number and want to shove it into a contract.
- * bigi = sdk.ScInt(0xdeadcafebabe);
- * bigi.toBigInt() // returns 244838016400062n
- * bigi.toNumber() // will throw: too large
+ * sci = sdk.ScInt(0xdeadcafebabe);
+ * sci.toBigInt() // returns 244838016400062n
+ * sci.toNumber() // throws: too large
  *
- * // Pass any to e.g. a Contract.call(), conversion happens automatically.
- * const scValU128 = bigi.toU128();
- * const scValI256 = bigi.toI256();
- * const scValU64  = bigi.toU64();
+ * // Pass any to e.g. a Contract.call(), conversion happens automatically
+ * // regardless of the initial type.
+ * const scValU128 = sci.toU128();
+ * const scValI256 = sci.toI256();
+ * const scValU64  = sci.toU64();
  *
  * // Lots of ways to initialize:
  * sdk.ScInt("123456789123456789")
  * sdk.ScInt(123456789123456789n);
  * sdk.ScInt(1n << 140n);
  * sdk.ScInt(-42);
+ * sdk.ScInt.fromScVal(scValU128); // from above
  *
- * // If you are confident in what you're doing and want to access `.raw`
- * // directly (which is faster than conversions), you can specify the type
- * // (otherwise, it's interpreted from the numbers you pass in):
- * const i = sdk.ScInt(
- *    123456789123456789n,
- *    { type: "u256" }
- * );
- * i.raw;            // an sdk.U256, which can be converted to an ScVal directly
- * i.raw.toScVal();  // an xdr.ScVal with ScValType = "scvU256"
+ * // If you know the type ahead of time (accessing `.raw` is faster than
+ * // conversions), you can specify the type directly (otherwise, it's
+ * // interpreted from the numbers you pass in):
+ * const i = sdk.ScInt(123456789n, { type: "u256" });
+ *
+ * // For example, you can use the underlying `sdk.U256` and convert it to an
+ * // `xdr.ScVal` directly like so:
+ * const scv = new xdr.ScVal.scvU256(i.raw);
+ *
+ * // Or reinterpret it as a different type (size permitting):
+ * const scv = i.toI64();
  * ```
  *
  * @param {Number|BigInt|String|ScInt} value - a single, integer-like value
  *    which will be interpreted in the smallest appropriate XDR type supported
  *    by Stellar (32, 64, 128, or 256 bit integer values). signed values are
- *    supported, though they are sanity-checked against `opts.type`
+ *    supported, though they are sanity-checked against `opts.type`.
  *
  * @param {object}    [opts] - an object holding optional options for parsing
  * @param {string}    [opts.type] - force a specific data type. options are:
@@ -67,8 +76,8 @@ import xdr from '../xdr';
  * @throws {RangeError} if the `value` is invalid (e.g. floating point), too
  *    large (i.e. exceeds a 256-bit value), or doesn't fit in the `opts.type`
  *
- * @throws {TypeError} if the "signedness" of `opts` doesn't match the input
- *    `value`, e.g. passing `{type: 'u64'}` yet passing -1n
+ * @throws {TypeError} on missing parameters, or if the "signedness" of `opts`
+ *    doesn't match input `value`, e.g. passing `{type: 'u64'}` yet passing -1n
  *
  * @throws {SyntaxError} if a string `value` can't be parsed as a big integer
  */
@@ -79,37 +88,49 @@ export class ScInt {
   /**
    * Transforms an opaque {@link xdr.ScVal} into a native BigInt, if possible.
    *
+   * You can then give this back to create an {@link ScInt} instance, but the
+   * rationale here is that the native type is more likely to be immediately
+   * useful.
+   *
    * @param {xdr.ScVal} scv - the raw XDR value to parse into an integer
    * @returns {BigInt} the integer value, regardless of size (even 32-bit)
    * @throws {TypeError} if the input value doesn't represent an integer
    */
   static fromScVal(scv) {
-    switch (scv.switch()) {
+    switch (scv.switch().name) {
       case 'scvU32':
       case 'scvI32':
         return BigInt(scv.value());
 
       case 'scvU64':
       case 'scvI64':
+        return scv.value().toBigInt();
+
       case 'scvU128':
+        return new U128(scv.value().lo(), scv.value().hi()).toBigInt();
+
       case 'scvI128':
+        return new I128(scv.value().lo(), scv.value().hi()).toBigInt();
+
       case 'scvU256':
+        return new U256(
+          scv.value().loLo(),
+          scv.value().loHi(),
+          scv.value().hiLo(),
+          scv.value().hiHi()
+        ).toBigInt();
+
       case 'scvI256':
-        return new ScInt(scv.value().toBigInt(), {
-          type: scv.switch().substr(3).toLowerCase()
-        });
+        return new I256(
+          scv.value().loLo(),
+          scv.value().loHi(),
+          scv.value().hiLo(),
+          scv.value().hiHi()
+        ).toBigInt();
 
       default:
         throw TypeError(`expected integer type, got ${scv.switch()}`);
     }
-  }
-
-  static fromParts(...values) {
-    let result = 0n;
-    values.forEach((v, _i) => {
-      result = (result << 32n) | v;
-    });
-    return ScInt(result);
   }
 
   constructor(value, opts = {}) {
@@ -117,11 +138,22 @@ export class ScInt {
       throw TypeError(`expected integer-like value, got ${value}`);
     } else if (value instanceof ScInt) {
       value = value.toBigInt();
+      //
+      // TODO: Decide whether or not this is worth supporting, i.e. building the
+      // value from a list of integer-like values (like jsXdr.LargeInt does). Why
+      // would someone need to do this? If they need to, they can use the types
+      // directly and pass them into this (e.g. `new U256(values...).toBigInt()`).
+      //
+      // } else if (value instanceof Array) {
+      //   if (typeof opts?.type !== 'string') {
+      //     throw TypeError(`expected opts.type with array of values, got ${opts}`);
+      //   }
     } else {
       value = BigInt(value); // normalize
     }
-    const signed = value < 0;
+
     let iType = opts.type ?? '';
+    const signed = value < 0;
 
     if (iType.startsWith('u') && signed) {
       throw TypeError(`specified type ${opts.type} yet negative (${value})`);
@@ -241,22 +273,18 @@ export class ScInt {
    */
   toU128() {
     this._sizeCheck(128);
-
     const v = this.raw.toBigInt();
-    const hi64 = BigInt.asUintN(64, v >> 64n);
-    const lo64 = BigInt.asUintN(64, v);
 
-    return xdr.ScVal.scvI128(
-      new xdr.Int128Parts({
-        hi: new xdr.Int64(hi64),
-        lo: new xdr.Uint64(lo64)
+    return xdr.ScVal.scvU128(
+      new xdr.UInt128Parts({
+        hi: new xdr.Uint64(BigInt.asUintN(64, v >> 64n)),
+        lo: new xdr.Uint64(BigInt.asUintN(64, v))
       })
     );
   }
 
   /**
    * @returns {xdr.ScVal} the integer encoded with `ScValType = I256`
-   * @throws {RangeError} if the value cannot fit in 256 bits
    */
   toI256() {
     const v = this.raw.toBigInt();
@@ -266,7 +294,7 @@ export class ScInt {
     const loLo64 = BigInt.asUintN(64, v);
 
     return xdr.ScVal.scvI256(
-      new xdr.UInt256Parts({
+      new xdr.Int256Parts({
         hiHi: new xdr.Int64(hiHi64),
         hiLo: new xdr.Uint64(hiLo64),
         loHi: new xdr.Uint64(loHi64),
@@ -277,10 +305,22 @@ export class ScInt {
 
   /**
    * @returns {xdr.ScVal} the integer encoded with `ScValType = U256`
-   * @throws {RangeError} if the value cannot fit in 256 bits
    */
   toU256() {
-    this._sizeCheck(256);
+    const v = this.raw.toBigInt();
+    const hiHi64 = BigInt.asUintN(64, v >> 192n); // encode sign bit
+    const hiLo64 = BigInt.asUintN(64, v >> 128n);
+    const loHi64 = BigInt.asUintN(64, v >> 64n);
+    const loLo64 = BigInt.asUintN(64, v);
+
+    return xdr.ScVal.scvU256(
+      new xdr.UInt256Parts({
+        hiHi: new xdr.Uint64(hiHi64),
+        hiLo: new xdr.Uint64(hiLo64),
+        loHi: new xdr.Uint64(loHi64),
+        loLo: new xdr.Uint64(loLo64)
+      })
+    );
   }
 
   valueOf() {
