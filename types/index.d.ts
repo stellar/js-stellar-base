@@ -1054,7 +1054,16 @@ export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMu
 export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 export function extractBaseAddress(address: string): string;
 
-export type ScIntType = 'i32' | 'u32' | 'i64' | 'u64' | 'i128' | 'u128' | 'i256' | 'u256';
+export type ScIntType =
+  | 'i32'
+  | 'u32'
+  | 'i64'
+  | 'u64'
+  | 'i128'
+  | 'u128'
+  | 'i256'
+  | 'u256';
+
 export class ScInt {
   constructor(value: number|bigint|string|ScInt, opts: { type: ScIntType });
   static fromScVal(scv: xdr.ScVal): bigint;
@@ -1074,5 +1083,5 @@ export class ScInt {
   toJSON(): {
     value: string;
     type: ScIntType;
-  }
+  };
 }
