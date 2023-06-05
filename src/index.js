@@ -47,6 +47,6 @@ export {
   encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
 
-export { BigInteger } from './numbers/generic';
+export { ScInt } from './numbers/scint';
 
 export default module.exports;
