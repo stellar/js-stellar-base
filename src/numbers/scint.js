@@ -96,7 +96,7 @@ export class ScInt {
       case 'scvU256':
       case 'scvI256':
         return new ScInt(scv.value().toBigInt(), {
-            type: scv.switch().substr(3).toLowerCase()
+          type: scv.switch().substr(3).toLowerCase()
         });
 
       default:
@@ -113,10 +113,13 @@ export class ScInt {
   }
 
   constructor(value, opts = {}) {
-    if (value instanceof ScInt) {
+    if (value === undefined) {
+      throw TypeError(`expected integer-like value, got ${value}`);
+    } else if (value instanceof ScInt) {
       value = value.toBigInt();
+    } else {
+      value = BigInt(value); // normalize
     }
-    value = BigInt(value); // normalize
     const signed = value < 0;
     let iType = opts.type ?? '';
 
@@ -286,6 +289,21 @@ export class ScInt {
    */
   toU256() {
     this._sizeCheck(256);
+  }
+
+  valueOf() {
+    return this.raw.valueOf();
+  }
+
+  toString() {
+    return this.raw.toString();
+  }
+
+  toJSON() {
+    return {
+      value: this.toBigInt().toString(),
+      type: this.type
+    };
   }
 
   _sizeCheck(bits) {

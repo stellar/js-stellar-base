@@ -18,8 +18,16 @@ describe('creating large integers', function () {
     });
   });
 
+  it('has correct utility methods', function () {
+    const v = 123456789123456789123456789123456789123456789123456789123456789123456789n;
+    const i = new ScInt(v);
+    expect(i.valueOf()).to.be.eql(new U256(v));
+    expect(i.toString()).to.be.equal('123456789123456789123456789123456789123456789123456789123456789123456789');
+    expect(i.toJSON()).to.be.eql({ value: v.toString(), type: 'u256' });
+  });
+
   describe('64 bit inputs', function () {
-    const sentinel = 85n;
+    const sentinel = 800000085n;
 
     it('handles 64 bits', function () {
       let b = new StellarBase.ScInt(sentinel);
@@ -33,7 +41,7 @@ describe('creating large integers', function () {
       expect(b.toBigInt()).to.equal(-sentinel);
       expect(b.toNumber()).to.equal(Number(-sentinel));
       u64 = b.toU64().u64();
-      expect(u64.low).to.equal(-85);
+      expect(u64.low).to.equal(b.toNumber());
       expect(u64.high).to.equal(-1);
     });
 
