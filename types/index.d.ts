@@ -1055,8 +1055,6 @@ export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccou
 export function extractBaseAddress(address: string): string;
 
 export type ScIntType =
-  | 'i32'
-  | 'u32'
   | 'i64'
   | 'u64'
   | 'i128'

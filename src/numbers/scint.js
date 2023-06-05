@@ -65,13 +65,15 @@ import xdr from '../xdr';
  *
  * @param {number|bigint|string|ScInt} value - a single, integer-like value
  *    which will be interpreted in the smallest appropriate XDR type supported
- *    by Stellar (32, 64, 128, or 256 bit integer values). signed values are
- *    supported, though they are sanity-checked against `opts.type`.
+ *    by Stellar (64, 128, or 256 bit integer values). signed values are
+ *    supported, though they are sanity-checked against `opts.type`. if you need
+ *    32-bit values, you can construct them directly without needing this
+ *    wrapper, e.g. `xdr.ScVal.scvU32(1234)`.
  *
  * @param {object}    [opts] - an object holding optional options for parsing
  * @param {string}    [opts.type] - force a specific data type. options are:
- *    'i32', u32', i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (default: the
- *    smallest one that fits the `value`)
+ *    'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (default: the smallest
+ *    one that fits the `value`)
  *
  * @throws {RangeError} if the `value` is invalid (e.g. floating point), too
  *    large (i.e. exceeds a 256-bit value), or doesn't fit in the `opts.type`
