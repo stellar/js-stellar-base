@@ -224,16 +224,8 @@ export class ScInt {
     this._sizeCheck(128);
 
     const v = this.raw.toBigInt();
-    let hi64 = 0n;
-
-    // special case: preserve the upper sign bits, since with a small value, we
-    // need to "manually" describe it as being negative
-    if (v < 0n && this.raw.size <= 64) {
-      hi64 = -1n;
-    } else {
-      hi64 = BigInt.asIntN(64, v >> 64n); // encode top 64 w/ sign bit
-    }
-    const lo64 = BigInt.asUintN(64, v); // grab btm 64
+    const hi64 = BigInt.asIntN(64, v >> 64n); // encode top 64 w/ sign bit
+    const lo64 = BigInt.asUintN(64, v); // grab btm 64, encode sign
 
     return xdr.ScVal.scvI128(
       new xdr.Int128Parts({
@@ -268,9 +260,9 @@ export class ScInt {
    */
   toI256() {
     const v = this.raw.toBigInt();
-    const hiHi64 = 0n;
-    const hiLo64 = 0n;
-    const loHi64 = 0n;
+    const hiHi64 = BigInt.asIntN(64, v >> 192n); // keep sign bit
+    const hiLo64 = BigInt.asUintN(64, v >> 128n);
+    const loHi64 = BigInt.asUintN(64, v >> 64n);
     const loLo64 = BigInt.asUintN(64, v);
 
     return xdr.ScVal.scvI256(

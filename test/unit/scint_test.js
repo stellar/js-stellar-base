@@ -19,10 +19,13 @@ describe('creating large integers', function () {
   });
 
   it('has correct utility methods', function () {
-    const v = 123456789123456789123456789123456789123456789123456789123456789123456789n;
+    const v =
+      123456789123456789123456789123456789123456789123456789123456789123456789n;
     const i = new ScInt(v);
     expect(i.valueOf()).to.be.eql(new U256(v));
-    expect(i.toString()).to.be.equal('123456789123456789123456789123456789123456789123456789123456789123456789');
+    expect(i.toString()).to.be.equal(
+      '123456789123456789123456789123456789123456789123456789123456789123456789'
+    );
     expect(i.toJSON()).to.be.eql({ value: v.toString(), type: 'u256' });
   });
 
@@ -45,14 +48,14 @@ describe('creating large integers', function () {
       expect(u64.high).to.equal(-1);
     });
 
-    it(`upscales + to 128`, function () {
+    it(`upscales u64 to 128`, function () {
       const b = new StellarBase.ScInt(sentinel);
       const i128 = b.toI128().i128();
       expect(i128.lo().toBigInt()).to.equal(sentinel);
       expect(i128.hi().toBigInt()).to.equal(0n);
     });
 
-    it(`upscales - to 128`, function () {
+    it(`upscales i64 to 128`, function () {
       const b = new StellarBase.ScInt(-sentinel);
       const i128 = b.toI128().i128();
       const hi = i128.hi().toBigInt();
@@ -62,7 +65,7 @@ describe('creating large integers', function () {
       expect(assembled).to.equal(-sentinel);
     });
 
-    it(`upscales + to 256`, function () {
+    it(`upscales i64 to 256`, function () {
       const b = new StellarBase.ScInt(sentinel);
       const i = b.toI256().i256();
 
@@ -78,18 +81,34 @@ describe('creating large integers', function () {
       expect(loHi).to.equal(0n);
       expect(loLo).to.equal(sentinel);
 
-      const assembled = new I256([loLo, loHi, hiLo, hiHi]).toBigInt();
+      let assembled = new I256([loLo, loHi, hiLo, hiHi]).toBigInt();
+      expect(assembled).to.equal(sentinel);
+
+      assembled = new U256([loLo, loHi, hiLo, hiHi]).toBigInt();
       expect(assembled).to.equal(sentinel);
     });
 
-    it(`upscales - to 256`, function () {
+    it(`upscales i64 to 256`, function () {
       const b = new StellarBase.ScInt(-sentinel);
-      const i128 = b.toI128().i128();
-      const hi = i128.hi().toBigInt();
-      const lo = i128.lo().toBigInt();
+      const i = b.toI256().i256();
 
-      const assembled = new I128([lo, hi]).toBigInt();
+      const [hiHi, hiLo, loHi, loLo] = [
+        i.hiHi(),
+        i.hiLo(),
+        i.loHi(),
+        i.loLo()
+      ].map((i) => i.toBigInt());
+
+      expect(hiHi).to.equal(-1n);
+      expect(hiLo).to.equal(BigInt.asUintN(64, -1n));
+      expect(loHi).to.equal(BigInt.asUintN(64, -1n));
+      expect(loLo).to.equal(BigInt.asUintN(64, -sentinel));
+
+      let assembled = new I256([loLo, loHi, hiLo, hiHi]).toBigInt();
       expect(assembled).to.equal(-sentinel);
+
+      assembled = new U256([loLo, loHi, hiLo, hiHi]).toBigInt();
+      expect(assembled).to.equal(BigInt.asUintN(256, -sentinel));
     });
   });
 
