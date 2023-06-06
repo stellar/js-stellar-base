@@ -140,38 +140,27 @@ export class ScInt {
       throw TypeError(`expected integer-like value, got ${value}`);
     } else if (value instanceof ScInt) {
       value = value.toBigInt();
-      //
-      // TODO: Decide whether or not this is worth supporting, i.e. building the
-      // value from a list of integer-like values (like jsXdr.LargeInt does). Why
-      // would someone need to do this? If they need to, they can use the types
-      // directly and pass them into this (e.g. `new U256(values...).toBigInt()`).
-      //
-      // } else if (value instanceof Array) {
-      //   if (typeof opts?.type !== 'string') {
-      //     throw TypeError(`expected opts.type with array of values, got ${opts}`);
-      //   }
     } else {
       value = BigInt(value); // normalize
     }
 
-    let iType = opts.type ?? '';
     const signed = value < 0;
-
-    if (iType.startsWith('u') && signed) {
+    let type = opts.type ?? '';
+    if (type.startsWith('u') && signed) {
       throw TypeError(`specified type ${opts.type} yet negative (${value})`);
     }
 
     // If unspecified, we make a best guess at the type based on the bit length
     // of the value, treating 64 as a minimum and 256 as a maximum.
-    if (iType === '') {
-      iType = signed ? 'i' : 'u';
+    if (type === '') {
+      type = signed ? 'i' : 'u';
       const bitlen = nearestBigIntSize(value);
 
       switch (bitlen) {
         case 64:
         case 128:
         case 256:
-          iType += bitlen.toString();
+          type += bitlen.toString();
           break;
 
         default:
@@ -181,7 +170,7 @@ export class ScInt {
       }
     }
 
-    switch (iType) {
+    switch (type) {
       case 'i64':
         this.raw = new Hyper(value);
         break;
@@ -201,10 +190,10 @@ export class ScInt {
         this.raw = new U256(value);
         break;
       default:
-        throw TypeError(`invalid type: ${iType}`);
+        throw TypeError(`invalid type: ${type}`);
     }
 
-    this.type = iType;
+    this.type = type;
   }
 
   /**

@@ -47,7 +47,7 @@ describe('creating large integers', function () {
       u64 = b.toU64().u64();
       expect(u64.low).to.equal(b.toNumber());
       expect(u64.high).to.equal(-1);
-    })
+    });
 
     it('handles i64', function () {
       let b = new StellarBase.ScInt(sentinel);
@@ -133,67 +133,79 @@ describe('creating large integers', function () {
       expect(() => b.toI64()).to.throw(/too large/i);
 
       let u128 = b.toU128().u128();
-      expect(new U128([
-        u128.lo().low,
-        u128.lo().high,
-        u128.hi().low,
-        u128.hi().high,
-      ]).toBigInt()).to.equal(sentinel);
+      expect(
+        new U128([
+          u128.lo().low,
+          u128.lo().high,
+          u128.hi().low,
+          u128.hi().high
+        ]).toBigInt()
+      ).to.equal(sentinel);
 
       b = new StellarBase.ScInt(-sentinel);
       u128 = b.toU128().u128();
-      expect(new U128([
-        u128.lo().low,
-        u128.lo().high,
-        u128.hi().low,
-        u128.hi().high,
-      ]).toBigInt()).to.equal(BigInt.asUintN(128, -sentinel));
+      expect(
+        new U128([
+          u128.lo().low,
+          u128.lo().high,
+          u128.hi().low,
+          u128.hi().high
+        ]).toBigInt()
+      ).to.equal(BigInt.asUintN(128, -sentinel));
 
       b = new StellarBase.ScInt(sentinel);
       let i128 = b.toI128().i128();
-      expect(new I128([
-        i128.lo().low,
-        i128.lo().high,
-        i128.hi().low,
-        i128.hi().high,
-      ]).toBigInt()).to.equal(sentinel);
+      expect(
+        new I128([
+          i128.lo().low,
+          i128.lo().high,
+          i128.hi().low,
+          i128.hi().high
+        ]).toBigInt()
+      ).to.equal(sentinel);
 
       b = new StellarBase.ScInt(-sentinel);
       i128 = b.toI128().i128();
-      expect(new I128([
-        i128.lo().low,
-        i128.lo().high,
-        i128.hi().low,
-        i128.hi().high,
-      ]).toBigInt()).to.equal(-sentinel);
+      expect(
+        new I128([
+          i128.lo().low,
+          i128.lo().high,
+          i128.hi().low,
+          i128.hi().high
+        ]).toBigInt()
+      ).to.equal(-sentinel);
     });
 
-    it('upscales to 256 bits', function() {
+    it('upscales to 256 bits', function () {
       let b = new StellarBase.ScInt(-sentinel);
       let i256 = b.toI256().i256();
       let u256 = b.toU256().u256();
 
-      expect(new I256([
-        i256.loLo().low,
-        i256.loLo().high,
-        i256.loHi().low,
-        i256.loHi().high,
-        i256.hiLo().low,
-        i256.hiLo().high,
-        i256.hiHi().low,
-        i256.hiHi().high,
-      ]).toBigInt()).to.equal(-sentinel);
+      expect(
+        new I256([
+          i256.loLo().low,
+          i256.loLo().high,
+          i256.loHi().low,
+          i256.loHi().high,
+          i256.hiLo().low,
+          i256.hiLo().high,
+          i256.hiHi().low,
+          i256.hiHi().high
+        ]).toBigInt()
+      ).to.equal(-sentinel);
 
-      expect(new U256([
-        u256.loLo().low,
-        u256.loLo().high,
-        u256.loHi().low,
-        u256.loHi().high,
-        u256.hiLo().low,
-        u256.hiLo().high,
-        u256.hiHi().low,
-        u256.hiHi().high,
-      ]).toBigInt()).to.equal(BigInt.asUintN(256, -sentinel));
+      expect(
+        new U256([
+          u256.loLo().low,
+          u256.loLo().high,
+          u256.loHi().low,
+          u256.loHi().high,
+          u256.hiLo().low,
+          u256.hiLo().high,
+          u256.hiHi().low,
+          u256.hiHi().high
+        ]).toBigInt()
+      ).to.equal(BigInt.asUintN(256, -sentinel));
     });
   });
 
