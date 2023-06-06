@@ -8,7 +8,7 @@
 
 - Various dependency updates ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
 
-
+- Remove crc dependency ([#621](https://github.com/stellar/js-stellar-base/issues/621))
 ## [v9.0.0-beta.2](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
 ### Update
