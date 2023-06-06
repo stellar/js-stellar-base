@@ -24,7 +24,7 @@ describe('creating large integers', function () {
       123456789123456789123456789123456789123456789123456789123456789123456789n;
     const i = new ScInt(v);
     expect(i.valueOf()).to.be.eql(new U256(v));
-    expect(i.toString()).to.be.equal(
+    expect(i.toString()).to.equal(
       '123456789123456789123456789123456789123456789123456789123456789123456789'
     );
     expect(i.toJSON()).to.be.eql({ value: v.toString(), type: 'u256' });
@@ -33,7 +33,7 @@ describe('creating large integers', function () {
   describe('64 bit inputs', function () {
     const sentinel = 800000085n;
 
-    it('handles 64 bits', function () {
+    it('handles u64', function () {
       let b = new StellarBase.ScInt(sentinel);
       expect(b.toBigInt()).to.equal(sentinel);
       expect(b.toNumber()).to.equal(Number(sentinel));
@@ -47,6 +47,15 @@ describe('creating large integers', function () {
       u64 = b.toU64().u64();
       expect(u64.low).to.equal(b.toNumber());
       expect(u64.high).to.equal(-1);
+    })
+
+    it('handles i64', function () {
+      let b = new StellarBase.ScInt(sentinel);
+      expect(b.toBigInt()).to.equal(sentinel);
+      expect(b.toNumber()).to.equal(Number(sentinel));
+      let i64 = b.toI64().i64();
+
+      expect(new xdr.Int64([i64.low, i64.high]).toBigInt()).to.equal(sentinel);
     });
 
     it(`upscales u64 to 128`, function () {
@@ -113,6 +122,81 @@ describe('creating large integers', function () {
     });
   });
 
+  describe('128 bit inputs', function () {
+    const sentinel = 800000000000000000000085n; // 80 bits long
+
+    it('handles inputs', function () {
+      let b = new StellarBase.ScInt(sentinel);
+      expect(b.toBigInt()).to.equal(sentinel);
+      expect(() => b.toNumber()).to.throw(/too large/i);
+      expect(() => b.toU64()).to.throw(/too large/i);
+      expect(() => b.toI64()).to.throw(/too large/i);
+
+      let u128 = b.toU128().u128();
+      expect(new U128([
+        u128.lo().low,
+        u128.lo().high,
+        u128.hi().low,
+        u128.hi().high,
+      ]).toBigInt()).to.equal(sentinel);
+
+      b = new StellarBase.ScInt(-sentinel);
+      u128 = b.toU128().u128();
+      expect(new U128([
+        u128.lo().low,
+        u128.lo().high,
+        u128.hi().low,
+        u128.hi().high,
+      ]).toBigInt()).to.equal(BigInt.asUintN(128, -sentinel));
+
+      b = new StellarBase.ScInt(sentinel);
+      let i128 = b.toI128().i128();
+      expect(new I128([
+        i128.lo().low,
+        i128.lo().high,
+        i128.hi().low,
+        i128.hi().high,
+      ]).toBigInt()).to.equal(sentinel);
+
+      b = new StellarBase.ScInt(-sentinel);
+      i128 = b.toI128().i128();
+      expect(new I128([
+        i128.lo().low,
+        i128.lo().high,
+        i128.hi().low,
+        i128.hi().high,
+      ]).toBigInt()).to.equal(-sentinel);
+    });
+
+    it('upscales to 256 bits', function() {
+      let b = new StellarBase.ScInt(-sentinel);
+      let i256 = b.toI256().i256();
+      let u256 = b.toU256().u256();
+
+      expect(new I256([
+        i256.loLo().low,
+        i256.loLo().high,
+        i256.loHi().low,
+        i256.loHi().high,
+        i256.hiLo().low,
+        i256.hiLo().high,
+        i256.hiHi().low,
+        i256.hiHi().high,
+      ]).toBigInt()).to.equal(-sentinel);
+
+      expect(new U256([
+        u256.loLo().low,
+        u256.loLo().high,
+        u256.loHi().low,
+        u256.loHi().high,
+        u256.hiLo().low,
+        u256.hiLo().high,
+        u256.hiHi().low,
+        u256.hiHi().high,
+      ]).toBigInt()).to.equal(BigInt.asUintN(256, -sentinel));
+    });
+  });
+
   describe('conversion to/from ScVals', function () {
     const v = 80000085n;
     const i = new ScInt(v);
@@ -127,7 +211,7 @@ describe('creating large integers', function () {
     ].forEach(([scv, type]) => {
       it(`works for ${type}`, function () {
         expect(scv.switch().name).to.equal(`scv${type.toUpperCase()}`);
-        expect(typeof scv.toXDR('base64')).to.be.equal('string');
+        expect(typeof scv.toXDR('base64')).to.equal('string');
 
         const bigi = ScInt.fromScVal(scv);
         expect(bigi).to.equal(v);

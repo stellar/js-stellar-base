@@ -1,4 +1,3 @@
-
 import { XdrWriter, XdrReader } from 'js-xdr';
 import { I256 } from '../../src/numbers/scint';
 
@@ -54,9 +53,21 @@ describe('I256.isValid', function () {
 
 describe('I256.slice', function () {
   it('slices number to parts', function () {
-    expect(new I256(-0x7FFFFFFF800000005FFFFFFFA00000003FFFFFFFC00000001FFFFFFFFn).slice(32)).to.be.eql([1n, -2n, 3n, -4n, 5n, -6n, 7n, -8n]);
-    expect(new I256(-0x7FFFFFFF800000005FFFFFFFA00000003FFFFFFFC00000001FFFFFFFFn).slice(64)).to.be.eql([-0x1FFFFFFFFn, -0x3FFFFFFFDn, -0x5FFFFFFFBn, -0x7FFFFFFF9n]);
-    expect(new I256(-0x7FFFFFFF800000005FFFFFFFA00000003FFFFFFFC00000001FFFFFFFFn).slice(128)).to.be.eql([-0x3fffffffc00000001ffffffffn, -0x7fffffff800000005fffffffbn]);
+    expect(
+      new I256(
+        -0x7fffffff800000005fffffffa00000003fffffffc00000001ffffffffn
+      ).slice(32)
+    ).to.be.eql([1n, -2n, 3n, -4n, 5n, -6n, 7n, -8n]);
+    expect(
+      new I256(
+        -0x7fffffff800000005fffffffa00000003fffffffc00000001ffffffffn
+      ).slice(64)
+    ).to.be.eql([-0x1ffffffffn, -0x3fffffffdn, -0x5fffffffbn, -0x7fffffff9n]);
+    expect(
+      new I256(
+        -0x7fffffff800000005fffffffa00000003fffffffc00000001ffffffffn
+      ).slice(128)
+    ).to.be.eql([-0x3fffffffc00000001ffffffffn, -0x7fffffff800000005fffffffbn]);
   });
 });
 
@@ -66,7 +77,9 @@ describe('I256.fromString', function () {
   });
 
   it('works for negative numbers', function () {
-    expect(I256.fromString('-105909234885029834059234850234985028304085').toString()).to.eql('-105909234885029834059234850234985028304085');
+    expect(
+      I256.fromString('-105909234885029834059234850234985028304085').toString()
+    ).to.eql('-105909234885029834059234850234985028304085');
   });
 
   it('fails when providing a string with a decimal place', function () {
