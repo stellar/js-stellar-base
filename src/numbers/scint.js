@@ -135,6 +135,20 @@ export class ScInt {
     }
   }
 
+  /**
+   * Constructs an instance from a "large integer"-like XDR type.
+   *
+   * @param {xdr.LargeInt} i - the XDR instance
+   * @returns {ScInt} the parsed value set up with the specified type
+   *
+   * @see {@link I128} {@link U128} {@link I256} {@link U256}
+   */
+  static fromXdrInt(i) {
+    return new ScInt(i.toBigInt(), {
+      type: `${i.unsigned ? 'u' : 'i'}${i.size}`
+    });
+  }
+
   constructor(value, opts = {}) {
     if (value === undefined) {
       throw TypeError(`expected integer-like value, got ${value}`);
