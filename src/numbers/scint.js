@@ -80,7 +80,15 @@ export class XdrInt {
     }
 
     // normalize values to one type
-    values = values.map(i => (i instanceof XdrInt) ? i.toBigInt() : BigInt(i));
+    values = values.map((i) => {
+      // micro-optimization to no-op the likeliest input value:
+      if (typeof i === 'bigint') {
+        return i;
+      } else if (i instanceof XdrInt) {
+        return i.toBigInt();
+      }
+      return BigInt(i);
+    });
 
     switch (type) {
       case 'i64':
