@@ -1065,7 +1065,7 @@ export type ScIntType =
 export class XdrInt {
   constructor(
     type: ScIntType,
-    values: number|bigint|string|ScInt|Array<number|bigint|string|ScInt>
+    values: number|bigint|string|Array<number|bigint|string>
   );
   static fromScVal(scv: xdr.ScVal): bigint;
 
