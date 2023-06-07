@@ -1,5 +1,11 @@
-import { I128, U128, I256, U256 } from '../../src/numbers/scint';
-import xdr from '../../src/xdr';
+import {
+  Int128 as I128,
+  Uint128 as U128,
+  Int256 as I256,
+  Uint256 as U256
+} from '../../src/numbers/xdrint';
+
+const xdr = StellarBase.xdr; // shorthand
 
 describe('creating large integers', function () {
   describe('picks the right types', function () {

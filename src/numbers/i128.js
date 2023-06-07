@@ -1,6 +1,6 @@
 import { LargeInt } from 'js-xdr';
 
-export class I128 extends LargeInt {
+export class Int128 extends LargeInt {
   constructor(...args) {
     super(args);
   }
@@ -14,4 +14,4 @@ export class I128 extends LargeInt {
   }
 }
 
-I128.defineIntBoundaries();
+Int128.defineIntBoundaries();

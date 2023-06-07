@@ -1,6 +1,6 @@
 import { LargeInt } from 'js-xdr';
 
-export class U256 extends LargeInt {
+export class Uint256 extends LargeInt {
   constructor(...args) {
     super(args);
   }
@@ -14,4 +14,4 @@ export class U256 extends LargeInt {
   }
 }
 
-U256.defineIntBoundaries();
+Uint256.defineIntBoundaries();
