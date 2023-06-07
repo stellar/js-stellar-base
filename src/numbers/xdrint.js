@@ -1,10 +1,10 @@
 /* eslint no-bitwise: ["error", {"allow": [">>"]}] */
 import { Hyper, UnsignedHyper } from 'js-xdr';
 
-import { Uint128 } from './u128';
-import { Int128 } from './i128';
-import { Int256 } from './i256';
-import { Uint256 } from './u256';
+import { Uint128 } from './uint128';
+import { Uint256 } from './uint256';
+import { Int128 } from './int128';
+import { Int256 } from './int256';
 
 import xdr from '../xdr';
 
