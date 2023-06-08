@@ -1,10 +1,7 @@
-import {
-  Int128 as I128,
-  Uint128 as U128,
-  Int256 as I256,
-  Uint256 as U256
-} from '../../src/numbers/xdrint';
-
+const I128 = StellarBase.Int128;
+const U128 = StellarBase.Uint128;
+const I256 = StellarBase.Int256;
+const U256 = StellarBase.Uint256;
 const xdr = StellarBase.xdr; // shorthand
 
 describe('creating large integers', function () {
