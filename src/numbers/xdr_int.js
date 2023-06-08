@@ -207,7 +207,7 @@ export class XdrInt {
  * @example
  * ```js
  * let scv = contract.call("add", x, y); // assume it returns an xdr.ScVal
- * let bigi = convertScVal(scv);
+ * let bigi = scValToInt(scv);
  *
  * new ScInt(bigi);           // if you don't care about types, and
  * new XdrInt('i128', bigi);  // if you do
@@ -218,7 +218,7 @@ export class XdrInt {
  *
  * @throws {TypeError} if the `scv` input value doesn't represent an integer
  */
-export function convertScVal(scv) {
+export function scValToInt(scv) {
   const type = scv.switch().name.slice(3).toLowerCase();
 
   switch (scv.switch().name) {

@@ -1,6 +1,6 @@
-import { XdrInt } from './xdrint';
+import { XdrInt, scValToInt } from './xdrint';
 
-export { XdrInt };
+export { XdrInt, scValToInt };
 
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
