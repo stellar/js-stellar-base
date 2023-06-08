@@ -110,7 +110,10 @@ export class XdrInt {
   toNumber() {
     const bi = this.int.toBigInt();
     if (bi > Number.MAX_SAFE_INTEGER || bi < Number.MIN_SAFE_INTEGER) {
-      throw RangeError(`value ${bi} too large for Number`);
+      throw RangeError(
+        `value ${bi} not in range for Number ` +
+          `[${Number.MAX_SAFE_INTEGER}, ${Number.MIN_SAFE_INTEGER}]`
+      );
     }
 
     return Number(bi);
