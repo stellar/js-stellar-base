@@ -130,7 +130,7 @@ describe('creating large integers', function () {
     it('handles inputs', function () {
       let b = new StellarBase.ScInt(sentinel);
       expect(b.toBigInt()).to.equal(sentinel);
-      expect(() => b.toNumber()).to.throw(/too large/i);
+      expect(() => b.toNumber()).to.throw(/not in range/i);
       expect(() => b.toU64()).to.throw(/too large/i);
       expect(() => b.toI64()).to.throw(/too large/i);
 
@@ -227,7 +227,7 @@ describe('creating large integers', function () {
         expect(scv.switch().name).to.equal(`scv${type.toUpperCase()}`);
         expect(typeof scv.toXDR('base64')).to.equal('string');
 
-        const bigi = StellarBase.ScInt.fromScVal(scv);
+        const bigi = StellarBase.scValToInt(scv);
         expect(bigi).to.equal(v);
         expect(new StellarBase.ScInt(bigi, { type }).toJSON()).to.eql({
           ...i.toJSON(),
@@ -240,13 +240,13 @@ describe('creating large integers', function () {
       const i32 = new xdr.ScVal.scvI32(Number(v));
       const u32 = new xdr.ScVal.scvU32(Number(v));
 
-      expect(StellarBase.ScInt.fromScVal(i32)).to.equal(v);
-      expect(StellarBase.ScInt.fromScVal(u32)).to.equal(v);
+      expect(StellarBase.scValToInt(i32)).to.equal(v);
+      expect(StellarBase.scValToInt(u32)).to.equal(v);
     });
 
     it('throws for non-integers', function () {
       expect(() =>
-        StellarBase.ScInt.fromScVal(new xdr.ScVal.scvString('hello'))
+        StellarBase.scValToInt(new xdr.ScVal.scvString('hello'))
       ).to.throw(/integer/i);
     });
   });
@@ -266,10 +266,10 @@ describe('creating large integers', function () {
       let big;
 
       big = new StellarBase.ScInt(1n << 64n);
-      expect(() => big.toNumber()).to.throw(/too large/i);
+      expect(() => big.toNumber()).to.throw(/not in range/i);
 
       big = new StellarBase.ScInt(Number.MAX_SAFE_INTEGER + 1);
-      expect(() => big.toNumber()).to.throw(/too large/i);
+      expect(() => big.toNumber()).to.throw(/not in range/i);
 
       big = new StellarBase.ScInt(1, { type: 'i128' });
       expect(() => big.toU64()).to.throw(/too large/i);
