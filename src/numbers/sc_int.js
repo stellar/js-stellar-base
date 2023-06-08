@@ -1,4 +1,4 @@
-import { XdrInt, scValToInt } from './xdrint';
+import { XdrInt, scValToInt } from './xdr_int';
 
 export { XdrInt, scValToInt };
 
@@ -10,8 +10,8 @@ export { XdrInt, scValToInt };
  *
  * If you need to create a native BigInt from a list of integer "parts" (for
  * example, you have a series of encoded 32-bit integers that represent a larger
- * value), you should use the specific XDR type, like {@link U128}. For example,
- * you could do `new U128(values...).toBigInt()`.
+ * value), you can use the lower level abstraction {@link XdrInt}. For example,
+ * you could do `new XdrInt('u128', bytes...).toBigInt()`.
  *
  * @example
  * ```js

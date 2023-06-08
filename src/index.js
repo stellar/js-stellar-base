@@ -47,7 +47,7 @@ export {
   encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
 
-export { ScInt, XdrInt, scValToInt } from './numbers/scint';
-export { Uint256, Int256, Uint128, Int128 } from './numbers/xdrint';
+export { ScInt, XdrInt, scValToInt } from './numbers/sc_int';
+export { Uint256, Int256, Uint128, Int128 } from './numbers/xdr_int';
 
 export default module.exports;
