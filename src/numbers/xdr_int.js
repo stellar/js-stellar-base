@@ -12,54 +12,6 @@ export class XdrInt {
   int; // child class of a jsXdr.LargeInt
   type; // string, one of i64, u64, i128, u128, i256, or u256
 
-  /**
-   * Transforms an opaque {@link xdr.ScVal} into a native BigInt, if possible.
-   *
-   * You can then give this back to create an {@link ScInt} instance, but the
-   * rationale here is that the native type is more likely to be immediately
-   * useful.
-   *
-   * @param {xdr.ScVal} scv - the raw XDR value to parse into an integer
-   * @returns {bigint} the integer value, regardless of size (even 32-bit)
-   * @throws {TypeError} if the input value doesn't represent an integer
-   */
-  static fromScVal(scv) {
-    switch (scv.switch().name) {
-      case 'scvU32':
-      case 'scvI32':
-        return BigInt(scv.value());
-
-      case 'scvU64':
-      case 'scvI64':
-        return scv.value().toBigInt();
-
-      case 'scvU128':
-        return new Uint128(scv.value().lo(), scv.value().hi()).toBigInt();
-
-      case 'scvI128':
-        return new Int128(scv.value().lo(), scv.value().hi()).toBigInt();
-
-      case 'scvU256':
-        return new Uint256(
-          scv.value().loLo(),
-          scv.value().loHi(),
-          scv.value().hiLo(),
-          scv.value().hiHi()
-        ).toBigInt();
-
-      case 'scvI256':
-        return new Int256(
-          scv.value().loLo(),
-          scv.value().loHi(),
-          scv.value().hiLo(),
-          scv.value().hiHi()
-        ).toBigInt();
-
-      default:
-        throw TypeError(`expected integer type, got ${scv.switch()}`);
-    }
-  }
-
   constructor(type, values) {
     if (!(values instanceof Array)) {
       values = [values];
@@ -243,6 +195,56 @@ export class XdrInt {
     if (this.int.size > bits) {
       throw RangeError(`value too large for ${bits} bits (${this.type})`);
     }
+  }
+}
+
+/**
+ * Transforms an opaque {@link xdr.ScVal} into a native bigint, if possible.
+ *
+ * If you then want to use this in the abstractions provided by this module,
+ * you can pass it to the constructor of {@link XdrInt}.
+ *
+ * @example
+ * ```js
+ * let scv = contract.call("add", x, y); // assume it returns an xdr.ScVal
+ * let bigi = convertScVal(scv);
+ *
+ * new ScInt(bigi);           // if you don't care about types, and
+ * new XdrInt('i128', bigi);  // if you do
+ * ```
+ *
+ * @param {xdr.ScVal} scv - the raw XDR value to parse into an integer
+ * @returns {bigint} the native value of this input value
+ *
+ * @throws {TypeError} if the `scv` input value doesn't represent an integer
+ */
+export function convertScVal(scv) {
+  const type = scv.switch().name.slice(3).toLowerCase();
+
+  switch (scv.switch().name) {
+    case 'scvU32':
+    case 'scvI32':
+      return BigInt(scv.value());
+
+    case 'scvU64':
+    case 'scvI64':
+      return new XdrInt(type, scv.value()).toBigInt();
+
+    case 'scvU128':
+    case 'scvI128':
+      return new XdrInt(type, [scv.value().lo(), scv.value().hi()]).toBigInt();
+
+    case 'scvU256':
+    case 'scvI256':
+      return new XdrInt(type, [
+        scv.value().loLo(),
+        scv.value().loHi(),
+        scv.value().hiLo(),
+        scv.value().hiHi()
+      ]).toBigInt();
+
+    default:
+      throw TypeError(`expected integer type, got ${scv.switch()}`);
   }
 }
 
