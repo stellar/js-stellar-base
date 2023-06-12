@@ -12,7 +12,6 @@
 
 ### Update
 - Upgrade all dependencies to their latest versions ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
-
 - Drop the `crc` dependency and inline it to lower bundle size ([#621](https://github.com/stellar/js-stellar-base/pull/621)).
 
 
