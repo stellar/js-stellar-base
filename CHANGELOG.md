@@ -3,12 +3,19 @@
 
 ## Unreleased
 
-- Fix bug in asset sorting. We were not correctly sorting in ascii bytes
-  ([#606](https://github.com/stellar/js-stellar-base/pull/606))
 
-- Various dependency updates ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
+## [v9.0.0-beta.3](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
-- Remove crc dependency ([#621](https://github.com/stellar/js-stellar-base/issues/621))
+### Fix
+
+- Fixes a bug when sorting mixed-case assets for liquidity pools ([#606](https://github.com/stellar/js-stellar-base/pull/606)).
+
+### Update
+- Upgrade all dependencies to their latest versions ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
+
+- Drop the `crc` dependency and inline it to lower bundle size ([#621](https://github.com/stellar/js-stellar-base/pull/621)).
+
+
 ## [v9.0.0-beta.2](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
 ### Update
