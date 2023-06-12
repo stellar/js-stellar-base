@@ -12,6 +12,13 @@ describe('Contract', function () {
       expect(contract.contractId('hex')).to.equal(contractId);
     });
 
+    it('converts strkeys to hex', function () {
+      let contractId = 'CDYFWOUPJCGPFU2CS33BZSEUD7INMFKXKJ25TIMRUHQGAFISBVM2D7J6';
+      let contract = new StellarBase.Contract(contractId);
+      let expected = 'f05b3a8f488cf2d34296f61cc8941fd0d615575275d9a191a1e06015120d59a1';
+      expect(contract.contractId('hex')).to.equal(expected);
+    });
+
     it('parses throws on invalid ids', function () {
       expect(() => {
         new StellarBase.Contract('foobar')
