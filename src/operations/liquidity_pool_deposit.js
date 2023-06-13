@@ -1,4 +1,3 @@
-import isUndefined from 'lodash/isUndefined';
 import xdr from '../xdr';
 
 /**
@@ -41,12 +40,12 @@ export function liquidityPoolDeposit(opts = {}) {
   }
   attributes.maxAmountB = this._toXDRAmount(maxAmountB);
 
-  if (isUndefined(minPrice)) {
+  if (minPrice === undefined) {
     throw new TypeError('minPrice argument is required');
   }
   attributes.minPrice = this._toXDRPrice(minPrice);
 
-  if (isUndefined(maxPrice)) {
+  if (maxPrice === undefined) {
     throw new TypeError('maxPrice argument is required');
   }
   attributes.maxPrice = this._toXDRPrice(maxPrice);

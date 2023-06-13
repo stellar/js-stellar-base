@@ -1,6 +1,4 @@
-import clone from 'lodash/clone';
-import padEnd from 'lodash/padEnd';
-import trimEnd from 'lodash/trimEnd';
+import trimEnd from './util/util';
 import xdr from './xdr';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
@@ -119,7 +117,7 @@ export class Asset {
 
     // pad code with null bytes if necessary
     const padLength = this.code.length <= 4 ? 4 : 12;
-    const paddedCode = padEnd(this.code, padLength, '\0');
+    const paddedCode = this.code.padEnd(padLength, '\0');
 
     // eslint-disable-next-line new-cap
     const assetType = new xdrType({
@@ -134,14 +132,16 @@ export class Asset {
    * @returns {string} Asset code
    */
   getCode() {
-    return clone(this.code);
+    const code = {...this.code};
+    return code;
   }
 
   /**
    * @returns {string} Asset issuer
    */
   getIssuer() {
-    return clone(this.issuer);
+    const issuer = {... this.issuer};
+    return issuer;
   }
 
   /**

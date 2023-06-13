@@ -1,7 +1,5 @@
-import times from 'lodash/times';
-
 function bufferToArray(buffer, length, offset = 0) {
-  return times(length, (n) => buffer[offset + n]);
+  return Array.from({ length }, (_, n) => buffer[offset + n]);
 }
 
 function cursorToArray(io) {

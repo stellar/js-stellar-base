@@ -1,4 +1,3 @@
-import isUndefined from 'lodash/isUndefined';
 import xdr from '../xdr';
 
 /**
@@ -27,7 +26,7 @@ export function createPassiveSellOffer(opts) {
     throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
   attributes.amount = this._toXDRAmount(opts.amount);
-  if (isUndefined(opts.price)) {
+  if (opts.price === undefined) {
     throw new TypeError('price argument is required');
   }
   attributes.price = this._toXDRPrice(opts.price);

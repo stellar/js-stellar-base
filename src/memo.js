@@ -1,6 +1,3 @@
-import isUndefined from 'lodash/isUndefined';
-import isString from 'lodash/isString';
-import clone from 'lodash/clone';
 import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from './xdr';
@@ -52,7 +49,7 @@ export class Memo {
       case MemoReturn:
         Memo._validateHashValue(value);
         // We want MemoHash and MemoReturn to have Buffer as a value
-        if (isString(value)) {
+        if (typeof(value) === 'string') {
           this._value = Buffer.from(value, 'hex');
         }
         break;
@@ -65,7 +62,7 @@ export class Memo {
    * Contains memo type: `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
    */
   get type() {
-    return clone(this._type);
+    return {...this._type};
   }
 
   set type(type) {
@@ -85,7 +82,7 @@ export class Memo {
         return null;
       case MemoID:
       case MemoText:
-        return clone(this._value);
+        return {...this._value};
       case MemoHash:
       case MemoReturn:
         return Buffer.from(this._value);
@@ -101,7 +98,7 @@ export class Memo {
   static _validateIdValue(value) {
     const error = new Error(`Expects a int64 as a string. Got ${value}`);
 
-    if (!isString(value)) {
+    if (typeof(value) !== 'string') {
       throw error;
     }
 
@@ -134,12 +131,12 @@ export class Memo {
       `Expects a 32 byte hash value or hex encoded string. Got ${value}`
     );
 
-    if (value === null || isUndefined(value)) {
+    if (value === null || value === undefined) {
       throw error;
     }
 
     let valueBuffer;
-    if (isString(value)) {
+    if (typeof(value) === 'string') {
       if (!/^[0-9A-Fa-f]{64}$/g.test(value)) {
         throw error;
       }

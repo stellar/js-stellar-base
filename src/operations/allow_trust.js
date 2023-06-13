@@ -1,4 +1,3 @@
-import padEnd from 'lodash/padEnd';
 import xdr from '../xdr';
 import { Keypair } from '../keypair';
 import { StrKey } from '../strkey';
@@ -27,10 +26,10 @@ export function allowTrust(opts) {
   const attributes = {};
   attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
   if (opts.assetCode.length <= 4) {
-    const code = padEnd(opts.assetCode, 4, '\0');
+    const code = opts.assetCode.padEnd(4, '\0');
     attributes.asset = xdr.AssetCode.assetTypeCreditAlphanum4(code);
   } else if (opts.assetCode.length <= 12) {
-    const code = padEnd(opts.assetCode, 12, '\0');
+    const code = opts.assetCode.padEnd(12, '\0');
     attributes.asset = xdr.AssetCode.assetTypeCreditAlphanum12(code);
   } else {
     throw new Error('Asset code must be 12 characters at max.');

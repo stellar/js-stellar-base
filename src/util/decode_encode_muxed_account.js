@@ -1,5 +1,3 @@
-import isString from 'lodash/isString';
-
 import xdr from '../xdr';
 import { StrKey } from '../strkey';
 
@@ -58,7 +56,7 @@ export function encodeMuxedAccount(address, id) {
   if (!StrKey.isValidEd25519PublicKey(address)) {
     throw new Error('address should be a Stellar account ID (G...)');
   }
-  if (!isString(id)) {
+  if (typeof(id) !== 'string') {
     throw new Error('id should be a string representing a number (uint64)');
   }
 

@@ -1,5 +1,3 @@
-import isString from 'lodash/isString';
-
 import xdr from './xdr';
 import { Account } from './account';
 import { StrKey } from './strkey';
@@ -99,7 +97,7 @@ export class MuxedAccount {
   }
 
   setId(id) {
-    if (!isString(id)) {
+    if (typeof(id)!== 'string') {
       throw new Error('id should be a string representing a number (uint64)');
     }
 
