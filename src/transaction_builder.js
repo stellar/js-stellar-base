@@ -121,12 +121,12 @@ export class TransactionBuilder {
     this.operations = [];
 
     this.baseFee = opts.fee;
-    this.timebounds = {...opts.timebounds} || null;
-    this.ledgerbounds = {...opts.ledgerbounds} || null;
+    this.timebounds = opts.timebounds ? { ...opts.timebounds } : null;
+    this.ledgerbounds = opts.ledgerbounds ? { ...opts.ledgerbounds } : null;
     this.minAccountSequence = opts.minAccountSequence || null;
     this.minAccountSequenceAge = opts.minAccountSequenceAge || null;
     this.minAccountSequenceLedgerGap = opts.minAccountSequenceLedgerGap || null;
-    this.extraSigners = {...opts.extraSigners} || null;
+    this.extraSigners = opts.extraSigners ? [...opts.extraSigners] : null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
   }
@@ -416,7 +416,7 @@ export class TransactionBuilder {
       throw new Error('extra_signers cannot be longer than 2 elements.');
     }
 
-    this.extraSigners = {...extraSigners};
+    this.extraSigners = [...extraSigners];
 
     return this;
   }
@@ -495,8 +495,8 @@ export class TransactionBuilder {
 
       const extraSigners =
         this.extraSigners !== null
-          ? this.extraSigners.map(SignerKey.decodeAddress)
-          : [];
+        ? this.extraSigners.map(SignerKey.decodeAddress)
+        : [];
 
       attrs.cond = xdr.Preconditions.precondV2(
         new xdr.PreconditionsV2({

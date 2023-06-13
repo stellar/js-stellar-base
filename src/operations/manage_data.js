@@ -13,7 +13,7 @@ import xdr from '../xdr';
 export function manageData(opts) {
   const attributes = {};
 
-  if (!(typeof opts.name !== 'string' && opts.name.length <= 64)) {
+  if (!((typeof(opts.name) === 'string') && opts.name.length <= 64)) {
     throw new Error('name must be a string, up to 64 characters');
   }
   attributes.dataName = opts.name;

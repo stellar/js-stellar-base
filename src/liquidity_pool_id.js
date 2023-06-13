@@ -52,7 +52,7 @@ export class LiquidityPoolId {
    * @returns {string} Liquidity pool ID.
    */
   getLiquidityPoolId() {
-    return {...this.liquidityPoolId};
+    return  String(this.liquidityPoolId);
   }
 
   /**

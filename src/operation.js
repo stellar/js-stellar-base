@@ -414,7 +414,7 @@ export class Operation {
       amount.decimalPlaces() > 7 ||
       // NaN or Infinity
       amount.isNaN() ||
-      !Number.isFinite(amount)
+      !amount.isFinite()
     ) {
       return false;
     }
@@ -437,7 +437,7 @@ export class Operation {
    * @returns {undefined|Number}
    */
   static _checkUnsignedIntValue(name, value, isValidFunction = null) {
-    if (value === undefined) {
+    if (typeof value === 'undefined') {
       return undefined;
     }
 
@@ -446,7 +446,7 @@ export class Operation {
     }
 
     switch (true) {
-      case typeof number !== 'number' || !Number.isFinite(value) || value % 1 !== 0:
+      case typeof value !== 'number' || !Number.isFinite(value) || value % 1 !== 0:
         throw new Error(`${name} value is invalid`);
       case value < 0:
         throw new Error(`${name} value must be unsigned`);

@@ -137,8 +137,8 @@ export class Keypair {
    * @return {xdr.MuxedAccount}
    */
   xdrMuxedAccount(id) {
-    if (id !== undefined) {
-      if (typeof(id) !== 'string') {
+    if (typeof id !== 'undefined') {
+      if (typeof id !== 'string') {
         throw new TypeError(`expected string for ID, got ${typeof id}`);
       }
 

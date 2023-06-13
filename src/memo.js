@@ -49,7 +49,7 @@ export class Memo {
       case MemoReturn:
         Memo._validateHashValue(value);
         // We want MemoHash and MemoReturn to have Buffer as a value
-        if (typeof(value) === 'string') {
+        if (typeof value === 'string') {
           this._value = Buffer.from(value, 'hex');
         }
         break;
@@ -62,7 +62,7 @@ export class Memo {
    * Contains memo type: `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
    */
   get type() {
-    return {...this._type};
+    return this._type;
   }
 
   set type(type) {
@@ -82,7 +82,7 @@ export class Memo {
         return null;
       case MemoID:
       case MemoText:
-        return {...this._value};
+        return  this._value;
       case MemoHash:
       case MemoReturn:
         return Buffer.from(this._value);
@@ -131,12 +131,12 @@ export class Memo {
       `Expects a 32 byte hash value or hex encoded string. Got ${value}`
     );
 
-    if (value === null || value === undefined) {
+    if (value === null || typeof value === 'undefined') {
       throw error;
     }
 
     let valueBuffer;
-    if (typeof(value) === 'string') {
+    if (typeof value === 'string') {
       if (!/^[0-9A-Fa-f]{64}$/g.test(value)) {
         throw error;
       }
