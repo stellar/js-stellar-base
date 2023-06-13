@@ -25,7 +25,6 @@ Though we have tried to maintain compatibility with older JavaScript implementat
 ### Fixes
 
 - Fixes a bug when sorting mixed-case assets for liquidity pools ([#606](https://github.com/stellar/js-stellar-base/pull/606)).
-
 - Documentation is fixed and should generate correctly on https://stellar.github.io/js-stellar-base/ ([#609](https://github.com/stellar/js-stellar-base/pull/609)).
 
 ### Updates
