@@ -2,7 +2,39 @@
 
 
 ## Unreleased
-- Remove lodash dependency ([#624](https://github.com/stellar/js-stellar-base/issues/624))
+
+
+## [v9.0.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0)
+
+This is a large update and the following changelog incorporates ALL changes across the `beta.N` versions of this upgrade.
+
+This version is marked by a major version bump because of the significant upgrades to underlying dependencies. While there should be no noticeable API changes from a downstream perspective, there may be breaking changes in the way that this library is bundled.
+
+The browser bundle size has decreased **significantly**:
+
+  * `stellar-base.min.js` is **340 KiB**, down from **1.2 MiB** previously.
+  * the new, unminified `stellar-base.js` is **895 KiB**.
+
+
+### Breaking Changes
+
+- The build system has been completely overhauled to support Webpack 5 ([#584](https://github.com/stellar/js-stellar-base/pull/584), [#585](https://github.com/stellar/js-stellar-base/pull/585)).
+
+Though we have tried to maintain compatibility with older JavaScript implementations, this still means you may need to update your build pipeline to transpile to certain targets.
+
+### Fixes
+
+- Fixes a bug when sorting mixed-case assets for liquidity pools ([#606](https://github.com/stellar/js-stellar-base/pull/606)).
+
+- Documentation is fixed and should generate correctly on https://stellar.github.io/js-stellar-base/ ([#609](https://github.com/stellar/js-stellar-base/pull/609)).
+
+### Updates
+
+- XDR has been updated to its latest version (both `curr` and `next` versions, [#587](https://github.com/stellar/js-stellar-base/pull/587)).
+- Drop the `lodash` dependency entirely ([#624](https://github.com/stellar/js-stellar-base/issues/624)).
+- Drop the `crc` dependency and inline it to lower bundle size ([#621](https://github.com/stellar/js-stellar-base/pull/621)).
+- Upgrade all dependencies to their latest versions ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
+
 
 ## [v9.0.0-beta.3](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
