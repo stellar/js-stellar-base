@@ -386,8 +386,8 @@ export class Operation {
    * Note that while smart contracts allow larger amounts, this is oriented
    * towards validating the standard Stellar operations.
    *
-   * @param {string} value          the amount to validate
-   * @param {[boolean]} allowZero   whether or not zero is valid (default: no)
+   * @param {string}  value       the amount to validate
+   * @param {boolean} allowZero   optionally, whether or not zero is valid (default: no)
    *
    * @returns {boolean}
    */
