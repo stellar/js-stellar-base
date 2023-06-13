@@ -1,9 +1,6 @@
 /* eslint no-bitwise: ["error", {"allow": ["<<", ">>", "^", "&", "&="]}] */
 
 import base32 from 'base32.js';
-import isUndefined from 'lodash/isUndefined';
-import isNull from 'lodash/isNull';
-import isString from 'lodash/isString';
 import { verifyChecksum } from './util/checksum';
 
 const versionBytes = {
@@ -198,7 +195,7 @@ export class StrKey {
  *     and (c) output length.
  */
 function isValid(versionByteName, encoded) {
-  if (!isString(encoded)) {
+  if (typeof encoded !== 'string') {
     return false;
   }
 
@@ -260,7 +257,7 @@ function isValid(versionByteName, encoded) {
 }
 
 export function decodeCheck(versionByteName, encoded) {
-  if (!isString(encoded)) {
+  if (typeof encoded !== 'string') {
     throw new TypeError('encoded argument must be of type String');
   }
 
@@ -276,7 +273,7 @@ export function decodeCheck(versionByteName, encoded) {
 
   const expectedVersion = versionBytes[versionByteName];
 
-  if (isUndefined(expectedVersion)) {
+  if (expectedVersion === undefined) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
         `Expected one of ${Object.keys(versionBytes).join(', ')}`
@@ -299,13 +296,13 @@ export function decodeCheck(versionByteName, encoded) {
 }
 
 export function encodeCheck(versionByteName, data) {
-  if (isNull(data) || isUndefined(data)) {
+  if (data === null || data === undefined) {
     throw new Error('cannot encode null data');
   }
 
   const versionByte = versionBytes[versionByteName];
 
-  if (isUndefined(versionByte)) {
+  if (versionByte === undefined) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
         `Expected one of ${Object.keys(versionBytes).join(', ')}`

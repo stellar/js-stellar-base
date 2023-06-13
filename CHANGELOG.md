@@ -2,7 +2,7 @@
 
 
 ## Unreleased
-
+- Remove lodash dependency ([#624](https://github.com/stellar/js-stellar-base/issues/624))
 
 ## [v9.0.0-beta.3](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 

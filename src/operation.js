@@ -2,11 +2,7 @@
 
 import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
-import trimEnd from 'lodash/trimEnd';
-import isUndefined from 'lodash/isUndefined';
-import isString from 'lodash/isString';
-import isNumber from 'lodash/isNumber';
-import isFinite from 'lodash/isFinite';
+import { trimEnd } from './util/util';
 import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
 import { LiquidityPoolAsset } from './liquidity_pool_asset';
@@ -396,7 +392,7 @@ export class Operation {
    * @returns {boolean}
    */
   static isValidAmount(value, allowZero = false) {
-    if (!isString(value)) {
+    if (typeof value !== 'string') {
       return false;
     }
 
@@ -441,16 +437,18 @@ export class Operation {
    * @returns {undefined|Number}
    */
   static _checkUnsignedIntValue(name, value, isValidFunction = null) {
-    if (isUndefined(value)) {
+    if (typeof value === 'undefined') {
       return undefined;
     }
 
-    if (isString(value)) {
+    if (typeof value === 'string') {
       value = parseFloat(value);
     }
 
     switch (true) {
-      case !isNumber(value) || !isFinite(value) || value % 1 !== 0:
+      case typeof value !== 'number' ||
+        !Number.isFinite(value) ||
+        value % 1 !== 0:
         throw new Error(`${name} value is invalid`);
       case value < 0:
         throw new Error(`${name} value must be unsigned`);

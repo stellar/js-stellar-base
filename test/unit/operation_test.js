@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import isString from 'lodash/isString';
 
 import {
   encodeMuxedAccountToAddress,
@@ -675,7 +674,7 @@ describe('Operation', function () {
       var opts = {};
 
       var hash = StellarBase.hash('Tx hash').toString('hex');
-      expect(isString(hash)).to.be.true;
+      expect(typeof hash === 'string').to.be.true;
 
       opts.signer = {
         preAuthTx: hash,
@@ -718,7 +717,7 @@ describe('Operation', function () {
       var opts = {};
 
       var hash = StellarBase.hash('Hash Preimage').toString('hex');
-      expect(isString(hash)).to.be.true;
+      expect(typeof hash === 'string').to.be.true;
 
       opts.signer = {
         sha256Hash: hash,
