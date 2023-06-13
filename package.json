@@ -1,6 +1,6 @@
 {
   "name": "stellar-base",
-  "version": "9.0.0-beta.3",
+  "version": "9.0.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
