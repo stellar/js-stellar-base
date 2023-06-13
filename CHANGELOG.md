@@ -10,7 +10,7 @@
 
 - Remove crc dependency ([#621](https://github.com/stellar/js-stellar-base/issues/621))
 
-- Remove lodash dependency ([#622](https://github.com/stellar/js-stellar-base/issues/622))
+- Remove lodash dependency ([#624](https://github.com/stellar/js-stellar-base/issues/624))
 ## [v9.0.0-beta.2](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
 ### Update
