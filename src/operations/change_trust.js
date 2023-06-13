@@ -29,7 +29,7 @@ export function changeTrust(opts) {
     throw new TypeError('asset must be Asset or LiquidityPoolAsset');
   }
 
-  if ((opts.limit !== undefined) && !this.isValidAmount(opts.limit, true)) {
+  if (opts.limit !== undefined && !this.isValidAmount(opts.limit, true)) {
     throw new TypeError(this.constructAmountRequirementsError('limit'));
   }
 

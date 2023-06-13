@@ -392,7 +392,7 @@ export class Operation {
    * @returns {boolean}
    */
   static isValidAmount(value, allowZero = false) {
-    if (typeof(value) !== 'string') {
+    if (typeof value !== 'string') {
       return false;
     }
 
@@ -441,12 +441,14 @@ export class Operation {
       return undefined;
     }
 
-    if (typeof(value)==='string') {
+    if (typeof value === 'string') {
       value = parseFloat(value);
     }
 
     switch (true) {
-      case typeof value !== 'number' || !Number.isFinite(value) || value % 1 !== 0:
+      case typeof value !== 'number' ||
+        !Number.isFinite(value) ||
+        value % 1 !== 0:
         throw new Error(`${name} value is invalid`);
       case value < 0:
         throw new Error(`${name} value must be unsigned`);

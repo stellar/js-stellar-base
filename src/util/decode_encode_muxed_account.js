@@ -56,7 +56,7 @@ export function encodeMuxedAccount(address, id) {
   if (!StrKey.isValidEd25519PublicKey(address)) {
     throw new Error('address should be a Stellar account ID (G...)');
   }
-  if (typeof(id) !== 'string') {
+  if (typeof id !== 'string') {
     throw new Error('id should be a string representing a number (uint64)');
   }
 

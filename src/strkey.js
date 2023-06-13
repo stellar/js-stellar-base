@@ -195,7 +195,7 @@ export class StrKey {
  *     and (c) output length.
  */
 function isValid(versionByteName, encoded) {
-  if (typeof(encoded) !== 'string') {
+  if (typeof encoded !== 'string') {
     return false;
   }
 
@@ -257,7 +257,7 @@ function isValid(versionByteName, encoded) {
 }
 
 export function decodeCheck(versionByteName, encoded) {
-  if (typeof(encoded) !== 'string') {
+  if (typeof encoded !== 'string') {
     throw new TypeError('encoded argument must be of type String');
   }
 
@@ -296,7 +296,7 @@ export function decodeCheck(versionByteName, encoded) {
 }
 
 export function encodeCheck(versionByteName, data) {
-  if (data === null ||data === undefined) {
+  if (data === null || data === undefined) {
     throw new Error('cannot encode null data');
   }
 
@@ -351,7 +351,7 @@ function calculateChecksum(payload) {
     0xdf7c, 0xaf9b, 0xbfba, 0x8fd9, 0x9ff8, 0x6e17, 0x7e36, 0x4e55, 0x5e74,
     0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
   ];
-  
+
   let crc16 = 0x0;
 
   for (let i = 0; i < payload.length; i += 1) {

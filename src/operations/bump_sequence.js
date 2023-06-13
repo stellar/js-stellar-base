@@ -14,7 +14,7 @@ import xdr from '../xdr';
 export function bumpSequence(opts) {
   const attributes = {};
 
-  if (typeof(opts.bumpTo) !== 'string') {
+  if (typeof opts.bumpTo !== 'string') {
     throw new Error('bumpTo must be a string');
   }
 

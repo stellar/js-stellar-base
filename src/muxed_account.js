@@ -97,7 +97,7 @@ export class MuxedAccount {
   }
 
   setId(id) {
-    if (typeof(id)!== 'string') {
+    if (typeof id !== 'string') {
       throw new Error('id should be a string representing a number (uint64)');
     }
 

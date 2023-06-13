@@ -109,7 +109,7 @@ export function revokeOfferSponsorship(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.seller)) {
     throw new Error('seller is invalid');
   }
-  if (typeof(opts.offerId) !== 'string') {
+  if (typeof opts.offerId !== 'string') {
     throw new Error('offerId is invalid');
   }
 
@@ -149,7 +149,7 @@ export function revokeDataSponsorship(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error('account is invalid');
   }
-  if (typeof(opts.name) !== 'string' || opts.name.length > 64) {
+  if (typeof opts.name !== 'string' || opts.name.length > 64) {
     throw new Error('name must be a string, up to 64 characters');
   }
 
@@ -184,7 +184,7 @@ export function revokeDataSponsorship(opts = {}) {
  *
  */
 export function revokeClaimableBalanceSponsorship(opts = {}) {
-  if (typeof(opts.balanceId) !== 'string') {
+  if (typeof opts.balanceId !== 'string') {
     throw new Error('balanceId is invalid');
   }
 
@@ -218,7 +218,7 @@ export function revokeClaimableBalanceSponsorship(opts = {}) {
  *
  */
 export function revokeLiquidityPoolSponsorship(opts = {}) {
-  if (typeof(opts.liquidityPoolId) !== 'string') {
+  if (typeof opts.liquidityPoolId !== 'string') {
     throw new Error('liquidityPoolId is invalid');
   }
 
@@ -274,7 +274,7 @@ export function revokeSignerSponsorship(opts = {}) {
     key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
   } else if (opts.signer.preAuthTx) {
     let buffer;
-    if (typeof(opts.signer.preAuthTx) === 'string') {
+    if (typeof opts.signer.preAuthTx === 'string') {
       buffer = Buffer.from(opts.signer.preAuthTx, 'hex');
     } else {
       buffer = opts.signer.preAuthTx;
@@ -287,7 +287,7 @@ export function revokeSignerSponsorship(opts = {}) {
     key = new xdr.SignerKey.signerKeyTypePreAuthTx(buffer);
   } else if (opts.signer.sha256Hash) {
     let buffer;
-    if (typeof(opts.signer.sha256Hash) === 'string') {
+    if (typeof opts.signer.sha256Hash === 'string') {
       buffer = Buffer.from(opts.signer.sha256Hash, 'hex');
     } else {
       buffer = opts.signer.sha256Hash;

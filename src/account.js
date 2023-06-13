@@ -1,4 +1,3 @@
-
 import BigNumber from 'bignumber.js';
 
 import { StrKey } from './strkey';
@@ -29,7 +28,7 @@ export class Account {
     if (!StrKey.isValidEd25519PublicKey(accountId)) {
       throw new Error('accountId is invalid');
     }
-    if (!(typeof(sequence)=== 'string')) {
+    if (!(typeof sequence === 'string')) {
       throw new Error('sequence must be of type string');
     }
 

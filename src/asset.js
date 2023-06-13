@@ -132,16 +132,20 @@ export class Asset {
    * @returns {string} Asset code
    */
   getCode() {
-    if (this.code === undefined){return undefined}
-    return  String(this.code);
+    if (this.code === undefined) {
+      return undefined;
+    }
+    return String(this.code);
   }
 
   /**
    * @returns {string} Asset issuer
    */
   getIssuer() {
-    if (this.issuer === undefined){return undefined}
-    return  String(this.issuer);
+    if (this.issuer === undefined) {
+      return undefined;
+    }
+    return String(this.issuer);
   }
 
   /**

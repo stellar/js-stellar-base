@@ -82,7 +82,7 @@ export class Memo {
         return null;
       case MemoID:
       case MemoText:
-        return  this._value;
+        return this._value;
       case MemoHash:
       case MemoReturn:
         return Buffer.from(this._value);
@@ -98,7 +98,7 @@ export class Memo {
   static _validateIdValue(value) {
     const error = new Error(`Expects a int64 as a string. Got ${value}`);
 
-    if (typeof(value) !== 'string') {
+    if (typeof value !== 'string') {
       throw error;
     }
 

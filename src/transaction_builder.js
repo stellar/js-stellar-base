@@ -495,8 +495,8 @@ export class TransactionBuilder {
 
       const extraSigners =
         this.extraSigners !== null
-        ? this.extraSigners.map(SignerKey.decodeAddress)
-        : [];
+          ? this.extraSigners.map(SignerKey.decodeAddress)
+          : [];
 
       attrs.cond = xdr.Preconditions.precondV2(
         new xdr.PreconditionsV2({
@@ -611,7 +611,7 @@ export class TransactionBuilder {
     }
 
     let feeSourceAccount;
-    if (typeof(feeSource) === 'string') {
+    if (typeof feeSource === 'string') {
       feeSourceAccount = decodeAddressToMuxedAccount(feeSource);
     } else {
       feeSourceAccount = feeSource.xdrMuxedAccount();
