@@ -227,7 +227,7 @@ describe('creating large integers', function () {
         expect(scv.switch().name).to.equal(`scv${type.toUpperCase()}`);
         expect(typeof scv.toXDR('base64')).to.equal('string');
 
-        const bigi = StellarBase.scValToInt(scv);
+        const bigi = StellarBase.scValToBigInt(scv);
         expect(bigi).to.equal(v);
         expect(new StellarBase.ScInt(bigi, { type }).toJSON()).to.eql({
           ...i.toJSON(),
@@ -240,13 +240,13 @@ describe('creating large integers', function () {
       const i32 = new xdr.ScVal.scvI32(Number(v));
       const u32 = new xdr.ScVal.scvU32(Number(v));
 
-      expect(StellarBase.scValToInt(i32)).to.equal(v);
-      expect(StellarBase.scValToInt(u32)).to.equal(v);
+      expect(StellarBase.scValToBigInt(i32)).to.equal(v);
+      expect(StellarBase.scValToBigInt(u32)).to.equal(v);
     });
 
     it('throws for non-integers', function () {
       expect(() =>
-        StellarBase.scValToInt(new xdr.ScVal.scvString('hello'))
+        StellarBase.scValToBigInt(new xdr.ScVal.scvString('hello'))
       ).to.throw(/integer/i);
     });
   });
@@ -293,7 +293,7 @@ describe('creating raw large XDR integers', function () {
     ].forEach(([type, count], idx) => {
       it(`works for ${type}`, function () {
         const input = new Array(count).fill(1n);
-        const xdrI = new StellarBase.XdrInt(type, input);
+        const xdrI = new StellarBase.XdrLargeInt(type, input);
 
         let expected = input.reduce((accum, v, i) => {
           return (accum << 32n) | v;

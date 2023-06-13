@@ -1,6 +1,4 @@
-import { XdrInt, scValToInt } from './xdr_int';
-
-export { XdrInt, scValToInt };
+import { XdrLargeInt } from './xdr_int';
 
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
@@ -10,8 +8,8 @@ export { XdrInt, scValToInt };
  *
  * If you need to create a native BigInt from a list of integer "parts" (for
  * example, you have a series of encoded 32-bit integers that represent a larger
- * value), you can use the lower level abstraction {@link XdrInt}. For example,
- * you could do `new XdrInt('u128', bytes...).toBigInt()`.
+ * value), you can use the lower level abstraction {@link XdrLargeInt}. For example,
+ * you could do `new XdrLargeInt('u128', bytes...).toBigInt()`.
  *
  * @example
  * ```js
@@ -77,7 +75,7 @@ export { XdrInt, scValToInt };
  *
  * @throws {SyntaxError} if a string `value` can't be parsed as a big integer
  */
-export class ScInt extends XdrInt {
+export class ScInt extends XdrLargeInt {
   constructor(value, opts) {
     const signed = value < 0;
     let type = opts?.type ?? '';

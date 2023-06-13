@@ -8,7 +8,7 @@ import { Int256 } from './int256';
 
 import xdr from '../xdr';
 
-export class XdrInt {
+export class XdrLargeInt {
   int; // child class of a jsXdr.LargeInt
   type; // string, one of i64, u64, i128, u128, i256, or u256
 
@@ -23,7 +23,7 @@ export class XdrInt {
       if (typeof i === 'bigint') {
         return i;
       }
-      if (i instanceof XdrInt) {
+      if (i instanceof XdrLargeInt) {
         return i.toBigInt();
       }
       return BigInt(i);
@@ -195,56 +195,6 @@ export class XdrInt {
     if (this.int.size > bits) {
       throw RangeError(`value too large for ${bits} bits (${this.type})`);
     }
-  }
-}
-
-/**
- * Transforms an opaque {@link xdr.ScVal} into a native bigint, if possible.
- *
- * If you then want to use this in the abstractions provided by this module,
- * you can pass it to the constructor of {@link XdrInt}.
- *
- * @example
- * ```js
- * let scv = contract.call("add", x, y); // assume it returns an xdr.ScVal
- * let bigi = scValToInt(scv);
- *
- * new ScInt(bigi);           // if you don't care about types, and
- * new XdrInt('i128', bigi);  // if you do
- * ```
- *
- * @param {xdr.ScVal} scv - the raw XDR value to parse into an integer
- * @returns {bigint} the native value of this input value
- *
- * @throws {TypeError} if the `scv` input value doesn't represent an integer
- */
-export function scValToInt(scv) {
-  const type = scv.switch().name.slice(3).toLowerCase();
-
-  switch (scv.switch().name) {
-    case 'scvU32':
-    case 'scvI32':
-      return BigInt(scv.value());
-
-    case 'scvU64':
-    case 'scvI64':
-      return new XdrInt(type, scv.value()).toBigInt();
-
-    case 'scvU128':
-    case 'scvI128':
-      return new XdrInt(type, [scv.value().lo(), scv.value().hi()]).toBigInt();
-
-    case 'scvU256':
-    case 'scvI256':
-      return new XdrInt(type, [
-        scv.value().loLo(),
-        scv.value().loHi(),
-        scv.value().hiLo(),
-        scv.value().hiHi()
-      ]).toBigInt();
-
-    default:
-      throw TypeError(`expected integer type, got ${scv.switch()}`);
   }
 }
 

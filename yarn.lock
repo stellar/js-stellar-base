@@ -4350,9 +4350,9 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-"js-xdr@git+https://github.com/stellar/js-xdr#a3eb0e6":
+"js-xdr@git+https://github.com/stellar/js-xdr#ad2e43e":
   version "3.0.0"
-  resolved "git+https://github.com/stellar/js-xdr#a3eb0e6f2edd2ffe8099290978045a585b28066b"
+  resolved "git+https://github.com/stellar/js-xdr#ad2e43e5b7cc31edd2169043ab90ad2b82d113e8"
 
 js-yaml@4.1.0, js-yaml@^4.1.0:
   version "4.1.0"

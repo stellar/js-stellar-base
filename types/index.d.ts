@@ -1062,12 +1062,11 @@ export type ScIntType =
   | 'i256'
   | 'u256';
 
-export class XdrInt {
+export class XdrLargeInt {
   constructor(
     type: ScIntType,
     values: number|bigint|string|Array<number|bigint|string>
   );
-  static fromScVal(scv: xdr.ScVal): bigint;
 
   toNumber(): number;
   toBigInt(): bigint;
@@ -1087,6 +1086,8 @@ export class XdrInt {
   };
 }
 
-export class ScInt extends XdrInt {
-  constructor(value: number|bigint|string|ScInt, opts: { type: ScIntType });
+export class ScInt extends XdrLargeInt {
+  constructor(value: number|bigint|string|ScInt, opts?: { type: ScIntType });
 }
+
+export function scValToBigInt(scv: xdr.ScVal): bigint;
