@@ -2,7 +2,7 @@
 
 import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
-import trimEnd from './util/util';
+import { trimEnd } from './util/util';
 import { best_r } from './util/continued_fraction';
 import { Asset } from './asset';
 import { LiquidityPoolAsset } from './liquidity_pool_asset';

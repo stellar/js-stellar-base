@@ -1,4 +1,4 @@
-import trimEnd from './util/util';
+import { trimEnd } from './util/util';
 import xdr from './xdr';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
