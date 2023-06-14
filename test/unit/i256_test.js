@@ -52,7 +52,7 @@ describe('I256.fromString', function () {
   });
 
   it('fails when providing a string with a decimal place', function () {
-    expect(() => I256.fromString('105946095601.5')).to.throw(/Invalid/);
+    expect(() => I256.fromString('105946095601.5')).to.throw(/bigint-like/);
   });
 });
 

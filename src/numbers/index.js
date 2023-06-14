@@ -37,7 +37,10 @@ export function scValToBigInt(scv) {
 
     case 'scvU128':
     case 'scvI128':
-      return new XdrLargeInt(type, [scv.value().lo(), scv.value().hi()]).toBigInt();
+      return new XdrLargeInt(type, [
+        scv.value().lo(),
+        scv.value().hi()
+      ]).toBigInt();
 
     case 'scvU256':
     case 'scvI256':
