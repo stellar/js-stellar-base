@@ -197,5 +197,3 @@ export class XdrLargeInt {
     }
   }
 }
-
-export { Uint128, Int128, Uint256, Int256 };
