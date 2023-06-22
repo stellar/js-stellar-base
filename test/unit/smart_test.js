@@ -31,8 +31,6 @@ describe('parsing and building ScVals', function () {
       ['i32', xdr.ScVal.scvI32(1)],
       ['u64', xdr.ScVal.scvU64(new xdr.Uint64(1))],
       ['i64', xdr.ScVal.scvI64(new xdr.Int64(-1))],
-    //   ['u64_alt', xdr.ScVal.scvU64(new xdr.Uint64(1))],
-    //   ['i64_alt', xdr.ScVal.scvI64(new xdr.Int64(1))],
       ['u128', new ScInt(1, { type: 'u128' }).toScVal()],
       ['i128', new ScInt(1, { type: 'i128' }).toScVal()],
       ['u256', new ScInt(1, { type: 'u256' }).toScVal()],

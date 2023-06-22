@@ -68,7 +68,6 @@ export class SmartParser {
    *    xdr.ScVal (recursively). note that there is no restriction on types
    *    matching anywhere (unlike arrays)
    *
-   *
    * @param {any} val a native input value to wrap
    *
    * @returns {xdr.ScVal} a "wrapped" version of the input value
