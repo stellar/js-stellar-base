@@ -1,7 +1,6 @@
-import { SmartParser } from '../../src/smart';
-import { ScInt } from '../../src/index';
-
 const xdr = StellarBase.xdr;
+const SmartParser = StellarBase.SmartParser;
+const ScInt = StellarBase.ScInt; // shorthand
 
 describe('parsing and building ScVals', function () {
   const gigaMap = {
@@ -75,8 +74,6 @@ describe('parsing and building ScVals', function () {
     // iterate for granular errors on failures
     targetScv.value().forEach((entry, idx) => {
       const actual = scv.value()[idx];
-      console.log(`expected (${idx}):`, entry);
-      console.log(`actual   (${idx}):`, actual);
       expect(entry).to.deep.equal(actual, `item ${idx} doesn't match`);
     });
 

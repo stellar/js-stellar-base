@@ -97,35 +97,43 @@ export class SmartParser {
         return new ScInt(val).toScVal();
 
       case 'object':
-        if (isScValish(val)) {
+        if (val instanceof xdr.ScVal) {
           return val;
-        } else if (val === null) {
+        }
+
+        if (val === null) {
           return xdr.ScVal.scvVoid();
-        } else if (Buffer.isBuffer(val) || val instanceof Uint8Array) {
+        }
+
+        if (Buffer.isBuffer(val) || val instanceof Uint8Array) {
           return xdr.ScVal.scvBytes(Buffer.from(val));
-        } else if (val instanceof Address) {
+        }
+
+        if (val instanceof Address) {
           return val.toScVal();
-        } else if (Array.isArray(val)) {
+        }
+
+        if (Array.isArray(val)) {
           if (val.length > 0 && val.some((v) => typeof v !== typeof v[0])) {
             throw new TypeError(`array value (${val}) must have a single type`);
           }
           return xdr.ScVal.scvVec(val.map(this.toScVal));
-        } else if ((val.constructor?.name ?? '') !== 'Object') {
+        }
+
+        if ((val.constructor?.name ?? '') !== 'Object') {
           throw new TypeError(
             `cannot interpret ${
               val.constructor?.name
             } value as ScVal (${JSON.stringify(val)})`
           );
-        } else {
-          return xdr.ScVal.scvMap(
-            Object.entries(val).map(([key, val], i) => {
-              return new xdr.ScMapEntry({
-                key: this.toScVal(key),
-                val: this.toScVal(val)
-              });
-            })
-          );
         }
+
+        return xdr.ScVal.scvMap(
+          Object.entries(val).map(
+            ([k, v]) =>
+              new xdr.ScMapEntry({ key: this.toScVal(k), val: this.toScVal(v) })
+          )
+        );
 
       default:
         throw new TypeError(`failed to convert typeof ${typeof val} (${val})`);
@@ -181,14 +189,15 @@ export class SmartParser {
       case xdr.ScValType.scvAddress().value:
         return Address.fromScVal(scv);
 
-      case xdr.ScValType.scvMap().value:
-        let result = {};
+      case xdr.ScValType.scvMap().value: {
+        const result = {};
         (scv.map() ?? []).forEach((entry) => {
-          let key = entry.key(),
-            val = entry.val();
+          const key = entry.key();
+          const val = entry.val();
           result[this.fromScVal(key)] = this.fromScVal(val);
         });
         return result;
+      }
 
       // these return the primitive type directly
       case xdr.ScValType.scvBool().value:
@@ -204,19 +213,4 @@ export class SmartParser {
         return scv.value();
     }
   }
-}
-
-function isScValish(scv) {
-  // for whatever reason, this fails in browser contexts:
-  //
-  //   let scv = xdr.ScVal.scvU32(1234);
-  //   scv instanceof xdr.ScVal;  // false!!!
-  //
-  // so we add a janky, duck-type way to 'best effort' check an ScVal
-  return scv instanceof xdr.ScVal || (
-    scv !== null &&
-    typeof scv.switch === 'function' &&
-    typeof scv.switch().name === 'string' &&
-    scv.switch().name.startsWith('scv')
-  );
 }
