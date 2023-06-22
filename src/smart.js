@@ -37,7 +37,6 @@ import xdr from './xdr';
 
 import { Address } from './address';
 import { ScInt, scValToBigInt } from './numbers/index';
-import { isUint8Array } from 'util/types';
 
 /**
  * A container class for methods that convert to<-->from raw {@link xdr.ScVal}s.
@@ -103,7 +102,7 @@ export class SmartParser {
           return val;
         } else if (val === null) {
           return xdr.ScVal.scvVoid();
-        } else if (Buffer.isBuffer(val) || isUint8Array(val)) {
+        } else if (Buffer.isBuffer(val) || val instanceof Uint8Array) {
           return xdr.ScVal.scvBytes(Buffer.from(val));
         } else if (val instanceof Address) {
           return val.toScVal();
