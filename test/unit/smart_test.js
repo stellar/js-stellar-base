@@ -112,7 +112,24 @@ describe('parsing and building ScVals', function () {
         new StellarBase.Address(kp.publicKey()).toScVal(),
         (actual) => actual.toString() === kp.publicKey()
       ],
-      [xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)), inputVec]
+      [xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)), inputVec],
+      [
+        xdr.ScVal.scvMap(
+          [
+            [new ScInt(0).toI256(), xdr.ScVal.scvBool(true)],
+            [xdr.ScVal.scvBool(false), xdr.ScVal.scvString('second')],
+            [
+              xdr.ScVal.scvU32(2),
+              xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString))
+            ]
+          ].map(([key, val]) => new xdr.ScMapEntry({ key, val }))
+        ),
+        {
+          0: true,
+          false: 'second',
+          2: inputVec
+        }
+      ]
     ].forEach(([scv, expected]) => {
       expect(() => scv.toXDR(), 'ScVal is invalid').to.not.throw();
 
