@@ -183,29 +183,49 @@ export class SmartParser {
         return scValToBigInt(scv);
 
       case xdr.ScValType.scvVec().value:
-        return (scv.vec() ?? []).map((item) => this.fromScVal(item));
+        return (scv.vec() ?? []).map(this.fromScVal);
 
       case xdr.ScValType.scvAddress().value:
         return Address.fromScVal(scv);
 
-      case xdr.ScValType.scvMap().value: {
-        const result = {};
-        (scv.map() ?? []).forEach((entry) => {
-          const key = entry.key();
-          const val = entry.val();
-          result[this.fromScVal(key)] = this.fromScVal(val);
-        });
-        return result;
-      }
+      case xdr.ScValType.scvMap().value:
+        return Object.fromEntries(
+          (scv.map() ?? []).map((entry) => [
+            this.fromScVal(entry.key()),
+            this.fromScVal(entry.val())
+          ])
+        );
 
       // these return the primitive type directly
       case xdr.ScValType.scvBool().value:
       case xdr.ScValType.scvU32().value:
       case xdr.ScValType.scvI32().value:
       case xdr.ScValType.scvBytes().value:
-      case xdr.ScValType.scvString().value: // string OR Buffer
-      case xdr.ScValType.scvSymbol().value: // string OR Buffer
+      case xdr.ScValType.scvString().value: // TODO: string OR Buffer, how to handle?
+      case xdr.ScValType.scvSymbol().value: // TODO: string OR Buffer, how to handle?
         return scv.value();
+
+      // these can be converted to bigint
+      case xdr.ScValType.scvTimepoint().value:
+      case xdr.ScValType.scvDuration().value:
+        return new xdr.Uint64(scv.value()).toBigInt();
+
+      case xdr.ScValType.scvStatus().value:
+        // TODO: Convert each status type into a human-readable error string?
+        switch (scv.value().switch()) {
+          case xdr.ScStatusType.sstOk().value:
+          case xdr.ScStatusType.sstUnknownError().value:
+          case xdr.ScStatusType.sstHostValueError().value:
+          case xdr.ScStatusType.sstHostObjectError().value:
+          case xdr.ScStatusType.sstHostFunctionError().value:
+          case xdr.ScStatusType.sstHostStorageError().value:
+          case xdr.ScStatusType.sstHostContextError().value:
+          case xdr.ScStatusType.sstVmError().value:
+          case xdr.ScStatusType.sstContractError().value:
+          case xdr.ScStatusType.sstHostAuthError().value:
+          default:
+            break;
+        }
 
       // in the fallthrough case, just return the underlying value directly
       default:
