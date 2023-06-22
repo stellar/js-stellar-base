@@ -29,14 +29,14 @@ jobs:
     - name: Build All
       run: yarn build:prod
 
-    - name: Run Prettier Checks
-      run: yarn fmt && (git diff-index --quiet HEAD; git diff) && yarn lint
-
     - name: Run Node Tests
       run: yarn test:node
 
     - name: Run Browser Tests
       run: yarn build:browser:prod && yarn test:browser
+
+    - name: Run Prettier Checks
+      run: yarn fmt && (git diff-index --quiet HEAD; git diff)
 
     - name: Run Linter
       run: yarn lint
