@@ -104,22 +104,13 @@ describe('parsing and building ScVals', function () {
         xdr.ScVal.scvBytes(Buffer.alloc(32, '\xba')),
         Buffer.from('\xba'.repeat(16))
       ],
-      [
-        xdr.ScVal.scvString("hello there!"),
-        "hello there!"
-      ],
-      [
-        xdr.ScVal.scvString(Buffer.alloc(32, '\xba')),
-        '\xba'.repeat(16)
-      ],
+      [xdr.ScVal.scvString('hello there!'), 'hello there!'],
+      [xdr.ScVal.scvString(Buffer.alloc(32, '\xba')), '\xba'.repeat(16)],
       [
         new StellarBase.Address(kp.publicKey()).toScVal(),
         (actual) => actual.toString() === kp.publicKey()
       ],
-      [
-        xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)),
-        inputVec
-      ]
+      [xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)), inputVec]
     ].forEach(([scv, expected]) => {
       const actual = SmartParser.fromScVal(scv);
 
