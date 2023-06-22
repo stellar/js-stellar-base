@@ -74,6 +74,8 @@ describe('parsing and building ScVals', function () {
     // iterate for granular errors on failures
     targetScv.value().forEach((entry, idx) => {
       const actual = scv.value()[idx];
+      // console.log(idx, 'exp:', JSON.stringify(entry));
+      // console.log(idx, 'act:', JSON.stringify(actual));
       expect(entry).to.deep.equal(actual, `item ${idx} doesn't match`);
     });
 

@@ -52,10 +52,8 @@ export class SmartParser {
    *  - UintArray8/Buffer -> scvBytes (a copy is made)
    *  - boolean -> scvBool
    *
-   *  - number/bigint -> the smallest possible integer type that will fit the
-   *    input value; if you want a specific type, you should use {@link ScInt}
-   *    and either pass a `type` option or call the appropriate `.to<size>()`
-   *    conversion helper.
+   *  - number/bigint -> the smallest possible XDR integer type that will fit
+   *    the input value (if you want a specific type, use {@link ScInt})
    *
    *  - {@link Address} -> scvAddress (for contracts and public keys)
    *
@@ -66,49 +64,34 @@ export class SmartParser {
    *    xdr.ScVal (recursively). note that there is no restriction on types
    *    matching anywhere (unlike arrays)
    *
-   * @param {any} val a native input value to wrap
+   * @param {any} val a native (or convertible) input value to wrap
    *
-   * @returns {xdr.ScVal} a "wrapped" version of the input value
+   * @returns {xdr.ScVal} a wrapped, smart, XDR version of the input value
    *
-   * @throws {TypeError} if the type of the input object (or some inner value of
-   *    said object) cannot be determined (via `typeof`).
+   * @throws {TypeError} if...
+   *  - there are arrays with more than one type in them
+   *  - there are values that do not have a sensible conversion (e.g. random XDR
+   *    types, custom classes)
+   *  - the type of the input object (or some inner value of said object) cannot
+   *    be determined (via `typeof`)
    */
   static toScVal(val) {
     switch (typeof val) {
-      case 'null': // if this ever becomes a thing lol
-      case 'undefined':
-        return xdr.ScVal.scvVoid();
-
-      case 'function': // FIXME: Is this too helpful?
-        return this.toScVal(val());
-
-      case 'string':
-        return xdr.ScVal.scvString(val.toString());
-
-      case 'boolean':
-        return xdr.ScVal.scvBool(val);
-
-      // Users should just prefer `ScInt` with a type specification if they care
-      // about the kind of number interpretation they get, right?
-      case 'number':
-      case 'bigint':
-        return new ScInt(val).toScVal();
-
       case 'object':
-        if (val instanceof xdr.ScVal) {
-          return val;
-        }
-
         if (val === null) {
           return xdr.ScVal.scvVoid();
         }
 
-        if (Buffer.isBuffer(val) || val instanceof Uint8Array) {
-          return xdr.ScVal.scvBytes(Buffer.from(val));
+        if (val instanceof xdr.ScVal) {
+          return val;
         }
 
         if (val instanceof Address) {
           return val.toScVal();
+        }
+
+        if (Buffer.isBuffer(val) || val instanceof Uint8Array) {
+          return xdr.ScVal.scvBytes(Buffer.from(val));
         }
 
         if (Array.isArray(val)) {
@@ -132,6 +115,24 @@ export class SmartParser {
               new xdr.ScMapEntry({ key: this.toScVal(k), val: this.toScVal(v) })
           )
         );
+
+      // Users should just prefer `ScInt` with a type specification if they care
+      // about the kind of number interpretation they get, right?
+      case 'number':
+      case 'bigint':
+        return new ScInt(val).toScVal();
+
+      case 'string':
+        return xdr.ScVal.scvString(val.toString());
+
+      case 'boolean':
+        return xdr.ScVal.scvBool(val);
+
+      case 'undefined':
+        return xdr.ScVal.scvVoid();
+
+      case 'function': // FIXME: Is this too helpful?
+        return this.toScVal(val());
 
       default:
         throw new TypeError(`failed to convert typeof ${typeof val} (${val})`);
