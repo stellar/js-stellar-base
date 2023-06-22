@@ -3,7 +3,7 @@
  * native JavaScript types.
  *
  * @example
- * import { ScValParser, ScInt } from 'stellar-base';
+ * import { SmartParser, ScInt, xdr } from 'stellar-base';
  *
  * let gigaMap = {
  *   bool: true,
@@ -24,11 +24,9 @@
  *   vec: ['same', 'type', 'list'],
  * };
  *
- * // if you don't know the type (or don't care), then:
- * let scv = ScValParser.toScVal(gigaMap);
- * // or, if you don't want type detection:
- * scv = ScValParser.toScMap(gigaMap);
- * // where scv.switch() == xdr.ScValType.scvMap()
+ * // then, simply:
+ * let scv = SmartParser.toScVal(gigaMap);
+ * // so scv.switch() == xdr.ScValType.scvMap()
  *
  * // then...
  * someContract.call("method", scv);
