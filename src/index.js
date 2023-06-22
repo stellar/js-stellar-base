@@ -57,6 +57,6 @@ export {
   Int128
 } from './numbers/index';
 
-export { SmartParser } from './smart'
+export { SmartParser } from './smart';
 
 export default module.exports;
