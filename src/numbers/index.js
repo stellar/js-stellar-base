@@ -1,4 +1,11 @@
-import { XdrLargeInt } from './xdr_int';
+import { XdrLargeInt } from './xdr_large_int';
+
+import { Uint128 } from './uint128';
+import { Uint256 } from './uint256';
+import { Int128 } from './int128';
+import { Int256 } from './int256';
+
+export { Uint256, Int256, Uint128, Int128 };
 
 export { ScInt } from './sc_int';
 export { XdrLargeInt };
@@ -55,10 +62,3 @@ export function scValToBigInt(scv) {
       throw TypeError(`expected integer type, got ${scv.switch()}`);
   }
 }
-
-import { Uint128 } from './uint128';
-import { Uint256 } from './uint256';
-import { Int128 } from './int128';
-import { Int256 } from './int256';
-
-export { Uint256, Int256, Uint128, Int128 };

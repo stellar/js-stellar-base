@@ -1,4 +1,4 @@
-import { XdrLargeInt } from './xdr_int';
+import { XdrLargeInt } from './xdr_large_int';
 
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
