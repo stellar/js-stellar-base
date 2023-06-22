@@ -63,7 +63,7 @@ describe('parsing and building ScVals', function () {
     })
   );
 
-  it('works with all intended native types', function () {
+  it('builds an ScVal from all intended native types', function () {
     const scv = SmartParser.toScVal(gigaMap);
 
     // test case expectation sanity check
@@ -80,5 +80,54 @@ describe('parsing and building ScVals', function () {
     });
 
     expect(scv.toXDR('base64')).to.deep.equal(targetScv.toXDR('base64'));
+  });
+
+  it('converts ScVal to intended native types', function () {
+    const kp = StellarBase.Keypair.random();
+    const inputVec = ['Hello', 'there.', 'General', 'Kenobi!'];
+
+    [
+      [xdr.ScVal.scvVoid(), null],
+      [xdr.ScVal.scvBool(true), true],
+      [xdr.ScVal.scvBool(false), false],
+      [xdr.ScVal.scvU32(1), 1],
+      [xdr.ScVal.scvI32(1), 1],
+      [new ScInt(11).toU64(), 11n],
+      [new ScInt(11).toI64(), 11n],
+      [new ScInt(22).toU128(), 22n],
+      [new ScInt(22).toI128(), 22n],
+      [new ScInt(33).toU256(), 33n],
+      [new ScInt(33).toI256(), 33n],
+      [xdr.ScVal.scvTimepoint(new xdr.Uint64(44n)), 44n],
+      [xdr.ScVal.scvDuration(new xdr.Uint64(55n)), 55n],
+      [
+        xdr.ScVal.scvBytes(Buffer.alloc(32, '\xba')),
+        Buffer.from('\xba'.repeat(16))
+      ],
+      [
+        xdr.ScVal.scvString("hello there!"),
+        "hello there!"
+      ],
+      [
+        xdr.ScVal.scvString(Buffer.alloc(32, '\xba')),
+        '\xba'.repeat(16)
+      ],
+      [
+        new StellarBase.Address(kp.publicKey()).toScVal(),
+        (actual) => actual.toString() === kp.publicKey()
+      ],
+      [
+        xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)),
+        inputVec
+      ]
+    ].forEach(([scv, expected]) => {
+      const actual = SmartParser.fromScVal(scv);
+
+      if (typeof expected === 'function') {
+        expect(expected(actual)).to.be.true;
+      } else {
+        expect(actual).to.deep.equal(expected);
+      }
+    });
   });
 });

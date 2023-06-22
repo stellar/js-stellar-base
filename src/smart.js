@@ -201,9 +201,12 @@ export class SmartParser {
       case xdr.ScValType.scvU32().value:
       case xdr.ScValType.scvI32().value:
       case xdr.ScValType.scvBytes().value:
-      case xdr.ScValType.scvString().value: // TODO: string OR Buffer, how to handle?
-      case xdr.ScValType.scvSymbol().value: // TODO: string OR Buffer, how to handle?
         return scv.value();
+
+      case xdr.ScValType.scvString().value:
+      case xdr.ScValType.scvSymbol().value:
+        // FIXME: Is this the right way to handle it being string|Buffer?
+        return String(scv.value());
 
       // these can be converted to bigint
       case xdr.ScValType.scvTimepoint().value:
