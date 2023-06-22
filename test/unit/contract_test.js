@@ -1,7 +1,8 @@
 describe('Contract', function () {
   describe('constructor', function () {
     it('parses strkeys', function () {
-      let contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      let contractId =
+        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
       let contract = new StellarBase.Contract(contractId);
       expect(contract.contractId('strkey')).to.equal(contractId);
     });
@@ -21,7 +22,7 @@ describe('Contract', function () {
 
     it('parses throws on invalid ids', function () {
       expect(() => {
-        new StellarBase.Contract('foobar')
+        new StellarBase.Contract('foobar');
       }).to.throw();
     });
   });
@@ -30,14 +31,15 @@ describe('Contract', function () {
     it('returns the contract address', function () {
       let contractId = '0'.repeat(63) + '1';
       let contract = new StellarBase.Contract(contractId);
-      expect(contract.address().toBuffer().toString('hex')).to.equal(contractId);
+      expect(contract.address().toBuffer().toString('hex')).to.equal(
+        contractId
+      );
     });
   });
 
   describe('getFootprint', function () {
     it('includes the correct contract code footprint', function () {
       let contractId = '0'.repeat(63) + '1';
-
       let contract = new StellarBase.Contract(contractId);
       expect(contract.contractId('hex')).to.equal(contractId);
 

@@ -43,12 +43,12 @@ export class Contract {
    */
   contractId(format = 'strkey') {
     switch (format) {
-    case 'strkey':
-      return StrKey.encodeContract(this._id);
-    case 'hex':
-      return this._id.toString('hex');
-    default:
-      throw new Error(`Invalid format: ${format}`);
+      case 'strkey':
+        return StrKey.encodeContract(this._id);
+      case 'hex':
+        return this._id.toString('hex');
+      default:
+        throw new Error(`Invalid format: ${format}`);
     }
   }
 

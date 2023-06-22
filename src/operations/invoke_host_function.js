@@ -22,7 +22,10 @@ export function invokeHostFunction(opts) {
     );
   }
 
-  const hostFn = new xdr.HostFunction({args: opts.args, auth: opts.auth || []});
+  const hostFn = new xdr.HostFunction({
+    args: opts.args,
+    auth: opts.auth || []
+  });
   return this.invokeHostFunctions({ source: opts.source, functions: [hostFn] });
 }
 
@@ -34,17 +37,17 @@ export function invokeHostFunction(opts) {
  *
  * @param {object} opts - options for the operation
  * @param {xdr.HostFunction[]} opts.functions - a list of contract functions to
- *    invoke in this operation. 
+ *    invoke in this operation.
  * @param {string} [opts.source] - an optional source account
  *
  * @returns {xdr.Operation} an Invoke Host Function operation
  *    (xdr.InvokeHostFunctionOp) with xdr.HostFunction instances corresponding
  *    to each invocation
- *
  */
 export function invokeHostFunctions(opts) {
-  
-  const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({ functions: opts.functions });
+  const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
+    functions: opts.functions
+  });
   const opAttributes = {
     body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp)
   };

@@ -348,3 +348,10 @@ const sk = StellarSdk.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
 );
 StellarSdk.SignerKey.encodeSignerKey(sk);                   // $ExpectType string
 StellarSdk.SignerKey.decodeAddress(sourceKey.publicKey());  // $ExpectType SignerKey
+
+new StellarSdk.ScInt(1234);           // $ExpectType ScInt
+new StellarSdk.ScInt('1234');         // $ExpectType ScInt
+new StellarSdk.ScInt(BigInt(1234));   // $ExpectType ScInt
+(['i64', 'u64', 'i128', 'u128', 'i256', 'u256'] as StellarSdk.ScIntType[]).forEach((type) => {
+  new StellarSdk.ScInt(1234, { type }); // $ExpectType ScInt
+});
