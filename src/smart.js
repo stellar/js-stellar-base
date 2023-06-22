@@ -37,15 +37,45 @@ import xdr from './xdr';
 
 import { Address } from './address';
 import { ScInt, scValToBigInt } from './numbers/index';
+import { isUint8Array } from 'util/types';
 
 /**
  * A container class for methods that convert to<-->from raw {@link xdr.ScVal}s.
  */
 export class SmartParser {
   /**
+   * Attempts to convert native types into smart contract values
+   * ({@link xdr.ScVal}).
    *
-   * @param {any} val
-   * @returns {xdr.ScVal}
+   * The conversions are as follows:
+   *
+   *  - xdr.ScVal -> passthrough
+   *  - null/undefined -> scvVoid
+   *  - string -> scvString (a copy is made)
+   *  - UintArray8/Buffer -> scvBytes (a copy is made)
+   *  - boolean -> scvBool
+   *
+   *  - number/bigint -> the smallest possible integer type that will fit the
+   *    input value; if you want a specific type, you should use {@link ScInt}
+   *    and either pass a `type` option or call the appropriate `.to<size>()`
+   *    conversion helper.
+   *
+   *  - {@link Address} -> scvAddress (for contracts and public keys)
+   *
+   *  - Array<T> -> scvVec after attempting to convert each item of type `T` to
+   *    an xdr.ScVal (recursively). note that all values must be the same type!
+   *
+   *  - object -> scvMap after attempting to convert each key and value to an
+   *    xdr.ScVal (recursively). note that there is no restriction on types
+   *    matching anywhere (unlike arrays)
+   *
+   *
+   * @param {any} val a native input value to wrap
+   *
+   * @returns {xdr.ScVal} a "wrapped" version of the input value
+   *
+   * @throws {TypeError} if the type of the input object (or some inner value of
+   *    said object) cannot be determined (via `typeof`).
    */
   static toScVal(val) {
     switch (typeof val) {
@@ -57,7 +87,7 @@ export class SmartParser {
         return this.toScVal(val());
 
       case 'string':
-        return xdr.ScVal.scvString(val);
+        return xdr.ScVal.scvString(val.toString());
 
       case 'boolean':
         return xdr.ScVal.scvBool(val);
@@ -73,8 +103,8 @@ export class SmartParser {
           return val;
         } else if (val === null) {
           return xdr.ScVal.scvVoid();
-        } else if (Buffer.isBuffer(val)) {
-          return xdr.ScVal.scvBytes(val);
+        } else if (Buffer.isBuffer(val) || isUint8Array(val)) {
+          return xdr.ScVal.scvBytes(Buffer.from(val));
         } else if (val instanceof Address) {
           return val.toScVal();
         } else if (Array.isArray(val)) {
@@ -101,12 +131,27 @@ export class SmartParser {
   }
 
   /**
+   * Given a smart contract value, attempt to convert to a native type.
    *
-   * @param {xdr.ScVal} scv -
+   * Possible conversions include:
+   *
+   *  - void -> null
+   *  - u32, i32 -> number
+   *  - u64, i64, u128, i128, u256, i256 -> bigint
+   *  - vec -> array of any of the above (via recursion)
+   *  - map -> key-value object of any of the above (via recursion)
+   *  - bool -> boolean
+   *  - bytes -> Uint8Array
+   *  - string, symbol -> string
+   *
+   * If no conversion can be made, this just "unwraps" the smart value to return
+   * its underlying XDR value.
+   *
+   * @param {xdr.ScVal} scv - the input smart contract value
    *
    * @returns {any}
    */
-  static parse(scv) {
+  static fromScVal(scv) {
     // we use the verbose xdr.ScValType.<type>.value form here because it's
     // faster than string comparisons and the underlying constants never need to
     // be updated
@@ -129,7 +174,7 @@ export class SmartParser {
         return scValToBigInt(scv);
 
       case xdr.ScValType.scvVec().value:
-        return (scv.vec() ?? []).map((item) => this.parse(item));
+        return (scv.vec() ?? []).map((item) => this.fromScVal(item));
 
       case xdr.ScValType.scvAddress().value:
         return Address.fromScVal(scv);
@@ -139,7 +184,7 @@ export class SmartParser {
         (scv.map() ?? []).forEach((entry) => {
           let key = entry.key(),
             val = entry.val();
-          result[this.parse(key)] = this.parse(val);
+          result[this.fromScVal(key)] = this.fromScVal(val);
         });
         return result;
 
