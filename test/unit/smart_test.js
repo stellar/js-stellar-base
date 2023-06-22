@@ -74,11 +74,11 @@ describe('parsing and building ScVals', function () {
 
     // iterate for granular errors on failures
     targetScv.value().forEach((entry, idx) => {
-        const actual = scv.value()[idx];
-        // console.log(`expected (${idx}):`, entry);
-        // console.log(`actual   (${idx}):`, actual);
-        expect(entry).to.deep.equal(actual, `item ${idx} does not match`);
-    })
+      const actual = scv.value()[idx];
+      console.log(`expected (${idx}):`, entry);
+      console.log(`actual   (${idx}):`, actual);
+      expect(entry).to.deep.equal(actual, `item ${idx} doesn't match`);
+    });
 
     expect(scv.toXDR('base64')).to.deep.equal(targetScv.toXDR('base64'));
   });

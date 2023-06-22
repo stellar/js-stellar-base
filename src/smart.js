@@ -97,7 +97,7 @@ export class SmartParser {
         return new ScInt(val).toScVal();
 
       case 'object':
-        if (val instanceof xdr.ScVal) {
+        if (isScValish(val)) {
           return val;
         } else if (val === null) {
           return xdr.ScVal.scvVoid();
@@ -111,7 +111,11 @@ export class SmartParser {
           }
           return xdr.ScVal.scvVec(val.map(this.toScVal));
         } else if ((val.constructor?.name ?? '') !== 'Object') {
-          throw new TypeError(`cannot interpret ${val.constructor?.name} value as ScVal (${val})`)
+          throw new TypeError(
+            `cannot interpret ${
+              val.constructor?.name
+            } value as ScVal (${JSON.stringify(val)})`
+          );
         } else {
           return xdr.ScVal.scvMap(
             Object.entries(val).map(([key, val], i) => {
@@ -200,4 +204,19 @@ export class SmartParser {
         return scv.value();
     }
   }
+}
+
+function isScValish(scv) {
+  // for whatever reason, this fails in browser contexts:
+  //
+  //   let scv = xdr.ScVal.scvU32(1234);
+  //   scv instanceof xdr.ScVal;  // false!!!
+  //
+  // so we add a janky, duck-type way to 'best effort' check an ScVal
+  return scv instanceof xdr.ScVal || (
+    scv !== null &&
+    typeof scv.switch === 'function' &&
+    typeof scv.switch().name === 'string' &&
+    scv.switch().name.startsWith('scv')
+  );
 }
