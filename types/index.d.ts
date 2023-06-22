@@ -1094,3 +1094,8 @@ export class ScInt extends XdrLargeInt {
 }
 
 export function scValToBigInt(scv: xdr.ScVal): bigint;
+
+export class SmartParser {
+  toScVal(x: any): xdr.ScVal;
+  parse(scv: xdr.ScVal): any;
+}

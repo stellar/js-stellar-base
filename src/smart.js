@@ -6,24 +6,22 @@
  * import { ScValParser, ScInt } from 'stellar-base';
  *
  * let gigaMap = {
- *  'bool': true,
- *  'void': null,
- *  'u32': xdr.Uint32(1),
- *  'i32': xdr.Int32(1),
- *  'u64': new ScInt(1).toU64(),
- *  'i64': new ScInt(1).toI64(),
- *  'u64_alt':  1n,
- *  'i64_alt': -1n,
- *  'u128': new ScInt(1).toU128(),
- *  'i128': new ScInt(1).toI128(),
- *  'u256': new ScInt(1).toU256(),
- *  'i256': new ScInt(1).toI256(),
- *  'map': {
- *    1n: 'arbitrary',
- *    'nested': 'values'
- *  },
- *  'vec': [ 'same', 'type', 'list' ],
- *  '
+ *   bool: true,
+ *   void: null,
+ *   u32: xdr.ScVal.scvU32(1),
+ *   i32: xdr.ScVal.scvI32(1),
+ *   u64: 1n,
+ *   i64: -1n,
+ *   u128: new ScInt(1).toU128(),
+ *   i128: new ScInt(1).toI128(),
+ *   u256: new ScInt(1).toU256(),
+ *   i256: new ScInt(1).toI256(),
+ *   map: {
+ *     arbitrary: 1n,
+ *     nested: 'values',
+ *     etc: false
+ *   },
+ *   vec: ['same', 'type', 'list'],
  * };
  *
  * // if you don't know the type (or don't care), then:
