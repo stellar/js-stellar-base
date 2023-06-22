@@ -9,8 +9,15 @@ import { Int256 } from './int256';
 import xdr from '../xdr';
 
 export class XdrLargeInt {
+  /**
+   * @type {xdr.LargeInt}
+   */
   int; // child class of a jsXdr.LargeInt
-  type; // string, one of i64, u64, i128, u128, i256, or u256
+
+  /**
+   * @type {string} - one of i64, u64, i128, u128, i256, or u256
+   */
+  type;
 
   constructor(type, values) {
     if (!(values instanceof Array)) {
@@ -174,6 +181,28 @@ export class XdrLargeInt {
         loLo: new xdr.Uint64(loLo64)
       })
     );
+  }
+
+  /**
+   * @returns {xdr.ScVal} the smallest ScVal interpretation of the stored value
+   */
+  toScVal() {
+    switch (this.type) {
+      case 'i64':
+        return this.toI64();
+      case 'i128':
+        return this.toI128();
+      case 'i256':
+        return this.toI256();
+      case 'u64':
+        return this.toU64();
+      case 'u128':
+        return this.toU128();
+      case 'u256':
+        return this.toU256();
+      default:
+        throw TypeError(`invalid type: ${this.type}`);
+    }
   }
 
   valueOf() {
