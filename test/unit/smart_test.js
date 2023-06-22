@@ -105,6 +105,8 @@ describe('parsing and building ScVals', function () {
         Buffer.from('\xba'.repeat(16))
       ],
       [xdr.ScVal.scvString('hello there!'), 'hello there!'],
+      [xdr.ScVal.scvSymbol('hello'), 'hello'],
+      [xdr.ScVal.scvSymbol(Buffer.from('hello')), 'hello'],
       [xdr.ScVal.scvString(Buffer.alloc(32, '\xba')), '\xba'.repeat(16)],
       [
         new StellarBase.Address(kp.publicKey()).toScVal(),
@@ -112,10 +114,12 @@ describe('parsing and building ScVals', function () {
       ],
       [xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)), inputVec]
     ].forEach(([scv, expected]) => {
+      expect(() => scv.toXDR(), 'ScVal is invalid').to.not.throw();
+
       const actual = SmartParser.fromScVal(scv);
 
       if (typeof expected === 'function') {
-        expect(expected(actual)).to.be.true;
+        expect(expected(actual), `converting ${scv} to native`).to.be.true;
       } else {
         expect(actual).to.deep.equal(expected);
       }
