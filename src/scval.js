@@ -63,15 +63,16 @@ import { XdrLargeInt, ScInt, scValToBigInt } from './numbers/index';
  *    xdr.ScVal (recursively). note that there is no restriction on types
  *    matching anywhere (unlike arrays)
  *
- * You can also optionally specify a type which will force a particular
- * interpretation of the given object. Note that this is a "single-level"
- * interpretation. It's useful when specifying e.g. integer `ScVal`s (see
- * {@link ScInt}) or if you want e.g. a string to be a symbol.
+ * When passing an integer-like native value, you can also optionally specify a
+ * type which will force a particular interpretation of that value.
  *
  * Note that not all type specifications are compatible with all `ScVal`s, e.g.
  * `toScVal("string", {type: i256})` will throw.
  *
- * @param {any} val a native (or convertible) input value to wrap
+ * @param {any} val         a native (or convertible) input value to wrap
+ * @param {object} [opts]   an optional set of options to pass which allows you
+ *      to specify a type when the native `val` is an integer-like (i.e.
+ *      number|bigint) type
  *
  * @returns {xdr.ScVal} a wrapped, smart, XDR version of the input value
  *
@@ -81,6 +82,9 @@ import { XdrLargeInt, ScInt, scValToBigInt } from './numbers/index';
  *    types, custom classes)
  *  - the type of the input object (or some inner value of said object) cannot
  *    be determined (via `typeof`)
+ *
+ * TODO: Allow users to force types that are not direct but can be translated,
+ *       i.e. forcing a `Buffer` to be encoded as an ScSymbol or ScString.
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
