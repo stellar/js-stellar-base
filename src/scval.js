@@ -37,7 +37,7 @@
 import xdr from './xdr';
 
 import { Address } from './address';
-import { XdrLargeInt, ScInt, scValToBigInt } from './numbers/index';
+import { ScInt, scValToBigInt } from './numbers/index';
 
 /**
  * Attempts to convert native types into smart contract values
