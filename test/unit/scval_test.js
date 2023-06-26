@@ -2,8 +2,6 @@ const xdr = StellarBase.xdr;
 const ScInt = StellarBase.ScInt; // shorthand
 const [ scValToNative, nativeToScVal ] = [StellarBase.scValToNative, StellarBase.nativeToScVal]
 
-console.log(xdr.ScVal.prototype, xdr.ScVal)
-
 describe('parsing and building ScVals', function () {
   const gigaMap = {
     bool: true,

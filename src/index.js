@@ -57,6 +57,6 @@ export {
   Int128
 } from './numbers/index';
 
-export { scValToNative, nativeToScVal } from './xdr.js';
+export * from './scval.js';
 
 export default module.exports;
