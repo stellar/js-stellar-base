@@ -57,4 +57,6 @@ export {
   Int128
 } from './numbers/index';
 
+export * from './scval';
+
 export default module.exports;
