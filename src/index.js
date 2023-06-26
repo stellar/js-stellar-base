@@ -57,6 +57,6 @@ export {
   Int128
 } from './numbers/index';
 
-export { SmartParser } from './smart';
+export { scValToNative, nativeToScVal } from './xdr.js';
 
 export default module.exports;

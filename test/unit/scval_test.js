@@ -1,6 +1,8 @@
 const xdr = StellarBase.xdr;
-const SmartParser = StellarBase.SmartParser;
 const ScInt = StellarBase.ScInt; // shorthand
+const [ scValToNative, nativeToScVal ] = [StellarBase.scValToNative, StellarBase.nativeToScVal]
+
+console.log(xdr.ScVal.prototype, xdr.ScVal)
 
 describe('parsing and building ScVals', function () {
   const gigaMap = {
@@ -64,7 +66,7 @@ describe('parsing and building ScVals', function () {
   );
 
   it('builds an ScVal from all intended native types', function () {
-    const scv = SmartParser.toScVal(gigaMap);
+    const scv = nativeToScVal(gigaMap);
 
     // test case expectation sanity check
     expect(targetScv.value().length).to.equal(Object.keys(gigaMap).length);
@@ -133,7 +135,7 @@ describe('parsing and building ScVals', function () {
     ].forEach(([scv, expected]) => {
       expect(() => scv.toXDR(), 'ScVal is invalid').to.not.throw();
 
-      const actual = SmartParser.fromScVal(scv);
+      const actual = scValToNative(scv);
 
       if (typeof expected === 'function') {
         expect(expected(actual), `converting ${scv} to native`).to.be.true;
