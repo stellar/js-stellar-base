@@ -48,7 +48,7 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *  - xdr.ScVal -> passthrough
  *  - null/undefined -> scvVoid
  *  - string -> scvString (a copy is made)
- *  - UintArray8/Buffer -> scvBytes (a copy is made)
+ *  - UintArray8 -> scvBytes (a copy is made)
  *  - boolean -> scvBool
  *
  *  - number/bigint -> the smallest possible XDR integer type that will fit the
@@ -84,7 +84,7 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *    be determined (via `typeof`)
  *
  * TODO: Allow users to force types that are not direct but can be translated,
- *       i.e. forcing a `Buffer` to be encoded as an ScSymbol or ScString.
+ *       i.e. forcing a `Uint8Array` to be encoded as an ScSymbol or ScString.
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
@@ -101,8 +101,8 @@ export function nativeToScVal(val, opts = {}) {
         return val.toScVal();
       }
 
-      if (Buffer.isBuffer(val) || val instanceof Uint8Array) {
-        return xdr.ScVal.scvBytes(Buffer.from(val));
+      if (val instanceof Uint8Array) {
+        return xdr.ScVal.scvBytes(Uint8Array.from(val));
       }
 
       if (Array.isArray(val)) {

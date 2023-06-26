@@ -103,9 +103,10 @@ describe('parsing and building ScVals', function () {
       [new ScInt(33).toI256(), 33n],
       [xdr.ScVal.scvTimepoint(new xdr.Uint64(44n)), 44n],
       [xdr.ScVal.scvDuration(new xdr.Uint64(55n)), 55n],
+      [xdr.ScVal.scvBytes(Buffer.alloc(32, 123)), Buffer.from('{'.repeat(32))],
       [
-        xdr.ScVal.scvBytes(Buffer.alloc(32, '\xba')),
-        Buffer.from('\xba'.repeat(16))
+        xdr.ScVal.scvBytes(Buffer.alloc(32, 123)),
+        new Uint8Array(32).fill(123, 0, 32)
       ],
       [xdr.ScVal.scvString('hello there!'), 'hello there!'],
       [xdr.ScVal.scvSymbol('hello'), 'hello'],
