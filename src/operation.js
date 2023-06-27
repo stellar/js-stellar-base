@@ -97,6 +97,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.liquidityPoolWithdraw}`
  * * `{@link Operation.invokeHostFunction}`
  * * `{@link Operation.bumpFootprintExpiration}`
+ * * `{@link Operation.restoreFootprint}`
  *
  * @class Operation
  */
@@ -389,6 +390,10 @@ export class Operation {
         result.ledgersToExpire = attrs.ledgersToExpire();
         break;
       }
+      case 'restoreFootprint': {
+        result.type = 'restoreFootprint';
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -655,3 +660,4 @@ Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
 Operation.bumpFootprintExpiration = ops.bumpFootprintExpiration;
+Operation.restoreFootprint = ops.restoreFootprint;

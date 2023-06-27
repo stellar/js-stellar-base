@@ -367,6 +367,7 @@ export namespace OperationType {
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
   type BumpFootprintExpiration = 'bumpFootprintExpiration';
+  type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -394,7 +395,8 @@ export type OperationType =
   | OperationType.LiquidityPoolDeposit
   | OperationType.LiquidityPoolWithdraw
   | OperationType.InvokeHostFunction
-  | OperationType.BumpFootprintExpiration;
+  | OperationType.BumpFootprintExpiration
+  | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -548,6 +550,7 @@ export namespace OperationOptions {
   interface BumpFootprintExpiration extends BaseOptions {
     ledgersToExpire: number;
   }
+  type RestoreFootprint = BaseOptions;
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -580,7 +583,8 @@ export type OperationOptions =
   | OperationOptions.LiquidityPoolDeposit
   | OperationOptions.LiquidityPoolWithdraw
   | OperationOptions.InvokeHostFunction
-  | OperationOptions.BumpFootprintExpiration;
+  | OperationOptions.BumpFootprintExpiration
+  | OperationOptions.RestoreFootprint;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -876,6 +880,10 @@ export namespace Operation {
     ledgersToExpire: number;
   }
 
+  function rstoreFootprint(options: OperationOptions.RestoreFootprint):
+    xdr.Operation<RestoreFootprint>;
+  interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
+
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
   ): T;
@@ -912,7 +920,8 @@ export type Operation =
   | Operation.LiquidityPoolDeposit
   | Operation.LiquidityPoolWithdraw
   | Operation.InvokeHostFunction
-  | Operation.BumpFootprintExpiration;
+  | Operation.BumpFootprintExpiration
+  | Operation.RestoreFootprint;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

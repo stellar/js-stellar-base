@@ -2052,7 +2052,9 @@ describe('Operation', function () {
       const xdr = op.toXDR('hex');
       const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
-      expect(operation.body().switch().name).to.equal('bumpFootprintExpiration');
+      expect(operation.body().switch().name).to.equal(
+        'bumpFootprintExpiration'
+      );
       const obj = StellarBase.Operation.fromXDRObject(operation);
       expect(obj.type).to.be.equal('bumpFootprintExpiration');
       expect(obj.ledgersToExpire).to.equal(1234);
@@ -2062,6 +2064,18 @@ describe('Operation', function () {
           ledgersToExpire: 0
         });
       }).to.throw(/ledger quantity/i);
+    });
+  });
+
+  describe('restoreFootprint()', function () {
+    it('creates operation', function () {
+      const op = StellarBase.Operation.restoreFootprint();
+      const xdr = op.toXDR('hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+
+      expect(operation.body().switch().name).to.equal('restoreFootprint');
+      const obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('restoreFootprint');
     });
   });
 
