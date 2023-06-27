@@ -73,11 +73,10 @@ export class TransactionBase {
     const requiresContractSignatures = (this.operations || []).some(
       (op) =>
         op.type === 'invokeHostFunction' &&
-        op.auth
-          .some(
-            (auth) =>
-              auth.credentials().switch().name === 'sorobanCredentialsAddress'
-          )
+        op.auth.some(
+          (auth) =>
+            auth.credentials().switch().name === 'sorobanCredentialsAddress'
+        )
     );
 
     if (requiresContractSignatures) {

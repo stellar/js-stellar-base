@@ -2043,6 +2043,28 @@ describe('Operation', function () {
       ).to.throw(/\('func'\) required/);
     });
   });
+
+  describe('bumpFootprintExpiration()', function () {
+    it('creates operation', function () {
+      const op = StellarBase.Operation.bumpFootprintExpiration({
+        ledgersToExpire: 1234
+      });
+      const xdr = op.toXDR('hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+
+      expect(operation.body().switch().name).to.equal('bumpFootprintExpiration');
+      const obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('bumpFootprintExpiration');
+      expect(obj.ledgersToExpire).to.equal(1234);
+
+      expect(() => {
+        StellarBase.Operation.bumpFootprintExpiration({
+          ledgersToExpire: 0
+        });
+      }).to.throw(/ledger quantity/i);
+    });
+  });
+
   describe('revokeTrustlineSponsorship()', function () {
     it('creates a revokeTrustlineSponsorship', function () {
       const account =

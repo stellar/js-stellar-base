@@ -96,7 +96,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
  * * `{@link Operation.invokeHostFunction}`
- * * `{@link Operation.invokeHostFunctions}`
+ * * `{@link Operation.bumpFootprintExpiration}`
  *
  * @class Operation
  */
@@ -384,6 +384,11 @@ export class Operation {
         result.auth = attrs.auth() ?? [];
         break;
       }
+      case 'bumpFootprintExpiration': {
+        result.type = 'bumpFootprintExpiration';
+        result.ledgersToExpire = attrs.ledgersToExpire();
+        break;
+      }
       default: {
         throw new Error(`Unknown operation: ${operationName}`);
       }
@@ -649,3 +654,4 @@ Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
+Operation.bumpFootprintExpiration = ops.bumpFootprintExpiration;
