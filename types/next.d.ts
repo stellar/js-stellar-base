@@ -88,7 +88,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | (string | bigint | number)[]
+      values: string | bigint | number | Array<string | bigint | number>
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -132,7 +132,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | (string | bigint | number)[]
+      values: string | bigint | number | Array<string | bigint | number>
     );
 
     toXDR(format?: 'raw'): Buffer;

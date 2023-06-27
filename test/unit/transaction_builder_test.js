@@ -94,7 +94,7 @@ describe('TransactionBuilder', function () {
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
-            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
               []
             ),
             auth: []
@@ -116,7 +116,7 @@ describe('TransactionBuilder', function () {
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
-            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
               []
             ),
             auth: []
@@ -138,7 +138,7 @@ describe('TransactionBuilder', function () {
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
-            args: new StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
               []
             ),
             auth: []

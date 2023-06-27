@@ -380,9 +380,8 @@ export class Operation {
       }
       case 'invokeHostFunction': {
         result.type = 'invokeHostFunction';
-        // TODO: Unpack each of the xdr.HostFunction instances into friendlier
-        // objects?
-        result.functions = attrs.functions();
+        result.func = attrs.hostFunction();
+        result.auth = attrs.auth() ?? [];
         break;
       }
       default: {
@@ -650,4 +649,3 @@ Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
-Operation.invokeHostFunctions = ops.invokeHostFunctions;

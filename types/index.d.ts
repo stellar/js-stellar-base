@@ -540,11 +540,8 @@ export namespace OperationOptions {
     minAmountB: string;
   }
   interface InvokeHostFunction extends BaseOptions {
-    args: xdr.HostFunctionArgs;
-    auth: xdr.ContractAuth[];
-  }
-  interface InvokeHostFunctions extends BaseOptions {
-    functions: xdr.HostFunction[];
+    args: xdr.HostFunction;
+    auth: xdr.SorobanAuthorizationEntry[];
   }
 }
 export type OperationOptions =
@@ -863,9 +860,6 @@ export namespace Operation {
   }
   function invokeHostFunction(
     options: OperationOptions.InvokeHostFunction
-  ): xdr.Operation<InvokeHostFunction>;
-  function invokeHostFunctions(
-    options: OperationOptions.InvokeHostFunctions
   ): xdr.Operation<InvokeHostFunction>;
 
   function fromXDRObject<T extends Operation = Operation>(

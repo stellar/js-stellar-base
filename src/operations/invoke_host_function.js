@@ -7,8 +7,8 @@ import xdr from '../xdr';
  * @alias Operation.invokeHostFunction
  *
  * @param {object} opts - options object
- * @param {xdr.HostFunctionArgs} opts.args - parameters to pass to the host
- *    function being invoked
+ * @param {xdr.HostFunction} opts.func - host function to execute (with its
+ *    wrapped parameters)
  * @param {xdr.ContractAuth[]} [opts.auth] - list of authorizations for the call
  * @param {string} [opts.source] - an optional source account
  *
@@ -16,38 +16,17 @@ import xdr from '../xdr';
  *    (xdr.InvokeHostFunctionOp)
  */
 export function invokeHostFunction(opts) {
-  if (!opts.args) {
+  if (!opts.func) {
     throw new TypeError(
-      `function arguments ('args') required (got ${JSON.stringify(opts)})`
+      `host function invocation ('func') required (got ${JSON.stringify(opts)})`
     );
   }
 
-  const hostFn = new xdr.HostFunction({
-    args: opts.args,
+  const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
+    hostFunction: opts.func,
     auth: opts.auth || []
   });
-  return this.invokeHostFunctions({ source: opts.source, functions: [hostFn] });
-}
 
-/**
- * Invokes multiple smart contract functions via a single operation.
- *
- * @function
- * @alias Operation.invokeHostFunctions
- *
- * @param {object} opts - options for the operation
- * @param {xdr.HostFunction[]} opts.functions - a list of contract functions to
- *    invoke in this operation.
- * @param {string} [opts.source] - an optional source account
- *
- * @returns {xdr.Operation} an Invoke Host Function operation
- *    (xdr.InvokeHostFunctionOp) with xdr.HostFunction instances corresponding
- *    to each invocation
- */
-export function invokeHostFunctions(opts) {
-  const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
-    functions: opts.functions
-  });
   const opAttributes = {
     body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp)
   };
