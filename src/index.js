@@ -4,6 +4,7 @@ import xdr from './xdr';
 
 BigNumber.DEBUG = true; // gives us exceptions on bad constructor values
 
+import './contract_auth';
 export { xdr };
 export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';

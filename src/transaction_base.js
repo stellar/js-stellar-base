@@ -63,23 +63,33 @@ export class TransactionBase {
     this._networkPassphrase = networkPassphrase;
   }
 
+  get networkId() {
+    return hash(this._networkPassphrase);
+  }
+
   /**
    * Signs the transaction with the given {@link Keypair}.
    * @param {...Keypair} keypairs Keypairs of signers
    * @returns {void}
    */
   sign(...keypairs) {
-    // Temporary warning for contract auth-next signatures not being supported.
-    const requiresContractSignatures = (this.operations || []).some(
-      (op) =>
-        op.type === 'invokeHostFunction' &&
-        op.functions.some((fn) => fn.auth().some((a) => a.addressWithNonce()))
-    );
-    if (requiresContractSignatures) {
-      throw new Error(
-        'Soroban contract signatures are not supported in this version of the SDK.'
-      );
-    }
+    // Sign all the invokeHostFunction auths where we have a matching keypair.
+    // TODO: Before sending, we should check that we have signed all the required auths.
+    const networkId = this.networkId;
+    (this.operations || []).forEach((op) => {
+      if (op.type !== 'invokeHostFunction') return;
+      op.auth().forEach((auth) => {
+        // Check if this needs signing
+        const expectedSigner = auth.addressWithNonce()?.address()?.accountId();
+        if (!expectedSigner) return;
+        // Check if we have the matching keypair to sign with
+        const signer = keypairs.find((kp) => auth.canSign(kp));
+        if (!signer) return;
+        // Sign it
+        auth.sign(signer, networkId);
+      });
+    });
+    // Sign the whole transaction itself
     const txHash = this.hash();
     keypairs.forEach((kp) => {
       const sig = kp.signDecorated(txHash);
