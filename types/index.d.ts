@@ -544,7 +544,7 @@ export namespace OperationOptions {
     minAmountB: string;
   }
   interface InvokeHostFunction extends BaseOptions {
-    args: xdr.HostFunction;
+    func: xdr.HostFunction;
     auth: xdr.SorobanAuthorizationEntry[];
   }
   interface BumpFootprintExpiration extends BaseOptions {
