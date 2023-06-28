@@ -24,7 +24,7 @@ import xdr from '../xdr';
  */
 export function bumpFootprintExpiration(opts) {
   if ((opts.ledgersToExpire ?? -1) <= 0) {
-    throw new RangeError('ledgersToExpire isn\'t a ledger quantity (uint32)');
+    throw new RangeError("ledgersToExpire isn't a ledger quantity (uint32)");
   }
 
   const bumpFootprintOp = new xdr.BumpFootprintExpirationOp({
