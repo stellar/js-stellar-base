@@ -1,10 +1,14 @@
 import xdr from '../xdr';
 
 /**
- * TODO
+ * Builds a footprint restoration operation. It takes no parameters because the
+ * relevant footprint is derived from the transaction itself (see
+ * {@link TransactionBuilder}'s `opts.sorobanData` parameter, which is a
+ * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
+ * usage as part of {@link xdr.SorobanResources}).
  *
  * @function
- * @alias Operation.restoreFootprintOp
+ * @alias Operation.restoreFootprint
  *
  * @param {object} [opts] - an optional set of parameters
  * @param {string} [opts.source] - an optional source account

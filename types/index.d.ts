@@ -880,7 +880,7 @@ export namespace Operation {
     ledgersToExpire: number;
   }
 
-  function rstoreFootprint(options: OperationOptions.RestoreFootprint):
+  function restoreFootprint(options: OperationOptions.RestoreFootprint):
     xdr.Operation<RestoreFootprint>;
   interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
 
