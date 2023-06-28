@@ -80,8 +80,9 @@ export class TransactionBase {
     );
 
     if (requiresContractSignatures) {
-      throw new Error(
-        'Soroban contract signatures are not supported in this version of the SDK.'
+      // eslint-disable-next-line no-console
+      console.warn(
+        'Soroban contract signatures are not well-supported in this version of the SDK.'
       );
     }
 

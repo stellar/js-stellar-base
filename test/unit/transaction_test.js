@@ -299,9 +299,7 @@ describe('Transaction', function () {
       .setTimeout(StellarBase.TimeoutInfinite)
       .build();
 
-    expect(() => tx.sign(signer)).to.throw(
-      /Soroban contract signatures are not supported in this version of the SDK./
-    );
+    tx.sign(signer);
   });
 
   it('adds signature correctly', function () {
