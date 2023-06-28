@@ -366,6 +366,8 @@ export namespace OperationType {
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
+  type BumpFootprintExpiration = 'bumpFootprintExpiration';
+  type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -392,7 +394,9 @@ export type OperationType =
   | OperationType.SetTrustLineFlags
   | OperationType.LiquidityPoolDeposit
   | OperationType.LiquidityPoolWithdraw
-  | OperationType.InvokeHostFunction;
+  | OperationType.InvokeHostFunction
+  | OperationType.BumpFootprintExpiration
+  | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -540,12 +544,13 @@ export namespace OperationOptions {
     minAmountB: string;
   }
   interface InvokeHostFunction extends BaseOptions {
-    args: xdr.HostFunctionArgs;
-    auth: xdr.ContractAuth[];
+    args: xdr.HostFunction;
+    auth: xdr.SorobanAuthorizationEntry[];
   }
-  interface InvokeHostFunctions extends BaseOptions {
-    functions: xdr.HostFunction[];
+  interface BumpFootprintExpiration extends BaseOptions {
+    ledgersToExpire: number;
   }
+  type RestoreFootprint = BaseOptions;
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -577,7 +582,9 @@ export type OperationOptions =
   | OperationOptions.SetTrustLineFlags
   | OperationOptions.LiquidityPoolDeposit
   | OperationOptions.LiquidityPoolWithdraw
-  | OperationOptions.InvokeHostFunction;
+  | OperationOptions.InvokeHostFunction
+  | OperationOptions.BumpFootprintExpiration
+  | OperationOptions.RestoreFootprint;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -859,14 +866,23 @@ export namespace Operation {
     options: OperationOptions.LiquidityPoolWithdraw
   ): xdr.Operation<LiquidityPoolWithdraw>;
   interface InvokeHostFunction extends BaseOperation<OperationType.InvokeHostFunction> {
-    functions: xdr.HostFunction[];
+    func: xdr.HostFunction;
+    auth?: xdr.SorobanAuthorizationEntry[];
   }
   function invokeHostFunction(
     options: OperationOptions.InvokeHostFunction
   ): xdr.Operation<InvokeHostFunction>;
-  function invokeHostFunctions(
-    options: OperationOptions.InvokeHostFunctions
-  ): xdr.Operation<InvokeHostFunction>;
+
+  function bumpFootprintExpiration(
+    options: OperationOptions.BumpFootprintExpiration
+  ): xdr.Operation<BumpFootprintExpiration>;
+  interface BumpFootprintExpiration extends BaseOperation<OperationType.BumpFootprintExpiration> {
+    ledgersToExpire: number;
+  }
+
+  function restoreFootprint(options: OperationOptions.RestoreFootprint):
+    xdr.Operation<RestoreFootprint>;
+  interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -903,7 +919,9 @@ export type Operation =
   | Operation.SetTrustLineFlags
   | Operation.LiquidityPoolDeposit
   | Operation.LiquidityPoolWithdraw
-  | Operation.InvokeHostFunction;
+  | Operation.InvokeHostFunction
+  | Operation.BumpFootprintExpiration
+  | Operation.RestoreFootprint;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;

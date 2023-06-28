@@ -63,22 +63,6 @@ export class Contract {
   /**
    * Returns an operation that will invoke this contract call.
    *
-   * @todo Allow easily building `Operation`s that invoke multiple contract
-   * calls at once via this abstraction layer. For example, something like
-   *
-   * ```js
-   * let [ a, b ] = [someId1, someId2].map(id => { new Contract(id) });
-   *
-   * let combinedOp = Operation.invokeHostFunctions({
-   *  source: undefined, // optional
-   *  functions: [
-   *    a.partialCall("hello"),
-   *    a.partialCall("transfer", ...),
-   *    b.partialCall("increment"),
-   *  ]
-   * });
-   * ```
-   *
    * @param {string} method - name of the method to call
    * @param {...xdr.ScVal} params - arguments to pass to the function call
    * @returns {xdr.Operation} Build a InvokeHostFunctionOp operation to call the
@@ -88,7 +72,7 @@ export class Contract {
     const contractId = Buffer.from(this._id, 'hex');
 
     return Operation.invokeHostFunction({
-      args: xdr.HostFunctionArgs.hostFunctionTypeInvokeContract([
+      func: xdr.HostFunction.hostFunctionTypeInvokeContract([
         xdr.ScVal.scvBytes(contractId),
         xdr.ScVal.scvSymbol(method),
         ...params
@@ -105,12 +89,12 @@ export class Contract {
    * @returns {xdr.LedgerKey} the contract's executable data ledger key
    */
   getFootprint() {
-    const contractId = Buffer.from(this._id, 'hex');
-
     return xdr.LedgerKey.contractData(
       new xdr.LedgerKeyContractData({
-        contractId,
-        key: xdr.ScVal.scvLedgerKeyContractExecutable()
+        contract: this.address().toScAddress(),
+        key: xdr.ScVal.scvLedgerKeyContractInstance(),
+        durability: xdr.ContractDataDurability.persistent(),
+        bodyType: xdr.ContractEntryBodyType.dataEntry()
       })
     );
   }

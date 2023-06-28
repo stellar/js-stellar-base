@@ -259,6 +259,7 @@ describe('Transaction', function () {
       '0'
     );
     let signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
+    let scAddress = new StellarBase.Address(source.accountId()).toScAddress();
 
     let tx = new StellarBase.TransactionBuilder(source, {
       fee: 100,
@@ -266,26 +267,31 @@ describe('Transaction', function () {
     })
       .addOperation(
         StellarBase.Operation.invokeHostFunction({
-          args: StellarBase.xdr.HostFunctionArgs.hostFunctionTypeInvokeContract(
-            []
-          ),
+          func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract([]),
           auth: [
-            new StellarBase.xdr.ContractAuth({
-              // Include an AddressWithNonce to trigger this
-              addressWithNonce: new StellarBase.xdr.AddressWithNonce({
-                address: new StellarBase.Address(
-                  source.accountId()
-                ).toScAddress(),
-                nonce: StellarBase.xdr.Uint64.fromString('0')
-              }),
+            new StellarBase.xdr.SorobanAuthorizationEntry({
+              // Include a credentials w/ a nonce to trigger this
+              credentials:
+                new StellarBase.xdr.SorobanCredentials.sorobanCredentialsAddress(
+                  new StellarBase.xdr.SorobanAddressCredentials({
+                    address: scAddress,
+                    nonce: new StellarBase.xdr.Int64(1234),
+                    signatureExpirationLedger: 1,
+                    signatureArgs: []
+                  })
+                ),
               // Rest of params are irrelevant
-              rootInvocation: new StellarBase.xdr.AuthorizedInvocation({
-                contractId: Buffer.alloc(32),
-                functionName: 'test',
-                args: [],
+              rootInvocation: new StellarBase.xdr.SorobanAuthorizedInvocation({
+                function:
+                  StellarBase.xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
+                    new StellarBase.xdr.SorobanAuthorizedContractFunction({
+                      contractAddress: scAddress,
+                      functionName: 'test',
+                      args: []
+                    })
+                  ),
                 subInvocations: []
-              }),
-              signatureArgs: []
+              })
             })
           ]
         })

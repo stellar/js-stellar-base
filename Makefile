@@ -9,7 +9,7 @@ XDR_FILES_CURR= \
 	Stellar-types.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/2f16687fdf6f4bcfb56805e2035f69997f4b34c4
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/e372df9f677961aac04c5a4cc80a3667f310b29f
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \
@@ -55,7 +55,7 @@ types/curr.d.ts: src/generated/curr_generated.js
 		apk add --update git && \
 		git clone --depth 1 https://github.com/stellar/dts-xdr -b $(DTSXDR_COMMIT) --single-branch && \
 		cd /dts-xdr && \
-		yarn install && \
+		yarn install --network-concurrency 1 && \
 		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
 		yarn run prettier --write /wd/$@ \
@@ -66,7 +66,7 @@ types/next.d.ts: src/generated/next_generated.js
 		apk add --update git && \
 		git clone --depth 1 https://github.com/stellar/dts-xdr -b $(DTSXDR_COMMIT) --single-branch && \
 		cd /dts-xdr && \
-		yarn install && \
+		yarn install --network-concurrency 1 && \
 		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
 		yarn run prettier --write /wd/$@ \

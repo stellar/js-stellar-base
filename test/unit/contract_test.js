@@ -49,8 +49,10 @@ describe('Contract', function () {
 
       let expected = new StellarBase.xdr.LedgerKey.contractData(
         new StellarBase.xdr.LedgerKeyContractData({
-          contractId: Buffer.from(contractId, 'hex'),
-          key: StellarBase.xdr.ScVal.scvLedgerKeyContractExecutable()
+          contract: contract.address().toScAddress(),
+          key: StellarBase.xdr.ScVal.scvLedgerKeyContractInstance(),
+          durability: StellarBase.xdr.ContractDataDurability.persistent(),
+          bodyType: StellarBase.xdr.ContractEntryBodyType.dataEntry()
         })
       )
         .toXDR()

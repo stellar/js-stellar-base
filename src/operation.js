@@ -96,7 +96,8 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
  * * `{@link Operation.invokeHostFunction}`
- * * `{@link Operation.invokeHostFunctions}`
+ * * `{@link Operation.bumpFootprintExpiration}`
+ * * `{@link Operation.restoreFootprint}`
  *
  * @class Operation
  */
@@ -380,9 +381,17 @@ export class Operation {
       }
       case 'invokeHostFunction': {
         result.type = 'invokeHostFunction';
-        // TODO: Unpack each of the xdr.HostFunction instances into friendlier
-        // objects?
-        result.functions = attrs.functions();
+        result.func = attrs.hostFunction();
+        result.auth = attrs.auth() ?? [];
+        break;
+      }
+      case 'bumpFootprintExpiration': {
+        result.type = 'bumpFootprintExpiration';
+        result.ledgersToExpire = attrs.ledgersToExpire();
+        break;
+      }
+      case 'restoreFootprint': {
+        result.type = 'restoreFootprint';
         break;
       }
       default: {
@@ -650,4 +659,5 @@ Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
-Operation.invokeHostFunctions = ops.invokeHostFunctions;
+Operation.bumpFootprintExpiration = ops.bumpFootprintExpiration;
+Operation.restoreFootprint = ops.restoreFootprint;
