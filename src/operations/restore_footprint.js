@@ -6,14 +6,14 @@ import xdr from '../xdr';
  * @function
  * @alias Operation.restoreFootprintOp
  *
+ * @param {object} [opts] - an optional set of parameters
  * @param {string} [opts.source] - an optional source account
  *
  * @returns {xdr.Operation} a Bump Footprint Expiration operation
  *    (xdr.RestoreFootprintOp)
  */
 export function restoreFootprint(opts = {}) {
-
-  const op = new xdr.RestoreFootprintOp({ ext: new xdr.ExtensionPoint(0)});
+  const op = new xdr.RestoreFootprintOp({ ext: new xdr.ExtensionPoint(0) });
   const opAttributes = {
     body: xdr.OperationBody.restoreFootprint(op)
   };
