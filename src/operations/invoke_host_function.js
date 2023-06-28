@@ -9,7 +9,8 @@ import xdr from '../xdr';
  * @param {object} opts - options object
  * @param {xdr.HostFunction} opts.func - host function to execute (with its
  *    wrapped parameters)
- * @param {xdr.ContractAuth[]} [opts.auth] - list of authorizations for the call
+ * @param {xdr.SorobanAuthorizationEntry[]} [opts.auth] - list outlining the
+ *    tree of authorizations required for the call
  * @param {string} [opts.source] - an optional source account
  *
  * @returns {xdr.Operation} an Invoke Host Function operation

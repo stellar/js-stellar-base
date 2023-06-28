@@ -253,57 +253,6 @@ describe('Transaction', function () {
     );
   });
 
-  it('returns error when transaction includes soroban contract auth', function () {
-    let source = new StellarBase.Account(
-      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
-      '0'
-    );
-    let signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
-    let scAddress = new StellarBase.Address(source.accountId()).toScAddress();
-
-    let tx = new StellarBase.TransactionBuilder(source, {
-      fee: 100,
-      networkPassphrase: StellarBase.Networks.TESTNET
-    })
-      .addOperation(
-        StellarBase.Operation.invokeHostFunction({
-          func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract([]),
-          auth: [
-            new StellarBase.xdr.SorobanAuthorizationEntry({
-              // Include a credentials w/ a nonce to trigger this
-              credentials:
-                new StellarBase.xdr.SorobanCredentials.sorobanCredentialsAddress(
-                  new StellarBase.xdr.SorobanAddressCredentials({
-                    address: scAddress,
-                    nonce: new StellarBase.xdr.Int64(1234),
-                    signatureExpirationLedger: 1,
-                    signatureArgs: []
-                  })
-                ),
-              // Rest of params are irrelevant
-              rootInvocation: new StellarBase.xdr.SorobanAuthorizedInvocation({
-                function:
-                  StellarBase.xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
-                    new StellarBase.xdr.SorobanAuthorizedContractFunction({
-                      contractAddress: scAddress,
-                      functionName: 'test',
-                      args: []
-                    })
-                  ),
-                subInvocations: []
-              })
-            })
-          ]
-        })
-      )
-      .setTimeout(StellarBase.TimeoutInfinite)
-      .build();
-
-    expect(() => tx.sign(signer)).to.throw(
-      /Soroban contract signatures are not supported in this version of the SDK./
-    );
-  });
-
   it('adds signature correctly', function () {
     const sourceKey =
       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
