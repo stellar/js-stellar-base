@@ -11,32 +11,35 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 2
+      max-parallel: 4
       matrix:
         node-version: [14, 16, 18]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install Dependencies
-      run: yarn install --network-concurrency 1
 
-    - name: Build All
-      run: yarn build:prod
+      # Workaround for some `yarn` nonsense, see:
+      # https://github.com/yarnpkg/yarn/issues/6312#issuecomment-429685210
+      - name: Install Dependencies
+        run: yarn install --network-concurrency 1
 
-    - name: Run Node Tests
-      run: yarn test:node
+      - name: Build All
+        run: yarn build:prod
 
-    - name: Run Browser Tests
-      run: yarn build:browser:prod && yarn test:browser
+      - name: Run Node Tests
+        run: yarn test:node
 
-    - name: Run Prettier Checks
-      run: yarn fmt && (git diff-index --quiet HEAD; git diff)
+      - name: Run Browser Tests
+        run: yarn test:browser
 
-    - name: Run Linter
-      run: yarn lint
+      - name: Run Prettier Checks
+        run: yarn fmt && (git diff-index --quiet HEAD; git diff)
+
+      - name: Run Linter
+        run: yarn lint

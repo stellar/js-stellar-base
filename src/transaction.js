@@ -1,5 +1,3 @@
-import map from 'lodash/map';
-
 import xdr from './xdr';
 import { hash } from './hashing';
 
@@ -126,7 +124,7 @@ export class Transaction extends TransactionBase {
     }
 
     const operations = tx.operations() || [];
-    this._operations = map(operations, (op) => Operation.fromXDRObject(op));
+    this._operations = operations.map((op) => Operation.fromXDRObject(op));
   }
 
   /**

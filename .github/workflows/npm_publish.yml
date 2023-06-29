@@ -19,7 +19,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Depencencies
-        run: yarn
+        run: yarn install
 
       - name: Test & Build
         run: yarn preversion

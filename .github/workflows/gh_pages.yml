@@ -31,6 +31,8 @@ jobs:
           path: jsdoc
 
       - name: Generate JS docs
+        # because parsing errors still result in renderable docs
+        continue-on-error: true
         run: yarn docs
 
       - name: Publish JS docs

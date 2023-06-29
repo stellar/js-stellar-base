@@ -1,4 +1,3 @@
-import isString from 'lodash/isString';
 import xdr from '../xdr';
 
 /**
@@ -14,20 +13,20 @@ import xdr from '../xdr';
 export function manageData(opts) {
   const attributes = {};
 
-  if (!(isString(opts.name) && opts.name.length <= 64)) {
+  if (!(typeof opts.name === 'string' && opts.name.length <= 64)) {
     throw new Error('name must be a string, up to 64 characters');
   }
   attributes.dataName = opts.name;
 
   if (
-    !isString(opts.value) &&
+    typeof opts.value !== 'string' &&
     !Buffer.isBuffer(opts.value) &&
     opts.value !== null
   ) {
     throw new Error('value must be a string, Buffer or null');
   }
 
-  if (isString(opts.value)) {
+  if (typeof opts.value === 'string') {
     attributes.dataValue = Buffer.from(opts.value);
   } else {
     attributes.dataValue = opts.value;

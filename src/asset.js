@@ -1,6 +1,4 @@
-import clone from 'lodash/clone';
-import padEnd from 'lodash/padEnd';
-import trimEnd from 'lodash/trimEnd';
+import { trimEnd } from './util/util';
 import xdr from './xdr';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
@@ -119,7 +117,7 @@ export class Asset {
 
     // pad code with null bytes if necessary
     const padLength = this.code.length <= 4 ? 4 : 12;
-    const paddedCode = padEnd(this.code, padLength, '\0');
+    const paddedCode = this.code.padEnd(padLength, '\0');
 
     // eslint-disable-next-line new-cap
     const assetType = new xdrType({
@@ -134,14 +132,20 @@ export class Asset {
    * @returns {string} Asset code
    */
   getCode() {
-    return clone(this.code);
+    if (this.code === undefined) {
+      return undefined;
+    }
+    return String(this.code);
   }
 
   /**
    * @returns {string} Asset issuer
    */
   getIssuer() {
-    return clone(this.issuer);
+    if (this.issuer === undefined) {
+      return undefined;
+    }
+    return String(this.issuer);
   }
 
   /**
@@ -257,9 +261,7 @@ export class Asset {
  *     -1 if `a < b`, 0 if `a == b`, and 1 if `a > b`
  *
  * @warning No type-checks are done on the parameters
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
  */
 function asciiCompare(a, b) {
-  return a.localeCompare(b, 'en', { caseFirst: 'upper' });
+  return Buffer.compare(Buffer.from(a, 'ascii'), Buffer.from(b, 'ascii'));
 }
