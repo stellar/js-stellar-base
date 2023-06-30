@@ -54,7 +54,8 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *  - number/bigint -> the smallest possible XDR integer type that will fit the
  *    input value (if you want a specific type, use {@link ScInt})
  *
- *  - {@link Address} -> scvAddress (for contracts and public keys)
+ *  - {@link Address} or {@link Contract} -> scvAddress (for contracts and
+ *    public keys)
  *
  *  - Array<T> -> scvVec after attempting to convert each item of type `T` to an
  *    xdr.ScVal (recursively). note that all values must be the same type!
@@ -67,12 +68,17 @@ import { ScInt, scValToBigInt } from './numbers/index';
  * type which will force a particular interpretation of that value.
  *
  * Note that not all type specifications are compatible with all `ScVal`s, e.g.
- * `toScVal("string", {type: i256})` will throw.
+ * `toScVal("a string", {type: "i256"})` will throw.
  *
- * @param {any} val         a native (or convertible) input value to wrap
- * @param {object} [opts]   an optional set of options to pass which allows you
- *      to specify a type when the native `val` is an integer-like (i.e.
- *      number|bigint) type
+ * @param {any} val -       a native (or convertible) input value to wrap
+ * @param {object} [opts] - an optional set of hints around the type of
+ *    conversion you'd like to see
+ * @param {string} [opts.type] - when `val` is an integer-like type (i.e.
+ *    number|bigint), this will be forwarded to {@link ScInt}. otherwise, it can
+ *    be 'string', 'symbol', 'bytes' to force a particular interpretation of
+ *    `val`. for example, `nativeToScVal("hello", {type: 'symbol'})` will return
+ *    an `scvSymbol`, whereas without the type it would have been an
+ *    `scvString`.
  *
  * @returns {xdr.ScVal} a wrapped, smart, XDR version of the input value
  *
@@ -82,9 +88,8 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *    types, custom classes)
  *  - the type of the input object (or some inner value of said object) cannot
  *    be determined (via `typeof`)
- *
- * TODO: Allow users to force types that are not direct but can be translated,
- *       i.e. forcing a `Uint8Array` to be encoded as an ScSymbol or ScString.
+ *  - the type you specified (via `opts.type`) is incompatible with the value
+ *    you passed in (`val`), e.g. `nativeToScVal("a string", { type: 'i128' })`.
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
@@ -101,8 +106,24 @@ export function nativeToScVal(val, opts = {}) {
         return val.toScVal();
       }
 
-      if (val instanceof Uint8Array) {
-        return xdr.ScVal.scvBytes(Uint8Array.from(val));
+      if (val instanceof Contract) {
+        return val.address().toScVal();
+      }
+
+      if (val instanceof Uint8Array || Buffer.isBuffer(val)) {
+        const copy = Uint8Array.from(val);
+        switch (opts?.type ?? 'bytes') {
+          case 'bytes':
+            return xdr.ScVal.scvBytes(copy);
+          case 'symbol':
+            return xdr.ScVal.scvSymbol(copy);
+          case 'string':
+            return xdr.ScVal.scvSymbol(copy);
+          default:
+            throw new TypeError(
+              `invalid type (${opts.type}) specified for bytes-like value`
+            );
+        }
       }
 
       if (Array.isArray(val)) {
@@ -129,10 +150,24 @@ export function nativeToScVal(val, opts = {}) {
 
     case 'number':
     case 'bigint':
-      return new ScInt(val, opts).toScVal();
+      return new ScInt(val, { type: opts?.type }).toScVal();
 
     case 'string':
-      return xdr.ScVal.scvString(val.toString());
+      switch (opts?.type ?? 'string') {
+        case 'string':
+          return xdr.ScVal.scvString(val);
+
+        case 'symbol':
+          return xdr.ScVal.scvSymbol(val);
+
+        case 'bytes':
+          return xdr.ScVal.scvBytes(Uint8Array.from(val));
+
+        default:
+          throw new TypeError(
+            `invalid type (${opts.type}) specified for string value`
+          );
+      }
 
     case 'boolean':
       return xdr.ScVal.scvBool(val);
@@ -160,7 +195,7 @@ export function nativeToScVal(val, opts = {}) {
  *  - map -> key-value object of any of the above (via recursion)
  *  - bool -> boolean
  *  - bytes -> Uint8Array
- *  - string, symbol -> string
+ *  - string, symbol -> string|Buffer
  *
  * If no conversion can be made, this just "unwraps" the smart value to return
  * its underlying XDR value.
@@ -214,8 +249,7 @@ export function scValToNative(scv) {
 
     case xdr.ScValType.scvString().value:
     case xdr.ScValType.scvSymbol().value:
-      // FIXME: Is this the right way to handle it being string|Buffer?
-      return String(scv.value());
+      return scv.value(); // string|Buffer
 
     // these can be converted to bigint
     case xdr.ScValType.scvTimepoint().value:
