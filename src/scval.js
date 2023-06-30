@@ -3,6 +3,7 @@
  * native JavaScript types.
  *
  * @example
+ * ```js
  * import { nativeToScVal, scValToNative, ScInt, xdr } from 'stellar-base';
  *
  * let gigaMap = {
@@ -32,6 +33,7 @@
  *
  * // Similarly, the inverse should work:
  * scValToNative(scv) == gigaMap;       // true
+ * ```
  */
 
 import xdr from './xdr';
@@ -104,7 +106,7 @@ import { ScInt, scValToBigInt } from './numbers/index';
  * nativeToScVal(new Uint8Array(5));                      // gives ScValType === ScBytes
  * nativeToScVal(new Uint8Array(5), { type: 'symbol' });  // gives ScValType === ScSymbol
  * nativeToScVal(null); // gives ScValType === ScVoid
- * nativeToScVal(null); // gives ScValType === ScVoid
+ * nativeToScVal([1, 2, 3]); // gives ScValType === ScVoid
  * ```
  */
 export function nativeToScVal(val, opts = {}) {
@@ -146,7 +148,7 @@ export function nativeToScVal(val, opts = {}) {
         if (val.length > 0 && val.some((v) => typeof v !== typeof v[0])) {
           throw new TypeError(`array value (${val}) must have a single type`);
         }
-        return xdr.ScVal.scvVec(val.map(nativeToScVal));
+        return xdr.ScVal.scvVec(val.map(v => nativeToScVal(v, opts)));
       }
 
       if ((val.constructor?.name ?? '') !== 'Object') {
