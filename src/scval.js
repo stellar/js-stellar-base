@@ -262,7 +262,7 @@ export function nativeToScVal(val, opts = {}) {
  *  - map -> key-value object of any of the above (via recursion)
  *  - bool -> boolean
  *  - bytes -> Uint8Array
- *  - string, symbol -> string|Buffer
+ *  - string, symbol -> string|Uint8Array
  *
  * If no conversion can be made, this just "unwraps" the smart value to return
  * its underlying XDR value.
@@ -316,7 +316,12 @@ export function scValToNative(scv) {
 
     case xdr.ScValType.scvString().value:
     case xdr.ScValType.scvSymbol().value:
-      return scv.value(); // string|Buffer
+      let v = scv.value(); // string|Buffer
+      if (Buffer.isBuffer(v)) {
+        // trying to avoid bubbling up problematic Buffer type
+        return Uint8Array.from(v);
+      }
+      return v; // string
 
     // these can be converted to bigint
     case xdr.ScValType.scvTimepoint().value:
