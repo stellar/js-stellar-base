@@ -39,6 +39,7 @@
 import xdr from './xdr';
 
 import { Address } from './address';
+import { Contract } from './contract';
 import { ScInt, scValToBigInt } from './numbers/index';
 
 /**
@@ -210,6 +211,9 @@ export function nativeToScVal(val, opts = {}) {
 
         case 'i32':
           return xdr.ScVal.scvI32(val);
+
+        default:
+          break;
       }
 
       return new ScInt(val, { type: opts?.type }).toScVal();
