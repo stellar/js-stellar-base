@@ -164,7 +164,7 @@ export function nativeToScVal(val, opts = {}) {
           case 'symbol':
             return xdr.ScVal.scvSymbol(copy);
           case 'string':
-            return xdr.ScVal.scvSymbol(copy);
+            return xdr.ScVal.scvString(copy);
           default:
             throw new TypeError(
               `invalid type (${opts.type}) specified for bytes-like value`
@@ -173,8 +173,12 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (Array.isArray(val)) {
-        if (val.length > 0 && val.some((v) => typeof v !== typeof v[0])) {
-          throw new TypeError(`array value (${val}) must have a single type`);
+        if (val.length > 0 && val.some((v) => typeof v !== typeof val[0])) {
+          throw new TypeError(
+            `array values (${val}) must have the same type (types: ${val
+              .map((v) => typeof v)
+              .join(',')})`
+          );
         }
         return xdr.ScVal.scvVec(val.map((v) => nativeToScVal(v, opts)));
       }
@@ -192,7 +196,7 @@ export function nativeToScVal(val, opts = {}) {
           // the type can be specified with an entry for the key and the value,
           // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
           // 'u128' ]} or you can use `null` for the default interpretation
-          const [keyType, valType] = opts?.type[k] ?? [null, null];
+          const [keyType, valType] = (opts?.type ?? {})[k] ?? [null, null];
           const keyOpts = keyType ? { type: keyType } : {};
           const valOpts = valType ? { type: valType } : {};
 

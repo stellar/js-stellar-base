@@ -110,8 +110,8 @@ describe('parsing and building ScVals', function () {
       ],
       [xdr.ScVal.scvString('hello there!'), 'hello there!'],
       [xdr.ScVal.scvSymbol('hello'), 'hello'],
-      [xdr.ScVal.scvSymbol(Buffer.from('hello')), 'hello'],
-      [xdr.ScVal.scvString(Buffer.alloc(32, '\xba')), '\xba'.repeat(16)],
+      [xdr.ScVal.scvString(Buffer.from('hello')), Buffer.from('hello')], // ensure no conversion
+      [xdr.ScVal.scvSymbol(Buffer.from('hello')), Buffer.from('hello')], // ensure no conversion
       [
         new StellarBase.Address(kp.publicKey()).toScVal(),
         (actual) => actual.toString() === kp.publicKey()
@@ -145,5 +145,65 @@ describe('parsing and building ScVals', function () {
         expect(actual).to.deep.equal(expected);
       }
     });
+  });
+
+  it('converts native types with customized types', function () {
+    [
+      [1, 'u32', 'scvU32'],
+      [1, 'i32', 'scvI32'],
+      [1, 'i64', 'scvI64'],
+      [1, 'i128', 'scvI128'],
+      [1, 'u256', 'scvU256'],
+      ['a', 'symbol', 'scvSymbol'],
+      ['a', undefined, 'scvString'],
+      [Buffer.from('abcdefg'), undefined, 'scvBytes'],
+      [Buffer.from('abcdefg'), 'string', 'scvString'],
+      [Buffer.from('abcdefg'), 'symbol', 'scvSymbol']
+    ].forEach(([input, typeSpec, outType]) => {
+      let scv = nativeToScVal(input, { type: typeSpec });
+      expect(scv.switch().name).to.equal(
+        outType,
+        `in: ${input}, ${typeSpec}\nout: ${JSON.stringify(scv, null, 2)}`
+      );
+    });
+
+    let scv;
+
+    scv = nativeToScVal(['a', 'b', 'c'], { type: 'symbol' });
+    expect(scv.switch().name).to.equal('scvVec');
+    scv.value().forEach((v) => {
+      expect(v.switch().name).to.equal('scvSymbol');
+    });
+
+    scv = nativeToScVal(
+      {
+        hello: 'world',
+        goodbye: [1, 2, 3]
+      },
+      {
+        type: {
+          hello: ['symbol', null],
+          goodbye: [null, 'i32']
+        }
+      }
+    );
+    let e;
+    expect(scv.switch().name).to.equal('scvMap');
+
+    e = scv.value()[0];
+    expect(e.key().switch().name).to.equal('scvSymbol', `${JSON.stringify(e)}`);
+    expect(e.val().switch().name).to.equal('scvString', `${JSON.stringify(e)}`);
+
+    e = scv.value()[1];
+    expect(e.key().switch().name).to.equal('scvString', `${JSON.stringify(e)}`);
+    expect(e.val().switch().name).to.equal('scvVec', `${JSON.stringify(e)}`);
+    expect(e.val().value()[0].switch().name).to.equal(
+      'scvI32',
+      `${JSON.stringify(e)}`
+    );
+  });
+
+  it('throws on arrays with mixed types', function () {
+    expect(() => nativeToScVal([1, 'a', false])).to.throw(/same type/i);
   });
 });
