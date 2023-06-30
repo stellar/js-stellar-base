@@ -90,6 +90,22 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *    be determined (via `typeof`)
  *  - the type you specified (via `opts.type`) is incompatible with the value
  *    you passed in (`val`), e.g. `nativeToScVal("a string", { type: 'i128' })`.
+ *
+ * @example
+ *
+ * ```js
+ * nativeToScVal(1000);                   // gives ScValType === U64
+ * nativeToScVal(1000n);                  // gives ScValType === U64
+ * nativeToScVal(1n << 100n);             // gives ScValType === U128
+ * nativeToScVal(1000, { type: 'u32' });  // gives ScValType === U32
+ * nativeToScVal(1000, { type: 'i125' }); // gives ScValType === I256
+ * nativeToScVal("a string");                     // gives ScValType === ScString
+ * nativeToScVal("a string", { type: 'symbol' }); // gives ScValType === ScSymbol
+ * nativeToScVal(new Uint8Array(5));                      // gives ScValType === ScBytes
+ * nativeToScVal(new Uint8Array(5), { type: 'symbol' });  // gives ScValType === ScSymbol
+ * nativeToScVal(null); // gives ScValType === ScVoid
+ * nativeToScVal(null); // gives ScValType === ScVoid
+ * ```
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
@@ -99,7 +115,7 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (val instanceof xdr.ScVal) {
-        return val;
+        return val; // should we copy?
       }
 
       if (val instanceof Address) {
@@ -150,6 +166,14 @@ export function nativeToScVal(val, opts = {}) {
 
     case 'number':
     case 'bigint':
+      switch (opts?.type) {
+        case 'u32':
+          return ScVal.scvU32(val);
+
+        case 'i32':
+          return ScVal.scvI32(val);
+      }
+
       return new ScInt(val, { type: opts?.type }).toScVal();
 
     case 'string':
@@ -159,9 +183,6 @@ export function nativeToScVal(val, opts = {}) {
 
         case 'symbol':
           return xdr.ScVal.scvSymbol(val);
-
-        case 'bytes':
-          return xdr.ScVal.scvBytes(Uint8Array.from(val));
 
         default:
           throw new TypeError(
