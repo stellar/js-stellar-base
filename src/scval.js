@@ -315,13 +315,14 @@ export function scValToNative(scv) {
       return scv.value();
 
     case xdr.ScValType.scvString().value:
-    case xdr.ScValType.scvSymbol().value:
-      let v = scv.value(); // string|Buffer
+    case xdr.ScValType.scvSymbol().value: {
+      const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v)) {
         // trying to avoid bubbling up problematic Buffer type
         return Uint8Array.from(v);
       }
       return v; // string
+    }
 
     // these can be converted to bigint
     case xdr.ScValType.scvTimepoint().value:
