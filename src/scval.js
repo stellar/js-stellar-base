@@ -108,7 +108,8 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *  - the type of the input object (or some inner value of said object) cannot
  *    be determined (via `typeof`)
  *  - the type you specified (via `opts.type`) is incompatible with the value
- *    you passed in (`val`), e.g. `nativeToScVal("a string", { type: 'i128' })`.
+ *    you passed in (`val`), e.g. `nativeToScVal("a string", { type: 'i128' })`,
+ *    though this does not apply for types that ignore `opts` (e.g. addresses).
  *
  * @example
  *
