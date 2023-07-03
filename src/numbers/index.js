@@ -1,4 +1,4 @@
-import { XdrLargeInt } from './xdr_large_int';
+import { XdrLargeInt, getType } from './xdr_large_int';
 
 export { Uint128 } from './uint128';
 export { Uint256 } from './uint256';
@@ -28,7 +28,7 @@ export { XdrLargeInt };
  * @throws {TypeError} if the `scv` input value doesn't represent an integer
  */
 export function scValToBigInt(scv) {
-  const type = scv.switch().name.slice(3).toLowerCase(); // if it ain't broke...
+  const scIntType = getType(scv.switch().name);
 
   switch (scv.switch().name) {
     case 'scvU32':
@@ -37,18 +37,18 @@ export function scValToBigInt(scv) {
 
     case 'scvU64':
     case 'scvI64':
-      return new XdrLargeInt(type, scv.value()).toBigInt();
+      return new XdrLargeInt(scIntType, scv.value()).toBigInt();
 
     case 'scvU128':
     case 'scvI128':
-      return new XdrLargeInt(type, [
+      return new XdrLargeInt(scIntType, [
         scv.value().lo(),
         scv.value().hi()
       ]).toBigInt();
 
     case 'scvU256':
     case 'scvI256':
-      return new XdrLargeInt(type, [
+      return new XdrLargeInt(scIntType, [
         scv.value().loLo(),
         scv.value().loHi(),
         scv.value().hiLo(),
