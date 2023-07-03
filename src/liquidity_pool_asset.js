@@ -1,4 +1,3 @@
-import clone from 'lodash/clone';
 import xdr from './xdr';
 import { Asset } from './asset';
 import {
@@ -83,11 +82,12 @@ export class LiquidityPoolAsset {
    * @returns {LiquidityPoolParameters} Liquidity pool parameters.
    */
   getLiquidityPoolParameters() {
-    return clone({
+    return {
+      ...this,
       assetA: this.assetA,
       assetB: this.assetB,
       fee: this.fee
-    });
+    };
   }
 
   /**

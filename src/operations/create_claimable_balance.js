@@ -53,7 +53,9 @@ export function createClaimableBalance(opts) {
   const attributes = {};
   attributes.asset = opts.asset.toXDRObject();
   attributes.amount = this._toXDRAmount(opts.amount);
-  attributes.claimants = opts.claimants.map((c) => c.toXDRObject());
+  attributes.claimants = Object.values(opts.claimants).map((c) =>
+    c.toXDRObject()
+  );
 
   const createClaimableBalanceOp = new xdr.CreateClaimableBalanceOp(attributes);
 

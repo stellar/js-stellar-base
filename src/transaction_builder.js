@@ -1,9 +1,5 @@
 import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
-import clone from 'lodash/clone';
-import isUndefined from 'lodash/isUndefined';
-import isString from 'lodash/isString';
-import isArray from 'lodash/isArray';
 
 import xdr from './xdr';
 import { Transaction } from './transaction';
@@ -123,7 +119,7 @@ export class TransactionBuilder {
       throw new Error('must specify source account for the transaction');
     }
 
-    if (isUndefined(opts.fee)) {
+    if (opts.fee === undefined) {
       throw new Error('must specify fee for the transaction (in stroops)');
     }
 
@@ -131,12 +127,12 @@ export class TransactionBuilder {
     this.operations = [];
 
     this.baseFee = opts.fee;
-    this.timebounds = clone(opts.timebounds) || null;
-    this.ledgerbounds = clone(opts.ledgerbounds) || null;
+    this.timebounds = opts.timebounds ? { ...opts.timebounds } : null;
+    this.ledgerbounds = opts.ledgerbounds ? { ...opts.ledgerbounds } : null;
     this.minAccountSequence = opts.minAccountSequence || null;
     this.minAccountSequenceAge = opts.minAccountSequenceAge || null;
     this.minAccountSequenceLedgerGap = opts.minAccountSequenceLedgerGap || null;
-    this.extraSigners = clone(opts.extraSigners) || null;
+    this.extraSigners = opts.extraSigners ? [...opts.extraSigners] : null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
     this.sorobanData = unmarshalSorobanData(opts.sorobanData);
@@ -413,7 +409,7 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder}
    */
   setExtraSigners(extraSigners) {
-    if (!isArray(extraSigners)) {
+    if (!Array.isArray(extraSigners)) {
       throw new Error('extra_signers must be an array of strings.');
     }
 
@@ -427,7 +423,7 @@ export class TransactionBuilder {
       throw new Error('extra_signers cannot be longer than 2 elements.');
     }
 
-    this.extraSigners = clone(extraSigners);
+    this.extraSigners = [...extraSigners];
 
     return this;
   }
@@ -650,7 +646,7 @@ export class TransactionBuilder {
     }
 
     let feeSourceAccount;
-    if (isString(feeSource)) {
+    if (typeof feeSource === 'string') {
       feeSourceAccount = decodeAddressToMuxedAccount(feeSource);
     } else {
       feeSourceAccount = feeSource.xdrMuxedAccount();

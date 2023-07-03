@@ -8,7 +8,6 @@ describe('Memo.none()', function () {
   it('converts to/from xdr object', function () {
     let memo = StellarBase.Memo.none().toXDRObject();
     expect(memo.value()).to.be.undefined;
-
     let baseMemo = StellarBase.Memo.fromXDRObject(memo);
     expect(baseMemo.type).to.be.equal(StellarBase.MemoNone);
     expect(baseMemo.value).to.be.null;

@@ -1,4 +1,3 @@
-import isUndefined from 'lodash/isUndefined';
 import { Hyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from '../xdr';
@@ -30,7 +29,7 @@ export function changeTrust(opts) {
     throw new TypeError('asset must be Asset or LiquidityPoolAsset');
   }
 
-  if (!isUndefined(opts.limit) && !this.isValidAmount(opts.limit, true)) {
+  if (opts.limit !== undefined && !this.isValidAmount(opts.limit, true)) {
     throw new TypeError(this.constructAmountRequirementsError('limit'));
   }
 

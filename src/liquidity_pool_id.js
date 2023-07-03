@@ -1,4 +1,3 @@
-import clone from 'lodash/clone';
 import xdr from './xdr';
 
 /**
@@ -53,7 +52,7 @@ export class LiquidityPoolId {
    * @returns {string} Liquidity pool ID.
    */
   getLiquidityPoolId() {
-    return clone(this.liquidityPoolId);
+    return String(this.liquidityPoolId);
   }
 
   /**

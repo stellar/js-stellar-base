@@ -3,6 +3,7 @@
   "version": "10.0.0-soroban.1",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
+  "browser": "./dist/stellar-base.min.js",
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn build:node && yarn build:browser",
@@ -21,6 +22,9 @@
     "prepare": "yarn build:prod",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
+  },
+  "browser": {
+    "sodium-native": false
   },
   "mocha": {
     "require": [
@@ -51,9 +55,6 @@
       "yarn fmt",
       "yarn lint"
     ]
-  },
-  "browser": {
-    "sodium-native": false
   },
   "repository": {
     "type": "git",
@@ -114,8 +115,8 @@
     "terser-webpack-plugin": "^5.3.8",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.3",
-    "webpack": "^5.82.0",
-    "webpack-cli": "^5.1.0"
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1"
   },
   "dependencies": {
     "base32.js": "^0.1.0",
@@ -124,7 +125,6 @@
     "crc": "^4.3.2",
     "crypto-browserify": "^3.12.0",
     "js-xdr": "^3.0.0",
-    "lodash": "^4.17.21",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
   },
