@@ -60,4 +60,31 @@ describe('Contract', function () {
       expect(fp.toXDR().toString('base64')).to.equal(expected);
     });
   });
+
+  describe('call', function () {
+    let contractId = '0'.repeat(63) + '1';
+    let call = new StellarBase.Contract(contractId).call(
+      'method',
+      StellarBase.xdr.ScVal.scvU32(123)
+    );
+    let args = call
+      .body()
+      .invokeHostFunctionOp()
+      .hostFunction()
+      .invokeContract();
+
+    it('passes the contract id as an ScAddress', function () {
+      expect(args[0]).to.deep.equal(
+        StellarBase.Address.contract(Buffer.from(contractId, 'hex')).toScVal()
+      );
+    });
+
+    it('passes the method name as the second arg', function () {
+      expect(args[1]).to.deep.equal(StellarBase.xdr.ScVal.scvSymbol('method'));
+    });
+
+    it('passes all params after that', function () {
+      expect(args[2]).to.deep.equal(StellarBase.xdr.ScVal.scvU32(123));
+    });
+  });
 });
