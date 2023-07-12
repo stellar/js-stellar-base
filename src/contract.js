@@ -69,11 +69,9 @@ export class Contract {
    * contract.
    */
   call(method, ...params) {
-    const contractId = Buffer.from(this._id, 'hex');
-
     return Operation.invokeHostFunction({
       func: xdr.HostFunction.hostFunctionTypeInvokeContract([
-        xdr.ScVal.scvBytes(contractId),
+        this.address().toScVal(),
         xdr.ScVal.scvSymbol(method),
         ...params
       ]),
