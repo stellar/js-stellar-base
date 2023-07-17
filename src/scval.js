@@ -252,20 +252,19 @@ export function nativeToScVal(val, opts = {}) {
 }
 
 /**
- * Given a smart contract value, attempt to convert to a native type.
- *
+ * Given a smart contract value, attempt to convert it to a native type.
  * Possible conversions include:
  *
- *  - void -> null
- *  - u32, i32 -> number
- *  - u64, i64, u128, i128, u256, i256 -> bigint
- *  - vec -> array of any of the above (via recursion)
+ *  - void -> `null`
+ *  - u32, i32 -> `number`
+ *  - u64, i64, u128, i128, u256, i256 -> `bigint`
+ *  - vec -> `Array` of any of the above (via recursion)
  *  - map -> key-value object of any of the above (via recursion)
- *  - bool -> boolean
- *  - bytes -> Uint8Array
- *  - symbol -> string
- *  - string -> string IF the underlying buffer can be decoded as ascii/utf8,
- *    and a raw Uint8Array of the contents in any error case
+ *  - bool -> `boolean`
+ *  - bytes -> `Uint8Array`
+ *  - symbol -> `string`
+ *  - string -> `string` IF the underlying buffer can be decoded as ascii/utf8,
+ *              `Uint8Array` of the raw contents in any error case
  *
  * If no viable conversion can be determined, this just "unwraps" the smart
  * value to return its underlying XDR value.
@@ -317,13 +316,16 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvBytes().value:
       return scv.value();
 
-    // these are "presented" as strings so we should treat them as such (in
-    // other words, string = bytes with a hint that it's text). if the user
+    // Symbols are limited to [a-zA-Z0-9_]+, so we can safely make ascii strings
+    //
+    // Strings, however, are "presented" as strings and we treat them as such
+    // (in other words, string = bytes with a hint that it's text). If the user
     // encoded non-printable bytes in their string value, that's on them.
     //
-    // note that we assume a utf8 encoding, which is ascii-compatible. for other
-    // encodings, you should probably use bytes anyway. if it cannot be decoded,
+    // Note that we assume a utf8 encoding (ascii-compatible). For other
+    // encodings, you should probably use bytes anyway. If it cannot be decoded,
     // the raw bytes are returned.
+    case xdr.ScValType.scvSymbol().value:
     case xdr.ScValType.scvString().value: {
       const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
@@ -332,20 +334,6 @@ export function scValToNative(scv) {
         } catch (e) {
           return new Uint8Array(v.buffer); // copy of bytes
         }
-      }
-      return v; // string already
-    }
-
-    // these are limited to [a-zA-Z0-9_]+, so we can safely make ascii strings
-    case xdr.ScValType.scvSymbol().value: {
-      const v = scv.value(); // string|Buffer
-      if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
-        // we don't need the add'l complexity of utf8 since the charset is known
-        const result = new Array(v.length);
-        for (let i = 0; i < result.length; i += 1) {
-          result[i] = String.fromCharCode(v[i]);
-        }
-        return result.join('');
       }
       return v; // string already
     }
