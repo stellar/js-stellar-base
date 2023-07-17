@@ -110,8 +110,8 @@ describe('parsing and building ScVals', function () {
       ],
       [xdr.ScVal.scvString('hello there!'), 'hello there!'],
       [xdr.ScVal.scvSymbol('hello'), 'hello'],
-      [xdr.ScVal.scvString(Buffer.from('hello')), Buffer.from('hello')], // ensure no conversion
-      [xdr.ScVal.scvSymbol(Buffer.from('hello')), Buffer.from('hello')], // ensure no conversion
+      [xdr.ScVal.scvString(Buffer.from('hello')), 'hello'], // ensure conversion
+      [xdr.ScVal.scvSymbol(Buffer.from('hello')), 'hello'], // ensure conversion
       [
         new StellarBase.Address(kp.publicKey()).toScVal(),
         (actual) => actual.toString() === kp.publicKey()

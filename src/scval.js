@@ -252,21 +252,22 @@ export function nativeToScVal(val, opts = {}) {
 }
 
 /**
- * Given a smart contract value, attempt to convert to a native type.
- *
+ * Given a smart contract value, attempt to convert it to a native type.
  * Possible conversions include:
  *
- *  - void -> null
- *  - u32, i32 -> number
- *  - u64, i64, u128, i128, u256, i256 -> bigint
- *  - vec -> array of any of the above (via recursion)
+ *  - void -> `null`
+ *  - u32, i32 -> `number`
+ *  - u64, i64, u128, i128, u256, i256 -> `bigint`
+ *  - vec -> `Array` of any of the above (via recursion)
  *  - map -> key-value object of any of the above (via recursion)
- *  - bool -> boolean
- *  - bytes -> Uint8Array
- *  - string, symbol -> string|Uint8Array
+ *  - bool -> `boolean`
+ *  - bytes -> `Uint8Array`
+ *  - symbol -> `string`
+ *  - string -> `string` IF the underlying buffer can be decoded as ascii/utf8,
+ *              `Uint8Array` of the raw contents in any error case
  *
- * If no conversion can be made, this just "unwraps" the smart value to return
- * its underlying XDR value.
+ * If no viable conversion can be determined, this just "unwraps" the smart
+ * value to return its underlying XDR value.
  *
  * @param {xdr.ScVal} scv - the input smart contract value
  *
@@ -315,14 +316,26 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvBytes().value:
       return scv.value();
 
-    case xdr.ScValType.scvString().value:
-    case xdr.ScValType.scvSymbol().value: {
+    // Symbols are limited to [a-zA-Z0-9_]+, so we can safely make ascii strings
+    //
+    // Strings, however, are "presented" as strings and we treat them as such
+    // (in other words, string = bytes with a hint that it's text). If the user
+    // encoded non-printable bytes in their string value, that's on them.
+    //
+    // Note that we assume a utf8 encoding (ascii-compatible). For other
+    // encodings, you should probably use bytes anyway. If it cannot be decoded,
+    // the raw bytes are returned.
+    case xdr.ScValType.scvSymbol().value:
+    case xdr.ScValType.scvString().value: {
       const v = scv.value(); // string|Buffer
-      if (Buffer.isBuffer(v)) {
-        // trying to avoid bubbling up problematic Buffer type
-        return Uint8Array.from(v);
+      if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
+        try {
+          return new TextDecoder().decode(v);
+        } catch (e) {
+          return new Uint8Array(v.buffer); // copy of bytes
+        }
       }
-      return v; // string
+      return v; // string already
     }
 
     // these can be converted to bigint
