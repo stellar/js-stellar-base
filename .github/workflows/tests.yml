@@ -23,7 +23,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-
       # Workaround for some `yarn` nonsense, see:
       # https://github.com/yarnpkg/yarn/issues/6312#issuecomment-429685210
       - name: Install Dependencies
