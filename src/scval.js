@@ -315,19 +315,27 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvBytes().value:
       return scv.value();
 
-    // these are "presented" as strings so we should treat them as such. if the
-    // user encoded non-printable bytes in their string value, that's on them.
+    // these are "presented" as strings so we should treat them as such (in
+    // other words, string = bytes with a hint that it's text). if the user
+    // encoded non-printable bytes in their string value, that's on them.
     //
-    // TODO: Should we make a judgement call about UTF-8 here? We could use e.g.
-    // TextDecoder instead.
+    // note that we assume a utf8 encoding, which is ascii-compatible. for other
+    // encodings, you should probably use bytes anyway.
     case xdr.ScValType.scvString().value:
+      const v = scv.value(); // string|Buffer
+      if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
+        return new TextDecoder(v);
+      }
+      return v; // string already
+
     // these are limited to [a-zA-Z0-9_]+, so we can safely make ascii strings
     case xdr.ScValType.scvSymbol().value: {
       const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
+        // we don't need the add'l complexity of utf8 since the charset is known
         return Array.from(v).map(char => String.fromCharCode(char));
       }
-      return v; // string already?
+      return v; // string already
     }
 
     // these can be converted to bigint
