@@ -321,12 +321,13 @@ export function scValToNative(scv) {
     //
     // note that we assume a utf8 encoding, which is ascii-compatible. for other
     // encodings, you should probably use bytes anyway.
-    case xdr.ScValType.scvString().value:
+    case xdr.ScValType.scvString().value: {
       const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
-        return new TextDecoder(v);
+        return new TextDecoder().decode(v);
       }
       return v; // string already
+    }
 
     // these are limited to [a-zA-Z0-9_]+, so we can safely make ascii strings
     case xdr.ScValType.scvSymbol().value: {
