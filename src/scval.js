@@ -334,7 +334,7 @@ export function scValToNative(scv) {
       const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
         // we don't need the add'l complexity of utf8 since the charset is known
-        return Array.from(v).map(char => String.fromCharCode(char));
+        return Array.from(v).map(char => String.fromCharCode(char)).join('');
       }
       return v; // string already
     }
