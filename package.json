@@ -4,6 +4,7 @@
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
+    "main": "./dist/stellar-base.min.js",
     "sodium-native": false
   },
   "types": "./types/index.d.ts",
