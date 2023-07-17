@@ -1,9 +1,12 @@
 {
   "name": "stellar-base",
-  "version": "10.0.0-soroban.3",
+  "version": "10.0.0-soroban.4",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
-  "browser": "./dist/stellar-base.min.js",
+  "browser": {
+    "main": "./dist/stellar-base.min.js",
+    "sodium-native": false
+  },
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn build:node && yarn build:browser",
@@ -22,9 +25,6 @@
     "prepare": "yarn build:prod",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
-  },
-  "browser": {
-    "sodium-native": false
   },
   "mocha": {
     "require": [
@@ -70,21 +70,21 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
-    "@babel/cli": "^7.21.5",
-    "@babel/core": "^7.21.8",
-    "@babel/eslint-parser": "^7.21.8",
+    "@babel/cli": "^7.22.9",
+    "@babel/core": "^7.22.9",
+    "@babel/eslint-parser": "^7.22.9",
     "@babel/eslint-plugin": "^7.19.1",
-    "@babel/preset-env": "^7.21.5",
+    "@babel/preset-env": "^7.22.9",
     "@babel/register": "^7.21.0",
     "@definitelytyped/dtslint": "^0.0.163",
     "@istanbuljs/nyc-config-babel": "3.0.0",
-    "@types/node": "^20.3.3",
+    "@types/node": "^20.4.2",
     "@typescript-eslint/parser": "^5.61.0",
-    "babel-loader": "^9.1.2",
+    "babel-loader": "^9.1.3",
     "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.7",
     "cross-env": "^7.0.3",
-    "eslint": "^8.44.0",
+    "eslint": "^8.45.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.25.2",
