@@ -263,7 +263,7 @@ export function nativeToScVal(val, opts = {}) {
  *  - map -> key-value object of any of the above (via recursion)
  *  - bool -> boolean
  *  - bytes -> Uint8Array
- *  - string, symbol -> string|Uint8Array
+ *  - string, symbol -> string
  *
  * If no conversion can be made, this just "unwraps" the smart value to return
  * its underlying XDR value.
@@ -315,14 +315,19 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvBytes().value:
       return scv.value();
 
+    // these are "presented" as strings so we should treat them as such. if the
+    // user encoded non-printable bytes in their string value, that's on them.
+    //
+    // TODO: Should we make a judgement call about UTF-8 here? We could use e.g.
+    // TextDecoder instead.
     case xdr.ScValType.scvString().value:
+    // these are limited to [a-zA-Z0-9_]+, so we can safely make ascii strings
     case xdr.ScValType.scvSymbol().value: {
       const v = scv.value(); // string|Buffer
-      if (Buffer.isBuffer(v)) {
-        // trying to avoid bubbling up problematic Buffer type
-        return Uint8Array.from(v);
+      if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
+        return Array.from(v).map(char => String.fromCharCode(char));
       }
-      return v; // string
+      return v; // string already?
     }
 
     // these can be converted to bigint
