@@ -320,11 +320,16 @@ export function scValToNative(scv) {
     // encoded non-printable bytes in their string value, that's on them.
     //
     // note that we assume a utf8 encoding, which is ascii-compatible. for other
-    // encodings, you should probably use bytes anyway.
+    // encodings, you should probably use bytes anyway. if it cannot be decoded,
+    // the raw bytes are returned.
     case xdr.ScValType.scvString().value: {
       const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
-        return new TextDecoder().decode(v);
+        try {
+          return new TextDecoder().decode(v);
+        } catch (e) {
+          return new Uint8Array(v.buffer); // copy of bytes
+        }
       }
       return v; // string already
     }
