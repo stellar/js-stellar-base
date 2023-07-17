@@ -263,10 +263,12 @@ export function nativeToScVal(val, opts = {}) {
  *  - map -> key-value object of any of the above (via recursion)
  *  - bool -> boolean
  *  - bytes -> Uint8Array
- *  - string, symbol -> string
+ *  - symbol -> string
+ *  - string -> string IF the underlying buffer can be decoded as ascii/utf8,
+ *    and a raw Uint8Array of the contents in any error case
  *
- * If no conversion can be made, this just "unwraps" the smart value to return
- * its underlying XDR value.
+ * If no viable conversion can be determined, this just "unwraps" the smart
+ * value to return its underlying XDR value.
  *
  * @param {xdr.ScVal} scv - the input smart contract value
  *
@@ -339,9 +341,11 @@ export function scValToNative(scv) {
       const v = scv.value(); // string|Buffer
       if (Buffer.isBuffer(v) || ArrayBuffer.isView(v)) {
         // we don't need the add'l complexity of utf8 since the charset is known
-        return Array.from(v)
-          .map((char) => String.fromCharCode(char))
-          .join('');
+        const result = new Array(v.length);
+        for (let i = 0; i < result.length; i += 1) {
+          result[i] = String.fromCharCode(v[i]);
+        }
+        return result.join('');
       }
       return v; // string already
     }
