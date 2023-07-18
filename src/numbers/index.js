@@ -14,13 +14,11 @@ export { XdrLargeInt };
  * you can pass it to the constructor of {@link XdrLargeInt}.
  *
  * @example
- * ```js
  * let scv = contract.call("add", x, y); // assume it returns an xdr.ScVal
  * let bigi = scValToBigInt(scv);
  *
  * new ScInt(bigi);               // if you don't care about types, and
  * new XdrLargeInt('i128', bigi); // if you do
- * ```
  *
  * @param {xdr.ScVal} scv - the raw XDR value to parse into an integer
  * @returns {bigint} the native value of this input value

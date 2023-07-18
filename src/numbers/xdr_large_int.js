@@ -8,6 +8,19 @@ import { Int256 } from './int256';
 
 import xdr from '../xdr';
 
+/**
+ * A wrapper class to represent large XDR-encodable integers.
+ *
+ * This operates at a lower level than {@link ScInt} by forcing you to specify
+ * the type / width / size in bits of the integer you're targeting, regardless
+ * of the input value(s) you provide.
+ *
+ * @param {string}  type - force a specific data type. the type choices
+ *    are: 'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (default: the
+ *    smallest one that fits the `value`)
+ * @param {number|bigint|string|ScInt|Array<number|bigint|string|ScInt>} values
+ *    - a list of integer-like values interpreted in big-endian order
+ */
 export class XdrLargeInt {
   /**
    * @type {xdr.LargeInt}

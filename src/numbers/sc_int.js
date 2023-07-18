@@ -8,11 +8,10 @@ import { XdrLargeInt } from './xdr_large_int';
  *
  * If you need to create a native BigInt from a list of integer "parts" (for
  * example, you have a series of encoded 32-bit integers that represent a larger
- * value), you can use the lower level abstraction {@link XdrLargeInt}. For example,
- * you could do `new XdrLargeInt('u128', bytes...).toBigInt()`.
+ * value), you can use the lower level abstraction {@link XdrLargeInt}. For
+ * example, you could do `new XdrLargeInt('u128', bytes...).toBigInt()`.
  *
  * @example
- * ```js
  * import sdk from "stellar-base";
  *
  * // You have an ScVal from a contract and want to parse it into JS native.
@@ -53,7 +52,6 @@ import { XdrLargeInt } from './xdr_large_int';
  *
  * // Or reinterpret it as a different type (size permitting):
  * const scv = i.toI64();
- * ```
  *
  * @param {number|bigint|string|ScInt} value - a single, integer-like value
  *    which will be interpreted in the smallest appropriate XDR type supported
