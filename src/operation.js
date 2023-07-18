@@ -19,6 +19,8 @@ import {
 const ONE = 10000000;
 const MAX_INT64 = '9223372036854775807';
 
+BigNumber.DEBUG = true; // gives us exceptions on bad constructor values
+
 /**
  * When set using `{@link Operation.setOptions}` option, requires the issuing
  * account to give other accounts permission before they can hold the issuing
@@ -502,10 +504,10 @@ export class Operation {
     if (price.n && price.d) {
       xdrObject = new xdr.Price(price);
     } else {
-      const approx = best_r(price);
+      const [n, d] = best_r(price);
       xdrObject = new xdr.Price({
-        n: parseInt(approx[0], 10),
-        d: parseInt(approx[1], 10)
+        n: parseInt(n, 10),
+        d: parseInt(d, 10)
       });
     }
 

@@ -1,5 +1,4 @@
 import { UnsignedHyper } from 'js-xdr';
-import BigNumber from 'bignumber.js';
 import xdr from './xdr';
 
 /**
@@ -102,20 +101,9 @@ export class Memo {
       throw error;
     }
 
-    let number;
     try {
-      number = new BigNumber(value);
+      BigInt(value); // throws on invalid, inf, or NaN
     } catch (e) {
-      throw error;
-    }
-
-    // Infinity
-    if (!number.isFinite()) {
-      throw error;
-    }
-
-    // NaN
-    if (number.isNaN()) {
       throw error;
     }
   }

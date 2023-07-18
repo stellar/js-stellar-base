@@ -62,7 +62,7 @@
   "keywords": [
     "stellar"
   ],
-  "author": "George Kudrayvtsev <george@stellar.org>",
+  "author": "Stellar Development Foundation <hello@stellar.org>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/stellar/js-stellar-base/issues"
@@ -84,6 +84,7 @@
     "buffer": "^6.0.3",
     "chai": "^4.3.7",
     "cross-env": "^7.0.3",
+    "crypto-browserify": "^3.12.0",
     "eslint": "^8.37.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",

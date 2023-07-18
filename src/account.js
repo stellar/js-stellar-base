@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js';
-
 import { StrKey } from './strkey';
 
 /**
@@ -33,7 +31,11 @@ export class Account {
     }
 
     this._accountId = accountId;
-    this.sequence = new BigNumber(sequence);
+    try {
+      this.sequence = BigInt(sequence);
+    } catch (e) {
+      throw new Error(`sequence is not a number: ${sequence}`);
+    }
   }
 
   /**
@@ -57,6 +59,6 @@ export class Account {
    * @returns {void}
    */
   incrementSequenceNumber() {
-    this.sequence = this.sequence.plus(1);
+    this.sequence += 1n;
   }
 }

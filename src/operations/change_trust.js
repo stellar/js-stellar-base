@@ -1,10 +1,9 @@
 import { Hyper } from 'js-xdr';
-import BigNumber from 'bignumber.js';
 import xdr from '../xdr';
 import { Asset } from '../asset';
 import { LiquidityPoolAsset } from '../liquidity_pool_asset';
 
-const MAX_INT64 = '9223372036854775807';
+const MAX_INT64 = 9223372036854775807n;
 
 /**
  * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
@@ -36,7 +35,7 @@ export function changeTrust(opts) {
   if (opts.limit) {
     attributes.limit = this._toXDRAmount(opts.limit);
   } else {
-    attributes.limit = Hyper.fromString(new BigNumber(MAX_INT64).toString());
+    attributes.limit = Hyper.fromString(MAX_INT64.toString());
   }
 
   if (opts.source) {

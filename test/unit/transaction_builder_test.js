@@ -528,7 +528,7 @@ describe('TransactionBuilder', function () {
           innerTx,
           networkPassphrase
         );
-      }).to.throw(/Invalid baseFee, it should be at least 200 stroops./);
+      }).to.throw(/it should be at least 200 stroops/i);
 
       innerTx = new StellarBase.TransactionBuilder(innerAccount, {
         fee: '80',
@@ -556,7 +556,7 @@ describe('TransactionBuilder', function () {
           innerTx,
           networkPassphrase
         );
-      }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
+      }).to.throw(/it should be at least 100 stroops/i);
 
       innerTx = new StellarBase.TransactionBuilder(innerAccount, {
         fee: '100',
