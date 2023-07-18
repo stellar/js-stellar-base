@@ -1,41 +1,3 @@
-/**
- * Provides conversions from smart contract XDR values ({@link xdr.ScVal}) to
- * native JavaScript types.
- *
- * @example
- * ```js
- * import { nativeToScVal, scValToNative, ScInt, xdr } from 'stellar-base';
- *
- * let gigaMap = {
- *   bool: true,
- *   void: null,
- *   u32: xdr.ScVal.scvU32(1),
- *   i32: xdr.ScVal.scvI32(1),
- *   u64: 1n,
- *   i64: -1n,
- *   u128: new ScInt(1).toU128(),
- *   i128: new ScInt(1).toI128(),
- *   u256: new ScInt(1).toU256(),
- *   i256: new ScInt(1).toI256(),
- *   map: {
- *     arbitrary: 1n,
- *     nested: 'values',
- *     etc: false
- *   },
- *   vec: ['same', 'type', 'list'],
- * };
- *
- * // then, simply:
- * let scv = nativeToScVal(gigaMap);    // scv.switch() == xdr.ScValType.scvMap()
- *
- * // then...
- * someContract.call("method", scv);
- *
- * // Similarly, the inverse should work:
- * scValToNative(scv) == gigaMap;       // true
- * ```
- */
-
 import xdr from './xdr';
 
 import { Address } from './address';
@@ -45,6 +7,9 @@ import { ScInt, scValToBigInt } from './numbers/index';
 /**
  * Attempts to convert native types into smart contract values
  * ({@link xdr.ScVal}).
+ *
+ * Provides conversions from smart contract XDR values ({@link xdr.ScVal}) to
+ * native JavaScript types.
  *
  * The conversions are as follows:
  *
@@ -112,8 +77,6 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *    though this does not apply for types that ignore `opts` (e.g. addresses).
  *
  * @example
- *
- * ```js
  * nativeToScVal(1000);                   // gives ScValType === scvU64
  * nativeToScVal(1000n);                  // gives ScValType === scvU64
  * nativeToScVal(1n << 100n);             // gives ScValType === scvU128
@@ -136,7 +99,39 @@ import { ScInt, scValToBigInt } from './numbers/index';
  * //     [ scvSymbol, scvI128 ],
  * //     [ scvString, scvArray<scvBool> ]
  * // ]
- * ```
+ *
+ * @example
+ * import { nativeToScVal, scValToNative, ScInt, xdr } from 'stellar-base';
+ *
+ * let gigaMap = {
+ *   bool: true,
+ *   void: null,
+ *   u32: xdr.ScVal.scvU32(1),
+ *   i32: xdr.ScVal.scvI32(1),
+ *   u64: 1n,
+ *   i64: -1n,
+ *   u128: new ScInt(1).toU128(),
+ *   i128: new ScInt(1).toI128(),
+ *   u256: new ScInt(1).toU256(),
+ *   i256: new ScInt(1).toI256(),
+ *   map: {
+ *     arbitrary: 1n,
+ *     nested: 'values',
+ *     etc: false
+ *   },
+ *   vec: ['same', 'type', 'list'],
+ * };
+ *
+ * // then, simply:
+ * let scv = nativeToScVal(gigaMap);    // scv.switch() == xdr.ScValType.scvMap()
+ *
+ * // then...
+ * someContract.call("method", scv);
+ *
+ * // Similarly, the inverse should work:
+ * scValToNative(scv) == gigaMap;       // true
+ *
+ * @see scValToNative
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
@@ -272,6 +267,7 @@ export function nativeToScVal(val, opts = {}) {
  * @param {xdr.ScVal} scv - the input smart contract value
  *
  * @returns {any}
+ * @see nativeToScVal
  */
 export function scValToNative(scv) {
   // we use the verbose xdr.ScValType.<type>.value form here because it's faster
