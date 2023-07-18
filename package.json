@@ -122,8 +122,6 @@
     "base32.js": "^0.1.0",
     "bignumber.js": "^9.1.1",
     "buffer": "^6.0.3",
-    "crc": "^4.3.2",
-    "crypto-browserify": "^3.12.0",
     "js-xdr": "^3.0.0",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
