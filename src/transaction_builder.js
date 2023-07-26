@@ -156,7 +156,8 @@ export class TransactionBuilder {
    *
    * @param {Transaction} tx  a "template" transaction to clone exactly
    * @param {object} [opts]   additional options to override the clone, e.g.
-   *    {fee: '1000'} will override the existing base fee derived from `tx`
+   *    {fee: '1000'} will override the existing base fee derived from `tx` (see
+   *    the {@link TransactionBuilder} constructor for detailed options)
    *
    * @returns {TransactionBuilder} a "prepared" builder instance with the same
    *    configuration and operations as the given transaction
