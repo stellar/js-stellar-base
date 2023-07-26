@@ -927,10 +927,7 @@ describe('TransactionBuilder', function () {
       let builder = new StellarBase.TransactionBuilder(source, {
         fee: '100',
         timebounds: { minTime: 0, maxTime: 0 },
-        memo: new StellarBase.Memo(
-          StellarBase.MemoText,
-          'Testing cloning'
-        ),
+        memo: new StellarBase.Memo(StellarBase.MemoText, 'Testing cloning'),
         networkPassphrase
       })
         .addOperation(operations[0])
@@ -939,12 +936,16 @@ describe('TransactionBuilder', function () {
       let tx = builder.build();
       let cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx).build();
 
-      expect(cloneTx).to.eql(tx,
+      expect(cloneTx).to.eql(
+        tx,
         `txs differ:` +
-        `\n(src) ${JSON.stringify(tx, null, 2)}` +
-        `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`);
+          `\n(src) ${JSON.stringify(tx, null, 2)}` +
+          `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`
+      );
 
-      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx, {fee: "10000" }).build();
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx, {
+        fee: '10000'
+      }).build();
       expect(cloneTx.fee).to.equal('20000'); // double because two ops
     });
   });

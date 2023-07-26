@@ -195,7 +195,7 @@ export class TransactionBuilder {
       minAccountSequenceAge: tx.minAccountSequenceAge,
       minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
       extraSigners: tx.extraSigners,
-      ...opts,
+      ...opts
     });
 
     tx._tx.operations().forEach((op) => builder.addOperation(op));
