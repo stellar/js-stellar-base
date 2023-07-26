@@ -907,5 +907,42 @@ describe('TransactionBuilder', function () {
         source.baseAccount().accountId()
       );
     });
+
+    it('clones existing transactions', function () {
+      const operations = [
+        StellarBase.Operation.payment({
+          source: source.accountId(),
+          destination: destination,
+          amount: amount,
+          asset: asset
+        }),
+        StellarBase.Operation.clawback({
+          source: source.baseAccount().accountId(),
+          from: destination,
+          amount: amount,
+          asset: asset
+        })
+      ];
+
+      let builder = new StellarBase.TransactionBuilder(source, {
+        fee: '100',
+        timebounds: { minTime: 0, maxTime: 0 },
+        memo: new StellarBase.Memo(
+          StellarBase.MemoText,
+          'Testing cloning'
+        ),
+        networkPassphrase
+      })
+        .addOperation(operations[0])
+        .addOperation(operations[1]);
+
+      let tx = builder.build();
+      let cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx).build();
+
+      expect(cloneTx).to.eql(tx,
+        `txs differ:` +
+        `\n(src) ${JSON.stringify(tx, null, 2)}` +
+        `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`);
+    });
   });
 });

@@ -2,11 +2,17 @@ import { UnsignedHyper } from 'js-xdr';
 import BigNumber from 'bignumber.js';
 
 import xdr from './xdr';
+
+import { Account } from './account';
+import { MuxedAccount } from './muxed_account';
+import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
+
 import { Transaction } from './transaction';
 import { FeeBumpTransaction } from './fee_bump_transaction';
+
+import { StrKey } from './strkey';
 import { SignerKey } from './signerkey';
 import { Memo } from './memo';
-import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -136,6 +142,61 @@ export class TransactionBuilder {
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
     this.sorobanData = unmarshalSorobanData(opts.sorobanData);
+  }
+
+  /**
+   * Creates a builder instance using an existing {@link Transaction} as a
+   * template, ignoring any existing envelope signatures.
+   *
+   * Note that the sequence number WILL be cloned, so EITHER this transaction or
+   * the one it was cloned from will be valid. This is useful in situations
+   * where you are constructing a transaction in pieces and need to make
+   * adjustments as you go (for example, when filling out Soroban resource
+   * information).
+   *
+   * @param {Transaction} tx  a "template" transaction to clone exactly
+   *
+   * @returns {TransactionBuilder} a "prepared" builder instance with the same
+   *    configuration and operations as the given transaction
+   *
+   * @todo This cannot clone {@link FeeBumpTransaction}s, yet.
+   */
+  static cloneFrom(tx) {
+    if (!(tx instanceof Transaction)) {
+      throw new TypeError(`expected a 'Transaction', got: ${tx}`);
+    }
+
+    const sequenceNum = `${parseInt(tx.sequence, 10) - 1}`;
+
+    let source;
+    // rebuild the source account based on the strkey
+    if (StrKey.isValidMed25519PublicKey(tx.source)) {
+      source = MuxedAccount.fromAddress(tx.source, sequenceNum);
+    } else if (StrKey.isValidEd25519PublicKey(tx.source)) {
+      source = new Account(tx.source, sequenceNum);
+    } else {
+      throw new TypeError(`unsupported tx source account: ${tx.source}`);
+    }
+
+    // the initial fee passed to the builder gets scaled up based on the number
+    // of operations at the end, so we have to down-scale first
+    const unscaledFee = parseInt(tx.fee, 10) / tx.operations.length;
+
+    const builder = new TransactionBuilder(source, {
+      fee: (unscaledFee || BASE_FEE).toString(),
+      memo: tx.memo,
+      networkPassphrase: tx.networkPassphrase,
+      timebounds: tx.timeBounds,
+      ledgerbounds: tx.ledgerBounds,
+      minAccountSequence: tx.minAccountSequence,
+      minAccountSequenceAge: tx.minAccountSequenceAge,
+      minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
+      extraSigners: tx.extraSigners
+    });
+
+    tx._tx.operations().forEach((op) => builder.addOperation(op));
+
+    return builder;
   }
 
   /**
