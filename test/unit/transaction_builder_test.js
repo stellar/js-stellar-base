@@ -943,6 +943,9 @@ describe('TransactionBuilder', function () {
         `txs differ:` +
         `\n(src) ${JSON.stringify(tx, null, 2)}` +
         `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`);
+
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx, {fee: "10000" }).build();
+      expect(cloneTx.fee).to.equal('20000'); // double because two ops
     });
   });
 });

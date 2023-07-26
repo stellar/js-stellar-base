@@ -155,13 +155,15 @@ export class TransactionBuilder {
    * information).
    *
    * @param {Transaction} tx  a "template" transaction to clone exactly
+   * @param {object} [opts]   additional options to override the clone, e.g.
+   *    {fee: '1000'} will override the existing base fee derived from `tx`
    *
    * @returns {TransactionBuilder} a "prepared" builder instance with the same
    *    configuration and operations as the given transaction
    *
    * @todo This cannot clone {@link FeeBumpTransaction}s, yet.
    */
-  static cloneFrom(tx) {
+  static cloneFrom(tx, opts = {}) {
     if (!(tx instanceof Transaction)) {
       throw new TypeError(`expected a 'Transaction', got: ${tx}`);
     }
@@ -191,7 +193,8 @@ export class TransactionBuilder {
       minAccountSequence: tx.minAccountSequence,
       minAccountSequenceAge: tx.minAccountSequenceAge,
       minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
-      extraSigners: tx.extraSigners
+      extraSigners: tx.extraSigners,
+      ...opts,
     });
 
     tx._tx.operations().forEach((op) => builder.addOperation(op));
