@@ -7,6 +7,7 @@ import { FeeBumpTransaction } from './fee_bump_transaction';
 import { SignerKey } from './signerkey';
 import { Memo } from './memo';
 import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
+import { sorobanDataFromFootprint } from './resources';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -456,6 +457,47 @@ export class TransactionBuilder {
    */
   setSorobanData(sorobanData) {
     this.sorobanData = unmarshalSorobanData(sorobanData);
+    return this;
+  }
+
+  /**
+   * Sets the ledger access footprint of the Soroban transaction to match the
+   * given parameters, creating a {@link xdr.SorobanTransactionData} structure
+   * if it doesn't exist.
+   *
+   * This is a convenience method for building bump / restore operations without
+   * need to build the entire data structure from scratch and use
+   * {@link TransactionBuilder.setSorobanData}.
+   *
+   * @param {xdr.LedgerKey[] | null} readOnly   the set of ledger keys to set in
+   *    the read-only portion of the transaction's `sorobanData`. if null is
+   *    passed, the field is left untouched (so if you want to clear it, pass an
+   *    empty array)
+   * @param {xdr.LedgerKey[] | null} readWrite  the set of ledger keys to set in
+   *    the read-write portion of the transaction's `sorobanData`. if null is
+   *    passed, the field is left untouched (so if you want to clear it, pass an
+   *    empty array)
+   *
+   * @returns {TransactionBuilder}
+   *
+   * @warning If the `sorobanData` has NOT been set (e.g. via
+   *    {@link TransactionBuilder.setSorobanData}), this will create one and
+   *    fill it in accordingly with your ledger access footprint. If it has, it
+   *    will just overwrite its existing footprint.
+   */
+  setFootprint(readOnly, readWrite) {
+    if (this.sorobanData !== null) {
+      const res = sorobanDataFromFootprint(readOnly ?? [], readWrite ?? []);
+      return this.setSorobanData(res);
+    }
+
+    if (readOnly !== null) { // null means "leave me alone"
+      this.sorobanData.resources().footprint().readOnly(readOnly);
+    }
+    if (readWrite !== null) {
+      this.sorobanData.resources().footprint().readWrite(readWrite);
+    }
+
     return this;
   }
 

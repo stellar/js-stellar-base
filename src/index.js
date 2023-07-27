@@ -33,8 +33,6 @@ export {
 } from './operation';
 export * from './memo';
 export { Account } from './account';
-export * from './address';
-export { Contract } from './contract';
 export { MuxedAccount } from './muxed_account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
@@ -47,7 +45,14 @@ export {
   encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
 
-export * from './numbers/index';
+//
+// Soroban
+//
+
+export { Contract } from './contract';
+export { Address } from './address';
+export * from './numbers';
 export * from './scval';
+export * from './resources';
 
 export default module.exports;
