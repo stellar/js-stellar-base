@@ -1,3 +1,5 @@
+const NULL_ADDRESS = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM'
+
 describe('Contract', function () {
   describe('constructor', function () {
     it('parses strkeys', function () {
@@ -7,22 +9,13 @@ describe('Contract', function () {
       expect(contract.contractId('strkey')).to.equal(contractId);
     });
 
-    it('parses hex addresses', function () {
-      let contractId = '0'.repeat(63) + '1';
-      let contract = new StellarBase.Contract(contractId);
-      expect(contract.contractId('hex')).to.equal(contractId);
-    });
+    it('throws on obsolete hex ids', function () {
+      expect(() => {
+        new StellarBase.Contract('0'.repeat(63) + '1');
+      }).to.throw();
+    })
 
-    it('converts strkeys to hex', function () {
-      let contractId =
-        'CDYFWOUPJCGPFU2CS33BZSEUD7INMFKXKJ25TIMRUHQGAFISBVM2D7J6';
-      let contract = new StellarBase.Contract(contractId);
-      let expected =
-        'f05b3a8f488cf2d34296f61cc8941fd0d615575275d9a191a1e06015120d59a1';
-      expect(contract.contractId('hex')).to.equal(expected);
-    });
-
-    it('parses throws on invalid ids', function () {
+    it('throws on invalid ids', function () {
       expect(() => {
         new StellarBase.Contract('foobar');
       }).to.throw();
@@ -31,19 +24,17 @@ describe('Contract', function () {
 
   describe('address', function () {
     it('returns the contract address', function () {
-      let contractId = '0'.repeat(63) + '1';
-      let contract = new StellarBase.Contract(contractId);
-      expect(contract.address().toBuffer().toString('hex')).to.equal(
-        contractId
+      let contract = new StellarBase.Contract(NULL_ADDRESS);
+      expect(contract.address().toString()).to.equal(
+        NULL_ADDRESS
       );
     });
   });
 
   describe('getFootprint', function () {
     it('includes the correct contract code footprint', function () {
-      let contractId = '0'.repeat(63) + '1';
-      let contract = new StellarBase.Contract(contractId);
-      expect(contract.contractId('hex')).to.equal(contractId);
+      let contract = new StellarBase.Contract(NULL_ADDRESS);
+      expect(contract.contractId()).to.equal(NULL_ADDRESS);
 
       const fp = contract.getFootprint();
 
@@ -62,8 +53,7 @@ describe('Contract', function () {
   });
 
   describe('call', function () {
-    let contractId = '0'.repeat(63) + '1';
-    let call = new StellarBase.Contract(contractId).call(
+    let call = new StellarBase.Contract(NULL_ADDRESS).call(
       'method',
       StellarBase.xdr.ScVal.scvU32(123)
     );
@@ -75,7 +65,7 @@ describe('Contract', function () {
 
     it('passes the contract id as an ScAddress', function () {
       expect(args[0]).to.deep.equal(
-        StellarBase.Address.contract(Buffer.from(contractId, 'hex')).toScVal()
+        new StellarBase.Contract(NULL_ADDRESS).address().toScVal()
       );
     });
 
