@@ -491,7 +491,8 @@ export class TransactionBuilder {
       return this.setSorobanData(res);
     }
 
-    if (readOnly !== null) { // null means "leave me alone"
+    if (readOnly !== null) {
+      // null means "leave me alone"
       this.sorobanData.resources().footprint().readOnly(readOnly);
     }
     if (readWrite !== null) {

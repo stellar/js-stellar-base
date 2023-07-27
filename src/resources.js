@@ -19,5 +19,5 @@ export function sorobanDataFromFootprint(readOnly, readWrite) {
 }
 
 export function readSorobanData(base64) {
-    return xdr.SorobanTransactionData.fromXDR(base64, 'base64');
+  return xdr.SorobanTransactionData.fromXDR(base64, 'base64');
 }
