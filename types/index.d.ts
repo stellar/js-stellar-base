@@ -1114,3 +1114,25 @@ export class ScInt extends XdrLargeInt {
 export function scValToBigInt(scv: xdr.ScVal): bigint;
 export function nativeToScVal(val: any, opts?: { type: ScIntType }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
+
+export class SorobanDataBuilder {
+  constructor(data?: string | xdr.SorobanTransactionData | null);
+
+  setRefundableFee(fee: string | number | bigint): SorobanDataBuilder;
+  setResources(
+    cpuInstrs: number,
+    readBytes: number,
+    writeBytes: number,
+    metadataBytes: number
+  ): SorobanDataBuilder;
+
+  setFootprint(
+    readOnly?: xdr.LedgerKey[] | null,
+    readWrite?: xdr.LedgerKey[] | null
+  ): SorobanDataBuilder;
+
+  setReadOnly(keys?: xdr.LedgerKey[] | null): SorobanDataBuilder;
+  setReadWrite(keys?: xdr.LedgerKey[] | null): SorobanDataBuilder;
+
+  build(): xdr.SorobanTransactionData;
+}
