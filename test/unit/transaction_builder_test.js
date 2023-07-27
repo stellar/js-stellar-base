@@ -71,20 +71,22 @@ describe('TransactionBuilder', function () {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      sorobanTransactionData = new StellarBase.xdr.SorobanTransactionData({
-        resources: new StellarBase.xdr.SorobanResources({
-          footprint: new StellarBase.xdr.LedgerFootprint({
-            readOnly: [],
-            readWrite: []
+      sorobanTransactionData = new StellarBase.SorobanDataBuilder(
+        StellarBase.xdr.SorobanTransactionData({
+          resources: new StellarBase.xdr.SorobanResources({
+            footprint: new StellarBase.xdr.LedgerFootprint({
+              readOnly: [],
+              readWrite: []
+            }),
+            instructions: 0,
+            readBytes: 5,
+            writeBytes: 0,
+            extendedMetaDataSizeBytes: 0
           }),
-          instructions: 0,
-          readBytes: 5,
-          writeBytes: 0,
-          extendedMetaDataSizeBytes: 0
-        }),
-        refundableFee: StellarBase.xdr.Int64.fromString('1'),
-        ext: new StellarBase.xdr.ExtensionPoint(0)
-      });
+          refundableFee: StellarBase.xdr.Int64.fromString('1'),
+          ext: new StellarBase.xdr.ExtensionPoint(0)
+        })
+      ).build();
     });
 
     it('should set the soroban data from object', function (done) {
