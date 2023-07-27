@@ -49,5 +49,6 @@ export {
 
 export * from './numbers/index';
 export * from './scval';
+export * from './events';
 
 export default module.exports;
