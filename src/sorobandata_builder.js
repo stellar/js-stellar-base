@@ -17,7 +17,7 @@ import xdr from './xdr';
  *      `null` to start from an empty instance
  *
  * @example
- * // You want to use an existing data blob but set specific parts.
+ * // You want to use an existing data blob but override specific parts.
  * const newData = new SorobanDataBuilder(existing)
  *   .setReadOnly(someLedgerKey)
  *   .setRefundableFee("1000")
@@ -28,6 +28,7 @@ export class SorobanDataBuilder {
 
   constructor(sorobanData) {
     let data;
+
     if (typeof sorobanData === 'string') {
       data = xdr.SorobanTransactionData.fromXDR(sorobanData, 'base64');
     } else if (!sorobanData) {
@@ -39,7 +40,7 @@ export class SorobanDataBuilder {
           writeBytes: 0,
           extendedMetaDataSizeBytes: 0
         }),
-        ext: new xdr.ExtensionPoint(),
+        ext: new xdr.ExtensionPoint(0),
         refundableFee: new xdr.Int64(0)
       });
     } else {
@@ -82,7 +83,7 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * Sets the footprint to be a certain set of ledger keys.
+   * Sets the storage access footprint to be a certain set of ledger keys.
    *
    * You can also set each field explicitly via
    * {@link SorobanDataBuilder.setReadOnly} and
@@ -98,7 +99,7 @@ export class SorobanDataBuilder {
    *    empty array)
    *
    * @returns {SorobanDataBuilder}
-   **/
+   */
   setFootprint(readOnly, readWrite) {
     if (readOnly !== null) {
       // null means "leave me alone"
@@ -119,7 +120,7 @@ export class SorobanDataBuilder {
     return this;
   }
 
-  setReadOnly(readWrite) {
+  setReadWrite(readWrite) {
     this.sorobanData
       .resources()
       .footprint()
