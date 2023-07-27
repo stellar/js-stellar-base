@@ -1116,11 +1116,13 @@ export function nativeToScVal(val: any, opts?: { type: ScIntType }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
 
 interface HumanEvent {
-  type: 'system' | 'contract' | 'diagnostic'; // i.e. an xdr.ContractEventType.name
-  contractId?: string;    // C... encoded strkey
+  type: 'system'|'contract'|'diagnostic';   // xdr.ContractEventType.name
+  contractId?: string;                      // C... encoded strkey
 
   topics: any[];  // essentially a call of map(event.body.topics, scValToNative)
   data: any;      // similarly, scValToNative(rawEvent.data);
 }
 
-export function humanizeEvents(events: xdr.DiagnosticEvent[] | xdr.ContractEvent[]): HumanEvent[];
+export function humanizeEvents(
+  events: xdr.DiagnosticEvent[] | xdr.ContractEvent[]
+): HumanEvent[];

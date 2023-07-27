@@ -27,9 +27,6 @@ export function humanizeEvents(events) {
   });
 }
 
-/**
- * @param {xdr.ContractEvent} event
- */
 function extractEvent(event) {
   return {
     contractId:
