@@ -44,7 +44,7 @@ export class SorobanDataBuilder {
         refundableFee: new xdr.Int64(0)
       });
     } else {
-      data = sorobanData;
+      data = xdr.SorobanTransactionData.fromXDR(sorobanData.toXDR()); // copy
     }
 
     this._data = data;
@@ -113,7 +113,7 @@ export class SorobanDataBuilder {
   }
 
   setReadOnly(readOnly) {
-    this.sorobanData
+    this._data
       .resources()
       .footprint()
       .readOnly(readOnly ?? []);
@@ -121,7 +121,7 @@ export class SorobanDataBuilder {
   }
 
   setReadWrite(readWrite) {
-    this.sorobanData
+    this._data
       .resources()
       .footprint()
       .readWrite(readWrite ?? []);
