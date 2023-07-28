@@ -1132,7 +1132,7 @@ export function humanizeEvents(
 ): SorobanEvent[];
 
 export class SorobanDataBuilder {
-  constructor(data?: string | xdr.SorobanTransactionData | null);
+  constructor(data?: string | xdr.SorobanTransactionData);
 
   setRefundableFee(fee: IntLike): SorobanDataBuilder;
   setResources(
@@ -1152,3 +1152,10 @@ export class SorobanDataBuilder {
 
   build(): xdr.SorobanTransactionData;
 }
+
+export function authorizeInvocation(
+  signer: Keypair,
+  networkPassphrase: string,
+  validUntil: number,
+  invocation: xdr.SorobanAuthorizedInvocation
+): xdr.SorobanAuthorizationEntry;
