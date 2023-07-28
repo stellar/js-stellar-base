@@ -6,20 +6,26 @@ import xdr from './xdr';
  *
  * This is recommended for when you are building
  * {@link Operation.bumpFootprintExpiration} /
- * {@link Operation.restoreFootprint} operations to avoid building the entire
+ * {@link Operation.restoreFootprint} operations to avoid (re)building the entire
  * data structure from scratch.
  *
  * @constructor
  *
- * @param {string | null | xdr.SorobanTransactionData} sorobanData  one of: a
+ * @param {string | xdr.SorobanTransactionData} [sorobanData]  either a
  *      base64-encoded string that represents an
- *      {@link xdr.SorobanTransactionData} instance, an instance itself, or
- *      `null` to start from an empty instance
+ *      {@link xdr.SorobanTransactionData} instance or an XDR instance itself
+ *      (it will be copied); if omitted, it starts with an empty instance
  *
  * @example
  * // You want to use an existing data blob but override specific parts.
  * const newData = new SorobanDataBuilder(existing)
- *   .setReadOnly(someLedgerKey)
+ *   .setReadOnly(someLedgerKeys)
+ *   .setRefundableFee("1000")
+ *   .build();
+ *
+ * // You want an instance from scratch
+ * const newData = new SorobanDataBuilder()
+ *   .setFootprint([someLedgerKey], [])
  *   .setRefundableFee("1000")
  *   .build();
  */
@@ -89,14 +95,13 @@ export class SorobanDataBuilder {
    * {@link SorobanDataBuilder.setReadOnly} and
    * {@link SorobanDataBuilder.setReadWrite}.
    *
-   * @param {xdr.LedgerKey[] | null} readOnly   the set of ledger keys to set in
-   *    the read-only portion of the transaction's `sorobanData`. if null is
-   *    passed, the field is left untouched (so if you want to clear it, pass an
-   *    empty array)
-   * @param {xdr.LedgerKey[] | null} readWrite  the set of ledger keys to set in
-   *    the read-write portion of the transaction's `sorobanData`. if null is
-   *    passed, the field is left untouched (so if you want to clear it, pass an
-   *    empty array)
+   * Passing `null|undefined` to either parameter will IGNORE the existing
+   * values. If you want to clear them, pass `[]`, instead.
+   *
+   * @param {xdr.LedgerKey[]|null} [readOnly]   the set of ledger keys to set in
+   *    the read-only portion of the transaction's `sorobanData`
+   * @param {xdr.LedgerKey[]|null} [readWrite]  the set of ledger keys to set in
+   *    the read-write portion of the transaction's `sorobanData`
    *
    * @returns {SorobanDataBuilder}
    */
@@ -108,10 +113,13 @@ export class SorobanDataBuilder {
     if (readWrite !== null) {
       this.setReadWrite(readWrite);
     }
-
     return this;
   }
 
+  /**
+   * @param {xdr.LedgerKey[]} readOnly  read-only keys in the access footprint
+   * @returns {SorobanDataBuilder}
+   */
   setReadOnly(readOnly) {
     this._data
       .resources()
@@ -120,6 +128,10 @@ export class SorobanDataBuilder {
     return this;
   }
 
+  /**
+   * @param {xdr.LedgerKey[]} readWrite  read-write keys in the access footprint
+   * @returns {SorobanDataBuilder}
+   */
   setReadWrite(readWrite) {
     this._data
       .resources()

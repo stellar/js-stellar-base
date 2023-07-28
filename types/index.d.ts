@@ -1083,10 +1083,12 @@ export type ScIntType =
   | 'i256'
   | 'u256';
 
+export type IntLike = string | number | bigint;
+
 export class XdrLargeInt {
   constructor(
     type: ScIntType,
-    values: number|bigint|string|Array<number|bigint|string>
+    values: IntLike | IntLike[]
   );
 
   toNumber(): number;
@@ -1108,7 +1110,7 @@ export class XdrLargeInt {
 }
 
 export class ScInt extends XdrLargeInt {
-  constructor(value: number|bigint|string|ScInt, opts?: { type: ScIntType });
+  constructor(value: IntLike | ScInt, opts?: { type: ScIntType });
 }
 
 export function scValToBigInt(scv: xdr.ScVal): bigint;
@@ -1118,7 +1120,7 @@ export function scValToNative(scv: xdr.ScVal): any;
 export class SorobanDataBuilder {
   constructor(data?: string | xdr.SorobanTransactionData | null);
 
-  setRefundableFee(fee: string | number | bigint): SorobanDataBuilder;
+  setRefundableFee(fee: IntLike): SorobanDataBuilder;
   setResources(
     cpuInstrs: number,
     readBytes: number,
@@ -1131,8 +1133,8 @@ export class SorobanDataBuilder {
     readWrite?: xdr.LedgerKey[] | null
   ): SorobanDataBuilder;
 
-  setReadOnly(keys?: xdr.LedgerKey[] | null): SorobanDataBuilder;
-  setReadWrite(keys?: xdr.LedgerKey[] | null): SorobanDataBuilder;
+  setReadOnly(keys?: xdr.LedgerKey[]): SorobanDataBuilder;
+  setReadWrite(keys?: xdr.LedgerKey[]): SorobanDataBuilder;
 
   build(): xdr.SorobanTransactionData;
 }
