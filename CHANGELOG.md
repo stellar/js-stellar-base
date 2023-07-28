@@ -3,10 +3,6 @@
 
 ## Unreleased
 
-### Add
-
-* Use an existing, immutable `Transaction` as a template for a new one via `TransactionBuilder.cloneFrom(tx, opts = {})` and use `opts` to override fields ([#656](https://github.com/stellar/js-stellar-base/pull/656)).
-
 
 ## [v9.0.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0)
 
