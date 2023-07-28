@@ -1119,6 +1119,18 @@ export function scValToBigInt(scv: xdr.ScVal): bigint;
 export function nativeToScVal(val: any, opts?: { type: ScIntType }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
 
+interface SorobanEvent {
+  type: 'system'|'contract'|'diagnostic';   // xdr.ContractEventType.name
+  contractId?: string;                      // C... encoded strkey
+
+  topics: any[];  // essentially a call of map(event.body.topics, scValToNative)
+  data: any;      // similarly, scValToNative(rawEvent.data);
+}
+
+export function humanizeEvents(
+  events: xdr.DiagnosticEvent[] | xdr.ContractEvent[]
+): SorobanEvent[];
+
 export class SorobanDataBuilder {
   constructor(data?: string | xdr.SorobanTransactionData | null);
 

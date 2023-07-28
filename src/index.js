@@ -53,6 +53,7 @@ export { Contract } from './contract';
 export { Address } from './address';
 export * from './numbers';
 export * from './scval';
+export * from './events';
 export * from './sorobandata_builder';
 
 export default module.exports;
