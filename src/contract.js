@@ -14,9 +14,7 @@ import { StrKey } from './strkey';
  * @constructor
  *
  * @param {string} contractId - ID of the contract (ex.
- *     `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`, or as a
- *     32-byte hex string
- *     `000000000000000000000000000000000000000000000000000000000000000001`).
+ *     `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`).
  */
 // TODO: Support contract deployment, maybe?
 export class Contract {
@@ -25,31 +23,17 @@ export class Contract {
       // First, try it as a strkey
       this._id = StrKey.decodeContract(contractId);
     } catch (_) {
-      // If that fails, try it as a hex string
-      // TODO: Add methods based on the contractSpec (or do that elsewhere?)
-      const b = Buffer.from(contractId, 'hex');
-      if (b.length !== 32) {
-        throw new Error('Invalid contract ID');
-      }
-      this._id = b;
+      throw new Error(`Invalid contract ID: ${contractId}`);
     }
   }
 
   /**
-   * Returns Stellar contract ID as a strkey, or hex string, ex.
-   * `000000000000000000000000000000000000000000000000000000000000000001`.
-   * @param {'hex'|'strkey'} format - format of output, defaults to 'strkey'
+   * Returns Stellar contract ID as a strkey, ex.
+   * `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`.
    * @returns {string}
    */
-  contractId(format = 'strkey') {
-    switch (format) {
-      case 'strkey':
-        return StrKey.encodeContract(this._id);
-      case 'hex':
-        return this._id.toString('hex');
-      default:
-        throw new Error(`Invalid format: ${format}`);
-    }
+  contractId() {
+    return StrKey.encodeContract(this._id);
   }
 
   /**
