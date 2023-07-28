@@ -10,7 +10,7 @@ import { scValToNative } from './scval';
  * @param {xdr.DiagnosticEvent[] | xdr.ContractEvent[]} events  either contract
  *    events or diagnostic events to parse into a friendly format
  *
- * @returns {HumanEvent[]}  a list of human-readable event structures, where
+ * @returns {SorobanEvent[]}  a list of human-readable event structures, where
  *    each element has the following properties:
  *  - type: a string of one of 'system', 'contract', 'diagnostic
  *  - contractId?: optionally, a `C...` encoded strkey
