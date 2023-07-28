@@ -13,6 +13,8 @@ import { FeeBumpTransaction } from './fee_bump_transaction';
 import { StrKey } from './strkey';
 import { SignerKey } from './signerkey';
 import { Memo } from './memo';
+import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
+import { SorobanDataBuilder } from './sorobandata_builder';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -112,11 +114,15 @@ export const TimeoutInfinite = 0;
  * @param {string}              [opts.networkPassphrase] passphrase of the
  *     target Stellar network (e.g. "Public Global Stellar Network ; September
  *     2015" for the pubnet)
- * @param {xdr.SorobanTransactionData | string}  [opts.sorobanData] - an optional xdr instance of SorobanTransactionData
- * to be set as .Transaction.Ext.SorobanData. It can be xdr object or base64 string.
- * For non-contract(non-Soroban) transactions, this has no effect.
- * In the case of Soroban transactions, SorobanTransactionData can be obtained from a prior simulation of
- * the transaction with a contract invocation and provides necessary resource estimations.
+ * @param {xdr.SorobanTransactionData | string}  [opts.sorobanData] - an
+ *     optional instance of {@link xdr.SorobanTransactionData} to be set as the
+ *     internal `Transaction.Ext.SorobanData` field (either the xdr object or a
+ *     base64 string). In the case of Soroban transactions, this can be obtained
+ *     from a prior simulation of the transaction with a contract invocation and
+ *     provides necessary resource estimations. You can also use
+ *     {@link SorobanDataBuilder} to construct complicated combinations of
+ *     parameters without mucking with XDR directly. **Note:** For
+ *     non-contract(non-Soroban) transactions, this has no effect.
  *
  */
 export class TransactionBuilder {
@@ -141,7 +147,10 @@ export class TransactionBuilder {
     this.extraSigners = opts.extraSigners ? [...opts.extraSigners] : null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
-    this.sorobanData = unmarshalSorobanData(opts.sorobanData);
+
+    this.sorobanData = opts.sorobanData
+      ? new SorobanDataBuilder(opts.sorobanData).build()
+      : null;
   }
 
   /**
@@ -507,20 +516,22 @@ export class TransactionBuilder {
   }
 
   /**
-   * Set the {SorobanTransactionData}. For non-contract(non-Soroban) transactions,
-   * this setting has no effect.
-   * In the case of Soroban transactions, set to an instance of
-   * SorobanTransactionData. This can typically be obtained from the simulation
-   * response based on a transaction with a InvokeHostFunctionOp.
-   * It provides necessary resource estimations for contract invocation.
+   * Set the {SorobanTransactionData}. For non-contract(non-Soroban)
+   * transactions, this setting has no effect. In the case of Soroban
+   * transactions, set to an instance of SorobanTransactionData. This can
+   * typically be obtained from the simulation response based on a transaction
+   * with a InvokeHostFunctionOp. It provides necessary resource estimations for
+   * contract invocation.
    *
-   * @param {xdr.SorobanTransactionData | string} sorobanData    the SorobanTransactionData as xdr object or base64 string
-   * to be set as Transaction.Ext.SorobanData.
+   * @param {xdr.SorobanTransactionData | string} sorobanData    the
+   *    {@link xdr.SorobanTransactionData} as a raw xdr object or a base64
+   *    string to be decoded then set as Transaction.Ext.SorobanData
    *
    * @returns {TransactionBuilder}
+   * @see {SorobanDataBuilder}
    */
   setSorobanData(sorobanData) {
-    this.sorobanData = unmarshalSorobanData(sorobanData);
+    this.sorobanData = new SorobanDataBuilder(sorobanData).build();
     return this;
   }
 
@@ -770,18 +781,4 @@ export function isValidDate(d) {
   // isnan is okay here because it correctly checks for invalid date objects
   // eslint-disable-next-line no-restricted-globals
   return d instanceof Date && !isNaN(d);
-}
-
-/**
- * local helper function to convert SorobanTransactionData from
- * base64 string or xdr object.
- * @param {string | xdr.SorobanTransactionData} sorobanData  the soroban transaction data
- * @returns {xdr.SorobanTransactionData}
- */
-function unmarshalSorobanData(sorobanData) {
-  if (typeof sorobanData === 'string') {
-    const buffer = Buffer.from(sorobanData, 'base64');
-    sorobanData = xdr.SorobanTransactionData.fromXDR(buffer);
-  }
-  return sorobanData;
 }

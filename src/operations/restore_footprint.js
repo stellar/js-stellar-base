@@ -1,11 +1,14 @@
 import xdr from '../xdr';
 
 /**
- * Builds a footprint restoration operation. It takes no parameters because the
- * relevant footprint is derived from the transaction itself (see
- * {@link TransactionBuilder}'s `opts.sorobanData` parameter, which is a
+ * Builds a footprint restoration operation.
+ *
+ * It takes no parameters because the relevant footprint is derived from the
+ * transaction itself (see {@link TransactionBuilder}'s `opts.sorobanData`
+ * parameter (or {@link TransactionBuilder.setSorobanData} /
+ * {@link TransactionBuilder.setLedgerKeys}), which is a
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
- * usage as part of {@link xdr.SorobanResources}).
+ * usage as part of {@link xdr.SorobanTransactionData}).
  *
  * @function
  * @alias Operation.restoreFootprint
