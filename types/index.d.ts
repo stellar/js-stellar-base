@@ -1028,6 +1028,8 @@ export class TransactionBuilder {
   setSorobanData(sorobanData: string | xdr.SorobanTransactionData): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
+
+  static cloneFrom(tx: Transaction): TransactionBuilder;
   static buildFeeBumpTransaction(
     feeSource: Keypair | string,
     baseFee: string,
