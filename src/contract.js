@@ -36,6 +36,10 @@ export class Contract {
     return StrKey.encodeContract(this._id);
   }
 
+  toString() {
+    return this.contractId();
+  }
+
   /**
    * Returns the address of this contract as an Address type.
    * @returns {Address}
@@ -64,20 +68,29 @@ export class Contract {
   }
 
   /**
-   * Returns the read-only footprint entry necessary for any invocations to this
-   * contract, for convenience when adding it to your transaction's overall
-   * footprint.
+   * Returns the read-only footprint entries necessary for any invocations to
+   * this contract, for convenience when adding it to your transaction's overall
+   * footprint or doing bump/restore operations.
    *
-   * @returns {xdr.LedgerKey} the contract's executable data ledger key
+   * @returns {xdr.LedgerKey[]} the ledger keys containing the contract's code
+   *    (first) and its deployed contract instance (second)
    */
   getFootprint() {
-    return xdr.LedgerKey.contractData(
-      new xdr.LedgerKeyContractData({
-        contract: this.address().toScAddress(),
-        key: xdr.ScVal.scvLedgerKeyContractInstance(),
-        durability: xdr.ContractDataDurability.persistent(),
-        bodyType: xdr.ContractEntryBodyType.dataEntry()
-      })
-    );
+    return [
+      xdr.LedgerKey.contractCode(
+        new xdr.LedgerKeyContractCode({
+          hash: this._id,
+          bodyType: xdr.ContractEntryBodyType.dataEntry(),
+        })
+      ),
+      xdr.LedgerKey.contractData(
+        new xdr.LedgerKeyContractData({
+          contract: this.address().toScAddress(),
+          key: xdr.ScVal.scvLedgerKeyContractInstance(),
+          durability: xdr.ContractDataDurability.persistent(),
+          bodyType: xdr.ContractEntryBodyType.dataEntry()
+        })
+      )
+    ];
   }
 }
