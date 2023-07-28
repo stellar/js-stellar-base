@@ -9,12 +9,11 @@ import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account'
 
 import { Transaction } from './transaction';
 import { FeeBumpTransaction } from './fee_bump_transaction';
+import { SorobanDataBuilder } from './sorobandata_builder';
 
 import { StrKey } from './strkey';
 import { SignerKey } from './signerkey';
 import { Memo } from './memo';
-import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
-import { SorobanDataBuilder } from './sorobandata_builder';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
