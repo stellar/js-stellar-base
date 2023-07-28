@@ -80,7 +80,7 @@ export class Contract {
       xdr.LedgerKey.contractCode(
         new xdr.LedgerKeyContractCode({
           hash: this._id,
-          bodyType: xdr.ContractEntryBodyType.dataEntry(),
+          bodyType: xdr.ContractEntryBodyType.dataEntry()
         })
       ),
       xdr.LedgerKey.contractData(

@@ -41,7 +41,7 @@ describe('Contract', function () {
         new xdr.LedgerKey.contractCode(
           new xdr.LedgerKeyContractCode({
             hash: StellarBase.StrKey.decodeContract(contract.contractId()),
-            bodyType: xdr.ContractEntryBodyType.dataEntry(),
+            bodyType: xdr.ContractEntryBodyType.dataEntry()
           })
         ),
         new xdr.LedgerKey.contractData(
