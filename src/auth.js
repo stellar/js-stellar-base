@@ -1,9 +1,11 @@
-import { Address } from './address';
-import { Keypair } from './keypair';
-import { hash } from './signing';
-
-import { nativeToScVal } from './scval';
 import xdr from './xdr';
+
+import { StrKey } from './strkey';
+import { Keypair } from './keypair';
+import { hash } from './hashing';
+
+import { Address } from './address';
+import { nativeToScVal } from './scval';
 
 /**
  * This builds an authorization entry that indicates to
@@ -42,7 +44,7 @@ export function authorizeInvocation(
   const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation);
   const input = hash(preimage.toXDR());
   const signature = signer.sign(input);
-  return buildAuthEntry(preimage, signature, publicKey);
+  return buildAuthEntry(preimage, signature, signer.publicKey());
 }
 
 /**
@@ -121,7 +123,7 @@ export function buildAuthEntry(envelope, signature, publicKey) {
   }
 
   return new xdr.SorobanAuthorizationEntry({
-    rootInvocation: invocation,
+    rootInvocation: envelope.sorobanAuthorization().invocation(),
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
         address: new Address(publicKey).toScAddress(),
