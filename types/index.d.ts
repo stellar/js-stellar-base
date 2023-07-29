@@ -1159,3 +1159,15 @@ export function authorizeInvocation(
   validUntil: number,
   invocation: xdr.SorobanAuthorizedInvocation
 ): xdr.SorobanAuthorizationEntry;
+
+export function buildAuthEnvelope(
+  networkPassphrase: string,
+  validUntil: number,
+  invocation: xdr.SorobanAuthorizedInvocation
+): xdr.HashIdPreimage;
+
+export function buildAuthEntry(
+  envelope: xdr.HashIdPreimage,
+  signature: Buffer | Uint8Array,
+  publicKey: string
+): xdr.SorobanAuthorizationEntry;

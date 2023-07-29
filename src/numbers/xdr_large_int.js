@@ -18,7 +18,7 @@ import xdr from '../xdr';
  * @param {string}  type - force a specific data type. the type choices
  *    are: 'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (default: the
  *    smallest one that fits the `value`)
- * @param {number|bigint|string|ScInt|Array<number|bigint|string|ScInt>} values
+ * @param {number|bigint|string|XdrLargeInt|ScInt|Array<number|bigint|string|XdrLargeInt|ScInt>} values
  *    - a list of integer-like values interpreted in big-endian order
  */
 export class XdrLargeInt {

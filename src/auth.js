@@ -74,7 +74,7 @@ export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
   // with any crypto dependencies. Note that this just has to be random and
   // unique, not cryptographically secure, so it's fine.
   const kp = Keypair.random().rawPublicKey();
-  const nonce = new xdr.Int64(...kp.buffer().subarray(0, 8));
+  const nonce = new xdr.Int64(bytesToInt64(kp));
 
   const networkId = hash(Buffer.from(networkPassphrase));
   const envelope = new xdr.HashIdPreimageSorobanAuthorization({
@@ -110,7 +110,9 @@ export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
  */
 export function buildAuthEntry(envelope, signature, publicKey) {
   // ensure this identity signed this envelope correctly
-  if (!Keypair.fromPublicKey(publicKey).verify(hash(envelope), signature)) {
+  if (
+    !Keypair.fromPublicKey(publicKey).verify(hash(envelope.toXDR()), signature)
+  ) {
     throw new Error(`signature does not match envelope or identity`);
   }
 
@@ -122,13 +124,14 @@ export function buildAuthEntry(envelope, signature, publicKey) {
     );
   }
 
+  const auth = envelope.sorobanAuthorization();
   return new xdr.SorobanAuthorizationEntry({
-    rootInvocation: envelope.sorobanAuthorization().invocation(),
+    rootInvocation: auth.invocation(),
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
         address: new Address(publicKey).toScAddress(),
-        nonce: envelope.sorobanAuthorization().nonce(),
-        signatureExpirationLedger: envelope.signatureExpirationLedger(),
+        nonce: auth.nonce(),
+        signatureExpirationLedger: auth.signatureExpirationLedger(),
         signatureArgs: [
           nativeToScVal(
             {
@@ -148,4 +151,9 @@ export function buildAuthEntry(envelope, signature, publicKey) {
       })
     )
   });
+}
+
+function bytesToInt64(bytes) {
+  // eslint-disable-next-line no-bitwise
+  return bytes.subarray(0, 8).reduce((accum, b) => ((accum << 8) | b), 0);
 }
