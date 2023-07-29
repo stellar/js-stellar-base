@@ -155,5 +155,5 @@ export function buildAuthEntry(envelope, signature, publicKey) {
 
 function bytesToInt64(bytes) {
   // eslint-disable-next-line no-bitwise
-  return bytes.subarray(0, 8).reduce((accum, b) => ((accum << 8) | b), 0);
+  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
 }
