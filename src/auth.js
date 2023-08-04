@@ -1,5 +1,6 @@
 import xdr from './xdr';
 
+import { StrKey } from './strkey';
 import { Keypair } from './keypair';
 import { hash } from './hashing';
 
@@ -169,7 +170,22 @@ export function buildAuthEntry(envelope, signature, publicKey) {
         address: new Address(publicKey).toScAddress(),
         nonce: auth.nonce(),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
-        signature: nativeToScVal(signature)
+        signature: nativeToScVal(
+          [
+            {
+              public_key: StrKey.decodeEd25519PublicKey(publicKey),
+              signature
+            }
+          ],
+          // force conversion of map keys to ScSymbol as this is expected by
+          // custom [contracttype] Rust structures
+          {
+            type: {
+              public_key: ['symbol', null],
+              signature: ['symbol', null]
+            }
+          }
+        )
       })
     )
   });
