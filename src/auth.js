@@ -65,11 +65,9 @@ export function authorizeInvocation(
  *    into the signature (see {@link Networks} for options)
  * @param {number} validUntil   the (exclusive) future ledger sequence number
  *    until which this authorization entry should be valid (if
- *    `currentLedgerSeq==validUntil`, this is expired))
+ *    `currentLedgerSeq==validUntil`, this is expired)
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
- *
- * @param {xdr.SorobanAuthorizedInvocation} invocation
  *
  * @returns {Promise<xdr.SorobanAuthorizationEntry>}
  * @see authorizeInvocation
