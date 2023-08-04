@@ -503,10 +503,16 @@ struct CreateContractArgs
     ContractExecutable executable;
 };
 
+struct InvokeContractArgs {
+    SCAddress contractAddress;
+    SCSymbol functionName;
+    SCVal args<>;
+};
+
 union HostFunction switch (HostFunctionType type)
 {
 case HOST_FUNCTION_TYPE_INVOKE_CONTRACT:
-    SCVec invokeContract;
+    InvokeContractArgs invokeContract;
 case HOST_FUNCTION_TYPE_CREATE_CONTRACT:
     CreateContractArgs createContract;
 case HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM:
@@ -519,17 +525,10 @@ enum SorobanAuthorizedFunctionType
     SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN = 1
 };
 
-struct SorobanAuthorizedContractFunction 
-{
-    SCAddress contractAddress;
-    SCSymbol functionName;
-    SCVec args;
-};
-
 union SorobanAuthorizedFunction switch (SorobanAuthorizedFunctionType type)
 {
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN:
-    SorobanAuthorizedContractFunction contractFn;
+    InvokeContractArgs contractFn;
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN:
     CreateContractArgs createContractHostFn;
 };
@@ -545,7 +544,7 @@ struct SorobanAddressCredentials
     SCAddress address;
     int64 nonce;
     uint32 signatureExpirationLedger;    
-    SCVec signatureArgs;
+    SCVal signature;
 };
 
 enum SorobanCredentialsType
@@ -816,9 +815,9 @@ struct SorobanResources
     // The maximum number of bytes this transaction can write to ledger
     uint32 writeBytes;
 
-    // Maximum size of dynamic metadata produced by this contract (
-    // currently only includes the events).
-    uint32 extendedMetaDataSizeBytes;
+    // Maximum size of the contract events (serialized to XDR) this transaction
+    // can emit.
+    uint32 contractEventsSizeBytes;
 };
 
 // The transaction extension for Soroban.
@@ -1793,7 +1792,8 @@ enum InvokeHostFunctionResultCode
     // codes considered as "failure" for the operation
     INVOKE_HOST_FUNCTION_MALFORMED = -1,
     INVOKE_HOST_FUNCTION_TRAPPED = -2,
-    INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3
+    INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3,
+    INVOKE_HOST_FUNCTION_ENTRY_EXPIRED = -4
 };
 
 union InvokeHostFunctionResult switch (InvokeHostFunctionResultCode code)
@@ -1803,6 +1803,7 @@ case INVOKE_HOST_FUNCTION_SUCCESS:
 case INVOKE_HOST_FUNCTION_MALFORMED:
 case INVOKE_HOST_FUNCTION_TRAPPED:
 case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
+case INVOKE_HOST_FUNCTION_ENTRY_EXPIRED:
     void;
 };
 

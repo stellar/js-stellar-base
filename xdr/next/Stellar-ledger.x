@@ -127,7 +127,8 @@ enum LedgerUpgradeType
     LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
     LEDGER_UPGRADE_BASE_RESERVE = 4,
     LEDGER_UPGRADE_FLAGS = 5,
-    LEDGER_UPGRADE_CONFIG = 6
+    LEDGER_UPGRADE_CONFIG = 6,
+    LEDGER_UPGRADE_MAX_SOROBAN_TX_SET_SIZE = 7
 };
 
 struct ConfigUpgradeSetKey {
@@ -148,7 +149,12 @@ case LEDGER_UPGRADE_BASE_RESERVE:
 case LEDGER_UPGRADE_FLAGS:
     uint32 newFlags; // update flags
 case LEDGER_UPGRADE_CONFIG:
+    // Update arbitray `ConfigSetting` entries identified by the key.
     ConfigUpgradeSetKey newConfig;
+case LEDGER_UPGRADE_MAX_SOROBAN_TX_SET_SIZE:
+    // Update ConfigSettingContractExecutionLanesV0.ledgerMaxTxCount without
+    // using `LEDGER_UPGRADE_CONFIG`.
+    uint32 newMaxSorobanTxSetSize;
 };
 
 struct ConfigUpgradeSet {
@@ -385,7 +391,7 @@ struct ContractEvent
     case 0:
         struct
         {
-            SCVec topics;
+            SCVal topics<>;
             SCVal data;
         } v0;
     }
