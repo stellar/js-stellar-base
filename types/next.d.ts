@@ -1,4 +1,48 @@
-declare namespace xdr {
+// Automatically generated on 2023-08-04T10:33:42-08:00
+import { Operation } from './index';
+
+export {};
+
+// Hidden namespace as hack to work around name collision.
+declare namespace xdrHidden {
+  // tslint:disable-line:strict-export-declare-modifiers
+  class Operation2<T extends Operation = Operation> {
+    constructor(attributes: {
+      sourceAccount: null | xdr.MuxedAccount;
+      body: xdr.OperationBody;
+    });
+
+    sourceAccount(value?: null | xdr.MuxedAccount): null | xdr.MuxedAccount;
+
+    body(value?: xdr.OperationBody): xdr.OperationBody;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): xdr.Operation;
+
+    static write(value: xdr.Operation, io: Buffer): void;
+
+    static isValid(value: xdr.Operation): boolean;
+
+    static toXDR(value: xdr.Operation): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): xdr.Operation;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): xdr.Operation;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+}
+
+export namespace xdr {
+  export import Operation = xdrHidden.Operation2; // tslint:disable-line:strict-export-declare-modifiers
+
+  type Hash = Opaque[]; // workaround, cause unknown
+
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;
@@ -6,10 +50,10 @@ declare namespace xdr {
     write(value: number, io: Buffer): void;
     isValid(value: number): boolean;
     toXDR(value: number): Buffer;
-    fromXDR(input: Buffer, format?: "raw"): number;
-    fromXDR(input: string, format: "hex" | "base64"): number;
-    validateXDR(input: Buffer, format?: "raw"): boolean;
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    fromXDR(input: Buffer, format?: 'raw'): number;
+    fromXDR(input: string, format: 'hex' | 'base64'): number;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   interface UnsignedInt {
@@ -19,10 +63,10 @@ declare namespace xdr {
     write(value: number, io: Buffer): void;
     isValid(value: number): boolean;
     toXDR(value: number): Buffer;
-    fromXDR(input: Buffer, format?: "raw"): number;
-    fromXDR(input: string, format: "hex" | "base64"): number;
-    validateXDR(input: Buffer, format?: "raw"): boolean;
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    fromXDR(input: Buffer, format?: 'raw'): number;
+    fromXDR(input: string, format: 'hex' | 'base64'): number;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   interface Bool {
@@ -30,10 +74,10 @@ declare namespace xdr {
     write(value: boolean, io: Buffer): void;
     isValid(value: boolean): boolean;
     toXDR(value: boolean): Buffer;
-    fromXDR(input: Buffer, format?: "raw"): boolean;
-    fromXDR(input: string, format: "hex" | "base64"): boolean;
-    validateXDR(input: Buffer, format?: "raw"): boolean;
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    fromXDR(input: Buffer, format?: 'raw'): boolean;
+    fromXDR(input: string, format: 'hex' | 'base64'): boolean;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Hyper {
@@ -44,22 +88,22 @@ declare namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | (string | bigint | number)[],
+      values: string | bigint | number | Array<string | bigint | number>,
     );
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static toXDR(value: Hyper): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Hyper;
+    static fromXDR(input: Buffer, format?: 'raw'): Hyper;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Hyper;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Hyper;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
 
     static readonly MAX_VALUE: Hyper;
 
@@ -88,22 +132,22 @@ declare namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | (string | bigint | number)[],
+      values: string | bigint | number | Array<string | bigint | number>,
     );
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static toXDR(value: UnsignedHyper): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): UnsignedHyper;
+    static fromXDR(input: Buffer, format?: 'raw'): UnsignedHyper;
 
-    static fromXDR(input: string, format: "hex" | "base64"): UnsignedHyper;
+    static fromXDR(input: string, format: 'hex' | 'base64'): UnsignedHyper;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
 
     static readonly MAX_VALUE: UnsignedHyper;
 
@@ -137,13 +181,13 @@ declare namespace xdr {
 
     toXDR(value: string | Buffer): Buffer;
 
-    fromXDR(input: Buffer, format?: "raw"): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
 
-    fromXDR(input: string, format: "hex" | "base64"): Buffer;
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
 
-    validateXDR(input: Buffer, format?: "raw"): boolean;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class XDRArray<T> {
@@ -155,13 +199,13 @@ declare namespace xdr {
 
     toXDR(value: T[]): Buffer;
 
-    fromXDR(input: Buffer, format?: "raw"): T[];
+    fromXDR(input: Buffer, format?: 'raw'): T[];
 
-    fromXDR(input: string, format: "hex" | "base64"): T[];
+    fromXDR(input: string, format: 'hex' | 'base64'): T[];
 
-    validateXDR(input: Buffer, format?: "raw"): boolean;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Opaque {
@@ -175,13 +219,13 @@ declare namespace xdr {
 
     toXDR(value: Buffer): Buffer;
 
-    fromXDR(input: Buffer, format?: "raw"): Buffer;
+    fromXDR(input: Buffer, format?: 'raw'): Buffer;
 
-    fromXDR(input: string, format: "hex" | "base64"): Buffer;
+    fromXDR(input: string, format: 'hex' | 'base64'): Buffer;
 
-    validateXDR(input: Buffer, format?: "raw"): boolean;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class VarOpaque extends Opaque {}
@@ -201,21 +245,21 @@ declare namespace xdr {
 
     toXDR(value: any): Buffer;
 
-    fromXDR(input: Buffer, format?: "raw"): any;
+    fromXDR(input: Buffer, format?: 'raw'): any;
 
-    fromXDR(input: string, format: "hex" | "base64"): any;
+    fromXDR(input: string, format: 'hex' | 'base64'): any;
 
-    validateXDR(input: Buffer, format?: "raw"): boolean;
+    validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    validateXDR(input: string, format: "hex" | "base64"): boolean;
+    validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpStatementType {
     readonly name:
-      | "scpStPrepare"
-      | "scpStConfirm"
-      | "scpStExternalize"
-      | "scpStNominate";
+      | 'scpStPrepare'
+      | 'scpStConfirm'
+      | 'scpStExternalize'
+      | 'scpStNominate';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -230,10 +274,10 @@ declare namespace xdr {
 
   class AssetType {
     readonly name:
-      | "assetTypeNative"
-      | "assetTypeCreditAlphanum4"
-      | "assetTypeCreditAlphanum12"
-      | "assetTypePoolShare";
+      | 'assetTypeNative'
+      | 'assetTypeCreditAlphanum4'
+      | 'assetTypeCreditAlphanum12'
+      | 'assetTypePoolShare';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -248,10 +292,10 @@ declare namespace xdr {
 
   class ThresholdIndices {
     readonly name:
-      | "thresholdMasterWeight"
-      | "thresholdLow"
-      | "thresholdMed"
-      | "thresholdHigh";
+      | 'thresholdMasterWeight'
+      | 'thresholdLow'
+      | 'thresholdMed'
+      | 'thresholdHigh';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -266,15 +310,15 @@ declare namespace xdr {
 
   class LedgerEntryType {
     readonly name:
-      | "account"
-      | "trustline"
-      | "offer"
-      | "data"
-      | "claimableBalance"
-      | "liquidityPool"
-      | "contractData"
-      | "contractCode"
-      | "configSetting";
+      | 'account'
+      | 'trustline'
+      | 'offer'
+      | 'data'
+      | 'claimableBalance'
+      | 'liquidityPool'
+      | 'contractData'
+      | 'contractCode'
+      | 'configSetting';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
@@ -299,10 +343,10 @@ declare namespace xdr {
 
   class AccountFlags {
     readonly name:
-      | "authRequiredFlag"
-      | "authRevocableFlag"
-      | "authImmutableFlag"
-      | "authClawbackEnabledFlag";
+      | 'authRequiredFlag'
+      | 'authRevocableFlag'
+      | 'authImmutableFlag'
+      | 'authClawbackEnabledFlag';
 
     readonly value: 1 | 2 | 4 | 8;
 
@@ -317,9 +361,9 @@ declare namespace xdr {
 
   class TrustLineFlags {
     readonly name:
-      | "authorizedFlag"
-      | "authorizedToMaintainLiabilitiesFlag"
-      | "trustlineClawbackEnabledFlag";
+      | 'authorizedFlag'
+      | 'authorizedToMaintainLiabilitiesFlag'
+      | 'trustlineClawbackEnabledFlag';
 
     readonly value: 1 | 2 | 4;
 
@@ -331,7 +375,7 @@ declare namespace xdr {
   }
 
   class LiquidityPoolType {
-    readonly name: "liquidityPoolConstantProduct";
+    readonly name: 'liquidityPoolConstantProduct';
 
     readonly value: 0;
 
@@ -339,7 +383,7 @@ declare namespace xdr {
   }
 
   class OfferEntryFlags {
-    readonly name: "passiveFlag";
+    readonly name: 'passiveFlag';
 
     readonly value: 1;
 
@@ -348,12 +392,12 @@ declare namespace xdr {
 
   class ClaimPredicateType {
     readonly name:
-      | "claimPredicateUnconditional"
-      | "claimPredicateAnd"
-      | "claimPredicateOr"
-      | "claimPredicateNot"
-      | "claimPredicateBeforeAbsoluteTime"
-      | "claimPredicateBeforeRelativeTime";
+      | 'claimPredicateUnconditional'
+      | 'claimPredicateAnd'
+      | 'claimPredicateOr'
+      | 'claimPredicateNot'
+      | 'claimPredicateBeforeAbsoluteTime'
+      | 'claimPredicateBeforeRelativeTime';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5;
 
@@ -371,7 +415,7 @@ declare namespace xdr {
   }
 
   class ClaimantType {
-    readonly name: "claimantTypeV0";
+    readonly name: 'claimantTypeV0';
 
     readonly value: 0;
 
@@ -379,7 +423,7 @@ declare namespace xdr {
   }
 
   class ClaimableBalanceIdType {
-    readonly name: "claimableBalanceIdTypeV0";
+    readonly name: 'claimableBalanceIdTypeV0';
 
     readonly value: 0;
 
@@ -387,7 +431,7 @@ declare namespace xdr {
   }
 
   class ClaimableBalanceFlags {
-    readonly name: "claimableBalanceClawbackEnabledFlag";
+    readonly name: 'claimableBalanceClawbackEnabledFlag';
 
     readonly value: 1;
 
@@ -395,7 +439,7 @@ declare namespace xdr {
   }
 
   class ContractEntryBodyType {
-    readonly name: "dataEntry" | "expirationExtension";
+    readonly name: 'dataEntry' | 'expirationExtension';
 
     readonly value: 0 | 1;
 
@@ -405,7 +449,7 @@ declare namespace xdr {
   }
 
   class ContractDataFlags {
-    readonly name: "noAutobump";
+    readonly name: 'noAutobump';
 
     readonly value: 1;
 
@@ -413,7 +457,7 @@ declare namespace xdr {
   }
 
   class ContractDataDurability {
-    readonly name: "temporary" | "persistent";
+    readonly name: 'temporary' | 'persistent';
 
     readonly value: 0 | 1;
 
@@ -424,16 +468,16 @@ declare namespace xdr {
 
   class EnvelopeType {
     readonly name:
-      | "envelopeTypeTxV0"
-      | "envelopeTypeScp"
-      | "envelopeTypeTx"
-      | "envelopeTypeAuth"
-      | "envelopeTypeScpvalue"
-      | "envelopeTypeTxFeeBump"
-      | "envelopeTypeOpId"
-      | "envelopeTypePoolRevokeOpId"
-      | "envelopeTypeContractId"
-      | "envelopeTypeSorobanAuthorization";
+      | 'envelopeTypeTxV0'
+      | 'envelopeTypeScp'
+      | 'envelopeTypeTx'
+      | 'envelopeTypeAuth'
+      | 'envelopeTypeScpvalue'
+      | 'envelopeTypeTxFeeBump'
+      | 'envelopeTypeOpId'
+      | 'envelopeTypePoolRevokeOpId'
+      | 'envelopeTypeContractId'
+      | 'envelopeTypeSorobanAuthorization';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -459,7 +503,7 @@ declare namespace xdr {
   }
 
   class StellarValueType {
-    readonly name: "stellarValueBasic" | "stellarValueSigned";
+    readonly name: 'stellarValueBasic' | 'stellarValueSigned';
 
     readonly value: 0 | 1;
 
@@ -470,13 +514,13 @@ declare namespace xdr {
 
   class LedgerHeaderFlags {
     readonly name:
-      | "disableLiquidityPoolTradingFlag"
-      | "disableLiquidityPoolDepositFlag"
-      | "disableLiquidityPoolWithdrawalFlag"
-      | "disableContractCreate"
-      | "disableContractUpdate"
-      | "disableContractRemove"
-      | "disableContractInvoke";
+      | 'disableLiquidityPoolTradingFlag'
+      | 'disableLiquidityPoolDepositFlag'
+      | 'disableLiquidityPoolWithdrawalFlag'
+      | 'disableContractCreate'
+      | 'disableContractUpdate'
+      | 'disableContractRemove'
+      | 'disableContractInvoke';
 
     readonly value: 1 | 2 | 4 | 8 | 16 | 32 | 64;
 
@@ -497,13 +541,13 @@ declare namespace xdr {
 
   class LedgerUpgradeType {
     readonly name:
-      | "ledgerUpgradeVersion"
-      | "ledgerUpgradeBaseFee"
-      | "ledgerUpgradeMaxTxSetSize"
-      | "ledgerUpgradeBaseReserve"
-      | "ledgerUpgradeFlags"
-      | "ledgerUpgradeConfig"
-      | "ledgerUpgradeMaxSorobanTxSetSize";
+      | 'ledgerUpgradeVersion'
+      | 'ledgerUpgradeBaseFee'
+      | 'ledgerUpgradeMaxTxSetSize'
+      | 'ledgerUpgradeBaseReserve'
+      | 'ledgerUpgradeFlags'
+      | 'ledgerUpgradeConfig'
+      | 'ledgerUpgradeMaxSorobanTxSetSize';
 
     readonly value: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -523,7 +567,7 @@ declare namespace xdr {
   }
 
   class BucketEntryType {
-    readonly name: "metaentry" | "liveentry" | "deadentry" | "initentry";
+    readonly name: 'metaentry' | 'liveentry' | 'deadentry' | 'initentry';
 
     readonly value: -1 | 0 | 1 | 2;
 
@@ -537,7 +581,7 @@ declare namespace xdr {
   }
 
   class TxSetComponentType {
-    readonly name: "txsetCompTxsMaybeDiscountedFee";
+    readonly name: 'txsetCompTxsMaybeDiscountedFee';
 
     readonly value: 0;
 
@@ -546,10 +590,10 @@ declare namespace xdr {
 
   class LedgerEntryChangeType {
     readonly name:
-      | "ledgerEntryCreated"
-      | "ledgerEntryUpdated"
-      | "ledgerEntryRemoved"
-      | "ledgerEntryState";
+      | 'ledgerEntryCreated'
+      | 'ledgerEntryUpdated'
+      | 'ledgerEntryRemoved'
+      | 'ledgerEntryState';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -563,7 +607,7 @@ declare namespace xdr {
   }
 
   class ContractEventType {
-    readonly name: "system" | "contract" | "diagnostic";
+    readonly name: 'system' | 'contract' | 'diagnostic';
 
     readonly value: 0 | 1 | 2;
 
@@ -575,7 +619,7 @@ declare namespace xdr {
   }
 
   class ErrorCode {
-    readonly name: "errMisc" | "errData" | "errConf" | "errAuth" | "errLoad";
+    readonly name: 'errMisc' | 'errData' | 'errConf' | 'errAuth' | 'errLoad';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
 
@@ -591,7 +635,7 @@ declare namespace xdr {
   }
 
   class IpAddrType {
-    readonly name: "iPv4" | "iPv6";
+    readonly name: 'iPv4' | 'iPv6';
 
     readonly value: 0 | 1;
 
@@ -602,26 +646,26 @@ declare namespace xdr {
 
   class MessageType {
     readonly name:
-      | "errorMsg"
-      | "auth"
-      | "dontHave"
-      | "getPeers"
-      | "peers"
-      | "getTxSet"
-      | "txSet"
-      | "generalizedTxSet"
-      | "transaction"
-      | "getScpQuorumset"
-      | "scpQuorumset"
-      | "scpMessage"
-      | "getScpState"
-      | "hello"
-      | "surveyRequest"
-      | "surveyResponse"
-      | "sendMore"
-      | "sendMoreExtended"
-      | "floodAdvert"
-      | "floodDemand";
+      | 'errorMsg'
+      | 'auth'
+      | 'dontHave'
+      | 'getPeers'
+      | 'peers'
+      | 'getTxSet'
+      | 'txSet'
+      | 'generalizedTxSet'
+      | 'transaction'
+      | 'getScpQuorumset'
+      | 'scpQuorumset'
+      | 'scpMessage'
+      | 'getScpState'
+      | 'hello'
+      | 'surveyRequest'
+      | 'surveyResponse'
+      | 'sendMore'
+      | 'sendMoreExtended'
+      | 'floodAdvert'
+      | 'floodDemand';
 
     readonly value:
       | 0
@@ -687,7 +731,7 @@ declare namespace xdr {
   }
 
   class SurveyMessageCommandType {
-    readonly name: "surveyTopology";
+    readonly name: 'surveyTopology';
 
     readonly value: 0;
 
@@ -695,7 +739,7 @@ declare namespace xdr {
   }
 
   class SurveyMessageResponseType {
-    readonly name: "surveyTopologyResponseV0" | "surveyTopologyResponseV1";
+    readonly name: 'surveyTopologyResponseV0' | 'surveyTopologyResponseV1';
 
     readonly value: 0 | 1;
 
@@ -706,33 +750,33 @@ declare namespace xdr {
 
   class OperationType {
     readonly name:
-      | "createAccount"
-      | "payment"
-      | "pathPaymentStrictReceive"
-      | "manageSellOffer"
-      | "createPassiveSellOffer"
-      | "setOptions"
-      | "changeTrust"
-      | "allowTrust"
-      | "accountMerge"
-      | "inflation"
-      | "manageData"
-      | "bumpSequence"
-      | "manageBuyOffer"
-      | "pathPaymentStrictSend"
-      | "createClaimableBalance"
-      | "claimClaimableBalance"
-      | "beginSponsoringFutureReserves"
-      | "endSponsoringFutureReserves"
-      | "revokeSponsorship"
-      | "clawback"
-      | "clawbackClaimableBalance"
-      | "setTrustLineFlags"
-      | "liquidityPoolDeposit"
-      | "liquidityPoolWithdraw"
-      | "invokeHostFunction"
-      | "bumpFootprintExpiration"
-      | "restoreFootprint";
+      | 'createAccount'
+      | 'payment'
+      | 'pathPaymentStrictReceive'
+      | 'manageSellOffer'
+      | 'createPassiveSellOffer'
+      | 'setOptions'
+      | 'changeTrust'
+      | 'allowTrust'
+      | 'accountMerge'
+      | 'inflation'
+      | 'manageData'
+      | 'bumpSequence'
+      | 'manageBuyOffer'
+      | 'pathPaymentStrictSend'
+      | 'createClaimableBalance'
+      | 'claimClaimableBalance'
+      | 'beginSponsoringFutureReserves'
+      | 'endSponsoringFutureReserves'
+      | 'revokeSponsorship'
+      | 'clawback'
+      | 'clawbackClaimableBalance'
+      | 'setTrustLineFlags'
+      | 'liquidityPoolDeposit'
+      | 'liquidityPoolWithdraw'
+      | 'invokeHostFunction'
+      | 'bumpFootprintExpiration'
+      | 'restoreFootprint';
 
     readonly value:
       | 0
@@ -819,7 +863,7 @@ declare namespace xdr {
   }
 
   class RevokeSponsorshipType {
-    readonly name: "revokeSponsorshipLedgerEntry" | "revokeSponsorshipSigner";
+    readonly name: 'revokeSponsorshipLedgerEntry' | 'revokeSponsorshipSigner';
 
     readonly value: 0 | 1;
 
@@ -830,9 +874,9 @@ declare namespace xdr {
 
   class HostFunctionType {
     readonly name:
-      | "hostFunctionTypeInvokeContract"
-      | "hostFunctionTypeCreateContract"
-      | "hostFunctionTypeUploadContractWasm";
+      | 'hostFunctionTypeInvokeContract'
+      | 'hostFunctionTypeCreateContract'
+      | 'hostFunctionTypeUploadContractWasm';
 
     readonly value: 0 | 1 | 2;
 
@@ -845,8 +889,8 @@ declare namespace xdr {
 
   class ContractIdPreimageType {
     readonly name:
-      | "contractIdPreimageFromAddress"
-      | "contractIdPreimageFromAsset";
+      | 'contractIdPreimageFromAddress'
+      | 'contractIdPreimageFromAsset';
 
     readonly value: 0 | 1;
 
@@ -857,8 +901,8 @@ declare namespace xdr {
 
   class SorobanAuthorizedFunctionType {
     readonly name:
-      | "sorobanAuthorizedFunctionTypeContractFn"
-      | "sorobanAuthorizedFunctionTypeCreateContractHostFn";
+      | 'sorobanAuthorizedFunctionTypeContractFn'
+      | 'sorobanAuthorizedFunctionTypeCreateContractHostFn';
 
     readonly value: 0 | 1;
 
@@ -869,8 +913,8 @@ declare namespace xdr {
 
   class SorobanCredentialsType {
     readonly name:
-      | "sorobanCredentialsSourceAccount"
-      | "sorobanCredentialsAddress";
+      | 'sorobanCredentialsSourceAccount'
+      | 'sorobanCredentialsAddress';
 
     readonly value: 0 | 1;
 
@@ -881,11 +925,11 @@ declare namespace xdr {
 
   class MemoType {
     readonly name:
-      | "memoNone"
-      | "memoText"
-      | "memoId"
-      | "memoHash"
-      | "memoReturn";
+      | 'memoNone'
+      | 'memoText'
+      | 'memoId'
+      | 'memoHash'
+      | 'memoReturn';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
 
@@ -901,7 +945,7 @@ declare namespace xdr {
   }
 
   class PreconditionType {
-    readonly name: "precondNone" | "precondTime" | "precondV2";
+    readonly name: 'precondNone' | 'precondTime' | 'precondV2';
 
     readonly value: 0 | 1 | 2;
 
@@ -914,9 +958,9 @@ declare namespace xdr {
 
   class ClaimAtomType {
     readonly name:
-      | "claimAtomTypeV0"
-      | "claimAtomTypeOrderBook"
-      | "claimAtomTypeLiquidityPool";
+      | 'claimAtomTypeV0'
+      | 'claimAtomTypeOrderBook'
+      | 'claimAtomTypeLiquidityPool';
 
     readonly value: 0 | 1 | 2;
 
@@ -929,11 +973,11 @@ declare namespace xdr {
 
   class CreateAccountResultCode {
     readonly name:
-      | "createAccountSuccess"
-      | "createAccountMalformed"
-      | "createAccountUnderfunded"
-      | "createAccountLowReserve"
-      | "createAccountAlreadyExist";
+      | 'createAccountSuccess'
+      | 'createAccountMalformed'
+      | 'createAccountUnderfunded'
+      | 'createAccountLowReserve'
+      | 'createAccountAlreadyExist';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -950,16 +994,16 @@ declare namespace xdr {
 
   class PaymentResultCode {
     readonly name:
-      | "paymentSuccess"
-      | "paymentMalformed"
-      | "paymentUnderfunded"
-      | "paymentSrcNoTrust"
-      | "paymentSrcNotAuthorized"
-      | "paymentNoDestination"
-      | "paymentNoTrust"
-      | "paymentNotAuthorized"
-      | "paymentLineFull"
-      | "paymentNoIssuer";
+      | 'paymentSuccess'
+      | 'paymentMalformed'
+      | 'paymentUnderfunded'
+      | 'paymentSrcNoTrust'
+      | 'paymentSrcNotAuthorized'
+      | 'paymentNoDestination'
+      | 'paymentNoTrust'
+      | 'paymentNotAuthorized'
+      | 'paymentLineFull'
+      | 'paymentNoIssuer';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9;
 
@@ -986,19 +1030,19 @@ declare namespace xdr {
 
   class PathPaymentStrictReceiveResultCode {
     readonly name:
-      | "pathPaymentStrictReceiveSuccess"
-      | "pathPaymentStrictReceiveMalformed"
-      | "pathPaymentStrictReceiveUnderfunded"
-      | "pathPaymentStrictReceiveSrcNoTrust"
-      | "pathPaymentStrictReceiveSrcNotAuthorized"
-      | "pathPaymentStrictReceiveNoDestination"
-      | "pathPaymentStrictReceiveNoTrust"
-      | "pathPaymentStrictReceiveNotAuthorized"
-      | "pathPaymentStrictReceiveLineFull"
-      | "pathPaymentStrictReceiveNoIssuer"
-      | "pathPaymentStrictReceiveTooFewOffers"
-      | "pathPaymentStrictReceiveOfferCrossSelf"
-      | "pathPaymentStrictReceiveOverSendmax";
+      | 'pathPaymentStrictReceiveSuccess'
+      | 'pathPaymentStrictReceiveMalformed'
+      | 'pathPaymentStrictReceiveUnderfunded'
+      | 'pathPaymentStrictReceiveSrcNoTrust'
+      | 'pathPaymentStrictReceiveSrcNotAuthorized'
+      | 'pathPaymentStrictReceiveNoDestination'
+      | 'pathPaymentStrictReceiveNoTrust'
+      | 'pathPaymentStrictReceiveNotAuthorized'
+      | 'pathPaymentStrictReceiveLineFull'
+      | 'pathPaymentStrictReceiveNoIssuer'
+      | 'pathPaymentStrictReceiveTooFewOffers'
+      | 'pathPaymentStrictReceiveOfferCrossSelf'
+      | 'pathPaymentStrictReceiveOverSendmax';
 
     readonly value:
       | 0
@@ -1044,19 +1088,19 @@ declare namespace xdr {
 
   class PathPaymentStrictSendResultCode {
     readonly name:
-      | "pathPaymentStrictSendSuccess"
-      | "pathPaymentStrictSendMalformed"
-      | "pathPaymentStrictSendUnderfunded"
-      | "pathPaymentStrictSendSrcNoTrust"
-      | "pathPaymentStrictSendSrcNotAuthorized"
-      | "pathPaymentStrictSendNoDestination"
-      | "pathPaymentStrictSendNoTrust"
-      | "pathPaymentStrictSendNotAuthorized"
-      | "pathPaymentStrictSendLineFull"
-      | "pathPaymentStrictSendNoIssuer"
-      | "pathPaymentStrictSendTooFewOffers"
-      | "pathPaymentStrictSendOfferCrossSelf"
-      | "pathPaymentStrictSendUnderDestmin";
+      | 'pathPaymentStrictSendSuccess'
+      | 'pathPaymentStrictSendMalformed'
+      | 'pathPaymentStrictSendUnderfunded'
+      | 'pathPaymentStrictSendSrcNoTrust'
+      | 'pathPaymentStrictSendSrcNotAuthorized'
+      | 'pathPaymentStrictSendNoDestination'
+      | 'pathPaymentStrictSendNoTrust'
+      | 'pathPaymentStrictSendNotAuthorized'
+      | 'pathPaymentStrictSendLineFull'
+      | 'pathPaymentStrictSendNoIssuer'
+      | 'pathPaymentStrictSendTooFewOffers'
+      | 'pathPaymentStrictSendOfferCrossSelf'
+      | 'pathPaymentStrictSendUnderDestmin';
 
     readonly value:
       | 0
@@ -1102,19 +1146,19 @@ declare namespace xdr {
 
   class ManageSellOfferResultCode {
     readonly name:
-      | "manageSellOfferSuccess"
-      | "manageSellOfferMalformed"
-      | "manageSellOfferSellNoTrust"
-      | "manageSellOfferBuyNoTrust"
-      | "manageSellOfferSellNotAuthorized"
-      | "manageSellOfferBuyNotAuthorized"
-      | "manageSellOfferLineFull"
-      | "manageSellOfferUnderfunded"
-      | "manageSellOfferCrossSelf"
-      | "manageSellOfferSellNoIssuer"
-      | "manageSellOfferBuyNoIssuer"
-      | "manageSellOfferNotFound"
-      | "manageSellOfferLowReserve";
+      | 'manageSellOfferSuccess'
+      | 'manageSellOfferMalformed'
+      | 'manageSellOfferSellNoTrust'
+      | 'manageSellOfferBuyNoTrust'
+      | 'manageSellOfferSellNotAuthorized'
+      | 'manageSellOfferBuyNotAuthorized'
+      | 'manageSellOfferLineFull'
+      | 'manageSellOfferUnderfunded'
+      | 'manageSellOfferCrossSelf'
+      | 'manageSellOfferSellNoIssuer'
+      | 'manageSellOfferBuyNoIssuer'
+      | 'manageSellOfferNotFound'
+      | 'manageSellOfferLowReserve';
 
     readonly value:
       | 0
@@ -1160,9 +1204,9 @@ declare namespace xdr {
 
   class ManageOfferEffect {
     readonly name:
-      | "manageOfferCreated"
-      | "manageOfferUpdated"
-      | "manageOfferDeleted";
+      | 'manageOfferCreated'
+      | 'manageOfferUpdated'
+      | 'manageOfferDeleted';
 
     readonly value: 0 | 1 | 2;
 
@@ -1175,19 +1219,19 @@ declare namespace xdr {
 
   class ManageBuyOfferResultCode {
     readonly name:
-      | "manageBuyOfferSuccess"
-      | "manageBuyOfferMalformed"
-      | "manageBuyOfferSellNoTrust"
-      | "manageBuyOfferBuyNoTrust"
-      | "manageBuyOfferSellNotAuthorized"
-      | "manageBuyOfferBuyNotAuthorized"
-      | "manageBuyOfferLineFull"
-      | "manageBuyOfferUnderfunded"
-      | "manageBuyOfferCrossSelf"
-      | "manageBuyOfferSellNoIssuer"
-      | "manageBuyOfferBuyNoIssuer"
-      | "manageBuyOfferNotFound"
-      | "manageBuyOfferLowReserve";
+      | 'manageBuyOfferSuccess'
+      | 'manageBuyOfferMalformed'
+      | 'manageBuyOfferSellNoTrust'
+      | 'manageBuyOfferBuyNoTrust'
+      | 'manageBuyOfferSellNotAuthorized'
+      | 'manageBuyOfferBuyNotAuthorized'
+      | 'manageBuyOfferLineFull'
+      | 'manageBuyOfferUnderfunded'
+      | 'manageBuyOfferCrossSelf'
+      | 'manageBuyOfferSellNoIssuer'
+      | 'manageBuyOfferBuyNoIssuer'
+      | 'manageBuyOfferNotFound'
+      | 'manageBuyOfferLowReserve';
 
     readonly value:
       | 0
@@ -1233,17 +1277,17 @@ declare namespace xdr {
 
   class SetOptionsResultCode {
     readonly name:
-      | "setOptionsSuccess"
-      | "setOptionsLowReserve"
-      | "setOptionsTooManySigners"
-      | "setOptionsBadFlags"
-      | "setOptionsInvalidInflation"
-      | "setOptionsCantChange"
-      | "setOptionsUnknownFlag"
-      | "setOptionsThresholdOutOfRange"
-      | "setOptionsBadSigner"
-      | "setOptionsInvalidHomeDomain"
-      | "setOptionsAuthRevocableRequired";
+      | 'setOptionsSuccess'
+      | 'setOptionsLowReserve'
+      | 'setOptionsTooManySigners'
+      | 'setOptionsBadFlags'
+      | 'setOptionsInvalidInflation'
+      | 'setOptionsCantChange'
+      | 'setOptionsUnknownFlag'
+      | 'setOptionsThresholdOutOfRange'
+      | 'setOptionsBadSigner'
+      | 'setOptionsInvalidHomeDomain'
+      | 'setOptionsAuthRevocableRequired';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10;
 
@@ -1272,15 +1316,15 @@ declare namespace xdr {
 
   class ChangeTrustResultCode {
     readonly name:
-      | "changeTrustSuccess"
-      | "changeTrustMalformed"
-      | "changeTrustNoIssuer"
-      | "changeTrustInvalidLimit"
-      | "changeTrustLowReserve"
-      | "changeTrustSelfNotAllowed"
-      | "changeTrustTrustLineMissing"
-      | "changeTrustCannotDelete"
-      | "changeTrustNotAuthMaintainLiabilities";
+      | 'changeTrustSuccess'
+      | 'changeTrustMalformed'
+      | 'changeTrustNoIssuer'
+      | 'changeTrustInvalidLimit'
+      | 'changeTrustLowReserve'
+      | 'changeTrustSelfNotAllowed'
+      | 'changeTrustTrustLineMissing'
+      | 'changeTrustCannotDelete'
+      | 'changeTrustNotAuthMaintainLiabilities';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8;
 
@@ -1305,13 +1349,13 @@ declare namespace xdr {
 
   class AllowTrustResultCode {
     readonly name:
-      | "allowTrustSuccess"
-      | "allowTrustMalformed"
-      | "allowTrustNoTrustLine"
-      | "allowTrustTrustNotRequired"
-      | "allowTrustCantRevoke"
-      | "allowTrustSelfNotAllowed"
-      | "allowTrustLowReserve";
+      | 'allowTrustSuccess'
+      | 'allowTrustMalformed'
+      | 'allowTrustNoTrustLine'
+      | 'allowTrustTrustNotRequired'
+      | 'allowTrustCantRevoke'
+      | 'allowTrustSelfNotAllowed'
+      | 'allowTrustLowReserve';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
 
@@ -1332,14 +1376,14 @@ declare namespace xdr {
 
   class AccountMergeResultCode {
     readonly name:
-      | "accountMergeSuccess"
-      | "accountMergeMalformed"
-      | "accountMergeNoAccount"
-      | "accountMergeImmutableSet"
-      | "accountMergeHasSubEntries"
-      | "accountMergeSeqnumTooFar"
-      | "accountMergeDestFull"
-      | "accountMergeIsSponsor";
+      | 'accountMergeSuccess'
+      | 'accountMergeMalformed'
+      | 'accountMergeNoAccount'
+      | 'accountMergeImmutableSet'
+      | 'accountMergeHasSubEntries'
+      | 'accountMergeSeqnumTooFar'
+      | 'accountMergeDestFull'
+      | 'accountMergeIsSponsor';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7;
 
@@ -1361,7 +1405,7 @@ declare namespace xdr {
   }
 
   class InflationResultCode {
-    readonly name: "inflationSuccess" | "inflationNotTime";
+    readonly name: 'inflationSuccess' | 'inflationNotTime';
 
     readonly value: 0 | -1;
 
@@ -1372,11 +1416,11 @@ declare namespace xdr {
 
   class ManageDataResultCode {
     readonly name:
-      | "manageDataSuccess"
-      | "manageDataNotSupportedYet"
-      | "manageDataNameNotFound"
-      | "manageDataLowReserve"
-      | "manageDataInvalidName";
+      | 'manageDataSuccess'
+      | 'manageDataNotSupportedYet'
+      | 'manageDataNameNotFound'
+      | 'manageDataLowReserve'
+      | 'manageDataInvalidName';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -1392,7 +1436,7 @@ declare namespace xdr {
   }
 
   class BumpSequenceResultCode {
-    readonly name: "bumpSequenceSuccess" | "bumpSequenceBadSeq";
+    readonly name: 'bumpSequenceSuccess' | 'bumpSequenceBadSeq';
 
     readonly value: 0 | -1;
 
@@ -1403,12 +1447,12 @@ declare namespace xdr {
 
   class CreateClaimableBalanceResultCode {
     readonly name:
-      | "createClaimableBalanceSuccess"
-      | "createClaimableBalanceMalformed"
-      | "createClaimableBalanceLowReserve"
-      | "createClaimableBalanceNoTrust"
-      | "createClaimableBalanceNotAuthorized"
-      | "createClaimableBalanceUnderfunded";
+      | 'createClaimableBalanceSuccess'
+      | 'createClaimableBalanceMalformed'
+      | 'createClaimableBalanceLowReserve'
+      | 'createClaimableBalanceNoTrust'
+      | 'createClaimableBalanceNotAuthorized'
+      | 'createClaimableBalanceUnderfunded';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -1427,12 +1471,12 @@ declare namespace xdr {
 
   class ClaimClaimableBalanceResultCode {
     readonly name:
-      | "claimClaimableBalanceSuccess"
-      | "claimClaimableBalanceDoesNotExist"
-      | "claimClaimableBalanceCannotClaim"
-      | "claimClaimableBalanceLineFull"
-      | "claimClaimableBalanceNoTrust"
-      | "claimClaimableBalanceNotAuthorized";
+      | 'claimClaimableBalanceSuccess'
+      | 'claimClaimableBalanceDoesNotExist'
+      | 'claimClaimableBalanceCannotClaim'
+      | 'claimClaimableBalanceLineFull'
+      | 'claimClaimableBalanceNoTrust'
+      | 'claimClaimableBalanceNotAuthorized';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -1451,10 +1495,10 @@ declare namespace xdr {
 
   class BeginSponsoringFutureReservesResultCode {
     readonly name:
-      | "beginSponsoringFutureReservesSuccess"
-      | "beginSponsoringFutureReservesMalformed"
-      | "beginSponsoringFutureReservesAlreadySponsored"
-      | "beginSponsoringFutureReservesRecursive";
+      | 'beginSponsoringFutureReservesSuccess'
+      | 'beginSponsoringFutureReservesMalformed'
+      | 'beginSponsoringFutureReservesAlreadySponsored'
+      | 'beginSponsoringFutureReservesRecursive';
 
     readonly value: 0 | -1 | -2 | -3;
 
@@ -1469,8 +1513,8 @@ declare namespace xdr {
 
   class EndSponsoringFutureReservesResultCode {
     readonly name:
-      | "endSponsoringFutureReservesSuccess"
-      | "endSponsoringFutureReservesNotSponsored";
+      | 'endSponsoringFutureReservesSuccess'
+      | 'endSponsoringFutureReservesNotSponsored';
 
     readonly value: 0 | -1;
 
@@ -1481,12 +1525,12 @@ declare namespace xdr {
 
   class RevokeSponsorshipResultCode {
     readonly name:
-      | "revokeSponsorshipSuccess"
-      | "revokeSponsorshipDoesNotExist"
-      | "revokeSponsorshipNotSponsor"
-      | "revokeSponsorshipLowReserve"
-      | "revokeSponsorshipOnlyTransferable"
-      | "revokeSponsorshipMalformed";
+      | 'revokeSponsorshipSuccess'
+      | 'revokeSponsorshipDoesNotExist'
+      | 'revokeSponsorshipNotSponsor'
+      | 'revokeSponsorshipLowReserve'
+      | 'revokeSponsorshipOnlyTransferable'
+      | 'revokeSponsorshipMalformed';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -1505,11 +1549,11 @@ declare namespace xdr {
 
   class ClawbackResultCode {
     readonly name:
-      | "clawbackSuccess"
-      | "clawbackMalformed"
-      | "clawbackNotClawbackEnabled"
-      | "clawbackNoTrust"
-      | "clawbackUnderfunded";
+      | 'clawbackSuccess'
+      | 'clawbackMalformed'
+      | 'clawbackNotClawbackEnabled'
+      | 'clawbackNoTrust'
+      | 'clawbackUnderfunded';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -1526,10 +1570,10 @@ declare namespace xdr {
 
   class ClawbackClaimableBalanceResultCode {
     readonly name:
-      | "clawbackClaimableBalanceSuccess"
-      | "clawbackClaimableBalanceDoesNotExist"
-      | "clawbackClaimableBalanceNotIssuer"
-      | "clawbackClaimableBalanceNotClawbackEnabled";
+      | 'clawbackClaimableBalanceSuccess'
+      | 'clawbackClaimableBalanceDoesNotExist'
+      | 'clawbackClaimableBalanceNotIssuer'
+      | 'clawbackClaimableBalanceNotClawbackEnabled';
 
     readonly value: 0 | -1 | -2 | -3;
 
@@ -1544,12 +1588,12 @@ declare namespace xdr {
 
   class SetTrustLineFlagsResultCode {
     readonly name:
-      | "setTrustLineFlagsSuccess"
-      | "setTrustLineFlagsMalformed"
-      | "setTrustLineFlagsNoTrustLine"
-      | "setTrustLineFlagsCantRevoke"
-      | "setTrustLineFlagsInvalidState"
-      | "setTrustLineFlagsLowReserve";
+      | 'setTrustLineFlagsSuccess'
+      | 'setTrustLineFlagsMalformed'
+      | 'setTrustLineFlagsNoTrustLine'
+      | 'setTrustLineFlagsCantRevoke'
+      | 'setTrustLineFlagsInvalidState'
+      | 'setTrustLineFlagsLowReserve';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -1568,14 +1612,14 @@ declare namespace xdr {
 
   class LiquidityPoolDepositResultCode {
     readonly name:
-      | "liquidityPoolDepositSuccess"
-      | "liquidityPoolDepositMalformed"
-      | "liquidityPoolDepositNoTrust"
-      | "liquidityPoolDepositNotAuthorized"
-      | "liquidityPoolDepositUnderfunded"
-      | "liquidityPoolDepositLineFull"
-      | "liquidityPoolDepositBadPrice"
-      | "liquidityPoolDepositPoolFull";
+      | 'liquidityPoolDepositSuccess'
+      | 'liquidityPoolDepositMalformed'
+      | 'liquidityPoolDepositNoTrust'
+      | 'liquidityPoolDepositNotAuthorized'
+      | 'liquidityPoolDepositUnderfunded'
+      | 'liquidityPoolDepositLineFull'
+      | 'liquidityPoolDepositBadPrice'
+      | 'liquidityPoolDepositPoolFull';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6 | -7;
 
@@ -1598,12 +1642,12 @@ declare namespace xdr {
 
   class LiquidityPoolWithdrawResultCode {
     readonly name:
-      | "liquidityPoolWithdrawSuccess"
-      | "liquidityPoolWithdrawMalformed"
-      | "liquidityPoolWithdrawNoTrust"
-      | "liquidityPoolWithdrawUnderfunded"
-      | "liquidityPoolWithdrawLineFull"
-      | "liquidityPoolWithdrawUnderMinimum";
+      | 'liquidityPoolWithdrawSuccess'
+      | 'liquidityPoolWithdrawMalformed'
+      | 'liquidityPoolWithdrawNoTrust'
+      | 'liquidityPoolWithdrawUnderfunded'
+      | 'liquidityPoolWithdrawLineFull'
+      | 'liquidityPoolWithdrawUnderMinimum';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
@@ -1622,11 +1666,11 @@ declare namespace xdr {
 
   class InvokeHostFunctionResultCode {
     readonly name:
-      | "invokeHostFunctionSuccess"
-      | "invokeHostFunctionMalformed"
-      | "invokeHostFunctionTrapped"
-      | "invokeHostFunctionResourceLimitExceeded"
-      | "invokeHostFunctionEntryExpired";
+      | 'invokeHostFunctionSuccess'
+      | 'invokeHostFunctionMalformed'
+      | 'invokeHostFunctionTrapped'
+      | 'invokeHostFunctionResourceLimitExceeded'
+      | 'invokeHostFunctionEntryExpired';
 
     readonly value: 0 | -1 | -2 | -3 | -4;
 
@@ -1643,9 +1687,9 @@ declare namespace xdr {
 
   class BumpFootprintExpirationResultCode {
     readonly name:
-      | "bumpFootprintExpirationSuccess"
-      | "bumpFootprintExpirationMalformed"
-      | "bumpFootprintExpirationResourceLimitExceeded";
+      | 'bumpFootprintExpirationSuccess'
+      | 'bumpFootprintExpirationMalformed'
+      | 'bumpFootprintExpirationResourceLimitExceeded';
 
     readonly value: 0 | -1 | -2;
 
@@ -1658,9 +1702,9 @@ declare namespace xdr {
 
   class RestoreFootprintResultCode {
     readonly name:
-      | "restoreFootprintSuccess"
-      | "restoreFootprintMalformed"
-      | "restoreFootprintResourceLimitExceeded";
+      | 'restoreFootprintSuccess'
+      | 'restoreFootprintMalformed'
+      | 'restoreFootprintResourceLimitExceeded';
 
     readonly value: 0 | -1 | -2;
 
@@ -1673,13 +1717,13 @@ declare namespace xdr {
 
   class OperationResultCode {
     readonly name:
-      | "opInner"
-      | "opBadAuth"
-      | "opNoAccount"
-      | "opNotSupported"
-      | "opTooManySubentries"
-      | "opExceededWorkLimit"
-      | "opTooManySponsoring";
+      | 'opInner'
+      | 'opBadAuth'
+      | 'opNoAccount'
+      | 'opNotSupported'
+      | 'opTooManySubentries'
+      | 'opExceededWorkLimit'
+      | 'opTooManySponsoring';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5 | -6;
 
@@ -1700,25 +1744,25 @@ declare namespace xdr {
 
   class TransactionResultCode {
     readonly name:
-      | "txFeeBumpInnerSuccess"
-      | "txSuccess"
-      | "txFailed"
-      | "txTooEarly"
-      | "txTooLate"
-      | "txMissingOperation"
-      | "txBadSeq"
-      | "txBadAuth"
-      | "txInsufficientBalance"
-      | "txNoAccount"
-      | "txInsufficientFee"
-      | "txBadAuthExtra"
-      | "txInternalError"
-      | "txNotSupported"
-      | "txFeeBumpInnerFailed"
-      | "txBadSponsorship"
-      | "txBadMinSeqAgeOrGap"
-      | "txMalformed"
-      | "txSorobanResourceLimitExceeded";
+      | 'txFeeBumpInnerSuccess'
+      | 'txSuccess'
+      | 'txFailed'
+      | 'txTooEarly'
+      | 'txTooLate'
+      | 'txMissingOperation'
+      | 'txBadSeq'
+      | 'txBadAuth'
+      | 'txInsufficientBalance'
+      | 'txNoAccount'
+      | 'txInsufficientFee'
+      | 'txBadAuthExtra'
+      | 'txInternalError'
+      | 'txNotSupported'
+      | 'txFeeBumpInnerFailed'
+      | 'txBadSponsorship'
+      | 'txBadMinSeqAgeOrGap'
+      | 'txMalformed'
+      | 'txSorobanResourceLimitExceeded';
 
     readonly value:
       | 1
@@ -1782,11 +1826,11 @@ declare namespace xdr {
 
   class CryptoKeyType {
     readonly name:
-      | "keyTypeEd25519"
-      | "keyTypePreAuthTx"
-      | "keyTypeHashX"
-      | "keyTypeEd25519SignedPayload"
-      | "keyTypeMuxedEd25519";
+      | 'keyTypeEd25519'
+      | 'keyTypePreAuthTx'
+      | 'keyTypeHashX'
+      | 'keyTypeEd25519SignedPayload'
+      | 'keyTypeMuxedEd25519';
 
     readonly value: 0 | 1 | 2 | 3 | 256;
 
@@ -1802,7 +1846,7 @@ declare namespace xdr {
   }
 
   class PublicKeyType {
-    readonly name: "publicKeyTypeEd25519";
+    readonly name: 'publicKeyTypeEd25519';
 
     readonly value: 0;
 
@@ -1811,10 +1855,10 @@ declare namespace xdr {
 
   class SignerKeyType {
     readonly name:
-      | "signerKeyTypeEd25519"
-      | "signerKeyTypePreAuthTx"
-      | "signerKeyTypeHashX"
-      | "signerKeyTypeEd25519SignedPayload";
+      | 'signerKeyTypeEd25519'
+      | 'signerKeyTypePreAuthTx'
+      | 'signerKeyTypeHashX'
+      | 'signerKeyTypeEd25519SignedPayload';
 
     readonly value: 0 | 1 | 2 | 3;
 
@@ -1829,28 +1873,28 @@ declare namespace xdr {
 
   class ScValType {
     readonly name:
-      | "scvBool"
-      | "scvVoid"
-      | "scvError"
-      | "scvU32"
-      | "scvI32"
-      | "scvU64"
-      | "scvI64"
-      | "scvTimepoint"
-      | "scvDuration"
-      | "scvU128"
-      | "scvI128"
-      | "scvU256"
-      | "scvI256"
-      | "scvBytes"
-      | "scvString"
-      | "scvSymbol"
-      | "scvVec"
-      | "scvMap"
-      | "scvAddress"
-      | "scvContractInstance"
-      | "scvLedgerKeyContractInstance"
-      | "scvLedgerKeyNonce";
+      | 'scvBool'
+      | 'scvVoid'
+      | 'scvError'
+      | 'scvU32'
+      | 'scvI32'
+      | 'scvU64'
+      | 'scvI64'
+      | 'scvTimepoint'
+      | 'scvDuration'
+      | 'scvU128'
+      | 'scvI128'
+      | 'scvU256'
+      | 'scvI256'
+      | 'scvBytes'
+      | 'scvString'
+      | 'scvSymbol'
+      | 'scvVec'
+      | 'scvMap'
+      | 'scvAddress'
+      | 'scvContractInstance'
+      | 'scvLedgerKeyContractInstance'
+      | 'scvLedgerKeyNonce';
 
     readonly value:
       | 0
@@ -1923,16 +1967,16 @@ declare namespace xdr {
 
   class ScErrorType {
     readonly name:
-      | "sceContract"
-      | "sceWasmVm"
-      | "sceContext"
-      | "sceStorage"
-      | "sceObject"
-      | "sceCrypto"
-      | "sceEvents"
-      | "sceBudget"
-      | "sceValue"
-      | "sceAuth";
+      | 'sceContract'
+      | 'sceWasmVm'
+      | 'sceContext'
+      | 'sceStorage'
+      | 'sceObject'
+      | 'sceCrypto'
+      | 'sceEvents'
+      | 'sceBudget'
+      | 'sceValue'
+      | 'sceAuth';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -1959,16 +2003,16 @@ declare namespace xdr {
 
   class ScErrorCode {
     readonly name:
-      | "scecArithDomain"
-      | "scecIndexBounds"
-      | "scecInvalidInput"
-      | "scecMissingValue"
-      | "scecExistingValue"
-      | "scecExceededLimit"
-      | "scecInvalidAction"
-      | "scecInternalError"
-      | "scecUnexpectedType"
-      | "scecUnexpectedSize";
+      | 'scecArithDomain'
+      | 'scecIndexBounds'
+      | 'scecInvalidInput'
+      | 'scecMissingValue'
+      | 'scecExistingValue'
+      | 'scecExceededLimit'
+      | 'scecInvalidAction'
+      | 'scecInternalError'
+      | 'scecUnexpectedType'
+      | 'scecUnexpectedSize';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -1994,7 +2038,7 @@ declare namespace xdr {
   }
 
   class ContractExecutableType {
-    readonly name: "contractExecutableWasm" | "contractExecutableToken";
+    readonly name: 'contractExecutableWasm' | 'contractExecutableToken';
 
     readonly value: 0 | 1;
 
@@ -2004,7 +2048,7 @@ declare namespace xdr {
   }
 
   class ScAddressType {
-    readonly name: "scAddressTypeAccount" | "scAddressTypeContract";
+    readonly name: 'scAddressTypeAccount' | 'scAddressTypeContract';
 
     readonly value: 0 | 1;
 
@@ -2014,7 +2058,7 @@ declare namespace xdr {
   }
 
   class ScEnvMetaKind {
-    readonly name: "scEnvMetaKindInterfaceVersion";
+    readonly name: 'scEnvMetaKindInterfaceVersion';
 
     readonly value: 0;
 
@@ -2022,7 +2066,7 @@ declare namespace xdr {
   }
 
   class ScMetaKind {
-    readonly name: "scMetaV0";
+    readonly name: 'scMetaV0';
 
     readonly value: 0;
 
@@ -2031,32 +2075,32 @@ declare namespace xdr {
 
   class ScSpecType {
     readonly name:
-      | "scSpecTypeVal"
-      | "scSpecTypeBool"
-      | "scSpecTypeVoid"
-      | "scSpecTypeError"
-      | "scSpecTypeU32"
-      | "scSpecTypeI32"
-      | "scSpecTypeU64"
-      | "scSpecTypeI64"
-      | "scSpecTypeTimepoint"
-      | "scSpecTypeDuration"
-      | "scSpecTypeU128"
-      | "scSpecTypeI128"
-      | "scSpecTypeU256"
-      | "scSpecTypeI256"
-      | "scSpecTypeBytes"
-      | "scSpecTypeString"
-      | "scSpecTypeSymbol"
-      | "scSpecTypeAddress"
-      | "scSpecTypeOption"
-      | "scSpecTypeResult"
-      | "scSpecTypeVec"
-      | "scSpecTypeSet"
-      | "scSpecTypeMap"
-      | "scSpecTypeTuple"
-      | "scSpecTypeBytesN"
-      | "scSpecTypeUdt";
+      | 'scSpecTypeVal'
+      | 'scSpecTypeBool'
+      | 'scSpecTypeVoid'
+      | 'scSpecTypeError'
+      | 'scSpecTypeU32'
+      | 'scSpecTypeI32'
+      | 'scSpecTypeU64'
+      | 'scSpecTypeI64'
+      | 'scSpecTypeTimepoint'
+      | 'scSpecTypeDuration'
+      | 'scSpecTypeU128'
+      | 'scSpecTypeI128'
+      | 'scSpecTypeU256'
+      | 'scSpecTypeI256'
+      | 'scSpecTypeBytes'
+      | 'scSpecTypeString'
+      | 'scSpecTypeSymbol'
+      | 'scSpecTypeAddress'
+      | 'scSpecTypeOption'
+      | 'scSpecTypeResult'
+      | 'scSpecTypeVec'
+      | 'scSpecTypeSet'
+      | 'scSpecTypeMap'
+      | 'scSpecTypeTuple'
+      | 'scSpecTypeBytesN'
+      | 'scSpecTypeUdt';
 
     readonly value:
       | 0
@@ -2140,7 +2184,7 @@ declare namespace xdr {
   }
 
   class ScSpecUdtUnionCaseV0Kind {
-    readonly name: "scSpecUdtUnionCaseVoidV0" | "scSpecUdtUnionCaseTupleV0";
+    readonly name: 'scSpecUdtUnionCaseVoidV0' | 'scSpecUdtUnionCaseTupleV0';
 
     readonly value: 0 | 1;
 
@@ -2151,11 +2195,11 @@ declare namespace xdr {
 
   class ScSpecEntryKind {
     readonly name:
-      | "scSpecEntryFunctionV0"
-      | "scSpecEntryUdtStructV0"
-      | "scSpecEntryUdtUnionV0"
-      | "scSpecEntryUdtEnumV0"
-      | "scSpecEntryUdtErrorEnumV0";
+      | 'scSpecEntryFunctionV0'
+      | 'scSpecEntryUdtStructV0'
+      | 'scSpecEntryUdtUnionV0'
+      | 'scSpecEntryUdtEnumV0'
+      | 'scSpecEntryUdtErrorEnumV0';
 
     readonly value: 0 | 1 | 2 | 3 | 4;
 
@@ -2172,37 +2216,37 @@ declare namespace xdr {
 
   class ContractCostType {
     readonly name:
-      | "wasmInsnExec"
-      | "wasmMemAlloc"
-      | "hostMemAlloc"
-      | "hostMemCpy"
-      | "hostMemCmp"
-      | "invokeHostFunction"
-      | "visitObject"
-      | "valXdrConv"
-      | "valSer"
-      | "valDeser"
-      | "computeSha256Hash"
-      | "computeEd25519PubKey"
-      | "mapEntry"
-      | "vecEntry"
-      | "guardFrame"
-      | "verifyEd25519Sig"
-      | "vmMemRead"
-      | "vmMemWrite"
-      | "vmInstantiation"
-      | "vmCachedInstantiation"
-      | "invokeVmFunction"
-      | "chargeBudget"
-      | "computeKeccak256Hash"
-      | "computeEcdsaSecp256k1Key"
-      | "computeEcdsaSecp256k1Sig"
-      | "recoverEcdsaSecp256k1Key"
-      | "int256AddSub"
-      | "int256Mul"
-      | "int256Div"
-      | "int256Pow"
-      | "int256Shift";
+      | 'wasmInsnExec'
+      | 'wasmMemAlloc'
+      | 'hostMemAlloc'
+      | 'hostMemCpy'
+      | 'hostMemCmp'
+      | 'invokeHostFunction'
+      | 'visitObject'
+      | 'valXdrConv'
+      | 'valSer'
+      | 'valDeser'
+      | 'computeSha256Hash'
+      | 'computeEd25519PubKey'
+      | 'mapEntry'
+      | 'vecEntry'
+      | 'guardFrame'
+      | 'verifyEd25519Sig'
+      | 'vmMemRead'
+      | 'vmMemWrite'
+      | 'vmInstantiation'
+      | 'vmCachedInstantiation'
+      | 'invokeVmFunction'
+      | 'chargeBudget'
+      | 'computeKeccak256Hash'
+      | 'computeEcdsaSecp256k1Key'
+      | 'computeEcdsaSecp256k1Sig'
+      | 'recoverEcdsaSecp256k1Key'
+      | 'int256AddSub'
+      | 'int256Mul'
+      | 'int256Div'
+      | 'int256Pow'
+      | 'int256Shift';
 
     readonly value:
       | 0
@@ -2302,19 +2346,19 @@ declare namespace xdr {
 
   class ConfigSettingId {
     readonly name:
-      | "configSettingContractMaxSizeBytes"
-      | "configSettingContractComputeV0"
-      | "configSettingContractLedgerCostV0"
-      | "configSettingContractHistoricalDataV0"
-      | "configSettingContractEventsV0"
-      | "configSettingContractBandwidthV0"
-      | "configSettingContractCostParamsCpuInstructions"
-      | "configSettingContractCostParamsMemoryBytes"
-      | "configSettingContractDataKeySizeBytes"
-      | "configSettingContractDataEntrySizeBytes"
-      | "configSettingStateExpiration"
-      | "configSettingContractExecutionLanes"
-      | "configSettingBucketlistSizeWindow";
+      | 'configSettingContractMaxSizeBytes'
+      | 'configSettingContractComputeV0'
+      | 'configSettingContractLedgerCostV0'
+      | 'configSettingContractHistoricalDataV0'
+      | 'configSettingContractEventsV0'
+      | 'configSettingContractBandwidthV0'
+      | 'configSettingContractCostParamsCpuInstructions'
+      | 'configSettingContractCostParamsMemoryBytes'
+      | 'configSettingContractDataKeySizeBytes'
+      | 'configSettingContractDataEntrySizeBytes'
+      | 'configSettingStateExpiration'
+      | 'configSettingContractExecutionLanes'
+      | 'configSettingBucketlistSizeWindow';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -2420,9 +2464,9 @@ declare namespace xdr {
 
     value(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpBallot;
 
@@ -2432,13 +2476,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpBallot): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpBallot;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpBallot;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpBallot;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpBallot;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpNomination {
@@ -2454,9 +2498,9 @@ declare namespace xdr {
 
     accepted(value?: Buffer[]): Buffer[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpNomination;
 
@@ -2466,13 +2510,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpNomination): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpNomination;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpNomination;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpNomination;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpNomination;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpStatementPrepare {
@@ -2497,9 +2541,9 @@ declare namespace xdr {
 
     nH(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpStatementPrepare;
 
@@ -2509,16 +2553,16 @@ declare namespace xdr {
 
     static toXDR(value: ScpStatementPrepare): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpStatementPrepare;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementPrepare;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScpStatementPrepare;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpStatementConfirm {
@@ -2540,9 +2584,9 @@ declare namespace xdr {
 
     quorumSetHash(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpStatementConfirm;
 
@@ -2552,16 +2596,16 @@ declare namespace xdr {
 
     static toXDR(value: ScpStatementConfirm): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpStatementConfirm;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementConfirm;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScpStatementConfirm;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpStatementExternalize {
@@ -2577,9 +2621,9 @@ declare namespace xdr {
 
     commitQuorumSetHash(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpStatementExternalize;
 
@@ -2589,16 +2633,16 @@ declare namespace xdr {
 
     static toXDR(value: ScpStatementExternalize): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpStatementExternalize;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementExternalize;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScpStatementExternalize;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpStatement {
@@ -2614,9 +2658,9 @@ declare namespace xdr {
 
     pledges(value?: ScpStatementPledges): ScpStatementPledges;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpStatement;
 
@@ -2626,13 +2670,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpStatement): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpStatement;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatement;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpStatement;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpStatement;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpEnvelope {
@@ -2642,9 +2686,9 @@ declare namespace xdr {
 
     signature(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpEnvelope;
 
@@ -2654,13 +2698,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpEnvelope): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpEnvelope;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpEnvelope;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpEnvelope;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpEnvelope;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpQuorumSet {
@@ -2676,9 +2720,9 @@ declare namespace xdr {
 
     innerSets(value?: ScpQuorumSet[]): ScpQuorumSet[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpQuorumSet;
 
@@ -2688,13 +2732,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpQuorumSet): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpQuorumSet;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpQuorumSet;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpQuorumSet;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpQuorumSet;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AlphaNum4 {
@@ -2704,9 +2748,9 @@ declare namespace xdr {
 
     issuer(value?: AccountId): AccountId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AlphaNum4;
 
@@ -2716,13 +2760,13 @@ declare namespace xdr {
 
     static toXDR(value: AlphaNum4): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AlphaNum4;
+    static fromXDR(input: Buffer, format?: 'raw'): AlphaNum4;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AlphaNum4;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AlphaNum4;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AlphaNum12 {
@@ -2732,9 +2776,9 @@ declare namespace xdr {
 
     issuer(value?: AccountId): AccountId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AlphaNum12;
 
@@ -2744,13 +2788,13 @@ declare namespace xdr {
 
     static toXDR(value: AlphaNum12): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AlphaNum12;
+    static fromXDR(input: Buffer, format?: 'raw'): AlphaNum12;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AlphaNum12;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AlphaNum12;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Price {
@@ -2760,9 +2804,9 @@ declare namespace xdr {
 
     d(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Price;
 
@@ -2772,13 +2816,13 @@ declare namespace xdr {
 
     static toXDR(value: Price): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Price;
+    static fromXDR(input: Buffer, format?: 'raw'): Price;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Price;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Price;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Liabilities {
@@ -2788,9 +2832,9 @@ declare namespace xdr {
 
     selling(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Liabilities;
 
@@ -2800,13 +2844,13 @@ declare namespace xdr {
 
     static toXDR(value: Liabilities): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Liabilities;
+    static fromXDR(input: Buffer, format?: 'raw'): Liabilities;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Liabilities;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Liabilities;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Signer {
@@ -2816,9 +2860,9 @@ declare namespace xdr {
 
     weight(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Signer;
 
@@ -2828,13 +2872,13 @@ declare namespace xdr {
 
     static toXDR(value: Signer): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Signer;
+    static fromXDR(input: Buffer, format?: 'raw'): Signer;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Signer;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Signer;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntryExtensionV3 {
@@ -2850,9 +2894,9 @@ declare namespace xdr {
 
     seqTime(value?: TimePoint): TimePoint;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntryExtensionV3;
 
@@ -2862,16 +2906,16 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntryExtensionV3): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntryExtensionV3;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV3;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV3;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntryExtensionV2 {
@@ -2892,9 +2936,9 @@ declare namespace xdr {
 
     ext(value?: AccountEntryExtensionV2Ext): AccountEntryExtensionV2Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntryExtensionV2;
 
@@ -2904,16 +2948,16 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntryExtensionV2): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntryExtensionV2;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV2;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV2;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntryExtensionV1 {
@@ -2926,9 +2970,9 @@ declare namespace xdr {
 
     ext(value?: AccountEntryExtensionV1Ext): AccountEntryExtensionV1Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntryExtensionV1;
 
@@ -2938,16 +2982,16 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntryExtensionV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntryExtensionV1;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV1;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntry {
@@ -2984,9 +3028,9 @@ declare namespace xdr {
 
     ext(value?: AccountEntryExt): AccountEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntry;
 
@@ -2996,13 +3040,13 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AccountEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineEntryExtensionV2 {
@@ -3015,9 +3059,9 @@ declare namespace xdr {
 
     ext(value?: TrustLineEntryExtensionV2Ext): TrustLineEntryExtensionV2Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineEntryExtensionV2;
 
@@ -3027,16 +3071,16 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineEntryExtensionV2): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineEntryExtensionV2;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryExtensionV2;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TrustLineEntryExtensionV2;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineEntryV1 {
@@ -3049,9 +3093,9 @@ declare namespace xdr {
 
     ext(value?: TrustLineEntryV1Ext): TrustLineEntryV1Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineEntryV1;
 
@@ -3061,13 +3105,13 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineEntryV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineEntryV1;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryV1;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TrustLineEntryV1;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntryV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineEntry {
@@ -3092,9 +3136,9 @@ declare namespace xdr {
 
     ext(value?: TrustLineEntryExt): TrustLineEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineEntry;
 
@@ -3104,13 +3148,13 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TrustLineEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class OfferEntry {
@@ -3141,9 +3185,9 @@ declare namespace xdr {
 
     ext(value?: OfferEntryExt): OfferEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): OfferEntry;
 
@@ -3153,13 +3197,13 @@ declare namespace xdr {
 
     static toXDR(value: OfferEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): OfferEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): OfferEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): OfferEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): OfferEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class DataEntry {
@@ -3178,9 +3222,9 @@ declare namespace xdr {
 
     ext(value?: DataEntryExt): DataEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): DataEntry;
 
@@ -3190,13 +3234,13 @@ declare namespace xdr {
 
     static toXDR(value: DataEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): DataEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): DataEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): DataEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): DataEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimantV0 {
@@ -3209,9 +3253,9 @@ declare namespace xdr {
 
     predicate(value?: ClaimPredicate): ClaimPredicate;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimantV0;
 
@@ -3221,13 +3265,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimantV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimantV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimantV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimantV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimantV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimableBalanceEntryExtensionV1 {
@@ -3242,9 +3286,9 @@ declare namespace xdr {
 
     flags(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimableBalanceEntryExtensionV1;
 
@@ -3256,17 +3300,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ClaimableBalanceEntryExtensionV1;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntryExtensionV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimableBalanceEntry {
@@ -3288,9 +3332,9 @@ declare namespace xdr {
 
     ext(value?: ClaimableBalanceEntryExt): ClaimableBalanceEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimableBalanceEntry;
 
@@ -3300,16 +3344,16 @@ declare namespace xdr {
 
     static toXDR(value: ClaimableBalanceEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimableBalanceEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntry;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolConstantProductParameters {
@@ -3321,9 +3365,9 @@ declare namespace xdr {
 
     fee(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolConstantProductParameters;
 
@@ -3338,17 +3382,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): LiquidityPoolConstantProductParameters;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolConstantProductParameters;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolEntryConstantProduct {
@@ -3372,9 +3416,9 @@ declare namespace xdr {
 
     poolSharesTrustLineCount(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolEntryConstantProduct;
 
@@ -3386,17 +3430,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): LiquidityPoolEntryConstantProduct;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolEntryConstantProduct;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolEntry {
@@ -3409,9 +3453,9 @@ declare namespace xdr {
 
     body(value?: LiquidityPoolEntryBody): LiquidityPoolEntryBody;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolEntry;
 
@@ -3421,13 +3465,13 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LiquidityPoolEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LiquidityPoolEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractDataEntryData {
@@ -3437,9 +3481,9 @@ declare namespace xdr {
 
     val(value?: ScVal): ScVal;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractDataEntryData;
 
@@ -3449,16 +3493,16 @@ declare namespace xdr {
 
     static toXDR(value: ContractDataEntryData): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractDataEntryData;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractDataEntryData;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ContractDataEntryData;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractDataEntry {
@@ -3480,9 +3524,9 @@ declare namespace xdr {
 
     expirationLedgerSeq(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractDataEntry;
 
@@ -3492,13 +3536,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractDataEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractDataEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractDataEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractDataEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractDataEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractCodeEntry {
@@ -3517,9 +3561,9 @@ declare namespace xdr {
 
     expirationLedgerSeq(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractCodeEntry;
 
@@ -3529,13 +3573,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractCodeEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractCodeEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractCodeEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractCodeEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractCodeEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerEntryExtensionV1 {
@@ -3548,9 +3592,9 @@ declare namespace xdr {
 
     ext(value?: LedgerEntryExtensionV1Ext): LedgerEntryExtensionV1Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerEntryExtensionV1;
 
@@ -3560,16 +3604,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerEntryExtensionV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerEntryExtensionV1;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExtensionV1;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerEntryExtensionV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerEntry {
@@ -3585,9 +3629,9 @@ declare namespace xdr {
 
     ext(value?: LedgerEntryExt): LedgerEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerEntry;
 
@@ -3597,13 +3641,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyAccount {
@@ -3611,9 +3655,9 @@ declare namespace xdr {
 
     accountId(value?: AccountId): AccountId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyAccount;
 
@@ -3623,13 +3667,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyAccount): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyAccount;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyAccount;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerKeyAccount;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyAccount;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyTrustLine {
@@ -3639,9 +3683,9 @@ declare namespace xdr {
 
     asset(value?: TrustLineAsset): TrustLineAsset;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyTrustLine;
 
@@ -3651,13 +3695,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyTrustLine): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyTrustLine;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyTrustLine;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerKeyTrustLine;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyTrustLine;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyOffer {
@@ -3667,9 +3711,9 @@ declare namespace xdr {
 
     offerId(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyOffer;
 
@@ -3679,13 +3723,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyOffer): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyOffer;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyOffer;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerKeyOffer;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyOffer;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyData {
@@ -3698,9 +3742,9 @@ declare namespace xdr {
 
     dataName(value?: string | Buffer): string | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyData;
 
@@ -3710,13 +3754,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyData): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyData;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyData;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerKeyData;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyData;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyClaimableBalance {
@@ -3724,9 +3768,9 @@ declare namespace xdr {
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyClaimableBalance;
 
@@ -3736,16 +3780,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyClaimableBalance): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyClaimableBalance;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyClaimableBalance;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerKeyClaimableBalance;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyLiquidityPool {
@@ -3753,9 +3797,9 @@ declare namespace xdr {
 
     liquidityPoolId(value?: PoolId): PoolId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyLiquidityPool;
 
@@ -3765,16 +3809,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyLiquidityPool): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyLiquidityPool;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyLiquidityPool;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerKeyLiquidityPool;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyContractData {
@@ -3793,9 +3837,9 @@ declare namespace xdr {
 
     bodyType(value?: ContractEntryBodyType): ContractEntryBodyType;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyContractData;
 
@@ -3805,16 +3849,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyContractData): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyContractData;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyContractData;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerKeyContractData;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyContractCode {
@@ -3824,9 +3868,9 @@ declare namespace xdr {
 
     bodyType(value?: ContractEntryBodyType): ContractEntryBodyType;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyContractCode;
 
@@ -3836,16 +3880,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyContractCode): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyContractCode;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyContractCode;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerKeyContractCode;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKeyConfigSetting {
@@ -3853,9 +3897,9 @@ declare namespace xdr {
 
     configSettingId(value?: ConfigSettingId): ConfigSettingId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKeyConfigSetting;
 
@@ -3865,16 +3909,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKeyConfigSetting): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKeyConfigSetting;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyConfigSetting;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerKeyConfigSetting;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerCloseValueSignature {
@@ -3884,9 +3928,9 @@ declare namespace xdr {
 
     signature(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerCloseValueSignature;
 
@@ -3896,16 +3940,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerCloseValueSignature): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerCloseValueSignature;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseValueSignature;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerCloseValueSignature;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class StellarValue {
@@ -3924,9 +3968,9 @@ declare namespace xdr {
 
     ext(value?: StellarValueExt): StellarValueExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): StellarValue;
 
@@ -3936,13 +3980,13 @@ declare namespace xdr {
 
     static toXDR(value: StellarValue): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): StellarValue;
+    static fromXDR(input: Buffer, format?: 'raw'): StellarValue;
 
-    static fromXDR(input: string, format: "hex" | "base64"): StellarValue;
+    static fromXDR(input: string, format: 'hex' | 'base64'): StellarValue;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerHeaderExtensionV1 {
@@ -3952,9 +3996,9 @@ declare namespace xdr {
 
     ext(value?: LedgerHeaderExtensionV1Ext): LedgerHeaderExtensionV1Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerHeaderExtensionV1;
 
@@ -3964,16 +4008,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerHeaderExtensionV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerHeaderExtensionV1;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderExtensionV1;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerHeaderExtensionV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerHeader {
@@ -4025,9 +4069,9 @@ declare namespace xdr {
 
     ext(value?: LedgerHeaderExt): LedgerHeaderExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerHeader;
 
@@ -4037,13 +4081,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerHeader): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerHeader;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeader;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerHeader;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeader;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigUpgradeSetKey {
@@ -4053,9 +4097,9 @@ declare namespace xdr {
 
     contentHash(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigUpgradeSetKey;
 
@@ -4065,16 +4109,16 @@ declare namespace xdr {
 
     static toXDR(value: ConfigUpgradeSetKey): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ConfigUpgradeSetKey;
+    static fromXDR(input: Buffer, format?: 'raw'): ConfigUpgradeSetKey;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigUpgradeSetKey;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigUpgradeSet {
@@ -4082,9 +4126,9 @@ declare namespace xdr {
 
     updatedEntry(value?: ConfigSettingEntry[]): ConfigSettingEntry[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigUpgradeSet;
 
@@ -4094,13 +4138,13 @@ declare namespace xdr {
 
     static toXDR(value: ConfigUpgradeSet): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ConfigUpgradeSet;
+    static fromXDR(input: Buffer, format?: 'raw'): ConfigUpgradeSet;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ConfigUpgradeSet;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ConfigUpgradeSet;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BucketMetadata {
@@ -4110,9 +4154,9 @@ declare namespace xdr {
 
     ext(value?: BucketMetadataExt): BucketMetadataExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BucketMetadata;
 
@@ -4122,13 +4166,13 @@ declare namespace xdr {
 
     static toXDR(value: BucketMetadata): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): BucketMetadata;
+    static fromXDR(input: Buffer, format?: 'raw'): BucketMetadata;
 
-    static fromXDR(input: string, format: "hex" | "base64"): BucketMetadata;
+    static fromXDR(input: string, format: 'hex' | 'base64'): BucketMetadata;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TxSetComponentTxsMaybeDiscountedFee {
@@ -4141,9 +4185,9 @@ declare namespace xdr {
 
     txes(value?: TransactionEnvelope[]): TransactionEnvelope[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TxSetComponentTxsMaybeDiscountedFee;
 
@@ -4155,17 +4199,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): TxSetComponentTxsMaybeDiscountedFee;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TxSetComponentTxsMaybeDiscountedFee;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionSet {
@@ -4178,9 +4222,9 @@ declare namespace xdr {
 
     txes(value?: TransactionEnvelope[]): TransactionEnvelope[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionSet;
 
@@ -4190,13 +4234,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionSet): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionSet;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionSet;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionSet;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionSet;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionSetV1 {
@@ -4209,9 +4253,9 @@ declare namespace xdr {
 
     phases(value?: TransactionPhase[]): TransactionPhase[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionSetV1;
 
@@ -4221,13 +4265,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionSetV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionSetV1;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionSetV1;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionSetV1;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionSetV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionResultPair {
@@ -4240,9 +4284,9 @@ declare namespace xdr {
 
     result(value?: TransactionResult): TransactionResult;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionResultPair;
 
@@ -4252,16 +4296,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionResultPair): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionResultPair;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultPair;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionResultPair;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionResultSet {
@@ -4269,9 +4313,9 @@ declare namespace xdr {
 
     results(value?: TransactionResultPair[]): TransactionResultPair[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionResultSet;
 
@@ -4281,16 +4325,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionResultSet): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionResultSet;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultSet;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionResultSet;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionHistoryEntry {
@@ -4306,9 +4350,9 @@ declare namespace xdr {
 
     ext(value?: TransactionHistoryEntryExt): TransactionHistoryEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionHistoryEntry;
 
@@ -4318,16 +4362,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionHistoryEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionHistoryEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryEntry;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionHistoryEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionHistoryResultEntry {
@@ -4345,9 +4389,9 @@ declare namespace xdr {
       value?: TransactionHistoryResultEntryExt,
     ): TransactionHistoryResultEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionHistoryResultEntry;
 
@@ -4359,17 +4403,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): TransactionHistoryResultEntry;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionHistoryResultEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerHeaderHistoryEntry {
@@ -4385,9 +4429,9 @@ declare namespace xdr {
 
     ext(value?: LedgerHeaderHistoryEntryExt): LedgerHeaderHistoryEntryExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerHeaderHistoryEntry;
 
@@ -4397,16 +4441,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerHeaderHistoryEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerHeaderHistoryEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderHistoryEntry;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerHeaderHistoryEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerScpMessages {
@@ -4416,9 +4460,9 @@ declare namespace xdr {
 
     messages(value?: ScpEnvelope[]): ScpEnvelope[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerScpMessages;
 
@@ -4428,13 +4472,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerScpMessages): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerScpMessages;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerScpMessages;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerScpMessages;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerScpMessages;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpHistoryEntryV0 {
@@ -4447,9 +4491,9 @@ declare namespace xdr {
 
     ledgerMessages(value?: LedgerScpMessages): LedgerScpMessages;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpHistoryEntryV0;
 
@@ -4459,13 +4503,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpHistoryEntryV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpHistoryEntryV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpHistoryEntryV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpHistoryEntryV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpHistoryEntryV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class OperationMeta {
@@ -4473,9 +4517,9 @@ declare namespace xdr {
 
     changes(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): OperationMeta;
 
@@ -4485,13 +4529,13 @@ declare namespace xdr {
 
     static toXDR(value: OperationMeta): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): OperationMeta;
+    static fromXDR(input: Buffer, format?: 'raw'): OperationMeta;
 
-    static fromXDR(input: string, format: "hex" | "base64"): OperationMeta;
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationMeta;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionMetaV1 {
@@ -4504,9 +4548,9 @@ declare namespace xdr {
 
     operations(value?: OperationMeta[]): OperationMeta[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionMetaV1;
 
@@ -4516,13 +4560,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionMetaV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionMetaV1;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV1;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionMetaV1;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionMetaV2 {
@@ -4538,9 +4582,9 @@ declare namespace xdr {
 
     txChangesAfter(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionMetaV2;
 
@@ -4550,13 +4594,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionMetaV2): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionMetaV2;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV2;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionMetaV2;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV2;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractEventV0 {
@@ -4566,9 +4610,9 @@ declare namespace xdr {
 
     data(value?: ScVal): ScVal;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractEventV0;
 
@@ -4578,13 +4622,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractEventV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractEventV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractEventV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractEventV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractEventV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractEvent {
@@ -4603,9 +4647,9 @@ declare namespace xdr {
 
     body(value?: ContractEventBody): ContractEventBody;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractEvent;
 
@@ -4615,13 +4659,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractEvent): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractEvent;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractEvent;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractEvent;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractEvent;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class DiagnosticEvent {
@@ -4634,9 +4678,9 @@ declare namespace xdr {
 
     event(value?: ContractEvent): ContractEvent;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): DiagnosticEvent;
 
@@ -4646,13 +4690,13 @@ declare namespace xdr {
 
     static toXDR(value: DiagnosticEvent): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): DiagnosticEvent;
+    static fromXDR(input: Buffer, format?: 'raw'): DiagnosticEvent;
 
-    static fromXDR(input: string, format: "hex" | "base64"): DiagnosticEvent;
+    static fromXDR(input: string, format: 'hex' | 'base64'): DiagnosticEvent;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanTransactionMeta {
@@ -4671,9 +4715,9 @@ declare namespace xdr {
 
     diagnosticEvents(value?: DiagnosticEvent[]): DiagnosticEvent[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanTransactionMeta;
 
@@ -4683,16 +4727,16 @@ declare namespace xdr {
 
     static toXDR(value: SorobanTransactionMeta): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanTransactionMeta;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanTransactionMeta;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SorobanTransactionMeta;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionMetaV3 {
@@ -4716,9 +4760,9 @@ declare namespace xdr {
       value?: null | SorobanTransactionMeta,
     ): null | SorobanTransactionMeta;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionMetaV3;
 
@@ -4728,13 +4772,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionMetaV3): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionMetaV3;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionMetaV3;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionMetaV3;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMetaV3;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InvokeHostFunctionSuccessPreImage {
@@ -4744,9 +4788,9 @@ declare namespace xdr {
 
     events(value?: ContractEvent[]): ContractEvent[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InvokeHostFunctionSuccessPreImage;
 
@@ -4758,17 +4802,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): InvokeHostFunctionSuccessPreImage;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InvokeHostFunctionSuccessPreImage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionResultMeta {
@@ -4784,9 +4828,9 @@ declare namespace xdr {
 
     txApplyProcessing(value?: TransactionMeta): TransactionMeta;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionResultMeta;
 
@@ -4796,16 +4840,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionResultMeta): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionResultMeta;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultMeta;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionResultMeta;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class UpgradeEntryMeta {
@@ -4818,9 +4862,9 @@ declare namespace xdr {
 
     changes(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): UpgradeEntryMeta;
 
@@ -4830,13 +4874,13 @@ declare namespace xdr {
 
     static toXDR(value: UpgradeEntryMeta): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): UpgradeEntryMeta;
+    static fromXDR(input: Buffer, format?: 'raw'): UpgradeEntryMeta;
 
-    static fromXDR(input: string, format: "hex" | "base64"): UpgradeEntryMeta;
+    static fromXDR(input: string, format: 'hex' | 'base64'): UpgradeEntryMeta;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerCloseMetaV0 {
@@ -4858,9 +4902,9 @@ declare namespace xdr {
 
     scpInfo(value?: ScpHistoryEntry[]): ScpHistoryEntry[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerCloseMetaV0;
 
@@ -4870,13 +4914,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerCloseMetaV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerCloseMetaV0;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerCloseMetaV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerCloseMetaV1 {
@@ -4898,9 +4942,9 @@ declare namespace xdr {
 
     scpInfo(value?: ScpHistoryEntry[]): ScpHistoryEntry[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerCloseMetaV1;
 
@@ -4910,13 +4954,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerCloseMetaV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerCloseMetaV1;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV1;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerCloseMetaV1;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerCloseMetaV2 {
@@ -4950,9 +4994,9 @@ declare namespace xdr {
 
     evictedPersistentLedgerEntries(value?: LedgerEntry[]): LedgerEntry[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerCloseMetaV2;
 
@@ -4962,13 +5006,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerCloseMetaV2): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerCloseMetaV2;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV2;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerCloseMetaV2;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV2;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Error {
@@ -4978,9 +5022,9 @@ declare namespace xdr {
 
     msg(value?: string | Buffer): string | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Error;
 
@@ -4990,13 +5034,13 @@ declare namespace xdr {
 
     static toXDR(value: Error): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Error;
+    static fromXDR(input: Buffer, format?: 'raw'): Error;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Error;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Error;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SendMore {
@@ -5004,9 +5048,9 @@ declare namespace xdr {
 
     numMessages(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SendMore;
 
@@ -5016,13 +5060,13 @@ declare namespace xdr {
 
     static toXDR(value: SendMore): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SendMore;
+    static fromXDR(input: Buffer, format?: 'raw'): SendMore;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SendMore;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SendMore;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SendMoreExtended {
@@ -5032,9 +5076,9 @@ declare namespace xdr {
 
     numBytes(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SendMoreExtended;
 
@@ -5044,13 +5088,13 @@ declare namespace xdr {
 
     static toXDR(value: SendMoreExtended): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SendMoreExtended;
+    static fromXDR(input: Buffer, format?: 'raw'): SendMoreExtended;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SendMoreExtended;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SendMoreExtended;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AuthCert {
@@ -5066,9 +5110,9 @@ declare namespace xdr {
 
     sig(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AuthCert;
 
@@ -5078,13 +5122,13 @@ declare namespace xdr {
 
     static toXDR(value: AuthCert): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AuthCert;
+    static fromXDR(input: Buffer, format?: 'raw'): AuthCert;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AuthCert;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AuthCert;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Hello {
@@ -5118,9 +5162,9 @@ declare namespace xdr {
 
     nonce(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Hello;
 
@@ -5130,13 +5174,13 @@ declare namespace xdr {
 
     static toXDR(value: Hello): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Hello;
+    static fromXDR(input: Buffer, format?: 'raw'): Hello;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Hello;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Hello;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Auth {
@@ -5144,9 +5188,9 @@ declare namespace xdr {
 
     flags(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Auth;
 
@@ -5156,13 +5200,13 @@ declare namespace xdr {
 
     static toXDR(value: Auth): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Auth;
+    static fromXDR(input: Buffer, format?: 'raw'): Auth;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Auth;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Auth;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PeerAddress {
@@ -5178,9 +5222,9 @@ declare namespace xdr {
 
     numFailures(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PeerAddress;
 
@@ -5190,13 +5234,13 @@ declare namespace xdr {
 
     static toXDR(value: PeerAddress): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PeerAddress;
+    static fromXDR(input: Buffer, format?: 'raw'): PeerAddress;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PeerAddress;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PeerAddress;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class DontHave {
@@ -5206,9 +5250,9 @@ declare namespace xdr {
 
     reqHash(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): DontHave;
 
@@ -5218,13 +5262,13 @@ declare namespace xdr {
 
     static toXDR(value: DontHave): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): DontHave;
+    static fromXDR(input: Buffer, format?: 'raw'): DontHave;
 
-    static fromXDR(input: string, format: "hex" | "base64"): DontHave;
+    static fromXDR(input: string, format: 'hex' | 'base64'): DontHave;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SurveyRequestMessage {
@@ -5246,9 +5290,9 @@ declare namespace xdr {
 
     commandType(value?: SurveyMessageCommandType): SurveyMessageCommandType;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SurveyRequestMessage;
 
@@ -5258,16 +5302,16 @@ declare namespace xdr {
 
     static toXDR(value: SurveyRequestMessage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SurveyRequestMessage;
+    static fromXDR(input: Buffer, format?: 'raw'): SurveyRequestMessage;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SurveyRequestMessage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SignedSurveyRequestMessage {
@@ -5280,9 +5324,9 @@ declare namespace xdr {
 
     request(value?: SurveyRequestMessage): SurveyRequestMessage;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SignedSurveyRequestMessage;
 
@@ -5292,16 +5336,16 @@ declare namespace xdr {
 
     static toXDR(value: SignedSurveyRequestMessage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SignedSurveyRequestMessage;
+    static fromXDR(input: Buffer, format?: 'raw'): SignedSurveyRequestMessage;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SignedSurveyRequestMessage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SurveyResponseMessage {
@@ -5323,9 +5367,9 @@ declare namespace xdr {
 
     encryptedBody(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SurveyResponseMessage;
 
@@ -5335,16 +5379,16 @@ declare namespace xdr {
 
     static toXDR(value: SurveyResponseMessage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SurveyResponseMessage;
+    static fromXDR(input: Buffer, format?: 'raw'): SurveyResponseMessage;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SurveyResponseMessage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SignedSurveyResponseMessage {
@@ -5357,9 +5401,9 @@ declare namespace xdr {
 
     response(value?: SurveyResponseMessage): SurveyResponseMessage;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SignedSurveyResponseMessage;
 
@@ -5369,16 +5413,16 @@ declare namespace xdr {
 
     static toXDR(value: SignedSurveyResponseMessage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SignedSurveyResponseMessage;
+    static fromXDR(input: Buffer, format?: 'raw'): SignedSurveyResponseMessage;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SignedSurveyResponseMessage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PeerStats {
@@ -5430,9 +5474,9 @@ declare namespace xdr {
 
     duplicateFetchMessageRecv(value?: Uint64): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PeerStats;
 
@@ -5442,13 +5486,13 @@ declare namespace xdr {
 
     static toXDR(value: PeerStats): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PeerStats;
+    static fromXDR(input: Buffer, format?: 'raw'): PeerStats;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PeerStats;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PeerStats;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TopologyResponseBodyV0 {
@@ -5467,9 +5511,9 @@ declare namespace xdr {
 
     totalOutboundPeerCount(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TopologyResponseBodyV0;
 
@@ -5479,16 +5523,16 @@ declare namespace xdr {
 
     static toXDR(value: TopologyResponseBodyV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TopologyResponseBodyV0;
+    static fromXDR(input: Buffer, format?: 'raw'): TopologyResponseBodyV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TopologyResponseBodyV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TopologyResponseBodyV1 {
@@ -5513,9 +5557,9 @@ declare namespace xdr {
 
     maxOutboundPeerCount(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TopologyResponseBodyV1;
 
@@ -5525,16 +5569,16 @@ declare namespace xdr {
 
     static toXDR(value: TopologyResponseBodyV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TopologyResponseBodyV1;
+    static fromXDR(input: Buffer, format?: 'raw'): TopologyResponseBodyV1;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TopologyResponseBodyV1;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class FloodAdvert {
@@ -5542,9 +5586,9 @@ declare namespace xdr {
 
     txHashes(value?: Hash[]): Hash[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): FloodAdvert;
 
@@ -5554,13 +5598,13 @@ declare namespace xdr {
 
     static toXDR(value: FloodAdvert): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): FloodAdvert;
+    static fromXDR(input: Buffer, format?: 'raw'): FloodAdvert;
 
-    static fromXDR(input: string, format: "hex" | "base64"): FloodAdvert;
+    static fromXDR(input: string, format: 'hex' | 'base64'): FloodAdvert;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class FloodDemand {
@@ -5568,9 +5612,9 @@ declare namespace xdr {
 
     txHashes(value?: Hash[]): Hash[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): FloodDemand;
 
@@ -5580,13 +5624,13 @@ declare namespace xdr {
 
     static toXDR(value: FloodDemand): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): FloodDemand;
+    static fromXDR(input: Buffer, format?: 'raw'): FloodDemand;
 
-    static fromXDR(input: string, format: "hex" | "base64"): FloodDemand;
+    static fromXDR(input: string, format: 'hex' | 'base64'): FloodDemand;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AuthenticatedMessageV0 {
@@ -5602,9 +5646,9 @@ declare namespace xdr {
 
     mac(value?: HmacSha256Mac): HmacSha256Mac;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AuthenticatedMessageV0;
 
@@ -5614,16 +5658,16 @@ declare namespace xdr {
 
     static toXDR(value: AuthenticatedMessageV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AuthenticatedMessageV0;
+    static fromXDR(input: Buffer, format?: 'raw'): AuthenticatedMessageV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AuthenticatedMessageV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class MuxedAccountMed25519 {
@@ -5633,9 +5677,9 @@ declare namespace xdr {
 
     ed25519(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): MuxedAccountMed25519;
 
@@ -5645,16 +5689,16 @@ declare namespace xdr {
 
     static toXDR(value: MuxedAccountMed25519): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): MuxedAccountMed25519;
+    static fromXDR(input: Buffer, format?: 'raw'): MuxedAccountMed25519;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): MuxedAccountMed25519;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class DecoratedSignature {
@@ -5664,9 +5708,9 @@ declare namespace xdr {
 
     signature(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): DecoratedSignature;
 
@@ -5676,13 +5720,13 @@ declare namespace xdr {
 
     static toXDR(value: DecoratedSignature): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): DecoratedSignature;
+    static fromXDR(input: Buffer, format?: 'raw'): DecoratedSignature;
 
-    static fromXDR(input: string, format: "hex" | "base64"): DecoratedSignature;
+    static fromXDR(input: string, format: 'hex' | 'base64'): DecoratedSignature;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class CreateAccountOp {
@@ -5692,9 +5736,9 @@ declare namespace xdr {
 
     startingBalance(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): CreateAccountOp;
 
@@ -5704,13 +5748,13 @@ declare namespace xdr {
 
     static toXDR(value: CreateAccountOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): CreateAccountOp;
+    static fromXDR(input: Buffer, format?: 'raw'): CreateAccountOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): CreateAccountOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): CreateAccountOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PaymentOp {
@@ -5726,9 +5770,9 @@ declare namespace xdr {
 
     amount(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PaymentOp;
 
@@ -5738,13 +5782,13 @@ declare namespace xdr {
 
     static toXDR(value: PaymentOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PaymentOp;
+    static fromXDR(input: Buffer, format?: 'raw'): PaymentOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PaymentOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PaymentOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PathPaymentStrictReceiveOp {
@@ -5769,9 +5813,9 @@ declare namespace xdr {
 
     path(value?: Asset[]): Asset[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PathPaymentStrictReceiveOp;
 
@@ -5781,16 +5825,16 @@ declare namespace xdr {
 
     static toXDR(value: PathPaymentStrictReceiveOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PathPaymentStrictReceiveOp;
+    static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictReceiveOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): PathPaymentStrictReceiveOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PathPaymentStrictSendOp {
@@ -5815,9 +5859,9 @@ declare namespace xdr {
 
     path(value?: Asset[]): Asset[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PathPaymentStrictSendOp;
 
@@ -5827,16 +5871,16 @@ declare namespace xdr {
 
     static toXDR(value: PathPaymentStrictSendOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PathPaymentStrictSendOp;
+    static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictSendOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): PathPaymentStrictSendOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageSellOfferOp {
@@ -5858,9 +5902,9 @@ declare namespace xdr {
 
     offerId(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageSellOfferOp;
 
@@ -5870,13 +5914,13 @@ declare namespace xdr {
 
     static toXDR(value: ManageSellOfferOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageSellOfferOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageSellOfferOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ManageSellOfferOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ManageSellOfferOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageBuyOfferOp {
@@ -5898,9 +5942,9 @@ declare namespace xdr {
 
     offerId(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageBuyOfferOp;
 
@@ -5910,13 +5954,13 @@ declare namespace xdr {
 
     static toXDR(value: ManageBuyOfferOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageBuyOfferOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageBuyOfferOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ManageBuyOfferOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ManageBuyOfferOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class CreatePassiveSellOfferOp {
@@ -5935,9 +5979,9 @@ declare namespace xdr {
 
     price(value?: Price): Price;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): CreatePassiveSellOfferOp;
 
@@ -5947,16 +5991,16 @@ declare namespace xdr {
 
     static toXDR(value: CreatePassiveSellOfferOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): CreatePassiveSellOfferOp;
+    static fromXDR(input: Buffer, format?: 'raw'): CreatePassiveSellOfferOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): CreatePassiveSellOfferOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SetOptionsOp {
@@ -5990,9 +6034,9 @@ declare namespace xdr {
 
     signer(value?: null | Signer): null | Signer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SetOptionsOp;
 
@@ -6002,13 +6046,13 @@ declare namespace xdr {
 
     static toXDR(value: SetOptionsOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SetOptionsOp;
+    static fromXDR(input: Buffer, format?: 'raw'): SetOptionsOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SetOptionsOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SetOptionsOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ChangeTrustOp {
@@ -6018,9 +6062,9 @@ declare namespace xdr {
 
     limit(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ChangeTrustOp;
 
@@ -6030,13 +6074,13 @@ declare namespace xdr {
 
     static toXDR(value: ChangeTrustOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ChangeTrustOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ChangeTrustOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ChangeTrustOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ChangeTrustOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AllowTrustOp {
@@ -6052,9 +6096,9 @@ declare namespace xdr {
 
     authorize(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AllowTrustOp;
 
@@ -6064,13 +6108,13 @@ declare namespace xdr {
 
     static toXDR(value: AllowTrustOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AllowTrustOp;
+    static fromXDR(input: Buffer, format?: 'raw'): AllowTrustOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AllowTrustOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AllowTrustOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageDataOp {
@@ -6083,9 +6127,9 @@ declare namespace xdr {
 
     dataValue(value?: null | Buffer): null | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageDataOp;
 
@@ -6095,13 +6139,13 @@ declare namespace xdr {
 
     static toXDR(value: ManageDataOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageDataOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageDataOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ManageDataOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ManageDataOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BumpSequenceOp {
@@ -6109,9 +6153,9 @@ declare namespace xdr {
 
     bumpTo(value?: SequenceNumber): SequenceNumber;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BumpSequenceOp;
 
@@ -6121,13 +6165,13 @@ declare namespace xdr {
 
     static toXDR(value: BumpSequenceOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): BumpSequenceOp;
+    static fromXDR(input: Buffer, format?: 'raw'): BumpSequenceOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): BumpSequenceOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): BumpSequenceOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class CreateClaimableBalanceOp {
@@ -6143,9 +6187,9 @@ declare namespace xdr {
 
     claimants(value?: Claimant[]): Claimant[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): CreateClaimableBalanceOp;
 
@@ -6155,16 +6199,16 @@ declare namespace xdr {
 
     static toXDR(value: CreateClaimableBalanceOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): CreateClaimableBalanceOp;
+    static fromXDR(input: Buffer, format?: 'raw'): CreateClaimableBalanceOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): CreateClaimableBalanceOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimClaimableBalanceOp {
@@ -6172,9 +6216,9 @@ declare namespace xdr {
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimClaimableBalanceOp;
 
@@ -6184,16 +6228,16 @@ declare namespace xdr {
 
     static toXDR(value: ClaimClaimableBalanceOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimClaimableBalanceOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimClaimableBalanceOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClaimClaimableBalanceOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BeginSponsoringFutureReservesOp {
@@ -6201,9 +6245,9 @@ declare namespace xdr {
 
     sponsoredId(value?: AccountId): AccountId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BeginSponsoringFutureReservesOp;
 
@@ -6215,17 +6259,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): BeginSponsoringFutureReservesOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): BeginSponsoringFutureReservesOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class RevokeSponsorshipOpSigner {
@@ -6235,9 +6279,9 @@ declare namespace xdr {
 
     signerKey(value?: SignerKey): SignerKey;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): RevokeSponsorshipOpSigner;
 
@@ -6247,16 +6291,16 @@ declare namespace xdr {
 
     static toXDR(value: RevokeSponsorshipOpSigner): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): RevokeSponsorshipOpSigner;
+    static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipOpSigner;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): RevokeSponsorshipOpSigner;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClawbackOp {
@@ -6272,9 +6316,9 @@ declare namespace xdr {
 
     amount(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClawbackOp;
 
@@ -6284,13 +6328,13 @@ declare namespace xdr {
 
     static toXDR(value: ClawbackOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClawbackOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ClawbackOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClawbackOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClawbackOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClawbackClaimableBalanceOp {
@@ -6298,9 +6342,9 @@ declare namespace xdr {
 
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClawbackClaimableBalanceOp;
 
@@ -6310,16 +6354,16 @@ declare namespace xdr {
 
     static toXDR(value: ClawbackClaimableBalanceOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClawbackClaimableBalanceOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ClawbackClaimableBalanceOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClawbackClaimableBalanceOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SetTrustLineFlagsOp {
@@ -6338,9 +6382,9 @@ declare namespace xdr {
 
     setFlags(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SetTrustLineFlagsOp;
 
@@ -6350,16 +6394,16 @@ declare namespace xdr {
 
     static toXDR(value: SetTrustLineFlagsOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SetTrustLineFlagsOp;
+    static fromXDR(input: Buffer, format?: 'raw'): SetTrustLineFlagsOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SetTrustLineFlagsOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolDepositOp {
@@ -6381,9 +6425,9 @@ declare namespace xdr {
 
     maxPrice(value?: Price): Price;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolDepositOp;
 
@@ -6393,16 +6437,16 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolDepositOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolDepositOp;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolDepositOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolDepositOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolWithdrawOp {
@@ -6421,9 +6465,9 @@ declare namespace xdr {
 
     minAmountB(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolWithdrawOp;
 
@@ -6433,16 +6477,16 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolWithdrawOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolWithdrawOp;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolWithdrawOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolWithdrawOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractIdPreimageFromAddress {
@@ -6452,9 +6496,9 @@ declare namespace xdr {
 
     salt(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractIdPreimageFromAddress;
 
@@ -6466,17 +6510,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ContractIdPreimageFromAddress;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ContractIdPreimageFromAddress;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class CreateContractArgs {
@@ -6489,9 +6533,9 @@ declare namespace xdr {
 
     executable(value?: ContractExecutable): ContractExecutable;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): CreateContractArgs;
 
@@ -6501,13 +6545,13 @@ declare namespace xdr {
 
     static toXDR(value: CreateContractArgs): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): CreateContractArgs;
+    static fromXDR(input: Buffer, format?: 'raw'): CreateContractArgs;
 
-    static fromXDR(input: string, format: "hex" | "base64"): CreateContractArgs;
+    static fromXDR(input: string, format: 'hex' | 'base64'): CreateContractArgs;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InvokeContractArgs {
@@ -6523,9 +6567,9 @@ declare namespace xdr {
 
     args(value?: ScVal[]): ScVal[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InvokeContractArgs;
 
@@ -6535,13 +6579,13 @@ declare namespace xdr {
 
     static toXDR(value: InvokeContractArgs): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InvokeContractArgs;
+    static fromXDR(input: Buffer, format?: 'raw'): InvokeContractArgs;
 
-    static fromXDR(input: string, format: "hex" | "base64"): InvokeContractArgs;
+    static fromXDR(input: string, format: 'hex' | 'base64'): InvokeContractArgs;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanAuthorizedInvocation {
@@ -6556,9 +6600,9 @@ declare namespace xdr {
       value?: SorobanAuthorizedInvocation[],
     ): SorobanAuthorizedInvocation[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanAuthorizedInvocation;
 
@@ -6568,16 +6612,16 @@ declare namespace xdr {
 
     static toXDR(value: SorobanAuthorizedInvocation): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanAuthorizedInvocation;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanAuthorizedInvocation;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SorobanAuthorizedInvocation;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanAddressCredentials {
@@ -6596,9 +6640,9 @@ declare namespace xdr {
 
     signature(value?: ScVal): ScVal;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanAddressCredentials;
 
@@ -6608,16 +6652,16 @@ declare namespace xdr {
 
     static toXDR(value: SorobanAddressCredentials): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanAddressCredentials;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanAddressCredentials;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SorobanAddressCredentials;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanAuthorizationEntry {
@@ -6632,9 +6676,9 @@ declare namespace xdr {
       value?: SorobanAuthorizedInvocation,
     ): SorobanAuthorizedInvocation;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanAuthorizationEntry;
 
@@ -6644,16 +6688,16 @@ declare namespace xdr {
 
     static toXDR(value: SorobanAuthorizationEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanAuthorizationEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanAuthorizationEntry;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SorobanAuthorizationEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InvokeHostFunctionOp {
@@ -6666,9 +6710,9 @@ declare namespace xdr {
 
     auth(value?: SorobanAuthorizationEntry[]): SorobanAuthorizationEntry[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InvokeHostFunctionOp;
 
@@ -6678,16 +6722,16 @@ declare namespace xdr {
 
     static toXDR(value: InvokeHostFunctionOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InvokeHostFunctionOp;
+    static fromXDR(input: Buffer, format?: 'raw'): InvokeHostFunctionOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InvokeHostFunctionOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BumpFootprintExpirationOp {
@@ -6697,9 +6741,9 @@ declare namespace xdr {
 
     ledgersToExpire(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BumpFootprintExpirationOp;
 
@@ -6709,16 +6753,16 @@ declare namespace xdr {
 
     static toXDR(value: BumpFootprintExpirationOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): BumpFootprintExpirationOp;
+    static fromXDR(input: Buffer, format?: 'raw'): BumpFootprintExpirationOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): BumpFootprintExpirationOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class RestoreFootprintOp {
@@ -6726,9 +6770,9 @@ declare namespace xdr {
 
     ext(value?: ExtensionPoint): ExtensionPoint;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): RestoreFootprintOp;
 
@@ -6738,44 +6782,13 @@ declare namespace xdr {
 
     static toXDR(value: RestoreFootprintOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): RestoreFootprintOp;
+    static fromXDR(input: Buffer, format?: 'raw'): RestoreFootprintOp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): RestoreFootprintOp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): RestoreFootprintOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
-  }
-
-  class Operation {
-    constructor(attributes: {
-      sourceAccount: null | MuxedAccount;
-      body: OperationBody;
-    });
-
-    sourceAccount(value?: null | MuxedAccount): null | MuxedAccount;
-
-    body(value?: OperationBody): OperationBody;
-
-    toXDR(format?: "raw"): Buffer;
-
-    toXDR(format: "hex" | "base64"): string;
-
-    static read(io: Buffer): Operation;
-
-    static write(value: Operation, io: Buffer): void;
-
-    static isValid(value: Operation): boolean;
-
-    static toXDR(value: Operation): Buffer;
-
-    static fromXDR(input: Buffer, format?: "raw"): Operation;
-
-    static fromXDR(input: string, format: "hex" | "base64"): Operation;
-
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
-
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HashIdPreimageOperationId {
@@ -6791,9 +6804,9 @@ declare namespace xdr {
 
     opNum(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HashIdPreimageOperationId;
 
@@ -6803,16 +6816,16 @@ declare namespace xdr {
 
     static toXDR(value: HashIdPreimageOperationId): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HashIdPreimageOperationId;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimageOperationId;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): HashIdPreimageOperationId;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HashIdPreimageRevokeId {
@@ -6834,9 +6847,9 @@ declare namespace xdr {
 
     asset(value?: Asset): Asset;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HashIdPreimageRevokeId;
 
@@ -6846,16 +6859,16 @@ declare namespace xdr {
 
     static toXDR(value: HashIdPreimageRevokeId): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HashIdPreimageRevokeId;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimageRevokeId;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): HashIdPreimageRevokeId;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HashIdPreimageContractId {
@@ -6868,9 +6881,9 @@ declare namespace xdr {
 
     contractIdPreimage(value?: ContractIdPreimage): ContractIdPreimage;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HashIdPreimageContractId;
 
@@ -6880,16 +6893,16 @@ declare namespace xdr {
 
     static toXDR(value: HashIdPreimageContractId): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HashIdPreimageContractId;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimageContractId;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): HashIdPreimageContractId;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HashIdPreimageSorobanAuthorization {
@@ -6910,9 +6923,9 @@ declare namespace xdr {
       value?: SorobanAuthorizedInvocation,
     ): SorobanAuthorizedInvocation;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HashIdPreimageSorobanAuthorization;
 
@@ -6924,17 +6937,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): HashIdPreimageSorobanAuthorization;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): HashIdPreimageSorobanAuthorization;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TimeBounds {
@@ -6944,9 +6957,9 @@ declare namespace xdr {
 
     maxTime(value?: TimePoint): TimePoint;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TimeBounds;
 
@@ -6956,13 +6969,13 @@ declare namespace xdr {
 
     static toXDR(value: TimeBounds): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TimeBounds;
+    static fromXDR(input: Buffer, format?: 'raw'): TimeBounds;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TimeBounds;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TimeBounds;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerBounds {
@@ -6972,9 +6985,9 @@ declare namespace xdr {
 
     maxLedger(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerBounds;
 
@@ -6984,13 +6997,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerBounds): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerBounds;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerBounds;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerBounds;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerBounds;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PreconditionsV2 {
@@ -7015,9 +7028,9 @@ declare namespace xdr {
 
     extraSigners(value?: SignerKey[]): SignerKey[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PreconditionsV2;
 
@@ -7027,13 +7040,13 @@ declare namespace xdr {
 
     static toXDR(value: PreconditionsV2): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PreconditionsV2;
+    static fromXDR(input: Buffer, format?: 'raw'): PreconditionsV2;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PreconditionsV2;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PreconditionsV2;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerFootprint {
@@ -7043,9 +7056,9 @@ declare namespace xdr {
 
     readWrite(value?: LedgerKey[]): LedgerKey[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerFootprint;
 
@@ -7055,13 +7068,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerFootprint): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerFootprint;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerFootprint;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerFootprint;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerFootprint;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanResources {
@@ -7083,9 +7096,9 @@ declare namespace xdr {
 
     contractEventsSizeBytes(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanResources;
 
@@ -7095,13 +7108,13 @@ declare namespace xdr {
 
     static toXDR(value: SorobanResources): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanResources;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanResources;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SorobanResources;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SorobanResources;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanTransactionData {
@@ -7117,9 +7130,9 @@ declare namespace xdr {
 
     refundableFee(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanTransactionData;
 
@@ -7129,16 +7142,16 @@ declare namespace xdr {
 
     static toXDR(value: SorobanTransactionData): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanTransactionData;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanTransactionData;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SorobanTransactionData;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionV0 {
@@ -7166,9 +7179,9 @@ declare namespace xdr {
 
     ext(value?: TransactionV0Ext): TransactionV0Ext;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionV0;
 
@@ -7178,13 +7191,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionV0;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionV0Envelope {
@@ -7197,9 +7210,9 @@ declare namespace xdr {
 
     signatures(value?: DecoratedSignature[]): DecoratedSignature[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionV0Envelope;
 
@@ -7209,16 +7222,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionV0Envelope): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionV0Envelope;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0Envelope;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionV0Envelope;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Transaction {
@@ -7246,9 +7259,9 @@ declare namespace xdr {
 
     ext(value?: TransactionExt): TransactionExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Transaction;
 
@@ -7258,13 +7271,13 @@ declare namespace xdr {
 
     static toXDR(value: Transaction): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Transaction;
+    static fromXDR(input: Buffer, format?: 'raw'): Transaction;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Transaction;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Transaction;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionV1Envelope {
@@ -7277,9 +7290,9 @@ declare namespace xdr {
 
     signatures(value?: DecoratedSignature[]): DecoratedSignature[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionV1Envelope;
 
@@ -7289,16 +7302,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionV1Envelope): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionV1Envelope;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV1Envelope;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionV1Envelope;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class FeeBumpTransaction {
@@ -7317,9 +7330,9 @@ declare namespace xdr {
 
     ext(value?: FeeBumpTransactionExt): FeeBumpTransactionExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): FeeBumpTransaction;
 
@@ -7329,13 +7342,13 @@ declare namespace xdr {
 
     static toXDR(value: FeeBumpTransaction): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): FeeBumpTransaction;
+    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransaction;
 
-    static fromXDR(input: string, format: "hex" | "base64"): FeeBumpTransaction;
+    static fromXDR(input: string, format: 'hex' | 'base64'): FeeBumpTransaction;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class FeeBumpTransactionEnvelope {
@@ -7348,9 +7361,9 @@ declare namespace xdr {
 
     signatures(value?: DecoratedSignature[]): DecoratedSignature[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): FeeBumpTransactionEnvelope;
 
@@ -7360,16 +7373,16 @@ declare namespace xdr {
 
     static toXDR(value: FeeBumpTransactionEnvelope): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): FeeBumpTransactionEnvelope;
+    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionEnvelope;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): FeeBumpTransactionEnvelope;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionSignaturePayload {
@@ -7384,9 +7397,9 @@ declare namespace xdr {
       value?: TransactionSignaturePayloadTaggedTransaction,
     ): TransactionSignaturePayloadTaggedTransaction;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionSignaturePayload;
 
@@ -7396,16 +7409,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionSignaturePayload): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionSignaturePayload;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionSignaturePayload;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionSignaturePayload;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimOfferAtomV0 {
@@ -7430,9 +7443,9 @@ declare namespace xdr {
 
     amountBought(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimOfferAtomV0;
 
@@ -7442,13 +7455,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimOfferAtomV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimOfferAtomV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimOfferAtomV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimOfferAtomV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimOfferAtomV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimOfferAtom {
@@ -7473,9 +7486,9 @@ declare namespace xdr {
 
     amountBought(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimOfferAtom;
 
@@ -7485,13 +7498,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimOfferAtom): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimOfferAtom;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimOfferAtom;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimOfferAtom;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimOfferAtom;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimLiquidityAtom {
@@ -7513,9 +7526,9 @@ declare namespace xdr {
 
     amountBought(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimLiquidityAtom;
 
@@ -7525,13 +7538,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimLiquidityAtom): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimLiquidityAtom;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimLiquidityAtom;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimLiquidityAtom;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimLiquidityAtom;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SimplePaymentResult {
@@ -7547,9 +7560,9 @@ declare namespace xdr {
 
     amount(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SimplePaymentResult;
 
@@ -7559,16 +7572,16 @@ declare namespace xdr {
 
     static toXDR(value: SimplePaymentResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SimplePaymentResult;
+    static fromXDR(input: Buffer, format?: 'raw'): SimplePaymentResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SimplePaymentResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PathPaymentStrictReceiveResultSuccess {
@@ -7578,9 +7591,9 @@ declare namespace xdr {
 
     last(value?: SimplePaymentResult): SimplePaymentResult;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PathPaymentStrictReceiveResultSuccess;
 
@@ -7595,17 +7608,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): PathPaymentStrictReceiveResultSuccess;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): PathPaymentStrictReceiveResultSuccess;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PathPaymentStrictSendResultSuccess {
@@ -7615,9 +7628,9 @@ declare namespace xdr {
 
     last(value?: SimplePaymentResult): SimplePaymentResult;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PathPaymentStrictSendResultSuccess;
 
@@ -7629,17 +7642,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): PathPaymentStrictSendResultSuccess;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): PathPaymentStrictSendResultSuccess;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageOfferSuccessResult {
@@ -7652,9 +7665,9 @@ declare namespace xdr {
 
     offer(value?: ManageOfferSuccessResultOffer): ManageOfferSuccessResultOffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageOfferSuccessResult;
 
@@ -7664,16 +7677,16 @@ declare namespace xdr {
 
     static toXDR(value: ManageOfferSuccessResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageOfferSuccessResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageOfferSuccessResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ManageOfferSuccessResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InflationPayout {
@@ -7683,9 +7696,9 @@ declare namespace xdr {
 
     amount(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InflationPayout;
 
@@ -7695,13 +7708,13 @@ declare namespace xdr {
 
     static toXDR(value: InflationPayout): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InflationPayout;
+    static fromXDR(input: Buffer, format?: 'raw'): InflationPayout;
 
-    static fromXDR(input: string, format: "hex" | "base64"): InflationPayout;
+    static fromXDR(input: string, format: 'hex' | 'base64'): InflationPayout;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InnerTransactionResult {
@@ -7717,9 +7730,9 @@ declare namespace xdr {
 
     ext(value?: InnerTransactionResultExt): InnerTransactionResultExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InnerTransactionResult;
 
@@ -7729,16 +7742,16 @@ declare namespace xdr {
 
     static toXDR(value: InnerTransactionResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InnerTransactionResult;
+    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InnerTransactionResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InnerTransactionResultPair {
@@ -7751,9 +7764,9 @@ declare namespace xdr {
 
     result(value?: InnerTransactionResult): InnerTransactionResult;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InnerTransactionResultPair;
 
@@ -7763,16 +7776,16 @@ declare namespace xdr {
 
     static toXDR(value: InnerTransactionResultPair): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InnerTransactionResultPair;
+    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultPair;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InnerTransactionResultPair;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionResult {
@@ -7788,9 +7801,9 @@ declare namespace xdr {
 
     ext(value?: TransactionResultExt): TransactionResultExt;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionResult;
 
@@ -7800,13 +7813,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionResult;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SignerKeyEd25519SignedPayload {
@@ -7816,9 +7829,9 @@ declare namespace xdr {
 
     payload(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SignerKeyEd25519SignedPayload;
 
@@ -7830,17 +7843,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): SignerKeyEd25519SignedPayload;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SignerKeyEd25519SignedPayload;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Curve25519Secret {
@@ -7848,9 +7861,9 @@ declare namespace xdr {
 
     key(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Curve25519Secret;
 
@@ -7860,13 +7873,13 @@ declare namespace xdr {
 
     static toXDR(value: Curve25519Secret): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Curve25519Secret;
+    static fromXDR(input: Buffer, format?: 'raw'): Curve25519Secret;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Curve25519Secret;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Curve25519Secret;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Curve25519Public {
@@ -7874,9 +7887,9 @@ declare namespace xdr {
 
     key(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Curve25519Public;
 
@@ -7886,13 +7899,13 @@ declare namespace xdr {
 
     static toXDR(value: Curve25519Public): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Curve25519Public;
+    static fromXDR(input: Buffer, format?: 'raw'): Curve25519Public;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Curve25519Public;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Curve25519Public;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HmacSha256Key {
@@ -7900,9 +7913,9 @@ declare namespace xdr {
 
     key(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HmacSha256Key;
 
@@ -7912,13 +7925,13 @@ declare namespace xdr {
 
     static toXDR(value: HmacSha256Key): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HmacSha256Key;
+    static fromXDR(input: Buffer, format?: 'raw'): HmacSha256Key;
 
-    static fromXDR(input: string, format: "hex" | "base64"): HmacSha256Key;
+    static fromXDR(input: string, format: 'hex' | 'base64'): HmacSha256Key;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HmacSha256Mac {
@@ -7926,9 +7939,9 @@ declare namespace xdr {
 
     mac(value?: Buffer): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HmacSha256Mac;
 
@@ -7938,13 +7951,13 @@ declare namespace xdr {
 
     static toXDR(value: HmacSha256Mac): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HmacSha256Mac;
+    static fromXDR(input: Buffer, format?: 'raw'): HmacSha256Mac;
 
-    static fromXDR(input: string, format: "hex" | "base64"): HmacSha256Mac;
+    static fromXDR(input: string, format: 'hex' | 'base64'): HmacSha256Mac;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class UInt128Parts {
@@ -7954,9 +7967,9 @@ declare namespace xdr {
 
     lo(value?: Uint64): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): UInt128Parts;
 
@@ -7966,13 +7979,13 @@ declare namespace xdr {
 
     static toXDR(value: UInt128Parts): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): UInt128Parts;
+    static fromXDR(input: Buffer, format?: 'raw'): UInt128Parts;
 
-    static fromXDR(input: string, format: "hex" | "base64"): UInt128Parts;
+    static fromXDR(input: string, format: 'hex' | 'base64'): UInt128Parts;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Int128Parts {
@@ -7982,9 +7995,9 @@ declare namespace xdr {
 
     lo(value?: Uint64): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Int128Parts;
 
@@ -7994,13 +8007,13 @@ declare namespace xdr {
 
     static toXDR(value: Int128Parts): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Int128Parts;
+    static fromXDR(input: Buffer, format?: 'raw'): Int128Parts;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Int128Parts;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Int128Parts;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class UInt256Parts {
@@ -8019,9 +8032,9 @@ declare namespace xdr {
 
     loLo(value?: Uint64): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): UInt256Parts;
 
@@ -8031,13 +8044,13 @@ declare namespace xdr {
 
     static toXDR(value: UInt256Parts): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): UInt256Parts;
+    static fromXDR(input: Buffer, format?: 'raw'): UInt256Parts;
 
-    static fromXDR(input: string, format: "hex" | "base64"): UInt256Parts;
+    static fromXDR(input: string, format: 'hex' | 'base64'): UInt256Parts;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Int256Parts {
@@ -8056,9 +8069,9 @@ declare namespace xdr {
 
     loLo(value?: Uint64): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Int256Parts;
 
@@ -8068,13 +8081,13 @@ declare namespace xdr {
 
     static toXDR(value: Int256Parts): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Int256Parts;
+    static fromXDR(input: Buffer, format?: 'raw'): Int256Parts;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Int256Parts;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Int256Parts;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScNonceKey {
@@ -8082,9 +8095,9 @@ declare namespace xdr {
 
     nonce(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScNonceKey;
 
@@ -8094,13 +8107,13 @@ declare namespace xdr {
 
     static toXDR(value: ScNonceKey): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScNonceKey;
+    static fromXDR(input: Buffer, format?: 'raw'): ScNonceKey;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScNonceKey;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScNonceKey;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScContractInstance {
@@ -8113,9 +8126,9 @@ declare namespace xdr {
 
     storage(value?: null | ScMapEntry[]): null | ScMapEntry[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScContractInstance;
 
@@ -8125,13 +8138,13 @@ declare namespace xdr {
 
     static toXDR(value: ScContractInstance): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScContractInstance;
+    static fromXDR(input: Buffer, format?: 'raw'): ScContractInstance;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScContractInstance;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScContractInstance;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScMapEntry {
@@ -8141,9 +8154,9 @@ declare namespace xdr {
 
     val(value?: ScVal): ScVal;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScMapEntry;
 
@@ -8153,13 +8166,13 @@ declare namespace xdr {
 
     static toXDR(value: ScMapEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScMapEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ScMapEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScMapEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScMapEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScMetaV0 {
@@ -8169,9 +8182,9 @@ declare namespace xdr {
 
     val(value?: string | Buffer): string | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScMetaV0;
 
@@ -8181,13 +8194,13 @@ declare namespace xdr {
 
     static toXDR(value: ScMetaV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScMetaV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScMetaV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScMetaV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScMetaV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeOption {
@@ -8195,9 +8208,9 @@ declare namespace xdr {
 
     valueType(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeOption;
 
@@ -8207,13 +8220,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeOption): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeOption;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeOption;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeOption;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeOption;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeResult {
@@ -8226,9 +8239,9 @@ declare namespace xdr {
 
     errorType(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeResult;
 
@@ -8238,13 +8251,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeVec {
@@ -8252,9 +8265,9 @@ declare namespace xdr {
 
     elementType(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeVec;
 
@@ -8264,13 +8277,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeVec): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeVec;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeVec;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeVec;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeVec;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeMap {
@@ -8283,9 +8296,9 @@ declare namespace xdr {
 
     valueType(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeMap;
 
@@ -8295,13 +8308,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeMap): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeMap;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeMap;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeMap;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeMap;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeSet {
@@ -8309,9 +8322,9 @@ declare namespace xdr {
 
     elementType(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeSet;
 
@@ -8321,13 +8334,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeSet): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeSet;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeSet;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeSet;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeSet;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeTuple {
@@ -8335,9 +8348,9 @@ declare namespace xdr {
 
     valueTypes(value?: ScSpecTypeDef[]): ScSpecTypeDef[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeTuple;
 
@@ -8347,13 +8360,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeTuple): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeTuple;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeTuple;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeTuple;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeTuple;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeBytesN {
@@ -8361,9 +8374,9 @@ declare namespace xdr {
 
     n(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeBytesN;
 
@@ -8373,13 +8386,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeBytesN): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeBytesN;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeBytesN;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeBytesN;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeBytesN;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeUdt {
@@ -8387,9 +8400,9 @@ declare namespace xdr {
 
     name(value?: string | Buffer): string | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeUdt;
 
@@ -8399,13 +8412,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeUdt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeUdt;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeUdt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeUdt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeUdt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtStructFieldV0 {
@@ -8421,9 +8434,9 @@ declare namespace xdr {
 
     type(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtStructFieldV0;
 
@@ -8433,16 +8446,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtStructFieldV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtStructFieldV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtStructFieldV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtStructFieldV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtStructV0 {
@@ -8461,9 +8474,9 @@ declare namespace xdr {
 
     fields(value?: ScSpecUdtStructFieldV0[]): ScSpecUdtStructFieldV0[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtStructV0;
 
@@ -8473,13 +8486,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtStructV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtStructV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtStructV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecUdtStructV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecUdtStructV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtUnionCaseVoidV0 {
@@ -8489,9 +8502,9 @@ declare namespace xdr {
 
     name(value?: string | Buffer): string | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtUnionCaseVoidV0;
 
@@ -8501,16 +8514,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtUnionCaseVoidV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtUnionCaseVoidV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseVoidV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtUnionCaseVoidV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtUnionCaseTupleV0 {
@@ -8526,9 +8539,9 @@ declare namespace xdr {
 
     type(value?: ScSpecTypeDef[]): ScSpecTypeDef[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtUnionCaseTupleV0;
 
@@ -8538,16 +8551,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtUnionCaseTupleV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtUnionCaseTupleV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseTupleV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtUnionCaseTupleV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtUnionV0 {
@@ -8566,9 +8579,9 @@ declare namespace xdr {
 
     cases(value?: ScSpecUdtUnionCaseV0[]): ScSpecUdtUnionCaseV0[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtUnionV0;
 
@@ -8578,13 +8591,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtUnionV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtUnionV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecUdtUnionV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecUdtUnionV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtEnumCaseV0 {
@@ -8600,9 +8613,9 @@ declare namespace xdr {
 
     value(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtEnumCaseV0;
 
@@ -8612,16 +8625,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtEnumCaseV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtEnumCaseV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtEnumCaseV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtEnumCaseV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtEnumV0 {
@@ -8640,9 +8653,9 @@ declare namespace xdr {
 
     cases(value?: ScSpecUdtEnumCaseV0[]): ScSpecUdtEnumCaseV0[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtEnumV0;
 
@@ -8652,13 +8665,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtEnumV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtEnumV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtEnumV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecUdtEnumV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecUdtEnumV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtErrorEnumCaseV0 {
@@ -8674,9 +8687,9 @@ declare namespace xdr {
 
     value(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtErrorEnumCaseV0;
 
@@ -8686,16 +8699,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtErrorEnumCaseV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtErrorEnumCaseV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtErrorEnumCaseV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtErrorEnumCaseV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtErrorEnumV0 {
@@ -8714,9 +8727,9 @@ declare namespace xdr {
 
     cases(value?: ScSpecUdtErrorEnumCaseV0[]): ScSpecUdtErrorEnumCaseV0[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtErrorEnumV0;
 
@@ -8726,16 +8739,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtErrorEnumV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtErrorEnumV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtErrorEnumV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtErrorEnumV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecFunctionInputV0 {
@@ -8751,9 +8764,9 @@ declare namespace xdr {
 
     type(value?: ScSpecTypeDef): ScSpecTypeDef;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecFunctionInputV0;
 
@@ -8763,16 +8776,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecFunctionInputV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecFunctionInputV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecFunctionInputV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecFunctionInputV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecFunctionV0 {
@@ -8791,9 +8804,9 @@ declare namespace xdr {
 
     outputs(value?: ScSpecTypeDef[]): ScSpecTypeDef[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecFunctionV0;
 
@@ -8803,13 +8816,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecFunctionV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecFunctionV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecFunctionV0;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecFunctionV0;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecFunctionV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingContractExecutionLanesV0 {
@@ -8817,9 +8830,9 @@ declare namespace xdr {
 
     ledgerMaxTxCount(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingContractExecutionLanesV0;
 
@@ -8834,17 +8847,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ConfigSettingContractExecutionLanesV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigSettingContractExecutionLanesV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingContractComputeV0 {
@@ -8863,9 +8876,9 @@ declare namespace xdr {
 
     txMemoryLimit(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingContractComputeV0;
 
@@ -8877,17 +8890,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ConfigSettingContractComputeV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigSettingContractComputeV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingContractLedgerCostV0 {
@@ -8939,9 +8952,9 @@ declare namespace xdr {
 
     bucketListWriteFeeGrowthFactor(value?: number): number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingContractLedgerCostV0;
 
@@ -8953,17 +8966,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ConfigSettingContractLedgerCostV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigSettingContractLedgerCostV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingContractHistoricalDataV0 {
@@ -8971,9 +8984,9 @@ declare namespace xdr {
 
     feeHistorical1Kb(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingContractHistoricalDataV0;
 
@@ -8988,17 +9001,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ConfigSettingContractHistoricalDataV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigSettingContractHistoricalDataV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingContractEventsV0 {
@@ -9011,9 +9024,9 @@ declare namespace xdr {
 
     feeContractEvents1Kb(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingContractEventsV0;
 
@@ -9025,17 +9038,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ConfigSettingContractEventsV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigSettingContractEventsV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingContractBandwidthV0 {
@@ -9051,9 +9064,9 @@ declare namespace xdr {
 
     feeTxSize1Kb(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingContractBandwidthV0;
 
@@ -9065,17 +9078,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ConfigSettingContractBandwidthV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ConfigSettingContractBandwidthV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractCostParamEntry {
@@ -9091,9 +9104,9 @@ declare namespace xdr {
 
     linearTerm(value?: Int64): Int64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractCostParamEntry;
 
@@ -9103,16 +9116,16 @@ declare namespace xdr {
 
     static toXDR(value: ContractCostParamEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractCostParamEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractCostParamEntry;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ContractCostParamEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class StateExpirationSettings {
@@ -9146,9 +9159,9 @@ declare namespace xdr {
 
     evictionScanSize(value?: Uint64): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): StateExpirationSettings;
 
@@ -9158,16 +9171,16 @@ declare namespace xdr {
 
     static toXDR(value: StateExpirationSettings): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): StateExpirationSettings;
+    static fromXDR(input: Buffer, format?: 'raw'): StateExpirationSettings;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): StateExpirationSettings;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpStatementPledges {
@@ -9197,9 +9210,9 @@ declare namespace xdr {
       | ScpStatementExternalize
       | ScpNomination;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpStatementPledges;
 
@@ -9209,16 +9222,16 @@ declare namespace xdr {
 
     static toXDR(value: ScpStatementPledges): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpStatementPledges;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpStatementPledges;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScpStatementPledges;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AssetCode {
@@ -9234,9 +9247,9 @@ declare namespace xdr {
 
     value(): Buffer | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AssetCode;
 
@@ -9246,13 +9259,13 @@ declare namespace xdr {
 
     static toXDR(value: AssetCode): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AssetCode;
+    static fromXDR(input: Buffer, format?: 'raw'): AssetCode;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AssetCode;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AssetCode;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Asset {
@@ -9270,9 +9283,9 @@ declare namespace xdr {
 
     value(): AlphaNum4 | AlphaNum12 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Asset;
 
@@ -9282,13 +9295,13 @@ declare namespace xdr {
 
     static toXDR(value: Asset): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Asset;
+    static fromXDR(input: Buffer, format?: 'raw'): Asset;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Asset;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Asset;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntryExtensionV2Ext {
@@ -9302,9 +9315,9 @@ declare namespace xdr {
 
     value(): AccountEntryExtensionV3 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntryExtensionV2Ext;
 
@@ -9314,16 +9327,16 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntryExtensionV2Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntryExtensionV2Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV2Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV2Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntryExtensionV1Ext {
@@ -9337,9 +9350,9 @@ declare namespace xdr {
 
     value(): AccountEntryExtensionV2 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntryExtensionV1Ext;
 
@@ -9349,16 +9362,16 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntryExtensionV1Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntryExtensionV1Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExtensionV1Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV1Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountEntryExt {
@@ -9372,9 +9385,9 @@ declare namespace xdr {
 
     value(): AccountEntryExtensionV1 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountEntryExt;
 
@@ -9384,13 +9397,13 @@ declare namespace xdr {
 
     static toXDR(value: AccountEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountEntryExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AccountEntryExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AccountEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineAsset {
@@ -9412,9 +9425,9 @@ declare namespace xdr {
 
     value(): AlphaNum4 | AlphaNum12 | PoolId | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineAsset;
 
@@ -9424,13 +9437,13 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineAsset): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineAsset;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineAsset;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TrustLineAsset;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineAsset;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineEntryExtensionV2Ext {
@@ -9440,9 +9453,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineEntryExtensionV2Ext;
 
@@ -9452,16 +9465,16 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineEntryExtensionV2Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineEntryExtensionV2Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryExtensionV2Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TrustLineEntryExtensionV2Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineEntryV1Ext {
@@ -9475,9 +9488,9 @@ declare namespace xdr {
 
     value(): TrustLineEntryExtensionV2 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineEntryV1Ext;
 
@@ -9487,16 +9500,16 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineEntryV1Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineEntryV1Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryV1Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TrustLineEntryV1Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TrustLineEntryExt {
@@ -9510,9 +9523,9 @@ declare namespace xdr {
 
     value(): TrustLineEntryV1 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TrustLineEntryExt;
 
@@ -9522,13 +9535,13 @@ declare namespace xdr {
 
     static toXDR(value: TrustLineEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TrustLineEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): TrustLineEntryExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TrustLineEntryExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TrustLineEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class OfferEntryExt {
@@ -9538,9 +9551,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): OfferEntryExt;
 
@@ -9550,13 +9563,13 @@ declare namespace xdr {
 
     static toXDR(value: OfferEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): OfferEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): OfferEntryExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): OfferEntryExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): OfferEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class DataEntryExt {
@@ -9566,9 +9579,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): DataEntryExt;
 
@@ -9578,13 +9591,13 @@ declare namespace xdr {
 
     static toXDR(value: DataEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): DataEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): DataEntryExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): DataEntryExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): DataEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimPredicate {
@@ -9621,9 +9634,9 @@ declare namespace xdr {
       | Int64
       | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimPredicate;
 
@@ -9633,13 +9646,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimPredicate): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimPredicate;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimPredicate;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimPredicate;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimPredicate;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Claimant {
@@ -9651,9 +9664,9 @@ declare namespace xdr {
 
     value(): ClaimantV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Claimant;
 
@@ -9663,13 +9676,13 @@ declare namespace xdr {
 
     static toXDR(value: Claimant): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Claimant;
+    static fromXDR(input: Buffer, format?: 'raw'): Claimant;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Claimant;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Claimant;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimableBalanceId {
@@ -9681,9 +9694,9 @@ declare namespace xdr {
 
     value(): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimableBalanceId;
 
@@ -9693,13 +9706,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimableBalanceId): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimableBalanceId;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceId;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimableBalanceId;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimableBalanceId;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimableBalanceEntryExtensionV1Ext {
@@ -9709,9 +9722,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimableBalanceEntryExtensionV1Ext;
 
@@ -9723,17 +9736,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ClaimableBalanceEntryExtensionV1Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntryExtensionV1Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimableBalanceEntryExt {
@@ -9749,9 +9762,9 @@ declare namespace xdr {
 
     value(): ClaimableBalanceEntryExtensionV1 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimableBalanceEntryExt;
 
@@ -9761,16 +9774,16 @@ declare namespace xdr {
 
     static toXDR(value: ClaimableBalanceEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimableBalanceEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimableBalanceEntryExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolEntryBody {
@@ -9786,9 +9799,9 @@ declare namespace xdr {
 
     value(): LiquidityPoolEntryConstantProduct;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolEntryBody;
 
@@ -9798,16 +9811,16 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolEntryBody): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolEntryBody;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolEntryBody;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolEntryBody;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractDataEntryBody {
@@ -9821,9 +9834,9 @@ declare namespace xdr {
 
     value(): ContractDataEntryData | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractDataEntryBody;
 
@@ -9833,16 +9846,16 @@ declare namespace xdr {
 
     static toXDR(value: ContractDataEntryBody): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractDataEntryBody;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractDataEntryBody;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ContractDataEntryBody;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractCodeEntryBody {
@@ -9856,9 +9869,9 @@ declare namespace xdr {
 
     value(): Buffer | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractCodeEntryBody;
 
@@ -9868,16 +9881,16 @@ declare namespace xdr {
 
     static toXDR(value: ContractCodeEntryBody): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractCodeEntryBody;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractCodeEntryBody;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ContractCodeEntryBody;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerEntryExtensionV1Ext {
@@ -9887,9 +9900,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerEntryExtensionV1Ext;
 
@@ -9899,16 +9912,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerEntryExtensionV1Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerEntryExtensionV1Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExtensionV1Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerEntryExtensionV1Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerEntryData {
@@ -9961,9 +9974,9 @@ declare namespace xdr {
       | ContractCodeEntry
       | ConfigSettingEntry;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerEntryData;
 
@@ -9973,13 +9986,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerEntryData): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerEntryData;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryData;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerEntryData;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryData;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerEntryExt {
@@ -9993,9 +10006,9 @@ declare namespace xdr {
 
     value(): LedgerEntryExtensionV1 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerEntryExt;
 
@@ -10005,13 +10018,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerEntryExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerKey {
@@ -10066,9 +10079,9 @@ declare namespace xdr {
       | LedgerKeyContractCode
       | LedgerKeyConfigSetting;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerKey;
 
@@ -10078,13 +10091,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerKey): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerKey;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKey;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerKey;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKey;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class StellarValueExt {
@@ -10102,9 +10115,9 @@ declare namespace xdr {
 
     value(): LedgerCloseValueSignature | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): StellarValueExt;
 
@@ -10114,13 +10127,13 @@ declare namespace xdr {
 
     static toXDR(value: StellarValueExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): StellarValueExt;
+    static fromXDR(input: Buffer, format?: 'raw'): StellarValueExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): StellarValueExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): StellarValueExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerHeaderExtensionV1Ext {
@@ -10130,9 +10143,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerHeaderExtensionV1Ext;
 
@@ -10142,16 +10155,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerHeaderExtensionV1Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerHeaderExtensionV1Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderExtensionV1Ext;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerHeaderExtensionV1Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerHeaderExt {
@@ -10165,9 +10178,9 @@ declare namespace xdr {
 
     value(): LedgerHeaderExtensionV1 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerHeaderExt;
 
@@ -10177,13 +10190,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerHeaderExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerHeaderExt;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerHeaderExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerHeaderExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerUpgrade {
@@ -10226,9 +10239,9 @@ declare namespace xdr {
       | ConfigUpgradeSetKey
       | number;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerUpgrade;
 
@@ -10238,13 +10251,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerUpgrade): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerUpgrade;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerUpgrade;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerUpgrade;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerUpgrade;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BucketMetadataExt {
@@ -10254,9 +10267,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BucketMetadataExt;
 
@@ -10266,13 +10279,13 @@ declare namespace xdr {
 
     static toXDR(value: BucketMetadataExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): BucketMetadataExt;
+    static fromXDR(input: Buffer, format?: 'raw'): BucketMetadataExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): BucketMetadataExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): BucketMetadataExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BucketEntry {
@@ -10294,9 +10307,9 @@ declare namespace xdr {
 
     value(): LedgerEntry | LedgerKey | BucketMetadata;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BucketEntry;
 
@@ -10306,13 +10319,13 @@ declare namespace xdr {
 
     static toXDR(value: BucketEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): BucketEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): BucketEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): BucketEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): BucketEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TxSetComponent {
@@ -10328,9 +10341,9 @@ declare namespace xdr {
 
     value(): TxSetComponentTxsMaybeDiscountedFee;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TxSetComponent;
 
@@ -10340,13 +10353,13 @@ declare namespace xdr {
 
     static toXDR(value: TxSetComponent): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TxSetComponent;
+    static fromXDR(input: Buffer, format?: 'raw'): TxSetComponent;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TxSetComponent;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TxSetComponent;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionPhase {
@@ -10358,9 +10371,9 @@ declare namespace xdr {
 
     value(): TxSetComponent[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionPhase;
 
@@ -10370,13 +10383,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionPhase): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionPhase;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionPhase;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionPhase;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionPhase;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class GeneralizedTransactionSet {
@@ -10388,9 +10401,9 @@ declare namespace xdr {
 
     value(): TransactionSetV1;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): GeneralizedTransactionSet;
 
@@ -10400,16 +10413,16 @@ declare namespace xdr {
 
     static toXDR(value: GeneralizedTransactionSet): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): GeneralizedTransactionSet;
+    static fromXDR(input: Buffer, format?: 'raw'): GeneralizedTransactionSet;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): GeneralizedTransactionSet;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionHistoryEntryExt {
@@ -10425,9 +10438,9 @@ declare namespace xdr {
 
     value(): GeneralizedTransactionSet | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionHistoryEntryExt;
 
@@ -10437,16 +10450,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionHistoryEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionHistoryEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionHistoryEntryExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionHistoryEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionHistoryResultEntryExt {
@@ -10456,9 +10469,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionHistoryResultEntryExt;
 
@@ -10470,17 +10483,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): TransactionHistoryResultEntryExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionHistoryResultEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerHeaderHistoryEntryExt {
@@ -10490,9 +10503,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerHeaderHistoryEntryExt;
 
@@ -10502,16 +10515,16 @@ declare namespace xdr {
 
     static toXDR(value: LedgerHeaderHistoryEntryExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerHeaderHistoryEntryExt;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerHeaderHistoryEntryExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LedgerHeaderHistoryEntryExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScpHistoryEntry {
@@ -10523,9 +10536,9 @@ declare namespace xdr {
 
     value(): ScpHistoryEntryV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScpHistoryEntry;
 
@@ -10535,13 +10548,13 @@ declare namespace xdr {
 
     static toXDR(value: ScpHistoryEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScpHistoryEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ScpHistoryEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScpHistoryEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScpHistoryEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerEntryChange {
@@ -10565,9 +10578,9 @@ declare namespace xdr {
 
     value(): LedgerEntry | LedgerEntry | LedgerKey | LedgerEntry;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerEntryChange;
 
@@ -10577,13 +10590,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerEntryChange): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerEntryChange;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerEntryChange;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerEntryChange;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerEntryChange;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractEventBody {
@@ -10595,9 +10608,9 @@ declare namespace xdr {
 
     value(): ContractEventV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractEventBody;
 
@@ -10607,13 +10620,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractEventBody): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractEventBody;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractEventBody;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractEventBody;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractEventBody;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionMeta {
@@ -10641,9 +10654,9 @@ declare namespace xdr {
       | TransactionMetaV2
       | TransactionMetaV3;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionMeta;
 
@@ -10653,13 +10666,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionMeta): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionMeta;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionMeta;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionMeta;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionMeta;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LedgerCloseMeta {
@@ -10679,9 +10692,9 @@ declare namespace xdr {
 
     value(): LedgerCloseMetaV0 | LedgerCloseMetaV1 | LedgerCloseMetaV2;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LedgerCloseMeta;
 
@@ -10691,13 +10704,13 @@ declare namespace xdr {
 
     static toXDR(value: LedgerCloseMeta): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LedgerCloseMeta;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMeta;
 
-    static fromXDR(input: string, format: "hex" | "base64"): LedgerCloseMeta;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMeta;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PeerAddressIp {
@@ -10713,9 +10726,9 @@ declare namespace xdr {
 
     value(): Buffer | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PeerAddressIp;
 
@@ -10725,13 +10738,13 @@ declare namespace xdr {
 
     static toXDR(value: PeerAddressIp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PeerAddressIp;
+    static fromXDR(input: Buffer, format?: 'raw'): PeerAddressIp;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PeerAddressIp;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PeerAddressIp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SurveyResponseBody {
@@ -10755,9 +10768,9 @@ declare namespace xdr {
 
     value(): TopologyResponseBodyV0 | TopologyResponseBodyV1;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SurveyResponseBody;
 
@@ -10767,13 +10780,13 @@ declare namespace xdr {
 
     static toXDR(value: SurveyResponseBody): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SurveyResponseBody;
+    static fromXDR(input: Buffer, format?: 'raw'): SurveyResponseBody;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SurveyResponseBody;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SurveyResponseBody;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class StellarMessage {
@@ -10885,9 +10898,9 @@ declare namespace xdr {
       | FloodDemand
       | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): StellarMessage;
 
@@ -10897,13 +10910,13 @@ declare namespace xdr {
 
     static toXDR(value: StellarMessage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): StellarMessage;
+    static fromXDR(input: Buffer, format?: 'raw'): StellarMessage;
 
-    static fromXDR(input: string, format: "hex" | "base64"): StellarMessage;
+    static fromXDR(input: string, format: 'hex' | 'base64'): StellarMessage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AuthenticatedMessage {
@@ -10915,9 +10928,9 @@ declare namespace xdr {
 
     value(): AuthenticatedMessageV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AuthenticatedMessage;
 
@@ -10927,16 +10940,16 @@ declare namespace xdr {
 
     static toXDR(value: AuthenticatedMessage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AuthenticatedMessage;
+    static fromXDR(input: Buffer, format?: 'raw'): AuthenticatedMessage;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): AuthenticatedMessage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolParameters {
@@ -10952,9 +10965,9 @@ declare namespace xdr {
 
     value(): LiquidityPoolConstantProductParameters;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolParameters;
 
@@ -10964,16 +10977,16 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolParameters): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolParameters;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolParameters;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolParameters;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class MuxedAccount {
@@ -10989,9 +11002,9 @@ declare namespace xdr {
 
     value(): Buffer | MuxedAccountMed25519;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): MuxedAccount;
 
@@ -11001,13 +11014,13 @@ declare namespace xdr {
 
     static toXDR(value: MuxedAccount): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): MuxedAccount;
+    static fromXDR(input: Buffer, format?: 'raw'): MuxedAccount;
 
-    static fromXDR(input: string, format: "hex" | "base64"): MuxedAccount;
+    static fromXDR(input: string, format: 'hex' | 'base64'): MuxedAccount;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ChangeTrustAsset {
@@ -11029,9 +11042,9 @@ declare namespace xdr {
 
     value(): AlphaNum4 | AlphaNum12 | LiquidityPoolParameters | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ChangeTrustAsset;
 
@@ -11041,13 +11054,13 @@ declare namespace xdr {
 
     static toXDR(value: ChangeTrustAsset): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ChangeTrustAsset;
+    static fromXDR(input: Buffer, format?: 'raw'): ChangeTrustAsset;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ChangeTrustAsset;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ChangeTrustAsset;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class RevokeSponsorshipOp {
@@ -11065,9 +11078,9 @@ declare namespace xdr {
 
     value(): LedgerKey | RevokeSponsorshipOpSigner;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): RevokeSponsorshipOp;
 
@@ -11077,16 +11090,16 @@ declare namespace xdr {
 
     static toXDR(value: RevokeSponsorshipOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): RevokeSponsorshipOp;
+    static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipOp;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): RevokeSponsorshipOp;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractIdPreimage {
@@ -11106,9 +11119,9 @@ declare namespace xdr {
 
     value(): ContractIdPreimageFromAddress | Asset;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractIdPreimage;
 
@@ -11118,13 +11131,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractIdPreimage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractIdPreimage;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractIdPreimage;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractIdPreimage;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractIdPreimage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HostFunction {
@@ -11148,9 +11161,9 @@ declare namespace xdr {
 
     value(): InvokeContractArgs | CreateContractArgs | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HostFunction;
 
@@ -11160,13 +11173,13 @@ declare namespace xdr {
 
     static toXDR(value: HostFunction): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HostFunction;
+    static fromXDR(input: Buffer, format?: 'raw'): HostFunction;
 
-    static fromXDR(input: string, format: "hex" | "base64"): HostFunction;
+    static fromXDR(input: string, format: 'hex' | 'base64'): HostFunction;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanAuthorizedFunction {
@@ -11186,9 +11199,9 @@ declare namespace xdr {
 
     value(): InvokeContractArgs | CreateContractArgs;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanAuthorizedFunction;
 
@@ -11198,16 +11211,16 @@ declare namespace xdr {
 
     static toXDR(value: SorobanAuthorizedFunction): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanAuthorizedFunction;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanAuthorizedFunction;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SorobanAuthorizedFunction;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SorobanCredentials {
@@ -11223,9 +11236,9 @@ declare namespace xdr {
 
     value(): SorobanAddressCredentials | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SorobanCredentials;
 
@@ -11235,13 +11248,13 @@ declare namespace xdr {
 
     static toXDR(value: SorobanCredentials): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SorobanCredentials;
+    static fromXDR(input: Buffer, format?: 'raw'): SorobanCredentials;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SorobanCredentials;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SorobanCredentials;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class OperationBody {
@@ -11411,9 +11424,9 @@ declare namespace xdr {
       | RestoreFootprintOp
       | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): OperationBody;
 
@@ -11423,13 +11436,13 @@ declare namespace xdr {
 
     static toXDR(value: OperationBody): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): OperationBody;
+    static fromXDR(input: Buffer, format?: 'raw'): OperationBody;
 
-    static fromXDR(input: string, format: "hex" | "base64"): OperationBody;
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationBody;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class HashIdPreimage {
@@ -11465,9 +11478,9 @@ declare namespace xdr {
       | HashIdPreimageContractId
       | HashIdPreimageSorobanAuthorization;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): HashIdPreimage;
 
@@ -11477,13 +11490,13 @@ declare namespace xdr {
 
     static toXDR(value: HashIdPreimage): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): HashIdPreimage;
+    static fromXDR(input: Buffer, format?: 'raw'): HashIdPreimage;
 
-    static fromXDR(input: string, format: "hex" | "base64"): HashIdPreimage;
+    static fromXDR(input: string, format: 'hex' | 'base64'): HashIdPreimage;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Memo {
@@ -11509,9 +11522,9 @@ declare namespace xdr {
 
     value(): string | Buffer | Uint64 | Buffer | Buffer | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Memo;
 
@@ -11521,13 +11534,13 @@ declare namespace xdr {
 
     static toXDR(value: Memo): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Memo;
+    static fromXDR(input: Buffer, format?: 'raw'): Memo;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Memo;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Memo;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class Preconditions {
@@ -11545,9 +11558,9 @@ declare namespace xdr {
 
     value(): TimeBounds | PreconditionsV2 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): Preconditions;
 
@@ -11557,13 +11570,13 @@ declare namespace xdr {
 
     static toXDR(value: Preconditions): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): Preconditions;
+    static fromXDR(input: Buffer, format?: 'raw'): Preconditions;
 
-    static fromXDR(input: string, format: "hex" | "base64"): Preconditions;
+    static fromXDR(input: string, format: 'hex' | 'base64'): Preconditions;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionV0Ext {
@@ -11573,9 +11586,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionV0Ext;
 
@@ -11585,13 +11598,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionV0Ext): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionV0Ext;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionV0Ext;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionV0Ext;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionV0Ext;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionExt {
@@ -11605,9 +11618,9 @@ declare namespace xdr {
 
     value(): SorobanTransactionData | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionExt;
 
@@ -11617,13 +11630,13 @@ declare namespace xdr {
 
     static toXDR(value: TransactionExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionExt;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionExt;
 
-    static fromXDR(input: string, format: "hex" | "base64"): TransactionExt;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TransactionExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class FeeBumpTransactionInnerTx {
@@ -11637,9 +11650,9 @@ declare namespace xdr {
 
     value(): TransactionV1Envelope;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): FeeBumpTransactionInnerTx;
 
@@ -11649,16 +11662,16 @@ declare namespace xdr {
 
     static toXDR(value: FeeBumpTransactionInnerTx): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): FeeBumpTransactionInnerTx;
+    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionInnerTx;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): FeeBumpTransactionInnerTx;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class FeeBumpTransactionExt {
@@ -11668,9 +11681,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): FeeBumpTransactionExt;
 
@@ -11680,16 +11693,16 @@ declare namespace xdr {
 
     static toXDR(value: FeeBumpTransactionExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): FeeBumpTransactionExt;
+    static fromXDR(input: Buffer, format?: 'raw'): FeeBumpTransactionExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): FeeBumpTransactionExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionEnvelope {
@@ -11714,9 +11727,9 @@ declare namespace xdr {
       | TransactionV1Envelope
       | FeeBumpTransactionEnvelope;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionEnvelope;
 
@@ -11726,16 +11739,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionEnvelope): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionEnvelope;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionEnvelope;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionEnvelope;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionSignaturePayloadTaggedTransaction {
@@ -11755,9 +11768,9 @@ declare namespace xdr {
 
     value(): Transaction | FeeBumpTransaction;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionSignaturePayloadTaggedTransaction;
 
@@ -11774,17 +11787,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): TransactionSignaturePayloadTaggedTransaction;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionSignaturePayloadTaggedTransaction;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimAtom {
@@ -11804,9 +11817,9 @@ declare namespace xdr {
 
     value(): ClaimOfferAtomV0 | ClaimOfferAtom | ClaimLiquidityAtom;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimAtom;
 
@@ -11816,13 +11829,13 @@ declare namespace xdr {
 
     static toXDR(value: ClaimAtom): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimAtom;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimAtom;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClaimAtom;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClaimAtom;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class CreateAccountResult {
@@ -11840,9 +11853,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): CreateAccountResult;
 
@@ -11852,16 +11865,16 @@ declare namespace xdr {
 
     static toXDR(value: CreateAccountResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): CreateAccountResult;
+    static fromXDR(input: Buffer, format?: 'raw'): CreateAccountResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): CreateAccountResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PaymentResult {
@@ -11889,9 +11902,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PaymentResult;
 
@@ -11901,13 +11914,13 @@ declare namespace xdr {
 
     static toXDR(value: PaymentResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PaymentResult;
+    static fromXDR(input: Buffer, format?: 'raw'): PaymentResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PaymentResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PaymentResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PathPaymentStrictReceiveResult {
@@ -11951,9 +11964,9 @@ declare namespace xdr {
 
     value(): PathPaymentStrictReceiveResultSuccess | Asset | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PathPaymentStrictReceiveResult;
 
@@ -11965,17 +11978,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): PathPaymentStrictReceiveResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): PathPaymentStrictReceiveResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PathPaymentStrictSendResult {
@@ -12019,9 +12032,9 @@ declare namespace xdr {
 
     value(): PathPaymentStrictSendResultSuccess | Asset | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PathPaymentStrictSendResult;
 
@@ -12031,16 +12044,16 @@ declare namespace xdr {
 
     static toXDR(value: PathPaymentStrictSendResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PathPaymentStrictSendResult;
+    static fromXDR(input: Buffer, format?: 'raw'): PathPaymentStrictSendResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): PathPaymentStrictSendResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageOfferSuccessResultOffer {
@@ -12056,9 +12069,9 @@ declare namespace xdr {
 
     value(): OfferEntry | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageOfferSuccessResultOffer;
 
@@ -12070,17 +12083,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ManageOfferSuccessResultOffer;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ManageOfferSuccessResultOffer;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageSellOfferResult {
@@ -12118,9 +12131,9 @@ declare namespace xdr {
 
     value(): ManageOfferSuccessResult | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageSellOfferResult;
 
@@ -12130,16 +12143,16 @@ declare namespace xdr {
 
     static toXDR(value: ManageSellOfferResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageSellOfferResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageSellOfferResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ManageSellOfferResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageBuyOfferResult {
@@ -12177,9 +12190,9 @@ declare namespace xdr {
 
     value(): ManageOfferSuccessResult | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageBuyOfferResult;
 
@@ -12189,16 +12202,16 @@ declare namespace xdr {
 
     static toXDR(value: ManageBuyOfferResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageBuyOfferResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageBuyOfferResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ManageBuyOfferResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SetOptionsResult {
@@ -12228,9 +12241,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SetOptionsResult;
 
@@ -12240,13 +12253,13 @@ declare namespace xdr {
 
     static toXDR(value: SetOptionsResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SetOptionsResult;
+    static fromXDR(input: Buffer, format?: 'raw'): SetOptionsResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SetOptionsResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SetOptionsResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ChangeTrustResult {
@@ -12272,9 +12285,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ChangeTrustResult;
 
@@ -12284,13 +12297,13 @@ declare namespace xdr {
 
     static toXDR(value: ChangeTrustResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ChangeTrustResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ChangeTrustResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ChangeTrustResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ChangeTrustResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AllowTrustResult {
@@ -12312,9 +12325,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AllowTrustResult;
 
@@ -12324,13 +12337,13 @@ declare namespace xdr {
 
     static toXDR(value: AllowTrustResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AllowTrustResult;
+    static fromXDR(input: Buffer, format?: 'raw'): AllowTrustResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AllowTrustResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AllowTrustResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class AccountMergeResult {
@@ -12356,9 +12369,9 @@ declare namespace xdr {
 
     value(): Int64 | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): AccountMergeResult;
 
@@ -12368,13 +12381,13 @@ declare namespace xdr {
 
     static toXDR(value: AccountMergeResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): AccountMergeResult;
+    static fromXDR(input: Buffer, format?: 'raw'): AccountMergeResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): AccountMergeResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): AccountMergeResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InflationResult {
@@ -12388,9 +12401,9 @@ declare namespace xdr {
 
     value(): InflationPayout[] | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InflationResult;
 
@@ -12400,13 +12413,13 @@ declare namespace xdr {
 
     static toXDR(value: InflationResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InflationResult;
+    static fromXDR(input: Buffer, format?: 'raw'): InflationResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): InflationResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): InflationResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ManageDataResult {
@@ -12424,9 +12437,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ManageDataResult;
 
@@ -12436,13 +12449,13 @@ declare namespace xdr {
 
     static toXDR(value: ManageDataResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ManageDataResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ManageDataResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ManageDataResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ManageDataResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BumpSequenceResult {
@@ -12454,9 +12467,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BumpSequenceResult;
 
@@ -12466,13 +12479,13 @@ declare namespace xdr {
 
     static toXDR(value: BumpSequenceResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): BumpSequenceResult;
+    static fromXDR(input: Buffer, format?: 'raw'): BumpSequenceResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): BumpSequenceResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): BumpSequenceResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class CreateClaimableBalanceResult {
@@ -12496,9 +12509,9 @@ declare namespace xdr {
 
     value(): ClaimableBalanceId | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): CreateClaimableBalanceResult;
 
@@ -12508,16 +12521,16 @@ declare namespace xdr {
 
     static toXDR(value: CreateClaimableBalanceResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): CreateClaimableBalanceResult;
+    static fromXDR(input: Buffer, format?: 'raw'): CreateClaimableBalanceResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): CreateClaimableBalanceResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClaimClaimableBalanceResult {
@@ -12537,9 +12550,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClaimClaimableBalanceResult;
 
@@ -12549,16 +12562,16 @@ declare namespace xdr {
 
     static toXDR(value: ClaimClaimableBalanceResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClaimClaimableBalanceResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ClaimClaimableBalanceResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClaimClaimableBalanceResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BeginSponsoringFutureReservesResult {
@@ -12574,9 +12587,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BeginSponsoringFutureReservesResult;
 
@@ -12588,17 +12601,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): BeginSponsoringFutureReservesResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): BeginSponsoringFutureReservesResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class EndSponsoringFutureReservesResult {
@@ -12610,9 +12623,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): EndSponsoringFutureReservesResult;
 
@@ -12624,17 +12637,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): EndSponsoringFutureReservesResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): EndSponsoringFutureReservesResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class RevokeSponsorshipResult {
@@ -12654,9 +12667,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): RevokeSponsorshipResult;
 
@@ -12666,16 +12679,16 @@ declare namespace xdr {
 
     static toXDR(value: RevokeSponsorshipResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): RevokeSponsorshipResult;
+    static fromXDR(input: Buffer, format?: 'raw'): RevokeSponsorshipResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): RevokeSponsorshipResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClawbackResult {
@@ -12693,9 +12706,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClawbackResult;
 
@@ -12705,13 +12718,13 @@ declare namespace xdr {
 
     static toXDR(value: ClawbackResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ClawbackResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ClawbackResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ClawbackResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ClawbackResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ClawbackClaimableBalanceResult {
@@ -12727,9 +12740,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ClawbackClaimableBalanceResult;
 
@@ -12741,17 +12754,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): ClawbackClaimableBalanceResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ClawbackClaimableBalanceResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SetTrustLineFlagsResult {
@@ -12771,9 +12784,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SetTrustLineFlagsResult;
 
@@ -12783,16 +12796,16 @@ declare namespace xdr {
 
     static toXDR(value: SetTrustLineFlagsResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SetTrustLineFlagsResult;
+    static fromXDR(input: Buffer, format?: 'raw'): SetTrustLineFlagsResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): SetTrustLineFlagsResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolDepositResult {
@@ -12816,9 +12829,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolDepositResult;
 
@@ -12828,16 +12841,16 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolDepositResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolDepositResult;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolDepositResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolDepositResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class LiquidityPoolWithdrawResult {
@@ -12857,9 +12870,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): LiquidityPoolWithdrawResult;
 
@@ -12869,16 +12882,16 @@ declare namespace xdr {
 
     static toXDR(value: LiquidityPoolWithdrawResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): LiquidityPoolWithdrawResult;
+    static fromXDR(input: Buffer, format?: 'raw'): LiquidityPoolWithdrawResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): LiquidityPoolWithdrawResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InvokeHostFunctionResult {
@@ -12898,9 +12911,9 @@ declare namespace xdr {
 
     value(): Buffer | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InvokeHostFunctionResult;
 
@@ -12910,16 +12923,16 @@ declare namespace xdr {
 
     static toXDR(value: InvokeHostFunctionResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InvokeHostFunctionResult;
+    static fromXDR(input: Buffer, format?: 'raw'): InvokeHostFunctionResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InvokeHostFunctionResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class BumpFootprintExpirationResult {
@@ -12933,9 +12946,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): BumpFootprintExpirationResult;
 
@@ -12947,17 +12960,17 @@ declare namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: "raw",
+      format?: 'raw',
     ): BumpFootprintExpirationResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): BumpFootprintExpirationResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class RestoreFootprintResult {
@@ -12971,9 +12984,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): RestoreFootprintResult;
 
@@ -12983,16 +12996,16 @@ declare namespace xdr {
 
     static toXDR(value: RestoreFootprintResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): RestoreFootprintResult;
+    static fromXDR(input: Buffer, format?: 'raw'): RestoreFootprintResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): RestoreFootprintResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class OperationResultTr {
@@ -13189,9 +13202,9 @@ declare namespace xdr {
       | BumpFootprintExpirationResult
       | RestoreFootprintResult;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): OperationResultTr;
 
@@ -13201,13 +13214,13 @@ declare namespace xdr {
 
     static toXDR(value: OperationResultTr): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): OperationResultTr;
+    static fromXDR(input: Buffer, format?: 'raw'): OperationResultTr;
 
-    static fromXDR(input: string, format: "hex" | "base64"): OperationResultTr;
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationResultTr;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class OperationResult {
@@ -13231,9 +13244,9 @@ declare namespace xdr {
 
     value(): OperationResultTr | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): OperationResult;
 
@@ -13243,13 +13256,13 @@ declare namespace xdr {
 
     static toXDR(value: OperationResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): OperationResult;
+    static fromXDR(input: Buffer, format?: 'raw'): OperationResult;
 
-    static fromXDR(input: string, format: "hex" | "base64"): OperationResult;
+    static fromXDR(input: string, format: 'hex' | 'base64'): OperationResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InnerTransactionResultResult {
@@ -13293,9 +13306,9 @@ declare namespace xdr {
 
     value(): OperationResult[] | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InnerTransactionResultResult;
 
@@ -13305,16 +13318,16 @@ declare namespace xdr {
 
     static toXDR(value: InnerTransactionResultResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InnerTransactionResultResult;
+    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InnerTransactionResultResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class InnerTransactionResultExt {
@@ -13324,9 +13337,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): InnerTransactionResultExt;
 
@@ -13336,16 +13349,16 @@ declare namespace xdr {
 
     static toXDR(value: InnerTransactionResultExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): InnerTransactionResultExt;
+    static fromXDR(input: Buffer, format?: 'raw'): InnerTransactionResultExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): InnerTransactionResultExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionResultResult {
@@ -13401,9 +13414,9 @@ declare namespace xdr {
 
     value(): InnerTransactionResultPair | OperationResult[] | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionResultResult;
 
@@ -13413,16 +13426,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionResultResult): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionResultResult;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultResult;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionResultResult;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class TransactionResultExt {
@@ -13432,9 +13445,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): TransactionResultExt;
 
@@ -13444,16 +13457,16 @@ declare namespace xdr {
 
     static toXDR(value: TransactionResultExt): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): TransactionResultExt;
+    static fromXDR(input: Buffer, format?: 'raw'): TransactionResultExt;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): TransactionResultExt;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ExtensionPoint {
@@ -13463,9 +13476,9 @@ declare namespace xdr {
 
     value(): void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ExtensionPoint;
 
@@ -13475,13 +13488,13 @@ declare namespace xdr {
 
     static toXDR(value: ExtensionPoint): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ExtensionPoint;
+    static fromXDR(input: Buffer, format?: 'raw'): ExtensionPoint;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ExtensionPoint;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ExtensionPoint;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class PublicKey {
@@ -13493,9 +13506,9 @@ declare namespace xdr {
 
     value(): Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): PublicKey;
 
@@ -13505,13 +13518,13 @@ declare namespace xdr {
 
     static toXDR(value: PublicKey): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): PublicKey;
+    static fromXDR(input: Buffer, format?: 'raw'): PublicKey;
 
-    static fromXDR(input: string, format: "hex" | "base64"): PublicKey;
+    static fromXDR(input: string, format: 'hex' | 'base64'): PublicKey;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class SignerKey {
@@ -13539,9 +13552,9 @@ declare namespace xdr {
 
     value(): Buffer | Buffer | Buffer | SignerKeyEd25519SignedPayload;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): SignerKey;
 
@@ -13551,13 +13564,13 @@ declare namespace xdr {
 
     static toXDR(value: SignerKey): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): SignerKey;
+    static fromXDR(input: Buffer, format?: 'raw'): SignerKey;
 
-    static fromXDR(input: string, format: "hex" | "base64"): SignerKey;
+    static fromXDR(input: string, format: 'hex' | 'base64'): SignerKey;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScError {
@@ -13589,9 +13602,9 @@ declare namespace xdr {
 
     value(): number | ScErrorCode;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScError;
 
@@ -13601,13 +13614,13 @@ declare namespace xdr {
 
     static toXDR(value: ScError): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScError;
+    static fromXDR(input: Buffer, format?: 'raw'): ScError;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScError;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScError;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ContractExecutable {
@@ -13621,9 +13634,9 @@ declare namespace xdr {
 
     value(): Buffer | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ContractExecutable;
 
@@ -13633,13 +13646,13 @@ declare namespace xdr {
 
     static toXDR(value: ContractExecutable): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ContractExecutable;
+    static fromXDR(input: Buffer, format?: 'raw'): ContractExecutable;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ContractExecutable;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ContractExecutable;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScAddress {
@@ -13655,9 +13668,9 @@ declare namespace xdr {
 
     value(): AccountId | Buffer;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScAddress;
 
@@ -13667,13 +13680,13 @@ declare namespace xdr {
 
     static toXDR(value: ScAddress): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScAddress;
+    static fromXDR(input: Buffer, format?: 'raw'): ScAddress;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScAddress;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScAddress;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScVal {
@@ -13790,9 +13803,9 @@ declare namespace xdr {
       | ScContractInstance
       | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScVal;
 
@@ -13802,13 +13815,13 @@ declare namespace xdr {
 
     static toXDR(value: ScVal): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScVal;
+    static fromXDR(input: Buffer, format?: 'raw'): ScVal;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScVal;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScVal;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScEnvMetaEntry {
@@ -13820,9 +13833,9 @@ declare namespace xdr {
 
     value(): Uint64;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScEnvMetaEntry;
 
@@ -13832,13 +13845,13 @@ declare namespace xdr {
 
     static toXDR(value: ScEnvMetaEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScEnvMetaEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ScEnvMetaEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScEnvMetaEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScEnvMetaEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScMetaEntry {
@@ -13850,9 +13863,9 @@ declare namespace xdr {
 
     value(): ScMetaV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScMetaEntry;
 
@@ -13862,13 +13875,13 @@ declare namespace xdr {
 
     static toXDR(value: ScMetaEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScMetaEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ScMetaEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScMetaEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScMetaEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecTypeDef {
@@ -13953,9 +13966,9 @@ declare namespace xdr {
       | ScSpecTypeUdt
       | void;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecTypeDef;
 
@@ -13965,13 +13978,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecTypeDef): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecTypeDef;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeDef;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecTypeDef;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeDef;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecUdtUnionCaseV0 {
@@ -13991,9 +14004,9 @@ declare namespace xdr {
 
     value(): ScSpecUdtUnionCaseVoidV0 | ScSpecUdtUnionCaseTupleV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecUdtUnionCaseV0;
 
@@ -14003,16 +14016,16 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecUdtUnionCaseV0): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecUdtUnionCaseV0;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecUdtUnionCaseV0;
 
     static fromXDR(
       input: string,
-      format: "hex" | "base64",
+      format: 'hex' | 'base64',
     ): ScSpecUdtUnionCaseV0;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ScSpecEntry {
@@ -14045,9 +14058,9 @@ declare namespace xdr {
       | ScSpecUdtEnumV0
       | ScSpecUdtErrorEnumV0;
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ScSpecEntry;
 
@@ -14057,13 +14070,13 @@ declare namespace xdr {
 
     static toXDR(value: ScSpecEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ScSpecEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ScSpecEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
   class ConfigSettingEntry {
@@ -14178,9 +14191,9 @@ declare namespace xdr {
       | ConfigSettingContractExecutionLanesV0
       | Uint64[];
 
-    toXDR(format?: "raw"): Buffer;
+    toXDR(format?: 'raw'): Buffer;
 
-    toXDR(format: "hex" | "base64"): string;
+    toXDR(format: 'hex' | 'base64'): string;
 
     static read(io: Buffer): ConfigSettingEntry;
 
@@ -14190,12 +14203,12 @@ declare namespace xdr {
 
     static toXDR(value: ConfigSettingEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: "raw"): ConfigSettingEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): ConfigSettingEntry;
 
-    static fromXDR(input: string, format: "hex" | "base64"): ConfigSettingEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): ConfigSettingEntry;
 
-    static validateXDR(input: Buffer, format?: "raw"): boolean;
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
-    static validateXDR(input: string, format: "hex" | "base64"): boolean;
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 }
