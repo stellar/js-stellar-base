@@ -1,4 +1,4 @@
-const NULL_ADDRESS = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM'
+const NULL_ADDRESS = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM';
 
 describe('Contract', function () {
   describe('constructor', function () {
@@ -13,7 +13,7 @@ describe('Contract', function () {
       expect(() => {
         new StellarBase.Contract('0'.repeat(63) + '1');
       }).to.throw();
-    })
+    });
 
     it('throws on invalid ids', function () {
       expect(() => {
@@ -25,9 +25,7 @@ describe('Contract', function () {
   describe('address', function () {
     it('returns the contract address', function () {
       let contract = new StellarBase.Contract(NULL_ADDRESS);
-      expect(contract.address().toString()).to.equal(
-        NULL_ADDRESS
-      );
+      expect(contract.address().toString()).to.equal(NULL_ADDRESS);
     });
   });
 

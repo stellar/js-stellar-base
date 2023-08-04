@@ -55,5 +55,6 @@ export * from './numbers';
 export * from './scval';
 export * from './events';
 export * from './sorobandata_builder';
+export * from './auth';
 
 export default module.exports;
