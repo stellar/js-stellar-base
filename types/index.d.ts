@@ -1160,6 +1160,14 @@ export function authorizeInvocation(
   invocation: xdr.SorobanAuthorizedInvocation
 ): xdr.SorobanAuthorizationEntry;
 
+export function authorizeInvocationCallback(
+  signingMethod: (input: Uint8Array) => Uint8Array,
+  publicKey: string,
+  networkPassphrase: string,
+  validUntil: number,
+  invocation: xdr.SorobanAuthorizedInvocation
+): xdr.SorobanAuthorizationEntry;
+
 export function buildAuthEnvelope(
   networkPassphrase: string,
   validUntil: number,

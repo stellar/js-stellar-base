@@ -10,10 +10,10 @@ import { nativeToScVal } from './scval';
 /**
  * This builds an authorization entry that indicates to
  * {@link Operation.invokeHostFunction} that a particular identity (i.e. signing
- * {@link Keypair}) approves the execution of an invocation tree (i.e. a
- * simulation-acquired {@link xdr.SorobanAuthorizedInvocation}) on a particular
- * network (uniquely identified by its passphrase, see {@link Networks}) until a
- * particular ledger sequence is reached.
+ * {@link Keypair} or other signer) approves the execution of an invocation tree
+ * (i.e. a simulation-acquired {@link xdr.SorobanAuthorizedInvocation}) on a
+ * particular network (uniquely identified by its passphrase, see
+ * {@link Networks}) until a particular ledger sequence is reached.
  *
  * This enables building an {@link xdr.SorobanAuthorizationEntry} without
  * worrying about how to combine {@link buildAuthEnvelope} and
@@ -45,6 +45,54 @@ export function authorizeInvocation(
   const input = hash(preimage.toXDR());
   const signature = signer.sign(input);
   return buildAuthEntry(preimage, signature, signer.publicKey());
+}
+
+/**
+ * An asynchronous callback to sign an input buffer.
+ *
+ * @callback signingCallback
+ *
+ * @param {Uint8Array} input  the raw buffer to sign
+ * @returns {Uint8Array} the signature on the input buffer
+ */
+
+/**
+ * This works like {@link authorizeInvocation}, but allows passing an
+ * asynchronous callback as a "signing method" (e.g. {@link Keypair.sign}) and a
+ * public key instead of a specific {@link Keypair}.
+ *
+ * This is to make two-step authorization (i.e. custom signing flows) easier.
+ *
+ * @borrows authorizeInvocation
+ *
+ * @param {string} publicKey    the public identity that is authorizing this
+ *    invocation via its signature
+ * @param {signingCallback} signingMethod  a function which takes a single
+ *    bytearray parameter (i.e. `Uint8Array`) and returns a bytearray
+ *    representing the signature of that input via the private key corresponding
+ *    to the `publicKey` parameter
+ * @param {number} validUntil   the (exclusive) future ledger sequence number
+ *    until which this authorization entry should be valid (if
+ *    `currentLedgerSeq==validUntil`, this is expired))
+ * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
+ *    we're authorizing (likely, this comes from transaction simulation)
+ *
+ * @param {xdr.SorobanAuthorizedInvocation} invocation
+ *
+ * @returns {xdr.SorobanAuthorizationEntry}
+ * @see authorizeInvocation
+ */
+
+export async function authorizeInvocationCallback(
+  publicKey,
+  signingMethod,
+  validUntil,
+  invocation
+) {
+  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation);
+  const input = hash(preimage.toXDR());
+  const signature = await signingMethod(input);
+  return buildAuthEntry(preimage, signature, publicKey);
 }
 
 /**
