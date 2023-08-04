@@ -1161,8 +1161,8 @@ export function authorizeInvocation(
 ): xdr.SorobanAuthorizationEntry;
 
 export function authorizeInvocationCallback(
-  signingMethod: (input: Uint8Array) => Uint8Array,
   publicKey: string,
+  signingMethod: (input: Buffer) => Buffer,
   networkPassphrase: string,
   validUntil: number,
   invocation: xdr.SorobanAuthorizedInvocation

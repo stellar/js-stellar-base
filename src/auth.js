@@ -50,8 +50,8 @@ export function authorizeInvocation(
 /**
  * An asynchronous callback to sign an input buffer.
  *
+ * @async
  * @callback signingCallback
- *
  * @param {Uint8Array} input  the raw buffer to sign
  * @returns {Uint8Array} the signature on the input buffer
  */
@@ -67,10 +67,11 @@ export function authorizeInvocation(
  *
  * @param {string} publicKey    the public identity that is authorizing this
  *    invocation via its signature
- * @param {signingCallback} signingMethod  a function which takes a single
- *    bytearray parameter (i.e. `Uint8Array`) and returns a bytearray
- *    representing the signature of that input via the private key corresponding
- *    to the `publicKey` parameter
+ * @param {function(Buffer): Buffer} signingMethod  a function which takes
+ *    an input bytearray and returns its signature as signed by the private key
+ *    corresponding to the `publicKey` parameter
+ * @param {string}  networkPassphrase   the network passphrase is incorprated
+ *    into the signature (see {@link Networks} for options)
  * @param {number} validUntil   the (exclusive) future ledger sequence number
  *    until which this authorization entry should be valid (if
  *    `currentLedgerSeq==validUntil`, this is expired))
@@ -79,13 +80,13 @@ export function authorizeInvocation(
  *
  * @param {xdr.SorobanAuthorizedInvocation} invocation
  *
- * @returns {xdr.SorobanAuthorizationEntry}
+ * @returns {Promise<xdr.SorobanAuthorizationEntry>}
  * @see authorizeInvocation
  */
-
 export async function authorizeInvocationCallback(
   publicKey,
   signingMethod,
+  networkPassphrase,
   validUntil,
   invocation
 ) {

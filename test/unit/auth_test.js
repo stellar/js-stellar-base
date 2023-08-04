@@ -48,24 +48,31 @@ describe('building authorization entries', function () {
     const nextCred = nextEntry.credentials().address();
 
     expect(cred.nonce()).to.not.equal(nextCred.nonce());
+  });
 
-    const thirdEntry = StellarBase.authorizeInvocationCallback(
-      (input) => { return kp.sign(input); },
+  it('works asynchronously', function (done) {
+    StellarBase.authorizeInvocationCallback(
       kp.publicKey(),
+      async (v) => kp.sign(v),
       StellarBase.Networks.FUTURENET,
       123,
-      invocation,
-    );
+      invocation
+    )
+      .then((entry) => {
+        let cred = entry.credentials().address();
+        let args = cred
+          .signatureArgs()
+          .map((v) => StellarBase.scValToNative(v));
 
-    cred = thirdEntry.credentials().address();
-    args = cred.signatureArgs().map((v) => StellarBase.scValToNative(v));
+        expect(cred.signatureExpirationLedger()).to.equal(123);
+        expect(args.length).to.equal(1);
+        expect(
+          StellarBase.StrKey.encodeEd25519PublicKey(args[0]['public_key'])
+        ).to.equal(kp.publicKey());
+        expect(entry.rootInvocation()).to.eql(invocation);
 
-    expect(cred.signatureExpirationLedger()).to.equal(123);
-    expect(args.length).to.equal(1);
-    expect(
-      StellarBase.StrKey.encodeEd25519PublicKey(args[0]['public_key'])
-    ).to.equal(kp.publicKey());
-    expect(entry.rootInvocation()).to.eql(invocation);
-
+        done();
+      })
+      .catch((err) => done(err));
   });
 });
