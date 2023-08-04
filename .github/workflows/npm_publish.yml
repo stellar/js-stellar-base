@@ -2,6 +2,8 @@ name: npm publish
 on:
   release:
     types: [published]
+  push:
+    branches: [soroban]
 
 jobs:
   build:
@@ -23,6 +25,6 @@ jobs:
         run: yarn preversion
 
       - name: Publish release npm package
-        run: yarn publish --tag beta
+        run: yarn publish --tag soroban
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
