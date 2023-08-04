@@ -53,7 +53,8 @@ describe('Contract', function () {
   describe('call', function () {
     let call = new StellarBase.Contract(NULL_ADDRESS).call(
       'method',
-      StellarBase.xdr.ScVal.scvU32(123)
+      StellarBase.xdr.ScVal.scvU32(123),
+      StellarBase.xdr.ScVal.scvString('testing')
     );
     let args = call
       .body()
@@ -62,17 +63,20 @@ describe('Contract', function () {
       .invokeContract();
 
     it('passes the contract id as an ScAddress', function () {
-      expect(args[0]).to.deep.equal(
-        new StellarBase.Contract(NULL_ADDRESS).address().toScVal()
+      expect(args.contractAddress()).to.eql(
+        new StellarBase.Contract(NULL_ADDRESS).address().toScAddress()
       );
     });
 
-    it('passes the method name as the second arg', function () {
-      expect(args[1]).to.deep.equal(StellarBase.xdr.ScVal.scvSymbol('method'));
+    it('passes the method name', function () {
+      expect(args.functionName()).to.equal('method');
     });
 
     it('passes all params after that', function () {
-      expect(args[2]).to.deep.equal(StellarBase.xdr.ScVal.scvU32(123));
+      expect(args.args()).to.eql([
+        StellarBase.xdr.ScVal.scvU32(123),
+        StellarBase.xdr.ScVal.scvString('testing')
+      ]);
     });
   });
 });

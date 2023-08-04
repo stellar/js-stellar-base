@@ -54,11 +54,13 @@ export class Contract {
    */
   call(method, ...params) {
     return Operation.invokeHostFunction({
-      func: xdr.HostFunction.hostFunctionTypeInvokeContract([
-        this.address().toScVal(),
-        xdr.ScVal.scvSymbol(method),
-        ...params
-      ]),
+      func: xdr.HostFunction.hostFunctionTypeInvokeContract(
+        new xdr.InvokeContractArgs({
+          contractAddress: this.address().toScAddress(),
+          functionName: method,
+          args: params
+        })
+      ),
       auth: []
     });
   }

@@ -2021,7 +2021,17 @@ describe('Operation', function () {
   describe('invokeHostFunction()', function () {
     it('creates operation', function () {
       const op = StellarBase.Operation.invokeHostFunction({
-        func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract([]),
+        func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+          new StellarBase.xdr.InvokeContractArgs({
+            contractAddress: new StellarBase.Contract(
+              'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM'
+            )
+              .address()
+              .toScAddress(),
+            functionName: 'hello',
+            args: []
+          })
+        ),
         auth: []
       });
       var xdr = op.toXDR('hex');

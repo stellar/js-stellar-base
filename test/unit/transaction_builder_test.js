@@ -1,5 +1,5 @@
-import { isValidDate } from '../../src/transaction_builder.js';
-import { encodeMuxedAccountToAddress } from '../../src/util/decode_encode_muxed_account.js';
+import { isValidDate } from '../../src/transaction_builder.js'; // unexported
+const encodeMuxedAccountToAddress = StellarBase.encodeMuxedAccountToAddress;
 
 describe('TransactionBuilder', function () {
   describe('constructs a native payment transaction with one operation', function () {
@@ -63,10 +63,12 @@ describe('TransactionBuilder', function () {
   });
 
   describe('constructs a transaction with soroban data', function () {
-    var ext;
     var source;
     var sorobanTransactionData;
+    var contractId;
+
     beforeEach(function () {
+      contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
       source = new StellarBase.Account(
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
@@ -80,12 +82,23 @@ describe('TransactionBuilder', function () {
           instructions: 0,
           readBytes: 5,
           writeBytes: 0,
-          extendedMetaDataSizeBytes: 0
+          contractEventsSizeBytes: 0
         }),
         refundableFee: StellarBase.xdr.Int64.fromString('1'),
         ext: new StellarBase.xdr.ExtensionPoint(0)
       });
     });
+
+    // shortcut for repeated code
+    const makeHostFunction = function () {
+      return StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+        new StellarBase.xdr.InvokeContractArgs({
+          contractAddress: new StellarBase.Address(contractId).toScAddress(),
+          functionName: 'hello',
+          args: []
+        })
+      );
+    };
 
     it('should set the soroban data from object', function (done) {
       let transaction = new StellarBase.TransactionBuilder(source, {
@@ -94,9 +107,7 @@ describe('TransactionBuilder', function () {
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
-            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
-              []
-            ),
+            func: makeHostFunction(),
             auth: []
           })
         )
@@ -109,6 +120,7 @@ describe('TransactionBuilder', function () {
       ).to.deep.equal(sorobanTransactionData);
       done();
     });
+
     it('should set the soroban data from xdr string', function (done) {
       let transaction = new StellarBase.TransactionBuilder(source, {
         fee: 100,
@@ -116,9 +128,7 @@ describe('TransactionBuilder', function () {
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
-            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
-              []
-            ),
+            func: makeHostFunction(),
             auth: []
           })
         )
@@ -131,6 +141,7 @@ describe('TransactionBuilder', function () {
       ).to.deep.equal(sorobanTransactionData);
       done();
     });
+
     it('should set the transaction Ext to default when soroban data present', function (done) {
       let transaction = new StellarBase.TransactionBuilder(source, {
         fee: 100,
@@ -138,9 +149,7 @@ describe('TransactionBuilder', function () {
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
-            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
-              []
-            ),
+            func: makeHostFunction(),
             auth: []
           })
         )

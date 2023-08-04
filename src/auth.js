@@ -1,6 +1,5 @@
 import xdr from './xdr';
 
-import { StrKey } from './strkey';
 import { Keypair } from './keypair';
 import { hash } from './hashing';
 
@@ -170,22 +169,7 @@ export function buildAuthEntry(envelope, signature, publicKey) {
         address: new Address(publicKey).toScAddress(),
         nonce: auth.nonce(),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
-        signatureArgs: [
-          nativeToScVal(
-            {
-              public_key: StrKey.decodeEd25519PublicKey(publicKey),
-              signature
-            },
-            {
-              // force the keys to be interpreted as symbols (expected for
-              // Soroban [contracttype]s)
-              type: {
-                public_key: ['symbol', null],
-                signature: ['symbol', null]
-              }
-            }
-          )
-        ]
+        signature: nativeToScVal(signature)
       })
     )
   });
