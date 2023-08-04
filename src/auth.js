@@ -69,8 +69,6 @@ export function authorizeInvocation(
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
  *
- * @param {xdr.SorobanAuthorizedInvocation} invocation
- *
  * @returns {Promise<xdr.SorobanAuthorizationEntry>}
  * @see authorizeInvocation
  */
