@@ -48,15 +48,6 @@ export function authorizeInvocation(
 }
 
 /**
- * An asynchronous callback to sign an input buffer.
- *
- * @async
- * @callback signingCallback
- * @param {Uint8Array} input  the raw buffer to sign
- * @returns {Uint8Array} the signature on the input buffer
- */
-
-/**
  * This works like {@link authorizeInvocation}, but allows passing an
  * asynchronous callback as a "signing method" (e.g. {@link Keypair.sign}) and a
  * public key instead of a specific {@link Keypair}.
