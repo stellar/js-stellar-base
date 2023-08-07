@@ -122,7 +122,6 @@ export const TimeoutInfinite = 0;
  *     {@link SorobanDataBuilder} to construct complicated combinations of
  *     parameters without mucking with XDR directly. **Note:** For
  *     non-contract(non-Soroban) transactions, this has no effect.
- *
  */
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
@@ -170,6 +169,11 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder} a "prepared" builder instance with the same
    *    configuration and operations as the given transaction
    *
+   * @warning This does not clone the transaction's
+   *    {@link xdr.SorobanTransactionData} (if applicable), use
+   *    {@link SorobanDataBuilder} and {@link TransactionBuilder.setSorobanData}
+   *    as needed, instead..
+   *
    * @todo This cannot clone {@link FeeBumpTransaction}s, yet.
    */
   static cloneFrom(tx, opts = {}) {
@@ -203,7 +207,6 @@ export class TransactionBuilder {
       minAccountSequenceAge: tx.minAccountSequenceAge,
       minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
       extraSigners: tx.extraSigners,
-      sorobanData: tx.sorobanData,
       ...opts
     });
 
