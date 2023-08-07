@@ -203,6 +203,7 @@ export class TransactionBuilder {
       minAccountSequenceAge: tx.minAccountSequenceAge,
       minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
       extraSigners: tx.extraSigners,
+      sorobanData: tx.sorobanData,
       ...opts
     });
 
