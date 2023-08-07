@@ -1029,7 +1029,10 @@ export class TransactionBuilder {
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
 
-  static cloneFrom(tx: Transaction): TransactionBuilder;
+  static cloneFrom(
+    tx: Transaction,
+    optionOverrides?: TransactionBuilder.TransactionBuilderOptions
+  ): TransactionBuilder;
   static buildFeeBumpTransaction(
     feeSource: Keypair | string,
     baseFee: string,
