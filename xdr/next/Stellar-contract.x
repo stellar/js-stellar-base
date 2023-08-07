@@ -38,8 +38,7 @@ enum SCValType
 
     // 128 bits is naturally supported by Rust and we use it for Soroban
     // fixed-point arithmetic prices / balances / similar "quantities". These
-    // are represented in XDR as a pair of 2 u64s, unlike {u,i}256 which is
-    // represented as an array of 32 bytes.
+    // are represented in XDR as a pair of 2 u64s.
     SCV_U128 = 9,
     SCV_I128 = 10,
 
@@ -102,9 +101,19 @@ enum SCErrorCode
     SCEC_UNEXPECTED_SIZE = 9    // something's size wasn't as expected
 };
 
-struct SCError
+union SCError switch (SCErrorType type)
 {
-    SCErrorType type;
+case SCE_CONTRACT:
+    uint32 contractCode;
+case SCE_WASM_VM:
+case SCE_CONTEXT:
+case SCE_STORAGE:
+case SCE_OBJECT:
+case SCE_CRYPTO:
+case SCE_EVENTS:
+case SCE_BUDGET:
+case SCE_VALUE:
+case SCE_AUTH:
     SCErrorCode code;
 };
 

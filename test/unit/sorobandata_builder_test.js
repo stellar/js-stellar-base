@@ -12,7 +12,7 @@ describe('SorobanTransactionData can be built', function () {
       instructions: 1,
       readBytes: 2,
       writeBytes: 3,
-      extendedMetaDataSizeBytes: 4
+      contractEventsSizeBytes: 4
     }),
     ext: new xdr.ExtensionPoint(0),
     refundableFee: new xdr.Int64(5)

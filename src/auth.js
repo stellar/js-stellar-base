@@ -170,22 +170,22 @@ export function buildAuthEntry(envelope, signature, publicKey) {
         address: new Address(publicKey).toScAddress(),
         nonce: auth.nonce(),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
-        signatureArgs: [
-          nativeToScVal(
+        signature: nativeToScVal(
+          [
             {
               public_key: StrKey.decodeEd25519PublicKey(publicKey),
               signature
-            },
-            {
-              // force the keys to be interpreted as symbols (expected for
-              // Soroban [contracttype]s)
-              type: {
-                public_key: ['symbol', null],
-                signature: ['symbol', null]
-              }
             }
-          )
-        ]
+          ],
+          // force conversion of map keys to ScSymbol as this is expected by
+          // custom [contracttype] Rust structures
+          {
+            type: {
+              public_key: ['symbol', null],
+              signature: ['symbol', null]
+            }
+          }
+        )
       })
     )
   });

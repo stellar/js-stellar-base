@@ -44,7 +44,7 @@ export class SorobanDataBuilder {
           instructions: 0,
           readBytes: 0,
           writeBytes: 0,
-          extendedMetaDataSizeBytes: 0
+          contractEventsSizeBytes: 0
         }),
         ext: new xdr.ExtensionPoint(0),
         refundableFee: new xdr.Int64(0)
@@ -84,18 +84,18 @@ export class SorobanDataBuilder {
    * You should almost NEVER need this, as its often generated / provided to you
    * by transaction simulation/preflight from a Soroban RPC server.
    *
-   * @param {number} cpuInstrs      number of CPU instructions
-   * @param {number} readBytes      number of bytes being read
-   * @param {number} writeBytes     number of bytes being written
-   * @param {number} metadataBytes  number of extended metadata bytes
+   * @param {number} cpuInstrs    number of CPU instructions
+   * @param {number} readBytes    number of bytes being read
+   * @param {number} writeBytes   number of bytes being written
+   * @param {number} eventsBytes  number of bytes of serialized contract events
    *
    * @returns {SorobanDataBuilder}
    */
-  setResources(cpuInstrs, readBytes, writeBytes, metadataBytes) {
+  setResources(cpuInstrs, readBytes, writeBytes, eventsBytes) {
     this._data.resources().instructions(cpuInstrs);
     this._data.resources().readBytes(readBytes);
     this._data.resources().writeBytes(writeBytes);
-    this._data.resources().extendedMetaDataSizeBytes(metadataBytes);
+    this._data.resources().contractEventsSizeBytes(eventsBytes);
 
     return this;
   }

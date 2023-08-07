@@ -169,13 +169,14 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (Array.isArray(val)) {
-        if (val.length > 0 && val.some((v) => typeof v !== typeof val[0])) {
+        if (val.length > 1 && val.some((v) => typeof v !== typeof val[0])) {
           throw new TypeError(
-            `array values (${val}) must have the same type (types: ${val
+            `array values ([${val}]) must have the same type (types: [${val
               .map((v) => typeof v)
-              .join(',')})`
+              .join(', ')}])`
           );
         }
+
         return xdr.ScVal.scvVec(val.map((v) => nativeToScVal(v, opts)));
       }
 
@@ -339,23 +340,8 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvDuration().value:
       return new xdr.Uint64(scv.value()).toBigInt();
 
+    // TODO: Convert each status type into a human-readable error string?
     case xdr.ScValType.scvStatus().value:
-      // TODO: Convert each status type into a human-readable error string?
-      switch (scv.value().switch()) {
-        case xdr.ScStatusType.sstOk().value:
-        case xdr.ScStatusType.sstUnknownError().value:
-        case xdr.ScStatusType.sstHostValueError().value:
-        case xdr.ScStatusType.sstHostObjectError().value:
-        case xdr.ScStatusType.sstHostFunctionError().value:
-        case xdr.ScStatusType.sstHostStorageError().value:
-        case xdr.ScStatusType.sstHostContextError().value:
-        case xdr.ScStatusType.sstVmError().value:
-        case xdr.ScStatusType.sstContractError().value:
-        case xdr.ScStatusType.sstHostAuthError().value:
-        default:
-          break;
-      }
-
     // in the fallthrough case, just return the underlying value directly
     default:
       return scv.value();

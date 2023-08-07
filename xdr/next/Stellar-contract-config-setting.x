@@ -48,16 +48,16 @@ struct ConfigSettingContractLedgerCostV0
     int64 feeWriteLedgerEntry; // Fee per ledger entry write
 
     int64 feeRead1KB;  // Fee for reading 1KB
-    int64 feeWrite1KB; // Fee for writing 1KB
 
-    // Bucket list fees grow slowly up to that size
-    int64 bucketListSizeBytes;
-    // Fee rate in stroops when the bucket list is empty
-    int64 bucketListFeeRateLow;
-    // Fee rate in stroops when the bucket list reached bucketListSizeBytes
-    int64 bucketListFeeRateHigh;
-    // Rate multiplier for any additional data past the first bucketListSizeBytes
-    uint32 bucketListGrowthFactor;
+    // The following parameters determine the write fee per 1KB.
+    // Write fee grows linearly until bucket list reaches this size
+    int64 bucketListTargetSizeBytes;
+    // Fee per 1KB write when the bucket list is empty
+    int64 writeFee1KBBucketListLow;
+    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes` 
+    int64 writeFee1KBBucketListHigh;
+    // Write fee multiplier for any additional data past the first `bucketListTargetSizeBytes`
+    uint32 bucketListWriteFeeGrowthFactor;
 };
 
 // Historical data (pushed to core archives) settings for contracts.
@@ -66,25 +66,27 @@ struct ConfigSettingContractHistoricalDataV0
     int64 feeHistorical1KB; // Fee for storing 1KB in archives
 };
 
-// Meta data (pushed to downstream systems) settings for contracts.
-struct ConfigSettingContractMetaDataV0
+// Contract event-related settings.
+struct ConfigSettingContractEventsV0
 {
-    // Maximum size of extended meta data produced by a transaction
-    uint32 txMaxExtendedMetaDataSizeBytes;
-    // Fee for generating 1KB of extended meta data
-    int64 feeExtendedMetaData1KB;
+    // Maximum size of events that a contract call can emit.
+    uint32 txMaxContractEventsSizeBytes;
+    // Fee for generating 1KB of contract events.
+    int64 feeContractEvents1KB;
 };
 
-// Bandwidth related data settings for contracts
+// Bandwidth related data settings for contracts.
+// We consider bandwidth to only be consumed by the transaction envelopes, hence
+// this concerns only transaction sizes.
 struct ConfigSettingContractBandwidthV0
 {
-    // Maximum size in bytes to propagate per ledger
-    uint32 ledgerMaxPropagateSizeBytes;
+    // Maximum sum of all transaction sizes in the ledger in bytes
+    uint32 ledgerMaxTxsSizeBytes;
     // Maximum size in bytes for a transaction
     uint32 txMaxSizeBytes;
 
-    // Fee for propagating 1KB of data
-    int64 feePropagateData1KB;
+    // Fee for 1 KB of transaction size
+    int64 feeTxSize1KB;
 };
 
 enum ContractCostType {
@@ -195,7 +197,7 @@ enum ConfigSettingID
     CONFIG_SETTING_CONTRACT_COMPUTE_V0 = 1,
     CONFIG_SETTING_CONTRACT_LEDGER_COST_V0 = 2,
     CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0 = 3,
-    CONFIG_SETTING_CONTRACT_META_DATA_V0 = 4,
+    CONFIG_SETTING_CONTRACT_EVENTS_V0 = 4,
     CONFIG_SETTING_CONTRACT_BANDWIDTH_V0 = 5,
     CONFIG_SETTING_CONTRACT_COST_PARAMS_CPU_INSTRUCTIONS = 6,
     CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES = 7,
@@ -216,8 +218,8 @@ case CONFIG_SETTING_CONTRACT_LEDGER_COST_V0:
     ConfigSettingContractLedgerCostV0 contractLedgerCost;
 case CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0:
     ConfigSettingContractHistoricalDataV0 contractHistoricalData;
-case CONFIG_SETTING_CONTRACT_META_DATA_V0:
-    ConfigSettingContractMetaDataV0 contractMetaData;
+case CONFIG_SETTING_CONTRACT_EVENTS_V0:
+    ConfigSettingContractEventsV0 contractEvents;
 case CONFIG_SETTING_CONTRACT_BANDWIDTH_V0:
     ConfigSettingContractBandwidthV0 contractBandwidth;
 case CONFIG_SETTING_CONTRACT_COST_PARAMS_CPU_INSTRUCTIONS:
