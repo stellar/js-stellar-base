@@ -515,16 +515,20 @@ export class TransactionBuilder {
   }
 
   /**
-   * Set the {SorobanTransactionData}. For non-contract(non-Soroban)
-   * transactions, this setting has no effect. In the case of Soroban
-   * transactions, set to an instance of SorobanTransactionData. This can
-   * typically be obtained from the simulation response based on a transaction
-   * with a InvokeHostFunctionOp. It provides necessary resource estimations for
-   * contract invocation.
+   * Sets the transaction's internal Soroban transaction data (resources,
+   * footprint, etc.).
+   *
+   * For non-contract(non-Soroban) transactions, this setting has no effect. In
+   * the case of Soroban transactions, this is either an instance of
+   * {@link xdr.SorobanTransactionData} or a base64-encoded string of said
+   * structure. This is usually obtained from the simulation response based on a
+   * transaction with a Soroban operation (e.g.
+   * {@link Operation.invokeHostFunction}, providing necessary resource
+   * and storage footprint estimations for contract invocation.
    *
    * @param {xdr.SorobanTransactionData | string} sorobanData    the
    *    {@link xdr.SorobanTransactionData} as a raw xdr object or a base64
-   *    string to be decoded then set as Transaction.Ext.SorobanData
+   *    string to be decoded
    *
    * @returns {TransactionBuilder}
    * @see {SorobanDataBuilder}
