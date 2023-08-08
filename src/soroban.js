@@ -52,9 +52,7 @@ export class Soroban {
     }
 
     // Trim trailing zeros
-    while (fraction[fraction.length - 1] === '0') {
-      fraction = fraction.substring(0, fraction.length - 1);
-    }
+    fraction = fraction.replace(/0+$/, '');
 
     // If decimals is 0, we have an empty string for fraction
     if (fraction === '') {
