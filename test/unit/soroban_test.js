@@ -18,7 +18,7 @@ describe('Soroban', function () {
       );
     });
 
-    it("returns '10000.00001' for '1000000001.'.' of a token set to 5 decimals", function () {
+    it("returns '10000.00001' for '1000000001.' of a token set to 5 decimals", function () {
       const amount = new BigNumber('1000000001.');
 
       expect(StellarBase.Soroban.formatTokenAmount(amount, 5)).to.equal(
