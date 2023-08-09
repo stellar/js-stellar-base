@@ -1,23 +1,24 @@
-import xdr from './xdr';
-
+import { Address } from './address';
+import { scValToNative } from './scval';
 /**
  * @typedef CreateInvocation
- * @prop {string} idInput
- * @prop {string} contractId
- * @prop {string} executable
+ * @prop {any}    args          TODO
+ * @prop {string} contractId    TODO
+ * @prop {string} executable    TODO
  * @prop
  */
 
 /**
  * @typedef ExecuteInvocation
- * @prop {string} source    TODO
- * @prop {string} function  TODO
- * @prop {any[]}  args      TODO
+ * @prop {string} source    the strkey of the contract (C...) being invoked
+ * @prop {string} function  the name of the function being invoked
+ * @prop {any[]}  args      the natively-represented parameters to the function
+ *      invocation (see {@link scValToNative}) for rules on how they're
+ *      represented a JS types
  */
 
 /**
  * @typedef InvocationTree
- *
  * @prop {'execute' | 'create'} type
  * @prop {CreateInvocation | ExecuteInvocation} args
  * @prop {InvocationTree[]} invocations
@@ -33,7 +34,7 @@ export function buildInvocationTree(rootInvocation) {
 }
 
 /**
- *
+ * @borrows buildInvocationTree
  * @param {xdr.SorobanAuthorizedInvocation} rootInvocation
  * @returns {InvocationTree}
  */
@@ -54,17 +55,20 @@ function buildInvocationTreeHelper(tree) {
         function: inner.functionName(),
         args: inner.args().map((arg) => scValToNative(arg))
       };
+      break;
 
     // sorobanAuthorizedFunctionTypeCreateContractHostFn
     case 1:
       output.type = 'create';
+      //   TODO: Format these in a way that is readable & friendly.
       output.args = {
-        executable: inner.executable().toXDR('base64')
+        executable: inner.executable().toXDR('base64'),
+        args: inner.contractIdPreimage().toXDR('base64')
       };
       break;
 
     default:
-      throw new Error(`unknown invocation type: ${JSON.stringify(invocation)}`);
+      throw new Error(`unknown invocation type: ${JSON.stringify(fn)}`);
   }
 
   output.subInvocations = tree.subInvocations.map(buildInvocationTreeHelper);
