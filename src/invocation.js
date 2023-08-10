@@ -44,7 +44,7 @@ export function buildInvocationTree(root) {
   /** @type {InvocationTree} */
   let output;
 
-  const fn = rootInvocation.function();
+  const fn = root.function();
   /** @type {xdr.CreateContractArgs | xdr.InvokeContractArgs} */
   const inner = fn.value();
 
@@ -73,7 +73,7 @@ export function buildInvocationTree(root) {
       throw new Error(`unknown invocation type: ${JSON.stringify(fn)}`);
   }
 
-  output.subInvocations = rootInvocation.subInvocations.map((i) =>
+  output.subInvocations = root.subInvocations.map((i) =>
     buildInvocationTree(i)
   );
   return output;
