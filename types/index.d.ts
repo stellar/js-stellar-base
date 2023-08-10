@@ -1169,7 +1169,7 @@ export function authorizeInvocation(
 
 export function authorizeInvocationCallback(
   publicKey: string,
-  signingMethod: (input: Buffer) => Buffer,
+  signingMethod: (input: Buffer) => Promise<Buffer>,
   networkPassphrase: string,
   validUntil: number,
   invocation: xdr.SorobanAuthorizedInvocation

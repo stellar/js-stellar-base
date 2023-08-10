@@ -58,9 +58,9 @@ export function authorizeInvocation(
  *
  * @param {string} publicKey    the public identity that is authorizing this
  *    invocation via its signature
- * @param {function(Buffer): Buffer} signingMethod  a function which takes
- *    an input bytearray and returns its signature as signed by the private key
- *    corresponding to the `publicKey` parameter
+ * @param {function(Buffer): Promise<Buffer>} signingMethod  a function which
+ *    takes an input bytearray and returns its signature as signed by the
+ *    private key corresponding to the `publicKey` parameter
  * @param {string}  networkPassphrase   the network passphrase is incorprated
  *    into the signature (see {@link Networks} for options)
  * @param {number} validUntil   the (exclusive) future ledger sequence number
@@ -108,12 +108,7 @@ export async function authorizeInvocationCallback(
  *    {@link xdr.SorobanAuthorizationEntry} via {@link buildAuthEntry}.
  */
 export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
-  // We use keypairs as a source of randomness for the nonce to avoid mucking
-  // with any crypto dependencies. Note that this just has to be random and
-  // unique, not cryptographically secure, so it's fine.
-  const kp = Keypair.random().rawPublicKey();
-  const nonce = new xdr.Int64(bytesToInt64(kp));
-
+  const nonce = prngInt64();
   const networkId = hash(Buffer.from(networkPassphrase));
   const envelope = new xdr.HashIdPreimageSorobanAuthorization({
     networkId,
@@ -191,7 +186,20 @@ export function buildAuthEntry(envelope, signature, publicKey) {
   });
 }
 
-function bytesToInt64(bytes) {
+/**
+ * @private
+ * Generates a "random enough" {@link xdr.Int64} number.
+ *
+ * We use keypairs as a source of randomness for the nonce to avoid mucking with
+ * any crypto dependencies. Note that this just has to be random and unique, not
+ * cryptographically secure, so it's fine.
+ *
+ * @returns {xdr.Int64} a pseudo-random value
+ */
+export function prngInt64() {
+  const bytes = Keypair.random().rawPublicKey();
   // eslint-disable-next-line no-bitwise
-  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
+  return new xdr.Int64(
+    bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0)
+  );
 }
