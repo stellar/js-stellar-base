@@ -1106,6 +1106,7 @@ export class XdrLargeInt {
   toU128(): xdr.ScVal;
   toI256(): xdr.ScVal;
   toU256(): xdr.ScVal;
+  toScVal(): xdr.ScVal;
 
   valueOf(): any; // FIXME
   toString(): string;
@@ -1116,7 +1117,7 @@ export class XdrLargeInt {
 }
 
 export class ScInt extends XdrLargeInt {
-  constructor(value: IntLike | ScInt, opts?: { type: ScIntType });
+  constructor(value: IntLike, opts?: { type: ScIntType });
 }
 
 export function scValToBigInt(scv: xdr.ScVal): bigint;

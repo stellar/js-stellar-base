@@ -53,12 +53,12 @@ import { XdrLargeInt } from './xdr_large_int';
  * // Or reinterpret it as a different type (size permitting):
  * const scv = i.toI64();
  *
- * @param {number|bigint|string|ScInt} value - a single, integer-like value
- *    which will be interpreted in the smallest appropriate XDR type supported
- *    by Stellar (64, 128, or 256 bit integer values). signed values are
- *    supported, though they are sanity-checked against `opts.type`. if you need
- *    32-bit values, you can construct them directly without needing this
- *    wrapper, e.g. `xdr.ScVal.scvU32(1234)`.
+ * @param {number|bigint|string} value - a single, integer-like value which will
+ *    be interpreted in the smallest appropriate XDR type supported by Stellar
+ *    (64, 128, or 256 bit integer values). signed values are supported, though
+ *    they are sanity-checked against `opts.type`. if you need 32-bit values,
+ *    you can construct them directly without needing this wrapper, e.g.
+ *    `xdr.ScVal.scvU32(1234)`.
  *
  * @param {object}  [opts] - an optional object controlling optional parameters
  * @param {string}  [opts.type] - force a specific data type. the type choices
@@ -96,7 +96,7 @@ export class ScInt extends XdrLargeInt {
 
         default:
           throw RangeError(
-            `expected 64/128/256 bits for parts (${value}), got ${bitlen}`
+            `expected 64/128/256 bits for input (${value}), got ${bitlen}`
           );
       }
     }
