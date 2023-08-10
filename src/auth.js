@@ -198,8 +198,8 @@ export function buildAuthEntry(envelope, signature, publicKey) {
  */
 export function prngInt64() {
   const bytes = Keypair.random().rawPublicKey();
-  // eslint-disable-next-line no-bitwise
   return new xdr.Int64(
+    // eslint-disable-next-line no-bitwise
     bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0)
   );
 }
