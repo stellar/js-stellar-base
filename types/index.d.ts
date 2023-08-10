@@ -1017,6 +1017,7 @@ export class TransactionBuilder {
     options?: TransactionBuilder.TransactionBuilderOptions
   );
   addOperation(operation: xdr.Operation): this;
+  clearOperations(): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
   setTimebounds(min: Date | number, max: Date | number): this;
