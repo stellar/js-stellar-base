@@ -36,14 +36,12 @@ export class Contract {
     return StrKey.encodeContract(this._id);
   }
 
+  /** @returns {string} the ID as a strkey (C...) */
   toString() {
     return this.contractId();
   }
 
-  /**
-   * Returns the address of this contract as an Address type.
-   * @returns {Address}
-   */
+  /** @returns {Address} the wrapped address of this contract */
   address() {
     return Address.contract(this._id);
   }
