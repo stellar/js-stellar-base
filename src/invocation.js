@@ -1,48 +1,50 @@
 import { Address } from './address';
 import { scValToNative } from './scval';
+
 /**
  * @typedef CreateInvocation
- * @prop {any}    args          TODO
- * @prop {string} contractId    TODO
- * @prop {string} executable    TODO
- * @prop
+ * @prop {any}    args          a base64-encoded {@link xdr.CreateContractArgs}
+ * @prop {string} executable    a base64-encoded {@link xdr.ContractExecutable}
  */
-
 /**
  * @typedef ExecuteInvocation
  * @prop {string} source    the strkey of the contract (C...) being invoked
  * @prop {string} function  the name of the function being invoked
  * @prop {any[]}  args      the natively-represented parameters to the function
- *      invocation (see {@link scValToNative}) for rules on how they're
- *      represented a JS types
+ *    invocation (see {@link scValToNative}) for rules on how they're
+ *    represented a JS types
  */
-
 /**
  * @typedef InvocationTree
- * @prop {'execute' | 'create'} type
- * @prop {CreateInvocation | ExecuteInvocation} args
- * @prop {InvocationTree[]} invocations
+ * @prop {'execute' | 'create'} type  the type of invocation occurring, either
+ *    contract creation or host function execution
+ * @prop {CreateInvocation | ExecuteInvocation} args  the parameters to the
+ *    invocation, depending on the type
+ * @prop {InvocationTree[]} invocations   any sub-invocations that (may) occur
+ *    as a result of this invocation (i.e. a tree of call stacks)
  */
 
 /**
+ * Turns a raw invocation tree into a human-readable format.
  *
- * @param {xdr.SorobanAuthorizedInvocation} rootInvocation
- * @returns {InvocationTree}
+ * This is designed to make the invocation tree easier to understand in order to
+ * inform users about the side-effects of their contract calls. This will help
+ * make informed decisions about whether or not a particular invocation will
+ * result in what you expect it to.
+ *
+ * @param {xdr.SorobanAuthorizedInvocation} root  the raw XDR of the invocation,
+ *    likely acquired from transaction simulation. this is either from the
+ *    {@link Operation.invokeHostFunction} itself (the `func` field), or from
+ *    the authorization entries ({@link SorobanAuthorizationEntry}, the
+ *    `rootInvocation` field)
+ *
+ * @returns {InvocationTree}  a human-readable version of the invocation tree
  */
-export function buildInvocationTree(rootInvocation) {
-  return buildInvocationTreeHelper(rootInvocation);
-}
-
-/**
- * @borrows buildInvocationTree
- * @param {xdr.SorobanAuthorizedInvocation} rootInvocation
- * @returns {InvocationTree}
- */
-function buildInvocationTreeHelper(tree) {
+export function buildInvocationTree(root) {
   /** @type {InvocationTree} */
   let output;
 
-  const fn = tree.function();
+  const fn = rootInvocation.function();
   /** @type {xdr.CreateContractArgs | xdr.InvokeContractArgs} */
   const inner = fn.value();
 
@@ -71,6 +73,8 @@ function buildInvocationTreeHelper(tree) {
       throw new Error(`unknown invocation type: ${JSON.stringify(fn)}`);
   }
 
-  output.subInvocations = tree.subInvocations.map(buildInvocationTreeHelper);
+  output.subInvocations = rootInvocation.subInvocations.map((i) =>
+    buildInvocationTree(i)
+  );
   return output;
 }
