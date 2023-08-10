@@ -1162,25 +1162,29 @@ export function authorizeInvocation(
   signer: Keypair,
   networkPassphrase: string,
   validUntil: number,
-  invocation: xdr.SorobanAuthorizedInvocation
+  invocation: xdr.SorobanAuthorizedInvocation,
+  credentialAddressNonce: xdr.Int64
 ): xdr.SorobanAuthorizationEntry;
 
 export function authorizeInvocationCallback(
   publicKey: string,
-  signingMethod: (input: Buffer) => Buffer,
+  signingMethod: (input: Buffer) => Promise<Buffer>,
   networkPassphrase: string,
   validUntil: number,
-  invocation: xdr.SorobanAuthorizedInvocation
+  invocation: xdr.SorobanAuthorizedInvocation,
+  credentialAddressNonce: xdr.Int64
 ): xdr.SorobanAuthorizationEntry;
 
 export function buildAuthEnvelope(
   networkPassphrase: string,
   validUntil: number,
-  invocation: xdr.SorobanAuthorizedInvocation
+  invocation: xdr.SorobanAuthorizedInvocation,
+  credentialAddressNonce: xdr.Int64
 ): xdr.HashIdPreimage;
 
 export function buildAuthEntry(
   envelope: xdr.HashIdPreimage,
   signature: Buffer | Uint8Array,
-  publicKey: string
+  publicKey: string,
+  credentialAddressNonce: xdr.Int64
 ): xdr.SorobanAuthorizationEntry;

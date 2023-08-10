@@ -31,6 +31,7 @@ import { nativeToScVal } from './scval';
  *    `currentLedgerSeq==validUntil`, this is expired))
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
+ * @param {string} credentialAddressNonce  the nonce from the corresponding credential address
  *
  * @returns {xdr.SorobanAuthorizationEntry}  an authorization entry that you can
  *    pass along to {@link Operation.invokeHostFunction}
@@ -39,12 +40,13 @@ export function authorizeInvocation(
   signer,
   networkPassphrase,
   validUntil,
-  invocation
+  invocation,
+  credentialAddressNonce
 ) {
-  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation);
+  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation, credentialAddressNonce);
   const input = hash(preimage.toXDR());
   const signature = signer.sign(input);
-  return buildAuthEntry(preimage, signature, signer.publicKey());
+  return buildAuthEntry(preimage, signature, signer.publicKey(), credentialAddressNonce);
 }
 
 /**
@@ -58,7 +60,7 @@ export function authorizeInvocation(
  *
  * @param {string} publicKey    the public identity that is authorizing this
  *    invocation via its signature
- * @param {function(Buffer): Buffer} signingMethod  a function which takes
+ * @param {function(Buffer): Promise<Buffer>} signingMethod  a function which takes
  *    an input bytearray and returns its signature as signed by the private key
  *    corresponding to the `publicKey` parameter
  * @param {string}  networkPassphrase   the network passphrase is incorprated
@@ -68,6 +70,7 @@ export function authorizeInvocation(
  *    `currentLedgerSeq==validUntil`, this is expired)
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
+ * @param {string} credentialAddressNonce  the nonce from the corresponding credential address
  *
  * @returns {Promise<xdr.SorobanAuthorizationEntry>}
  * @see authorizeInvocation
@@ -77,12 +80,13 @@ export async function authorizeInvocationCallback(
   signingMethod,
   networkPassphrase,
   validUntil,
-  invocation
+  invocation,
+  credentialAddressNonce
 ) {
-  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation);
+  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation, credentialAddressNonce);
   const input = hash(preimage.toXDR());
   const signature = await signingMethod(input);
-  return buildAuthEntry(preimage, signature, publicKey);
+  return buildAuthEntry(preimage, signature, publicKey, credentialAddressNonce);
 }
 
 /**
@@ -102,23 +106,18 @@ export async function authorizeInvocationCallback(
  *    until which this authorization entry should be valid
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
+ * @param {string} credentialAddressNonce  the nonce from the corresponding credential address
  *
  * @returns {xdr.HashIdPreimage}  a preimage envelope that, when hashed and
  *    signed, represents the signature necessary to build a proper
  *    {@link xdr.SorobanAuthorizationEntry} via {@link buildAuthEntry}.
  */
-export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
-  // We use keypairs as a source of randomness for the nonce to avoid mucking
-  // with any crypto dependencies. Note that this just has to be random and
-  // unique, not cryptographically secure, so it's fine.
-  const kp = Keypair.random().rawPublicKey();
-  const nonce = new xdr.Int64(bytesToInt64(kp));
-
+export function buildAuthEnvelope(networkPassphrase, validUntil, invocation, credentialAddressNonce) {
   const networkId = hash(Buffer.from(networkPassphrase));
   const envelope = new xdr.HashIdPreimageSorobanAuthorization({
     networkId,
     invocation,
-    nonce,
+    nonce: credentialAddressNonce,
     signatureExpirationLedger: validUntil
   });
 
@@ -138,6 +137,7 @@ export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
  *    envelope by the private key corresponding to `publicKey` (in other words,
  *    `signature = sign(hash(envelope))`)
  * @param {string} publicKey  the public identity that signed this envelope
+ * @param {string} credentialAddressNonce  the nonce from the corresponding credential address
  *
  * @returns {xdr.SorobanAuthorizationEntry}
  *
@@ -146,7 +146,7 @@ export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
  * @throws {TypeError} if the envelope does not hold an
  *    {@link xdr.HashIdPreimageSorobanAuthorization} instance
  */
-export function buildAuthEntry(envelope, signature, publicKey) {
+export function buildAuthEntry(envelope, signature, publicKey, credentialAddressNonce) {
   // ensure this identity signed this envelope correctly
   if (
     !Keypair.fromPublicKey(publicKey).verify(hash(envelope.toXDR()), signature)
@@ -168,7 +168,7 @@ export function buildAuthEntry(envelope, signature, publicKey) {
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
         address: new Address(publicKey).toScAddress(),
-        nonce: auth.nonce(),
+        nonce: credentialAddressNonce,
         signatureExpirationLedger: auth.signatureExpirationLedger(),
         signatureArgs: [
           nativeToScVal(
@@ -189,9 +189,4 @@ export function buildAuthEntry(envelope, signature, publicKey) {
       })
     )
   });
-}
-
-function bytesToInt64(bytes) {
-  // eslint-disable-next-line no-bitwise
-  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
 }

@@ -1,8 +1,14 @@
 const xdr = StellarBase.xdr;
 
+function bytesToInt64(bytes) {
+  // eslint-disable-next-line no-bitwise
+  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
+}
+
 describe('building authorization entries', function () {
   const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
   const kp = StellarBase.Keypair.random();
+  const nonce = new xdr.Int64(bytesToInt64(kp.rawPublicKey()));
   const invocation = new xdr.SorobanAuthorizedInvocation({
     function:
       xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
@@ -24,7 +30,8 @@ describe('building authorization entries', function () {
       kp,
       StellarBase.Networks.FUTURENET,
       123,
-      invocation
+      invocation,
+      nonce
     );
 
     let cred = entry.credentials().address();
@@ -36,18 +43,9 @@ describe('building authorization entries', function () {
       StellarBase.StrKey.encodeEd25519PublicKey(args[0]['public_key'])
     ).to.equal(kp.publicKey());
     expect(entry.rootInvocation()).to.eql(invocation);
+    expect(entry.credentials().address().nonce()).to.eql(nonce);
 
     // TODO: Validate the signature using the XDR structure.
-
-    const nextEntry = StellarBase.authorizeInvocation(
-      kp,
-      StellarBase.Networks.FUTURENET,
-      123,
-      invocation
-    );
-    const nextCred = nextEntry.credentials().address();
-
-    expect(cred.nonce()).to.not.equal(nextCred.nonce());
   });
 
   it('works asynchronously', function (done) {
@@ -56,7 +54,8 @@ describe('building authorization entries', function () {
       async (v) => kp.sign(v),
       StellarBase.Networks.FUTURENET,
       123,
-      invocation
+      invocation,
+      nonce
     )
       .then((entry) => {
         let cred = entry.credentials().address();
@@ -70,6 +69,7 @@ describe('building authorization entries', function () {
           StellarBase.StrKey.encodeEd25519PublicKey(args[0]['public_key'])
         ).to.equal(kp.publicKey());
         expect(entry.rootInvocation()).to.eql(invocation);
+        expect(cred.nonce()).to.eql(nonce);
 
         done();
       })
