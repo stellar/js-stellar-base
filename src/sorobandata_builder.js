@@ -35,8 +35,10 @@ export class SorobanDataBuilder {
   constructor(sorobanData) {
     let data;
 
-    if (typeof sorobanData === 'string' || ArrayBuffer.isView(sorobanData)) {
-      data = SorobanDataBuilder.fromXDR(sorobanData);
+    if (typeof sorobanData === 'string') {
+      data = SorobanDataBuilder.fromXDR(sorobanData, 'base64');
+    } else if (ArrayBuffer.isView(sorobanData)) {
+      data = SorobanDataBuilder.fromXDR(sorobanData, 'raw');
     } else if (!sorobanData) {
       data = new xdr.SorobanTransactionData({
         resources: new xdr.SorobanResources({
