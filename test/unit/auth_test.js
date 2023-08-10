@@ -51,7 +51,7 @@ describe('building authorization entries', function () {
     // unlikely): we check this by sorting the nonces and ensuring no neighbors
     // match
     //
-    const nonces = new Array(1000).map(StellarBase.prngInt64).sort();
+    const nonces = new Array(1000).map(prngInt64).sort();
     nonces.forEach((elem, idx) => {
       if (idx == nonces.length - 1) {
         return; // skip last elem

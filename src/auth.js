@@ -163,7 +163,7 @@ export function buildAuthEntry(envelope, signature, publicKey) {
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
         address: new Address(publicKey).toScAddress(),
-        nonce: auth.nonce(),
+        nonce: new xdr.Int64(auth.nonce()),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
         signatureArgs: [
           nativeToScVal(
