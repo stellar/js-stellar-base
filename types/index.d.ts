@@ -27,10 +27,12 @@ export class Address {
 
 export class Contract {
   constructor(contractId: string);
+  call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
   contractId(): string;
   address(): Address;
-  call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
-  getFootprint(): xdr.LedgerKey;
+  getFootprint(): xdr.LedgerKey[];
+
+  toString(): string;
 }
 
 export class MuxedAccount {

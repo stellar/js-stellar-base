@@ -1,3 +1,5 @@
+const xdr = StellarBase.xdr;
+
 const NULL_ADDRESS = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM';
 
 describe('Contract', function () {
@@ -30,30 +32,36 @@ describe('Contract', function () {
   });
 
   describe('getFootprint', function () {
-    it('includes the correct contract code footprint', function () {
+    it('includes the correct contract ledger keys', function () {
       let contract = new StellarBase.Contract(NULL_ADDRESS);
       expect(contract.contractId()).to.equal(NULL_ADDRESS);
 
-      const fp = contract.getFootprint();
+      const actual = contract.getFootprint();
+      const expected = [
+        new xdr.LedgerKey.contractCode(
+          new xdr.LedgerKeyContractCode({
+            hash: StellarBase.StrKey.decodeContract(contract.contractId()),
+            bodyType: xdr.ContractEntryBodyType.dataEntry()
+          })
+        ),
+        new xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: contract.address().toScAddress(),
+            key: xdr.ScVal.scvLedgerKeyContractInstance(),
+            durability: xdr.ContractDataDurability.persistent(),
+            bodyType: xdr.ContractEntryBodyType.dataEntry()
+          })
+        )
+      ];
 
-      let expected = new StellarBase.xdr.LedgerKey.contractData(
-        new StellarBase.xdr.LedgerKeyContractData({
-          contract: contract.address().toScAddress(),
-          key: StellarBase.xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: StellarBase.xdr.ContractDataDurability.persistent(),
-          bodyType: StellarBase.xdr.ContractEntryBodyType.dataEntry()
-        })
-      )
-        .toXDR()
-        .toString('base64');
-      expect(fp.toXDR().toString('base64')).to.equal(expected);
+      expect(actual).to.eql(expected);
     });
   });
 
   describe('call', function () {
     let call = new StellarBase.Contract(NULL_ADDRESS).call(
       'method',
-      StellarBase.xdr.ScVal.scvU32(123)
+      xdr.ScVal.scvU32(123)
     );
     let args = call
       .body()
@@ -68,11 +76,11 @@ describe('Contract', function () {
     });
 
     it('passes the method name as the second arg', function () {
-      expect(args[1]).to.deep.equal(StellarBase.xdr.ScVal.scvSymbol('method'));
+      expect(args[1]).to.deep.equal(xdr.ScVal.scvSymbol('method'));
     });
 
     it('passes all params after that', function () {
-      expect(args[2]).to.deep.equal(StellarBase.xdr.ScVal.scvU32(123));
+      expect(args[2]).to.deep.equal(xdr.ScVal.scvU32(123));
     });
   });
 });
