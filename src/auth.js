@@ -9,211 +9,49 @@ import { Address } from './address';
 import { nativeToScVal } from './scval';
 
 /**
- * This builds an authorization entry that indicates to
- * {@link Operation.invokeHostFunction} that a particular identity (i.e. signing
- * {@link Keypair} or other signer) approves the execution of an invocation tree
- * (i.e. a simulation-acquired {@link xdr.SorobanAuthorizedInvocation}) on a
- * particular network (uniquely identified by its passphrase, see
- * {@link Networks}) until a particular ledger sequence is reached.
- *
- * This enables building an {@link xdr.SorobanAuthorizationEntry} without
- * worrying about how to combine {@link buildAuthEnvelope} and
- * {@link buildAuthEntry}, while those allow advanced, asynchronous, two-step
- * building+signing of the authorization entries.
- *
- * This one lets you pass a either a {@link Keypair} or a callback function to
- * handle signing the envelope hash.
- *
- * @param {Keypair} signer   the identity keypair authorizing this invocation
- * @param {string}  networkPassphrase   the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options)
- * @param {number}  validUntil  the (exclusive) future ledger sequence number
- *    until which this authorization entry should be valid (if
- *    `currentLedgerSeq==validUntil`, this is expired))
- * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
- *    we're authorizing (likely, this comes from transaction simulation)
- *
- * @returns {xdr.SorobanAuthorizationEntry}  an authorization entry that you can
- *    pass along to {@link Operation.invokeHostFunction}
- */
-export function authorizeInvocation(
-  signer,
-  networkPassphrase,
-  validUntil,
-  invocation
-) {
-  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation);
-  const input = hash(preimage.toXDR());
-  const signature = signer.sign(input);
-  return buildAuthEntry(preimage, signature, signer.publicKey());
-}
-
-/**
- * This works like {@link authorizeInvocation}, but allows passing an
- * asynchronous callback as a "signing method" (e.g. {@link Keypair.sign}) and a
- * public key instead of a specific {@link Keypair}.
- *
- * This is to make two-step authorization (i.e. custom signing flows) easier.
- *
- * @borrows authorizeInvocation
- *
- * @param {string} publicKey    the public identity that is authorizing this
- *    invocation via its signature
- * @param {function(Buffer): Buffer} signingMethod  a function which takes
- *    an input bytearray and returns its signature as signed by the private key
- *    corresponding to the `publicKey` parameter
- * @param {string}  networkPassphrase   the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options)
- * @param {number} validUntil   the (exclusive) future ledger sequence number
- *    until which this authorization entry should be valid (if
- *    `currentLedgerSeq==validUntil`, this is expired)
- * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
- *    we're authorizing (likely, this comes from transaction simulation)
- *
- * @returns {Promise<xdr.SorobanAuthorizationEntry>}
- * @see authorizeInvocation
- */
-export async function authorizeInvocationCallback(
-  publicKey,
-  signingMethod,
-  networkPassphrase,
-  validUntil,
-  invocation
-) {
-  const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation);
-  const input = hash(preimage.toXDR());
-  const signature = await signingMethod(input);
-  return buildAuthEntry(preimage, signature, publicKey);
-}
-
-/**
- * Builds an {@link xdr.HashIdPreimage} that, when hashed and signed, can be
- * used to build an {@link xdr.SorobanAuthorizationEntry} via
- * {@link buildAuthEnvelope} to approve {@link Operation.invokeHostFunction}
- * invocations.
- *
- * The envelope built here will approve the execution of an invocation tree
- * (i.e. a simulation-acquired {@link xdr.SorobanAuthorizedInvocation}) on a
- * particular network (uniquely identified by its passphrase, see
- * {@link Networks}) until a particular ledger sequence is reached (exclusive).
- *
- * @param {string}  networkPassphrase   the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options)
- * @param {number}  validUntil the (exclusive) future ledger sequence number
- *    until which this authorization entry should be valid
- * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
- *    we're authorizing (likely, this comes from transaction simulation)
- *
- * @returns {xdr.HashIdPreimage}  a preimage envelope that, when hashed and
- *    signed, represents the signature necessary to build a proper
- *    {@link xdr.SorobanAuthorizationEntry} via {@link buildAuthEntry}.
- */
-export function buildAuthEnvelope(networkPassphrase, validUntil, invocation) {
-  // We use keypairs as a source of randomness for the nonce to avoid mucking
-  // with any crypto dependencies. Note that this just has to be random and
-  // unique, not cryptographically secure, so it's fine.
-  const kp = Keypair.random().rawPublicKey();
-  const nonce = new xdr.Int64(bytesToInt64(kp));
-
-  const networkId = hash(Buffer.from(networkPassphrase));
-  const envelope = new xdr.HashIdPreimageSorobanAuthorization({
-    networkId,
-    invocation,
-    nonce,
-    signatureExpirationLedger: validUntil
-  });
-
-  return xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(envelope);
-}
-
-/**
- * Builds an auth entry with a signed invocation tree.
- *
- * You should first build the envelope using {@link buildAuthEnvelope}. If you
- * have a signing {@link Keypair}, you can use the more convenient
- * {@link authorizeInvocation} to do signing for you.
- *
- * @param {xdr.HashIdPreimage} envelope   an envelope to represent the call tree
- *    being signed, probably built by {@link buildAuthEnvelope}
- * @param {Buffer|Uint8Array} signature   a signature of the hash of the
- *    envelope by the private key corresponding to `publicKey` (in other words,
- *    `signature = sign(hash(envelope))`)
- * @param {string} publicKey  the public identity that signed this envelope
- *
- * @returns {xdr.SorobanAuthorizationEntry}
- *
- * @throws {Error} if `verify(hash(envelope), signature, publicKey)` does not
- *    pass, meaning one of the arguments was not passed or built correctly
- * @throws {TypeError} if the envelope does not hold an
- *    {@link xdr.HashIdPreimageSorobanAuthorization} instance
- */
-export function buildAuthEntry(envelope, signature, publicKey) {
-  // ensure this identity signed this envelope correctly
-  if (
-    !Keypair.fromPublicKey(publicKey).verify(hash(envelope.toXDR()), signature)
-  ) {
-    throw new Error(`signature does not match envelope or identity`);
-  }
-
-  if (
-    envelope.switch() !== xdr.EnvelopeType.envelopeTypeSorobanAuthorization()
-  ) {
-    throw new TypeError(
-      `expected sorobanAuthorization envelope, got ${envelope.switch().name}`
-    );
-  }
-
-  const auth = envelope.sorobanAuthorization();
-  return new xdr.SorobanAuthorizationEntry({
-    rootInvocation: auth.invocation(),
-    credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
-      new xdr.SorobanAddressCredentials({
-        address: new Address(publicKey).toScAddress(),
-        nonce: auth.nonce(),
-        signatureExpirationLedger: auth.signatureExpirationLedger(),
-        signatureArgs: [
-          nativeToScVal(
-            {
-              public_key: StrKey.decodeEd25519PublicKey(publicKey),
-              signature
-            },
-            {
-              // force the keys to be interpreted as symbols (expected for
-              // Soroban [contracttype]s)
-              type: {
-                public_key: ['symbol', null],
-                signature: ['symbol', null]
-              }
-            }
-          )
-        ]
-      })
-    )
-  });
-}
-
-function bytesToInt64(bytes) {
-  // eslint-disable-next-line no-bitwise
-  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
-}
-
-/**
  * @async
  * @callback SigningCallback
- * @param {xdr.HashIdPreimageSorobanAuthorization} preimage
- * @returns {Promise<[Buffer, string]>}
+ * A callback for signing an XDR structure representing all of the details
+ * necessary to authorize an invocation tree.
+ *
+ * @param {xdr.HashIdPreimageSorobanAuthorization} preimage   the entire
+ *    authorization envelope whose hash you should sign, so that you can inspect
+ *    the entire structure if necessary (rather than blindly signing a hash)
+ *
+ * @returns {Promise<[Uint8Array, string]>}   a two-element array where the
+ *    first element is the signature of the raw payload (which is the sha256
+ *    hash of the preimage bytes, so `hash(preimage.toXDR())`) and the second
+ *    element is the strkey-encoded public key (G...) that signed the payload
  */
 
 /**
- * Actually authorizes an existing authorization entry using the given
- * credentials and expiration details.
+ * Actually authorizes an existing authorization entry (in place!) using the
+ * given the credentials and expiration details.
  *
- * @param {xdr.SorobanAuthorizationEntry} entry TODO
- * @param {SigningCallback} signingMethod TODO
- * @param {number} validUntil TODO
- * @param {string} [networkPassphrase]  TODO
+ * This "fills out" the authorization entry, indicating to that the
+ * {@link Operation.invokeHostFunction} its attached to that a particular
+ * identity (i.e. signing {@link Keypair} or other signing method) approves the
+ * execution of an particular invocation tree (i.e. a simulation-acquired
+ * {@link xdr.SorobanAuthorizedInvocation}) on a particular network (uniquely
+ * identified by its passphrase, see {@link Networks}) until a particular ledger
+ * sequence (i.e. `validUntil`) is reached.
  *
- * @returns {xdr.SorobanAuthorizationEntry}
+ * This one lets you pass a either a {@link Keypair} or a callback function (see
+ * {@link SigningCallback}) to handle signing the envelope hash.
+ *
+ * @param {xdr.SorobanAuthorizationEntry} entry  an unsigned authorization entr
+ * @param {Keypair | SigningCallback} signingMethod  either a keypair instance
+ *    or a function which takes an input bytearray and returns its signature as
+ *    signed by the private key corresponding to the `publicKey` parameter
+ * @param {number} validUntil   the (exclusive) future ledger sequence number
+ *    until which this authorization entry should be valid (if
+ *    `currentLedgerSeq==validUntil`, this is expired))
+ * @param {string} [networkPassphrase]  the network passphrase is incorprated
+ *    into the signature (see {@link Networks} for options)
+ *
+ * @returns {Promise<xdr.SorobanAuthorizationEntry>} a promise for an
+ *    authorization entry that you can pass along to
+ *    {@link Operation.invokeHostFunction}
  *
  * @example
  * import { Server, Transaction, Networks, authorizeEntry } from 'soroban-client';
@@ -267,25 +105,40 @@ export async function authorizeEntry(
   }
 
   /** @type {xdr.SorobanAddressCredentials} */
-  const addressAuth = entry.credentials().address();
-  addressAuth.signatureExpirationLedger(validUntil);
+  const addrAuth = entry.credentials().address();
+  addrAuth.signatureExpirationLedger(validUntil);
 
   const networkId = hash(Buffer.from(networkPassphrase));
-  const envelope = new xdr.HashIdPreimageSorobanAuthorization({
-    networkId,
-    nonce: addressAuth.nonce(),
-    invocation: entry.rootInvocation(),
-    signatureExpirationLedger: addressAuth.signatureExpirationLedger()
-  });
-
-  const preimage =
-    xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(envelope);
-
-  const [signature, publicKey] = await signingMethod(preimage);
-
+  const preimage = xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(
+    new xdr.HashIdPreimageSorobanAuthorization({
+      networkId,
+      nonce: addrAuth.nonce(),
+      invocation: entry.rootInvocation(),
+      signatureExpirationLedger: addrAuth.signatureExpirationLedger()
+    })
+  );
   const payload = hash(preimage.toXDR());
+
+  let signature;
+  let publicKey;
+  if (signingMethod instanceof Keypair) {
+    signature = signingMethod.sign(payload);
+    publicKey = signingMethod.publicKey();
+  } else {
+    const [sig, pk] = await signingMethod(preimage);
+    signature = Buffer.from(sig);
+    publicKey = pk;
+  }
+
+  const expectedPubkey = Address.fromScAddress(addrAuth.address()).toString();
+  if (expectedPubkey !== publicKey) {
+    throw new Error(
+      `signing identity doesn't match entry: expected ${expectedPubkey}, got ${publicKey}`
+    );
+  }
+
   if (!Keypair.fromPublicKey(publicKey).verify(payload, signature)) {
-    throw new Error(`signature does not match payload`);
+    throw new Error(`signature doesn't match payload`);
   }
 
   const sigScVal = nativeToScVal(
@@ -303,6 +156,6 @@ export async function authorizeEntry(
     }
   );
 
-  addressAuth.signatureArgs([sigScVal]);
-  return addressAuth;
+  addrAuth.signatureArgs([sigScVal]);
+  return entry;
 }
