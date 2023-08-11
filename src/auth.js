@@ -46,7 +46,7 @@ export function authorizeInvocation(
   const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation, credentialAddressNonce);
   const input = hash(preimage.toXDR());
   const signature = signer.sign(input);
-  return buildAuthEntry(preimage, signature, signer.publicKey(), credentialAddressNonce);
+  return buildAuthEntry(preimage, signature, signer.publicKey());
 }
 
 /**
@@ -86,7 +86,7 @@ export async function authorizeInvocationCallback(
   const preimage = buildAuthEnvelope(networkPassphrase, validUntil, invocation, credentialAddressNonce);
   const input = hash(preimage.toXDR());
   const signature = await signingMethod(input);
-  return buildAuthEntry(preimage, signature, publicKey, credentialAddressNonce);
+  return buildAuthEntry(preimage, signature, publicKey);
 }
 
 /**
@@ -137,7 +137,6 @@ export function buildAuthEnvelope(networkPassphrase, validUntil, invocation, cre
  *    envelope by the private key corresponding to `publicKey` (in other words,
  *    `signature = sign(hash(envelope))`)
  * @param {string} publicKey  the public identity that signed this envelope
- * @param {string} credentialAddressNonce  the nonce from the corresponding credential address
  *
  * @returns {xdr.SorobanAuthorizationEntry}
  *
@@ -146,7 +145,7 @@ export function buildAuthEnvelope(networkPassphrase, validUntil, invocation, cre
  * @throws {TypeError} if the envelope does not hold an
  *    {@link xdr.HashIdPreimageSorobanAuthorization} instance
  */
-export function buildAuthEntry(envelope, signature, publicKey, credentialAddressNonce) {
+export function buildAuthEntry(envelope, signature, publicKey) {
   // ensure this identity signed this envelope correctly
   if (
     !Keypair.fromPublicKey(publicKey).verify(hash(envelope.toXDR()), signature)
@@ -168,7 +167,7 @@ export function buildAuthEntry(envelope, signature, publicKey, credentialAddress
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
         address: new Address(publicKey).toScAddress(),
-        nonce: credentialAddressNonce,
+        nonce: auth.nonce(),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
         signatureArgs: [
           nativeToScVal(

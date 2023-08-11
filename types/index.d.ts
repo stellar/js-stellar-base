@@ -1185,6 +1185,5 @@ export function buildAuthEnvelope(
 export function buildAuthEntry(
   envelope: xdr.HashIdPreimage,
   signature: Buffer | Uint8Array,
-  publicKey: string,
-  credentialAddressNonce: xdr.Int64
+  publicKey: string
 ): xdr.SorobanAuthorizationEntry;
