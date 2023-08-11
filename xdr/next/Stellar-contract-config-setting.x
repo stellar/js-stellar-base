@@ -100,61 +100,56 @@ enum ContractCostType {
     HostMemCpy = 3,
     // Cost of comparing two slices of host memory
     HostMemCmp = 4,
-    // Cost of a host function invocation, not including the actual work done by the function
-    InvokeHostFunction = 5,
-    // Cost of visiting a host object from the host object storage
-    // Only thing to make sure is the guest can't visitObject repeatly without incurring some charges elsewhere.
+    // Cost of a host function dispatch, not including the actual work done by
+    // the function nor the cost of VM invocation machinary
+    DispatchHostFunction = 5,
+    // Cost of visiting a host object from the host object storage. Exists to 
+    // make sure some baseline cost coverage, i.e. repeatly visiting objects
+    // by the guest will always incur some charges.
     VisitObject = 6,
-    // Tracks a single Val (RawVal or primative Object like U64) <=> ScVal
-    // conversion cost. Most of these Val counterparts in ScVal (except e.g.
-    // Symbol) consumes a single int64 and therefore is a constant overhead.
-    ValXdrConv = 7,
     // Cost of serializing an xdr object to bytes
-    ValSer = 8,
+    ValSer = 7,
     // Cost of deserializing an xdr object from bytes
-    ValDeser = 9,
+    ValDeser = 8,
     // Cost of computing the sha256 hash from bytes
-    ComputeSha256Hash = 10,
+    ComputeSha256Hash = 9,
     // Cost of computing the ed25519 pubkey from bytes
-    ComputeEd25519PubKey = 11,
+    ComputeEd25519PubKey = 10,
     // Cost of accessing an entry in a Map.
-    MapEntry = 12,
+    MapEntry = 11,
     // Cost of accessing an entry in a Vec
-    VecEntry = 13,
-    // Cost of guarding a frame, which involves pushing and poping a frame and capturing a rollback point.
-    GuardFrame = 14,
+    VecEntry = 12,
     // Cost of verifying ed25519 signature of a payload.
-    VerifyEd25519Sig = 15,
+    VerifyEd25519Sig = 13,
     // Cost of reading a slice of vm linear memory
-    VmMemRead = 16,
+    VmMemRead = 14,
     // Cost of writing to a slice of vm linear memory
-    VmMemWrite = 17,
+    VmMemWrite = 15,
     // Cost of instantiation a VM from wasm bytes code.
-    VmInstantiation = 18,
+    VmInstantiation = 16,
     // Cost of instantiation a VM from a cached state.
-    VmCachedInstantiation = 19,
-    // Roundtrip cost of invoking a VM function from the host.
-    InvokeVmFunction = 20,
-    // Cost of charging a value to the budgeting system.
-    ChargeBudget = 21,
+    VmCachedInstantiation = 17,
+    // Cost of invoking a function on the VM. If the function is a host function,
+    // additional cost will be covered by `DispatchHostFunction`.
+    InvokeVmFunction = 18,
     // Cost of computing a keccak256 hash from bytes.
-    ComputeKeccak256Hash = 22,
+    ComputeKeccak256Hash = 19,
     // Cost of computing an ECDSA secp256k1 pubkey from bytes.
-    ComputeEcdsaSecp256k1Key = 23,
+    ComputeEcdsaSecp256k1Key = 20,
     // Cost of computing an ECDSA secp256k1 signature from bytes.
-    ComputeEcdsaSecp256k1Sig = 24,
+    ComputeEcdsaSecp256k1Sig = 21,
     // Cost of recovering an ECDSA secp256k1 key from a signature.
-    RecoverEcdsaSecp256k1Key = 25,
+    RecoverEcdsaSecp256k1Key = 22,
     // Cost of int256 addition (`+`) and subtraction (`-`) operations
-    Int256AddSub = 26,
+    Int256AddSub = 23,
     // Cost of int256 multiplication (`*`) operation
-    Int256Mul = 27,
+    Int256Mul = 24,
     // Cost of int256 division (`/`) operation
-    Int256Div = 28,
+    Int256Div = 25,
     // Cost of int256 power (`exp`) operation
-    Int256Pow = 29,    
+    Int256Pow = 26,
     // Cost of int256 shift (`shl`, `shr`) operation
-    Int256Shift = 30
+    Int256Shift = 27
 };
 
 struct ContractCostParamEntry {
@@ -183,6 +178,15 @@ struct StateExpirationSettings {
 
     // Maximum number of bytes that we scan for eviction per ledger
     uint64 evictionScanSize;
+
+    // Lowest BucketList level to be scanned to evict entries
+    uint32 startingEvictionScanLevel;
+};
+
+struct EvictionIterator {
+    uint32 bucketListLevel;
+    bool isCurrBucket;
+    uint64 bucketFileOffset;
 };
 
 // limits the ContractCostParams size to 20kB
@@ -205,7 +209,8 @@ enum ConfigSettingID
     CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES = 9,
     CONFIG_SETTING_STATE_EXPIRATION = 10,
     CONFIG_SETTING_CONTRACT_EXECUTION_LANES = 11,
-    CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12
+    CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12,
+    CONFIG_SETTING_EVICTION_ITERATOR = 13
 };
 
 union ConfigSettingEntry switch (ConfigSettingID configSettingID)
@@ -236,5 +241,7 @@ case CONFIG_SETTING_CONTRACT_EXECUTION_LANES:
     ConfigSettingContractExecutionLanesV0 contractExecutionLanes;
 case CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW:
     uint64 bucketListSizeWindow<>;
+case CONFIG_SETTING_EVICTION_ITERATOR:
+    EvictionIterator evictionIterator;
 };
 }
