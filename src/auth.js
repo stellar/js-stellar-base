@@ -1,8 +1,8 @@
 import xdr from './xdr';
 
 import { StrKey } from './strkey';
-import { Keypair } from './keypair';
 import { hash } from './hashing';
+import { Networks } from './network';
 
 import { Address } from './address';
 import { nativeToScVal } from './scval';
@@ -197,14 +197,58 @@ function bytesToInt64(bytes) {
 }
 
 /**
+ * @callback SigningCallback
+ * @param {xdr.HashIdPreimageSorobanAuthorization} preimage
+ * @returns {Promise<[Buffer, string]>}
+ */
+
+/**
  * Actually authorizes an existing authorization entry using the given
  * credentials and expiration details.
  *
  * @param {xdr.SorobanAuthorizationEntry} entry
- * @param {(Buffer) => Promise<[Buffer, string]>} signingMethod
+ * @param {SigningCallback} signingMethod
  * @param {number} validUntil
  * @param {string} [networkPassphrase]
+ *
  * @returns {xdr.SorobanAuthorizationEntry}
+ *
+ * @example
+ * import { Server, Transaction, Networks, authorizeEntry } from 'soroban-client';
+ *
+ * // Assume signPayloadCallback is a well-formed signing callback.
+ * //
+ * // It might, for example, pop up a modal from a browser extension, send the
+ * // transaction to a third-party service for signing, or just do simple
+ * // signing via Keypair like it does here:
+ * function signPayloadCallback(payload) {
+ *    const signature = signer.sign(hash(payload.toXDR());
+ *    return [ signature, signer.publicKey() ];
+ * }
+ *
+ * function multiPartyAuth(
+ *    server: Server,
+ *    // assume this involves multi-party auth
+ *    tx: Transaction,
+ * ) {
+ *    return server
+ *      .simulateTransaction(tx)
+ *      .then((simResult) => {
+ *          tx.operations[0].auth.map(entry =>
+ *            authorizeEntry(
+ *              entry,
+ *              signPayloadCallback,
+ *              currentLedger + 1000,
+ *              Networks.FUTURENET);
+ *          ));
+ *
+ *          return server.prepareTransaction(tx, Networks.FUTURENET, simResult);
+ *      })
+ *      .then((preppedTx) => {
+ *        preppedTx.sign(source);
+ *        return server.sendTransaction(preppedTx);
+ *      });
+ * }
  */
 export async function authorizeEntry(
   entry,
