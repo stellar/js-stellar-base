@@ -1,4 +1,4 @@
-// Automatically generated on 2023-06-26T16:34:00-08:00
+// Automatically generated on 2023-08-10T13:29:00-08:00
 import { Operation } from './index';
 
 export {};
@@ -88,7 +88,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | Array<string | bigint | number>
+      values: string | bigint | number | Array<string | bigint | number>,
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -132,7 +132,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | Array<string | bigint | number>
+      values: string | bigint | number | Array<string | bigint | number>,
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -2551,7 +2551,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScpStatementPrepare;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -2594,7 +2594,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScpStatementConfirm;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -2631,7 +2631,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScpStatementExternalize;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -2904,7 +2904,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV3;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -2925,7 +2925,7 @@ export namespace xdr {
     numSponsoring(value?: number): number;
 
     signerSponsoringIDs(
-      value?: SponsorshipDescriptor[]
+      value?: SponsorshipDescriptor[],
     ): SponsorshipDescriptor[];
 
     ext(value?: AccountEntryExtensionV2Ext): AccountEntryExtensionV2Ext;
@@ -2946,7 +2946,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV2;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -2980,7 +2980,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3069,7 +3069,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TrustLineEntryExtensionV2;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3275,7 +3275,7 @@ export namespace xdr {
     });
 
     ext(
-      value?: ClaimableBalanceEntryExtensionV1Ext
+      value?: ClaimableBalanceEntryExtensionV1Ext,
     ): ClaimableBalanceEntryExtensionV1Ext;
 
     flags(value?: number): number;
@@ -3294,12 +3294,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ClaimableBalanceEntryExtensionV1;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntryExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3342,7 +3342,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3367,7 +3367,7 @@ export namespace xdr {
 
     static write(
       value: LiquidityPoolConstantProductParameters,
-      io: Buffer
+      io: Buffer,
     ): void;
 
     static isValid(value: LiquidityPoolConstantProductParameters): boolean;
@@ -3376,12 +3376,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): LiquidityPoolConstantProductParameters;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolConstantProductParameters;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3399,7 +3399,7 @@ export namespace xdr {
     });
 
     params(
-      value?: LiquidityPoolConstantProductParameters
+      value?: LiquidityPoolConstantProductParameters,
     ): LiquidityPoolConstantProductParameters;
 
     reserveA(value?: Int64): Int64;
@@ -3424,12 +3424,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): LiquidityPoolEntryConstantProduct;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolEntryConstantProduct;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3491,7 +3491,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ContractDataEntryData;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3602,7 +3602,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerEntryExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3778,7 +3778,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerKeyClaimableBalance;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3807,7 +3807,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerKeyLiquidityPool;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3847,7 +3847,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerKeyContractData;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3878,7 +3878,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerKeyContractCode;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3907,7 +3907,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerKeyConfigSetting;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -3938,7 +3938,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerCloseValueSignature;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4006,7 +4006,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerHeaderExtensionV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4107,7 +4107,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigUpgradeSetKey;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4193,12 +4193,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): TxSetComponentTxsMaybeDiscountedFee;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TxSetComponentTxsMaybeDiscountedFee;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4294,7 +4294,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionResultPair;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4323,7 +4323,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionResultSet;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4360,7 +4360,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionHistoryEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4380,7 +4380,7 @@ export namespace xdr {
     txResultSet(value?: TransactionResultSet): TransactionResultSet;
 
     ext(
-      value?: TransactionHistoryResultEntryExt
+      value?: TransactionHistoryResultEntryExt,
     ): TransactionHistoryResultEntryExt;
 
     toXDR(format?: 'raw'): Buffer;
@@ -4397,12 +4397,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): TransactionHistoryResultEntry;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionHistoryResultEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4439,7 +4439,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerHeaderHistoryEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4725,7 +4725,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanTransactionMeta;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4751,7 +4751,7 @@ export namespace xdr {
     txChangesAfter(value?: LedgerEntryChange[]): LedgerEntryChange[];
 
     sorobanMeta(
-      value?: null | SorobanTransactionMeta
+      value?: null | SorobanTransactionMeta,
     ): null | SorobanTransactionMeta;
 
     toXDR(format?: 'raw'): Buffer;
@@ -4796,12 +4796,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): InvokeHostFunctionSuccessPreImage;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InvokeHostFunctionSuccessPreImage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -4838,7 +4838,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionResultMeta;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5300,7 +5300,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SurveyRequestMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5334,7 +5334,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SignedSurveyRequestMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5377,7 +5377,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SurveyResponseMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5411,7 +5411,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SignedSurveyResponseMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5521,7 +5521,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TopologyResponseBodyV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5567,7 +5567,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TopologyResponseBodyV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5656,7 +5656,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AuthenticatedMessageV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5687,7 +5687,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): MuxedAccountMed25519;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5823,7 +5823,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): PathPaymentStrictReceiveOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5869,7 +5869,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): PathPaymentStrictSendOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -5989,7 +5989,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): CreatePassiveSellOfferOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6197,7 +6197,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): CreateClaimableBalanceOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6226,7 +6226,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClaimClaimableBalanceOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6253,12 +6253,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): BeginSponsoringFutureReservesOp;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): BeginSponsoringFutureReservesOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6289,7 +6289,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): RevokeSponsorshipOpSigner;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6352,7 +6352,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClawbackClaimableBalanceOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6392,7 +6392,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SetTrustLineFlagsOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6435,7 +6435,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolDepositOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6475,7 +6475,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolWithdrawOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6504,12 +6504,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ContractIdPreimageFromAddress;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ContractIdPreimageFromAddress;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6575,12 +6575,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): SorobanAuthorizedContractFunction;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanAuthorizedContractFunction;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6597,7 +6597,7 @@ export namespace xdr {
     function(value?: SorobanAuthorizedFunction): SorobanAuthorizedFunction;
 
     subInvocations(
-      value?: SorobanAuthorizedInvocation[]
+      value?: SorobanAuthorizedInvocation[],
     ): SorobanAuthorizedInvocation[];
 
     toXDR(format?: 'raw'): Buffer;
@@ -6616,7 +6616,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanAuthorizedInvocation;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6656,7 +6656,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanAddressCredentials;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6673,7 +6673,7 @@ export namespace xdr {
     credentials(value?: SorobanCredentials): SorobanCredentials;
 
     rootInvocation(
-      value?: SorobanAuthorizedInvocation
+      value?: SorobanAuthorizedInvocation,
     ): SorobanAuthorizedInvocation;
 
     toXDR(format?: 'raw'): Buffer;
@@ -6692,7 +6692,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanAuthorizationEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6726,7 +6726,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InvokeHostFunctionOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6757,7 +6757,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): BumpFootprintExpirationOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6820,7 +6820,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): HashIdPreimageOperationId;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6863,7 +6863,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): HashIdPreimageRevokeId;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6897,7 +6897,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): HashIdPreimageContractId;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -6920,7 +6920,7 @@ export namespace xdr {
     signatureExpirationLedger(value?: number): number;
 
     invocation(
-      value?: SorobanAuthorizedInvocation
+      value?: SorobanAuthorizedInvocation,
     ): SorobanAuthorizedInvocation;
 
     toXDR(format?: 'raw'): Buffer;
@@ -6937,12 +6937,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): HashIdPreimageSorobanAuthorization;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): HashIdPreimageSorobanAuthorization;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7146,7 +7146,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanTransactionData;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7226,7 +7226,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionV0Envelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7306,7 +7306,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionV1Envelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7377,7 +7377,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): FeeBumpTransactionEnvelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7394,7 +7394,7 @@ export namespace xdr {
     networkId(value?: Buffer): Buffer;
 
     taggedTransaction(
-      value?: TransactionSignaturePayloadTaggedTransaction
+      value?: TransactionSignaturePayloadTaggedTransaction,
     ): TransactionSignaturePayloadTaggedTransaction;
 
     toXDR(format?: 'raw'): Buffer;
@@ -7413,7 +7413,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionSignaturePayload;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7576,7 +7576,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SimplePaymentResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7599,7 +7599,7 @@ export namespace xdr {
 
     static write(
       value: PathPaymentStrictReceiveResultSuccess,
-      io: Buffer
+      io: Buffer,
     ): void;
 
     static isValid(value: PathPaymentStrictReceiveResultSuccess): boolean;
@@ -7608,12 +7608,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): PathPaymentStrictReceiveResultSuccess;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): PathPaymentStrictReceiveResultSuccess;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7642,12 +7642,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): PathPaymentStrictSendResultSuccess;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): PathPaymentStrictSendResultSuccess;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7681,7 +7681,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ManageOfferSuccessResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7746,7 +7746,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InnerTransactionResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7780,7 +7780,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InnerTransactionResultPair;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -7843,12 +7843,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): SignerKeyEd25519SignedPayload;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SignerKeyEd25519SignedPayload;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8478,7 +8478,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtStructFieldV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8546,7 +8546,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtUnionCaseVoidV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8583,7 +8583,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtUnionCaseTupleV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8657,7 +8657,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtEnumCaseV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8731,7 +8731,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtErrorEnumCaseV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8771,7 +8771,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtErrorEnumV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8808,7 +8808,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecFunctionInputV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8866,7 +8866,7 @@ export namespace xdr {
 
     static write(
       value: ConfigSettingContractExecutionLanesV0,
-      io: Buffer
+      io: Buffer,
     ): void;
 
     static isValid(value: ConfigSettingContractExecutionLanesV0): boolean;
@@ -8875,12 +8875,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ConfigSettingContractExecutionLanesV0;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigSettingContractExecutionLanesV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8918,12 +8918,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ConfigSettingContractComputeV0;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigSettingContractComputeV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -8997,12 +8997,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ConfigSettingContractLedgerCostV0;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigSettingContractLedgerCostV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9023,7 +9023,7 @@ export namespace xdr {
 
     static write(
       value: ConfigSettingContractHistoricalDataV0,
-      io: Buffer
+      io: Buffer,
     ): void;
 
     static isValid(value: ConfigSettingContractHistoricalDataV0): boolean;
@@ -9032,12 +9032,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ConfigSettingContractHistoricalDataV0;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigSettingContractHistoricalDataV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9069,12 +9069,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ConfigSettingContractMetaDataV0;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigSettingContractMetaDataV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9109,12 +9109,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ConfigSettingContractBandwidthV0;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ConfigSettingContractBandwidthV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9151,7 +9151,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ContractCostParamEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9206,7 +9206,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): StateExpirationSettings;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9230,7 +9230,7 @@ export namespace xdr {
     static scpStConfirm(value: ScpStatementConfirm): ScpStatementPledges;
 
     static scpStExternalize(
-      value: ScpStatementExternalize
+      value: ScpStatementExternalize,
     ): ScpStatementPledges;
 
     static scpStNominate(value: ScpNomination): ScpStatementPledges;
@@ -9257,7 +9257,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScpStatementPledges;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9362,7 +9362,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV2Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9397,7 +9397,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AccountEntryExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9500,7 +9500,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TrustLineEntryExtensionV2Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9535,7 +9535,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TrustLineEntryV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9767,12 +9767,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ClaimableBalanceEntryExtensionV1Ext;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntryExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9784,7 +9784,7 @@ export namespace xdr {
     switch(): number;
 
     v1(
-      value?: ClaimableBalanceEntryExtensionV1
+      value?: ClaimableBalanceEntryExtensionV1,
     ): ClaimableBalanceEntryExtensionV1;
 
     static 0(): ClaimableBalanceEntryExt;
@@ -9809,7 +9809,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClaimableBalanceEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9821,11 +9821,11 @@ export namespace xdr {
     switch(): LiquidityPoolType;
 
     constantProduct(
-      value?: LiquidityPoolEntryConstantProduct
+      value?: LiquidityPoolEntryConstantProduct,
     ): LiquidityPoolEntryConstantProduct;
 
     static liquidityPoolConstantProduct(
-      value: LiquidityPoolEntryConstantProduct
+      value: LiquidityPoolEntryConstantProduct,
     ): LiquidityPoolEntryBody;
 
     value(): LiquidityPoolEntryConstantProduct;
@@ -9846,7 +9846,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolEntryBody;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9881,7 +9881,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ContractDataEntryBody;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9916,7 +9916,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ContractCodeEntryBody;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -9947,7 +9947,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerEntryExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10070,7 +10070,7 @@ export namespace xdr {
     data(value?: LedgerKeyData): LedgerKeyData;
 
     claimableBalance(
-      value?: LedgerKeyClaimableBalance
+      value?: LedgerKeyClaimableBalance,
     ): LedgerKeyClaimableBalance;
 
     liquidityPool(value?: LedgerKeyLiquidityPool): LedgerKeyLiquidityPool;
@@ -10135,13 +10135,13 @@ export namespace xdr {
     switch(): StellarValueType;
 
     lcValueSignature(
-      value?: LedgerCloseValueSignature
+      value?: LedgerCloseValueSignature,
     ): LedgerCloseValueSignature;
 
     static stellarValueBasic(): StellarValueExt;
 
     static stellarValueSigned(
-      value: LedgerCloseValueSignature
+      value: LedgerCloseValueSignature,
     ): StellarValueExt;
 
     value(): LedgerCloseValueSignature | void;
@@ -10190,7 +10190,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerHeaderExtensionV1Ext;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10352,11 +10352,11 @@ export namespace xdr {
     switch(): TxSetComponentType;
 
     txsMaybeDiscountedFee(
-      value?: TxSetComponentTxsMaybeDiscountedFee
+      value?: TxSetComponentTxsMaybeDiscountedFee,
     ): TxSetComponentTxsMaybeDiscountedFee;
 
     static txsetCompTxsMaybeDiscountedFee(
-      value: TxSetComponentTxsMaybeDiscountedFee
+      value: TxSetComponentTxsMaybeDiscountedFee,
     ): TxSetComponent;
 
     value(): TxSetComponentTxsMaybeDiscountedFee;
@@ -10437,7 +10437,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): GeneralizedTransactionSet;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10449,7 +10449,7 @@ export namespace xdr {
     switch(): number;
 
     generalizedTxSet(
-      value?: GeneralizedTransactionSet
+      value?: GeneralizedTransactionSet,
     ): GeneralizedTransactionSet;
 
     static 0(): TransactionHistoryEntryExt;
@@ -10474,7 +10474,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionHistoryEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10503,12 +10503,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): TransactionHistoryResultEntryExt;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionHistoryResultEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10539,7 +10539,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LedgerHeaderHistoryEntryExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10771,19 +10771,19 @@ export namespace xdr {
     switch(): SurveyMessageResponseType;
 
     topologyResponseBodyV0(
-      value?: TopologyResponseBodyV0
+      value?: TopologyResponseBodyV0,
     ): TopologyResponseBodyV0;
 
     topologyResponseBodyV1(
-      value?: TopologyResponseBodyV1
+      value?: TopologyResponseBodyV1,
     ): TopologyResponseBodyV1;
 
     static surveyTopologyResponseV0(
-      value: TopologyResponseBodyV0
+      value: TopologyResponseBodyV0,
     ): SurveyResponseBody;
 
     static surveyTopologyResponseV1(
-      value: TopologyResponseBodyV1
+      value: TopologyResponseBodyV1,
     ): SurveyResponseBody;
 
     value(): TopologyResponseBodyV0 | TopologyResponseBodyV1;
@@ -10827,17 +10827,17 @@ export namespace xdr {
     txSet(value?: TransactionSet): TransactionSet;
 
     generalizedTxSet(
-      value?: GeneralizedTransactionSet
+      value?: GeneralizedTransactionSet,
     ): GeneralizedTransactionSet;
 
     transaction(value?: TransactionEnvelope): TransactionEnvelope;
 
     signedSurveyRequestMessage(
-      value?: SignedSurveyRequestMessage
+      value?: SignedSurveyRequestMessage,
     ): SignedSurveyRequestMessage;
 
     signedSurveyResponseMessage(
-      value?: SignedSurveyResponseMessage
+      value?: SignedSurveyResponseMessage,
     ): SignedSurveyResponseMessage;
 
     qSetHash(value?: Buffer): Buffer;
@@ -10964,7 +10964,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): AuthenticatedMessage;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -10976,11 +10976,11 @@ export namespace xdr {
     switch(): LiquidityPoolType;
 
     constantProduct(
-      value?: LiquidityPoolConstantProductParameters
+      value?: LiquidityPoolConstantProductParameters,
     ): LiquidityPoolConstantProductParameters;
 
     static liquidityPoolConstantProduct(
-      value: LiquidityPoolConstantProductParameters
+      value: LiquidityPoolConstantProductParameters,
     ): LiquidityPoolParameters;
 
     value(): LiquidityPoolConstantProductParameters;
@@ -11001,7 +11001,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolParameters;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11093,7 +11093,7 @@ export namespace xdr {
     static revokeSponsorshipLedgerEntry(value: LedgerKey): RevokeSponsorshipOp;
 
     static revokeSponsorshipSigner(
-      value: RevokeSponsorshipOpSigner
+      value: RevokeSponsorshipOpSigner,
     ): RevokeSponsorshipOp;
 
     value(): LedgerKey | RevokeSponsorshipOpSigner;
@@ -11114,7 +11114,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): RevokeSponsorshipOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11126,13 +11126,13 @@ export namespace xdr {
     switch(): ContractIdPreimageType;
 
     fromAddress(
-      value?: ContractIdPreimageFromAddress
+      value?: ContractIdPreimageFromAddress,
     ): ContractIdPreimageFromAddress;
 
     fromAsset(value?: Asset): Asset;
 
     static contractIdPreimageFromAddress(
-      value: ContractIdPreimageFromAddress
+      value: ContractIdPreimageFromAddress,
     ): ContractIdPreimage;
 
     static contractIdPreimageFromAsset(value: Asset): ContractIdPreimage;
@@ -11172,7 +11172,7 @@ export namespace xdr {
     static hostFunctionTypeInvokeContract(value: ScVal[]): HostFunction;
 
     static hostFunctionTypeCreateContract(
-      value: CreateContractArgs
+      value: CreateContractArgs,
     ): HostFunction;
 
     static hostFunctionTypeUploadContractWasm(value: Buffer): HostFunction;
@@ -11204,17 +11204,17 @@ export namespace xdr {
     switch(): SorobanAuthorizedFunctionType;
 
     contractFn(
-      value?: SorobanAuthorizedContractFunction
+      value?: SorobanAuthorizedContractFunction,
     ): SorobanAuthorizedContractFunction;
 
     createContractHostFn(value?: CreateContractArgs): CreateContractArgs;
 
     static sorobanAuthorizedFunctionTypeContractFn(
-      value: SorobanAuthorizedContractFunction
+      value: SorobanAuthorizedContractFunction,
     ): SorobanAuthorizedFunction;
 
     static sorobanAuthorizedFunctionTypeCreateContractHostFn(
-      value: CreateContractArgs
+      value: CreateContractArgs,
     ): SorobanAuthorizedFunction;
 
     value(): SorobanAuthorizedContractFunction | CreateContractArgs;
@@ -11235,7 +11235,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SorobanAuthorizedFunction;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11251,7 +11251,7 @@ export namespace xdr {
     static sorobanCredentialsSourceAccount(): SorobanCredentials;
 
     static sorobanCredentialsAddress(
-      value: SorobanAddressCredentials
+      value: SorobanAddressCredentials,
     ): SorobanCredentials;
 
     value(): SorobanAddressCredentials | void;
@@ -11285,13 +11285,13 @@ export namespace xdr {
     paymentOp(value?: PaymentOp): PaymentOp;
 
     pathPaymentStrictReceiveOp(
-      value?: PathPaymentStrictReceiveOp
+      value?: PathPaymentStrictReceiveOp,
     ): PathPaymentStrictReceiveOp;
 
     manageSellOfferOp(value?: ManageSellOfferOp): ManageSellOfferOp;
 
     createPassiveSellOfferOp(
-      value?: CreatePassiveSellOfferOp
+      value?: CreatePassiveSellOfferOp,
     ): CreatePassiveSellOfferOp;
 
     setOptionsOp(value?: SetOptionsOp): SetOptionsOp;
@@ -11309,19 +11309,19 @@ export namespace xdr {
     manageBuyOfferOp(value?: ManageBuyOfferOp): ManageBuyOfferOp;
 
     pathPaymentStrictSendOp(
-      value?: PathPaymentStrictSendOp
+      value?: PathPaymentStrictSendOp,
     ): PathPaymentStrictSendOp;
 
     createClaimableBalanceOp(
-      value?: CreateClaimableBalanceOp
+      value?: CreateClaimableBalanceOp,
     ): CreateClaimableBalanceOp;
 
     claimClaimableBalanceOp(
-      value?: ClaimClaimableBalanceOp
+      value?: ClaimClaimableBalanceOp,
     ): ClaimClaimableBalanceOp;
 
     beginSponsoringFutureReservesOp(
-      value?: BeginSponsoringFutureReservesOp
+      value?: BeginSponsoringFutureReservesOp,
     ): BeginSponsoringFutureReservesOp;
 
     revokeSponsorshipOp(value?: RevokeSponsorshipOp): RevokeSponsorshipOp;
@@ -11329,23 +11329,23 @@ export namespace xdr {
     clawbackOp(value?: ClawbackOp): ClawbackOp;
 
     clawbackClaimableBalanceOp(
-      value?: ClawbackClaimableBalanceOp
+      value?: ClawbackClaimableBalanceOp,
     ): ClawbackClaimableBalanceOp;
 
     setTrustLineFlagsOp(value?: SetTrustLineFlagsOp): SetTrustLineFlagsOp;
 
     liquidityPoolDepositOp(
-      value?: LiquidityPoolDepositOp
+      value?: LiquidityPoolDepositOp,
     ): LiquidityPoolDepositOp;
 
     liquidityPoolWithdrawOp(
-      value?: LiquidityPoolWithdrawOp
+      value?: LiquidityPoolWithdrawOp,
     ): LiquidityPoolWithdrawOp;
 
     invokeHostFunctionOp(value?: InvokeHostFunctionOp): InvokeHostFunctionOp;
 
     bumpFootprintExpirationOp(
-      value?: BumpFootprintExpirationOp
+      value?: BumpFootprintExpirationOp,
     ): BumpFootprintExpirationOp;
 
     restoreFootprintOp(value?: RestoreFootprintOp): RestoreFootprintOp;
@@ -11355,13 +11355,13 @@ export namespace xdr {
     static payment(value: PaymentOp): OperationBody;
 
     static pathPaymentStrictReceive(
-      value: PathPaymentStrictReceiveOp
+      value: PathPaymentStrictReceiveOp,
     ): OperationBody;
 
     static manageSellOffer(value: ManageSellOfferOp): OperationBody;
 
     static createPassiveSellOffer(
-      value: CreatePassiveSellOfferOp
+      value: CreatePassiveSellOfferOp,
     ): OperationBody;
 
     static setOptions(value: SetOptionsOp): OperationBody;
@@ -11383,13 +11383,13 @@ export namespace xdr {
     static pathPaymentStrictSend(value: PathPaymentStrictSendOp): OperationBody;
 
     static createClaimableBalance(
-      value: CreateClaimableBalanceOp
+      value: CreateClaimableBalanceOp,
     ): OperationBody;
 
     static claimClaimableBalance(value: ClaimClaimableBalanceOp): OperationBody;
 
     static beginSponsoringFutureReserves(
-      value: BeginSponsoringFutureReservesOp
+      value: BeginSponsoringFutureReservesOp,
     ): OperationBody;
 
     static endSponsoringFutureReserves(): OperationBody;
@@ -11399,7 +11399,7 @@ export namespace xdr {
     static clawback(value: ClawbackOp): OperationBody;
 
     static clawbackClaimableBalance(
-      value: ClawbackClaimableBalanceOp
+      value: ClawbackClaimableBalanceOp,
     ): OperationBody;
 
     static setTrustLineFlags(value: SetTrustLineFlagsOp): OperationBody;
@@ -11411,7 +11411,7 @@ export namespace xdr {
     static invokeHostFunction(value: InvokeHostFunctionOp): OperationBody;
 
     static bumpFootprintExpiration(
-      value: BumpFootprintExpirationOp
+      value: BumpFootprintExpirationOp,
     ): OperationBody;
 
     static restoreFootprint(value: RestoreFootprintOp): OperationBody;
@@ -11475,21 +11475,21 @@ export namespace xdr {
     contractId(value?: HashIdPreimageContractId): HashIdPreimageContractId;
 
     sorobanAuthorization(
-      value?: HashIdPreimageSorobanAuthorization
+      value?: HashIdPreimageSorobanAuthorization,
     ): HashIdPreimageSorobanAuthorization;
 
     static envelopeTypeOpId(value: HashIdPreimageOperationId): HashIdPreimage;
 
     static envelopeTypePoolRevokeOpId(
-      value: HashIdPreimageRevokeId
+      value: HashIdPreimageRevokeId,
     ): HashIdPreimage;
 
     static envelopeTypeContractId(
-      value: HashIdPreimageContractId
+      value: HashIdPreimageContractId,
     ): HashIdPreimage;
 
     static envelopeTypeSorobanAuthorization(
-      value: HashIdPreimageSorobanAuthorization
+      value: HashIdPreimageSorobanAuthorization,
     ): HashIdPreimage;
 
     value():
@@ -11665,7 +11665,7 @@ export namespace xdr {
     v1(value?: TransactionV1Envelope): TransactionV1Envelope;
 
     static envelopeTypeTx(
-      value: TransactionV1Envelope
+      value: TransactionV1Envelope,
     ): FeeBumpTransactionInnerTx;
 
     value(): TransactionV1Envelope;
@@ -11686,7 +11686,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): FeeBumpTransactionInnerTx;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11717,7 +11717,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): FeeBumpTransactionExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11739,7 +11739,7 @@ export namespace xdr {
     static envelopeTypeTx(value: TransactionV1Envelope): TransactionEnvelope;
 
     static envelopeTypeTxFeeBump(
-      value: FeeBumpTransactionEnvelope
+      value: FeeBumpTransactionEnvelope,
     ): TransactionEnvelope;
 
     value():
@@ -11763,7 +11763,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionEnvelope;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11779,11 +11779,11 @@ export namespace xdr {
     feeBump(value?: FeeBumpTransaction): FeeBumpTransaction;
 
     static envelopeTypeTx(
-      value: Transaction
+      value: Transaction,
     ): TransactionSignaturePayloadTaggedTransaction;
 
     static envelopeTypeTxFeeBump(
-      value: FeeBumpTransaction
+      value: FeeBumpTransaction,
     ): TransactionSignaturePayloadTaggedTransaction;
 
     value(): Transaction | FeeBumpTransaction;
@@ -11796,23 +11796,23 @@ export namespace xdr {
 
     static write(
       value: TransactionSignaturePayloadTaggedTransaction,
-      io: Buffer
+      io: Buffer,
     ): void;
 
     static isValid(
-      value: TransactionSignaturePayloadTaggedTransaction
+      value: TransactionSignaturePayloadTaggedTransaction,
     ): boolean;
 
     static toXDR(value: TransactionSignaturePayloadTaggedTransaction): Buffer;
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): TransactionSignaturePayloadTaggedTransaction;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionSignaturePayloadTaggedTransaction;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11889,7 +11889,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): CreateAccountResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -11947,13 +11947,13 @@ export namespace xdr {
     switch(): PathPaymentStrictReceiveResultCode;
 
     success(
-      value?: PathPaymentStrictReceiveResultSuccess
+      value?: PathPaymentStrictReceiveResultSuccess,
     ): PathPaymentStrictReceiveResultSuccess;
 
     noIssuer(value?: Asset): Asset;
 
     static pathPaymentStrictReceiveSuccess(
-      value: PathPaymentStrictReceiveResultSuccess
+      value: PathPaymentStrictReceiveResultSuccess,
     ): PathPaymentStrictReceiveResult;
 
     static pathPaymentStrictReceiveMalformed(): PathPaymentStrictReceiveResult;
@@ -11973,7 +11973,7 @@ export namespace xdr {
     static pathPaymentStrictReceiveLineFull(): PathPaymentStrictReceiveResult;
 
     static pathPaymentStrictReceiveNoIssuer(
-      value: Asset
+      value: Asset,
     ): PathPaymentStrictReceiveResult;
 
     static pathPaymentStrictReceiveTooFewOffers(): PathPaymentStrictReceiveResult;
@@ -11998,12 +11998,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): PathPaymentStrictReceiveResult;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): PathPaymentStrictReceiveResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12015,13 +12015,13 @@ export namespace xdr {
     switch(): PathPaymentStrictSendResultCode;
 
     success(
-      value?: PathPaymentStrictSendResultSuccess
+      value?: PathPaymentStrictSendResultSuccess,
     ): PathPaymentStrictSendResultSuccess;
 
     noIssuer(value?: Asset): Asset;
 
     static pathPaymentStrictSendSuccess(
-      value: PathPaymentStrictSendResultSuccess
+      value: PathPaymentStrictSendResultSuccess,
     ): PathPaymentStrictSendResult;
 
     static pathPaymentStrictSendMalformed(): PathPaymentStrictSendResult;
@@ -12041,7 +12041,7 @@ export namespace xdr {
     static pathPaymentStrictSendLineFull(): PathPaymentStrictSendResult;
 
     static pathPaymentStrictSendNoIssuer(
-      value: Asset
+      value: Asset,
     ): PathPaymentStrictSendResult;
 
     static pathPaymentStrictSendTooFewOffers(): PathPaymentStrictSendResult;
@@ -12068,7 +12068,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): PathPaymentStrictSendResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12103,12 +12103,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ManageOfferSuccessResultOffer;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ManageOfferSuccessResultOffer;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12122,7 +12122,7 @@ export namespace xdr {
     success(value?: ManageOfferSuccessResult): ManageOfferSuccessResult;
 
     static manageSellOfferSuccess(
-      value: ManageOfferSuccessResult
+      value: ManageOfferSuccessResult,
     ): ManageSellOfferResult;
 
     static manageSellOfferMalformed(): ManageSellOfferResult;
@@ -12167,7 +12167,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ManageSellOfferResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12181,7 +12181,7 @@ export namespace xdr {
     success(value?: ManageOfferSuccessResult): ManageOfferSuccessResult;
 
     static manageBuyOfferSuccess(
-      value: ManageOfferSuccessResult
+      value: ManageOfferSuccessResult,
     ): ManageBuyOfferResult;
 
     static manageBuyOfferMalformed(): ManageBuyOfferResult;
@@ -12226,7 +12226,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ManageBuyOfferResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12514,7 +12514,7 @@ export namespace xdr {
     balanceId(value?: ClaimableBalanceId): ClaimableBalanceId;
 
     static createClaimableBalanceSuccess(
-      value: ClaimableBalanceId
+      value: ClaimableBalanceId,
     ): CreateClaimableBalanceResult;
 
     static createClaimableBalanceMalformed(): CreateClaimableBalanceResult;
@@ -12545,7 +12545,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): CreateClaimableBalanceResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12586,7 +12586,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClaimClaimableBalanceResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12621,12 +12621,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): BeginSponsoringFutureReservesResult;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): BeginSponsoringFutureReservesResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12657,12 +12657,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): EndSponsoringFutureReservesResult;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): EndSponsoringFutureReservesResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12703,7 +12703,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): RevokeSponsorshipResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12774,12 +12774,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): ClawbackClaimableBalanceResult;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ClawbackClaimableBalanceResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12820,7 +12820,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): SetTrustLineFlagsResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12865,7 +12865,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolDepositResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12906,7 +12906,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): LiquidityPoolWithdrawResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12945,7 +12945,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InvokeHostFunctionResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -12978,12 +12978,12 @@ export namespace xdr {
 
     static fromXDR(
       input: Buffer,
-      format?: 'raw'
+      format?: 'raw',
     ): BumpFootprintExpirationResult;
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): BumpFootprintExpirationResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -13018,7 +13018,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): RestoreFootprintResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -13034,13 +13034,13 @@ export namespace xdr {
     paymentResult(value?: PaymentResult): PaymentResult;
 
     pathPaymentStrictReceiveResult(
-      value?: PathPaymentStrictReceiveResult
+      value?: PathPaymentStrictReceiveResult,
     ): PathPaymentStrictReceiveResult;
 
     manageSellOfferResult(value?: ManageSellOfferResult): ManageSellOfferResult;
 
     createPassiveSellOfferResult(
-      value?: ManageSellOfferResult
+      value?: ManageSellOfferResult,
     ): ManageSellOfferResult;
 
     setOptionsResult(value?: SetOptionsResult): SetOptionsResult;
@@ -13060,57 +13060,57 @@ export namespace xdr {
     manageBuyOfferResult(value?: ManageBuyOfferResult): ManageBuyOfferResult;
 
     pathPaymentStrictSendResult(
-      value?: PathPaymentStrictSendResult
+      value?: PathPaymentStrictSendResult,
     ): PathPaymentStrictSendResult;
 
     createClaimableBalanceResult(
-      value?: CreateClaimableBalanceResult
+      value?: CreateClaimableBalanceResult,
     ): CreateClaimableBalanceResult;
 
     claimClaimableBalanceResult(
-      value?: ClaimClaimableBalanceResult
+      value?: ClaimClaimableBalanceResult,
     ): ClaimClaimableBalanceResult;
 
     beginSponsoringFutureReservesResult(
-      value?: BeginSponsoringFutureReservesResult
+      value?: BeginSponsoringFutureReservesResult,
     ): BeginSponsoringFutureReservesResult;
 
     endSponsoringFutureReservesResult(
-      value?: EndSponsoringFutureReservesResult
+      value?: EndSponsoringFutureReservesResult,
     ): EndSponsoringFutureReservesResult;
 
     revokeSponsorshipResult(
-      value?: RevokeSponsorshipResult
+      value?: RevokeSponsorshipResult,
     ): RevokeSponsorshipResult;
 
     clawbackResult(value?: ClawbackResult): ClawbackResult;
 
     clawbackClaimableBalanceResult(
-      value?: ClawbackClaimableBalanceResult
+      value?: ClawbackClaimableBalanceResult,
     ): ClawbackClaimableBalanceResult;
 
     setTrustLineFlagsResult(
-      value?: SetTrustLineFlagsResult
+      value?: SetTrustLineFlagsResult,
     ): SetTrustLineFlagsResult;
 
     liquidityPoolDepositResult(
-      value?: LiquidityPoolDepositResult
+      value?: LiquidityPoolDepositResult,
     ): LiquidityPoolDepositResult;
 
     liquidityPoolWithdrawResult(
-      value?: LiquidityPoolWithdrawResult
+      value?: LiquidityPoolWithdrawResult,
     ): LiquidityPoolWithdrawResult;
 
     invokeHostFunctionResult(
-      value?: InvokeHostFunctionResult
+      value?: InvokeHostFunctionResult,
     ): InvokeHostFunctionResult;
 
     bumpFootprintExpirationResult(
-      value?: BumpFootprintExpirationResult
+      value?: BumpFootprintExpirationResult,
     ): BumpFootprintExpirationResult;
 
     restoreFootprintResult(
-      value?: RestoreFootprintResult
+      value?: RestoreFootprintResult,
     ): RestoreFootprintResult;
 
     static createAccount(value: CreateAccountResult): OperationResultTr;
@@ -13118,13 +13118,13 @@ export namespace xdr {
     static payment(value: PaymentResult): OperationResultTr;
 
     static pathPaymentStrictReceive(
-      value: PathPaymentStrictReceiveResult
+      value: PathPaymentStrictReceiveResult,
     ): OperationResultTr;
 
     static manageSellOffer(value: ManageSellOfferResult): OperationResultTr;
 
     static createPassiveSellOffer(
-      value: ManageSellOfferResult
+      value: ManageSellOfferResult,
     ): OperationResultTr;
 
     static setOptions(value: SetOptionsResult): OperationResultTr;
@@ -13144,23 +13144,23 @@ export namespace xdr {
     static manageBuyOffer(value: ManageBuyOfferResult): OperationResultTr;
 
     static pathPaymentStrictSend(
-      value: PathPaymentStrictSendResult
+      value: PathPaymentStrictSendResult,
     ): OperationResultTr;
 
     static createClaimableBalance(
-      value: CreateClaimableBalanceResult
+      value: CreateClaimableBalanceResult,
     ): OperationResultTr;
 
     static claimClaimableBalance(
-      value: ClaimClaimableBalanceResult
+      value: ClaimClaimableBalanceResult,
     ): OperationResultTr;
 
     static beginSponsoringFutureReserves(
-      value: BeginSponsoringFutureReservesResult
+      value: BeginSponsoringFutureReservesResult,
     ): OperationResultTr;
 
     static endSponsoringFutureReserves(
-      value: EndSponsoringFutureReservesResult
+      value: EndSponsoringFutureReservesResult,
     ): OperationResultTr;
 
     static revokeSponsorship(value: RevokeSponsorshipResult): OperationResultTr;
@@ -13168,25 +13168,25 @@ export namespace xdr {
     static clawback(value: ClawbackResult): OperationResultTr;
 
     static clawbackClaimableBalance(
-      value: ClawbackClaimableBalanceResult
+      value: ClawbackClaimableBalanceResult,
     ): OperationResultTr;
 
     static setTrustLineFlags(value: SetTrustLineFlagsResult): OperationResultTr;
 
     static liquidityPoolDeposit(
-      value: LiquidityPoolDepositResult
+      value: LiquidityPoolDepositResult,
     ): OperationResultTr;
 
     static liquidityPoolWithdraw(
-      value: LiquidityPoolWithdrawResult
+      value: LiquidityPoolWithdrawResult,
     ): OperationResultTr;
 
     static invokeHostFunction(
-      value: InvokeHostFunctionResult
+      value: InvokeHostFunctionResult,
     ): OperationResultTr;
 
     static bumpFootprintExpiration(
-      value: BumpFootprintExpirationResult
+      value: BumpFootprintExpirationResult,
     ): OperationResultTr;
 
     static restoreFootprint(value: RestoreFootprintResult): OperationResultTr;
@@ -13340,7 +13340,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InnerTransactionResultResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -13371,7 +13371,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): InnerTransactionResultExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -13383,17 +13383,17 @@ export namespace xdr {
     switch(): TransactionResultCode;
 
     innerResultPair(
-      value?: InnerTransactionResultPair
+      value?: InnerTransactionResultPair,
     ): InnerTransactionResultPair;
 
     results(value?: OperationResult[]): OperationResult[];
 
     static txFeeBumpInnerSuccess(
-      value: InnerTransactionResultPair
+      value: InnerTransactionResultPair,
     ): TransactionResultResult;
 
     static txFeeBumpInnerFailed(
-      value: InnerTransactionResultPair
+      value: InnerTransactionResultPair,
     ): TransactionResultResult;
 
     static txSuccess(value: OperationResult[]): TransactionResultResult;
@@ -13448,7 +13448,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionResultResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -13479,7 +13479,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): TransactionResultExt;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -13555,7 +13555,7 @@ export namespace xdr {
     hashX(value?: Buffer): Buffer;
 
     ed25519SignedPayload(
-      value?: SignerKeyEd25519SignedPayload
+      value?: SignerKeyEd25519SignedPayload,
     ): SignerKeyEd25519SignedPayload;
 
     static signerKeyTypeEd25519(value: Buffer): SignerKey;
@@ -13565,7 +13565,7 @@ export namespace xdr {
     static signerKeyTypeHashX(value: Buffer): SignerKey;
 
     static signerKeyTypeEd25519SignedPayload(
-      value: SignerKeyEd25519SignedPayload
+      value: SignerKeyEd25519SignedPayload,
     ): SignerKey;
 
     value(): Buffer | Buffer | Buffer | SignerKeyEd25519SignedPayload;
@@ -13863,7 +13863,7 @@ export namespace xdr {
 
     map(value?: ScSpecTypeMap): ScSpecTypeMap;
 
-    set(value?: ScSpecTypeSet): ScSpecTypeSet;
+    set_(value?: ScSpecTypeSet): ScSpecTypeSet;
 
     tuple(value?: ScSpecTypeTuple): ScSpecTypeTuple;
 
@@ -13963,11 +13963,11 @@ export namespace xdr {
     tupleCase(value?: ScSpecUdtUnionCaseTupleV0): ScSpecUdtUnionCaseTupleV0;
 
     static scSpecUdtUnionCaseVoidV0(
-      value: ScSpecUdtUnionCaseVoidV0
+      value: ScSpecUdtUnionCaseVoidV0,
     ): ScSpecUdtUnionCaseV0;
 
     static scSpecUdtUnionCaseTupleV0(
-      value: ScSpecUdtUnionCaseTupleV0
+      value: ScSpecUdtUnionCaseTupleV0,
     ): ScSpecUdtUnionCaseV0;
 
     value(): ScSpecUdtUnionCaseVoidV0 | ScSpecUdtUnionCaseTupleV0;
@@ -13988,7 +13988,7 @@ export namespace xdr {
 
     static fromXDR(
       input: string,
-      format: 'hex' | 'base64'
+      format: 'hex' | 'base64',
     ): ScSpecUdtUnionCaseV0;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
@@ -14053,31 +14053,31 @@ export namespace xdr {
     contractMaxSizeBytes(value?: number): number;
 
     contractCompute(
-      value?: ConfigSettingContractComputeV0
+      value?: ConfigSettingContractComputeV0,
     ): ConfigSettingContractComputeV0;
 
     contractLedgerCost(
-      value?: ConfigSettingContractLedgerCostV0
+      value?: ConfigSettingContractLedgerCostV0,
     ): ConfigSettingContractLedgerCostV0;
 
     contractHistoricalData(
-      value?: ConfigSettingContractHistoricalDataV0
+      value?: ConfigSettingContractHistoricalDataV0,
     ): ConfigSettingContractHistoricalDataV0;
 
     contractMetaData(
-      value?: ConfigSettingContractMetaDataV0
+      value?: ConfigSettingContractMetaDataV0,
     ): ConfigSettingContractMetaDataV0;
 
     contractBandwidth(
-      value?: ConfigSettingContractBandwidthV0
+      value?: ConfigSettingContractBandwidthV0,
     ): ConfigSettingContractBandwidthV0;
 
     contractCostParamsCpuInsns(
-      value?: ContractCostParamEntry[]
+      value?: ContractCostParamEntry[],
     ): ContractCostParamEntry[];
 
     contractCostParamsMemBytes(
-      value?: ContractCostParamEntry[]
+      value?: ContractCostParamEntry[],
     ): ContractCostParamEntry[];
 
     contractDataKeySizeBytes(value?: number): number;
@@ -14085,11 +14085,11 @@ export namespace xdr {
     contractDataEntrySizeBytes(value?: number): number;
 
     stateExpirationSettings(
-      value?: StateExpirationSettings
+      value?: StateExpirationSettings,
     ): StateExpirationSettings;
 
     contractExecutionLanes(
-      value?: ConfigSettingContractExecutionLanesV0
+      value?: ConfigSettingContractExecutionLanesV0,
     ): ConfigSettingContractExecutionLanesV0;
 
     bucketListSizeWindow(value?: Uint64[]): Uint64[];
@@ -14097,51 +14097,51 @@ export namespace xdr {
     static configSettingContractMaxSizeBytes(value: number): ConfigSettingEntry;
 
     static configSettingContractComputeV0(
-      value: ConfigSettingContractComputeV0
+      value: ConfigSettingContractComputeV0,
     ): ConfigSettingEntry;
 
     static configSettingContractLedgerCostV0(
-      value: ConfigSettingContractLedgerCostV0
+      value: ConfigSettingContractLedgerCostV0,
     ): ConfigSettingEntry;
 
     static configSettingContractHistoricalDataV0(
-      value: ConfigSettingContractHistoricalDataV0
+      value: ConfigSettingContractHistoricalDataV0,
     ): ConfigSettingEntry;
 
     static configSettingContractMetaDataV0(
-      value: ConfigSettingContractMetaDataV0
+      value: ConfigSettingContractMetaDataV0,
     ): ConfigSettingEntry;
 
     static configSettingContractBandwidthV0(
-      value: ConfigSettingContractBandwidthV0
+      value: ConfigSettingContractBandwidthV0,
     ): ConfigSettingEntry;
 
     static configSettingContractCostParamsCpuInstructions(
-      value: ContractCostParamEntry[]
+      value: ContractCostParamEntry[],
     ): ConfigSettingEntry;
 
     static configSettingContractCostParamsMemoryBytes(
-      value: ContractCostParamEntry[]
+      value: ContractCostParamEntry[],
     ): ConfigSettingEntry;
 
     static configSettingContractDataKeySizeBytes(
-      value: number
+      value: number,
     ): ConfigSettingEntry;
 
     static configSettingContractDataEntrySizeBytes(
-      value: number
+      value: number,
     ): ConfigSettingEntry;
 
     static configSettingStateExpiration(
-      value: StateExpirationSettings
+      value: StateExpirationSettings,
     ): ConfigSettingEntry;
 
     static configSettingContractExecutionLanes(
-      value: ConfigSettingContractExecutionLanesV0
+      value: ConfigSettingContractExecutionLanesV0,
     ): ConfigSettingEntry;
 
     static configSettingBucketlistSizeWindow(
-      value: Uint64[]
+      value: Uint64[],
     ): ConfigSettingEntry;
 
     value():

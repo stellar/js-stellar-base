@@ -2100,9 +2100,9 @@ var types = XDR.config((xdr) => {
   //       TimePoint closeTime; // network close time
   //
   //       // upgrades to apply to the previous ledger (usually empty)
-  //       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
+  //       // this is a vector of encoded "LedgerUpgrade" so that nodes can drop
   //       // unknown steps during consensus if needed.
-  //       // see notes below on 'LedgerUpgrade' for more detail
+  //       // see notes below on "LedgerUpgrade" for more detail
   //       // max size is dictated by number of upgrade types (+ room for future)
   //       UpgradeType upgrades<6>;
   //
@@ -9089,7 +9089,7 @@ var types = XDR.config((xdr) => {
       ["scSpecTypeResult", "result"],
       ["scSpecTypeVec", "vec"],
       ["scSpecTypeMap", "map"],
-      ["scSpecTypeSet", "set"],
+      ["scSpecTypeSet", "set_"],
       ["scSpecTypeTuple", "tuple"],
       ["scSpecTypeBytesN", "bytesN"],
       ["scSpecTypeUdt", "udt"],
@@ -9099,7 +9099,7 @@ var types = XDR.config((xdr) => {
       result: xdr.lookup("ScSpecTypeResult"),
       vec: xdr.lookup("ScSpecTypeVec"),
       map: xdr.lookup("ScSpecTypeMap"),
-      set: xdr.lookup("ScSpecTypeSet"),
+      set_: xdr.lookup("ScSpecTypeSet"),
       tuple: xdr.lookup("ScSpecTypeTuple"),
       bytesN: xdr.lookup("ScSpecTypeBytesN"),
       udt: xdr.lookup("ScSpecTypeUdt"),
