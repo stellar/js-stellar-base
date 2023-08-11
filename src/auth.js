@@ -198,6 +198,7 @@ function bytesToInt64(bytes) {
 }
 
 /**
+ * @async
  * @callback SigningCallback
  * @param {xdr.HashIdPreimageSorobanAuthorization} preimage
  * @returns {Promise<[Buffer, string]>}
@@ -283,7 +284,9 @@ export async function authorizeEntry(
   const [signature, publicKey] = await signingMethod(preimage);
 
   const payload = hash(preimage.toXDR());
-  Keypair.fromPublicKey(publicKey).verify(payload, signature);
+  if (!Keypair.fromPublicKey(publicKey).verify(payload, signature)) {
+    throw new Error(`signature does not match payload`);
+  }
 
   const sigScVal = nativeToScVal(
     {
