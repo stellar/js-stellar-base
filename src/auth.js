@@ -1,8 +1,9 @@
 import xdr from './xdr';
 
+import { Keypair } from './keypair';
 import { StrKey } from './strkey';
-import { hash } from './hashing';
 import { Networks } from './network';
+import { hash } from './hashing';
 
 import { Address } from './address';
 import { nativeToScVal } from './scval';
@@ -206,10 +207,10 @@ function bytesToInt64(bytes) {
  * Actually authorizes an existing authorization entry using the given
  * credentials and expiration details.
  *
- * @param {xdr.SorobanAuthorizationEntry} entry
- * @param {SigningCallback} signingMethod
- * @param {number} validUntil
- * @param {string} [networkPassphrase]
+ * @param {xdr.SorobanAuthorizationEntry} entry TODO
+ * @param {SigningCallback} signingMethod TODO
+ * @param {number} validUntil TODO
+ * @param {string} [networkPassphrase]  TODO
  *
  * @returns {xdr.SorobanAuthorizationEntry}
  *
