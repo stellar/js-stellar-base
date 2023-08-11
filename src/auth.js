@@ -195,3 +195,62 @@ function bytesToInt64(bytes) {
   // eslint-disable-next-line no-bitwise
   return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
 }
+
+/**
+ * Actually authorizes an existing authorization entry using the given
+ * credentials and expiration details.
+ *
+ * @param {xdr.SorobanAuthorizationEntry} entry
+ * @param {(Buffer) => Promise<[Buffer, string]>} signingMethod
+ * @param {number} validUntil
+ * @param {string} [networkPassphrase]
+ * @returns {xdr.SorobanAuthorizationEntry}
+ */
+export async function authorizeEntry(
+  entry,
+  signingMethod,
+  validUntil,
+  networkPassphrase = Networks.FUTURENET
+) {
+  // no-op
+  if (
+    entry.credentials().switch() !==
+    xdr.SorobanCredentialsType.sorobanCredentialsAddress()
+  ) {
+    return entry;
+  }
+
+  /** @type {xdr.SorobanAddressCredentials} */
+  const addressAuth = entry.credentials().address();
+  addressAuth.signatureExpirationLedger(validUntil);
+
+  const networkId = hash(Buffer.from(networkPassphrase));
+  const envelope = new xdr.HashIdPreimageSorobanAuthorization({
+    networkId,
+    nonce: addressAuth.nonce(),
+    invocation: entry.rootInvocation(),
+    signatureExpirationLedger: addressAuth.signatureExpirationLedger()
+  });
+
+  const preimage =
+    xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(envelope);
+
+  const [signature, publicKey] = await signingMethod(hash(preimage.toXDR()));
+  const sigScVal = nativeToScVal(
+    {
+      public_key: StrKey.decodeEd25519PublicKey(publicKey),
+      signature
+    },
+    {
+      // force the keys to be interpreted as symbols (expected for
+      // Soroban [contracttype]s)
+      type: {
+        public_key: ['symbol', null],
+        signature: ['symbol', null]
+      }
+    }
+  );
+
+  addressAuth.signatureArgs([sigScVal]);
+  return addressAuth;
+}
