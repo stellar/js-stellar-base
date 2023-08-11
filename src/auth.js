@@ -235,7 +235,11 @@ export async function authorizeEntry(
   const preimage =
     xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(envelope);
 
-  const [signature, publicKey] = await signingMethod(hash(preimage.toXDR()));
+  const [signature, publicKey] = await signingMethod(preimage);
+
+  const payload = hash(preimage.toXDR());
+  Keypair.fromPublicKey(publicKey).verify(payload, signature);
+
   const sigScVal = nativeToScVal(
     {
       public_key: StrKey.decodeEd25519PublicKey(publicKey),
