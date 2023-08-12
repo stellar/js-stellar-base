@@ -228,7 +228,10 @@ export class TransactionBuilder {
     return this;
   }
 
-  /** Removes the operations from the builder (useful when cloning). */
+  /**
+   * Removes the operations from the builder (useful when cloning).
+   * @returns {TransactionBuilder} this builder instance
+   */
   clearOperations() {
     this.operations = [];
     return this;
