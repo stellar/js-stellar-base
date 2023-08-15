@@ -50,7 +50,7 @@ export class Soroban {
     let [whole, fraction, ...rest] = value.split('.').slice();
 
     if (rest.length) {
-      throw new Error('Invalid decimal');
+      throw new Error(`Invalid decimal value: ${value}`);
     }
 
     if (!whole) {
