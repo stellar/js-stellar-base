@@ -11,8 +11,7 @@ describe('humanizing raw events', function () {
   const topics1 = nativeToScVal([1, 2, 3]).value();
   const data1 = nativeToScVal({ hello: 'world' });
 
-  // workaround for xdr.ContractEventBody.0(...) being invalid lol
-  const bodyModel = xdr.ContractEventBody.fromXDR('AAAAAAAAAAAAAAAB', 'base64');
+  const bodyModel = xdr.ContractEventBody._0();
   const cloneAndSet = (newBody) => {
     const clone = xdr.ContractEventBody.fromXDR(bodyModel.toXDR());
     clone.v0().topics(newBody.topics);
@@ -24,7 +23,7 @@ describe('humanizing raw events', function () {
     new xdr.DiagnosticEvent({
       inSuccessfulContractCall: true,
       event: new xdr.ContractEvent({
-        ext: new xdr.ExtensionPoint(0),
+        ext: xdr.ExtensionPoint._0(),
         contractId: StellarBase.StrKey.decodeContract(contractId),
         type: xdr.ContractEventType.contract(),
         body: cloneAndSet({

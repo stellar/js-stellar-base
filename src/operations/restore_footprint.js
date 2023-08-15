@@ -20,7 +20,7 @@ import xdr from '../xdr';
  *    (xdr.RestoreFootprintOp)
  */
 export function restoreFootprint(opts = {}) {
-  const op = new xdr.RestoreFootprintOp({ ext: new xdr.ExtensionPoint(0) });
+  const op = new xdr.RestoreFootprintOp({ ext: xdr.ExtensionPoint._0() });
   const opAttributes = {
     body: xdr.OperationBody.restoreFootprint(op)
   };

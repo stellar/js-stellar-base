@@ -85,7 +85,7 @@ describe('TransactionBuilder', function () {
           contractEventsSizeBytes: 0
         }),
         refundableFee: StellarBase.xdr.Int64.fromString('1'),
-        ext: new StellarBase.xdr.ExtensionPoint(0)
+        ext: StellarBase.xdr.ExtensionPoint._0()
       });
     });
 
