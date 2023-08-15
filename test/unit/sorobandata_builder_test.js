@@ -59,6 +59,20 @@ describe('SorobanTransactionData can be built', function () {
     expect(data2.resources().footprint().readWrite()).to.eql([]);
   });
 
+  it('appends footprints', function () {
+    const builder = new dataBuilder();
+
+    const data = builder
+      .setFootprint([key], [key])
+      .appendFootprint([key, key], []);
+    const built = data.build();
+
+    expect(data.getReadOnly()).to.eql([key, key, key]);
+    expect(data.getReadWrite()).to.eql([key, key, key]);
+    expect(built.resources().footprint().readOnly()).to.eql([key, key, key]);
+    expect(built.resources().footprint().readWrite()).to.eql([key]);
+  });
+
   it('makes copies on build()', function () {
     const builder = new dataBuilder();
     const first = builder.build();

@@ -105,7 +105,7 @@ export class SorobanDataBuilder {
    * @borrows {@link SorobanDataBuilder.setFootprint}
    */
   appendFootprint(readOnly, readWrite) {
-    return setFootprint(
+    return this.setFootprint(
       this.getReadOnly().concat(readOnly),
       this.getReadWrite().concat(readWrite)
     );
