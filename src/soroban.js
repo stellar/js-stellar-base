@@ -43,7 +43,8 @@ export class Soroban {
    *
    * @example
    * const displayValueAmount = "123.4560"
-   * const parsedAmountForSmartContract = StellarBase.Soroban.parseTokenAmount(displayValueAmount, 5); // "12345600"
+   * const parsedAmountForSmartContract = parseTokenAmount("123.4560", 5);
+   * parsedAmountForSmartContract === "12345600"
    */
   static parseTokenAmount(value, decimals) {
     let [whole, fraction, ...rest] = value.split('.').slice();
