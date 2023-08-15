@@ -102,7 +102,9 @@ export class SorobanDataBuilder {
 
   /**
    * Appends the given ledger keys to the existing storage access footprint.
-   * @borrows {@link SorobanDataBuilder.setFootprint}
+   * @param {xdr.LedgerKey[]} readOnly   read-only keys to add
+   * @param {xdr.LedgerKey[]} readWrite  read-write keys to add
+   * @returns {SorobanDataBuilder} this builder instance
    */
   appendFootprint(readOnly, readWrite) {
     return this.setFootprint(
@@ -123,11 +125,12 @@ export class SorobanDataBuilder {
    * values. If you want to clear them, pass `[]`, instead.
    *
    * @param {xdr.LedgerKey[]|null} [readOnly]   the set of ledger keys to set in
-   *    the read-only portion of the transaction's `sorobanData`
+   *    the read-only portion of the transaction's `sorobanData`, or `null |
+   *    undefined` to keep the existing keys
    * @param {xdr.LedgerKey[]|null} [readWrite]  the set of ledger keys to set in
-   *    the read-write portion of the transaction's `sorobanData`
-   *
-   * @returns {SorobanDataBuilder}
+   *    the read-write portion of the transaction's `sorobanData`, or `null |
+   *    undefined` to keep the existing keys
+   * @returns {SorobanDataBuilder} this builder instance
    */
   setFootprint(readOnly, readWrite) {
     if (readOnly !== null) {
