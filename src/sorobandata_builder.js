@@ -35,10 +35,8 @@ export class SorobanDataBuilder {
   constructor(sorobanData) {
     let data;
 
-    if (typeof sorobanData === 'string') {
-      data = SorobanDataBuilder.fromXDR(sorobanData, 'base64');
-    } else if (ArrayBuffer.isView(sorobanData)) {
-      data = SorobanDataBuilder.fromXDR(sorobanData, 'raw');
+    if (typeof sorobanData === 'string' || ArrayBuffer.isView(sorobanData)) {
+      data = SorobanDataBuilder.fromXDR(sorobanData);
     } else if (!sorobanData) {
       data = new xdr.SorobanTransactionData({
         resources: new xdr.SorobanResources({
@@ -103,11 +101,23 @@ export class SorobanDataBuilder {
   }
 
   /**
+   * Appends the given ledger keys to the existing storage access footprint.
+   * @borrows {@link SorobanDataBuilder.setFootprint}
+   */
+  appendFootprint(readOnly, readWrite) {
+    return setFootprint(
+      this.getReadOnly().concat(readOnly),
+      this.getReadWrite().concat(readWrite)
+    );
+  }
+
+  /**
    * Sets the storage access footprint to be a certain set of ledger keys.
    *
    * You can also set each field explicitly via
    * {@link SorobanDataBuilder.setReadOnly} and
-   * {@link SorobanDataBuilder.setReadWrite}.
+   * {@link SorobanDataBuilder.setReadWrite} or add to the existing footprint
+   * via {@link SorobanDataBuilder.appendFootprint}.
    *
    * Passing `null|undefined` to either parameter will IGNORE the existing
    * values. If you want to clear them, pass `[]`, instead.
@@ -159,5 +169,25 @@ export class SorobanDataBuilder {
    */
   build() {
     return xdr.SorobanTransactionData.fromXDR(this._data.toXDR()); // clone
+  }
+
+  //
+  // getters follow
+  //
+
+  /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
+  getReadOnly() {
+    return this._data
+    .resources()
+    .footprint()
+    .readOnly();
+  }
+
+  /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
+  getReadWrite() {
+    return this._data
+      .resources()
+      .footprint()
+      .readWrite();
   }
 }

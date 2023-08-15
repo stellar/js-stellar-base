@@ -1140,6 +1140,7 @@ export function humanizeEvents(
 
 export class SorobanDataBuilder {
   constructor(data?: string | xdr.SorobanTransactionData);
+  static fromXDR(data: Uint8Array|Buffer|string): SorobanDataBuilder;
 
   setRefundableFee(fee: IntLike): SorobanDataBuilder;
   setResources(
@@ -1153,9 +1154,16 @@ export class SorobanDataBuilder {
     readOnly?: xdr.LedgerKey[] | null,
     readWrite?: xdr.LedgerKey[] | null
   ): SorobanDataBuilder;
+  appendFootprint(
+    readOnly?: xdr.LedgerKey[] | null,
+    readWrite?: xdr.LedgerKey[] | null
+  ): SorobanDataBuilder;
 
-  setReadOnly(keys?: xdr.LedgerKey[]): SorobanDataBuilder;
-  setReadWrite(keys?: xdr.LedgerKey[]): SorobanDataBuilder;
+  setReadOnly(keys: xdr.LedgerKey[]): SorobanDataBuilder;
+  setReadWrite(keys: xdr.LedgerKey[]): SorobanDataBuilder;
+
+  getReadOnly(): xdr.LedgerKey[];
+  getReadWrite(): xdr.LedgerKey[];
 
   build(): xdr.SorobanTransactionData;
 }
