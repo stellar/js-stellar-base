@@ -598,8 +598,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [3, "v3"],
+      ["_0", xdr.void()],
+      ["_3", "v3"],
     ],
     arms: {
       v3: xdr.lookup("AccountEntryExtensionV3"),
@@ -653,8 +653,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [2, "v2"],
+      ["_0", xdr.void()],
+      ["_2", "v2"],
     ],
     arms: {
       v2: xdr.lookup("AccountEntryExtensionV2"),
@@ -698,8 +698,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("AccountEntryExtensionV1"),
@@ -853,7 +853,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TrustLineEntryExtensionV2Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -892,8 +892,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [2, "v2"],
+      ["_0", xdr.void()],
+      ["_2", "v2"],
     ],
     arms: {
       v2: xdr.lookup("TrustLineEntryExtensionV2"),
@@ -949,8 +949,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("TrustLineEntryV1"),
@@ -1035,7 +1035,7 @@ var types = XDR.config((xdr) => {
   xdr.union("OfferEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1090,7 +1090,7 @@ var types = XDR.config((xdr) => {
   xdr.union("DataEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1292,7 +1292,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ClaimableBalanceEntryExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1331,8 +1331,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("ClaimableBalanceEntryExtensionV1"),
@@ -1647,7 +1647,7 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerEntryExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1738,8 +1738,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("LedgerEntryExtensionV1"),
@@ -2168,7 +2168,7 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerHeaderExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2207,8 +2207,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("LedgerHeaderExtensionV1"),
@@ -2406,7 +2406,7 @@ var types = XDR.config((xdr) => {
   xdr.union("BucketMetadataExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2525,7 +2525,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionPhase", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, "v0Components"]],
+    switches: [["_0", "v0Components"]],
     arms: {
       v0Components: xdr.varArray(xdr.lookup("TxSetComponent"), 2147483647),
     },
@@ -2572,7 +2572,7 @@ var types = XDR.config((xdr) => {
   xdr.union("GeneralizedTransactionSet", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[1, "v1TxSet"]],
+    switches: [["_1", "v1TxSet"]],
     arms: {
       v1TxSet: xdr.lookup("TransactionSetV1"),
     },
@@ -2619,8 +2619,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "generalizedTxSet"],
+      ["_0", xdr.void()],
+      ["_1", "generalizedTxSet"],
     ],
     arms: {
       generalizedTxSet: xdr.lookup("GeneralizedTransactionSet"),
@@ -2664,7 +2664,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionHistoryResultEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2703,7 +2703,7 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerHeaderHistoryEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2770,7 +2770,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ScpHistoryEntry", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, "v0"]],
+    switches: [["_0", "v0"]],
     arms: {
       v0: xdr.lookup("ScpHistoryEntryV0"),
     },
@@ -2924,7 +2924,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ContractEventBody", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, "v0"]],
+    switches: [["_0", "v0"]],
     arms: {
       v0: xdr.lookup("ContractEventV0"),
     },
@@ -3059,10 +3059,10 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, "operations"],
-      [1, "v1"],
-      [2, "v2"],
-      [3, "v3"],
+      ["_0", "operations"],
+      ["_1", "v1"],
+      ["_2", "v2"],
+      ["_3", "v3"],
     ],
     arms: {
       operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
@@ -3249,9 +3249,9 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, "v0"],
-      [1, "v1"],
-      [2, "v2"],
+      ["_0", "v0"],
+      ["_1", "v1"],
+      ["_2", "v2"],
     ],
     arms: {
       v0: xdr.lookup("LedgerCloseMetaV0"),
@@ -3920,7 +3920,7 @@ var types = XDR.config((xdr) => {
   xdr.union("AuthenticatedMessage", {
     switchOn: xdr.lookup("Uint32"),
     switchName: "v",
-    switches: [[0, "v0"]],
+    switches: [["_0", "v0"]],
     arms: {
       v0: xdr.lookup("AuthenticatedMessageV0"),
     },
@@ -5392,7 +5392,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionV0Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -5459,8 +5459,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "sorobanData"],
+      ["_0", xdr.void()],
+      ["_1", "sorobanData"],
     ],
     arms: {
       sorobanData: xdr.lookup("SorobanTransactionData"),
@@ -5558,7 +5558,7 @@ var types = XDR.config((xdr) => {
   xdr.union("FeeBumpTransactionExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -7848,7 +7848,7 @@ var types = XDR.config((xdr) => {
   xdr.union("InnerTransactionResultExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -7987,7 +7987,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionResultExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -8109,7 +8109,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ExtensionPoint", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -8929,7 +8929,6 @@ var types = XDR.config((xdr) => {
   //       SC_SPEC_TYPE_OPTION = 1000,
   //       SC_SPEC_TYPE_RESULT = 1001,
   //       SC_SPEC_TYPE_VEC = 1002,
-  //       SC_SPEC_TYPE_SET = 1003,
   //       SC_SPEC_TYPE_MAP = 1004,
   //       SC_SPEC_TYPE_TUPLE = 1005,
   //       SC_SPEC_TYPE_BYTES_N = 1006,
@@ -8961,7 +8960,6 @@ var types = XDR.config((xdr) => {
     scSpecTypeOption: 1000,
     scSpecTypeResult: 1001,
     scSpecTypeVec: 1002,
-    scSpecTypeSet: 1003,
     scSpecTypeMap: 1004,
     scSpecTypeTuple: 1005,
     scSpecTypeBytesN: 1006,
@@ -9015,16 +9013,6 @@ var types = XDR.config((xdr) => {
     ["keyType", xdr.lookup("ScSpecTypeDef")],
     ["valueType", xdr.lookup("ScSpecTypeDef")],
   ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct SCSpecTypeSet
-  //   {
-  //       SCSpecTypeDef elementType;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ScSpecTypeSet", [["elementType", xdr.lookup("ScSpecTypeDef")]]);
 
   // === xdr source ============================================================
   //
@@ -9089,8 +9077,6 @@ var types = XDR.config((xdr) => {
   //       SCSpecTypeVec vec;
   //   case SC_SPEC_TYPE_MAP:
   //       SCSpecTypeMap map;
-  //   case SC_SPEC_TYPE_SET:
-  //       SCSpecTypeSet set;
   //   case SC_SPEC_TYPE_TUPLE:
   //       SCSpecTypeTuple tuple;
   //   case SC_SPEC_TYPE_BYTES_N:
@@ -9126,7 +9112,6 @@ var types = XDR.config((xdr) => {
       ["scSpecTypeResult", "result"],
       ["scSpecTypeVec", "vec"],
       ["scSpecTypeMap", "map"],
-      ["scSpecTypeSet", "set_"],
       ["scSpecTypeTuple", "tuple"],
       ["scSpecTypeBytesN", "bytesN"],
       ["scSpecTypeUdt", "udt"],
@@ -9136,7 +9121,6 @@ var types = XDR.config((xdr) => {
       result: xdr.lookup("ScSpecTypeResult"),
       vec: xdr.lookup("ScSpecTypeVec"),
       map: xdr.lookup("ScSpecTypeMap"),
-      set_: xdr.lookup("ScSpecTypeSet"),
       tuple: xdr.lookup("ScSpecTypeTuple"),
       bytesN: xdr.lookup("ScSpecTypeBytesN"),
       udt: xdr.lookup("ScSpecTypeUdt"),
