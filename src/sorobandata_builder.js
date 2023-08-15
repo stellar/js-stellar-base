@@ -177,17 +177,11 @@ export class SorobanDataBuilder {
 
   /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
   getReadOnly() {
-    return this._data
-    .resources()
-    .footprint()
-    .readOnly();
+    return this._data.resources().footprint().readOnly();
   }
 
   /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
   getReadWrite() {
-    return this._data
-      .resources()
-      .footprint()
-      .readWrite();
+    return this._data.resources().footprint().readWrite();
   }
 }

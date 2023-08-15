@@ -68,7 +68,7 @@ describe('SorobanTransactionData can be built', function () {
     const built = data.build();
 
     expect(data.getReadOnly()).to.eql([key, key, key]);
-    expect(data.getReadWrite()).to.eql([key, key, key]);
+    expect(data.getReadWrite()).to.eql([key]);
     expect(built.resources().footprint().readOnly()).to.eql([key, key, key]);
     expect(built.resources().footprint().readWrite()).to.eql([key]);
   });
