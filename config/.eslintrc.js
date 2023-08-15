@@ -6,9 +6,6 @@ module.exports = {
   extends: ['airbnb-base', 'prettier'],
   plugins: ['@babel', 'prettier', 'prefer-import'],
   parser: '@babel/eslint-parser',
-  globals: {
-    BigInt: true
-  },
   rules: {
     // OFF
     'import/prefer-default-export': 0,

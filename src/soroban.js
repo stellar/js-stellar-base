@@ -17,16 +17,8 @@ export class Soroban {
     let formatted = amount.toString();
 
     if (decimals > 0) {
-      formatted = (amount / 10 ** decimals).toFixed(decimals).toString();
-
-      // Trim trailing zeros
-      while (formatted[formatted.length - 1] === '0') {
-        formatted = formatted.replace(/0+$/, '');
-      }
-
-      if (formatted.endsWith('.')) {
-        formatted = formatted.replace(/0+$/, '');
-      }
+      formatted = (amount / 10 ** decimals).toFixed(decimals);
+      formatted = formatted.replace(/\.?0+$/, '');
     }
 
     return formatted;
@@ -47,30 +39,10 @@ export class Soroban {
    * parsedAmountForSmartContract === "12345600"
    */
   static parseTokenAmount(value, decimals) {
-    let [whole, fraction, ...rest] = value.split('.').slice();
+    const [whole, fraction, ...rest] = value.split('.').slice();
 
     if (rest.length) {
       throw new Error(`Invalid decimal value: ${value}`);
-    }
-
-    if (!whole) {
-      whole = '0';
-    }
-    if (!fraction) {
-      fraction = '0';
-    }
-
-    // Trim trailing zeros
-    fraction = fraction.replace(/0+$/, '');
-
-    // If decimals is 0, we have an empty string for fraction
-    if (fraction === '') {
-      fraction = '0';
-    }
-
-    // Fully pad the string with zeros to get to value
-    while (fraction.length < decimals) {
-      fraction += '0';
     }
 
     const shifted = BigInt(
