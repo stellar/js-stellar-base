@@ -18,9 +18,7 @@ export function createAccount(opts) {
     throw new Error('destination is invalid');
   }
   if (!this.isValidAmount(opts.startingBalance, true)) {
-    throw new TypeError(
-      'startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal'
-    );
+    throw new TypeError(this.constructAmountRequirementsError('startingBalance'))
   }
   const attributes = {};
   attributes.destination = Keypair.fromPublicKey(
