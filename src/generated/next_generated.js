@@ -598,8 +598,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [3, "v3"],
+      ["_0", xdr.void()],
+      ["_3", "v3"],
     ],
     arms: {
       v3: xdr.lookup("AccountEntryExtensionV3"),
@@ -653,8 +653,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [2, "v2"],
+      ["_0", xdr.void()],
+      ["_2", "v2"],
     ],
     arms: {
       v2: xdr.lookup("AccountEntryExtensionV2"),
@@ -698,8 +698,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("AccountEntryExtensionV1"),
@@ -853,7 +853,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TrustLineEntryExtensionV2Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -892,8 +892,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [2, "v2"],
+      ["_0", xdr.void()],
+      ["_2", "v2"],
     ],
     arms: {
       v2: xdr.lookup("TrustLineEntryExtensionV2"),
@@ -949,8 +949,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("TrustLineEntryV1"),
@@ -1035,7 +1035,7 @@ var types = XDR.config((xdr) => {
   xdr.union("OfferEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1090,7 +1090,7 @@ var types = XDR.config((xdr) => {
   xdr.union("DataEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1292,7 +1292,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ClaimableBalanceEntryExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1331,8 +1331,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("ClaimableBalanceEntryExtensionV1"),
@@ -1647,7 +1647,7 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerEntryExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -1738,8 +1738,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("LedgerEntryExtensionV1"),
@@ -2100,9 +2100,9 @@ var types = XDR.config((xdr) => {
   //       TimePoint closeTime; // network close time
   //
   //       // upgrades to apply to the previous ledger (usually empty)
-  //       // this is a vector of encoded "LedgerUpgrade" so that nodes can drop
+  //       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
   //       // unknown steps during consensus if needed.
-  //       // see notes below on "LedgerUpgrade" for more detail
+  //       // see notes below on 'LedgerUpgrade' for more detail
   //       // max size is dictated by number of upgrade types (+ room for future)
   //       UpgradeType upgrades<6>;
   //
@@ -2168,7 +2168,7 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerHeaderExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2207,8 +2207,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "v1"],
+      ["_0", xdr.void()],
+      ["_1", "v1"],
     ],
     arms: {
       v1: xdr.lookup("LedgerHeaderExtensionV1"),
@@ -2397,7 +2397,7 @@ var types = XDR.config((xdr) => {
   xdr.union("BucketMetadataExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2516,7 +2516,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionPhase", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, "v0Components"]],
+    switches: [["_0", "v0Components"]],
     arms: {
       v0Components: xdr.varArray(xdr.lookup("TxSetComponent"), 2147483647),
     },
@@ -2563,7 +2563,7 @@ var types = XDR.config((xdr) => {
   xdr.union("GeneralizedTransactionSet", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[1, "v1TxSet"]],
+    switches: [["_1", "v1TxSet"]],
     arms: {
       v1TxSet: xdr.lookup("TransactionSetV1"),
     },
@@ -2610,8 +2610,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "generalizedTxSet"],
+      ["_0", xdr.void()],
+      ["_1", "generalizedTxSet"],
     ],
     arms: {
       generalizedTxSet: xdr.lookup("GeneralizedTransactionSet"),
@@ -2655,7 +2655,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionHistoryResultEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2694,7 +2694,7 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerHeaderHistoryEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -2761,7 +2761,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ScpHistoryEntry", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, "v0"]],
+    switches: [["_0", "v0"]],
     arms: {
       v0: xdr.lookup("ScpHistoryEntryV0"),
     },
@@ -2915,7 +2915,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ContractEventBody", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, "v0"]],
+    switches: [["_0", "v0"]],
     arms: {
       v0: xdr.lookup("ContractEventV0"),
     },
@@ -3050,10 +3050,10 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, "operations"],
-      [1, "v1"],
-      [2, "v2"],
-      [3, "v3"],
+      ["_0", "operations"],
+      ["_1", "v1"],
+      ["_2", "v2"],
+      ["_3", "v3"],
     ],
     arms: {
       operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
@@ -3240,9 +3240,9 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, "v0"],
-      [1, "v1"],
-      [2, "v2"],
+      ["_0", "v0"],
+      ["_1", "v1"],
+      ["_2", "v2"],
     ],
     arms: {
       v0: xdr.lookup("LedgerCloseMetaV0"),
@@ -3911,7 +3911,7 @@ var types = XDR.config((xdr) => {
   xdr.union("AuthenticatedMessage", {
     switchOn: xdr.lookup("Uint32"),
     switchName: "v",
-    switches: [[0, "v0"]],
+    switches: [["_0", "v0"]],
     arms: {
       v0: xdr.lookup("AuthenticatedMessageV0"),
     },
@@ -5384,7 +5384,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionV0Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -5451,8 +5451,8 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      [0, xdr.void()],
-      [1, "sorobanData"],
+      ["_0", xdr.void()],
+      ["_1", "sorobanData"],
     ],
     arms: {
       sorobanData: xdr.lookup("SorobanTransactionData"),
@@ -5550,7 +5550,7 @@ var types = XDR.config((xdr) => {
   xdr.union("FeeBumpTransactionExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -7836,7 +7836,7 @@ var types = XDR.config((xdr) => {
   xdr.union("InnerTransactionResultExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -7975,7 +7975,7 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionResultExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 
@@ -8097,7 +8097,7 @@ var types = XDR.config((xdr) => {
   xdr.union("ExtensionPoint", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [[0, xdr.void()]],
+    switches: [["_0", xdr.void()]],
     arms: {},
   });
 

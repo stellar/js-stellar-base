@@ -25,7 +25,7 @@ XDR_FILES_NEXT= \
 	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_NEXT=$(addprefix xdr/next/,$(XDR_FILES_NEXT))
 
-XDRGEN_COMMIT=8d303b1
+XDRGEN_COMMIT=master
 DTSXDR_COMMIT=master
 
 all: generate
@@ -58,7 +58,6 @@ types/curr.d.ts: src/generated/curr_generated.js
 		yarn install --network-concurrency 1 && \
 		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
-		yarn run prettier --write /wd/$@ \
 		'
 
 types/next.d.ts: src/generated/next_generated.js
@@ -69,7 +68,6 @@ types/next.d.ts: src/generated/next_generated.js
 		yarn install --network-concurrency 1 && \
 		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
-		yarn run prettier --write /wd/$@ \
 		'
 
 clean:
@@ -77,11 +75,11 @@ clean:
 
 $(XDR_FILES_LOCAL_CURR):
 	mkdir -p $(dir $@)
-	curl -L -o $@ $(XDR_BASE_URL_CURR)/$(notdir $@)
+	curl -s -L -o $@ $(XDR_BASE_URL_CURR)/$(notdir $@)
 
 $(XDR_FILES_LOCAL_NEXT):
 	mkdir -p $(dir $@)
-	curl -L -o $@ $(XDR_BASE_URL_NEXT)/$(notdir $@)
+	curl -s -L -o $@ $(XDR_BASE_URL_NEXT)/$(notdir $@)
 
 reset-xdr:
 	rm -f xdr/*/*.x
@@ -89,3 +87,6 @@ reset-xdr:
 	rm -f types/curr.d.ts
 	rm -f types/next.d.ts
 	$(MAKE) generate
+	yarn run prettier --config config/prettier.config.json --write \
+		types/{curr,next}.d.ts \
+		src/generated/*.js
