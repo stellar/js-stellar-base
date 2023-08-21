@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### Fixes
+
+* Improves the error messages when passing invalid amounts to deposit and withdraw operations ([#679](https://github.com/stellar/js-stellar-base/pull/679)).
+
 
 ## [v9.0.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0)
 

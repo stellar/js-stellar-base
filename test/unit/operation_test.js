@@ -44,9 +44,7 @@ describe('Operation', function () {
         startingBalance: '0',
         source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       };
-      expect(() => StellarBase.Operation.createAccount(opts)).not.to.throw(
-        /startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal/
-      );
+      expect(() => StellarBase.Operation.createAccount(opts)).not.to.throw();
     });
 
     it('fails to create createAccount operation with an invalid startingBalance', function () {
@@ -56,7 +54,7 @@ describe('Operation', function () {
         source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       };
       expect(() => StellarBase.Operation.createAccount(opts)).to.throw(
-        /startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal/
+        /startingBalance argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
     });
 
@@ -2461,12 +2459,12 @@ describe('Operation', function () {
       opts.liquidityPoolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
-        /maxAmountA argument is required/
+        /maxAmountA argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.maxAmountA = '10';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
-        /maxAmountB argument is required/
+        /maxAmountB argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.maxAmountB = '20';
@@ -2481,7 +2479,7 @@ describe('Operation', function () {
 
       opts.maxPrice = '0.55';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.not
-        .throw;
+        .throw();
     });
 
     it('throws an error if prices are negative', function () {
@@ -2643,22 +2641,22 @@ describe('Operation', function () {
       opts.liquidityPoolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /amount argument is required/
+        /amount argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.amount = '10';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /minAmountA argument is required/
+        /minAmountA argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.minAmountA = '10000';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /minAmountB argument is required/
+        /minAmountB argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.minAmountB = '20000';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.not
-        .throw;
+        .throw();
     });
 
     it('creates a liquidityPoolWithdraw', function () {
