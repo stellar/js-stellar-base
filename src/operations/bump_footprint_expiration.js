@@ -28,7 +28,7 @@ export function bumpFootprintExpiration(opts) {
   }
 
   const bumpFootprintOp = new xdr.BumpFootprintExpirationOp({
-    ext: xdr.ExtensionPoint._0(),
+    ext: new xdr.ExtensionPoint(0),
     ledgersToExpire: opts.ledgersToExpire
   });
 

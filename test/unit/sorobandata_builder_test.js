@@ -14,7 +14,7 @@ describe("SorobanTransactionData can be built", function () {
       writeBytes: 3,
       contractEventsSizeBytes: 4
     }),
-    ext: xdr.ExtensionPoint._0(),
+    ext: new xdr.ExtensionPoint(0),
     refundableFee: new xdr.Int64(5)
   });
 

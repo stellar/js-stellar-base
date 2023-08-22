@@ -46,7 +46,7 @@ export class SorobanDataBuilder {
           writeBytes: 0,
           contractEventsSizeBytes: 0
         }),
-        ext: xdr.ExtensionPoint._0(),
+        ext: new xdr.ExtensionPoint(0),
         refundableFee: new xdr.Int64(0)
       });
     } else {
