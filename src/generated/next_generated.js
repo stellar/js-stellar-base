@@ -32,7 +32,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScpBallot", [
     ["counter", xdr.lookup("Uint32")],
-    ["value", xdr.lookup("Value")],
+    ["value", xdr.lookup("Value")]
   ]);
 
   // === xdr source ============================================================
@@ -50,7 +50,7 @@ var types = XDR.config((xdr) => {
     scpStPrepare: 0,
     scpStConfirm: 1,
     scpStExternalize: 2,
-    scpStNominate: 3,
+    scpStNominate: 3
   });
 
   // === xdr source ============================================================
@@ -66,7 +66,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScpNomination", [
     ["quorumSetHash", xdr.lookup("Hash")],
     ["votes", xdr.varArray(xdr.lookup("Value"), 2147483647)],
-    ["accepted", xdr.varArray(xdr.lookup("Value"), 2147483647)],
+    ["accepted", xdr.varArray(xdr.lookup("Value"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -88,7 +88,7 @@ var types = XDR.config((xdr) => {
     ["prepared", xdr.option(xdr.lookup("ScpBallot"))],
     ["preparedPrime", xdr.option(xdr.lookup("ScpBallot"))],
     ["nC", xdr.lookup("Uint32")],
-    ["nH", xdr.lookup("Uint32")],
+    ["nH", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -108,7 +108,7 @@ var types = XDR.config((xdr) => {
     ["nPrepared", xdr.lookup("Uint32")],
     ["nCommit", xdr.lookup("Uint32")],
     ["nH", xdr.lookup("Uint32")],
-    ["quorumSetHash", xdr.lookup("Hash")],
+    ["quorumSetHash", xdr.lookup("Hash")]
   ]);
 
   // === xdr source ============================================================
@@ -124,7 +124,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScpStatementExternalize", [
     ["commit", xdr.lookup("ScpBallot")],
     ["nH", xdr.lookup("Uint32")],
-    ["commitQuorumSetHash", xdr.lookup("Hash")],
+    ["commitQuorumSetHash", xdr.lookup("Hash")]
   ]);
 
   // === xdr source ============================================================
@@ -169,14 +169,14 @@ var types = XDR.config((xdr) => {
       ["scpStPrepare", "prepare"],
       ["scpStConfirm", "confirm"],
       ["scpStExternalize", "externalize"],
-      ["scpStNominate", "nominate"],
+      ["scpStNominate", "nominate"]
     ],
     arms: {
       prepare: xdr.lookup("ScpStatementPrepare"),
       confirm: xdr.lookup("ScpStatementConfirm"),
       externalize: xdr.lookup("ScpStatementExternalize"),
-      nominate: xdr.lookup("ScpNomination"),
-    },
+      nominate: xdr.lookup("ScpNomination")
+    }
   });
 
   // === xdr source ============================================================
@@ -224,7 +224,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScpStatement", [
     ["nodeId", xdr.lookup("NodeId")],
     ["slotIndex", xdr.lookup("Uint64")],
-    ["pledges", xdr.lookup("ScpStatementPledges")],
+    ["pledges", xdr.lookup("ScpStatementPledges")]
   ]);
 
   // === xdr source ============================================================
@@ -238,7 +238,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScpEnvelope", [
     ["statement", xdr.lookup("ScpStatement")],
-    ["signature", xdr.lookup("Signature")],
+    ["signature", xdr.lookup("Signature")]
   ]);
 
   // === xdr source ============================================================
@@ -254,7 +254,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScpQuorumSet", [
     ["threshold", xdr.lookup("Uint32")],
     ["validators", xdr.varArray(xdr.lookup("NodeId"), 2147483647)],
-    ["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
+    ["innerSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -328,7 +328,7 @@ var types = XDR.config((xdr) => {
     assetTypeNative: 0,
     assetTypeCreditAlphanum4: 1,
     assetTypeCreditAlphanum12: 2,
-    assetTypePoolShare: 3,
+    assetTypePoolShare: 3
   });
 
   // === xdr source ============================================================
@@ -350,12 +350,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["assetTypeCreditAlphanum4", "assetCode4"],
-      ["assetTypeCreditAlphanum12", "assetCode12"],
+      ["assetTypeCreditAlphanum12", "assetCode12"]
     ],
     arms: {
       assetCode4: xdr.lookup("AssetCode4"),
-      assetCode12: xdr.lookup("AssetCode12"),
-    },
+      assetCode12: xdr.lookup("AssetCode12")
+    }
   });
 
   // === xdr source ============================================================
@@ -369,7 +369,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("AlphaNum4", [
     ["assetCode", xdr.lookup("AssetCode4")],
-    ["issuer", xdr.lookup("AccountId")],
+    ["issuer", xdr.lookup("AccountId")]
   ]);
 
   // === xdr source ============================================================
@@ -383,7 +383,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("AlphaNum12", [
     ["assetCode", xdr.lookup("AssetCode12")],
-    ["issuer", xdr.lookup("AccountId")],
+    ["issuer", xdr.lookup("AccountId")]
   ]);
 
   // === xdr source ============================================================
@@ -409,12 +409,12 @@ var types = XDR.config((xdr) => {
     switches: [
       ["assetTypeNative", xdr.void()],
       ["assetTypeCreditAlphanum4", "alphaNum4"],
-      ["assetTypeCreditAlphanum12", "alphaNum12"],
+      ["assetTypeCreditAlphanum12", "alphaNum12"]
     ],
     arms: {
       alphaNum4: xdr.lookup("AlphaNum4"),
-      alphaNum12: xdr.lookup("AlphaNum12"),
-    },
+      alphaNum12: xdr.lookup("AlphaNum12")
+    }
   });
 
   // === xdr source ============================================================
@@ -428,7 +428,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("Price", [
     ["n", xdr.lookup("Int32")],
-    ["d", xdr.lookup("Int32")],
+    ["d", xdr.lookup("Int32")]
   ]);
 
   // === xdr source ============================================================
@@ -442,7 +442,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("Liabilities", [
     ["buying", xdr.lookup("Int64")],
-    ["selling", xdr.lookup("Int64")],
+    ["selling", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -460,7 +460,7 @@ var types = XDR.config((xdr) => {
     thresholdMasterWeight: 0,
     thresholdLow: 1,
     thresholdMed: 2,
-    thresholdHigh: 3,
+    thresholdHigh: 3
   });
 
   // === xdr source ============================================================
@@ -488,7 +488,7 @@ var types = XDR.config((xdr) => {
     liquidityPool: 5,
     contractData: 6,
     contractCode: 7,
-    configSetting: 8,
+    configSetting: 8
   });
 
   // === xdr source ============================================================
@@ -502,7 +502,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("Signer", [
     ["key", xdr.lookup("SignerKey")],
-    ["weight", xdr.lookup("Uint32")],
+    ["weight", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -530,7 +530,7 @@ var types = XDR.config((xdr) => {
     authRequiredFlag: 1,
     authRevocableFlag: 2,
     authImmutableFlag: 4,
-    authClawbackEnabledFlag: 8,
+    authClawbackEnabledFlag: 8
   });
 
   // === xdr source ============================================================
@@ -580,7 +580,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("AccountEntryExtensionV3", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["seqLedger", xdr.lookup("Uint32")],
-    ["seqTime", xdr.lookup("TimePoint")],
+    ["seqTime", xdr.lookup("TimePoint")]
   ]);
 
   // === xdr source ============================================================
@@ -598,12 +598,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_3", "v3"],
+      [0, xdr.void()],
+      [3, "v3"]
     ],
     arms: {
-      v3: xdr.lookup("AccountEntryExtensionV3"),
-    },
+      v3: xdr.lookup("AccountEntryExtensionV3")
+    }
   });
 
   // === xdr source ============================================================
@@ -633,9 +633,9 @@ var types = XDR.config((xdr) => {
       xdr.varArray(
         xdr.lookup("SponsorshipDescriptor"),
         xdr.lookup("MAX_SIGNERS")
-      ),
+      )
     ],
-    ["ext", xdr.lookup("AccountEntryExtensionV2Ext")],
+    ["ext", xdr.lookup("AccountEntryExtensionV2Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -653,12 +653,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_2", "v2"],
+      [0, xdr.void()],
+      [2, "v2"]
     ],
     arms: {
-      v2: xdr.lookup("AccountEntryExtensionV2"),
-    },
+      v2: xdr.lookup("AccountEntryExtensionV2")
+    }
   });
 
   // === xdr source ============================================================
@@ -680,7 +680,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("AccountEntryExtensionV1", [
     ["liabilities", xdr.lookup("Liabilities")],
-    ["ext", xdr.lookup("AccountEntryExtensionV1Ext")],
+    ["ext", xdr.lookup("AccountEntryExtensionV1Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -698,12 +698,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "v1"],
+      [0, xdr.void()],
+      [1, "v1"]
     ],
     arms: {
-      v1: xdr.lookup("AccountEntryExtensionV1"),
-    },
+      v1: xdr.lookup("AccountEntryExtensionV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -748,7 +748,7 @@ var types = XDR.config((xdr) => {
     ["homeDomain", xdr.lookup("String32")],
     ["thresholds", xdr.lookup("Thresholds")],
     ["signers", xdr.varArray(xdr.lookup("Signer"), xdr.lookup("MAX_SIGNERS"))],
-    ["ext", xdr.lookup("AccountEntryExt")],
+    ["ext", xdr.lookup("AccountEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -769,7 +769,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("TrustLineFlags", {
     authorizedFlag: 1,
     authorizedToMaintainLiabilitiesFlag: 2,
-    trustlineClawbackEnabledFlag: 4,
+    trustlineClawbackEnabledFlag: 4
   });
 
   // === xdr source ============================================================
@@ -802,7 +802,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("LiquidityPoolType", {
-    liquidityPoolConstantProduct: 0,
+    liquidityPoolConstantProduct: 0
   });
 
   // === xdr source ============================================================
@@ -832,13 +832,13 @@ var types = XDR.config((xdr) => {
       ["assetTypeNative", xdr.void()],
       ["assetTypeCreditAlphanum4", "alphaNum4"],
       ["assetTypeCreditAlphanum12", "alphaNum12"],
-      ["assetTypePoolShare", "liquidityPoolId"],
+      ["assetTypePoolShare", "liquidityPoolId"]
     ],
     arms: {
       alphaNum4: xdr.lookup("AlphaNum4"),
       alphaNum12: xdr.lookup("AlphaNum12"),
-      liquidityPoolId: xdr.lookup("PoolId"),
-    },
+      liquidityPoolId: xdr.lookup("PoolId")
+    }
   });
 
   // === xdr source ============================================================
@@ -853,8 +853,8 @@ var types = XDR.config((xdr) => {
   xdr.union("TrustLineEntryExtensionV2Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -874,7 +874,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TrustLineEntryExtensionV2", [
     ["liquidityPoolUseCount", xdr.lookup("Int32")],
-    ["ext", xdr.lookup("TrustLineEntryExtensionV2Ext")],
+    ["ext", xdr.lookup("TrustLineEntryExtensionV2Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -892,12 +892,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_2", "v2"],
+      [0, xdr.void()],
+      [2, "v2"]
     ],
     arms: {
-      v2: xdr.lookup("TrustLineEntryExtensionV2"),
-    },
+      v2: xdr.lookup("TrustLineEntryExtensionV2")
+    }
   });
 
   // === xdr source ============================================================
@@ -919,7 +919,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TrustLineEntryV1", [
     ["liabilities", xdr.lookup("Liabilities")],
-    ["ext", xdr.lookup("TrustLineEntryV1Ext")],
+    ["ext", xdr.lookup("TrustLineEntryV1Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -949,12 +949,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "v1"],
+      [0, xdr.void()],
+      [1, "v1"]
     ],
     arms: {
-      v1: xdr.lookup("TrustLineEntryV1"),
-    },
+      v1: xdr.lookup("TrustLineEntryV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -999,7 +999,7 @@ var types = XDR.config((xdr) => {
     ["balance", xdr.lookup("Int64")],
     ["limit", xdr.lookup("Int64")],
     ["flags", xdr.lookup("Uint32")],
-    ["ext", xdr.lookup("TrustLineEntryExt")],
+    ["ext", xdr.lookup("TrustLineEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -1013,7 +1013,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("OfferEntryFlags", {
-    passiveFlag: 1,
+    passiveFlag: 1
   });
 
   // === xdr source ============================================================
@@ -1035,8 +1035,8 @@ var types = XDR.config((xdr) => {
   xdr.union("OfferEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -1075,7 +1075,7 @@ var types = XDR.config((xdr) => {
     ["amount", xdr.lookup("Int64")],
     ["price", xdr.lookup("Price")],
     ["flags", xdr.lookup("Uint32")],
-    ["ext", xdr.lookup("OfferEntryExt")],
+    ["ext", xdr.lookup("OfferEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -1090,8 +1090,8 @@ var types = XDR.config((xdr) => {
   xdr.union("DataEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -1116,7 +1116,7 @@ var types = XDR.config((xdr) => {
     ["accountId", xdr.lookup("AccountId")],
     ["dataName", xdr.lookup("String64")],
     ["dataValue", xdr.lookup("DataValue")],
-    ["ext", xdr.lookup("DataEntryExt")],
+    ["ext", xdr.lookup("DataEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -1138,7 +1138,7 @@ var types = XDR.config((xdr) => {
     claimPredicateOr: 2,
     claimPredicateNot: 3,
     claimPredicateBeforeAbsoluteTime: 4,
-    claimPredicateBeforeRelativeTime: 5,
+    claimPredicateBeforeRelativeTime: 5
   });
 
   // === xdr source ============================================================
@@ -1170,15 +1170,15 @@ var types = XDR.config((xdr) => {
       ["claimPredicateOr", "orPredicates"],
       ["claimPredicateNot", "notPredicate"],
       ["claimPredicateBeforeAbsoluteTime", "absBefore"],
-      ["claimPredicateBeforeRelativeTime", "relBefore"],
+      ["claimPredicateBeforeRelativeTime", "relBefore"]
     ],
     arms: {
       andPredicates: xdr.varArray(xdr.lookup("ClaimPredicate"), 2),
       orPredicates: xdr.varArray(xdr.lookup("ClaimPredicate"), 2),
       notPredicate: xdr.option(xdr.lookup("ClaimPredicate")),
       absBefore: xdr.lookup("Int64"),
-      relBefore: xdr.lookup("Int64"),
-    },
+      relBefore: xdr.lookup("Int64")
+    }
   });
 
   // === xdr source ============================================================
@@ -1190,7 +1190,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("ClaimantType", {
-    claimantTypeV0: 0,
+    claimantTypeV0: 0
   });
 
   // === xdr source ============================================================
@@ -1204,7 +1204,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ClaimantV0", [
     ["destination", xdr.lookup("AccountId")],
-    ["predicate", xdr.lookup("ClaimPredicate")],
+    ["predicate", xdr.lookup("ClaimPredicate")]
   ]);
 
   // === xdr source ============================================================
@@ -1225,8 +1225,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["claimantTypeV0", "v0"]],
     arms: {
-      v0: xdr.lookup("ClaimantV0"),
-    },
+      v0: xdr.lookup("ClaimantV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -1238,7 +1238,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("ClaimableBalanceIdType", {
-    claimableBalanceIdTypeV0: 0,
+    claimableBalanceIdTypeV0: 0
   });
 
   // === xdr source ============================================================
@@ -1255,8 +1255,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["claimableBalanceIdTypeV0", "v0"]],
     arms: {
-      v0: xdr.lookup("Hash"),
-    },
+      v0: xdr.lookup("Hash")
+    }
   });
 
   // === xdr source ============================================================
@@ -1270,7 +1270,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("ClaimableBalanceFlags", {
-    claimableBalanceClawbackEnabledFlag: 1,
+    claimableBalanceClawbackEnabledFlag: 1
   });
 
   // === xdr source ============================================================
@@ -1292,8 +1292,8 @@ var types = XDR.config((xdr) => {
   xdr.union("ClaimableBalanceEntryExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -1313,7 +1313,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ClaimableBalanceEntryExtensionV1", [
     ["ext", xdr.lookup("ClaimableBalanceEntryExtensionV1Ext")],
-    ["flags", xdr.lookup("Uint32")],
+    ["flags", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -1331,12 +1331,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "v1"],
+      [0, xdr.void()],
+      [1, "v1"]
     ],
     arms: {
-      v1: xdr.lookup("ClaimableBalanceEntryExtensionV1"),
-    },
+      v1: xdr.lookup("ClaimableBalanceEntryExtensionV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -1372,7 +1372,7 @@ var types = XDR.config((xdr) => {
     ["claimants", xdr.varArray(xdr.lookup("Claimant"), 10)],
     ["asset", xdr.lookup("Asset")],
     ["amount", xdr.lookup("Int64")],
-    ["ext", xdr.lookup("ClaimableBalanceEntryExt")],
+    ["ext", xdr.lookup("ClaimableBalanceEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -1388,7 +1388,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("LiquidityPoolConstantProductParameters", [
     ["assetA", xdr.lookup("Asset")],
     ["assetB", xdr.lookup("Asset")],
-    ["fee", xdr.lookup("Int32")],
+    ["fee", xdr.lookup("Int32")]
   ]);
 
   // === xdr source ============================================================
@@ -1410,7 +1410,7 @@ var types = XDR.config((xdr) => {
     ["reserveA", xdr.lookup("Int64")],
     ["reserveB", xdr.lookup("Int64")],
     ["totalPoolShares", xdr.lookup("Int64")],
-    ["poolSharesTrustLineCount", xdr.lookup("Int64")],
+    ["poolSharesTrustLineCount", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -1436,8 +1436,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["liquidityPoolConstantProduct", "constantProduct"]],
     arms: {
-      constantProduct: xdr.lookup("LiquidityPoolEntryConstantProduct"),
-    },
+      constantProduct: xdr.lookup("LiquidityPoolEntryConstantProduct")
+    }
   });
 
   // === xdr source ============================================================
@@ -1466,7 +1466,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LiquidityPoolEntry", [
     ["liquidityPoolId", xdr.lookup("PoolId")],
-    ["body", xdr.lookup("LiquidityPoolEntryBody")],
+    ["body", xdr.lookup("LiquidityPoolEntryBody")]
   ]);
 
   // === xdr source ============================================================
@@ -1479,7 +1479,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("ContractEntryBodyType", {
     dataEntry: 0,
-    expirationExtension: 1,
+    expirationExtension: 1
   });
 
   // === xdr source ============================================================
@@ -1499,7 +1499,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("ContractDataFlags", {
-    noAutobump: 1,
+    noAutobump: 1
   });
 
   // === xdr source ============================================================
@@ -1512,7 +1512,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("ContractDataDurability", {
     temporary: 0,
-    persistent: 1,
+    persistent: 1
   });
 
   // === xdr source ============================================================
@@ -1526,7 +1526,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ContractDataEntryData", [
     ["flags", xdr.lookup("Uint32")],
-    ["val", xdr.lookup("ScVal")],
+    ["val", xdr.lookup("ScVal")]
   ]);
 
   // === xdr source ============================================================
@@ -1549,11 +1549,11 @@ var types = XDR.config((xdr) => {
     switchName: "bodyType",
     switches: [
       ["dataEntry", "data"],
-      ["expirationExtension", xdr.void()],
+      ["expirationExtension", xdr.void()]
     ],
     arms: {
-      data: xdr.lookup("ContractDataEntryData"),
-    },
+      data: xdr.lookup("ContractDataEntryData")
+    }
   });
 
   // === xdr source ============================================================
@@ -1584,7 +1584,7 @@ var types = XDR.config((xdr) => {
     ["key", xdr.lookup("ScVal")],
     ["durability", xdr.lookup("ContractDataDurability")],
     ["body", xdr.lookup("ContractDataEntryBody")],
-    ["expirationLedgerSeq", xdr.lookup("Uint32")],
+    ["expirationLedgerSeq", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -1603,11 +1603,11 @@ var types = XDR.config((xdr) => {
     switchName: "bodyType",
     switches: [
       ["dataEntry", "code"],
-      ["expirationExtension", xdr.void()],
+      ["expirationExtension", xdr.void()]
     ],
     arms: {
-      code: xdr.varOpaque(),
-    },
+      code: xdr.varOpaque()
+    }
   });
 
   // === xdr source ============================================================
@@ -1632,7 +1632,7 @@ var types = XDR.config((xdr) => {
     ["ext", xdr.lookup("ExtensionPoint")],
     ["hash", xdr.lookup("Hash")],
     ["body", xdr.lookup("ContractCodeEntryBody")],
-    ["expirationLedgerSeq", xdr.lookup("Uint32")],
+    ["expirationLedgerSeq", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -1647,8 +1647,8 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerEntryExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -1668,7 +1668,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerEntryExtensionV1", [
     ["sponsoringId", xdr.lookup("SponsorshipDescriptor")],
-    ["ext", xdr.lookup("LedgerEntryExtensionV1Ext")],
+    ["ext", xdr.lookup("LedgerEntryExtensionV1Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -1708,7 +1708,7 @@ var types = XDR.config((xdr) => {
       ["liquidityPool", "liquidityPool"],
       ["contractData", "contractData"],
       ["contractCode", "contractCode"],
-      ["configSetting", "configSetting"],
+      ["configSetting", "configSetting"]
     ],
     arms: {
       account: xdr.lookup("AccountEntry"),
@@ -1719,8 +1719,8 @@ var types = XDR.config((xdr) => {
       liquidityPool: xdr.lookup("LiquidityPoolEntry"),
       contractData: xdr.lookup("ContractDataEntry"),
       contractCode: xdr.lookup("ContractCodeEntry"),
-      configSetting: xdr.lookup("ConfigSettingEntry"),
-    },
+      configSetting: xdr.lookup("ConfigSettingEntry")
+    }
   });
 
   // === xdr source ============================================================
@@ -1738,12 +1738,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "v1"],
+      [0, xdr.void()],
+      [1, "v1"]
     ],
     arms: {
-      v1: xdr.lookup("LedgerEntryExtensionV1"),
-    },
+      v1: xdr.lookup("LedgerEntryExtensionV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -1790,7 +1790,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("LedgerEntry", [
     ["lastModifiedLedgerSeq", xdr.lookup("Uint32")],
     ["data", xdr.lookup("LedgerEntryData")],
-    ["ext", xdr.lookup("LedgerEntryExt")],
+    ["ext", xdr.lookup("LedgerEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -1814,7 +1814,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerKeyTrustLine", [
     ["accountId", xdr.lookup("AccountId")],
-    ["asset", xdr.lookup("TrustLineAsset")],
+    ["asset", xdr.lookup("TrustLineAsset")]
   ]);
 
   // === xdr source ============================================================
@@ -1828,7 +1828,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerKeyOffer", [
     ["sellerId", xdr.lookup("AccountId")],
-    ["offerId", xdr.lookup("Int64")],
+    ["offerId", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -1842,7 +1842,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerKeyData", [
     ["accountId", xdr.lookup("AccountId")],
-    ["dataName", xdr.lookup("String64")],
+    ["dataName", xdr.lookup("String64")]
   ]);
 
   // === xdr source ============================================================
@@ -1854,7 +1854,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("LedgerKeyClaimableBalance", [
-    ["balanceId", xdr.lookup("ClaimableBalanceId")],
+    ["balanceId", xdr.lookup("ClaimableBalanceId")]
   ]);
 
   // === xdr source ============================================================
@@ -1866,7 +1866,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("LedgerKeyLiquidityPool", [
-    ["liquidityPoolId", xdr.lookup("PoolId")],
+    ["liquidityPoolId", xdr.lookup("PoolId")]
   ]);
 
   // === xdr source ============================================================
@@ -1884,7 +1884,7 @@ var types = XDR.config((xdr) => {
     ["contract", xdr.lookup("ScAddress")],
     ["key", xdr.lookup("ScVal")],
     ["durability", xdr.lookup("ContractDataDurability")],
-    ["bodyType", xdr.lookup("ContractEntryBodyType")],
+    ["bodyType", xdr.lookup("ContractEntryBodyType")]
   ]);
 
   // === xdr source ============================================================
@@ -1898,7 +1898,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerKeyContractCode", [
     ["hash", xdr.lookup("Hash")],
-    ["bodyType", xdr.lookup("ContractEntryBodyType")],
+    ["bodyType", xdr.lookup("ContractEntryBodyType")]
   ]);
 
   // === xdr source ============================================================
@@ -1910,7 +1910,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("LedgerKeyConfigSetting", [
-    ["configSettingId", xdr.lookup("ConfigSettingId")],
+    ["configSettingId", xdr.lookup("ConfigSettingId")]
   ]);
 
   // === xdr source ============================================================
@@ -1989,7 +1989,7 @@ var types = XDR.config((xdr) => {
       ["liquidityPool", "liquidityPool"],
       ["contractData", "contractData"],
       ["contractCode", "contractCode"],
-      ["configSetting", "configSetting"],
+      ["configSetting", "configSetting"]
     ],
     arms: {
       account: xdr.lookup("LedgerKeyAccount"),
@@ -2000,8 +2000,8 @@ var types = XDR.config((xdr) => {
       liquidityPool: xdr.lookup("LedgerKeyLiquidityPool"),
       contractData: xdr.lookup("LedgerKeyContractData"),
       contractCode: xdr.lookup("LedgerKeyContractCode"),
-      configSetting: xdr.lookup("LedgerKeyConfigSetting"),
-    },
+      configSetting: xdr.lookup("LedgerKeyConfigSetting")
+    }
   });
 
   // === xdr source ============================================================
@@ -2031,7 +2031,7 @@ var types = XDR.config((xdr) => {
     envelopeTypeOpId: 6,
     envelopeTypePoolRevokeOpId: 7,
     envelopeTypeContractId: 8,
-    envelopeTypeSorobanAuthorization: 9,
+    envelopeTypeSorobanAuthorization: 9
   });
 
   // === xdr source ============================================================
@@ -2052,7 +2052,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("StellarValueType", {
     stellarValueBasic: 0,
-    stellarValueSigned: 1,
+    stellarValueSigned: 1
   });
 
   // === xdr source ============================================================
@@ -2066,7 +2066,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerCloseValueSignature", [
     ["nodeId", xdr.lookup("NodeId")],
-    ["signature", xdr.lookup("Signature")],
+    ["signature", xdr.lookup("Signature")]
   ]);
 
   // === xdr source ============================================================
@@ -2085,11 +2085,11 @@ var types = XDR.config((xdr) => {
     switchName: "v",
     switches: [
       ["stellarValueBasic", xdr.void()],
-      ["stellarValueSigned", "lcValueSignature"],
+      ["stellarValueSigned", "lcValueSignature"]
     ],
     arms: {
-      lcValueSignature: xdr.lookup("LedgerCloseValueSignature"),
-    },
+      lcValueSignature: xdr.lookup("LedgerCloseValueSignature")
+    }
   });
 
   // === xdr source ============================================================
@@ -2122,7 +2122,7 @@ var types = XDR.config((xdr) => {
     ["txSetHash", xdr.lookup("Hash")],
     ["closeTime", xdr.lookup("TimePoint")],
     ["upgrades", xdr.varArray(xdr.lookup("UpgradeType"), 6)],
-    ["ext", xdr.lookup("StellarValueExt")],
+    ["ext", xdr.lookup("StellarValueExt")]
   ]);
 
   // === xdr source ============================================================
@@ -2153,7 +2153,7 @@ var types = XDR.config((xdr) => {
     disableContractCreate: 8,
     disableContractUpdate: 16,
     disableContractRemove: 32,
-    disableContractInvoke: 64,
+    disableContractInvoke: 64
   });
 
   // === xdr source ============================================================
@@ -2168,8 +2168,8 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerHeaderExtensionV1Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -2189,7 +2189,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerHeaderExtensionV1", [
     ["flags", xdr.lookup("Uint32")],
-    ["ext", xdr.lookup("LedgerHeaderExtensionV1Ext")],
+    ["ext", xdr.lookup("LedgerHeaderExtensionV1Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -2207,12 +2207,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "v1"],
+      [0, xdr.void()],
+      [1, "v1"]
     ],
     arms: {
-      v1: xdr.lookup("LedgerHeaderExtensionV1"),
-    },
+      v1: xdr.lookup("LedgerHeaderExtensionV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -2273,7 +2273,7 @@ var types = XDR.config((xdr) => {
     ["baseReserve", xdr.lookup("Uint32")],
     ["maxTxSetSize", xdr.lookup("Uint32")],
     ["skipList", xdr.array(xdr.lookup("Hash"), 4)],
-    ["ext", xdr.lookup("LedgerHeaderExt")],
+    ["ext", xdr.lookup("LedgerHeaderExt")]
   ]);
 
   // === xdr source ============================================================
@@ -2297,7 +2297,7 @@ var types = XDR.config((xdr) => {
     ledgerUpgradeBaseReserve: 4,
     ledgerUpgradeFlags: 5,
     ledgerUpgradeConfig: 6,
-    ledgerUpgradeMaxSorobanTxSetSize: 7,
+    ledgerUpgradeMaxSorobanTxSetSize: 7
   });
 
   // === xdr source ============================================================
@@ -2310,7 +2310,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ConfigUpgradeSetKey", [
     ["contractId", xdr.lookup("Hash")],
-    ["contentHash", xdr.lookup("Hash")],
+    ["contentHash", xdr.lookup("Hash")]
   ]);
 
   // === xdr source ============================================================
@@ -2347,7 +2347,7 @@ var types = XDR.config((xdr) => {
       ["ledgerUpgradeBaseReserve", "newBaseReserve"],
       ["ledgerUpgradeFlags", "newFlags"],
       ["ledgerUpgradeConfig", "newConfig"],
-      ["ledgerUpgradeMaxSorobanTxSetSize", "newMaxSorobanTxSetSize"],
+      ["ledgerUpgradeMaxSorobanTxSetSize", "newMaxSorobanTxSetSize"]
     ],
     arms: {
       newLedgerVersion: xdr.lookup("Uint32"),
@@ -2356,8 +2356,8 @@ var types = XDR.config((xdr) => {
       newBaseReserve: xdr.lookup("Uint32"),
       newFlags: xdr.lookup("Uint32"),
       newConfig: xdr.lookup("ConfigUpgradeSetKey"),
-      newMaxSorobanTxSetSize: xdr.lookup("Uint32"),
-    },
+      newMaxSorobanTxSetSize: xdr.lookup("Uint32")
+    }
   });
 
   // === xdr source ============================================================
@@ -2368,10 +2368,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ConfigUpgradeSet", [
-    [
-      "updatedEntry",
-      xdr.varArray(xdr.lookup("ConfigSettingEntry"), 2147483647),
-    ],
+    ["updatedEntry", xdr.varArray(xdr.lookup("ConfigSettingEntry"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2391,7 +2388,7 @@ var types = XDR.config((xdr) => {
     metaentry: -1,
     liveentry: 0,
     deadentry: 1,
-    initentry: 2,
+    initentry: 2
   });
 
   // === xdr source ============================================================
@@ -2406,8 +2403,8 @@ var types = XDR.config((xdr) => {
   xdr.union("BucketMetadataExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -2429,7 +2426,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("BucketMetadata", [
     ["ledgerVersion", xdr.lookup("Uint32")],
-    ["ext", xdr.lookup("BucketMetadataExt")],
+    ["ext", xdr.lookup("BucketMetadataExt")]
   ]);
 
   // === xdr source ============================================================
@@ -2454,13 +2451,13 @@ var types = XDR.config((xdr) => {
       ["liveentry", "liveEntry"],
       ["initentry", "liveEntry"],
       ["deadentry", "deadEntry"],
-      ["metaentry", "metaEntry"],
+      ["metaentry", "metaEntry"]
     ],
     arms: {
       liveEntry: xdr.lookup("LedgerEntry"),
       deadEntry: xdr.lookup("LedgerKey"),
-      metaEntry: xdr.lookup("BucketMetadata"),
-    },
+      metaEntry: xdr.lookup("BucketMetadata")
+    }
   });
 
   // === xdr source ============================================================
@@ -2474,7 +2471,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("TxSetComponentType", {
-    txsetCompTxsMaybeDiscountedFee: 0,
+    txsetCompTxsMaybeDiscountedFee: 0
   });
 
   // === xdr source ============================================================
@@ -2488,7 +2485,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TxSetComponentTxsMaybeDiscountedFee", [
     ["baseFee", xdr.option(xdr.lookup("Int64"))],
-    ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)],
+    ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2509,8 +2506,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["txsetCompTxsMaybeDiscountedFee", "txsMaybeDiscountedFee"]],
     arms: {
-      txsMaybeDiscountedFee: xdr.lookup("TxSetComponentTxsMaybeDiscountedFee"),
-    },
+      txsMaybeDiscountedFee: xdr.lookup("TxSetComponentTxsMaybeDiscountedFee")
+    }
   });
 
   // === xdr source ============================================================
@@ -2525,10 +2522,10 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionPhase", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", "v0Components"]],
+    switches: [[0, "v0Components"]],
     arms: {
-      v0Components: xdr.varArray(xdr.lookup("TxSetComponent"), 2147483647),
-    },
+      v0Components: xdr.varArray(xdr.lookup("TxSetComponent"), 2147483647)
+    }
   });
 
   // === xdr source ============================================================
@@ -2542,7 +2539,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionSet", [
     ["previousLedgerHash", xdr.lookup("Hash")],
-    ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)],
+    ["txes", xdr.varArray(xdr.lookup("TransactionEnvelope"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2556,7 +2553,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionSetV1", [
     ["previousLedgerHash", xdr.lookup("Hash")],
-    ["phases", xdr.varArray(xdr.lookup("TransactionPhase"), 2147483647)],
+    ["phases", xdr.varArray(xdr.lookup("TransactionPhase"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2572,10 +2569,10 @@ var types = XDR.config((xdr) => {
   xdr.union("GeneralizedTransactionSet", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_1", "v1TxSet"]],
+    switches: [[1, "v1TxSet"]],
     arms: {
-      v1TxSet: xdr.lookup("TransactionSetV1"),
-    },
+      v1TxSet: xdr.lookup("TransactionSetV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -2589,7 +2586,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionResultPair", [
     ["transactionHash", xdr.lookup("Hash")],
-    ["result", xdr.lookup("TransactionResult")],
+    ["result", xdr.lookup("TransactionResult")]
   ]);
 
   // === xdr source ============================================================
@@ -2601,7 +2598,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("TransactionResultSet", [
-    ["results", xdr.varArray(xdr.lookup("TransactionResultPair"), 2147483647)],
+    ["results", xdr.varArray(xdr.lookup("TransactionResultPair"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2619,12 +2616,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "generalizedTxSet"],
+      [0, xdr.void()],
+      [1, "generalizedTxSet"]
     ],
     arms: {
-      generalizedTxSet: xdr.lookup("GeneralizedTransactionSet"),
-    },
+      generalizedTxSet: xdr.lookup("GeneralizedTransactionSet")
+    }
   });
 
   // === xdr source ============================================================
@@ -2649,7 +2646,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("TransactionHistoryEntry", [
     ["ledgerSeq", xdr.lookup("Uint32")],
     ["txSet", xdr.lookup("TransactionSet")],
-    ["ext", xdr.lookup("TransactionHistoryEntryExt")],
+    ["ext", xdr.lookup("TransactionHistoryEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -2664,8 +2661,8 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionHistoryResultEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -2688,7 +2685,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("TransactionHistoryResultEntry", [
     ["ledgerSeq", xdr.lookup("Uint32")],
     ["txResultSet", xdr.lookup("TransactionResultSet")],
-    ["ext", xdr.lookup("TransactionHistoryResultEntryExt")],
+    ["ext", xdr.lookup("TransactionHistoryResultEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -2703,8 +2700,8 @@ var types = XDR.config((xdr) => {
   xdr.union("LedgerHeaderHistoryEntryExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -2727,7 +2724,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("LedgerHeaderHistoryEntry", [
     ["hash", xdr.lookup("Hash")],
     ["header", xdr.lookup("LedgerHeader")],
-    ["ext", xdr.lookup("LedgerHeaderHistoryEntryExt")],
+    ["ext", xdr.lookup("LedgerHeaderHistoryEntryExt")]
   ]);
 
   // === xdr source ============================================================
@@ -2741,7 +2738,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerScpMessages", [
     ["ledgerSeq", xdr.lookup("Uint32")],
-    ["messages", xdr.varArray(xdr.lookup("ScpEnvelope"), 2147483647)],
+    ["messages", xdr.varArray(xdr.lookup("ScpEnvelope"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2755,7 +2752,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScpHistoryEntryV0", [
     ["quorumSets", xdr.varArray(xdr.lookup("ScpQuorumSet"), 2147483647)],
-    ["ledgerMessages", xdr.lookup("LedgerScpMessages")],
+    ["ledgerMessages", xdr.lookup("LedgerScpMessages")]
   ]);
 
   // === xdr source ============================================================
@@ -2770,10 +2767,10 @@ var types = XDR.config((xdr) => {
   xdr.union("ScpHistoryEntry", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", "v0"]],
+    switches: [[0, "v0"]],
     arms: {
-      v0: xdr.lookup("ScpHistoryEntryV0"),
-    },
+      v0: xdr.lookup("ScpHistoryEntryV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -2791,7 +2788,7 @@ var types = XDR.config((xdr) => {
     ledgerEntryCreated: 0,
     ledgerEntryUpdated: 1,
     ledgerEntryRemoved: 2,
-    ledgerEntryState: 3,
+    ledgerEntryState: 3
   });
 
   // === xdr source ============================================================
@@ -2816,14 +2813,14 @@ var types = XDR.config((xdr) => {
       ["ledgerEntryCreated", "created"],
       ["ledgerEntryUpdated", "updated"],
       ["ledgerEntryRemoved", "removed"],
-      ["ledgerEntryState", "state"],
+      ["ledgerEntryState", "state"]
     ],
     arms: {
       created: xdr.lookup("LedgerEntry"),
       updated: xdr.lookup("LedgerEntry"),
       removed: xdr.lookup("LedgerKey"),
-      state: xdr.lookup("LedgerEntry"),
-    },
+      state: xdr.lookup("LedgerEntry")
+    }
   });
 
   // === xdr source ============================================================
@@ -2857,7 +2854,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionMetaV1", [
     ["txChanges", xdr.lookup("LedgerEntryChanges")],
-    ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
+    ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -2875,7 +2872,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("TransactionMetaV2", [
     ["txChangesBefore", xdr.lookup("LedgerEntryChanges")],
     ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
-    ["txChangesAfter", xdr.lookup("LedgerEntryChanges")],
+    ["txChangesAfter", xdr.lookup("LedgerEntryChanges")]
   ]);
 
   // === xdr source ============================================================
@@ -2891,7 +2888,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("ContractEventType", {
     system: 0,
     contract: 1,
-    diagnostic: 2,
+    diagnostic: 2
   });
 
   // === xdr source ============================================================
@@ -2905,7 +2902,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ContractEventV0", [
     ["topics", xdr.varArray(xdr.lookup("ScVal"), 2147483647)],
-    ["data", xdr.lookup("ScVal")],
+    ["data", xdr.lookup("ScVal")]
   ]);
 
   // === xdr source ============================================================
@@ -2924,10 +2921,10 @@ var types = XDR.config((xdr) => {
   xdr.union("ContractEventBody", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", "v0"]],
+    switches: [[0, "v0"]],
     arms: {
-      v0: xdr.lookup("ContractEventV0"),
-    },
+      v0: xdr.lookup("ContractEventV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -2958,7 +2955,7 @@ var types = XDR.config((xdr) => {
     ["ext", xdr.lookup("ExtensionPoint")],
     ["contractId", xdr.option(xdr.lookup("Hash"))],
     ["type", xdr.lookup("ContractEventType")],
-    ["body", xdr.lookup("ContractEventBody")],
+    ["body", xdr.lookup("ContractEventBody")]
   ]);
 
   // === xdr source ============================================================
@@ -2972,7 +2969,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("DiagnosticEvent", [
     ["inSuccessfulContractCall", xdr.bool()],
-    ["event", xdr.lookup("ContractEvent")],
+    ["event", xdr.lookup("ContractEvent")]
   ]);
 
   // === xdr source ============================================================
@@ -2998,8 +2995,8 @@ var types = XDR.config((xdr) => {
     ["returnValue", xdr.lookup("ScVal")],
     [
       "diagnosticEvents",
-      xdr.varArray(xdr.lookup("DiagnosticEvent"), 2147483647),
-    ],
+      xdr.varArray(xdr.lookup("DiagnosticEvent"), 2147483647)
+    ]
   ]);
 
   // === xdr source ============================================================
@@ -3023,7 +3020,7 @@ var types = XDR.config((xdr) => {
     ["txChangesBefore", xdr.lookup("LedgerEntryChanges")],
     ["operations", xdr.varArray(xdr.lookup("OperationMeta"), 2147483647)],
     ["txChangesAfter", xdr.lookup("LedgerEntryChanges")],
-    ["sorobanMeta", xdr.option(xdr.lookup("SorobanTransactionMeta"))],
+    ["sorobanMeta", xdr.option(xdr.lookup("SorobanTransactionMeta"))]
   ]);
 
   // === xdr source ============================================================
@@ -3037,7 +3034,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("InvokeHostFunctionSuccessPreImage", [
     ["returnValue", xdr.lookup("ScVal")],
-    ["events", xdr.varArray(xdr.lookup("ContractEvent"), 2147483647)],
+    ["events", xdr.varArray(xdr.lookup("ContractEvent"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -3059,17 +3056,17 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", "operations"],
-      ["_1", "v1"],
-      ["_2", "v2"],
-      ["_3", "v3"],
+      [0, "operations"],
+      [1, "v1"],
+      [2, "v2"],
+      [3, "v3"]
     ],
     arms: {
       operations: xdr.varArray(xdr.lookup("OperationMeta"), 2147483647),
       v1: xdr.lookup("TransactionMetaV1"),
       v2: xdr.lookup("TransactionMetaV2"),
-      v3: xdr.lookup("TransactionMetaV3"),
-    },
+      v3: xdr.lookup("TransactionMetaV3")
+    }
   });
 
   // === xdr source ============================================================
@@ -3085,7 +3082,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("TransactionResultMeta", [
     ["result", xdr.lookup("TransactionResultPair")],
     ["feeProcessing", xdr.lookup("LedgerEntryChanges")],
-    ["txApplyProcessing", xdr.lookup("TransactionMeta")],
+    ["txApplyProcessing", xdr.lookup("TransactionMeta")]
   ]);
 
   // === xdr source ============================================================
@@ -3099,7 +3096,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("UpgradeEntryMeta", [
     ["upgrade", xdr.lookup("LedgerUpgrade")],
-    ["changes", xdr.lookup("LedgerEntryChanges")],
+    ["changes", xdr.lookup("LedgerEntryChanges")]
   ]);
 
   // === xdr source ============================================================
@@ -3128,13 +3125,13 @@ var types = XDR.config((xdr) => {
     ["txSet", xdr.lookup("TransactionSet")],
     [
       "txProcessing",
-      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647),
+      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647)
     ],
     [
       "upgradesProcessing",
-      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647),
+      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647)
     ],
-    ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
+    ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -3163,13 +3160,13 @@ var types = XDR.config((xdr) => {
     ["txSet", xdr.lookup("GeneralizedTransactionSet")],
     [
       "txProcessing",
-      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647),
+      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647)
     ],
     [
       "upgradesProcessing",
-      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647),
+      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647)
     ],
-    ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
+    ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -3214,22 +3211,22 @@ var types = XDR.config((xdr) => {
     ["txSet", xdr.lookup("GeneralizedTransactionSet")],
     [
       "txProcessing",
-      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647),
+      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647)
     ],
     [
       "upgradesProcessing",
-      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647),
+      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647)
     ],
     ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
     ["totalByteSizeOfBucketList", xdr.lookup("Uint64")],
     [
       "evictedTemporaryLedgerKeys",
-      xdr.varArray(xdr.lookup("LedgerKey"), 2147483647),
+      xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)
     ],
     [
       "evictedPersistentLedgerEntries",
-      xdr.varArray(xdr.lookup("LedgerEntry"), 2147483647),
-    ],
+      xdr.varArray(xdr.lookup("LedgerEntry"), 2147483647)
+    ]
   ]);
 
   // === xdr source ============================================================
@@ -3249,15 +3246,15 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", "v0"],
-      ["_1", "v1"],
-      ["_2", "v2"],
+      [0, "v0"],
+      [1, "v1"],
+      [2, "v2"]
     ],
     arms: {
       v0: xdr.lookup("LedgerCloseMetaV0"),
       v1: xdr.lookup("LedgerCloseMetaV1"),
-      v2: xdr.lookup("LedgerCloseMetaV2"),
-    },
+      v2: xdr.lookup("LedgerCloseMetaV2")
+    }
   });
 
   // === xdr source ============================================================
@@ -3277,7 +3274,7 @@ var types = XDR.config((xdr) => {
     errData: 1,
     errConf: 2,
     errAuth: 3,
-    errLoad: 4,
+    errLoad: 4
   });
 
   // === xdr source ============================================================
@@ -3291,7 +3288,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("Error", [
     ["code", xdr.lookup("ErrorCode")],
-    ["msg", xdr.string(100)],
+    ["msg", xdr.string(100)]
   ]);
 
   // === xdr source ============================================================
@@ -3315,7 +3312,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("SendMoreExtended", [
     ["numMessages", xdr.lookup("Uint32")],
-    ["numBytes", xdr.lookup("Uint32")],
+    ["numBytes", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -3331,7 +3328,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("AuthCert", [
     ["pubkey", xdr.lookup("Curve25519Public")],
     ["expiration", xdr.lookup("Uint64")],
-    ["sig", xdr.lookup("Signature")],
+    ["sig", xdr.lookup("Signature")]
   ]);
 
   // === xdr source ============================================================
@@ -3359,7 +3356,7 @@ var types = XDR.config((xdr) => {
     ["listeningPort", xdr.int()],
     ["peerId", xdr.lookup("NodeId")],
     ["cert", xdr.lookup("AuthCert")],
-    ["nonce", xdr.lookup("Uint256")],
+    ["nonce", xdr.lookup("Uint256")]
   ]);
 
   // === xdr source ============================================================
@@ -3390,7 +3387,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("IpAddrType", {
     iPv4: 0,
-    iPv6: 1,
+    iPv6: 1
   });
 
   // === xdr source ============================================================
@@ -3409,12 +3406,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["iPv4", "ipv4"],
-      ["iPv6", "ipv6"],
+      ["iPv6", "ipv6"]
     ],
     arms: {
       ipv4: xdr.opaque(4),
-      ipv6: xdr.opaque(16),
-    },
+      ipv6: xdr.opaque(16)
+    }
   });
 
   // === xdr source ============================================================
@@ -3437,7 +3434,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("PeerAddress", [
     ["ip", xdr.lookup("PeerAddressIp")],
     ["port", xdr.lookup("Uint32")],
-    ["numFailures", xdr.lookup("Uint32")],
+    ["numFailures", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -3497,7 +3494,7 @@ var types = XDR.config((xdr) => {
     sendMore: 16,
     sendMoreExtended: 20,
     floodAdvert: 18,
-    floodDemand: 19,
+    floodDemand: 19
   });
 
   // === xdr source ============================================================
@@ -3511,7 +3508,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("DontHave", [
     ["type", xdr.lookup("MessageType")],
-    ["reqHash", xdr.lookup("Uint256")],
+    ["reqHash", xdr.lookup("Uint256")]
   ]);
 
   // === xdr source ============================================================
@@ -3523,7 +3520,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("SurveyMessageCommandType", {
-    surveyTopology: 0,
+    surveyTopology: 0
   });
 
   // === xdr source ============================================================
@@ -3537,7 +3534,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("SurveyMessageResponseType", {
     surveyTopologyResponseV0: 0,
-    surveyTopologyResponseV1: 1,
+    surveyTopologyResponseV1: 1
   });
 
   // === xdr source ============================================================
@@ -3557,7 +3554,7 @@ var types = XDR.config((xdr) => {
     ["surveyedPeerId", xdr.lookup("NodeId")],
     ["ledgerNum", xdr.lookup("Uint32")],
     ["encryptionKey", xdr.lookup("Curve25519Public")],
-    ["commandType", xdr.lookup("SurveyMessageCommandType")],
+    ["commandType", xdr.lookup("SurveyMessageCommandType")]
   ]);
 
   // === xdr source ============================================================
@@ -3571,7 +3568,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("SignedSurveyRequestMessage", [
     ["requestSignature", xdr.lookup("Signature")],
-    ["request", xdr.lookup("SurveyRequestMessage")],
+    ["request", xdr.lookup("SurveyRequestMessage")]
   ]);
 
   // === xdr source ============================================================
@@ -3598,7 +3595,7 @@ var types = XDR.config((xdr) => {
     ["surveyedPeerId", xdr.lookup("NodeId")],
     ["ledgerNum", xdr.lookup("Uint32")],
     ["commandType", xdr.lookup("SurveyMessageCommandType")],
-    ["encryptedBody", xdr.lookup("EncryptedBody")],
+    ["encryptedBody", xdr.lookup("EncryptedBody")]
   ]);
 
   // === xdr source ============================================================
@@ -3612,7 +3609,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("SignedSurveyResponseMessage", [
     ["responseSignature", xdr.lookup("Signature")],
-    ["response", xdr.lookup("SurveyResponseMessage")],
+    ["response", xdr.lookup("SurveyResponseMessage")]
   ]);
 
   // === xdr source ============================================================
@@ -3654,7 +3651,7 @@ var types = XDR.config((xdr) => {
     ["uniqueFloodMessageRecv", xdr.lookup("Uint64")],
     ["duplicateFloodMessageRecv", xdr.lookup("Uint64")],
     ["uniqueFetchMessageRecv", xdr.lookup("Uint64")],
-    ["duplicateFetchMessageRecv", xdr.lookup("Uint64")],
+    ["duplicateFetchMessageRecv", xdr.lookup("Uint64")]
   ]);
 
   // === xdr source ============================================================
@@ -3680,7 +3677,7 @@ var types = XDR.config((xdr) => {
     ["inboundPeers", xdr.lookup("PeerStatList")],
     ["outboundPeers", xdr.lookup("PeerStatList")],
     ["totalInboundPeerCount", xdr.lookup("Uint32")],
-    ["totalOutboundPeerCount", xdr.lookup("Uint32")],
+    ["totalOutboundPeerCount", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -3704,7 +3701,7 @@ var types = XDR.config((xdr) => {
     ["totalInboundPeerCount", xdr.lookup("Uint32")],
     ["totalOutboundPeerCount", xdr.lookup("Uint32")],
     ["maxInboundPeerCount", xdr.lookup("Uint32")],
-    ["maxOutboundPeerCount", xdr.lookup("Uint32")],
+    ["maxOutboundPeerCount", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -3723,12 +3720,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["surveyTopologyResponseV0", "topologyResponseBodyV0"],
-      ["surveyTopologyResponseV1", "topologyResponseBodyV1"],
+      ["surveyTopologyResponseV1", "topologyResponseBodyV1"]
     ],
     arms: {
       topologyResponseBodyV0: xdr.lookup("TopologyResponseBodyV0"),
-      topologyResponseBodyV1: xdr.lookup("TopologyResponseBodyV1"),
-    },
+      topologyResponseBodyV1: xdr.lookup("TopologyResponseBodyV1")
+    }
   });
 
   // === xdr source ============================================================
@@ -3862,7 +3859,7 @@ var types = XDR.config((xdr) => {
       ["sendMore", "sendMoreMessage"],
       ["sendMoreExtended", "sendMoreExtendedMessage"],
       ["floodAdvert", "floodAdvert"],
-      ["floodDemand", "floodDemand"],
+      ["floodDemand", "floodDemand"]
     ],
     arms: {
       error: xdr.lookup("Error"),
@@ -3883,8 +3880,8 @@ var types = XDR.config((xdr) => {
       sendMoreMessage: xdr.lookup("SendMore"),
       sendMoreExtendedMessage: xdr.lookup("SendMoreExtended"),
       floodAdvert: xdr.lookup("FloodAdvert"),
-      floodDemand: xdr.lookup("FloodDemand"),
-    },
+      floodDemand: xdr.lookup("FloodDemand")
+    }
   });
 
   // === xdr source ============================================================
@@ -3900,7 +3897,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("AuthenticatedMessageV0", [
     ["sequence", xdr.lookup("Uint64")],
     ["message", xdr.lookup("StellarMessage")],
-    ["mac", xdr.lookup("HmacSha256Mac")],
+    ["mac", xdr.lookup("HmacSha256Mac")]
   ]);
 
   // === xdr source ============================================================
@@ -3920,10 +3917,10 @@ var types = XDR.config((xdr) => {
   xdr.union("AuthenticatedMessage", {
     switchOn: xdr.lookup("Uint32"),
     switchName: "v",
-    switches: [["_0", "v0"]],
+    switches: [[0, "v0"]],
     arms: {
-      v0: xdr.lookup("AuthenticatedMessageV0"),
-    },
+      v0: xdr.lookup("AuthenticatedMessageV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -3947,8 +3944,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["liquidityPoolConstantProduct", "constantProduct"]],
     arms: {
-      constantProduct: xdr.lookup("LiquidityPoolConstantProductParameters"),
-    },
+      constantProduct: xdr.lookup("LiquidityPoolConstantProductParameters")
+    }
   });
 
   // === xdr source ============================================================
@@ -3962,7 +3959,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("MuxedAccountMed25519", [
     ["id", xdr.lookup("Uint64")],
-    ["ed25519", xdr.lookup("Uint256")],
+    ["ed25519", xdr.lookup("Uint256")]
   ]);
 
   // === xdr source ============================================================
@@ -3985,12 +3982,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["keyTypeEd25519", "ed25519"],
-      ["keyTypeMuxedEd25519", "med25519"],
+      ["keyTypeMuxedEd25519", "med25519"]
     ],
     arms: {
       ed25519: xdr.lookup("Uint256"),
-      med25519: xdr.lookup("MuxedAccountMed25519"),
-    },
+      med25519: xdr.lookup("MuxedAccountMed25519")
+    }
   });
 
   // === xdr source ============================================================
@@ -4004,7 +4001,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("DecoratedSignature", [
     ["hint", xdr.lookup("SignatureHint")],
-    ["signature", xdr.lookup("Signature")],
+    ["signature", xdr.lookup("Signature")]
   ]);
 
   // === xdr source ============================================================
@@ -4068,7 +4065,7 @@ var types = XDR.config((xdr) => {
     liquidityPoolWithdraw: 23,
     invokeHostFunction: 24,
     bumpFootprintExpiration: 25,
-    restoreFootprint: 26,
+    restoreFootprint: 26
   });
 
   // === xdr source ============================================================
@@ -4082,7 +4079,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("CreateAccountOp", [
     ["destination", xdr.lookup("AccountId")],
-    ["startingBalance", xdr.lookup("Int64")],
+    ["startingBalance", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4098,7 +4095,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("PaymentOp", [
     ["destination", xdr.lookup("MuxedAccount")],
     ["asset", xdr.lookup("Asset")],
-    ["amount", xdr.lookup("Int64")],
+    ["amount", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4124,7 +4121,7 @@ var types = XDR.config((xdr) => {
     ["destination", xdr.lookup("MuxedAccount")],
     ["destAsset", xdr.lookup("Asset")],
     ["destAmount", xdr.lookup("Int64")],
-    ["path", xdr.varArray(xdr.lookup("Asset"), 5)],
+    ["path", xdr.varArray(xdr.lookup("Asset"), 5)]
   ]);
 
   // === xdr source ============================================================
@@ -4150,7 +4147,7 @@ var types = XDR.config((xdr) => {
     ["destination", xdr.lookup("MuxedAccount")],
     ["destAsset", xdr.lookup("Asset")],
     ["destMin", xdr.lookup("Int64")],
-    ["path", xdr.varArray(xdr.lookup("Asset"), 5)],
+    ["path", xdr.varArray(xdr.lookup("Asset"), 5)]
   ]);
 
   // === xdr source ============================================================
@@ -4172,7 +4169,7 @@ var types = XDR.config((xdr) => {
     ["buying", xdr.lookup("Asset")],
     ["amount", xdr.lookup("Int64")],
     ["price", xdr.lookup("Price")],
-    ["offerId", xdr.lookup("Int64")],
+    ["offerId", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4195,7 +4192,7 @@ var types = XDR.config((xdr) => {
     ["buying", xdr.lookup("Asset")],
     ["buyAmount", xdr.lookup("Int64")],
     ["price", xdr.lookup("Price")],
-    ["offerId", xdr.lookup("Int64")],
+    ["offerId", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4213,7 +4210,7 @@ var types = XDR.config((xdr) => {
     ["selling", xdr.lookup("Asset")],
     ["buying", xdr.lookup("Asset")],
     ["amount", xdr.lookup("Int64")],
-    ["price", xdr.lookup("Price")],
+    ["price", xdr.lookup("Price")]
   ]);
 
   // === xdr source ============================================================
@@ -4248,7 +4245,7 @@ var types = XDR.config((xdr) => {
     ["medThreshold", xdr.option(xdr.lookup("Uint32"))],
     ["highThreshold", xdr.option(xdr.lookup("Uint32"))],
     ["homeDomain", xdr.option(xdr.lookup("String32"))],
-    ["signer", xdr.option(xdr.lookup("Signer"))],
+    ["signer", xdr.option(xdr.lookup("Signer"))]
   ]);
 
   // === xdr source ============================================================
@@ -4278,13 +4275,13 @@ var types = XDR.config((xdr) => {
       ["assetTypeNative", xdr.void()],
       ["assetTypeCreditAlphanum4", "alphaNum4"],
       ["assetTypeCreditAlphanum12", "alphaNum12"],
-      ["assetTypePoolShare", "liquidityPool"],
+      ["assetTypePoolShare", "liquidityPool"]
     ],
     arms: {
       alphaNum4: xdr.lookup("AlphaNum4"),
       alphaNum12: xdr.lookup("AlphaNum12"),
-      liquidityPool: xdr.lookup("LiquidityPoolParameters"),
-    },
+      liquidityPool: xdr.lookup("LiquidityPoolParameters")
+    }
   });
 
   // === xdr source ============================================================
@@ -4300,7 +4297,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ChangeTrustOp", [
     ["line", xdr.lookup("ChangeTrustAsset")],
-    ["limit", xdr.lookup("Int64")],
+    ["limit", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4318,7 +4315,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("AllowTrustOp", [
     ["trustor", xdr.lookup("AccountId")],
     ["asset", xdr.lookup("AssetCode")],
-    ["authorize", xdr.lookup("Uint32")],
+    ["authorize", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -4332,7 +4329,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ManageDataOp", [
     ["dataName", xdr.lookup("String64")],
-    ["dataValue", xdr.option(xdr.lookup("DataValue"))],
+    ["dataValue", xdr.option(xdr.lookup("DataValue"))]
   ]);
 
   // === xdr source ============================================================
@@ -4358,7 +4355,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("CreateClaimableBalanceOp", [
     ["asset", xdr.lookup("Asset")],
     ["amount", xdr.lookup("Int64")],
-    ["claimants", xdr.varArray(xdr.lookup("Claimant"), 10)],
+    ["claimants", xdr.varArray(xdr.lookup("Claimant"), 10)]
   ]);
 
   // === xdr source ============================================================
@@ -4370,7 +4367,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ClaimClaimableBalanceOp", [
-    ["balanceId", xdr.lookup("ClaimableBalanceId")],
+    ["balanceId", xdr.lookup("ClaimableBalanceId")]
   ]);
 
   // === xdr source ============================================================
@@ -4382,7 +4379,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("BeginSponsoringFutureReservesOp", [
-    ["sponsoredId", xdr.lookup("AccountId")],
+    ["sponsoredId", xdr.lookup("AccountId")]
   ]);
 
   // === xdr source ============================================================
@@ -4396,7 +4393,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("RevokeSponsorshipType", {
     revokeSponsorshipLedgerEntry: 0,
-    revokeSponsorshipSigner: 1,
+    revokeSponsorshipSigner: 1
   });
 
   // === xdr source ============================================================
@@ -4410,7 +4407,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("RevokeSponsorshipOpSigner", [
     ["accountId", xdr.lookup("AccountId")],
-    ["signerKey", xdr.lookup("SignerKey")],
+    ["signerKey", xdr.lookup("SignerKey")]
   ]);
 
   // === xdr source ============================================================
@@ -4433,12 +4430,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["revokeSponsorshipLedgerEntry", "ledgerKey"],
-      ["revokeSponsorshipSigner", "signer"],
+      ["revokeSponsorshipSigner", "signer"]
     ],
     arms: {
       ledgerKey: xdr.lookup("LedgerKey"),
-      signer: xdr.lookup("RevokeSponsorshipOpSigner"),
-    },
+      signer: xdr.lookup("RevokeSponsorshipOpSigner")
+    }
   });
 
   // === xdr source ============================================================
@@ -4454,7 +4451,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ClawbackOp", [
     ["asset", xdr.lookup("Asset")],
     ["from", xdr.lookup("MuxedAccount")],
-    ["amount", xdr.lookup("Int64")],
+    ["amount", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4466,7 +4463,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ClawbackClaimableBalanceOp", [
-    ["balanceId", xdr.lookup("ClaimableBalanceId")],
+    ["balanceId", xdr.lookup("ClaimableBalanceId")]
   ]);
 
   // === xdr source ============================================================
@@ -4485,7 +4482,7 @@ var types = XDR.config((xdr) => {
     ["trustor", xdr.lookup("AccountId")],
     ["asset", xdr.lookup("Asset")],
     ["clearFlags", xdr.lookup("Uint32")],
-    ["setFlags", xdr.lookup("Uint32")],
+    ["setFlags", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -4512,7 +4509,7 @@ var types = XDR.config((xdr) => {
     ["maxAmountA", xdr.lookup("Int64")],
     ["maxAmountB", xdr.lookup("Int64")],
     ["minPrice", xdr.lookup("Price")],
-    ["maxPrice", xdr.lookup("Price")],
+    ["maxPrice", xdr.lookup("Price")]
   ]);
 
   // === xdr source ============================================================
@@ -4530,7 +4527,7 @@ var types = XDR.config((xdr) => {
     ["liquidityPoolId", xdr.lookup("PoolId")],
     ["amount", xdr.lookup("Int64")],
     ["minAmountA", xdr.lookup("Int64")],
-    ["minAmountB", xdr.lookup("Int64")],
+    ["minAmountB", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -4546,7 +4543,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("HostFunctionType", {
     hostFunctionTypeInvokeContract: 0,
     hostFunctionTypeCreateContract: 1,
-    hostFunctionTypeUploadContractWasm: 2,
+    hostFunctionTypeUploadContractWasm: 2
   });
 
   // === xdr source ============================================================
@@ -4560,7 +4557,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("ContractIdPreimageType", {
     contractIdPreimageFromAddress: 0,
-    contractIdPreimageFromAsset: 1,
+    contractIdPreimageFromAsset: 1
   });
 
   // === xdr source ============================================================
@@ -4574,7 +4571,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ContractIdPreimageFromAddress", [
     ["address", xdr.lookup("ScAddress")],
-    ["salt", xdr.lookup("Uint256")],
+    ["salt", xdr.lookup("Uint256")]
   ]);
 
   // === xdr source ============================================================
@@ -4597,12 +4594,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["contractIdPreimageFromAddress", "fromAddress"],
-      ["contractIdPreimageFromAsset", "fromAsset"],
+      ["contractIdPreimageFromAsset", "fromAsset"]
     ],
     arms: {
       fromAddress: xdr.lookup("ContractIdPreimageFromAddress"),
-      fromAsset: xdr.lookup("Asset"),
-    },
+      fromAsset: xdr.lookup("Asset")
+    }
   });
 
   // === xdr source ============================================================
@@ -4616,7 +4613,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("CreateContractArgs", [
     ["contractIdPreimage", xdr.lookup("ContractIdPreimage")],
-    ["executable", xdr.lookup("ContractExecutable")],
+    ["executable", xdr.lookup("ContractExecutable")]
   ]);
 
   // === xdr source ============================================================
@@ -4631,7 +4628,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("InvokeContractArgs", [
     ["contractAddress", xdr.lookup("ScAddress")],
     ["functionName", xdr.lookup("ScSymbol")],
-    ["args", xdr.varArray(xdr.lookup("ScVal"), 2147483647)],
+    ["args", xdr.varArray(xdr.lookup("ScVal"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -4653,13 +4650,13 @@ var types = XDR.config((xdr) => {
     switches: [
       ["hostFunctionTypeInvokeContract", "invokeContract"],
       ["hostFunctionTypeCreateContract", "createContract"],
-      ["hostFunctionTypeUploadContractWasm", "wasm"],
+      ["hostFunctionTypeUploadContractWasm", "wasm"]
     ],
     arms: {
       invokeContract: xdr.lookup("InvokeContractArgs"),
       createContract: xdr.lookup("CreateContractArgs"),
-      wasm: xdr.varOpaque(),
-    },
+      wasm: xdr.varOpaque()
+    }
   });
 
   // === xdr source ============================================================
@@ -4673,7 +4670,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("SorobanAuthorizedFunctionType", {
     sorobanAuthorizedFunctionTypeContractFn: 0,
-    sorobanAuthorizedFunctionTypeCreateContractHostFn: 1,
+    sorobanAuthorizedFunctionTypeCreateContractHostFn: 1
   });
 
   // === xdr source ============================================================
@@ -4694,13 +4691,13 @@ var types = XDR.config((xdr) => {
       ["sorobanAuthorizedFunctionTypeContractFn", "contractFn"],
       [
         "sorobanAuthorizedFunctionTypeCreateContractHostFn",
-        "createContractHostFn",
-      ],
+        "createContractHostFn"
+      ]
     ],
     arms: {
       contractFn: xdr.lookup("InvokeContractArgs"),
-      createContractHostFn: xdr.lookup("CreateContractArgs"),
-    },
+      createContractHostFn: xdr.lookup("CreateContractArgs")
+    }
   });
 
   // === xdr source ============================================================
@@ -4716,8 +4713,8 @@ var types = XDR.config((xdr) => {
     ["function", xdr.lookup("SorobanAuthorizedFunction")],
     [
       "subInvocations",
-      xdr.varArray(xdr.lookup("SorobanAuthorizedInvocation"), 2147483647),
-    ],
+      xdr.varArray(xdr.lookup("SorobanAuthorizedInvocation"), 2147483647)
+    ]
   ]);
 
   // === xdr source ============================================================
@@ -4735,7 +4732,7 @@ var types = XDR.config((xdr) => {
     ["address", xdr.lookup("ScAddress")],
     ["nonce", xdr.lookup("Int64")],
     ["signatureExpirationLedger", xdr.lookup("Uint32")],
-    ["signature", xdr.lookup("ScVal")],
+    ["signature", xdr.lookup("ScVal")]
   ]);
 
   // === xdr source ============================================================
@@ -4749,7 +4746,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("SorobanCredentialsType", {
     sorobanCredentialsSourceAccount: 0,
-    sorobanCredentialsAddress: 1,
+    sorobanCredentialsAddress: 1
   });
 
   // === xdr source ============================================================
@@ -4768,11 +4765,11 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["sorobanCredentialsSourceAccount", xdr.void()],
-      ["sorobanCredentialsAddress", "address"],
+      ["sorobanCredentialsAddress", "address"]
     ],
     arms: {
-      address: xdr.lookup("SorobanAddressCredentials"),
-    },
+      address: xdr.lookup("SorobanAddressCredentials")
+    }
   });
 
   // === xdr source ============================================================
@@ -4786,7 +4783,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("SorobanAuthorizationEntry", [
     ["credentials", xdr.lookup("SorobanCredentials")],
-    ["rootInvocation", xdr.lookup("SorobanAuthorizedInvocation")],
+    ["rootInvocation", xdr.lookup("SorobanAuthorizedInvocation")]
   ]);
 
   // === xdr source ============================================================
@@ -4802,7 +4799,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("InvokeHostFunctionOp", [
     ["hostFunction", xdr.lookup("HostFunction")],
-    ["auth", xdr.varArray(xdr.lookup("SorobanAuthorizationEntry"), 2147483647)],
+    ["auth", xdr.varArray(xdr.lookup("SorobanAuthorizationEntry"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -4816,7 +4813,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("BumpFootprintExpirationOp", [
     ["ext", xdr.lookup("ExtensionPoint")],
-    ["ledgersToExpire", xdr.lookup("Uint32")],
+    ["ledgersToExpire", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -4920,7 +4917,7 @@ var types = XDR.config((xdr) => {
       ["liquidityPoolWithdraw", "liquidityPoolWithdrawOp"],
       ["invokeHostFunction", "invokeHostFunctionOp"],
       ["bumpFootprintExpiration", "bumpFootprintExpirationOp"],
-      ["restoreFootprint", "restoreFootprintOp"],
+      ["restoreFootprint", "restoreFootprintOp"]
     ],
     arms: {
       createAccountOp: xdr.lookup("CreateAccountOp"),
@@ -4949,8 +4946,8 @@ var types = XDR.config((xdr) => {
       liquidityPoolWithdrawOp: xdr.lookup("LiquidityPoolWithdrawOp"),
       invokeHostFunctionOp: xdr.lookup("InvokeHostFunctionOp"),
       bumpFootprintExpirationOp: xdr.lookup("BumpFootprintExpirationOp"),
-      restoreFootprintOp: xdr.lookup("RestoreFootprintOp"),
-    },
+      restoreFootprintOp: xdr.lookup("RestoreFootprintOp")
+    }
   });
 
   // === xdr source ============================================================
@@ -5025,7 +5022,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("Operation", [
     ["sourceAccount", xdr.option(xdr.lookup("MuxedAccount"))],
-    ["body", xdr.lookup("OperationBody")],
+    ["body", xdr.lookup("OperationBody")]
   ]);
 
   // === xdr source ============================================================
@@ -5041,7 +5038,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("HashIdPreimageOperationId", [
     ["sourceAccount", xdr.lookup("AccountId")],
     ["seqNum", xdr.lookup("SequenceNumber")],
-    ["opNum", xdr.lookup("Uint32")],
+    ["opNum", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -5061,7 +5058,7 @@ var types = XDR.config((xdr) => {
     ["seqNum", xdr.lookup("SequenceNumber")],
     ["opNum", xdr.lookup("Uint32")],
     ["liquidityPoolId", xdr.lookup("PoolId")],
-    ["asset", xdr.lookup("Asset")],
+    ["asset", xdr.lookup("Asset")]
   ]);
 
   // === xdr source ============================================================
@@ -5075,7 +5072,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("HashIdPreimageContractId", [
     ["networkId", xdr.lookup("Hash")],
-    ["contractIdPreimage", xdr.lookup("ContractIdPreimage")],
+    ["contractIdPreimage", xdr.lookup("ContractIdPreimage")]
   ]);
 
   // === xdr source ============================================================
@@ -5093,7 +5090,7 @@ var types = XDR.config((xdr) => {
     ["networkId", xdr.lookup("Hash")],
     ["nonce", xdr.lookup("Int64")],
     ["signatureExpirationLedger", xdr.lookup("Uint32")],
-    ["invocation", xdr.lookup("SorobanAuthorizedInvocation")],
+    ["invocation", xdr.lookup("SorobanAuthorizedInvocation")]
   ]);
 
   // === xdr source ============================================================
@@ -5140,14 +5137,14 @@ var types = XDR.config((xdr) => {
       ["envelopeTypeOpId", "operationId"],
       ["envelopeTypePoolRevokeOpId", "revokeId"],
       ["envelopeTypeContractId", "contractId"],
-      ["envelopeTypeSorobanAuthorization", "sorobanAuthorization"],
+      ["envelopeTypeSorobanAuthorization", "sorobanAuthorization"]
     ],
     arms: {
       operationId: xdr.lookup("HashIdPreimageOperationId"),
       revokeId: xdr.lookup("HashIdPreimageRevokeId"),
       contractId: xdr.lookup("HashIdPreimageContractId"),
-      sorobanAuthorization: xdr.lookup("HashIdPreimageSorobanAuthorization"),
-    },
+      sorobanAuthorization: xdr.lookup("HashIdPreimageSorobanAuthorization")
+    }
   });
 
   // === xdr source ============================================================
@@ -5167,7 +5164,7 @@ var types = XDR.config((xdr) => {
     memoText: 1,
     memoId: 2,
     memoHash: 3,
-    memoReturn: 4,
+    memoReturn: 4
   });
 
   // === xdr source ============================================================
@@ -5195,14 +5192,14 @@ var types = XDR.config((xdr) => {
       ["memoText", "text"],
       ["memoId", "id"],
       ["memoHash", "hash"],
-      ["memoReturn", "retHash"],
+      ["memoReturn", "retHash"]
     ],
     arms: {
       text: xdr.string(28),
       id: xdr.lookup("Uint64"),
       hash: xdr.lookup("Hash"),
-      retHash: xdr.lookup("Hash"),
-    },
+      retHash: xdr.lookup("Hash")
+    }
   });
 
   // === xdr source ============================================================
@@ -5216,7 +5213,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TimeBounds", [
     ["minTime", xdr.lookup("TimePoint")],
-    ["maxTime", xdr.lookup("TimePoint")],
+    ["maxTime", xdr.lookup("TimePoint")]
   ]);
 
   // === xdr source ============================================================
@@ -5230,7 +5227,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerBounds", [
     ["minLedger", xdr.lookup("Uint32")],
-    ["maxLedger", xdr.lookup("Uint32")],
+    ["maxLedger", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -5275,7 +5272,7 @@ var types = XDR.config((xdr) => {
     ["minSeqNum", xdr.option(xdr.lookup("SequenceNumber"))],
     ["minSeqAge", xdr.lookup("Duration")],
     ["minSeqLedgerGap", xdr.lookup("Uint32")],
-    ["extraSigners", xdr.varArray(xdr.lookup("SignerKey"), 2)],
+    ["extraSigners", xdr.varArray(xdr.lookup("SignerKey"), 2)]
   ]);
 
   // === xdr source ============================================================
@@ -5291,7 +5288,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("PreconditionType", {
     precondNone: 0,
     precondTime: 1,
-    precondV2: 2,
+    precondV2: 2
   });
 
   // === xdr source ============================================================
@@ -5313,12 +5310,12 @@ var types = XDR.config((xdr) => {
     switches: [
       ["precondNone", xdr.void()],
       ["precondTime", "timeBounds"],
-      ["precondV2", "v2"],
+      ["precondV2", "v2"]
     ],
     arms: {
       timeBounds: xdr.lookup("TimeBounds"),
-      v2: xdr.lookup("PreconditionsV2"),
-    },
+      v2: xdr.lookup("PreconditionsV2")
+    }
   });
 
   // === xdr source ============================================================
@@ -5332,7 +5329,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("LedgerFootprint", [
     ["readOnly", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)],
-    ["readWrite", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)],
+    ["readWrite", xdr.varArray(xdr.lookup("LedgerKey"), 2147483647)]
   ]);
 
   // === xdr source ============================================================
@@ -5360,7 +5357,7 @@ var types = XDR.config((xdr) => {
     ["instructions", xdr.lookup("Uint32")],
     ["readBytes", xdr.lookup("Uint32")],
     ["writeBytes", xdr.lookup("Uint32")],
-    ["contractEventsSizeBytes", xdr.lookup("Uint32")],
+    ["contractEventsSizeBytes", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -5377,7 +5374,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("SorobanTransactionData", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["resources", xdr.lookup("SorobanResources")],
-    ["refundableFee", xdr.lookup("Int64")],
+    ["refundableFee", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -5392,8 +5389,8 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionV0Ext", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -5423,9 +5420,9 @@ var types = XDR.config((xdr) => {
     ["memo", xdr.lookup("Memo")],
     [
       "operations",
-      xdr.varArray(xdr.lookup("Operation"), xdr.lookup("MAX_OPS_PER_TX")),
+      xdr.varArray(xdr.lookup("Operation"), xdr.lookup("MAX_OPS_PER_TX"))
     ],
-    ["ext", xdr.lookup("TransactionV0Ext")],
+    ["ext", xdr.lookup("TransactionV0Ext")]
   ]);
 
   // === xdr source ============================================================
@@ -5441,7 +5438,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionV0Envelope", [
     ["tx", xdr.lookup("TransactionV0")],
-    ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
+    ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)]
   ]);
 
   // === xdr source ============================================================
@@ -5459,12 +5456,12 @@ var types = XDR.config((xdr) => {
     switchOn: xdr.int(),
     switchName: "v",
     switches: [
-      ["_0", xdr.void()],
-      ["_1", "sorobanData"],
+      [0, xdr.void()],
+      [1, "sorobanData"]
     ],
     arms: {
-      sorobanData: xdr.lookup("SorobanTransactionData"),
-    },
+      sorobanData: xdr.lookup("SorobanTransactionData")
+    }
   });
 
   // === xdr source ============================================================
@@ -5507,9 +5504,9 @@ var types = XDR.config((xdr) => {
     ["memo", xdr.lookup("Memo")],
     [
       "operations",
-      xdr.varArray(xdr.lookup("Operation"), xdr.lookup("MAX_OPS_PER_TX")),
+      xdr.varArray(xdr.lookup("Operation"), xdr.lookup("MAX_OPS_PER_TX"))
     ],
-    ["ext", xdr.lookup("TransactionExt")],
+    ["ext", xdr.lookup("TransactionExt")]
   ]);
 
   // === xdr source ============================================================
@@ -5525,7 +5522,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("TransactionV1Envelope", [
     ["tx", xdr.lookup("Transaction")],
-    ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
+    ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)]
   ]);
 
   // === xdr source ============================================================
@@ -5542,8 +5539,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["envelopeTypeTx", "v1"]],
     arms: {
-      v1: xdr.lookup("TransactionV1Envelope"),
-    },
+      v1: xdr.lookup("TransactionV1Envelope")
+    }
   });
 
   // === xdr source ============================================================
@@ -5558,8 +5555,8 @@ var types = XDR.config((xdr) => {
   xdr.union("FeeBumpTransactionExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -5587,7 +5584,7 @@ var types = XDR.config((xdr) => {
     ["feeSource", xdr.lookup("MuxedAccount")],
     ["fee", xdr.lookup("Int64")],
     ["innerTx", xdr.lookup("FeeBumpTransactionInnerTx")],
-    ["ext", xdr.lookup("FeeBumpTransactionExt")],
+    ["ext", xdr.lookup("FeeBumpTransactionExt")]
   ]);
 
   // === xdr source ============================================================
@@ -5603,7 +5600,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("FeeBumpTransactionEnvelope", [
     ["tx", xdr.lookup("FeeBumpTransaction")],
-    ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)],
+    ["signatures", xdr.varArray(xdr.lookup("DecoratedSignature"), 20)]
   ]);
 
   // === xdr source ============================================================
@@ -5625,13 +5622,13 @@ var types = XDR.config((xdr) => {
     switches: [
       ["envelopeTypeTxV0", "v0"],
       ["envelopeTypeTx", "v1"],
-      ["envelopeTypeTxFeeBump", "feeBump"],
+      ["envelopeTypeTxFeeBump", "feeBump"]
     ],
     arms: {
       v0: xdr.lookup("TransactionV0Envelope"),
       v1: xdr.lookup("TransactionV1Envelope"),
-      feeBump: xdr.lookup("FeeBumpTransactionEnvelope"),
-    },
+      feeBump: xdr.lookup("FeeBumpTransactionEnvelope")
+    }
   });
 
   // === xdr source ============================================================
@@ -5651,12 +5648,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["envelopeTypeTx", "tx"],
-      ["envelopeTypeTxFeeBump", "feeBump"],
+      ["envelopeTypeTxFeeBump", "feeBump"]
     ],
     arms: {
       tx: xdr.lookup("Transaction"),
-      feeBump: xdr.lookup("FeeBumpTransaction"),
-    },
+      feeBump: xdr.lookup("FeeBumpTransaction")
+    }
   });
 
   // === xdr source ============================================================
@@ -5680,8 +5677,8 @@ var types = XDR.config((xdr) => {
     ["networkId", xdr.lookup("Hash")],
     [
       "taggedTransaction",
-      xdr.lookup("TransactionSignaturePayloadTaggedTransaction"),
-    ],
+      xdr.lookup("TransactionSignaturePayloadTaggedTransaction")
+    ]
   ]);
 
   // === xdr source ============================================================
@@ -5697,7 +5694,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("ClaimAtomType", {
     claimAtomTypeV0: 0,
     claimAtomTypeOrderBook: 1,
-    claimAtomTypeLiquidityPool: 2,
+    claimAtomTypeLiquidityPool: 2
   });
 
   // === xdr source ============================================================
@@ -5724,7 +5721,7 @@ var types = XDR.config((xdr) => {
     ["assetSold", xdr.lookup("Asset")],
     ["amountSold", xdr.lookup("Int64")],
     ["assetBought", xdr.lookup("Asset")],
-    ["amountBought", xdr.lookup("Int64")],
+    ["amountBought", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -5751,7 +5748,7 @@ var types = XDR.config((xdr) => {
     ["assetSold", xdr.lookup("Asset")],
     ["amountSold", xdr.lookup("Int64")],
     ["assetBought", xdr.lookup("Asset")],
-    ["amountBought", xdr.lookup("Int64")],
+    ["amountBought", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -5775,7 +5772,7 @@ var types = XDR.config((xdr) => {
     ["assetSold", xdr.lookup("Asset")],
     ["amountSold", xdr.lookup("Int64")],
     ["assetBought", xdr.lookup("Asset")],
-    ["amountBought", xdr.lookup("Int64")],
+    ["amountBought", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -5797,13 +5794,13 @@ var types = XDR.config((xdr) => {
     switches: [
       ["claimAtomTypeV0", "v0"],
       ["claimAtomTypeOrderBook", "orderBook"],
-      ["claimAtomTypeLiquidityPool", "liquidityPool"],
+      ["claimAtomTypeLiquidityPool", "liquidityPool"]
     ],
     arms: {
       v0: xdr.lookup("ClaimOfferAtomV0"),
       orderBook: xdr.lookup("ClaimOfferAtom"),
-      liquidityPool: xdr.lookup("ClaimLiquidityAtom"),
-    },
+      liquidityPool: xdr.lookup("ClaimLiquidityAtom")
+    }
   });
 
   // === xdr source ============================================================
@@ -5827,7 +5824,7 @@ var types = XDR.config((xdr) => {
     createAccountMalformed: -1,
     createAccountUnderfunded: -2,
     createAccountLowReserve: -3,
-    createAccountAlreadyExist: -4,
+    createAccountAlreadyExist: -4
   });
 
   // === xdr source ============================================================
@@ -5852,9 +5849,9 @@ var types = XDR.config((xdr) => {
       ["createAccountMalformed", xdr.void()],
       ["createAccountUnderfunded", xdr.void()],
       ["createAccountLowReserve", xdr.void()],
-      ["createAccountAlreadyExist", xdr.void()],
+      ["createAccountAlreadyExist", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -5887,7 +5884,7 @@ var types = XDR.config((xdr) => {
     paymentNoTrust: -6,
     paymentNotAuthorized: -7,
     paymentLineFull: -8,
-    paymentNoIssuer: -9,
+    paymentNoIssuer: -9
   });
 
   // === xdr source ============================================================
@@ -5922,9 +5919,9 @@ var types = XDR.config((xdr) => {
       ["paymentNoTrust", xdr.void()],
       ["paymentNotAuthorized", xdr.void()],
       ["paymentLineFull", xdr.void()],
-      ["paymentNoIssuer", xdr.void()],
+      ["paymentNoIssuer", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -5972,7 +5969,7 @@ var types = XDR.config((xdr) => {
     pathPaymentStrictReceiveNoIssuer: -9,
     pathPaymentStrictReceiveTooFewOffers: -10,
     pathPaymentStrictReceiveOfferCrossSelf: -11,
-    pathPaymentStrictReceiveOverSendmax: -12,
+    pathPaymentStrictReceiveOverSendmax: -12
   });
 
   // === xdr source ============================================================
@@ -5988,7 +5985,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("SimplePaymentResult", [
     ["destination", xdr.lookup("AccountId")],
     ["asset", xdr.lookup("Asset")],
-    ["amount", xdr.lookup("Int64")],
+    ["amount", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -6002,7 +5999,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("PathPaymentStrictReceiveResultSuccess", [
     ["offers", xdr.varArray(xdr.lookup("ClaimAtom"), 2147483647)],
-    ["last", xdr.lookup("SimplePaymentResult")],
+    ["last", xdr.lookup("SimplePaymentResult")]
   ]);
 
   // === xdr source ============================================================
@@ -6050,12 +6047,12 @@ var types = XDR.config((xdr) => {
       ["pathPaymentStrictReceiveNoIssuer", "noIssuer"],
       ["pathPaymentStrictReceiveTooFewOffers", xdr.void()],
       ["pathPaymentStrictReceiveOfferCrossSelf", xdr.void()],
-      ["pathPaymentStrictReceiveOverSendmax", xdr.void()],
+      ["pathPaymentStrictReceiveOverSendmax", xdr.void()]
     ],
     arms: {
       success: xdr.lookup("PathPaymentStrictReceiveResultSuccess"),
-      noIssuer: xdr.lookup("Asset"),
-    },
+      noIssuer: xdr.lookup("Asset")
+    }
   });
 
   // === xdr source ============================================================
@@ -6102,7 +6099,7 @@ var types = XDR.config((xdr) => {
     pathPaymentStrictSendNoIssuer: -9,
     pathPaymentStrictSendTooFewOffers: -10,
     pathPaymentStrictSendOfferCrossSelf: -11,
-    pathPaymentStrictSendUnderDestmin: -12,
+    pathPaymentStrictSendUnderDestmin: -12
   });
 
   // === xdr source ============================================================
@@ -6116,7 +6113,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("PathPaymentStrictSendResultSuccess", [
     ["offers", xdr.varArray(xdr.lookup("ClaimAtom"), 2147483647)],
-    ["last", xdr.lookup("SimplePaymentResult")],
+    ["last", xdr.lookup("SimplePaymentResult")]
   ]);
 
   // === xdr source ============================================================
@@ -6163,12 +6160,12 @@ var types = XDR.config((xdr) => {
       ["pathPaymentStrictSendNoIssuer", "noIssuer"],
       ["pathPaymentStrictSendTooFewOffers", xdr.void()],
       ["pathPaymentStrictSendOfferCrossSelf", xdr.void()],
-      ["pathPaymentStrictSendUnderDestmin", xdr.void()],
+      ["pathPaymentStrictSendUnderDestmin", xdr.void()]
     ],
     arms: {
       success: xdr.lookup("PathPaymentStrictSendResultSuccess"),
-      noIssuer: xdr.lookup("Asset"),
-    },
+      noIssuer: xdr.lookup("Asset")
+    }
   });
 
   // === xdr source ============================================================
@@ -6214,7 +6211,7 @@ var types = XDR.config((xdr) => {
     manageSellOfferSellNoIssuer: -9,
     manageSellOfferBuyNoIssuer: -10,
     manageSellOfferNotFound: -11,
-    manageSellOfferLowReserve: -12,
+    manageSellOfferLowReserve: -12
   });
 
   // === xdr source ============================================================
@@ -6230,7 +6227,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("ManageOfferEffect", {
     manageOfferCreated: 0,
     manageOfferUpdated: 1,
-    manageOfferDeleted: 2,
+    manageOfferDeleted: 2
   });
 
   // === xdr source ============================================================
@@ -6251,11 +6248,11 @@ var types = XDR.config((xdr) => {
     switches: [
       ["manageOfferCreated", "offer"],
       ["manageOfferUpdated", "offer"],
-      ["manageOfferDeleted", xdr.void()],
+      ["manageOfferDeleted", xdr.void()]
     ],
     arms: {
-      offer: xdr.lookup("OfferEntry"),
-    },
+      offer: xdr.lookup("OfferEntry")
+    }
   });
 
   // === xdr source ============================================================
@@ -6279,7 +6276,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ManageOfferSuccessResult", [
     ["offersClaimed", xdr.varArray(xdr.lookup("ClaimAtom"), 2147483647)],
-    ["offer", xdr.lookup("ManageOfferSuccessResultOffer")],
+    ["offer", xdr.lookup("ManageOfferSuccessResultOffer")]
   ]);
 
   // === xdr source ============================================================
@@ -6320,11 +6317,11 @@ var types = XDR.config((xdr) => {
       ["manageSellOfferSellNoIssuer", xdr.void()],
       ["manageSellOfferBuyNoIssuer", xdr.void()],
       ["manageSellOfferNotFound", xdr.void()],
-      ["manageSellOfferLowReserve", xdr.void()],
+      ["manageSellOfferLowReserve", xdr.void()]
     ],
     arms: {
-      success: xdr.lookup("ManageOfferSuccessResult"),
-    },
+      success: xdr.lookup("ManageOfferSuccessResult")
+    }
   });
 
   // === xdr source ============================================================
@@ -6367,7 +6364,7 @@ var types = XDR.config((xdr) => {
     manageBuyOfferSellNoIssuer: -9,
     manageBuyOfferBuyNoIssuer: -10,
     manageBuyOfferNotFound: -11,
-    manageBuyOfferLowReserve: -12,
+    manageBuyOfferLowReserve: -12
   });
 
   // === xdr source ============================================================
@@ -6408,11 +6405,11 @@ var types = XDR.config((xdr) => {
       ["manageBuyOfferSellNoIssuer", xdr.void()],
       ["manageBuyOfferBuyNoIssuer", xdr.void()],
       ["manageBuyOfferNotFound", xdr.void()],
-      ["manageBuyOfferLowReserve", xdr.void()],
+      ["manageBuyOfferLowReserve", xdr.void()]
     ],
     arms: {
-      success: xdr.lookup("ManageOfferSuccessResult"),
-    },
+      success: xdr.lookup("ManageOfferSuccessResult")
+    }
   });
 
   // === xdr source ============================================================
@@ -6447,7 +6444,7 @@ var types = XDR.config((xdr) => {
     setOptionsThresholdOutOfRange: -7,
     setOptionsBadSigner: -8,
     setOptionsInvalidHomeDomain: -9,
-    setOptionsAuthRevocableRequired: -10,
+    setOptionsAuthRevocableRequired: -10
   });
 
   // === xdr source ============================================================
@@ -6484,9 +6481,9 @@ var types = XDR.config((xdr) => {
       ["setOptionsThresholdOutOfRange", xdr.void()],
       ["setOptionsBadSigner", xdr.void()],
       ["setOptionsInvalidHomeDomain", xdr.void()],
-      ["setOptionsAuthRevocableRequired", xdr.void()],
+      ["setOptionsAuthRevocableRequired", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6520,7 +6517,7 @@ var types = XDR.config((xdr) => {
     changeTrustSelfNotAllowed: -5,
     changeTrustTrustLineMissing: -6,
     changeTrustCannotDelete: -7,
-    changeTrustNotAuthMaintainLiabilities: -8,
+    changeTrustNotAuthMaintainLiabilities: -8
   });
 
   // === xdr source ============================================================
@@ -6553,9 +6550,9 @@ var types = XDR.config((xdr) => {
       ["changeTrustSelfNotAllowed", xdr.void()],
       ["changeTrustTrustLineMissing", xdr.void()],
       ["changeTrustCannotDelete", xdr.void()],
-      ["changeTrustNotAuthMaintainLiabilities", xdr.void()],
+      ["changeTrustNotAuthMaintainLiabilities", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6583,7 +6580,7 @@ var types = XDR.config((xdr) => {
     allowTrustTrustNotRequired: -3,
     allowTrustCantRevoke: -4,
     allowTrustSelfNotAllowed: -5,
-    allowTrustLowReserve: -6,
+    allowTrustLowReserve: -6
   });
 
   // === xdr source ============================================================
@@ -6612,9 +6609,9 @@ var types = XDR.config((xdr) => {
       ["allowTrustTrustNotRequired", xdr.void()],
       ["allowTrustCantRevoke", xdr.void()],
       ["allowTrustSelfNotAllowed", xdr.void()],
-      ["allowTrustLowReserve", xdr.void()],
+      ["allowTrustLowReserve", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6643,7 +6640,7 @@ var types = XDR.config((xdr) => {
     accountMergeHasSubEntries: -4,
     accountMergeSeqnumTooFar: -5,
     accountMergeDestFull: -6,
-    accountMergeIsSponsor: -7,
+    accountMergeIsSponsor: -7
   });
 
   // === xdr source ============================================================
@@ -6674,11 +6671,11 @@ var types = XDR.config((xdr) => {
       ["accountMergeHasSubEntries", xdr.void()],
       ["accountMergeSeqnumTooFar", xdr.void()],
       ["accountMergeDestFull", xdr.void()],
-      ["accountMergeIsSponsor", xdr.void()],
+      ["accountMergeIsSponsor", xdr.void()]
     ],
     arms: {
-      sourceAccountBalance: xdr.lookup("Int64"),
-    },
+      sourceAccountBalance: xdr.lookup("Int64")
+    }
   });
 
   // === xdr source ============================================================
@@ -6694,7 +6691,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("InflationResultCode", {
     inflationSuccess: 0,
-    inflationNotTime: -1,
+    inflationNotTime: -1
   });
 
   // === xdr source ============================================================
@@ -6708,7 +6705,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("InflationPayout", [
     ["destination", xdr.lookup("AccountId")],
-    ["amount", xdr.lookup("Int64")],
+    ["amount", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -6727,11 +6724,11 @@ var types = XDR.config((xdr) => {
     switchName: "code",
     switches: [
       ["inflationSuccess", "payouts"],
-      ["inflationNotTime", xdr.void()],
+      ["inflationNotTime", xdr.void()]
     ],
     arms: {
-      payouts: xdr.varArray(xdr.lookup("InflationPayout"), 2147483647),
-    },
+      payouts: xdr.varArray(xdr.lookup("InflationPayout"), 2147483647)
+    }
   });
 
   // === xdr source ============================================================
@@ -6755,7 +6752,7 @@ var types = XDR.config((xdr) => {
     manageDataNotSupportedYet: -1,
     manageDataNameNotFound: -2,
     manageDataLowReserve: -3,
-    manageDataInvalidName: -4,
+    manageDataInvalidName: -4
   });
 
   // === xdr source ============================================================
@@ -6780,9 +6777,9 @@ var types = XDR.config((xdr) => {
       ["manageDataNotSupportedYet", xdr.void()],
       ["manageDataNameNotFound", xdr.void()],
       ["manageDataLowReserve", xdr.void()],
-      ["manageDataInvalidName", xdr.void()],
+      ["manageDataInvalidName", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6798,7 +6795,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("BumpSequenceResultCode", {
     bumpSequenceSuccess: 0,
-    bumpSequenceBadSeq: -1,
+    bumpSequenceBadSeq: -1
   });
 
   // === xdr source ============================================================
@@ -6817,9 +6814,9 @@ var types = XDR.config((xdr) => {
     switchName: "code",
     switches: [
       ["bumpSequenceSuccess", xdr.void()],
-      ["bumpSequenceBadSeq", xdr.void()],
+      ["bumpSequenceBadSeq", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6841,7 +6838,7 @@ var types = XDR.config((xdr) => {
     createClaimableBalanceLowReserve: -2,
     createClaimableBalanceNoTrust: -3,
     createClaimableBalanceNotAuthorized: -4,
-    createClaimableBalanceUnderfunded: -5,
+    createClaimableBalanceUnderfunded: -5
   });
 
   // === xdr source ============================================================
@@ -6869,11 +6866,11 @@ var types = XDR.config((xdr) => {
       ["createClaimableBalanceLowReserve", xdr.void()],
       ["createClaimableBalanceNoTrust", xdr.void()],
       ["createClaimableBalanceNotAuthorized", xdr.void()],
-      ["createClaimableBalanceUnderfunded", xdr.void()],
+      ["createClaimableBalanceUnderfunded", xdr.void()]
     ],
     arms: {
-      balanceId: xdr.lookup("ClaimableBalanceId"),
-    },
+      balanceId: xdr.lookup("ClaimableBalanceId")
+    }
   });
 
   // === xdr source ============================================================
@@ -6895,7 +6892,7 @@ var types = XDR.config((xdr) => {
     claimClaimableBalanceCannotClaim: -2,
     claimClaimableBalanceLineFull: -3,
     claimClaimableBalanceNoTrust: -4,
-    claimClaimableBalanceNotAuthorized: -5,
+    claimClaimableBalanceNotAuthorized: -5
   });
 
   // === xdr source ============================================================
@@ -6922,9 +6919,9 @@ var types = XDR.config((xdr) => {
       ["claimClaimableBalanceCannotClaim", xdr.void()],
       ["claimClaimableBalanceLineFull", xdr.void()],
       ["claimClaimableBalanceNoTrust", xdr.void()],
-      ["claimClaimableBalanceNotAuthorized", xdr.void()],
+      ["claimClaimableBalanceNotAuthorized", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6945,7 +6942,7 @@ var types = XDR.config((xdr) => {
     beginSponsoringFutureReservesSuccess: 0,
     beginSponsoringFutureReservesMalformed: -1,
     beginSponsoringFutureReservesAlreadySponsored: -2,
-    beginSponsoringFutureReservesRecursive: -3,
+    beginSponsoringFutureReservesRecursive: -3
   });
 
   // === xdr source ============================================================
@@ -6969,9 +6966,9 @@ var types = XDR.config((xdr) => {
       ["beginSponsoringFutureReservesSuccess", xdr.void()],
       ["beginSponsoringFutureReservesMalformed", xdr.void()],
       ["beginSponsoringFutureReservesAlreadySponsored", xdr.void()],
-      ["beginSponsoringFutureReservesRecursive", xdr.void()],
+      ["beginSponsoringFutureReservesRecursive", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -6988,7 +6985,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("EndSponsoringFutureReservesResultCode", {
     endSponsoringFutureReservesSuccess: 0,
-    endSponsoringFutureReservesNotSponsored: -1,
+    endSponsoringFutureReservesNotSponsored: -1
   });
 
   // === xdr source ============================================================
@@ -7008,9 +7005,9 @@ var types = XDR.config((xdr) => {
     switchName: "code",
     switches: [
       ["endSponsoringFutureReservesSuccess", xdr.void()],
-      ["endSponsoringFutureReservesNotSponsored", xdr.void()],
+      ["endSponsoringFutureReservesNotSponsored", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7035,7 +7032,7 @@ var types = XDR.config((xdr) => {
     revokeSponsorshipNotSponsor: -2,
     revokeSponsorshipLowReserve: -3,
     revokeSponsorshipOnlyTransferable: -4,
-    revokeSponsorshipMalformed: -5,
+    revokeSponsorshipMalformed: -5
   });
 
   // === xdr source ============================================================
@@ -7062,9 +7059,9 @@ var types = XDR.config((xdr) => {
       ["revokeSponsorshipNotSponsor", xdr.void()],
       ["revokeSponsorshipLowReserve", xdr.void()],
       ["revokeSponsorshipOnlyTransferable", xdr.void()],
-      ["revokeSponsorshipMalformed", xdr.void()],
+      ["revokeSponsorshipMalformed", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7087,7 +7084,7 @@ var types = XDR.config((xdr) => {
     clawbackMalformed: -1,
     clawbackNotClawbackEnabled: -2,
     clawbackNoTrust: -3,
-    clawbackUnderfunded: -4,
+    clawbackUnderfunded: -4
   });
 
   // === xdr source ============================================================
@@ -7112,9 +7109,9 @@ var types = XDR.config((xdr) => {
       ["clawbackMalformed", xdr.void()],
       ["clawbackNotClawbackEnabled", xdr.void()],
       ["clawbackNoTrust", xdr.void()],
-      ["clawbackUnderfunded", xdr.void()],
+      ["clawbackUnderfunded", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7135,7 +7132,7 @@ var types = XDR.config((xdr) => {
     clawbackClaimableBalanceSuccess: 0,
     clawbackClaimableBalanceDoesNotExist: -1,
     clawbackClaimableBalanceNotIssuer: -2,
-    clawbackClaimableBalanceNotClawbackEnabled: -3,
+    clawbackClaimableBalanceNotClawbackEnabled: -3
   });
 
   // === xdr source ============================================================
@@ -7159,9 +7156,9 @@ var types = XDR.config((xdr) => {
       ["clawbackClaimableBalanceSuccess", xdr.void()],
       ["clawbackClaimableBalanceDoesNotExist", xdr.void()],
       ["clawbackClaimableBalanceNotIssuer", xdr.void()],
-      ["clawbackClaimableBalanceNotClawbackEnabled", xdr.void()],
+      ["clawbackClaimableBalanceNotClawbackEnabled", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7187,7 +7184,7 @@ var types = XDR.config((xdr) => {
     setTrustLineFlagsNoTrustLine: -2,
     setTrustLineFlagsCantRevoke: -3,
     setTrustLineFlagsInvalidState: -4,
-    setTrustLineFlagsLowReserve: -5,
+    setTrustLineFlagsLowReserve: -5
   });
 
   // === xdr source ============================================================
@@ -7214,9 +7211,9 @@ var types = XDR.config((xdr) => {
       ["setTrustLineFlagsNoTrustLine", xdr.void()],
       ["setTrustLineFlagsCantRevoke", xdr.void()],
       ["setTrustLineFlagsInvalidState", xdr.void()],
-      ["setTrustLineFlagsLowReserve", xdr.void()],
+      ["setTrustLineFlagsLowReserve", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7249,7 +7246,7 @@ var types = XDR.config((xdr) => {
     liquidityPoolDepositUnderfunded: -4,
     liquidityPoolDepositLineFull: -5,
     liquidityPoolDepositBadPrice: -6,
-    liquidityPoolDepositPoolFull: -7,
+    liquidityPoolDepositPoolFull: -7
   });
 
   // === xdr source ============================================================
@@ -7280,9 +7277,9 @@ var types = XDR.config((xdr) => {
       ["liquidityPoolDepositUnderfunded", xdr.void()],
       ["liquidityPoolDepositLineFull", xdr.void()],
       ["liquidityPoolDepositBadPrice", xdr.void()],
-      ["liquidityPoolDepositPoolFull", xdr.void()],
+      ["liquidityPoolDepositPoolFull", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7310,7 +7307,7 @@ var types = XDR.config((xdr) => {
     liquidityPoolWithdrawNoTrust: -2,
     liquidityPoolWithdrawUnderfunded: -3,
     liquidityPoolWithdrawLineFull: -4,
-    liquidityPoolWithdrawUnderMinimum: -5,
+    liquidityPoolWithdrawUnderMinimum: -5
   });
 
   // === xdr source ============================================================
@@ -7337,9 +7334,9 @@ var types = XDR.config((xdr) => {
       ["liquidityPoolWithdrawNoTrust", xdr.void()],
       ["liquidityPoolWithdrawUnderfunded", xdr.void()],
       ["liquidityPoolWithdrawLineFull", xdr.void()],
-      ["liquidityPoolWithdrawUnderMinimum", xdr.void()],
+      ["liquidityPoolWithdrawUnderMinimum", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7362,7 +7359,7 @@ var types = XDR.config((xdr) => {
     invokeHostFunctionMalformed: -1,
     invokeHostFunctionTrapped: -2,
     invokeHostFunctionResourceLimitExceeded: -3,
-    invokeHostFunctionEntryExpired: -4,
+    invokeHostFunctionEntryExpired: -4
   });
 
   // === xdr source ============================================================
@@ -7387,11 +7384,11 @@ var types = XDR.config((xdr) => {
       ["invokeHostFunctionMalformed", xdr.void()],
       ["invokeHostFunctionTrapped", xdr.void()],
       ["invokeHostFunctionResourceLimitExceeded", xdr.void()],
-      ["invokeHostFunctionEntryExpired", xdr.void()],
+      ["invokeHostFunctionEntryExpired", xdr.void()]
     ],
     arms: {
-      success: xdr.lookup("Hash"),
-    },
+      success: xdr.lookup("Hash")
+    }
   });
 
   // === xdr source ============================================================
@@ -7410,7 +7407,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("BumpFootprintExpirationResultCode", {
     bumpFootprintExpirationSuccess: 0,
     bumpFootprintExpirationMalformed: -1,
-    bumpFootprintExpirationResourceLimitExceeded: -2,
+    bumpFootprintExpirationResourceLimitExceeded: -2
   });
 
   // === xdr source ============================================================
@@ -7431,9 +7428,9 @@ var types = XDR.config((xdr) => {
     switches: [
       ["bumpFootprintExpirationSuccess", xdr.void()],
       ["bumpFootprintExpirationMalformed", xdr.void()],
-      ["bumpFootprintExpirationResourceLimitExceeded", xdr.void()],
+      ["bumpFootprintExpirationResourceLimitExceeded", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7452,7 +7449,7 @@ var types = XDR.config((xdr) => {
   xdr.enum("RestoreFootprintResultCode", {
     restoreFootprintSuccess: 0,
     restoreFootprintMalformed: -1,
-    restoreFootprintResourceLimitExceeded: -2,
+    restoreFootprintResourceLimitExceeded: -2
   });
 
   // === xdr source ============================================================
@@ -7473,9 +7470,9 @@ var types = XDR.config((xdr) => {
     switches: [
       ["restoreFootprintSuccess", xdr.void()],
       ["restoreFootprintMalformed", xdr.void()],
-      ["restoreFootprintResourceLimitExceeded", xdr.void()],
+      ["restoreFootprintResourceLimitExceeded", xdr.void()]
     ],
-    arms: {},
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7500,7 +7497,7 @@ var types = XDR.config((xdr) => {
     opNotSupported: -3,
     opTooManySubentries: -4,
     opExceededWorkLimit: -5,
-    opTooManySponsoring: -6,
+    opTooManySponsoring: -6
   });
 
   // === xdr source ============================================================
@@ -7594,7 +7591,7 @@ var types = XDR.config((xdr) => {
       ["liquidityPoolWithdraw", "liquidityPoolWithdrawResult"],
       ["invokeHostFunction", "invokeHostFunctionResult"],
       ["bumpFootprintExpiration", "bumpFootprintExpirationResult"],
-      ["restoreFootprint", "restoreFootprintResult"],
+      ["restoreFootprint", "restoreFootprintResult"]
     ],
     arms: {
       createAccountResult: xdr.lookup("CreateAccountResult"),
@@ -7633,8 +7630,8 @@ var types = XDR.config((xdr) => {
       bumpFootprintExpirationResult: xdr.lookup(
         "BumpFootprintExpirationResult"
       ),
-      restoreFootprintResult: xdr.lookup("RestoreFootprintResult"),
-    },
+      restoreFootprintResult: xdr.lookup("RestoreFootprintResult")
+    }
   });
 
   // === xdr source ============================================================
@@ -7720,11 +7717,11 @@ var types = XDR.config((xdr) => {
       ["opNotSupported", xdr.void()],
       ["opTooManySubentries", xdr.void()],
       ["opExceededWorkLimit", xdr.void()],
-      ["opTooManySponsoring", xdr.void()],
+      ["opTooManySponsoring", xdr.void()]
     ],
     arms: {
-      tr: xdr.lookup("OperationResultTr"),
-    },
+      tr: xdr.lookup("OperationResultTr")
+    }
   });
 
   // === xdr source ============================================================
@@ -7778,7 +7775,7 @@ var types = XDR.config((xdr) => {
     txBadSponsorship: -14,
     txBadMinSeqAgeOrGap: -15,
     txMalformed: -16,
-    txSorobanResourceLimitExceeded: -17,
+    txSorobanResourceLimitExceeded: -17
   });
 
   // === xdr source ============================================================
@@ -7829,11 +7826,11 @@ var types = XDR.config((xdr) => {
       ["txBadSponsorship", xdr.void()],
       ["txBadMinSeqAgeOrGap", xdr.void()],
       ["txMalformed", xdr.void()],
-      ["txSorobanResourceLimitExceeded", xdr.void()],
+      ["txSorobanResourceLimitExceeded", xdr.void()]
     ],
     arms: {
-      results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
-    },
+      results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647)
+    }
   });
 
   // === xdr source ============================================================
@@ -7848,8 +7845,8 @@ var types = XDR.config((xdr) => {
   xdr.union("InnerTransactionResultExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -7898,7 +7895,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("InnerTransactionResult", [
     ["feeCharged", xdr.lookup("Int64")],
     ["result", xdr.lookup("InnerTransactionResultResult")],
-    ["ext", xdr.lookup("InnerTransactionResultExt")],
+    ["ext", xdr.lookup("InnerTransactionResultExt")]
   ]);
 
   // === xdr source ============================================================
@@ -7912,7 +7909,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("InnerTransactionResultPair", [
     ["transactionHash", xdr.lookup("Hash")],
-    ["result", xdr.lookup("InnerTransactionResult")],
+    ["result", xdr.lookup("InnerTransactionResult")]
   ]);
 
   // === xdr source ============================================================
@@ -7967,12 +7964,12 @@ var types = XDR.config((xdr) => {
       ["txBadSponsorship", xdr.void()],
       ["txBadMinSeqAgeOrGap", xdr.void()],
       ["txMalformed", xdr.void()],
-      ["txSorobanResourceLimitExceeded", xdr.void()],
+      ["txSorobanResourceLimitExceeded", xdr.void()]
     ],
     arms: {
       innerResultPair: xdr.lookup("InnerTransactionResultPair"),
-      results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647),
-    },
+      results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647)
+    }
   });
 
   // === xdr source ============================================================
@@ -7987,8 +7984,8 @@ var types = XDR.config((xdr) => {
   xdr.union("TransactionResultExt", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -8038,7 +8035,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("TransactionResult", [
     ["feeCharged", xdr.lookup("Int64")],
     ["result", xdr.lookup("TransactionResultResult")],
-    ["ext", xdr.lookup("TransactionResultExt")],
+    ["ext", xdr.lookup("TransactionResultExt")]
   ]);
 
   // === xdr source ============================================================
@@ -8109,8 +8106,8 @@ var types = XDR.config((xdr) => {
   xdr.union("ExtensionPoint", {
     switchOn: xdr.int(),
     switchName: "v",
-    switches: [["_0", xdr.void()]],
-    arms: {},
+    switches: [[0, xdr.void()]],
+    arms: {}
   });
 
   // === xdr source ============================================================
@@ -8132,7 +8129,7 @@ var types = XDR.config((xdr) => {
     keyTypePreAuthTx: 1,
     keyTypeHashX: 2,
     keyTypeEd25519SignedPayload: 3,
-    keyTypeMuxedEd25519: 256,
+    keyTypeMuxedEd25519: 256
   });
 
   // === xdr source ============================================================
@@ -8144,7 +8141,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("PublicKeyType", {
-    publicKeyTypeEd25519: 0,
+    publicKeyTypeEd25519: 0
   });
 
   // === xdr source ============================================================
@@ -8162,7 +8159,7 @@ var types = XDR.config((xdr) => {
     signerKeyTypeEd25519: 0,
     signerKeyTypePreAuthTx: 1,
     signerKeyTypeHashX: 2,
-    signerKeyTypeEd25519SignedPayload: 3,
+    signerKeyTypeEd25519SignedPayload: 3
   });
 
   // === xdr source ============================================================
@@ -8179,8 +8176,8 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [["publicKeyTypeEd25519", "ed25519"]],
     arms: {
-      ed25519: xdr.lookup("Uint256"),
-    },
+      ed25519: xdr.lookup("Uint256")
+    }
   });
 
   // === xdr source ============================================================
@@ -8196,7 +8193,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("SignerKeyEd25519SignedPayload", [
     ["ed25519", xdr.lookup("Uint256")],
-    ["payload", xdr.varOpaque(64)],
+    ["payload", xdr.varOpaque(64)]
   ]);
 
   // === xdr source ============================================================
@@ -8229,14 +8226,14 @@ var types = XDR.config((xdr) => {
       ["signerKeyTypeEd25519", "ed25519"],
       ["signerKeyTypePreAuthTx", "preAuthTx"],
       ["signerKeyTypeHashX", "hashX"],
-      ["signerKeyTypeEd25519SignedPayload", "ed25519SignedPayload"],
+      ["signerKeyTypeEd25519SignedPayload", "ed25519SignedPayload"]
     ],
     arms: {
       ed25519: xdr.lookup("Uint256"),
       preAuthTx: xdr.lookup("Uint256"),
       hashX: xdr.lookup("Uint256"),
-      ed25519SignedPayload: xdr.lookup("SignerKeyEd25519SignedPayload"),
-    },
+      ed25519SignedPayload: xdr.lookup("SignerKeyEd25519SignedPayload")
+    }
   });
 
   // === xdr source ============================================================
@@ -8387,7 +8384,7 @@ var types = XDR.config((xdr) => {
     scvAddress: 18,
     scvContractInstance: 19,
     scvLedgerKeyContractInstance: 20,
-    scvLedgerKeyNonce: 21,
+    scvLedgerKeyNonce: 21
   });
 
   // === xdr source ============================================================
@@ -8417,7 +8414,7 @@ var types = XDR.config((xdr) => {
     sceEvents: 6,
     sceBudget: 7,
     sceValue: 8,
-    sceAuth: 9,
+    sceAuth: 9
   });
 
   // === xdr source ============================================================
@@ -8447,7 +8444,7 @@ var types = XDR.config((xdr) => {
     scecInvalidAction: 6,
     scecInternalError: 7,
     scecUnexpectedType: 8,
-    scecUnexpectedSize: 9,
+    scecUnexpectedSize: 9
   });
 
   // === xdr source ============================================================
@@ -8482,12 +8479,12 @@ var types = XDR.config((xdr) => {
       ["sceEvents", "code"],
       ["sceBudget", "code"],
       ["sceValue", "code"],
-      ["sceAuth", "code"],
+      ["sceAuth", "code"]
     ],
     arms: {
       contractCode: xdr.lookup("Uint32"),
-      code: xdr.lookup("ScErrorCode"),
-    },
+      code: xdr.lookup("ScErrorCode")
+    }
   });
 
   // === xdr source ============================================================
@@ -8500,7 +8497,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("UInt128Parts", [
     ["hi", xdr.lookup("Uint64")],
-    ["lo", xdr.lookup("Uint64")],
+    ["lo", xdr.lookup("Uint64")]
   ]);
 
   // === xdr source ============================================================
@@ -8513,7 +8510,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("Int128Parts", [
     ["hi", xdr.lookup("Int64")],
-    ["lo", xdr.lookup("Uint64")],
+    ["lo", xdr.lookup("Uint64")]
   ]);
 
   // === xdr source ============================================================
@@ -8530,7 +8527,7 @@ var types = XDR.config((xdr) => {
     ["hiHi", xdr.lookup("Uint64")],
     ["hiLo", xdr.lookup("Uint64")],
     ["loHi", xdr.lookup("Uint64")],
-    ["loLo", xdr.lookup("Uint64")],
+    ["loLo", xdr.lookup("Uint64")]
   ]);
 
   // === xdr source ============================================================
@@ -8547,7 +8544,7 @@ var types = XDR.config((xdr) => {
     ["hiHi", xdr.lookup("Int64")],
     ["hiLo", xdr.lookup("Uint64")],
     ["loHi", xdr.lookup("Uint64")],
-    ["loLo", xdr.lookup("Uint64")],
+    ["loLo", xdr.lookup("Uint64")]
   ]);
 
   // === xdr source ============================================================
@@ -8561,7 +8558,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("ContractExecutableType", {
     contractExecutableWasm: 0,
-    contractExecutableToken: 1,
+    contractExecutableToken: 1
   });
 
   // === xdr source ============================================================
@@ -8580,11 +8577,11 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["contractExecutableWasm", "wasmHash"],
-      ["contractExecutableToken", xdr.void()],
+      ["contractExecutableToken", xdr.void()]
     ],
     arms: {
-      wasmHash: xdr.lookup("Hash"),
-    },
+      wasmHash: xdr.lookup("Hash")
+    }
   });
 
   // === xdr source ============================================================
@@ -8598,7 +8595,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("ScAddressType", {
     scAddressTypeAccount: 0,
-    scAddressTypeContract: 1,
+    scAddressTypeContract: 1
   });
 
   // === xdr source ============================================================
@@ -8617,12 +8614,12 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["scAddressTypeAccount", "accountId"],
-      ["scAddressTypeContract", "contractId"],
+      ["scAddressTypeContract", "contractId"]
     ],
     arms: {
       accountId: xdr.lookup("AccountId"),
-      contractId: xdr.lookup("Hash"),
-    },
+      contractId: xdr.lookup("Hash")
+    }
   });
 
   // === xdr source ============================================================
@@ -8686,7 +8683,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScContractInstance", [
     ["executable", xdr.lookup("ContractExecutable")],
-    ["storage", xdr.option(xdr.lookup("ScMap"))],
+    ["storage", xdr.option(xdr.lookup("ScMap"))]
   ]);
 
   // === xdr source ============================================================
@@ -8779,7 +8776,7 @@ var types = XDR.config((xdr) => {
       ["scvAddress", "address"],
       ["scvLedgerKeyContractInstance", xdr.void()],
       ["scvLedgerKeyNonce", "nonceKey"],
-      ["scvContractInstance", "instance"],
+      ["scvContractInstance", "instance"]
     ],
     arms: {
       b: xdr.bool(),
@@ -8801,8 +8798,8 @@ var types = XDR.config((xdr) => {
       map: xdr.option(xdr.lookup("ScMap")),
       address: xdr.lookup("ScAddress"),
       nonceKey: xdr.lookup("ScNonceKey"),
-      instance: xdr.lookup("ScContractInstance"),
-    },
+      instance: xdr.lookup("ScContractInstance")
+    }
   });
 
   // === xdr source ============================================================
@@ -8816,7 +8813,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScMapEntry", [
     ["key", xdr.lookup("ScVal")],
-    ["val", xdr.lookup("ScVal")],
+    ["val", xdr.lookup("ScVal")]
   ]);
 
   // === xdr source ============================================================
@@ -8828,7 +8825,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("ScEnvMetaKind", {
-    scEnvMetaKindInterfaceVersion: 0,
+    scEnvMetaKindInterfaceVersion: 0
   });
 
   // === xdr source ============================================================
@@ -8845,8 +8842,8 @@ var types = XDR.config((xdr) => {
     switchName: "kind",
     switches: [["scEnvMetaKindInterfaceVersion", "interfaceVersion"]],
     arms: {
-      interfaceVersion: xdr.lookup("Uint64"),
-    },
+      interfaceVersion: xdr.lookup("Uint64")
+    }
   });
 
   // === xdr source ============================================================
@@ -8860,7 +8857,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScMetaV0", [
     ["key", xdr.string()],
-    ["val", xdr.string()],
+    ["val", xdr.string()]
   ]);
 
   // === xdr source ============================================================
@@ -8872,7 +8869,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.enum("ScMetaKind", {
-    scMetaV0: 0,
+    scMetaV0: 0
   });
 
   // === xdr source ============================================================
@@ -8889,8 +8886,8 @@ var types = XDR.config((xdr) => {
     switchName: "kind",
     switches: [["scMetaV0", "v0"]],
     arms: {
-      v0: xdr.lookup("ScMetaV0"),
-    },
+      v0: xdr.lookup("ScMetaV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -8929,6 +8926,7 @@ var types = XDR.config((xdr) => {
   //       SC_SPEC_TYPE_OPTION = 1000,
   //       SC_SPEC_TYPE_RESULT = 1001,
   //       SC_SPEC_TYPE_VEC = 1002,
+  //       SC_SPEC_TYPE_SET = 1003,
   //       SC_SPEC_TYPE_MAP = 1004,
   //       SC_SPEC_TYPE_TUPLE = 1005,
   //       SC_SPEC_TYPE_BYTES_N = 1006,
@@ -8960,10 +8958,11 @@ var types = XDR.config((xdr) => {
     scSpecTypeOption: 1000,
     scSpecTypeResult: 1001,
     scSpecTypeVec: 1002,
+    scSpecTypeSet: 1003,
     scSpecTypeMap: 1004,
     scSpecTypeTuple: 1005,
     scSpecTypeBytesN: 1006,
-    scSpecTypeUdt: 2000,
+    scSpecTypeUdt: 2000
   });
 
   // === xdr source ============================================================
@@ -8987,7 +8986,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScSpecTypeResult", [
     ["okType", xdr.lookup("ScSpecTypeDef")],
-    ["errorType", xdr.lookup("ScSpecTypeDef")],
+    ["errorType", xdr.lookup("ScSpecTypeDef")]
   ]);
 
   // === xdr source ============================================================
@@ -9011,8 +9010,18 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScSpecTypeMap", [
     ["keyType", xdr.lookup("ScSpecTypeDef")],
-    ["valueType", xdr.lookup("ScSpecTypeDef")],
+    ["valueType", xdr.lookup("ScSpecTypeDef")]
   ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct SCSpecTypeSet
+  //   {
+  //       SCSpecTypeDef elementType;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ScSpecTypeSet", [["elementType", xdr.lookup("ScSpecTypeDef")]]);
 
   // === xdr source ============================================================
   //
@@ -9023,7 +9032,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ScSpecTypeTuple", [
-    ["valueTypes", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 12)],
+    ["valueTypes", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 12)]
   ]);
 
   // === xdr source ============================================================
@@ -9077,6 +9086,8 @@ var types = XDR.config((xdr) => {
   //       SCSpecTypeVec vec;
   //   case SC_SPEC_TYPE_MAP:
   //       SCSpecTypeMap map;
+  //   case SC_SPEC_TYPE_SET:
+  //       SCSpecTypeSet set;
   //   case SC_SPEC_TYPE_TUPLE:
   //       SCSpecTypeTuple tuple;
   //   case SC_SPEC_TYPE_BYTES_N:
@@ -9112,19 +9123,21 @@ var types = XDR.config((xdr) => {
       ["scSpecTypeResult", "result"],
       ["scSpecTypeVec", "vec"],
       ["scSpecTypeMap", "map"],
+      ["scSpecTypeSet", "set_"],
       ["scSpecTypeTuple", "tuple"],
       ["scSpecTypeBytesN", "bytesN"],
-      ["scSpecTypeUdt", "udt"],
+      ["scSpecTypeUdt", "udt"]
     ],
     arms: {
       option: xdr.lookup("ScSpecTypeOption"),
       result: xdr.lookup("ScSpecTypeResult"),
       vec: xdr.lookup("ScSpecTypeVec"),
       map: xdr.lookup("ScSpecTypeMap"),
+      set_: xdr.lookup("ScSpecTypeSet"),
       tuple: xdr.lookup("ScSpecTypeTuple"),
       bytesN: xdr.lookup("ScSpecTypeBytesN"),
-      udt: xdr.lookup("ScSpecTypeUdt"),
-    },
+      udt: xdr.lookup("ScSpecTypeUdt")
+    }
   });
 
   // === xdr source ============================================================
@@ -9140,7 +9153,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScSpecUdtStructFieldV0", [
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(30)],
-    ["type", xdr.lookup("ScSpecTypeDef")],
+    ["type", xdr.lookup("ScSpecTypeDef")]
   ]);
 
   // === xdr source ============================================================
@@ -9158,7 +9171,7 @@ var types = XDR.config((xdr) => {
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
-    ["fields", xdr.varArray(xdr.lookup("ScSpecUdtStructFieldV0"), 40)],
+    ["fields", xdr.varArray(xdr.lookup("ScSpecUdtStructFieldV0"), 40)]
   ]);
 
   // === xdr source ============================================================
@@ -9172,7 +9185,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ScSpecUdtUnionCaseVoidV0", [
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
-    ["name", xdr.string(60)],
+    ["name", xdr.string(60)]
   ]);
 
   // === xdr source ============================================================
@@ -9188,7 +9201,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScSpecUdtUnionCaseTupleV0", [
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
-    ["type", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 12)],
+    ["type", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 12)]
   ]);
 
   // === xdr source ============================================================
@@ -9202,7 +9215,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.enum("ScSpecUdtUnionCaseV0Kind", {
     scSpecUdtUnionCaseVoidV0: 0,
-    scSpecUdtUnionCaseTupleV0: 1,
+    scSpecUdtUnionCaseTupleV0: 1
   });
 
   // === xdr source ============================================================
@@ -9221,12 +9234,12 @@ var types = XDR.config((xdr) => {
     switchName: "kind",
     switches: [
       ["scSpecUdtUnionCaseVoidV0", "voidCase"],
-      ["scSpecUdtUnionCaseTupleV0", "tupleCase"],
+      ["scSpecUdtUnionCaseTupleV0", "tupleCase"]
     ],
     arms: {
       voidCase: xdr.lookup("ScSpecUdtUnionCaseVoidV0"),
-      tupleCase: xdr.lookup("ScSpecUdtUnionCaseTupleV0"),
-    },
+      tupleCase: xdr.lookup("ScSpecUdtUnionCaseTupleV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -9244,7 +9257,7 @@ var types = XDR.config((xdr) => {
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
-    ["cases", xdr.varArray(xdr.lookup("ScSpecUdtUnionCaseV0"), 50)],
+    ["cases", xdr.varArray(xdr.lookup("ScSpecUdtUnionCaseV0"), 50)]
   ]);
 
   // === xdr source ============================================================
@@ -9260,7 +9273,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScSpecUdtEnumCaseV0", [
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
-    ["value", xdr.lookup("Uint32")],
+    ["value", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -9278,7 +9291,7 @@ var types = XDR.config((xdr) => {
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
-    ["cases", xdr.varArray(xdr.lookup("ScSpecUdtEnumCaseV0"), 50)],
+    ["cases", xdr.varArray(xdr.lookup("ScSpecUdtEnumCaseV0"), 50)]
   ]);
 
   // === xdr source ============================================================
@@ -9294,7 +9307,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScSpecUdtErrorEnumCaseV0", [
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(60)],
-    ["value", xdr.lookup("Uint32")],
+    ["value", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -9312,7 +9325,7 @@ var types = XDR.config((xdr) => {
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["lib", xdr.string(80)],
     ["name", xdr.string(60)],
-    ["cases", xdr.varArray(xdr.lookup("ScSpecUdtErrorEnumCaseV0"), 50)],
+    ["cases", xdr.varArray(xdr.lookup("ScSpecUdtErrorEnumCaseV0"), 50)]
   ]);
 
   // === xdr source ============================================================
@@ -9328,7 +9341,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ScSpecFunctionInputV0", [
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.string(30)],
-    ["type", xdr.lookup("ScSpecTypeDef")],
+    ["type", xdr.lookup("ScSpecTypeDef")]
   ]);
 
   // === xdr source ============================================================
@@ -9346,7 +9359,7 @@ var types = XDR.config((xdr) => {
     ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
     ["name", xdr.lookup("ScSymbol")],
     ["inputs", xdr.varArray(xdr.lookup("ScSpecFunctionInputV0"), 10)],
-    ["outputs", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 1)],
+    ["outputs", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 1)]
   ]);
 
   // === xdr source ============================================================
@@ -9366,7 +9379,7 @@ var types = XDR.config((xdr) => {
     scSpecEntryUdtStructV0: 1,
     scSpecEntryUdtUnionV0: 2,
     scSpecEntryUdtEnumV0: 3,
-    scSpecEntryUdtErrorEnumV0: 4,
+    scSpecEntryUdtErrorEnumV0: 4
   });
 
   // === xdr source ============================================================
@@ -9394,15 +9407,15 @@ var types = XDR.config((xdr) => {
       ["scSpecEntryUdtStructV0", "udtStructV0"],
       ["scSpecEntryUdtUnionV0", "udtUnionV0"],
       ["scSpecEntryUdtEnumV0", "udtEnumV0"],
-      ["scSpecEntryUdtErrorEnumV0", "udtErrorEnumV0"],
+      ["scSpecEntryUdtErrorEnumV0", "udtErrorEnumV0"]
     ],
     arms: {
       functionV0: xdr.lookup("ScSpecFunctionV0"),
       udtStructV0: xdr.lookup("ScSpecUdtStructV0"),
       udtUnionV0: xdr.lookup("ScSpecUdtUnionV0"),
       udtEnumV0: xdr.lookup("ScSpecUdtEnumV0"),
-      udtErrorEnumV0: xdr.lookup("ScSpecUdtErrorEnumV0"),
-    },
+      udtErrorEnumV0: xdr.lookup("ScSpecUdtErrorEnumV0")
+    }
   });
 
   // === xdr source ============================================================
@@ -9415,7 +9428,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ConfigSettingContractExecutionLanesV0", [
-    ["ledgerMaxTxCount", xdr.lookup("Uint32")],
+    ["ledgerMaxTxCount", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -9439,7 +9452,7 @@ var types = XDR.config((xdr) => {
     ["ledgerMaxInstructions", xdr.lookup("Int64")],
     ["txMaxInstructions", xdr.lookup("Int64")],
     ["feeRatePerInstructionsIncrement", xdr.lookup("Int64")],
-    ["txMemoryLimit", xdr.lookup("Uint32")],
+    ["txMemoryLimit", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -9496,7 +9509,7 @@ var types = XDR.config((xdr) => {
     ["bucketListTargetSizeBytes", xdr.lookup("Int64")],
     ["writeFee1KbBucketListLow", xdr.lookup("Int64")],
     ["writeFee1KbBucketListHigh", xdr.lookup("Int64")],
-    ["bucketListWriteFeeGrowthFactor", xdr.lookup("Uint32")],
+    ["bucketListWriteFeeGrowthFactor", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -9508,7 +9521,7 @@ var types = XDR.config((xdr) => {
   //
   // ===========================================================================
   xdr.struct("ConfigSettingContractHistoricalDataV0", [
-    ["feeHistorical1Kb", xdr.lookup("Int64")],
+    ["feeHistorical1Kb", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -9524,7 +9537,7 @@ var types = XDR.config((xdr) => {
   // ===========================================================================
   xdr.struct("ConfigSettingContractEventsV0", [
     ["txMaxContractEventsSizeBytes", xdr.lookup("Uint32")],
-    ["feeContractEvents1Kb", xdr.lookup("Int64")],
+    ["feeContractEvents1Kb", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -9544,7 +9557,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ConfigSettingContractBandwidthV0", [
     ["ledgerMaxTxsSizeBytes", xdr.lookup("Uint32")],
     ["txMaxSizeBytes", xdr.lookup("Uint32")],
-    ["feeTxSize1Kb", xdr.lookup("Int64")],
+    ["feeTxSize1Kb", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -9641,7 +9654,7 @@ var types = XDR.config((xdr) => {
     int256Mul: 24,
     int256Div: 25,
     int256Pow: 26,
-    int256Shift: 27,
+    int256Shift: 27
   });
 
   // === xdr source ============================================================
@@ -9658,7 +9671,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("ContractCostParamEntry", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["constTerm", xdr.lookup("Int64")],
-    ["linearTerm", xdr.lookup("Int64")],
+    ["linearTerm", xdr.lookup("Int64")]
   ]);
 
   // === xdr source ============================================================
@@ -9697,7 +9710,7 @@ var types = XDR.config((xdr) => {
     ["maxEntriesToExpire", xdr.lookup("Uint32")],
     ["bucketListSizeWindowSampleSize", xdr.lookup("Uint32")],
     ["evictionScanSize", xdr.lookup("Uint64")],
-    ["startingEvictionScanLevel", xdr.lookup("Uint32")],
+    ["startingEvictionScanLevel", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -9712,7 +9725,7 @@ var types = XDR.config((xdr) => {
   xdr.struct("EvictionIterator", [
     ["bucketListLevel", xdr.lookup("Uint32")],
     ["isCurrBucket", xdr.bool()],
-    ["bucketFileOffset", xdr.lookup("Uint64")],
+    ["bucketFileOffset", xdr.lookup("Uint64")]
   ]);
 
   // === xdr source ============================================================
@@ -9770,7 +9783,7 @@ var types = XDR.config((xdr) => {
     configSettingStateExpiration: 10,
     configSettingContractExecutionLanes: 11,
     configSettingBucketlistSizeWindow: 12,
-    configSettingEvictionIterator: 13,
+    configSettingEvictionIterator: 13
   });
 
   // === xdr source ============================================================
@@ -9820,18 +9833,18 @@ var types = XDR.config((xdr) => {
       ["configSettingContractBandwidthV0", "contractBandwidth"],
       [
         "configSettingContractCostParamsCpuInstructions",
-        "contractCostParamsCpuInsns",
+        "contractCostParamsCpuInsns"
       ],
       [
         "configSettingContractCostParamsMemoryBytes",
-        "contractCostParamsMemBytes",
+        "contractCostParamsMemBytes"
       ],
       ["configSettingContractDataKeySizeBytes", "contractDataKeySizeBytes"],
       ["configSettingContractDataEntrySizeBytes", "contractDataEntrySizeBytes"],
       ["configSettingStateExpiration", "stateExpirationSettings"],
       ["configSettingContractExecutionLanes", "contractExecutionLanes"],
       ["configSettingBucketlistSizeWindow", "bucketListSizeWindow"],
-      ["configSettingEvictionIterator", "evictionIterator"],
+      ["configSettingEvictionIterator", "evictionIterator"]
     ],
     arms: {
       contractMaxSizeBytes: xdr.lookup("Uint32"),
@@ -9851,8 +9864,8 @@ var types = XDR.config((xdr) => {
         "ConfigSettingContractExecutionLanesV0"
       ),
       bucketListSizeWindow: xdr.varArray(xdr.lookup("Uint64"), 2147483647),
-      evictionIterator: xdr.lookup("EvictionIterator"),
-    },
+      evictionIterator: xdr.lookup("EvictionIterator")
+    }
   });
 });
 export default types;

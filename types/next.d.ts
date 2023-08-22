@@ -1,4 +1,4 @@
-// Automatically generated on 2023-08-141T18:31:28-08:00
+// Automatically generated on 2023-08-22T14:15:00-08:00
 import { Operation } from './index';
 
 export {};
@@ -2096,6 +2096,7 @@ export namespace xdr {
       | 'scSpecTypeOption'
       | 'scSpecTypeResult'
       | 'scSpecTypeVec'
+      | 'scSpecTypeSet'
       | 'scSpecTypeMap'
       | 'scSpecTypeTuple'
       | 'scSpecTypeBytesN'
@@ -2123,6 +2124,7 @@ export namespace xdr {
       | 1000
       | 1001
       | 1002
+      | 1003
       | 1004
       | 1005
       | 1006
@@ -2169,6 +2171,8 @@ export namespace xdr {
     static scSpecTypeResult(): ScSpecType;
 
     static scSpecTypeVec(): ScSpecType;
+
+    static scSpecTypeSet(): ScSpecType;
 
     static scSpecTypeMap(): ScSpecType;
 
@@ -8304,6 +8308,32 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class ScSpecTypeSet {
+    constructor(attributes: { elementType: ScSpecTypeDef });
+
+    elementType(value?: ScSpecTypeDef): ScSpecTypeDef;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ScSpecTypeSet;
+
+    static write(value: ScSpecTypeSet, io: Buffer): void;
+
+    static isValid(value: ScSpecTypeSet): boolean;
+
+    static toXDR(value: ScSpecTypeSet): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeSet;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeSet;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class ScSpecTypeTuple {
     constructor(attributes: { valueTypes: ScSpecTypeDef[] });
 
@@ -9307,9 +9337,9 @@ export namespace xdr {
 
     v3(value?: AccountEntryExtensionV3): AccountEntryExtensionV3;
 
-    static _0(): AccountEntryExtensionV2Ext;
+    static 0(): AccountEntryExtensionV2Ext;
 
-    static _3(value: AccountEntryExtensionV3): AccountEntryExtensionV2Ext;
+    static 3(value: AccountEntryExtensionV3): AccountEntryExtensionV2Ext;
 
     value(): AccountEntryExtensionV3 | void;
 
@@ -9342,9 +9372,9 @@ export namespace xdr {
 
     v2(value?: AccountEntryExtensionV2): AccountEntryExtensionV2;
 
-    static _0(): AccountEntryExtensionV1Ext;
+    static 0(): AccountEntryExtensionV1Ext;
 
-    static _2(value: AccountEntryExtensionV2): AccountEntryExtensionV1Ext;
+    static 2(value: AccountEntryExtensionV2): AccountEntryExtensionV1Ext;
 
     value(): AccountEntryExtensionV2 | void;
 
@@ -9377,9 +9407,9 @@ export namespace xdr {
 
     v1(value?: AccountEntryExtensionV1): AccountEntryExtensionV1;
 
-    static _0(): AccountEntryExt;
+    static 0(): AccountEntryExt;
 
-    static _1(value: AccountEntryExtensionV1): AccountEntryExt;
+    static 1(value: AccountEntryExtensionV1): AccountEntryExt;
 
     value(): AccountEntryExtensionV1 | void;
 
@@ -9447,7 +9477,7 @@ export namespace xdr {
   class TrustLineEntryExtensionV2Ext {
     switch(): number;
 
-    static _0(): TrustLineEntryExtensionV2Ext;
+    static 0(): TrustLineEntryExtensionV2Ext;
 
     value(): void;
 
@@ -9480,9 +9510,9 @@ export namespace xdr {
 
     v2(value?: TrustLineEntryExtensionV2): TrustLineEntryExtensionV2;
 
-    static _0(): TrustLineEntryV1Ext;
+    static 0(): TrustLineEntryV1Ext;
 
-    static _2(value: TrustLineEntryExtensionV2): TrustLineEntryV1Ext;
+    static 2(value: TrustLineEntryExtensionV2): TrustLineEntryV1Ext;
 
     value(): TrustLineEntryExtensionV2 | void;
 
@@ -9515,9 +9545,9 @@ export namespace xdr {
 
     v1(value?: TrustLineEntryV1): TrustLineEntryV1;
 
-    static _0(): TrustLineEntryExt;
+    static 0(): TrustLineEntryExt;
 
-    static _1(value: TrustLineEntryV1): TrustLineEntryExt;
+    static 1(value: TrustLineEntryV1): TrustLineEntryExt;
 
     value(): TrustLineEntryV1 | void;
 
@@ -9545,7 +9575,7 @@ export namespace xdr {
   class OfferEntryExt {
     switch(): number;
 
-    static _0(): OfferEntryExt;
+    static 0(): OfferEntryExt;
 
     value(): void;
 
@@ -9573,7 +9603,7 @@ export namespace xdr {
   class DataEntryExt {
     switch(): number;
 
-    static _0(): DataEntryExt;
+    static 0(): DataEntryExt;
 
     value(): void;
 
@@ -9716,7 +9746,7 @@ export namespace xdr {
   class ClaimableBalanceEntryExtensionV1Ext {
     switch(): number;
 
-    static _0(): ClaimableBalanceEntryExtensionV1Ext;
+    static 0(): ClaimableBalanceEntryExtensionV1Ext;
 
     value(): void;
 
@@ -9754,11 +9784,9 @@ export namespace xdr {
       value?: ClaimableBalanceEntryExtensionV1,
     ): ClaimableBalanceEntryExtensionV1;
 
-    static _0(): ClaimableBalanceEntryExt;
+    static 0(): ClaimableBalanceEntryExt;
 
-    static _1(
-      value: ClaimableBalanceEntryExtensionV1,
-    ): ClaimableBalanceEntryExt;
+    static 1(value: ClaimableBalanceEntryExtensionV1): ClaimableBalanceEntryExt;
 
     value(): ClaimableBalanceEntryExtensionV1 | void;
 
@@ -9896,7 +9924,7 @@ export namespace xdr {
   class LedgerEntryExtensionV1Ext {
     switch(): number;
 
-    static _0(): LedgerEntryExtensionV1Ext;
+    static 0(): LedgerEntryExtensionV1Ext;
 
     value(): void;
 
@@ -10000,9 +10028,9 @@ export namespace xdr {
 
     v1(value?: LedgerEntryExtensionV1): LedgerEntryExtensionV1;
 
-    static _0(): LedgerEntryExt;
+    static 0(): LedgerEntryExt;
 
-    static _1(value: LedgerEntryExtensionV1): LedgerEntryExt;
+    static 1(value: LedgerEntryExtensionV1): LedgerEntryExt;
 
     value(): LedgerEntryExtensionV1 | void;
 
@@ -10139,7 +10167,7 @@ export namespace xdr {
   class LedgerHeaderExtensionV1Ext {
     switch(): number;
 
-    static _0(): LedgerHeaderExtensionV1Ext;
+    static 0(): LedgerHeaderExtensionV1Ext;
 
     value(): void;
 
@@ -10172,9 +10200,9 @@ export namespace xdr {
 
     v1(value?: LedgerHeaderExtensionV1): LedgerHeaderExtensionV1;
 
-    static _0(): LedgerHeaderExt;
+    static 0(): LedgerHeaderExt;
 
-    static _1(value: LedgerHeaderExtensionV1): LedgerHeaderExt;
+    static 1(value: LedgerHeaderExtensionV1): LedgerHeaderExt;
 
     value(): LedgerHeaderExtensionV1 | void;
 
@@ -10263,7 +10291,7 @@ export namespace xdr {
   class BucketMetadataExt {
     switch(): number;
 
-    static _0(): BucketMetadataExt;
+    static 0(): BucketMetadataExt;
 
     value(): void;
 
@@ -10367,7 +10395,7 @@ export namespace xdr {
 
     v0Components(value?: TxSetComponent[]): TxSetComponent[];
 
-    static _0(value: TxSetComponent[]): TransactionPhase;
+    static 0(value: TxSetComponent[]): TransactionPhase;
 
     value(): TxSetComponent[];
 
@@ -10397,7 +10425,7 @@ export namespace xdr {
 
     v1TxSet(value?: TransactionSetV1): TransactionSetV1;
 
-    static _1(value: TransactionSetV1): GeneralizedTransactionSet;
+    static 1(value: TransactionSetV1): GeneralizedTransactionSet;
 
     value(): TransactionSetV1;
 
@@ -10432,9 +10460,9 @@ export namespace xdr {
       value?: GeneralizedTransactionSet,
     ): GeneralizedTransactionSet;
 
-    static _0(): TransactionHistoryEntryExt;
+    static 0(): TransactionHistoryEntryExt;
 
-    static _1(value: GeneralizedTransactionSet): TransactionHistoryEntryExt;
+    static 1(value: GeneralizedTransactionSet): TransactionHistoryEntryExt;
 
     value(): GeneralizedTransactionSet | void;
 
@@ -10465,7 +10493,7 @@ export namespace xdr {
   class TransactionHistoryResultEntryExt {
     switch(): number;
 
-    static _0(): TransactionHistoryResultEntryExt;
+    static 0(): TransactionHistoryResultEntryExt;
 
     value(): void;
 
@@ -10499,7 +10527,7 @@ export namespace xdr {
   class LedgerHeaderHistoryEntryExt {
     switch(): number;
 
-    static _0(): LedgerHeaderHistoryEntryExt;
+    static 0(): LedgerHeaderHistoryEntryExt;
 
     value(): void;
 
@@ -10532,7 +10560,7 @@ export namespace xdr {
 
     v0(value?: ScpHistoryEntryV0): ScpHistoryEntryV0;
 
-    static _0(value: ScpHistoryEntryV0): ScpHistoryEntry;
+    static 0(value: ScpHistoryEntryV0): ScpHistoryEntry;
 
     value(): ScpHistoryEntryV0;
 
@@ -10604,7 +10632,7 @@ export namespace xdr {
 
     v0(value?: ContractEventV0): ContractEventV0;
 
-    static _0(value: ContractEventV0): ContractEventBody;
+    static 0(value: ContractEventV0): ContractEventBody;
 
     value(): ContractEventV0;
 
@@ -10640,13 +10668,13 @@ export namespace xdr {
 
     v3(value?: TransactionMetaV3): TransactionMetaV3;
 
-    static _0(value: OperationMeta[]): TransactionMeta;
+    static 0(value: OperationMeta[]): TransactionMeta;
 
-    static _1(value: TransactionMetaV1): TransactionMeta;
+    static 1(value: TransactionMetaV1): TransactionMeta;
 
-    static _2(value: TransactionMetaV2): TransactionMeta;
+    static 2(value: TransactionMetaV2): TransactionMeta;
 
-    static _3(value: TransactionMetaV3): TransactionMeta;
+    static 3(value: TransactionMetaV3): TransactionMeta;
 
     value():
       | OperationMeta[]
@@ -10684,11 +10712,11 @@ export namespace xdr {
 
     v2(value?: LedgerCloseMetaV2): LedgerCloseMetaV2;
 
-    static _0(value: LedgerCloseMetaV0): LedgerCloseMeta;
+    static 0(value: LedgerCloseMetaV0): LedgerCloseMeta;
 
-    static _1(value: LedgerCloseMetaV1): LedgerCloseMeta;
+    static 1(value: LedgerCloseMetaV1): LedgerCloseMeta;
 
-    static _2(value: LedgerCloseMetaV2): LedgerCloseMeta;
+    static 2(value: LedgerCloseMetaV2): LedgerCloseMeta;
 
     value(): LedgerCloseMetaV0 | LedgerCloseMetaV1 | LedgerCloseMetaV2;
 
@@ -10924,7 +10952,7 @@ export namespace xdr {
 
     v0(value?: AuthenticatedMessageV0): AuthenticatedMessageV0;
 
-    static _0(value: AuthenticatedMessageV0): AuthenticatedMessage;
+    static 0(value: AuthenticatedMessageV0): AuthenticatedMessage;
 
     value(): AuthenticatedMessageV0;
 
@@ -11582,7 +11610,7 @@ export namespace xdr {
   class TransactionV0Ext {
     switch(): number;
 
-    static _0(): TransactionV0Ext;
+    static 0(): TransactionV0Ext;
 
     value(): void;
 
@@ -11612,9 +11640,9 @@ export namespace xdr {
 
     sorobanData(value?: SorobanTransactionData): SorobanTransactionData;
 
-    static _0(): TransactionExt;
+    static 0(): TransactionExt;
 
-    static _1(value: SorobanTransactionData): TransactionExt;
+    static 1(value: SorobanTransactionData): TransactionExt;
 
     value(): SorobanTransactionData | void;
 
@@ -11677,7 +11705,7 @@ export namespace xdr {
   class FeeBumpTransactionExt {
     switch(): number;
 
-    static _0(): FeeBumpTransactionExt;
+    static 0(): FeeBumpTransactionExt;
 
     value(): void;
 
@@ -13333,7 +13361,7 @@ export namespace xdr {
   class InnerTransactionResultExt {
     switch(): number;
 
-    static _0(): InnerTransactionResultExt;
+    static 0(): InnerTransactionResultExt;
 
     value(): void;
 
@@ -13441,7 +13469,7 @@ export namespace xdr {
   class TransactionResultExt {
     switch(): number;
 
-    static _0(): TransactionResultExt;
+    static 0(): TransactionResultExt;
 
     value(): void;
 
@@ -13472,7 +13500,7 @@ export namespace xdr {
   class ExtensionPoint {
     switch(): number;
 
-    static _0(): ExtensionPoint;
+    static 0(): ExtensionPoint;
 
     value(): void;
 
@@ -13895,6 +13923,8 @@ export namespace xdr {
 
     map(value?: ScSpecTypeMap): ScSpecTypeMap;
 
+    set_(value?: ScSpecTypeSet): ScSpecTypeSet;
+
     tuple(value?: ScSpecTypeTuple): ScSpecTypeTuple;
 
     bytesN(value?: ScSpecTypeBytesN): ScSpecTypeBytesN;
@@ -13945,6 +13975,8 @@ export namespace xdr {
 
     static scSpecTypeMap(value: ScSpecTypeMap): ScSpecTypeDef;
 
+    static scSpecTypeSet(value: ScSpecTypeSet): ScSpecTypeDef;
+
     static scSpecTypeTuple(value: ScSpecTypeTuple): ScSpecTypeDef;
 
     static scSpecTypeBytesN(value: ScSpecTypeBytesN): ScSpecTypeDef;
@@ -13956,6 +13988,7 @@ export namespace xdr {
       | ScSpecTypeResult
       | ScSpecTypeVec
       | ScSpecTypeMap
+      | ScSpecTypeSet
       | ScSpecTypeTuple
       | ScSpecTypeBytesN
       | ScSpecTypeUdt
