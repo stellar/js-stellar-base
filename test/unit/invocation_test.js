@@ -103,8 +103,14 @@ describe('parsing invocation trees', function () {
 
   it('outputs a human-readable version of it', function () {
     console.log(JSON.stringify(rootInvocation, null, 2));
-    console.log(JSON.stringify(buildInvocationTree(rootInvocation), (key, value) => {
-      return (typeof value === 'bigint') ? value.toString() : value;
-    }, 2));
+    console.log(
+      JSON.stringify(
+        buildInvocationTree(rootInvocation),
+        (key, value) => {
+          return typeof value === 'bigint' ? value.toString() : value;
+        },
+        2
+      )
+    );
   });
 });

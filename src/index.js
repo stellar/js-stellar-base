@@ -57,6 +57,6 @@ export * from './events';
 export * from './sorobandata_builder';
 export * from './auth';
 
-export * from './invocation'
+export * from './invocation';
 
 export default module.exports;
