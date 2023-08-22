@@ -1,4 +1,4 @@
-import xdr from '../xdr';
+import xdr from "../xdr";
 
 /**
  * Creates a liquidity pool withdraw operation.
@@ -19,22 +19,22 @@ import xdr from '../xdr';
 export function liquidityPoolWithdraw(opts = {}) {
   const attributes = {};
   if (!opts.liquidityPoolId) {
-    throw new TypeError('liquidityPoolId argument is required');
+    throw new TypeError("liquidityPoolId argument is required");
   }
-  attributes.liquidityPoolId = xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex');
+  attributes.liquidityPoolId = xdr.PoolId.fromXDR(opts.liquidityPoolId, "hex");
 
   if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError('amount argument is required');
+    throw new TypeError("amount argument is required");
   }
   attributes.amount = this._toXDRAmount(opts.amount);
 
   if (!this.isValidAmount(opts.minAmountA, true)) {
-    throw new TypeError('minAmountA argument is required');
+    throw new TypeError("minAmountA argument is required");
   }
   attributes.minAmountA = this._toXDRAmount(opts.minAmountA);
 
   if (!this.isValidAmount(opts.minAmountB, true)) {
-    throw new TypeError('minAmountB argument is required');
+    throw new TypeError("minAmountB argument is required");
   }
   attributes.minAmountB = this._toXDRAmount(opts.minAmountB);
 

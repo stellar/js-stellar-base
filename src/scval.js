@@ -1,8 +1,8 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
-import { Address } from './address';
-import { Contract } from './contract';
-import { ScInt, scValToBigInt } from './numbers/index';
+import { Address } from "./address";
+import { Contract } from "./contract";
+import { ScInt, scValToBigInt } from "./numbers/index";
 
 /**
  * Attempts to convert native types into smart contract values
@@ -135,7 +135,7 @@ import { ScInt, scValToBigInt } from './numbers/index';
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
-    case 'object':
+    case "object":
       if (val === null) {
         return xdr.ScVal.scvVoid();
       }
@@ -154,12 +154,12 @@ export function nativeToScVal(val, opts = {}) {
 
       if (val instanceof Uint8Array || Buffer.isBuffer(val)) {
         const copy = Uint8Array.from(val);
-        switch (opts?.type ?? 'bytes') {
-          case 'bytes':
+        switch (opts?.type ?? "bytes") {
+          case "bytes":
             return xdr.ScVal.scvBytes(copy);
-          case 'symbol':
+          case "symbol":
             return xdr.ScVal.scvSymbol(copy);
-          case 'string':
+          case "string":
             return xdr.ScVal.scvString(copy);
           default:
             throw new TypeError(
@@ -173,14 +173,14 @@ export function nativeToScVal(val, opts = {}) {
           throw new TypeError(
             `array values ([${val}]) must have the same type (types: [${val
               .map((v) => typeof v)
-              .join(', ')}])`
+              .join(", ")}])`
           );
         }
 
         return xdr.ScVal.scvVec(val.map((v) => nativeToScVal(v, opts)));
       }
 
-      if ((val.constructor?.name ?? '') !== 'Object') {
+      if ((val.constructor?.name ?? "") !== "Object") {
         throw new TypeError(
           `cannot interpret ${
             val.constructor?.name
@@ -204,13 +204,13 @@ export function nativeToScVal(val, opts = {}) {
         })
       );
 
-    case 'number':
-    case 'bigint':
+    case "number":
+    case "bigint":
       switch (opts?.type) {
-        case 'u32':
+        case "u32":
           return xdr.ScVal.scvU32(val);
 
-        case 'i32':
+        case "i32":
           return xdr.ScVal.scvI32(val);
 
         default:
@@ -219,12 +219,12 @@ export function nativeToScVal(val, opts = {}) {
 
       return new ScInt(val, { type: opts?.type }).toScVal();
 
-    case 'string':
-      switch (opts?.type ?? 'string') {
-        case 'string':
+    case "string":
+      switch (opts?.type ?? "string") {
+        case "string":
           return xdr.ScVal.scvString(val);
 
-        case 'symbol':
+        case "symbol":
           return xdr.ScVal.scvSymbol(val);
 
         default:
@@ -233,13 +233,13 @@ export function nativeToScVal(val, opts = {}) {
           );
       }
 
-    case 'boolean':
+    case "boolean":
       return xdr.ScVal.scvBool(val);
 
-    case 'undefined':
+    case "undefined":
       return xdr.ScVal.scvVoid();
 
-    case 'function': // FIXME: Is this too helpful?
+    case "function": // FIXME: Is this too helpful?
       return nativeToScVal(val());
 
     default:

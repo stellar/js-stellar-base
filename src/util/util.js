@@ -1,5 +1,5 @@
 export const trimEnd = (input, char) => {
-  const isNumber = typeof input === 'number';
+  const isNumber = typeof input === "number";
   let str = String(input);
 
   while (str.endsWith(char)) {

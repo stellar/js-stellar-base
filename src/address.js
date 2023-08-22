@@ -1,5 +1,5 @@
-import { StrKey } from './strkey';
-import xdr from './xdr';
+import { StrKey } from "./strkey";
+import xdr from "./xdr";
 
 /**
  * Create a new Address object.
@@ -17,13 +17,13 @@ import xdr from './xdr';
 export class Address {
   constructor(address) {
     if (StrKey.isValidEd25519PublicKey(address)) {
-      this._type = 'account';
+      this._type = "account";
       this._key = StrKey.decodeEd25519PublicKey(address);
     } else if (StrKey.isValidContract(address)) {
-      this._type = 'contract';
+      this._type = "contract";
       this._key = StrKey.decodeContract(address);
     } else {
-      throw new Error('Unsupported address type');
+      throw new Error("Unsupported address type");
     }
   }
 
@@ -80,7 +80,7 @@ export class Address {
       case xdr.ScAddressType.scAddressTypeContract():
         return Address.contract(scAddress.contractId());
       default:
-        throw new Error('Unsupported address type');
+        throw new Error("Unsupported address type");
     }
   }
 
@@ -91,12 +91,12 @@ export class Address {
    */
   toString() {
     switch (this._type) {
-      case 'account':
+      case "account":
         return StrKey.encodeEd25519PublicKey(this._key);
-      case 'contract':
+      case "contract":
         return StrKey.encodeContract(this._key);
       default:
-        throw new Error('Unsupported address type');
+        throw new Error("Unsupported address type");
     }
   }
 
@@ -116,14 +116,14 @@ export class Address {
    */
   toScAddress() {
     switch (this._type) {
-      case 'account':
+      case "account":
         return xdr.ScAddress.scAddressTypeAccount(
           xdr.PublicKey.publicKeyTypeEd25519(this._key)
         );
-      case 'contract':
+      case "contract":
         return xdr.ScAddress.scAddressTypeContract(this._key);
       default:
-        throw new Error('Unsupported address type');
+        throw new Error("Unsupported address type");
     }
   }
 

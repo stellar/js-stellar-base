@@ -1,7 +1,7 @@
-import { trimEnd } from './util/util';
-import xdr from './xdr';
-import { Keypair } from './keypair';
-import { StrKey } from './strkey';
+import { trimEnd } from "./util/util";
+import xdr from "./xdr";
+import { Keypair } from "./keypair";
+import { StrKey } from "./strkey";
 
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
@@ -18,19 +18,19 @@ export class Asset {
   constructor(code, issuer) {
     if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(
-        'Asset code is invalid (maximum alphanumeric, 12 characters at max)'
+        "Asset code is invalid (maximum alphanumeric, 12 characters at max)"
       );
     }
-    if (String(code).toLowerCase() !== 'xlm' && !issuer) {
-      throw new Error('Issuer cannot be null');
+    if (String(code).toLowerCase() !== "xlm" && !issuer) {
+      throw new Error("Issuer cannot be null");
     }
     if (issuer && !StrKey.isValidEd25519PublicKey(issuer)) {
-      throw new Error('Issuer is invalid');
+      throw new Error("Issuer is invalid");
     }
 
-    if (String(code).toLowerCase() === 'xlm') {
+    if (String(code).toLowerCase() === "xlm") {
       // transform all xLM, Xlm, etc. variants -> XLM
-      this.code = 'XLM';
+      this.code = "XLM";
     } else {
       this.code = code;
     }
@@ -43,7 +43,7 @@ export class Asset {
    * @Return {Asset}
    */
   static native() {
-    return new Asset('XLM');
+    return new Asset("XLM");
   }
 
   /**
@@ -64,7 +64,7 @@ export class Asset {
       case xdr.AssetType.assetTypeCreditAlphanum12():
         anum = anum || assetXdr.alphaNum12();
         issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
-        code = trimEnd(anum.assetCode(), '\0');
+        code = trimEnd(anum.assetCode(), "\0");
         return new this(code, issuer);
       default:
         throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
@@ -109,15 +109,15 @@ export class Asset {
     let xdrTypeString;
     if (this.code.length <= 4) {
       xdrType = xdr.AlphaNum4;
-      xdrTypeString = 'assetTypeCreditAlphanum4';
+      xdrTypeString = "assetTypeCreditAlphanum4";
     } else {
       xdrType = xdr.AlphaNum12;
-      xdrTypeString = 'assetTypeCreditAlphanum12';
+      xdrTypeString = "assetTypeCreditAlphanum12";
     }
 
     // pad code with null bytes if necessary
     const padLength = this.code.length <= 4 ? 4 : 12;
-    const paddedCode = this.code.padEnd(padLength, '\0');
+    const paddedCode = this.code.padEnd(padLength, "\0");
 
     // eslint-disable-next-line new-cap
     const assetType = new xdrType({
@@ -160,13 +160,13 @@ export class Asset {
   getAssetType() {
     switch (this.getRawAssetType()) {
       case xdr.AssetType.assetTypeNative():
-        return 'native';
+        return "native";
       case xdr.AssetType.assetTypeCreditAlphanum4():
-        return 'credit_alphanum4';
+        return "credit_alphanum4";
       case xdr.AssetType.assetTypeCreditAlphanum12():
-        return 'credit_alphanum12';
+        return "credit_alphanum12";
       default:
-        return 'unknown';
+        return "unknown";
     }
   }
 
@@ -202,7 +202,7 @@ export class Asset {
 
   toString() {
     if (this.isNative()) {
-      return 'native';
+      return "native";
     }
 
     return `${this.getCode()}:${this.getIssuer()}`;
@@ -224,10 +224,10 @@ export class Asset {
    */
   static compare(assetA, assetB) {
     if (!assetA || !(assetA instanceof Asset)) {
-      throw new Error('assetA is invalid');
+      throw new Error("assetA is invalid");
     }
     if (!assetB || !(assetB instanceof Asset)) {
-      throw new Error('assetB is invalid');
+      throw new Error("assetB is invalid");
     }
 
     if (assetA.equals(assetB)) {
@@ -263,5 +263,5 @@ export class Asset {
  * @warning No type-checks are done on the parameters
  */
 function asciiCompare(a, b) {
-  return Buffer.compare(Buffer.from(a, 'ascii'), Buffer.from(b, 'ascii'));
+  return Buffer.compare(Buffer.from(a, "ascii"), Buffer.from(b, "ascii"));
 }

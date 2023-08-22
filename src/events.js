@@ -1,7 +1,7 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
-import { StrKey } from './strkey';
-import { scValToNative } from './scval';
+import { StrKey } from "./strkey";
+import { scValToNative } from "./scval";
 
 /**
  * Converts raw diagnostic or contract events into something with a flatter,
@@ -31,7 +31,7 @@ function extractEvent(event) {
   return {
     contractId:
       event.contractId() === null
-        ? ''
+        ? ""
         : StrKey.encodeContract(event.contractId()),
     type: event.type().name,
     topics: event

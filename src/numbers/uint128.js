@@ -1,4 +1,4 @@
-import { LargeInt } from 'js-xdr';
+import { LargeInt } from "js-xdr";
 
 export class Uint128 extends LargeInt {
   /**

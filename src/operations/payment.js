@@ -1,5 +1,5 @@
-import xdr from '../xdr';
-import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
+import xdr from "../xdr";
+import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account";
 
 /**
  * Create a payment operation.
@@ -20,17 +20,17 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
  */
 export function payment(opts) {
   if (!opts.asset) {
-    throw new Error('Must provide an asset for a payment operation');
+    throw new Error("Must provide an asset for a payment operation");
   }
   if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError('amount'));
+    throw new TypeError(this.constructAmountRequirementsError("amount"));
   }
 
   const attributes = {};
   try {
     attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
-    throw new Error('destination is invalid');
+    throw new Error("destination is invalid");
   }
 
   attributes.asset = opts.asset.toXDRObject();

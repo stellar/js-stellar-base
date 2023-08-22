@@ -1,5 +1,5 @@
-import { Hyper } from 'js-xdr';
-import xdr from '../xdr';
+import { Hyper } from "js-xdr";
+import xdr from "../xdr";
 /**
  * Returns a XDR ManageSellOfferOp. A "manage sell offer" operation creates, updates, or
  * deletes an offer.
@@ -22,18 +22,18 @@ export function manageSellOffer(opts) {
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
   if (!this.isValidAmount(opts.amount, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('amount'));
+    throw new TypeError(this.constructAmountRequirementsError("amount"));
   }
   attributes.amount = this._toXDRAmount(opts.amount);
   if (opts.price === undefined) {
-    throw new TypeError('price argument is required');
+    throw new TypeError("price argument is required");
   }
   attributes.price = this._toXDRPrice(opts.price);
 
   if (opts.offerId !== undefined) {
     opts.offerId = opts.offerId.toString();
   } else {
-    opts.offerId = '0';
+    opts.offerId = "0";
   }
 
   attributes.offerId = Hyper.fromString(opts.offerId);

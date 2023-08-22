@@ -1,11 +1,11 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
-import { StrKey } from './strkey';
-import { Keypair } from './keypair';
-import { hash } from './hashing';
+import { StrKey } from "./strkey";
+import { Keypair } from "./keypair";
+import { hash } from "./hashing";
 
-import { Address } from './address';
-import { nativeToScVal } from './scval';
+import { Address } from "./address";
+import { nativeToScVal } from "./scval";
 
 /**
  * This builds an authorization entry that indicates to
@@ -181,8 +181,8 @@ export function buildAuthEntry(envelope, signature, publicKey) {
           // custom [contracttype] Rust structures
           {
             type: {
-              public_key: ['symbol', null],
-              signature: ['symbol', null]
+              public_key: ["symbol", null],
+              signature: ["symbol", null]
             }
           }
         )

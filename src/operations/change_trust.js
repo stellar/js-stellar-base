@@ -1,10 +1,10 @@
-import { Hyper } from 'js-xdr';
-import BigNumber from 'bignumber.js';
-import xdr from '../xdr';
-import { Asset } from '../asset';
-import { LiquidityPoolAsset } from '../liquidity_pool_asset';
+import { Hyper } from "js-xdr";
+import BigNumber from "bignumber.js";
+import xdr from "../xdr";
+import { Asset } from "../asset";
+import { LiquidityPoolAsset } from "../liquidity_pool_asset";
 
-const MAX_INT64 = '9223372036854775807';
+const MAX_INT64 = "9223372036854775807";
 
 /**
  * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
@@ -26,11 +26,11 @@ export function changeTrust(opts) {
   } else if (opts.asset instanceof LiquidityPoolAsset) {
     attributes.line = opts.asset.toXDRObject();
   } else {
-    throw new TypeError('asset must be Asset or LiquidityPoolAsset');
+    throw new TypeError("asset must be Asset or LiquidityPoolAsset");
   }
 
   if (opts.limit !== undefined && !this.isValidAmount(opts.limit, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('limit'));
+    throw new TypeError(this.constructAmountRequirementsError("limit"));
   }
 
   if (opts.limit) {

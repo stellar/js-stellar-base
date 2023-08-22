@@ -1,6 +1,6 @@
-import xdr from '../xdr';
-import { Keypair } from '../keypair';
-import { StrKey } from '../strkey';
+import xdr from "../xdr";
+import { Keypair } from "../keypair";
+import { StrKey } from "../strkey";
 
 /**
  * Create and fund a non existent account.
@@ -15,11 +15,11 @@ import { StrKey } from '../strkey';
  */
 export function createAccount(opts) {
   if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
-    throw new Error('destination is invalid');
+    throw new Error("destination is invalid");
   }
   if (!this.isValidAmount(opts.startingBalance, true)) {
     throw new TypeError(
-      'startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal'
+      "startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal"
     );
   }
   const attributes = {};

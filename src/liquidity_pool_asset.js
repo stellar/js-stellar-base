@@ -1,9 +1,9 @@
-import xdr from './xdr';
-import { Asset } from './asset';
+import xdr from "./xdr";
+import { Asset } from "./asset";
 import {
   LiquidityPoolFeeV18,
   getLiquidityPoolId
-} from './get_liquidity_pool_id';
+} from "./get_liquidity_pool_id";
 
 /**
  * LiquidityPoolAsset class represents a liquidity pool trustline change.
@@ -16,16 +16,16 @@ import {
 export class LiquidityPoolAsset {
   constructor(assetA, assetB, fee) {
     if (!assetA || !(assetA instanceof Asset)) {
-      throw new Error('assetA is invalid');
+      throw new Error("assetA is invalid");
     }
     if (!assetB || !(assetB instanceof Asset)) {
-      throw new Error('assetB is invalid');
+      throw new Error("assetB is invalid");
     }
     if (Asset.compare(assetA, assetB) !== -1) {
-      throw new Error('Assets are not in lexicographic order');
+      throw new Error("Assets are not in lexicographic order");
     }
     if (!fee || fee !== LiquidityPoolFeeV18) {
-      throw new Error('fee is invalid');
+      throw new Error("fee is invalid");
     }
 
     this.assetA = assetA;
@@ -72,10 +72,10 @@ export class LiquidityPoolAsset {
         fee: this.fee
       });
     const lpParamsXdr = new xdr.LiquidityPoolParameters(
-      'liquidityPoolConstantProduct',
+      "liquidityPoolConstantProduct",
       lpConstantProductParamsXdr
     );
-    return new xdr.ChangeTrustAsset('assetTypePoolShare', lpParamsXdr);
+    return new xdr.ChangeTrustAsset("assetTypePoolShare", lpParamsXdr);
   }
 
   /**
@@ -95,7 +95,7 @@ export class LiquidityPoolAsset {
    * @returns {AssetType.liquidityPoolShares} asset type. Can only be `liquidity_pool_shares`.
    */
   getAssetType() {
-    return 'liquidity_pool_shares';
+    return "liquidity_pool_shares";
   }
 
   /**
@@ -112,9 +112,9 @@ export class LiquidityPoolAsset {
 
   toString() {
     const poolId = getLiquidityPoolId(
-      'constant_product',
+      "constant_product",
       this.getLiquidityPoolParameters()
-    ).toString('hex');
+    ).toString("hex");
     return `liquidity_pool:${poolId}`;
   }
 }
