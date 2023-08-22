@@ -45,7 +45,7 @@ export function buildInvocationTree(root) {
   const fn = root.function();
 
   /** @type {InvocationTree} */
-  let output = {};
+  const output = {};
 
   /** @type {xdr.CreateContractArgs | xdr.InvokeContractArgs} */
   const inner = fn.value();
@@ -76,7 +76,7 @@ export function buildInvocationTree(root) {
       // The first part may not be true in V2, but we'd need to update this code
       // anyway so it can still be an error.
       const [exec, preimage] = [inner.executable(), inner.contractIdPreimage()];
-      if (!Boolean(exec.switch().value) !== Boolean(preimage.switch().value)) {
+      if (!exec.switch().value !== !!preimage.switch().value) {
         throw new Error(
           `creation function appears invalid: ${JSON.stringify(inner)}`
         );
@@ -104,6 +104,9 @@ export function buildInvocationTree(root) {
             preimage.fromAsset()
           ).toString();
           break;
+
+        default:
+          throw new Error(`unknown creation type: ${JSON.stringify(exec)}`);
       }
 
       break;
