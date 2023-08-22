@@ -10,18 +10,18 @@ import { nativeToScVal } from './scval';
 
 /**
  * @async
- * @callback SigningCallback
- * A callback for signing an XDR structure representing all of the details
- * necessary to authorize an invocation tree.
+ * @callback SigningCallback A callback for signing an XDR structure
+ * representing all of the details necessary to authorize an invocation tree.
  *
- * @param {xdr.HashIdPreimageSorobanAuthorization} preimage   the entire
- *    authorization envelope whose hash you should sign, so that you can inspect
- *    the entire structure if necessary (rather than blindly signing a hash)
+ * @param {xdr.HashIdPreimage} preimage   the entire authorization envelope
+ *    whose hash you should sign, so that you can inspect the entire structure
+ *    if necessary (rather than blindly signing a hash)
  *
- * @returns {Promise<[Uint8Array, string]>}   a two-element array where the
- *    first element is the signature of the raw payload (which is the sha256
- *    hash of the preimage bytes, so `hash(preimage.toXDR())`) and the second
- *    element is the strkey-encoded public key (G...) that signed the payload
+ * @returns {Promise<Uint8Array>}   the signature of the raw payload (which is
+ *    the sha256 hash of the preimage bytes, so `hash(preimage.toXDR())`) signed
+ *    by the key corresponding to the public key in the entry you pass to
+ *    {@link authorizeEntry} (decipherable from its
+ *    `credentials().address().address()`)
  */
 
 /**
@@ -36,15 +36,18 @@ import { nativeToScVal } from './scval';
  * identified by its passphrase, see {@link Networks}) until a particular ledger
  * sequence (i.e. `validUntil`) is reached.
  *
- * This one lets you pass a either a {@link Keypair} or a callback function (see
+ * This one lets you pass a either a {@link Keypair} (or, more accurately,
+ * anything with a `sign(Buffer): Buffer` method) or a callback function (see
  * {@link SigningCallback}) to handle signing the envelope hash.
  *
- * @param {xdr.SorobanAuthorizationEntry} entry  an unsigned authorization entr
- * @param {Keypair | SigningCallback} signingMethod  either a keypair instance
- *    or a function which takes an input bytearray and returns its signature as
- *    signed by the private key corresponding to the `publicKey` parameter
- * @param {number} validUntil   the (exclusive) future ledger sequence number
- *    until which this authorization entry should be valid (if
+ * @param {xdr.SorobanAuthorizationEntry} entry   an unsigned authorization entr
+ * @param {Keypair | SigningCallback} signer  either a {@link Keypair} instance
+ *    or a function which takes a payload (a
+ *    {@link xdr.HashIdPreimageSorobanAuthorization} instance) input and returns
+ *    the signature of the hash of the raw payload bytes (where the signing key
+ *    should correspond to the address in the `entry`)
+ * @param {number} validUntilLedgerSeq   the (exclusive) future ledger sequence
+ *    number until which this authorization entry should be valid (if
  *    `currentLedgerSeq==validUntil`, this is expired))
  * @param {string} [networkPassphrase]  the network passphrase is incorprated
  *    into the signature (see {@link Networks} for options)
@@ -62,8 +65,7 @@ import { nativeToScVal } from './scval';
  * // transaction to a third-party service for signing, or just do simple
  * // signing via Keypair like it does here:
  * function signPayloadCallback(payload) {
- *    const signature = signer.sign(hash(payload.toXDR());
- *    return [ signature, signer.publicKey() ];
+ *    return signer.sign(hash(payload.toXDR());
  * }
  *
  * function multiPartyAuth(
@@ -92,8 +94,8 @@ import { nativeToScVal } from './scval';
  */
 export async function authorizeEntry(
   entry,
-  signingMethod,
-  validUntil,
+  signer,
+  validUntilLedgerSeq,
   networkPassphrase = Networks.FUTURENET
 ) {
   // no-op
@@ -106,7 +108,7 @@ export async function authorizeEntry(
 
   /** @type {xdr.SorobanAddressCredentials} */
   const addrAuth = entry.credentials().address();
-  addrAuth.signatureExpirationLedger(validUntil);
+  addrAuth.signatureExpirationLedger(validUntilLedgerSeq);
 
   const networkId = hash(Buffer.from(networkPassphrase));
   const preimage = xdr.HashIdPreimage.envelopeTypeSorobanAuthorization(
@@ -120,22 +122,13 @@ export async function authorizeEntry(
   const payload = hash(preimage.toXDR());
 
   let signature;
-  let publicKey;
-  if (signingMethod instanceof Keypair) {
-    signature = signingMethod.sign(payload);
-    publicKey = signingMethod.publicKey();
-  } else {
-    const [sig, pk] = await signingMethod(preimage);
+  if (typeof signer === 'function') {
+    const sig = await signer(preimage);
     signature = Buffer.from(sig);
-    publicKey = pk;
+  } else {
+    signature = signer.sign(payload);
   }
-
-  const expectedPubkey = Address.fromScAddress(addrAuth.address()).toString();
-  if (expectedPubkey !== publicKey) {
-    throw new Error(
-      `signing identity doesn't match entry: expected ${expectedPubkey}, got ${publicKey}`
-    );
-  }
+  const publicKey = Address.fromScAddress(addrAuth.address()).toString();
 
   if (!Keypair.fromPublicKey(publicKey).verify(payload, signature)) {
     throw new Error(`signature doesn't match payload`);

@@ -85,12 +85,7 @@ describe('building authorization entries', function () {
   it('works with a callback', function (done) {
     StellarBase.authorizeEntry(
       authEntry,
-      (preimage) => {
-        return [
-          accountId.sign(StellarBase.hash(preimage.toXDR())),
-          accountId.publicKey()
-        ];
-      },
+      (preimage) => accountId.sign(StellarBase.hash(preimage.toXDR())),
       10
     )
       .then((signedEntry) => {
@@ -106,28 +101,11 @@ describe('building authorization entries', function () {
     ).to.eventually.be.rejectedWith(/identity doesn't match/i);
   });
 
-  it('throws with a mismatched public key', function () {
-    expect(
-      StellarBase.authorizeEntry(
-        authEntry,
-        (preimage) => {
-          return [
-            accountId.sign(StellarBase.hash(preimage.toXDR())),
-            randomKp.publicKey()
-          ];
-        },
-        10
-      )
-    ).to.eventually.be.rejectedWith(/signature doesn't match/i);
-  });
-
   it('throws with a bad signature', function () {
     expect(
       StellarBase.authorizeEntry(
         authEntry,
-        (_) => {
-          return [accountId.sign(Buffer.from('bs')), randomKp.publicKey()];
-        },
+        (_) => accountId.sign(Buffer.from('bs')),
         10
       )
     ).to.eventually.be.rejectedWith(/signature doesn't match/i);
