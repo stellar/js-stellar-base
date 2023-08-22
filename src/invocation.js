@@ -41,14 +41,15 @@ import { scValToNative } from './scval';
  * @returns {InvocationTree}  a human-readable version of the invocation tree
  */
 export function buildInvocationTree(root) {
-  /** @type {InvocationTree} */
-  let output;
-
   const fn = root.function();
+
+  /** @type {InvocationTree} */
+  let output = {};
+
   /** @type {xdr.CreateContractArgs | xdr.InvokeContractArgs} */
   const inner = fn.value();
 
-  switch (fn.switch()) {
+  switch (fn.switch().value) {
     // sorobanAuthorizedFunctionTypeContractFn
     case 0:
       output.type = 'execute';
@@ -70,10 +71,10 @@ export function buildInvocationTree(root) {
       break;
 
     default:
-      throw new Error(`unknown invocation type: ${JSON.stringify(fn)}`);
+      throw new Error(`unknown invocation type (${fn.switch()}): ${JSON.stringify(fn)}`);
   }
 
-  output.subInvocations = root.subInvocations.map((i) =>
+  output.subInvocations = root.subInvocations().map((i) =>
     buildInvocationTree(i)
   );
   return output;
