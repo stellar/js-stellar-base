@@ -168,21 +168,6 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * Adds a set of ledger keys to the existing access footprint.
-   *
-   * @param {xdr.LedgerKey[]} readOnly  read-only keys added to access footprint
-   * @param {xdr.LedgerKey[]} readWrite read-write keys added to access footprint
-   *
-   * @returns {SorobanDataBuilder}
-   */
-  appendFootprint(readOnly, readWrite) {
-    return this.setFootprint(
-      this._data.resources().footprint().readOnly().concat(readOnly),
-      this._data.resources().footprint().readWrite().concat(readWrite)
-    );
-  }
-
-  /**
    * @returns {xdr.SorobanTransactionData} a copy of the final data structure
    */
   build() {
