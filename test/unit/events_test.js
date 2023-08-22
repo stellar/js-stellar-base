@@ -12,7 +12,7 @@ describe("humanizing raw events", function () {
   const data1 = nativeToScVal({ hello: "world" });
 
   // workaround for xdr.ContractEventBody.0(...) being invalid lol
-  const bodyModel = xdr.ContractEventBody.fromXDR('AAAAAAAAAAAAAAAB', 'base64');
+  const bodyModel = xdr.ContractEventBody.fromXDR("AAAAAAAAAAAAAAAB", "base64");
   const cloneAndSet = (newBody) => {
     const clone = xdr.ContractEventBody.fromXDR(bodyModel.toXDR());
     clone.v0().topics(newBody.topics);
