@@ -9,19 +9,26 @@ export class Soroban {
    * avoid potential precision and consistency issues of floating-point
    *
    * This function takes the smart contract value and its decimals (if the token has any) and returns a display value
-   * @param {bigint | number | string} amount - the token amount you want to display
+   * @param {string} amount - the token amount you want to display
    * @param {number} decimals - specify how many decimal places a token has
    * @returns {string} - display value
    */
   static formatTokenAmount(amount, decimals) {
-    let formatted = amount.toString();
+    let formatted = amount;
 
-    if (decimals > 0) {
-      formatted = (amount / 10 ** decimals).toFixed(decimals);
-      formatted = formatted.replace(/\.?0+$/, '');
+    if (amount.includes('.')) {
+      throw new Error('No decimal is allowed');
     }
 
-    return formatted;
+    if (decimals > 0) {
+      formatted = [
+        formatted.slice(0, -decimals),
+        formatted.slice(-decimals)
+      ].join('.');
+    }
+
+    // remove trailing zero if any
+    return formatted.replace(/\.?0+$/, '');
   }
 
   /**

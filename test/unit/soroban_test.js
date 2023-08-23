@@ -1,43 +1,82 @@
-describe('Soroban', function () {
-  describe('formatTokenAmount', function () {
-    it("returns '100.0000001' for '1000000001' of a token set to 7 decimals", function () {
-      const amount = 1000000001;
+describe("Soroban", function () {
+  describe("formatTokenAmount", function () {
+    const SUCCESS_TEST_CASES = [
+      { amount: "1000000001", decimals: 7, expected: "100.0000001" },
+      { amount: "10000000010", decimals: 5, expected: "100000.0001" },
+      { amount: "10000000010", decimals: 0, expected: "1000000001" },
+    ];
 
-      expect(StellarBase.Soroban.formatTokenAmount(amount, 7)).to.equal(
-        '100.0000001'
-      );
+    const FAILED_TEST_CASES = [
+      {
+        amount: "1000000001.1",
+        decimals: 7,
+        expected: /No decimal is allowed/,
+      },
+      {
+        amount: "10000.00001.1",
+        decimals: 4,
+        expected: /No decimal is allowed/,
+      },
+    ];
+
+    SUCCESS_TEST_CASES.forEach((testCase) => {
+      it(`returns ${testCase.expected} for ${testCase.amount} with ${testCase.decimals} decimals`, function () {
+        expect(
+          StellarBase.Soroban.formatTokenAmount(
+            testCase.amount,
+            testCase.decimals,
+          ),
+        ).to.equal(testCase.expected);
+      });
     });
 
-    it("returns '100000.0001' for '10000000010' of a token set to 5 decimals", function () {
-      const amount = '10000000010';
-
-      expect(StellarBase.Soroban.formatTokenAmount(amount, 5)).to.equal(
-        '100000.0001'
-      );
-    });
-
-    it("returns '10000.00001' for '1000000001.' of a token set to 5 decimals", function () {
-      const amount = '1000000001.';
-
-      expect(StellarBase.Soroban.formatTokenAmount(amount, 5)).to.equal(
-        '10000.00001'
-      );
+    FAILED_TEST_CASES.forEach((testCase) => {
+      it(`fails on the input with decimals`, function () {
+        expect(() =>
+          StellarBase.Soroban.formatTokenAmount(
+            testCase.amount,
+            testCase.decimals,
+          ),
+        ).to.throw(testCase.expected);
+      });
     });
   });
 
-  describe('parseTokenAmount', function () {
-    it("returns '10000' for '100' of a token set to 2 decimals", function () {
-      const amount = '100';
-      const parsedAmount = StellarBase.Soroban.parseTokenAmount(amount, 2);
+  describe("parseTokenAmount", function () {
+    const SUCCESS_TEST_CASES = [
+      { amount: "100", decimals: 2, expected: "10000" },
+      { amount: "123.4560", decimals: 5, expected: "12345600" },
+      { amount: "100", decimals: 5, expected: "10000000" },
+    ];
 
-      expect(parsedAmount.toString()).to.equal('10000');
+    const FAILED_TEST_CASES = [
+      {
+        amount: "1000000.001.1",
+        decimals: 7,
+        expected: /Invalid decimal value/i,
+      },
+    ];
+
+    SUCCESS_TEST_CASES.forEach((testCase) => {
+      it(`returns ${testCase.expected} for ${testCase.amount} of a token with ${testCase.decimals} decimals`, function () {
+        expect(
+          StellarBase.Soroban.parseTokenAmount(
+            testCase.amount,
+            testCase.decimals,
+          ),
+        ).to.equal(testCase.expected);
+      });
     });
 
-    it("returns '12345600' for '123.4560' of a token set to 5 decimals", function () {
-      const amount = '123.4560';
-      const parsedAmount = StellarBase.Soroban.parseTokenAmount(amount, 5);
-
-      expect(parsedAmount.toString()).to.equal('12345600');
+    FAILED_TEST_CASES.forEach((testCase) => {
+      it(`fails on the input with more than one decimals`, function () {
+        expect(() =>
+          StellarBase.Soroban.parseTokenAmount(
+            testCase.amount,
+            testCase.decimals,
+          ),
+        ).to.throw(testCase.expected);
+      });
     });
   });
 });
