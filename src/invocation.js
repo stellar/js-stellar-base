@@ -4,11 +4,26 @@ import { scValToNative } from './scval';
 
 /**
  * @typedef CreateInvocation
- * @prop {any}    args          a base64-encoded {@link xdr.CreateContractArgs}
- * @prop {string} executable    a base64-encoded {@link xdr.ContractExecutable}
+ *
+ * @prop {'wasm'|'sac'} type  a type indicating if this creation was a custom
+ *    contract or a wrapping of an existing Stellar asset
+ * @prop {any}    args        an object holding creation parameters
+ *
+ * @prop {string} [args.hash]     when `type=='wasm'`, the hex hash of the WASM
+ *    bytecode backing this contract
+ * @prop {string} [args.address]  when `type=='wasm'`, the resulting contract
+ *    address of this deployment
+ * @prop {string} [args.salt]     when `type=='wasm'`, the hex salt that the
+ *    user consumed when creating this contract (this is part of the resulting
+ *    address)
+ *
+ * @prop {string} [args.asset]    when `type=='sac'`, the canonical
+ *    {@link Asset} that is being wrapped by this Stellar Asset Contract
  */
+
 /**
  * @typedef ExecuteInvocation
+ *
  * @prop {string} source    the strkey of the contract (C...) being invoked
  * @prop {string} function  the name of the function being invoked
  * @prop {any[]}  args      the natively-represented parameters to the function
@@ -40,6 +55,32 @@ import { scValToNative } from './scval';
  *    `rootInvocation` field)
  *
  * @returns {InvocationTree}  a human-readable version of the invocation tree
+ *
+ * @example
+ * Here, we show a browser modal after simulating an arbitrary transaction,
+ * `tx`, which we assume has an `Operation.invokeHostFunction` inside of it:
+ *
+ * ```typescript
+ * import { Server, buildInvocationTree } from 'soroban-client';
+ *
+ * const s = new Server("fill in accordingly");
+ *
+ * s.simulateTransaction(tx).then(
+ *  (resp: SorobanRpc.SimulateTransactionResponse) => {
+ *    if (SorobanRpc.isSuccessfulSim(resp) && ) {
+ *      // bold assumption: there's a valid result with an auth entry
+ *      alert(
+ *        "You are authorizing the following invocation:\n" +
+ *        JSON.stringify(
+ *          buildInvocationTree(resp.result!.auth[0].rootInvocation()),
+ *          null,
+ *          2
+ *        )
+ *      );
+ *    }
+ *  }
+ * );
+ * ```
  */
 export function buildInvocationTree(root) {
   const fn = root.function();
@@ -55,7 +96,7 @@ export function buildInvocationTree(root) {
     case 0:
       output.type = 'execute';
       output.args = {
-        source: new Address.fromScAddress(inner.contractAddress()).toString(),
+        source: Address.fromScAddress(inner.contractAddress()).toString(),
         function: inner.functionName(),
         args: inner.args().map((arg) => scValToNative(arg))
       };
@@ -64,9 +105,7 @@ export function buildInvocationTree(root) {
     // sorobanAuthorizedFunctionTypeCreateContractHostFn
     case 1: {
       output.type = 'create';
-      output.args = {
-        type: 'sac'
-      };
+      output.args = {};
 
       // If the executable is a WASM, the preimage MUST be an address. If it's a
       // token, the preimage MUST be an asset. This is a cheeky way to check
@@ -90,9 +129,9 @@ export function buildInvocationTree(root) {
 
           output.args.type = 'wasm';
           output.args.args = {
+            salt: details.salt().toString('hex'),
             hash: exec.wasmHash().toString('hex'),
             address: Address.fromScAddress(details.address()).toString(),
-            salt: details.salt().toString('hex')
           };
           break;
         }
@@ -100,9 +139,9 @@ export function buildInvocationTree(root) {
         // contractExecutableToken
         case 1:
           output.args.type = 'sac';
-          output.args.asset = Asset.fromOperation(
-            preimage.fromAsset()
-          ).toString();
+          output.args.args = {
+            asset: Asset.fromOperation(preimage.fromAsset()).toString()
+          };
           break;
 
         default:
