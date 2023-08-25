@@ -381,8 +381,9 @@ describe('Asset', function () {
       [
         [
           Asset.native(),
-          '-CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT'
+          'CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT'
         ]
+        // TODO: Add more
       ].forEach(([asset, contractId]) => {
         console.log('wtf');
         expect(asset.contractId(StellarBase.Networks.FUTURENET)).to.equal(
@@ -390,6 +391,8 @@ describe('Asset', function () {
           `the asset was: ${asset.toString()}`
         );
       });
+
+      expect(false).to.be.true('add more tests!');
     });
   });
 });
