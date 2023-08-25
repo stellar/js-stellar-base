@@ -11,11 +11,12 @@ module.exports = function (config) {
 
     files: [
       '../dist/stellar-base.js', // webpack should build this first
+      '../test/test-helper.js',
       '../test/unit/**/*.js'
     ],
 
     preprocessors: {
-      '../test/unit/**/*.js': ['webpack']
+      '../test/**/*.js': ['webpack']
     },
 
     webpack: webpackConfig,

@@ -5,4 +5,6 @@ if (typeof window === 'undefined') {
   global.chai.use(require('chai-as-promised'));
   global.sinon = require('sinon');
   global.expect = global.chai.expect;
+} else {
+  chai.use(require('chai-as-promised'));
 }
