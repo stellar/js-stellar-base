@@ -34,7 +34,8 @@ export class Soroban {
   /**
    * parse token amount to use it on smart contract
    *
-   * * This function takes the display value and its decimals (if the token has any) and returns an integer that'll be used it on smart contract
+   * This function takes the display value and its decimals (if the token has 
+   * any) and returns a string that'll be used within the smart contract.
    * @param {string} value - the token amount you want to use it on smart contract
    * @param {number} decimals - specify how many decimal places a token has
    * @returns {string} - smart contract value
