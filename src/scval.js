@@ -204,18 +204,16 @@ export function nativeToScVal(val, opts = {}) {
       );
 
     case 'number':
-    case 'bigint':
       switch (opts?.type) {
         case 'u32':
           return xdr.ScVal.scvU32(val);
 
         case 'i32':
-          return xdr.ScVal.scvI32(val);
-
         default:
-          break;
+          return xdr.ScVal.scvI32(val);
       }
 
+    case 'bigint':
       return new ScInt(val, { type: opts?.type }).toScVal();
 
     case 'string':
@@ -225,6 +223,14 @@ export function nativeToScVal(val, opts = {}) {
 
         case 'symbol':
           return xdr.ScVal.scvSymbol(val);
+
+        case 'i64':
+        case 'u64':
+        case 'i128':
+        case 'u128':
+        case 'i256':
+        case 'u256':
+          return new ScInt(val, { type: opts.type }).toScVal();
 
         default:
           throw new TypeError(
