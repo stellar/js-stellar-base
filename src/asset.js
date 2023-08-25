@@ -2,6 +2,7 @@ import { trimEnd } from './util/util';
 import xdr from './xdr';
 import { Keypair } from './keypair';
 import { StrKey } from './strkey';
+import { hash } from './hashing';
 
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
@@ -93,6 +94,32 @@ export class Asset {
    */
   toTrustLineXDRObject() {
     return this._toXDRObject(xdr.TrustLineAsset);
+  }
+
+  /**
+   * Returns the would-be contract ID (`C...` format) for this asset on a given
+   * network.
+   *
+   * @param {string}    networkPassphrase   indicates which network the contract
+   *    ID should refer to, since every network will have a unique ID for the
+   *    same contract (see {@link Networks} for options)
+   *
+   * @returns {string}  the strkey-encoded (`C...`) contract ID for this asset
+   *
+   * @warning This makes no guarantee that this contract actually *exists*.
+   */
+  contractId(networkPassphrase) {
+    const networkId = hash(Buffer.from(networkPassphrase));
+    const preimage = xdr.HashIdPreimage.envelopeTypeContractId(
+      new xdr.HashIdPreimageContractId({
+        networkId,
+        contractIdPreimage: xdr.ContractIdPreimage.contractIdPreimageFromAsset(
+          this.toXDRObject()
+        )
+      })
+    );
+
+    return StrKey.encodeContract(hash(preimage.toXDR()));
   }
 
   /**
