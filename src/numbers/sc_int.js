@@ -78,7 +78,14 @@ export class ScInt extends XdrLargeInt {
     const signed = value < 0;
     let type = opts?.type ?? '';
     if (type.startsWith('u') && signed) {
-      throw TypeError(`specified type ${opts.type} yet negative (${value})`);
+      throw new TypeError(`specified type ${opts.type} yet negative (${value})`);
+    }
+
+    const tval = typeof value
+    if (tval !== 'string' && tval !== 'bigint') {
+      throw new TypeError(
+        `expected string or bigint for maximum precision, got '${tval}'`
+      );
     }
 
     // If unspecified, we make a best guess at the type based on the bit length
