@@ -385,7 +385,6 @@ describe('Asset', function () {
         ]
         // TODO: Add more
       ].forEach(([asset, contractId]) => {
-        console.log('wtf');
         expect(asset.contractId(StellarBase.Networks.FUTURENET)).to.equal(
           contractId,
           `the asset was: ${asset.toString()}`

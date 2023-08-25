@@ -106,9 +106,7 @@ export class Asset {
    *
    * @returns {string}  the strkey-encoded (`C...`) contract ID for this asset
    *
-   * @warning This makes no guarantee that this contract actually exists, but
-   *    rather just returns what the predictable contract ID *should* be for
-   *    this asset.
+   * @warning This makes no guarantee that this contract actually *exists*.
    */
   contractId(networkPassphrase) {
     const networkId = hash(Buffer.from(networkPassphrase));
