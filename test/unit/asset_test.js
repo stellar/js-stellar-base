@@ -382,16 +382,20 @@ describe('Asset', function () {
         [
           Asset.native(),
           'CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT'
+        ],
+        [
+          new Asset(
+            'USD',
+            'GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP'
+          ),
+          'CCWNZPARJG7KQ6N4BGZ5OBWKSSK4AVQ5URLDRXB4ZJXKGEJQTIIRPAHN'
         ]
-        // TODO: Add more
       ].forEach(([asset, contractId]) => {
         expect(asset.contractId(StellarBase.Networks.FUTURENET)).to.equal(
           contractId,
           `the asset was: ${asset.toString()}`
         );
       });
-
-      expect(false).to.be.true('add more tests!');
     });
   });
 });
