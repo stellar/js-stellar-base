@@ -1182,3 +1182,40 @@ export function buildAuthEntry(
   signature: Buffer | Uint8Array,
   publicKey: string
 ): xdr.SorobanAuthorizationEntry;
+
+export interface CreateInvocation {
+  type: 'wasm' | 'sac';
+  token?: string;
+  wasm?: {
+      hash: string;
+      address: string;
+      salt: string;
+  };
+}
+
+export interface ExecuteInvocation {
+  source: string;
+  function: string;
+  args: any[];
+}
+
+export interface InvocationTree {
+  type: 'execute' | 'create';
+  args: CreateInvocation | ExecuteInvocation;
+  invocations: InvocationTree[];
+}
+
+export function buildInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation
+): InvocationTree;
+
+export type InvocationWalker = (
+  node: xdr.SorobanAuthorizedInvocation,
+  depth: number,
+  parent?: any
+) => boolean|null;
+
+export function walkInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation,
+  callback: InvocationWalker
+): void;
