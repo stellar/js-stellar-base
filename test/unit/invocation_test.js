@@ -1,12 +1,14 @@
 const {
   Keypair,
+  Asset,
   StrKey,
   xdr,
   hash,
   Address,
   Contract,
   nativeToScVal,
-  buildInvocationTree
+  buildInvocationTree,
+  walkInvocationTree
 } = StellarBase;
 
 // Here's a complicated invocation tree whose pseudo-structure is supposed to
@@ -18,13 +20,17 @@ const {
 //
 // purchase("SomeNft:G...", 7 xlm)
 //     |
+//     +--- create(wrap: "SomeNft:G...")
+//     |
 //     +--- swap(xlm, usdc, from, to)
 //     |      |
 //     |      |- xlm.transfer(from, to, 7)
 //     |      |
 //     |      |- usdc.transfer(to, from, 1)
 //     |
-//     +--- someNft.transfer(invoker, contract, 1)
+//     +--- someNft.transfer(invoker, someNft, 2)
+//     |
+//     +--- create(custom wasm contract)
 function rk() {
   return Keypair.random().publicKey();
 }
@@ -32,7 +38,7 @@ function rk() {
 function makeInvocation(contract, name, ...args) {
   return xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
     new xdr.SorobanAuthorizedContractFunction({
-      contractAddress: contract,
+      contractAddress: contract.address().toScAddress(),
       functionName: name,
       args: args.map(nativeToScVal)
     })
@@ -46,20 +52,36 @@ describe('parsing invocation trees', function () {
   ].map(() => {
     // ezpz method to generate random contract IDs
     const buf = hash(Keypair.random().publicKey());
-    return new Contract(StrKey.encodeContract(buf)).address().toScAddress();
+    return new Contract(StrKey.encodeContract(buf));
   });
 
+  const nftId = rk();
+  const usdcId = rk();
+  const dest = rk();
   const rootInvocation = new xdr.SorobanAuthorizedInvocation({
-    function: makeInvocation(nftContract, 'purchase', `SomeNft:${rk()}`, 7),
+    function: makeInvocation(nftContract, 'purchase', `SomeNft:${nftId}`, 7),
     subInvocations: [
+      new xdr.SorobanAuthorizedInvocation({
+        function:
+          xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeCreateContractHostFn(
+            new xdr.CreateContractArgs({
+              contractIdPreimage:
+                xdr.ContractIdPreimage.contractIdPreimageFromAsset(
+                  new Asset('TEST', nftId).toXDRObject()
+                ),
+              executable: xdr.ContractExecutable.contractExecutableToken()
+            })
+          ),
+        subInvocations: []
+      }),
       new xdr.SorobanAuthorizedInvocation({
         function: makeInvocation(
           swapContract,
           'swap',
           'native',
-          `USDC:${rk()}`,
+          `USDC:${usdcId}`,
           new Address(invoker).toScVal(),
-          new Address(rk()).toScVal()
+          new Address(dest).toScVal()
         ),
         subInvocations: [
           new xdr.SorobanAuthorizedInvocation({
@@ -76,7 +98,7 @@ describe('parsing invocation trees', function () {
               usdcContract,
               'transfer',
               new Address(invoker).toScVal(),
-              '7'
+              '1'
             ),
             subInvocations: []
           })
@@ -85,14 +107,101 @@ describe('parsing invocation trees', function () {
       new xdr.SorobanAuthorizedInvocation({
         function: makeInvocation(
           nftContract,
-          invoker,
-          new Address(invoker).toScVal(), // should be nftContract but w/e
-          1
+          'transfer',
+          nftContract.address().toScVal(),
+          '2'
         ),
+        subInvocations: []
+      }),
+      new xdr.SorobanAuthorizedInvocation({
+        function:
+          xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeCreateContractHostFn(
+            new xdr.CreateContractArgs({
+              contractIdPreimage:
+                xdr.ContractIdPreimage.contractIdPreimageFromAddress(
+                  new xdr.ContractIdPreimageFromAddress({
+                    address: nftContract.address().toScAddress(),
+                    salt: Buffer.alloc(32, 0)
+                  })
+                ),
+              executable: xdr.ContractExecutable.contractExecutableWasm(
+                Buffer.alloc(32, '\x20')
+              )
+            })
+          ),
         subInvocations: []
       })
     ]
   });
+
+  const expectedParsed = {
+    type: 'execute',
+    args: {
+      source: nftContract.contractId(),
+      function: 'purchase',
+      args: [`SomeNft:${nftId}`, '7']
+    },
+    invocations: [
+      {
+        type: 'create',
+        args: {
+          type: 'sac',
+          asset: `TEST:${nftId}`
+        },
+        invocations: []
+      },
+      {
+        type: 'execute',
+        args: {
+          source: swapContract.contractId(),
+          function: 'swap',
+          args: ['native', `USDC:${usdcId}`, invoker, dest]
+        },
+        invocations: [
+          {
+            type: 'execute',
+            args: {
+              source: xlmContract.contractId(),
+              function: 'transfer',
+              args: [invoker, '7']
+            },
+            invocations: []
+          },
+          {
+            type: 'execute',
+            args: {
+              source: usdcContract.contractId(),
+              function: 'transfer',
+              args: [invoker, '1']
+            },
+            invocations: []
+          }
+        ]
+      },
+      {
+        type: 'execute',
+        args: {
+          source: nftContract.contractId(),
+          function: 'transfer',
+          args: [nftContract.contractId(), '2']
+        },
+        invocations: []
+      },
+
+      {
+        type: 'create',
+        args: {
+          type: 'wasm',
+          wasm: {
+            salt: '00'.repeat(32),
+            hash: '20'.repeat(32),
+            address: nftContract.contractId()
+          }
+        },
+        invocations: []
+      }
+    ]
+  };
 
   it('builds an invocation tree', function () {
     expect(() => rootInvocation.toXDR()).not.to.throw(
@@ -102,15 +211,35 @@ describe('parsing invocation trees', function () {
   });
 
   it('outputs a human-readable version of it', function () {
-    console.log(JSON.stringify(rootInvocation, null, 2));
-    console.log(
+    const parsed = buildInvocationTree(rootInvocation);
+    expect(
       JSON.stringify(
-        buildInvocationTree(rootInvocation),
-        (key, value) => {
-          return typeof value === 'bigint' ? value.toString() : value;
-        },
+        parsed,
+        (_, val) => (typeof val === 'bigint' ? val.toString() : val),
         2
       )
-    );
+    ).to.deep.equal(JSON.stringify(expectedParsed, null, 2));
+  });
+
+  it('walks correctly', function () {
+    let walkCount = 0;
+    let walkSet = {};
+    let maxDepth = 0;
+
+    walkInvocationTree(rootInvocation, (node, depth, parent) => {
+      walkCount++;
+      const s = node.toXDR('base64');
+      walkSet[s] = s in walkSet ? walkSet[s] + 1 : 1;
+      maxDepth = Math.max(maxDepth, depth);
+      return true;
+    });
+
+    // 7 nodes walked, exactly once each
+    expect(walkCount).to.equal(7, `${walkSet}`);
+    expect(
+      Object.values(walkSet).reduce((accum, curr) => accum + curr, 0)
+    ).to.equal(7, `${walkSet}`);
+    expect(Object.values(walkSet).every((val) => val !== 0)).to.be.true;
+    expect(maxDepth).to.equal(3);
   });
 });
