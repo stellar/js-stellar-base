@@ -1,4 +1,4 @@
-// Automatically generated on 2023-08-22T14:15:00-08:00
+// Automatically generated on 2023-08-31T16:49:00-08:00
 import { Operation } from './index';
 
 export {};
@@ -318,9 +318,10 @@ export namespace xdr {
       | 'liquidityPool'
       | 'contractData'
       | 'contractCode'
-      | 'configSetting';
+      | 'configSetting'
+      | 'expiration';
 
-    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     static account(): LedgerEntryType;
 
@@ -339,6 +340,8 @@ export namespace xdr {
     static contractCode(): LedgerEntryType;
 
     static configSetting(): LedgerEntryType;
+
+    static expiration(): LedgerEntryType;
   }
 
   class AccountFlags {
@@ -436,24 +439,6 @@ export namespace xdr {
     readonly value: 1;
 
     static claimableBalanceClawbackEnabledFlag(): ClaimableBalanceFlags;
-  }
-
-  class ContractEntryBodyType {
-    readonly name: 'dataEntry' | 'expirationExtension';
-
-    readonly value: 0 | 1;
-
-    static dataEntry(): ContractEntryBodyType;
-
-    static expirationExtension(): ContractEntryBodyType;
-  }
-
-  class ContractDataFlags {
-    readonly name: 'noAutobump';
-
-    readonly value: 1;
-
-    static noAutobump(): ContractDataFlags;
   }
 
   class ContractDataDurability {
@@ -1670,9 +1655,10 @@ export namespace xdr {
       | 'invokeHostFunctionMalformed'
       | 'invokeHostFunctionTrapped'
       | 'invokeHostFunctionResourceLimitExceeded'
-      | 'invokeHostFunctionEntryExpired';
+      | 'invokeHostFunctionEntryExpired'
+      | 'invokeHostFunctionInsufficientRefundableFee';
 
-    readonly value: 0 | -1 | -2 | -3 | -4;
+    readonly value: 0 | -1 | -2 | -3 | -4 | -5;
 
     static invokeHostFunctionSuccess(): InvokeHostFunctionResultCode;
 
@@ -1683,36 +1669,44 @@ export namespace xdr {
     static invokeHostFunctionResourceLimitExceeded(): InvokeHostFunctionResultCode;
 
     static invokeHostFunctionEntryExpired(): InvokeHostFunctionResultCode;
+
+    static invokeHostFunctionInsufficientRefundableFee(): InvokeHostFunctionResultCode;
   }
 
   class BumpFootprintExpirationResultCode {
     readonly name:
       | 'bumpFootprintExpirationSuccess'
       | 'bumpFootprintExpirationMalformed'
-      | 'bumpFootprintExpirationResourceLimitExceeded';
+      | 'bumpFootprintExpirationResourceLimitExceeded'
+      | 'bumpFootprintExpirationInsufficientRefundableFee';
 
-    readonly value: 0 | -1 | -2;
+    readonly value: 0 | -1 | -2 | -3;
 
     static bumpFootprintExpirationSuccess(): BumpFootprintExpirationResultCode;
 
     static bumpFootprintExpirationMalformed(): BumpFootprintExpirationResultCode;
 
     static bumpFootprintExpirationResourceLimitExceeded(): BumpFootprintExpirationResultCode;
+
+    static bumpFootprintExpirationInsufficientRefundableFee(): BumpFootprintExpirationResultCode;
   }
 
   class RestoreFootprintResultCode {
     readonly name:
       | 'restoreFootprintSuccess'
       | 'restoreFootprintMalformed'
-      | 'restoreFootprintResourceLimitExceeded';
+      | 'restoreFootprintResourceLimitExceeded'
+      | 'restoreFootprintInsufficientRefundableFee';
 
-    readonly value: 0 | -1 | -2;
+    readonly value: 0 | -1 | -2 | -3;
 
     static restoreFootprintSuccess(): RestoreFootprintResultCode;
 
     static restoreFootprintMalformed(): RestoreFootprintResultCode;
 
     static restoreFootprintResourceLimitExceeded(): RestoreFootprintResultCode;
+
+    static restoreFootprintInsufficientRefundableFee(): RestoreFootprintResultCode;
   }
 
   class OperationResultCode {
@@ -1762,7 +1756,7 @@ export namespace xdr {
       | 'txBadSponsorship'
       | 'txBadMinSeqAgeOrGap'
       | 'txMalformed'
-      | 'txSorobanResourceLimitExceeded';
+      | 'txSorobanInvalid';
 
     readonly value:
       | 1
@@ -1821,7 +1815,7 @@ export namespace xdr {
 
     static txMalformed(): TransactionResultCode;
 
-    static txSorobanResourceLimitExceeded(): TransactionResultCode;
+    static txSorobanInvalid(): TransactionResultCode;
   }
 
   class CryptoKeyType {
@@ -2096,7 +2090,6 @@ export namespace xdr {
       | 'scSpecTypeOption'
       | 'scSpecTypeResult'
       | 'scSpecTypeVec'
-      | 'scSpecTypeSet'
       | 'scSpecTypeMap'
       | 'scSpecTypeTuple'
       | 'scSpecTypeBytesN'
@@ -2124,7 +2117,6 @@ export namespace xdr {
       | 1000
       | 1001
       | 1002
-      | 1003
       | 1004
       | 1005
       | 1006
@@ -2171,8 +2163,6 @@ export namespace xdr {
     static scSpecTypeResult(): ScSpecType;
 
     static scSpecTypeVec(): ScSpecType;
-
-    static scSpecTypeSet(): ScSpecType;
 
     static scSpecTypeMap(): ScSpecType;
 
@@ -3465,45 +3455,16 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ContractDataEntryData {
-    constructor(attributes: { flags: number; val: ScVal });
-
-    flags(value?: number): number;
-
-    val(value?: ScVal): ScVal;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ContractDataEntryData;
-
-    static write(value: ContractDataEntryData, io: Buffer): void;
-
-    static isValid(value: ContractDataEntryData): boolean;
-
-    static toXDR(value: ContractDataEntryData): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ContractDataEntryData;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64',
-    ): ContractDataEntryData;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
   class ContractDataEntry {
     constructor(attributes: {
+      ext: ExtensionPoint;
       contract: ScAddress;
       key: ScVal;
       durability: ContractDataDurability;
-      body: ContractDataEntryBody;
-      expirationLedgerSeq: number;
+      val: ScVal;
     });
+
+    ext(value?: ExtensionPoint): ExtensionPoint;
 
     contract(value?: ScAddress): ScAddress;
 
@@ -3511,9 +3472,7 @@ export namespace xdr {
 
     durability(value?: ContractDataDurability): ContractDataDurability;
 
-    body(value?: ContractDataEntryBody): ContractDataEntryBody;
-
-    expirationLedgerSeq(value?: number): number;
+    val(value?: ScVal): ScVal;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3540,17 +3499,14 @@ export namespace xdr {
     constructor(attributes: {
       ext: ExtensionPoint;
       hash: Buffer;
-      body: ContractCodeEntryBody;
-      expirationLedgerSeq: number;
+      code: Buffer;
     });
 
     ext(value?: ExtensionPoint): ExtensionPoint;
 
     hash(value?: Buffer): Buffer;
 
-    body(value?: ContractCodeEntryBody): ContractCodeEntryBody;
-
-    expirationLedgerSeq(value?: number): number;
+    code(value?: Buffer): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3567,6 +3523,34 @@ export namespace xdr {
     static fromXDR(input: Buffer, format?: 'raw'): ContractCodeEntry;
 
     static fromXDR(input: string, format: 'hex' | 'base64'): ContractCodeEntry;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class ExpirationEntry {
+    constructor(attributes: { keyHash: Buffer; expirationLedgerSeq: number });
+
+    keyHash(value?: Buffer): Buffer;
+
+    expirationLedgerSeq(value?: number): number;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): ExpirationEntry;
+
+    static write(value: ExpirationEntry, io: Buffer): void;
+
+    static isValid(value: ExpirationEntry): boolean;
+
+    static toXDR(value: ExpirationEntry): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): ExpirationEntry;
+
+    static fromXDR(input: string, format: 'hex' | 'base64'): ExpirationEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3817,7 +3801,6 @@ export namespace xdr {
       contract: ScAddress;
       key: ScVal;
       durability: ContractDataDurability;
-      bodyType: ContractEntryBodyType;
     });
 
     contract(value?: ScAddress): ScAddress;
@@ -3825,8 +3808,6 @@ export namespace xdr {
     key(value?: ScVal): ScVal;
 
     durability(value?: ContractDataDurability): ContractDataDurability;
-
-    bodyType(value?: ContractEntryBodyType): ContractEntryBodyType;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3853,11 +3834,9 @@ export namespace xdr {
   }
 
   class LedgerKeyContractCode {
-    constructor(attributes: { hash: Buffer; bodyType: ContractEntryBodyType });
+    constructor(attributes: { hash: Buffer });
 
     hash(value?: Buffer): Buffer;
-
-    bodyType(value?: ContractEntryBodyType): ContractEntryBodyType;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -3906,6 +3885,35 @@ export namespace xdr {
       input: string,
       format: 'hex' | 'base64',
     ): LedgerKeyConfigSetting;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class LedgerKeyExpiration {
+    constructor(attributes: { keyHash: Buffer });
+
+    keyHash(value?: Buffer): Buffer;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): LedgerKeyExpiration;
+
+    static write(value: LedgerKeyExpiration, io: Buffer): void;
+
+    static isValid(value: LedgerKeyExpiration): boolean;
+
+    static toXDR(value: LedgerKeyExpiration): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyExpiration;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64',
+    ): LedgerKeyExpiration;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7074,7 +7082,6 @@ export namespace xdr {
       instructions: number;
       readBytes: number;
       writeBytes: number;
-      contractEventsSizeBytes: number;
     });
 
     footprint(value?: LedgerFootprint): LedgerFootprint;
@@ -7084,8 +7091,6 @@ export namespace xdr {
     readBytes(value?: number): number;
 
     writeBytes(value?: number): number;
-
-    contractEventsSizeBytes(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -8308,32 +8313,6 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ScSpecTypeSet {
-    constructor(attributes: { elementType: ScSpecTypeDef });
-
-    elementType(value?: ScSpecTypeDef): ScSpecTypeDef;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ScSpecTypeSet;
-
-    static write(value: ScSpecTypeSet, io: Buffer): void;
-
-    static isValid(value: ScSpecTypeSet): boolean;
-
-    static toXDR(value: ScSpecTypeSet): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ScSpecTypeSet;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): ScSpecTypeSet;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
   class ScSpecTypeTuple {
     constructor(attributes: { valueTypes: ScSpecTypeDef[] });
 
@@ -9124,7 +9103,6 @@ export namespace xdr {
       maxEntryExpiration: number;
       minTempEntryExpiration: number;
       minPersistentEntryExpiration: number;
-      autoBumpLedgers: number;
       persistentRentRateDenominator: Int64;
       tempRentRateDenominator: Int64;
       maxEntriesToExpire: number;
@@ -9138,8 +9116,6 @@ export namespace xdr {
     minTempEntryExpiration(value?: number): number;
 
     minPersistentEntryExpiration(value?: number): number;
-
-    autoBumpLedgers(value?: number): number;
 
     persistentRentRateDenominator(value?: Int64): Int64;
 
@@ -9851,76 +9827,6 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ContractDataEntryBody {
-    switch(): ContractEntryBodyType;
-
-    data(value?: ContractDataEntryData): ContractDataEntryData;
-
-    static dataEntry(value: ContractDataEntryData): ContractDataEntryBody;
-
-    static expirationExtension(): ContractDataEntryBody;
-
-    value(): ContractDataEntryData | void;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ContractDataEntryBody;
-
-    static write(value: ContractDataEntryBody, io: Buffer): void;
-
-    static isValid(value: ContractDataEntryBody): boolean;
-
-    static toXDR(value: ContractDataEntryBody): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ContractDataEntryBody;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64',
-    ): ContractDataEntryBody;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class ContractCodeEntryBody {
-    switch(): ContractEntryBodyType;
-
-    code(value?: Buffer): Buffer;
-
-    static dataEntry(value: Buffer): ContractCodeEntryBody;
-
-    static expirationExtension(): ContractCodeEntryBody;
-
-    value(): Buffer | void;
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): ContractCodeEntryBody;
-
-    static write(value: ContractCodeEntryBody, io: Buffer): void;
-
-    static isValid(value: ContractCodeEntryBody): boolean;
-
-    static toXDR(value: ContractCodeEntryBody): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): ContractCodeEntryBody;
-
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64',
-    ): ContractCodeEntryBody;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
   class LedgerEntryExtensionV1Ext {
     switch(): number;
 
@@ -9973,6 +9879,8 @@ export namespace xdr {
 
     configSetting(value?: ConfigSettingEntry): ConfigSettingEntry;
 
+    expiration(value?: ExpirationEntry): ExpirationEntry;
+
     static account(value: AccountEntry): LedgerEntryData;
 
     static trustline(value: TrustLineEntry): LedgerEntryData;
@@ -9991,6 +9899,8 @@ export namespace xdr {
 
     static configSetting(value: ConfigSettingEntry): LedgerEntryData;
 
+    static expiration(value: ExpirationEntry): LedgerEntryData;
+
     value():
       | AccountEntry
       | TrustLineEntry
@@ -10000,7 +9910,8 @@ export namespace xdr {
       | LiquidityPoolEntry
       | ContractDataEntry
       | ContractCodeEntry
-      | ConfigSettingEntry;
+      | ConfigSettingEntry
+      | ExpirationEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -10078,6 +9989,8 @@ export namespace xdr {
 
     configSetting(value?: LedgerKeyConfigSetting): LedgerKeyConfigSetting;
 
+    expiration(value?: LedgerKeyExpiration): LedgerKeyExpiration;
+
     static account(value: LedgerKeyAccount): LedgerKey;
 
     static trustline(value: LedgerKeyTrustLine): LedgerKey;
@@ -10096,6 +10009,8 @@ export namespace xdr {
 
     static configSetting(value: LedgerKeyConfigSetting): LedgerKey;
 
+    static expiration(value: LedgerKeyExpiration): LedgerKey;
+
     value():
       | LedgerKeyAccount
       | LedgerKeyTrustLine
@@ -10105,7 +10020,8 @@ export namespace xdr {
       | LedgerKeyLiquidityPool
       | LedgerKeyContractData
       | LedgerKeyContractCode
-      | LedgerKeyConfigSetting;
+      | LedgerKeyConfigSetting
+      | LedgerKeyExpiration;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -12937,6 +12853,8 @@ export namespace xdr {
 
     static invokeHostFunctionEntryExpired(): InvokeHostFunctionResult;
 
+    static invokeHostFunctionInsufficientRefundableFee(): InvokeHostFunctionResult;
+
     value(): Buffer | void;
 
     toXDR(format?: 'raw'): Buffer;
@@ -12971,6 +12889,8 @@ export namespace xdr {
     static bumpFootprintExpirationMalformed(): BumpFootprintExpirationResult;
 
     static bumpFootprintExpirationResourceLimitExceeded(): BumpFootprintExpirationResult;
+
+    static bumpFootprintExpirationInsufficientRefundableFee(): BumpFootprintExpirationResult;
 
     value(): void;
 
@@ -13009,6 +12929,8 @@ export namespace xdr {
     static restoreFootprintMalformed(): RestoreFootprintResult;
 
     static restoreFootprintResourceLimitExceeded(): RestoreFootprintResult;
+
+    static restoreFootprintInsufficientRefundableFee(): RestoreFootprintResult;
 
     value(): void;
 
@@ -13330,7 +13252,7 @@ export namespace xdr {
 
     static txMalformed(): InnerTransactionResultResult;
 
-    static txSorobanResourceLimitExceeded(): InnerTransactionResultResult;
+    static txSorobanInvalid(): InnerTransactionResultResult;
 
     value(): OperationResult[] | void;
 
@@ -13438,7 +13360,7 @@ export namespace xdr {
 
     static txMalformed(): TransactionResultResult;
 
-    static txSorobanResourceLimitExceeded(): TransactionResultResult;
+    static txSorobanInvalid(): TransactionResultResult;
 
     value(): InnerTransactionResultPair | OperationResult[] | void;
 
@@ -13923,8 +13845,6 @@ export namespace xdr {
 
     map(value?: ScSpecTypeMap): ScSpecTypeMap;
 
-    set_(value?: ScSpecTypeSet): ScSpecTypeSet;
-
     tuple(value?: ScSpecTypeTuple): ScSpecTypeTuple;
 
     bytesN(value?: ScSpecTypeBytesN): ScSpecTypeBytesN;
@@ -13975,8 +13895,6 @@ export namespace xdr {
 
     static scSpecTypeMap(value: ScSpecTypeMap): ScSpecTypeDef;
 
-    static scSpecTypeSet(value: ScSpecTypeSet): ScSpecTypeDef;
-
     static scSpecTypeTuple(value: ScSpecTypeTuple): ScSpecTypeDef;
 
     static scSpecTypeBytesN(value: ScSpecTypeBytesN): ScSpecTypeDef;
@@ -13988,7 +13906,6 @@ export namespace xdr {
       | ScSpecTypeResult
       | ScSpecTypeVec
       | ScSpecTypeMap
-      | ScSpecTypeSet
       | ScSpecTypeTuple
       | ScSpecTypeBytesN
       | ScSpecTypeUdt

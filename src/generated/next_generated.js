@@ -475,7 +475,8 @@ var types = XDR.config((xdr) => {
   //       LIQUIDITY_POOL = 5,
   //       CONTRACT_DATA = 6,
   //       CONTRACT_CODE = 7,
-  //       CONFIG_SETTING = 8
+  //       CONFIG_SETTING = 8,
+  //       EXPIRATION = 9
   //   };
   //
   // ===========================================================================
@@ -488,7 +489,8 @@ var types = XDR.config((xdr) => {
     liquidityPool: 5,
     contractData: 6,
     contractCode: 7,
-    configSetting: 8
+    configSetting: 8,
+    expiration: 9
   });
 
   // === xdr source ============================================================
@@ -1471,39 +1473,6 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   enum ContractEntryBodyType {
-  //       DATA_ENTRY = 0,
-  //       EXPIRATION_EXTENSION = 1
-  //   };
-  //
-  // ===========================================================================
-  xdr.enum("ContractEntryBodyType", {
-    dataEntry: 0,
-    expirationExtension: 1
-  });
-
-  // === xdr source ============================================================
-  //
-  //   const MASK_CONTRACT_DATA_FLAGS_V20 = 0x1;
-  //
-  // ===========================================================================
-  xdr.const("MASK_CONTRACT_DATA_FLAGS_V20", 0x1);
-
-  // === xdr source ============================================================
-  //
-  //   enum ContractDataFlags {
-  //       // When set, the given entry does not recieve automatic expiration bumps
-  //       // on access. Note that entries can still be bumped manually via the footprint.
-  //       NO_AUTOBUMP = 0x1
-  //   };
-  //
-  // ===========================================================================
-  xdr.enum("ContractDataFlags", {
-    noAutobump: 1
-  });
-
-  // === xdr source ============================================================
-  //
   //   enum ContractDataDurability {
   //       TEMPORARY = 0,
   //       PERSISTENT = 1
@@ -1517,98 +1486,23 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   struct
-  //       {
-  //           uint32 flags;
-  //           SCVal val;
-  //       }
-  //
-  // ===========================================================================
-  xdr.struct("ContractDataEntryData", [
-    ["flags", xdr.lookup("Uint32")],
-    ["val", xdr.lookup("ScVal")]
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   union switch (ContractEntryBodyType bodyType)
-  //       {
-  //       case DATA_ENTRY:
-  //       struct
-  //       {
-  //           uint32 flags;
-  //           SCVal val;
-  //       } data;
-  //       case EXPIRATION_EXTENSION:
-  //           void;
-  //       }
-  //
-  // ===========================================================================
-  xdr.union("ContractDataEntryBody", {
-    switchOn: xdr.lookup("ContractEntryBodyType"),
-    switchName: "bodyType",
-    switches: [
-      ["dataEntry", "data"],
-      ["expirationExtension", xdr.void()]
-    ],
-    arms: {
-      data: xdr.lookup("ContractDataEntryData")
-    }
-  });
-
-  // === xdr source ============================================================
-  //
   //   struct ContractDataEntry {
+  //       ExtensionPoint ext;
+  //
   //       SCAddress contract;
   //       SCVal key;
   //       ContractDataDurability durability;
-  //
-  //       union switch (ContractEntryBodyType bodyType)
-  //       {
-  //       case DATA_ENTRY:
-  //       struct
-  //       {
-  //           uint32 flags;
-  //           SCVal val;
-  //       } data;
-  //       case EXPIRATION_EXTENSION:
-  //           void;
-  //       } body;
-  //
-  //       uint32 expirationLedgerSeq;
+  //       SCVal val;
   //   };
   //
   // ===========================================================================
   xdr.struct("ContractDataEntry", [
+    ["ext", xdr.lookup("ExtensionPoint")],
     ["contract", xdr.lookup("ScAddress")],
     ["key", xdr.lookup("ScVal")],
     ["durability", xdr.lookup("ContractDataDurability")],
-    ["body", xdr.lookup("ContractDataEntryBody")],
-    ["expirationLedgerSeq", xdr.lookup("Uint32")]
+    ["val", xdr.lookup("ScVal")]
   ]);
-
-  // === xdr source ============================================================
-  //
-  //   union switch (ContractEntryBodyType bodyType)
-  //       {
-  //       case DATA_ENTRY:
-  //           opaque code<>;
-  //       case EXPIRATION_EXTENSION:
-  //           void;
-  //       }
-  //
-  // ===========================================================================
-  xdr.union("ContractCodeEntryBody", {
-    switchOn: xdr.lookup("ContractEntryBodyType"),
-    switchName: "bodyType",
-    switches: [
-      ["dataEntry", "code"],
-      ["expirationExtension", xdr.void()]
-    ],
-    arms: {
-      code: xdr.varOpaque()
-    }
-  });
 
   // === xdr source ============================================================
   //
@@ -1616,22 +1510,27 @@ var types = XDR.config((xdr) => {
   //       ExtensionPoint ext;
   //
   //       Hash hash;
-  //       union switch (ContractEntryBodyType bodyType)
-  //       {
-  //       case DATA_ENTRY:
-  //           opaque code<>;
-  //       case EXPIRATION_EXTENSION:
-  //           void;
-  //       } body;
-  //
-  //       uint32 expirationLedgerSeq;
+  //       opaque code<>;
   //   };
   //
   // ===========================================================================
   xdr.struct("ContractCodeEntry", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["hash", xdr.lookup("Hash")],
-    ["body", xdr.lookup("ContractCodeEntryBody")],
+    ["code", xdr.varOpaque()]
+  ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct ExpirationEntry {
+  //       // Hash of the LedgerKey that is associated with this ExpirationEntry
+  //       Hash keyHash;
+  //       uint32 expirationLedgerSeq;
+  //   };
+  //
+  // ===========================================================================
+  xdr.struct("ExpirationEntry", [
+    ["keyHash", xdr.lookup("Hash")],
     ["expirationLedgerSeq", xdr.lookup("Uint32")]
   ]);
 
@@ -1693,6 +1592,8 @@ var types = XDR.config((xdr) => {
   //           ContractCodeEntry contractCode;
   //       case CONFIG_SETTING:
   //           ConfigSettingEntry configSetting;
+  //       case EXPIRATION:
+  //           ExpirationEntry expiration;
   //       }
   //
   // ===========================================================================
@@ -1708,7 +1609,8 @@ var types = XDR.config((xdr) => {
       ["liquidityPool", "liquidityPool"],
       ["contractData", "contractData"],
       ["contractCode", "contractCode"],
-      ["configSetting", "configSetting"]
+      ["configSetting", "configSetting"],
+      ["expiration", "expiration"]
     ],
     arms: {
       account: xdr.lookup("AccountEntry"),
@@ -1719,7 +1621,8 @@ var types = XDR.config((xdr) => {
       liquidityPool: xdr.lookup("LiquidityPoolEntry"),
       contractData: xdr.lookup("ContractDataEntry"),
       contractCode: xdr.lookup("ContractCodeEntry"),
-      configSetting: xdr.lookup("ConfigSettingEntry")
+      configSetting: xdr.lookup("ConfigSettingEntry"),
+      expiration: xdr.lookup("ExpirationEntry")
     }
   });
 
@@ -1772,6 +1675,8 @@ var types = XDR.config((xdr) => {
   //           ContractCodeEntry contractCode;
   //       case CONFIG_SETTING:
   //           ConfigSettingEntry configSetting;
+  //       case EXPIRATION:
+  //           ExpirationEntry expiration;
   //       }
   //       data;
   //
@@ -1876,15 +1781,13 @@ var types = XDR.config((xdr) => {
   //           SCAddress contract;
   //           SCVal key;
   //           ContractDataDurability durability;
-  //           ContractEntryBodyType bodyType;
   //       }
   //
   // ===========================================================================
   xdr.struct("LedgerKeyContractData", [
     ["contract", xdr.lookup("ScAddress")],
     ["key", xdr.lookup("ScVal")],
-    ["durability", xdr.lookup("ContractDataDurability")],
-    ["bodyType", xdr.lookup("ContractEntryBodyType")]
+    ["durability", xdr.lookup("ContractDataDurability")]
   ]);
 
   // === xdr source ============================================================
@@ -1892,14 +1795,10 @@ var types = XDR.config((xdr) => {
   //   struct
   //       {
   //           Hash hash;
-  //           ContractEntryBodyType bodyType;
   //       }
   //
   // ===========================================================================
-  xdr.struct("LedgerKeyContractCode", [
-    ["hash", xdr.lookup("Hash")],
-    ["bodyType", xdr.lookup("ContractEntryBodyType")]
-  ]);
+  xdr.struct("LedgerKeyContractCode", [["hash", xdr.lookup("Hash")]]);
 
   // === xdr source ============================================================
   //
@@ -1912,6 +1811,17 @@ var types = XDR.config((xdr) => {
   xdr.struct("LedgerKeyConfigSetting", [
     ["configSettingId", xdr.lookup("ConfigSettingId")]
   ]);
+
+  // === xdr source ============================================================
+  //
+  //   struct
+  //       {
+  //           // Hash of the LedgerKey that is associated with this ExpirationEntry
+  //           Hash keyHash;
+  //       }
+  //
+  // ===========================================================================
+  xdr.struct("LedgerKeyExpiration", [["keyHash", xdr.lookup("Hash")]]);
 
   // === xdr source ============================================================
   //
@@ -1961,19 +1871,23 @@ var types = XDR.config((xdr) => {
   //           SCAddress contract;
   //           SCVal key;
   //           ContractDataDurability durability;
-  //           ContractEntryBodyType bodyType;
   //       } contractData;
   //   case CONTRACT_CODE:
   //       struct
   //       {
   //           Hash hash;
-  //           ContractEntryBodyType bodyType;
   //       } contractCode;
   //   case CONFIG_SETTING:
   //       struct
   //       {
   //           ConfigSettingID configSettingID;
   //       } configSetting;
+  //   case EXPIRATION:
+  //       struct
+  //       {
+  //           // Hash of the LedgerKey that is associated with this ExpirationEntry
+  //           Hash keyHash;
+  //       } expiration;
   //   };
   //
   // ===========================================================================
@@ -1989,7 +1903,8 @@ var types = XDR.config((xdr) => {
       ["liquidityPool", "liquidityPool"],
       ["contractData", "contractData"],
       ["contractCode", "contractCode"],
-      ["configSetting", "configSetting"]
+      ["configSetting", "configSetting"],
+      ["expiration", "expiration"]
     ],
     arms: {
       account: xdr.lookup("LedgerKeyAccount"),
@@ -2000,7 +1915,8 @@ var types = XDR.config((xdr) => {
       liquidityPool: xdr.lookup("LedgerKeyLiquidityPool"),
       contractData: xdr.lookup("LedgerKeyContractData"),
       contractCode: xdr.lookup("LedgerKeyContractCode"),
-      configSetting: xdr.lookup("LedgerKeyConfigSetting")
+      configSetting: xdr.lookup("LedgerKeyConfigSetting"),
+      expiration: xdr.lookup("LedgerKeyExpiration")
     }
   });
 
@@ -5345,10 +5261,6 @@ var types = XDR.config((xdr) => {
   //       uint32 readBytes;
   //       // The maximum number of bytes this transaction can write to ledger
   //       uint32 writeBytes;
-  //
-  //       // Maximum size of the contract events (serialized to XDR) this transaction
-  //       // can emit.
-  //       uint32 contractEventsSizeBytes;
   //   };
   //
   // ===========================================================================
@@ -5356,8 +5268,7 @@ var types = XDR.config((xdr) => {
     ["footprint", xdr.lookup("LedgerFootprint")],
     ["instructions", xdr.lookup("Uint32")],
     ["readBytes", xdr.lookup("Uint32")],
-    ["writeBytes", xdr.lookup("Uint32")],
-    ["contractEventsSizeBytes", xdr.lookup("Uint32")]
+    ["writeBytes", xdr.lookup("Uint32")]
   ]);
 
   // === xdr source ============================================================
@@ -7350,7 +7261,8 @@ var types = XDR.config((xdr) => {
   //       INVOKE_HOST_FUNCTION_MALFORMED = -1,
   //       INVOKE_HOST_FUNCTION_TRAPPED = -2,
   //       INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3,
-  //       INVOKE_HOST_FUNCTION_ENTRY_EXPIRED = -4
+  //       INVOKE_HOST_FUNCTION_ENTRY_EXPIRED = -4,
+  //       INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE = -5
   //   };
   //
   // ===========================================================================
@@ -7359,7 +7271,8 @@ var types = XDR.config((xdr) => {
     invokeHostFunctionMalformed: -1,
     invokeHostFunctionTrapped: -2,
     invokeHostFunctionResourceLimitExceeded: -3,
-    invokeHostFunctionEntryExpired: -4
+    invokeHostFunctionEntryExpired: -4,
+    invokeHostFunctionInsufficientRefundableFee: -5
   });
 
   // === xdr source ============================================================
@@ -7372,6 +7285,7 @@ var types = XDR.config((xdr) => {
   //   case INVOKE_HOST_FUNCTION_TRAPPED:
   //   case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
   //   case INVOKE_HOST_FUNCTION_ENTRY_EXPIRED:
+  //   case INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE:
   //       void;
   //   };
   //
@@ -7384,7 +7298,8 @@ var types = XDR.config((xdr) => {
       ["invokeHostFunctionMalformed", xdr.void()],
       ["invokeHostFunctionTrapped", xdr.void()],
       ["invokeHostFunctionResourceLimitExceeded", xdr.void()],
-      ["invokeHostFunctionEntryExpired", xdr.void()]
+      ["invokeHostFunctionEntryExpired", xdr.void()],
+      ["invokeHostFunctionInsufficientRefundableFee", xdr.void()]
     ],
     arms: {
       success: xdr.lookup("Hash")
@@ -7400,14 +7315,16 @@ var types = XDR.config((xdr) => {
   //
   //       // codes considered as "failure" for the operation
   //       BUMP_FOOTPRINT_EXPIRATION_MALFORMED = -1,
-  //       BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED = -2
+  //       BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED = -2,
+  //       BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE = -3
   //   };
   //
   // ===========================================================================
   xdr.enum("BumpFootprintExpirationResultCode", {
     bumpFootprintExpirationSuccess: 0,
     bumpFootprintExpirationMalformed: -1,
-    bumpFootprintExpirationResourceLimitExceeded: -2
+    bumpFootprintExpirationResourceLimitExceeded: -2,
+    bumpFootprintExpirationInsufficientRefundableFee: -3
   });
 
   // === xdr source ============================================================
@@ -7418,6 +7335,7 @@ var types = XDR.config((xdr) => {
   //       void;
   //   case BUMP_FOOTPRINT_EXPIRATION_MALFORMED:
   //   case BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED:
+  //   case BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE:
   //       void;
   //   };
   //
@@ -7428,7 +7346,8 @@ var types = XDR.config((xdr) => {
     switches: [
       ["bumpFootprintExpirationSuccess", xdr.void()],
       ["bumpFootprintExpirationMalformed", xdr.void()],
-      ["bumpFootprintExpirationResourceLimitExceeded", xdr.void()]
+      ["bumpFootprintExpirationResourceLimitExceeded", xdr.void()],
+      ["bumpFootprintExpirationInsufficientRefundableFee", xdr.void()]
     ],
     arms: {}
   });
@@ -7442,14 +7361,16 @@ var types = XDR.config((xdr) => {
   //
   //       // codes considered as "failure" for the operation
   //       RESTORE_FOOTPRINT_MALFORMED = -1,
-  //       RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED = -2
+  //       RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED = -2,
+  //       RESTORE_FOOTPRINT_INSUFFICIENT_REFUNDABLE_FEE = -3
   //   };
   //
   // ===========================================================================
   xdr.enum("RestoreFootprintResultCode", {
     restoreFootprintSuccess: 0,
     restoreFootprintMalformed: -1,
-    restoreFootprintResourceLimitExceeded: -2
+    restoreFootprintResourceLimitExceeded: -2,
+    restoreFootprintInsufficientRefundableFee: -3
   });
 
   // === xdr source ============================================================
@@ -7460,6 +7381,7 @@ var types = XDR.config((xdr) => {
   //       void;
   //   case RESTORE_FOOTPRINT_MALFORMED:
   //   case RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED:
+  //   case RESTORE_FOOTPRINT_INSUFFICIENT_REFUNDABLE_FEE:
   //       void;
   //   };
   //
@@ -7470,7 +7392,8 @@ var types = XDR.config((xdr) => {
     switches: [
       ["restoreFootprintSuccess", xdr.void()],
       ["restoreFootprintMalformed", xdr.void()],
-      ["restoreFootprintResourceLimitExceeded", xdr.void()]
+      ["restoreFootprintResourceLimitExceeded", xdr.void()],
+      ["restoreFootprintInsufficientRefundableFee", xdr.void()]
     ],
     arms: {}
   });
@@ -7745,14 +7668,12 @@ var types = XDR.config((xdr) => {
   //       txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
   //       txINTERNAL_ERROR = -11,      // an unknown error occurred
   //
-  //       txNOT_SUPPORTED = -12,         // transaction type not supported
-  //       txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
-  //       txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
-  //       txBAD_MIN_SEQ_AGE_OR_GAP =
-  //           -15, // minSeqAge or minSeqLedgerGap conditions not met
-  //       txMALFORMED = -16, // precondition is invalid
-  //       // declared Soroban resource usage exceeds the network limit
-  //       txSOROBAN_RESOURCE_LIMIT_EXCEEDED = -17
+  //       txNOT_SUPPORTED = -12,          // transaction type not supported
+  //       txFEE_BUMP_INNER_FAILED = -13,  // fee bump inner transaction failed
+  //       txBAD_SPONSORSHIP = -14,        // sponsorship not confirmed
+  //       txBAD_MIN_SEQ_AGE_OR_GAP = -15, // minSeqAge or minSeqLedgerGap conditions not met
+  //       txMALFORMED = -16,              // precondition is invalid
+  //       txSOROBAN_INVALID = -17         // soroban-specific preconditions were not met
   //   };
   //
   // ===========================================================================
@@ -7775,7 +7696,7 @@ var types = XDR.config((xdr) => {
     txBadSponsorship: -14,
     txBadMinSeqAgeOrGap: -15,
     txMalformed: -16,
-    txSorobanResourceLimitExceeded: -17
+    txSorobanInvalid: -17
   });
 
   // === xdr source ============================================================
@@ -7801,7 +7722,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
-  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
+  //       case txSOROBAN_INVALID:
   //           void;
   //       }
   //
@@ -7826,7 +7747,7 @@ var types = XDR.config((xdr) => {
       ["txBadSponsorship", xdr.void()],
       ["txBadMinSeqAgeOrGap", xdr.void()],
       ["txMalformed", xdr.void()],
-      ["txSorobanResourceLimitExceeded", xdr.void()]
+      ["txSorobanInvalid", xdr.void()]
     ],
     arms: {
       results: xdr.varArray(xdr.lookup("OperationResult"), 2147483647)
@@ -7877,7 +7798,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
-  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
+  //       case txSOROBAN_INVALID:
   //           void;
   //       }
   //       result;
@@ -7937,7 +7858,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
-  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
+  //       case txSOROBAN_INVALID:
   //           void;
   //       }
   //
@@ -7964,7 +7885,7 @@ var types = XDR.config((xdr) => {
       ["txBadSponsorship", xdr.void()],
       ["txBadMinSeqAgeOrGap", xdr.void()],
       ["txMalformed", xdr.void()],
-      ["txSorobanResourceLimitExceeded", xdr.void()]
+      ["txSorobanInvalid", xdr.void()]
     ],
     arms: {
       innerResultPair: xdr.lookup("InnerTransactionResultPair"),
@@ -8017,7 +7938,7 @@ var types = XDR.config((xdr) => {
   //       case txBAD_SPONSORSHIP:
   //       case txBAD_MIN_SEQ_AGE_OR_GAP:
   //       case txMALFORMED:
-  //       case txSOROBAN_RESOURCE_LIMIT_EXCEEDED:
+  //       case txSOROBAN_INVALID:
   //           void;
   //       }
   //       result;
@@ -8391,16 +8312,16 @@ var types = XDR.config((xdr) => {
   //
   //   enum SCErrorType
   //   {
-  //       SCE_CONTRACT = 0,
-  //       SCE_WASM_VM = 1,
-  //       SCE_CONTEXT = 2,
-  //       SCE_STORAGE = 3,
-  //       SCE_OBJECT = 4,
-  //       SCE_CRYPTO = 5,
-  //       SCE_EVENTS = 6,
-  //       SCE_BUDGET = 7,
-  //       SCE_VALUE = 8,
-  //       SCE_AUTH = 9
+  //       SCE_CONTRACT = 0,          // Contract-specific, user-defined codes.
+  //       SCE_WASM_VM = 1,           // Errors while interpreting WASM bytecode.
+  //       SCE_CONTEXT = 2,           // Errors in the contract's host context.
+  //       SCE_STORAGE = 3,           // Errors accessing host storage.
+  //       SCE_OBJECT = 4,            // Errors working with host objects.
+  //       SCE_CRYPTO = 5,            // Errors in cryptographic operations.
+  //       SCE_EVENTS = 6,            // Errors while emitting events.
+  //       SCE_BUDGET = 7,            // Errors relating to budget limits.
+  //       SCE_VALUE = 8,             // Errors working with host values or SCVals.
+  //       SCE_AUTH = 9               // Errors from the authentication subsystem.
   //   };
   //
   // ===========================================================================
@@ -8421,16 +8342,16 @@ var types = XDR.config((xdr) => {
   //
   //   enum SCErrorCode
   //   {
-  //       SCEC_ARITH_DOMAIN = 0,      // some arithmetic wasn't defined (overflow, divide-by-zero)
-  //       SCEC_INDEX_BOUNDS = 1,      // something was indexed beyond its bounds
-  //       SCEC_INVALID_INPUT = 2,     // user provided some otherwise-bad data
-  //       SCEC_MISSING_VALUE = 3,     // some value was required but not provided
-  //       SCEC_EXISTING_VALUE = 4,    // some value was provided where not allowed
-  //       SCEC_EXCEEDED_LIMIT = 5,    // some arbitrary limit -- gas or otherwise -- was hit
-  //       SCEC_INVALID_ACTION = 6,    // data was valid but action requested was not
-  //       SCEC_INTERNAL_ERROR = 7,    // the internal state of the host was otherwise-bad
-  //       SCEC_UNEXPECTED_TYPE = 8,   // some type wasn't as expected
-  //       SCEC_UNEXPECTED_SIZE = 9    // something's size wasn't as expected
+  //       SCEC_ARITH_DOMAIN = 0,      // Some arithmetic was undefined (overflow, divide-by-zero).
+  //       SCEC_INDEX_BOUNDS = 1,      // Something was indexed beyond its bounds.
+  //       SCEC_INVALID_INPUT = 2,     // User provided some otherwise-bad data.
+  //       SCEC_MISSING_VALUE = 3,     // Some value was required but not provided.
+  //       SCEC_EXISTING_VALUE = 4,    // Some value was provided where not allowed.
+  //       SCEC_EXCEEDED_LIMIT = 5,    // Some arbitrary limit -- gas or otherwise -- was hit.
+  //       SCEC_INVALID_ACTION = 6,    // Data was valid but action requested was not.
+  //       SCEC_INTERNAL_ERROR = 7,    // The host detected an error in its own logic.
+  //       SCEC_UNEXPECTED_TYPE = 8,   // Some type wasn't as expected.
+  //       SCEC_UNEXPECTED_SIZE = 9    // Something's size wasn't as expected.
   //   };
   //
   // ===========================================================================
@@ -8926,7 +8847,6 @@ var types = XDR.config((xdr) => {
   //       SC_SPEC_TYPE_OPTION = 1000,
   //       SC_SPEC_TYPE_RESULT = 1001,
   //       SC_SPEC_TYPE_VEC = 1002,
-  //       SC_SPEC_TYPE_SET = 1003,
   //       SC_SPEC_TYPE_MAP = 1004,
   //       SC_SPEC_TYPE_TUPLE = 1005,
   //       SC_SPEC_TYPE_BYTES_N = 1006,
@@ -8958,7 +8878,6 @@ var types = XDR.config((xdr) => {
     scSpecTypeOption: 1000,
     scSpecTypeResult: 1001,
     scSpecTypeVec: 1002,
-    scSpecTypeSet: 1003,
     scSpecTypeMap: 1004,
     scSpecTypeTuple: 1005,
     scSpecTypeBytesN: 1006,
@@ -9012,16 +8931,6 @@ var types = XDR.config((xdr) => {
     ["keyType", xdr.lookup("ScSpecTypeDef")],
     ["valueType", xdr.lookup("ScSpecTypeDef")]
   ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct SCSpecTypeSet
-  //   {
-  //       SCSpecTypeDef elementType;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("ScSpecTypeSet", [["elementType", xdr.lookup("ScSpecTypeDef")]]);
 
   // === xdr source ============================================================
   //
@@ -9086,8 +8995,6 @@ var types = XDR.config((xdr) => {
   //       SCSpecTypeVec vec;
   //   case SC_SPEC_TYPE_MAP:
   //       SCSpecTypeMap map;
-  //   case SC_SPEC_TYPE_SET:
-  //       SCSpecTypeSet set;
   //   case SC_SPEC_TYPE_TUPLE:
   //       SCSpecTypeTuple tuple;
   //   case SC_SPEC_TYPE_BYTES_N:
@@ -9123,7 +9030,6 @@ var types = XDR.config((xdr) => {
       ["scSpecTypeResult", "result"],
       ["scSpecTypeVec", "vec"],
       ["scSpecTypeMap", "map"],
-      ["scSpecTypeSet", "set_"],
       ["scSpecTypeTuple", "tuple"],
       ["scSpecTypeBytesN", "bytesN"],
       ["scSpecTypeUdt", "udt"]
@@ -9133,7 +9039,6 @@ var types = XDR.config((xdr) => {
       result: xdr.lookup("ScSpecTypeResult"),
       vec: xdr.lookup("ScSpecTypeVec"),
       map: xdr.lookup("ScSpecTypeMap"),
-      set_: xdr.lookup("ScSpecTypeSet"),
       tuple: xdr.lookup("ScSpecTypeTuple"),
       bytesN: xdr.lookup("ScSpecTypeBytesN"),
       udt: xdr.lookup("ScSpecTypeUdt")
@@ -9680,7 +9585,6 @@ var types = XDR.config((xdr) => {
   //       uint32 maxEntryExpiration;
   //       uint32 minTempEntryExpiration;
   //       uint32 minPersistentEntryExpiration;
-  //       uint32 autoBumpLedgers;
   //
   //       // rent_fee = wfee_rate_average / rent_rate_denominator_for_type
   //       int64 persistentRentRateDenominator;
@@ -9704,7 +9608,6 @@ var types = XDR.config((xdr) => {
     ["maxEntryExpiration", xdr.lookup("Uint32")],
     ["minTempEntryExpiration", xdr.lookup("Uint32")],
     ["minPersistentEntryExpiration", xdr.lookup("Uint32")],
-    ["autoBumpLedgers", xdr.lookup("Uint32")],
     ["persistentRentRateDenominator", xdr.lookup("Int64")],
     ["tempRentRateDenominator", xdr.lookup("Int64")],
     ["maxEntriesToExpire", xdr.lookup("Uint32")],
