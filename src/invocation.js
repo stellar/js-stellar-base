@@ -162,3 +162,36 @@ export function buildInvocationTree(root) {
     .map((i) => buildInvocationTree(i));
   return output;
 }
+
+/**
+ * @callback InvocationWalker
+ *
+ * @param {xdr.SorobanAuthorizedInvocation} node  the currently explored node
+ * @param {number} depth  the depth of the tree this node is occurring at
+ * @param {xdr.SorobanAuthorizedInvocation} [parent]  this `node`s parent node,
+ *    if any (i.e. this doesn't exist at the root)
+ *
+ * @returns {boolean}   a hint to stop exploring
+ */
+
+/**
+ * Executes a callback function on each node in the tree until stopped.
+ *
+ * Nodes are walked in a depth-first order. Returning `false` from the callback
+ * stops further depth exploration at that node, but it does not stop the walk
+ * in a "global" view.
+ *
+ * @param {xdr.SorobanAuthorizedInvocation} root  the tree to explore
+ * @param {InvocationWalker} callback  the callback to execute for each node
+ */
+export function walkInvocationTree(root, callback) {
+  walkHelper(root.rootInvocation(), 0, callback);
+}
+
+function walkHelper(node, depth, callback, parent) {
+  if (!callback(node, depth, parent)) {
+    return;
+  }
+
+  node.subInvocations().forEach(i => walkHelper(i, depth + 1, callback, node));
+}
