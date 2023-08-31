@@ -1163,6 +1163,7 @@ export class SorobanDataBuilder {
   setReadOnly(keys: xdr.LedgerKey[]): SorobanDataBuilder;
   setReadWrite(keys: xdr.LedgerKey[]): SorobanDataBuilder;
 
+  getFootprint(): xdr.LedgerFootprint;
   getReadOnly(): xdr.LedgerKey[];
   getReadWrite(): xdr.LedgerKey[];
 
