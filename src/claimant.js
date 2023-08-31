@@ -1,6 +1,6 @@
-import xdr from "./xdr";
-import { Keypair } from "./keypair";
-import { StrKey } from "./strkey";
+import xdr from './xdr';
+import { Keypair } from './keypair';
+import { StrKey } from './strkey';
 
 /**
  * Claimant class represents an xdr.Claimant
@@ -14,7 +14,7 @@ import { StrKey } from "./strkey";
 export class Claimant {
   constructor(destination, predicate) {
     if (destination && !StrKey.isValidEd25519PublicKey(destination)) {
-      throw new Error("Destination is invalid");
+      throw new Error('Destination is invalid');
     }
     this._destination = destination;
 
@@ -23,7 +23,7 @@ export class Claimant {
     } else if (predicate instanceof xdr.ClaimPredicate) {
       this._predicate = predicate;
     } else {
-      throw new Error("Predicate should be an xdr.ClaimPredicate");
+      throw new Error('Predicate should be an xdr.ClaimPredicate');
     }
   }
 
@@ -43,10 +43,10 @@ export class Claimant {
    */
   static predicateAnd(left, right) {
     if (!(left instanceof xdr.ClaimPredicate)) {
-      throw new Error("left Predicate should be an xdr.ClaimPredicate");
+      throw new Error('left Predicate should be an xdr.ClaimPredicate');
     }
     if (!(right instanceof xdr.ClaimPredicate)) {
-      throw new Error("right Predicate should be an xdr.ClaimPredicate");
+      throw new Error('right Predicate should be an xdr.ClaimPredicate');
     }
 
     return xdr.ClaimPredicate.claimPredicateAnd([left, right]);
@@ -60,10 +60,10 @@ export class Claimant {
    */
   static predicateOr(left, right) {
     if (!(left instanceof xdr.ClaimPredicate)) {
-      throw new Error("left Predicate should be an xdr.ClaimPredicate");
+      throw new Error('left Predicate should be an xdr.ClaimPredicate');
     }
     if (!(right instanceof xdr.ClaimPredicate)) {
-      throw new Error("right Predicate should be an xdr.ClaimPredicate");
+      throw new Error('right Predicate should be an xdr.ClaimPredicate');
     }
 
     return xdr.ClaimPredicate.claimPredicateOr([left, right]);
@@ -76,7 +76,7 @@ export class Claimant {
    */
   static predicateNot(predicate) {
     if (!(predicate instanceof xdr.ClaimPredicate)) {
-      throw new Error("right Predicate should be an xdr.ClaimPredicate");
+      throw new Error('right Predicate should be an xdr.ClaimPredicate');
     }
 
     return xdr.ClaimPredicate.claimPredicateNot(predicate);
@@ -155,7 +155,7 @@ export class Claimant {
   }
 
   set destination(value) {
-    throw new Error("Claimant is immutable");
+    throw new Error('Claimant is immutable');
   }
 
   /**
@@ -167,6 +167,6 @@ export class Claimant {
   }
 
   set predicate(value) {
-    throw new Error("Claimant is immutable");
+    throw new Error('Claimant is immutable');
   }
 }

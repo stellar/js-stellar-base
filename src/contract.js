@@ -1,7 +1,7 @@
-import { Address } from "./address";
-import { Operation } from "./operation";
-import xdr from "./xdr";
-import { StrKey } from "./strkey";
+import { Address } from './address';
+import { Operation } from './operation';
+import xdr from './xdr';
+import { StrKey } from './strkey';
 
 /**
  * Create a new Contract object.

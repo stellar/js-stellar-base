@@ -1,5 +1,5 @@
-import xdr from "../xdr";
-import { Asset } from "../asset";
+import xdr from '../xdr';
+import { Asset } from '../asset';
 
 /**
  * Create a new claimable balance operation.
@@ -38,16 +38,16 @@ import { Asset } from "../asset";
 export function createClaimableBalance(opts) {
   if (!(opts.asset instanceof Asset)) {
     throw new Error(
-      "must provide an asset for create claimable balance operation"
+      'must provide an asset for create claimable balance operation'
     );
   }
 
   if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+    throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
 
   if (!Array.isArray(opts.claimants) || opts.claimants.length === 0) {
-    throw new Error("must provide at least one claimant");
+    throw new Error('must provide at least one claimant');
   }
 
   const attributes = {};

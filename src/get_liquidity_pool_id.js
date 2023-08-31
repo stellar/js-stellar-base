@@ -1,6 +1,6 @@
-import xdr from "./xdr";
-import { Asset } from "./asset";
-import { hash } from "./hashing";
+import xdr from './xdr';
+import { Asset } from './asset';
+import { hash } from './hashing';
 
 // LiquidityPoolFeeV18 is the default liquidity pool fee in protocol v18. It defaults to 30 base points (0.3%).
 export const LiquidityPoolFeeV18 = 30;
@@ -23,23 +23,23 @@ export function getLiquidityPoolId(
   liquidityPoolType,
   liquidityPoolParameters = {}
 ) {
-  if (liquidityPoolType !== "constant_product") {
-    throw new Error("liquidityPoolType is invalid");
+  if (liquidityPoolType !== 'constant_product') {
+    throw new Error('liquidityPoolType is invalid');
   }
 
   const { assetA, assetB, fee } = liquidityPoolParameters;
   if (!assetA || !(assetA instanceof Asset)) {
-    throw new Error("assetA is invalid");
+    throw new Error('assetA is invalid');
   }
   if (!assetB || !(assetB instanceof Asset)) {
-    throw new Error("assetB is invalid");
+    throw new Error('assetB is invalid');
   }
   if (!fee || fee !== LiquidityPoolFeeV18) {
-    throw new Error("fee is invalid");
+    throw new Error('fee is invalid');
   }
 
   if (Asset.compare(assetA, assetB) !== -1) {
-    throw new Error("Assets are not in lexicographic order");
+    throw new Error('Assets are not in lexicographic order');
   }
 
   const lpTypeData =

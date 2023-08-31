@@ -1,12 +1,12 @@
 /* eslint no-bitwise: ["error", {"allow": [">>"]}] */
-import { Hyper, UnsignedHyper } from "js-xdr";
+import { Hyper, UnsignedHyper } from 'js-xdr';
 
-import { Uint128 } from "./uint128";
-import { Uint256 } from "./uint256";
-import { Int128 } from "./int128";
-import { Int256 } from "./int256";
+import { Uint128 } from './uint128';
+import { Uint256 } from './uint256';
+import { Int128 } from './int128';
+import { Int256 } from './int256';
 
-import xdr from "../xdr";
+import xdr from '../xdr';
 
 /**
  * A wrapper class to represent large XDR-encodable integers.
@@ -40,7 +40,7 @@ export class XdrLargeInt {
     // normalize values to one type
     values = values.map((i) => {
       // micro-optimization to no-op on the likeliest input value:
-      if (typeof i === "bigint") {
+      if (typeof i === 'bigint') {
         return i;
       }
       if (i instanceof XdrLargeInt) {
@@ -50,22 +50,22 @@ export class XdrLargeInt {
     });
 
     switch (type) {
-      case "i64":
+      case 'i64':
         this.int = new Hyper(values);
         break;
-      case "i128":
+      case 'i128':
         this.int = new Int128(values);
         break;
-      case "i256":
+      case 'i256':
         this.int = new Int256(values);
         break;
-      case "u64":
+      case 'u64':
         this.int = new UnsignedHyper(values);
         break;
-      case "u128":
+      case 'u128':
         this.int = new Uint128(values);
         break;
-      case "u256":
+      case 'u256':
         this.int = new Uint256(values);
         break;
       default:
@@ -201,17 +201,17 @@ export class XdrLargeInt {
    */
   toScVal() {
     switch (this.type) {
-      case "i64":
+      case 'i64':
         return this.toI64();
-      case "i128":
+      case 'i128':
         return this.toI128();
-      case "i256":
+      case 'i256':
         return this.toI256();
-      case "u64":
+      case 'u64':
         return this.toU64();
-      case "u128":
+      case 'u128':
         return this.toU128();
-      case "u256":
+      case 'u256':
         return this.toU256();
       default:
         throw TypeError(`invalid type: ${this.type}`);

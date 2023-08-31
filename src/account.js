@@ -1,6 +1,6 @@
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
-import { StrKey } from "./strkey";
+import { StrKey } from './strkey';
 
 /**
  * Create a new Account object.
@@ -22,14 +22,14 @@ import { StrKey } from "./strkey";
 export class Account {
   constructor(accountId, sequence) {
     if (StrKey.isValidMed25519PublicKey(accountId)) {
-      throw new Error("accountId is an M-address; use MuxedAccount instead");
+      throw new Error('accountId is an M-address; use MuxedAccount instead');
     }
 
     if (!StrKey.isValidEd25519PublicKey(accountId)) {
-      throw new Error("accountId is invalid");
+      throw new Error('accountId is invalid');
     }
-    if (!(typeof sequence === "string")) {
-      throw new Error("sequence must be of type string");
+    if (!(typeof sequence === 'string')) {
+      throw new Error('sequence must be of type string');
     }
 
     this._accountId = accountId;

@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import xdr from "../xdr";
-import { Keypair } from "../keypair";
-import { StrKey } from "../strkey";
+import xdr from '../xdr';
+import { Keypair } from '../keypair';
+import { StrKey } from '../strkey';
 
 function weightCheckFunction(value, name) {
   if (value >= 0 && value <= 255) {
@@ -51,7 +51,7 @@ export function setOptions(opts) {
 
   if (opts.inflationDest) {
     if (!StrKey.isValidEd25519PublicKey(opts.inflationDest)) {
-      throw new Error("inflationDest is invalid");
+      throw new Error('inflationDest is invalid');
     }
     attributes.inflationDest = Keypair.fromPublicKey(
       opts.inflationDest
@@ -59,39 +59,39 @@ export function setOptions(opts) {
   }
 
   attributes.clearFlags = this._checkUnsignedIntValue(
-    "clearFlags",
+    'clearFlags',
     opts.clearFlags
   );
-  attributes.setFlags = this._checkUnsignedIntValue("setFlags", opts.setFlags);
+  attributes.setFlags = this._checkUnsignedIntValue('setFlags', opts.setFlags);
   attributes.masterWeight = this._checkUnsignedIntValue(
-    "masterWeight",
+    'masterWeight',
     opts.masterWeight,
     weightCheckFunction
   );
   attributes.lowThreshold = this._checkUnsignedIntValue(
-    "lowThreshold",
+    'lowThreshold',
     opts.lowThreshold,
     weightCheckFunction
   );
   attributes.medThreshold = this._checkUnsignedIntValue(
-    "medThreshold",
+    'medThreshold',
     opts.medThreshold,
     weightCheckFunction
   );
   attributes.highThreshold = this._checkUnsignedIntValue(
-    "highThreshold",
+    'highThreshold',
     opts.highThreshold,
     weightCheckFunction
   );
 
-  if (opts.homeDomain !== undefined && typeof opts.homeDomain !== "string") {
-    throw new TypeError("homeDomain argument must be of type String");
+  if (opts.homeDomain !== undefined && typeof opts.homeDomain !== 'string') {
+    throw new TypeError('homeDomain argument must be of type String');
   }
   attributes.homeDomain = opts.homeDomain;
 
   if (opts.signer) {
     const weight = this._checkUnsignedIntValue(
-      "signer.weight",
+      'signer.weight',
       opts.signer.weight,
       weightCheckFunction
     );
@@ -101,7 +101,7 @@ export function setOptions(opts) {
 
     if (opts.signer.ed25519PublicKey) {
       if (!StrKey.isValidEd25519PublicKey(opts.signer.ed25519PublicKey)) {
-        throw new Error("signer.ed25519PublicKey is invalid.");
+        throw new Error('signer.ed25519PublicKey is invalid.');
       }
       const rawKey = StrKey.decodeEd25519PublicKey(
         opts.signer.ed25519PublicKey
@@ -113,8 +113,8 @@ export function setOptions(opts) {
     }
 
     if (opts.signer.preAuthTx) {
-      if (typeof opts.signer.preAuthTx === "string") {
-        opts.signer.preAuthTx = Buffer.from(opts.signer.preAuthTx, "hex");
+      if (typeof opts.signer.preAuthTx === 'string') {
+        opts.signer.preAuthTx = Buffer.from(opts.signer.preAuthTx, 'hex');
       }
 
       if (
@@ -123,7 +123,7 @@ export function setOptions(opts) {
           opts.signer.preAuthTx.length === 32
         )
       ) {
-        throw new Error("signer.preAuthTx must be 32 bytes Buffer.");
+        throw new Error('signer.preAuthTx must be 32 bytes Buffer.');
       }
 
       // eslint-disable-next-line new-cap
@@ -132,8 +132,8 @@ export function setOptions(opts) {
     }
 
     if (opts.signer.sha256Hash) {
-      if (typeof opts.signer.sha256Hash === "string") {
-        opts.signer.sha256Hash = Buffer.from(opts.signer.sha256Hash, "hex");
+      if (typeof opts.signer.sha256Hash === 'string') {
+        opts.signer.sha256Hash = Buffer.from(opts.signer.sha256Hash, 'hex');
       }
 
       if (
@@ -142,7 +142,7 @@ export function setOptions(opts) {
           opts.signer.sha256Hash.length === 32
         )
       ) {
-        throw new Error("signer.sha256Hash must be 32 bytes Buffer.");
+        throw new Error('signer.sha256Hash must be 32 bytes Buffer.');
       }
 
       // eslint-disable-next-line new-cap
@@ -152,7 +152,7 @@ export function setOptions(opts) {
 
     if (opts.signer.ed25519SignedPayload) {
       if (!StrKey.isValidSignedPayload(opts.signer.ed25519SignedPayload)) {
-        throw new Error("signer.ed25519SignedPayload is invalid.");
+        throw new Error('signer.ed25519SignedPayload is invalid.');
       }
       const rawKey = StrKey.decodeSignedPayload(
         opts.signer.ed25519SignedPayload
@@ -167,7 +167,7 @@ export function setOptions(opts) {
 
     if (setValues !== 1) {
       throw new Error(
-        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx."
+        'Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.'
       );
     }
 

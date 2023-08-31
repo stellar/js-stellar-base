@@ -1,5 +1,5 @@
-import xdr from "../xdr";
-import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account";
+import xdr from '../xdr';
+import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
 
 /**
  * Creates a clawback operation.
@@ -23,14 +23,14 @@ import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account
 export function clawback(opts) {
   const attributes = {};
   if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+    throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
   attributes.amount = this._toXDRAmount(opts.amount);
   attributes.asset = opts.asset.toXDRObject();
   try {
     attributes.from = decodeAddressToMuxedAccount(opts.from);
   } catch (e) {
-    throw new Error("from address is invalid");
+    throw new Error('from address is invalid');
   }
 
   const opAttributes = {

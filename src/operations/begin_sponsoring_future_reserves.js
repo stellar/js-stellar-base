@@ -1,6 +1,6 @@
-import xdr from "../xdr";
-import { StrKey } from "../strkey";
-import { Keypair } from "../keypair";
+import xdr from '../xdr';
+import { StrKey } from '../strkey';
+import { Keypair } from '../keypair';
 
 /**
  * Create a "begin sponsoring future reserves" operation.
@@ -19,7 +19,7 @@ import { Keypair } from "../keypair";
  */
 export function beginSponsoringFutureReserves(opts = {}) {
   if (!StrKey.isValidEd25519PublicKey(opts.sponsoredId)) {
-    throw new Error("sponsoredId is invalid");
+    throw new Error('sponsoredId is invalid');
   }
   const op = new xdr.BeginSponsoringFutureReservesOp({
     sponsoredId: Keypair.fromPublicKey(opts.sponsoredId).xdrAccountId()

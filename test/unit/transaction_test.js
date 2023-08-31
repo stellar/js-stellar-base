@@ -1,16 +1,16 @@
-import { UnsignedHyper } from "js-xdr";
-import randomBytes from "randombytes";
+import { UnsignedHyper } from 'js-xdr';
+import randomBytes from 'randombytes';
 
-describe("Transaction", function () {
-  it("constructs Transaction object from a TransactionEnvelope", function (done) {
+describe('Transaction', function () {
+  it('constructs Transaction object from a TransactionEnvelope', function (done) {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000.0000000";
+    let amount = '2000.0000000';
 
     let input = new StellarBase.TransactionBuilder(source, {
       fee: 100,
@@ -19,11 +19,11 @@ describe("Transaction", function () {
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
-      .addMemo(StellarBase.Memo.text("Happy birthday!"))
+      .addMemo(StellarBase.Memo.text('Happy birthday!'))
       .setTimeout(StellarBase.TimeoutInfinite)
       .build()
       .toEnvelope()
-      .toXDR("base64");
+      .toXDR('base64');
 
     var transaction = new StellarBase.Transaction(
       input,
@@ -32,28 +32,28 @@ describe("Transaction", function () {
     var operation = transaction.operations[0];
 
     expect(transaction.source).to.be.equal(source.accountId());
-    expect(transaction.fee).to.be.equal("100");
+    expect(transaction.fee).to.be.equal('100');
     expect(transaction.memo.type).to.be.equal(StellarBase.MemoText);
-    expect(transaction.memo.value.toString("ascii")).to.be.equal(
-      "Happy birthday!"
+    expect(transaction.memo.value.toString('ascii')).to.be.equal(
+      'Happy birthday!'
     );
-    expect(operation.type).to.be.equal("payment");
+    expect(operation.type).to.be.equal('payment');
     expect(operation.destination).to.be.equal(destination);
     expect(operation.amount).to.be.equal(amount);
 
     done();
   });
 
-  describe("toEnvelope", function () {
+  describe('toEnvelope', function () {
     beforeEach(function () {
       let source = new StellarBase.Account(
-        "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-        "0"
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+        '0'
       );
       let destination =
-        "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+        'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
       let asset = StellarBase.Asset.native();
-      let amount = "2000.0000000";
+      let amount = '2000.0000000';
 
       this.transaction = new StellarBase.TransactionBuilder(source, {
         fee: 100,
@@ -62,36 +62,36 @@ describe("Transaction", function () {
         .addOperation(
           StellarBase.Operation.payment({ destination, asset, amount })
         )
-        .addMemo(StellarBase.Memo.text("Happy birthday!"))
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
     });
 
-    it("does not return a reference to source signatures", function () {
+    it('does not return a reference to source signatures', function () {
       const transaction = this.transaction;
       const envelope = transaction.toEnvelope().value();
       envelope.signatures().push({});
 
       expect(transaction.signatures.length).to.equal(0);
     });
-    it("does not return a reference to the source transaction", function () {
+    it('does not return a reference to the source transaction', function () {
       const transaction = this.transaction;
       const envelope = transaction.toEnvelope().value();
-      envelope.tx().fee(StellarBase.xdr.Int64.fromString("300"));
+      envelope.tx().fee(StellarBase.xdr.Int64.fromString('300'));
 
-      expect(transaction.tx.fee().toString()).to.equal("100");
+      expect(transaction.tx.fee().toString()).to.equal('100');
     });
   });
 
-  it("throws when a garbage Network is selected", () => {
+  it('throws when a garbage Network is selected', () => {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000.0000000";
+    let amount = '2000.0000000';
 
     let input = new StellarBase.TransactionBuilder(source, {
       fee: 100,
@@ -100,14 +100,14 @@ describe("Transaction", function () {
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
-      .addMemo(StellarBase.Memo.text("Happy birthday!"))
+      .addMemo(StellarBase.Memo.text('Happy birthday!'))
       .setTimeout(StellarBase.TimeoutInfinite)
       .build()
       .toEnvelope()
-      .toXDR("base64");
+      .toXDR('base64');
 
     expect(() => {
-      new StellarBase.Transaction(input, { garbage: "yes" });
+      new StellarBase.Transaction(input, { garbage: 'yes' });
     }).to.throw(/expected a string/);
 
     expect(() => {
@@ -115,15 +115,15 @@ describe("Transaction", function () {
     }).to.throw(/expected a string/);
   });
 
-  it("throws when a Network is not passed", () => {
+  it('throws when a Network is not passed', () => {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000.0000000";
+    let amount = '2000.0000000';
 
     let input = new StellarBase.TransactionBuilder(source, {
       fee: 100,
@@ -132,26 +132,26 @@ describe("Transaction", function () {
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
-      .addMemo(StellarBase.Memo.text("Happy birthday!"))
+      .addMemo(StellarBase.Memo.text('Happy birthday!'))
       .setTimeout(StellarBase.TimeoutInfinite)
       .build()
       .toEnvelope()
-      .toXDR("base64");
+      .toXDR('base64');
 
     expect(() => {
       new StellarBase.Transaction(input);
     }).to.throw(/expected a string/);
   });
 
-  it("throws when no fee is provided", function () {
+  it('throws when no fee is provided', function () {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000";
+    let amount = '2000';
 
     expect(() =>
       new StellarBase.TransactionBuilder(source, {
@@ -165,15 +165,15 @@ describe("Transaction", function () {
     ).to.throw(/must specify fee/);
   });
 
-  it("signs correctly", function () {
+  it('signs correctly', function () {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000";
+    let amount = '2000';
     let signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     let tx = new StellarBase.TransactionBuilder(source, {
@@ -194,15 +194,15 @@ describe("Transaction", function () {
     expect(verified).to.equal(true);
   });
 
-  it("signs using hash preimage", function () {
+  it('signs using hash preimage', function () {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000";
+    let amount = '2000';
 
     let preimage = randomBytes(64);
     let hash = StellarBase.hash(preimage);
@@ -226,15 +226,15 @@ describe("Transaction", function () {
     );
   });
 
-  it("returns error when signing using hash preimage that is too long", function () {
+  it('returns error when signing using hash preimage that is too long', function () {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000";
+    let amount = '2000';
 
     let preimage = randomBytes(2 * 64);
 
@@ -253,16 +253,16 @@ describe("Transaction", function () {
     );
   });
 
-  it("adds signature correctly", function () {
+  it('adds signature correctly', function () {
     const sourceKey =
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB";
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
     // make two sources so they have the same seq number
-    const signedSource = new StellarBase.Account(sourceKey, "20");
-    const addedSignatureSource = new StellarBase.Account(sourceKey, "20");
+    const signedSource = new StellarBase.Account(sourceKey, '20');
+    const addedSignatureSource = new StellarBase.Account(sourceKey, '20');
     const destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
-    const amount = "2000";
+    const amount = '2000';
     const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const signedTx = new StellarBase.TransactionBuilder(signedSource, {
@@ -299,7 +299,7 @@ describe("Transaction", function () {
       )
       .build();
 
-    const signature = signer.sign(presignHash).toString("base64");
+    const signature = signer.sign(presignHash).toString('base64');
 
     addedSignatureTx.addSignature(signer.publicKey(), signature);
 
@@ -325,16 +325,16 @@ describe("Transaction", function () {
     expectBuffersToBeEqual(addedSignatureTx.hash(), signedTx.hash());
   });
 
-  it("adds signature generated by getKeypairSignature", function () {
+  it('adds signature generated by getKeypairSignature', function () {
     const sourceKey =
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB";
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
     // make two sources so they have the same seq number
-    const signedSource = new StellarBase.Account(sourceKey, "20");
-    const addedSignatureSource = new StellarBase.Account(sourceKey, "20");
+    const signedSource = new StellarBase.Account(sourceKey, '20');
+    const addedSignatureSource = new StellarBase.Account(sourceKey, '20');
     const destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
-    const amount = "2000";
+    const amount = '2000';
     const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const signedTx = new StellarBase.TransactionBuilder(signedSource, {
@@ -360,7 +360,7 @@ describe("Transaction", function () {
       StellarBase.Networks.TESTNET
     ).getKeypairSignature(signer);
 
-    expect(signer.sign(presignHash).toString("base64")).to.equal(signature);
+    expect(signer.sign(presignHash).toString('base64')).to.equal(signature);
 
     const addedSignatureTx = new StellarBase.TransactionBuilder(
       addedSignatureSource,
@@ -402,17 +402,17 @@ describe("Transaction", function () {
     expectBuffersToBeEqual(addedSignatureTx.hash(), signedTx.hash());
   });
 
-  it("does not add invalid signature", function () {
+  it('does not add invalid signature', function () {
     const sourceKey =
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB";
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB';
     // make two sources so they have the same seq number
-    const source = new StellarBase.Account(sourceKey, "20");
-    const sourceCopy = new StellarBase.Account(sourceKey, "20");
+    const source = new StellarBase.Account(sourceKey, '20');
+    const sourceCopy = new StellarBase.Account(sourceKey, '20');
     const destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     const asset = StellarBase.Asset.native();
-    const originalAmount = "2000";
-    const alteredAmount = "1000";
+    const originalAmount = '2000';
+    const alteredAmount = '1000';
     const signer = StellarBase.Keypair.master(StellarBase.Networks.TESTNET);
 
     const originalTx = new StellarBase.TransactionBuilder(source, {
@@ -457,18 +457,18 @@ describe("Transaction", function () {
     function addSignature() {
       alteredTx.addSignature(signer.publicKey(), signature);
     }
-    expect(addSignature).to.throw("Invalid signature");
+    expect(addSignature).to.throw('Invalid signature');
   });
 
-  it("accepts 0 as a valid transaction fee", function (done) {
+  it('accepts 0 as a valid transaction fee', function (done) {
     let source = new StellarBase.Account(
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-      "0"
+      'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+      '0'
     );
     let destination =
-      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
     let asset = StellarBase.Asset.native();
-    let amount = "2000";
+    let amount = '2000';
 
     let input = new StellarBase.TransactionBuilder(source, {
       fee: 0,
@@ -477,11 +477,11 @@ describe("Transaction", function () {
       .addOperation(
         StellarBase.Operation.payment({ destination, asset, amount })
       )
-      .addMemo(StellarBase.Memo.text("Happy birthday!"))
+      .addMemo(StellarBase.Memo.text('Happy birthday!'))
       .setTimeout(StellarBase.TimeoutInfinite)
       .build()
       .toEnvelope()
-      .toXDR("base64");
+      .toXDR('base64');
 
     var transaction = new StellarBase.Transaction(
       input,
@@ -489,32 +489,32 @@ describe("Transaction", function () {
     );
     var operation = transaction.operations[0];
 
-    expect(transaction.fee).to.be.equal("0");
+    expect(transaction.fee).to.be.equal('0');
 
     done();
   });
 
-  it("outputs xdr as a string", () => {
+  it('outputs xdr as a string', () => {
     const xdrString =
-      "AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=";
+      'AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=';
     const transaction = new StellarBase.Transaction(
       xdrString,
       StellarBase.Networks.TESTNET
     );
-    expect(typeof transaction).to.be.equal("object");
-    expect(typeof transaction.toXDR).to.be.equal("function");
+    expect(typeof transaction).to.be.equal('object');
+    expect(typeof transaction.toXDR).to.be.equal('function');
     expect(transaction.toXDR()).to.be.equal(xdrString);
   });
 
-  describe("TransactionEnvelope with MuxedAccount", function () {
-    it("handles muxed accounts", function () {
-      let baseFee = "100";
-      const networkPassphrase = "Standalone Network ; February 2017";
+  describe('TransactionEnvelope with MuxedAccount', function () {
+    it('handles muxed accounts', function () {
+      let baseFee = '100';
+      const networkPassphrase = 'Standalone Network ; February 2017';
       const source = StellarBase.Keypair.master(networkPassphrase);
-      const account = new StellarBase.Account(source.publicKey(), "7");
+      const account = new StellarBase.Account(source.publicKey(), '7');
       const destination =
-        "GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM";
-      const amount = "2000.0000000";
+        'GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM';
+      const amount = '2000.0000000';
       const asset = StellarBase.Asset.native();
       let tx = new StellarBase.TransactionBuilder(account, {
         fee: baseFee,
@@ -531,18 +531,18 @@ describe("Transaction", function () {
             amount
           })
         )
-        .addMemo(StellarBase.Memo.text("Happy birthday!"))
+        .addMemo(StellarBase.Memo.text('Happy birthday!'))
         .build();
 
       // force the source to be muxed in the envelope
-      const muxedSource = new StellarBase.MuxedAccount(account, "0");
+      const muxedSource = new StellarBase.MuxedAccount(account, '0');
       const envelope = tx.toEnvelope();
       envelope.v1().tx().sourceAccount(muxedSource.toXDRObject());
 
       // force the payment destination to be muxed in the envelope
       const destinationMuxed = new StellarBase.MuxedAccount(
-        new StellarBase.Account(destination, "1"),
-        "0"
+        new StellarBase.Account(destination, '1'),
+        '0'
       );
       envelope
         .v1()
@@ -562,8 +562,8 @@ describe("Transaction", function () {
     });
   });
 
-  describe("knows how to calculate claimable balance IDs", function () {
-    const address = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ";
+  describe('knows how to calculate claimable balance IDs', function () {
+    const address = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
     const makeBuilder = function (source) {
       return new StellarBase.TransactionBuilder(source, {
@@ -576,7 +576,7 @@ describe("Transaction", function () {
     const makeClaimableBalance = function () {
       return StellarBase.Operation.createClaimableBalance({
         asset: StellarBase.Asset.native(),
-        amount: "100",
+        amount: '100',
         claimants: [
           new StellarBase.Claimant(
             address,
@@ -589,49 +589,49 @@ describe("Transaction", function () {
     const paymentOp = StellarBase.Operation.payment({
       destination: address,
       asset: StellarBase.Asset.native(),
-      amount: "100"
+      amount: '100'
     });
 
-    it("calculates from transaction src", function () {
-      let gSource = new StellarBase.Account(address, "1234");
+    it('calculates from transaction src', function () {
+      let gSource = new StellarBase.Account(address, '1234');
 
       let tx = makeBuilder(gSource)
         .addOperation(makeClaimableBalance())
         .build();
       const balanceId = tx.getClaimableBalanceId(0);
       expect(balanceId).to.be.equal(
-        "00000000536af35c666a28d26775008321655e9eda2039154270484e3f81d72c66d5c26f"
+        '00000000536af35c666a28d26775008321655e9eda2039154270484e3f81d72c66d5c26f'
       );
     });
 
     // See https://github.com/stellar/js-stellar-base/issues/529
-    it("calculates from transaction src (big number sequence)", function () {
-      let gSource = new StellarBase.Account(address, "114272277834498050");
+    it('calculates from transaction src (big number sequence)', function () {
+      let gSource = new StellarBase.Account(address, '114272277834498050');
 
       let tx = makeBuilder(gSource)
         .addOperation(makeClaimableBalance())
         .build();
       const balanceId = tx.getClaimableBalanceId(0);
       expect(balanceId).to.be.equal(
-        "000000001cd1e39f422a864b4efca661e11ffaa1c54e69b23aaf096e0cfd361bb4a275bf"
+        '000000001cd1e39f422a864b4efca661e11ffaa1c54e69b23aaf096e0cfd361bb4a275bf'
       );
     });
 
-    it("calculates from muxed transaction src as if unmuxed", function () {
-      let gSource = new StellarBase.Account(address, "1234");
-      let mSource = new StellarBase.MuxedAccount(gSource, "5678");
+    it('calculates from muxed transaction src as if unmuxed', function () {
+      let gSource = new StellarBase.Account(address, '1234');
+      let mSource = new StellarBase.MuxedAccount(gSource, '5678');
       let tx = makeBuilder(mSource)
         .addOperation(makeClaimableBalance())
         .build();
 
       const balanceId = tx.getClaimableBalanceId(0);
       expect(balanceId).to.be.equal(
-        "00000000536af35c666a28d26775008321655e9eda2039154270484e3f81d72c66d5c26f"
+        '00000000536af35c666a28d26775008321655e9eda2039154270484e3f81d72c66d5c26f'
       );
     });
 
-    it("throws on invalid operations", function () {
-      let gSource = new StellarBase.Account(address, "1234");
+    it('throws on invalid operations', function () {
+      let gSource = new StellarBase.Account(address, '1234');
       let tx = makeBuilder(gSource)
         .addOperation(paymentOp)
         .addOperation(makeClaimableBalance())
@@ -646,10 +646,10 @@ describe("Transaction", function () {
     });
   });
 
-  describe("preconditions", function () {
-    const address = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ";
+  describe('preconditions', function () {
+    const address = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
-    const source = new StellarBase.Account(address, "1234");
+    const source = new StellarBase.Account(address, '1234');
     const makeBuilder = function () {
       return new StellarBase.TransactionBuilder(source, {
         fee: StellarBase.BASE_FEE,
@@ -658,8 +658,8 @@ describe("Transaction", function () {
       });
     };
 
-    describe("timebounds", function () {
-      it("Date", function () {
+    describe('timebounds', function () {
+      it('Date', function () {
         let now = new Date();
         let tx = makeBuilder().setTimebounds(now, now).build();
         const expMin = `${Math.floor(now.valueOf() / 1000)}`;
@@ -673,18 +673,18 @@ describe("Transaction", function () {
         expect(tb.maxTime().toString()).to.equal(expMax);
       });
 
-      it("number", function () {
+      it('number', function () {
         let tx = makeBuilder().setTimebounds(5, 10).build();
-        expect(tx.timeBounds.minTime).to.eql("5");
-        expect(tx.timeBounds.maxTime).to.eql("10");
+        expect(tx.timeBounds.minTime).to.eql('5');
+        expect(tx.timeBounds.maxTime).to.eql('10');
 
         const tb = tx.toEnvelope().v1().tx().cond().timeBounds();
-        expect(tb.minTime().toString()).to.equal("5");
-        expect(tb.maxTime().toString()).to.equal("10");
+        expect(tb.minTime().toString()).to.equal('5');
+        expect(tb.maxTime().toString()).to.equal('10');
       });
     });
 
-    it("ledgerbounds", function () {
+    it('ledgerbounds', function () {
       let tx = makeBuilder().setTimeout(5).setLedgerbounds(5, 10).build();
 
       expect(tx.ledgerBounds.minLedger).to.equal(5);
@@ -695,34 +695,34 @@ describe("Transaction", function () {
       expect(lb.maxLedger()).to.equal(10);
     });
 
-    it("minAccountSequence", function () {
-      let tx = makeBuilder().setTimeout(5).setMinAccountSequence("5").build();
-      expect(tx.minAccountSequence).to.eql("5");
+    it('minAccountSequence', function () {
+      let tx = makeBuilder().setTimeout(5).setMinAccountSequence('5').build();
+      expect(tx.minAccountSequence).to.eql('5');
 
       const val = tx.toEnvelope().v1().tx().cond().v2().minSeqNum();
-      expect(val.toString()).to.equal("5");
+      expect(val.toString()).to.equal('5');
     });
 
-    it("minAccountSequence (big number)", function () {
+    it('minAccountSequence (big number)', function () {
       let tx = makeBuilder()
         .setTimeout(5)
-        .setMinAccountSequence("103420918407103888")
+        .setMinAccountSequence('103420918407103888')
         .build();
-      expect(tx.minAccountSequence).to.eql("103420918407103888");
+      expect(tx.minAccountSequence).to.eql('103420918407103888');
 
       const val = tx.toEnvelope().v1().tx().cond().v2().minSeqNum();
-      expect(val.toString()).to.equal("103420918407103888");
+      expect(val.toString()).to.equal('103420918407103888');
     });
 
-    it("minAccountSequenceAge", function () {
+    it('minAccountSequenceAge', function () {
       let tx = makeBuilder().setTimeout(5).setMinAccountSequenceAge(5).build();
-      expect(tx.minAccountSequenceAge.toString()).to.equal("5");
+      expect(tx.minAccountSequenceAge.toString()).to.equal('5');
 
       const val = tx.toEnvelope().v1().tx().cond().v2().minSeqAge();
-      expect(val.toString()).to.equal("5");
+      expect(val.toString()).to.equal('5');
     });
 
-    it("minAccountSequenceLedgerGap", function () {
+    it('minAccountSequenceLedgerGap', function () {
       let tx = makeBuilder()
         .setTimeout(5)
         .setMinAccountSequenceLedgerGap(5)
@@ -730,10 +730,10 @@ describe("Transaction", function () {
       expect(tx.minAccountSequenceLedgerGap).to.equal(5);
 
       const val = tx.toEnvelope().v1().tx().cond().v2().minSeqLedgerGap();
-      expect(val.toString()).to.equal("5");
+      expect(val.toString()).to.equal('5');
     });
 
-    it("extraSigners", function () {
+    it('extraSigners', function () {
       let tx = makeBuilder().setTimeout(5).setExtraSigners([address]).build();
       expect(tx.extraSigners).to.have.lengthOf(1);
       expect(tx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)).to.eql(
@@ -748,7 +748,7 @@ describe("Transaction", function () {
 });
 
 function expectBuffersToBeEqual(left, right) {
-  let leftHex = left.toString("hex");
-  let rightHex = right.toString("hex");
+  let leftHex = left.toString('hex');
+  let rightHex = right.toString('hex');
   expect(leftHex).to.eql(rightHex);
 }

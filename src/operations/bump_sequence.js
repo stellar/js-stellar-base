@@ -1,6 +1,6 @@
-import { Hyper } from "js-xdr";
-import BigNumber from "bignumber.js";
-import xdr from "../xdr";
+import { Hyper } from 'js-xdr';
+import BigNumber from 'bignumber.js';
+import xdr from '../xdr';
 
 /**
  * This operation bumps sequence number.
@@ -14,15 +14,15 @@ import xdr from "../xdr";
 export function bumpSequence(opts) {
   const attributes = {};
 
-  if (typeof opts.bumpTo !== "string") {
-    throw new Error("bumpTo must be a string");
+  if (typeof opts.bumpTo !== 'string') {
+    throw new Error('bumpTo must be a string');
   }
 
   try {
     // eslint-disable-next-line no-new
     new BigNumber(opts.bumpTo);
   } catch (e) {
-    throw new Error("bumpTo must be a stringified number");
+    throw new Error('bumpTo must be a stringified number');
   }
 
   attributes.bumpTo = Hyper.fromString(opts.bumpTo);

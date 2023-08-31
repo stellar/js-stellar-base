@@ -1,6 +1,6 @@
-import xdr from "../xdr";
-import { Keypair } from "../keypair";
-import { StrKey } from "../strkey";
+import xdr from '../xdr';
+import { Keypair } from '../keypair';
+import { StrKey } from '../strkey';
 
 /**
  * @deprecated since v5.0
@@ -21,21 +21,21 @@ import { StrKey } from "../strkey";
  */
 export function allowTrust(opts) {
   if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
-    throw new Error("trustor is invalid");
+    throw new Error('trustor is invalid');
   }
   const attributes = {};
   attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
   if (opts.assetCode.length <= 4) {
-    const code = opts.assetCode.padEnd(4, "\0");
+    const code = opts.assetCode.padEnd(4, '\0');
     attributes.asset = xdr.AssetCode.assetTypeCreditAlphanum4(code);
   } else if (opts.assetCode.length <= 12) {
-    const code = opts.assetCode.padEnd(12, "\0");
+    const code = opts.assetCode.padEnd(12, '\0');
     attributes.asset = xdr.AssetCode.assetTypeCreditAlphanum12(code);
   } else {
-    throw new Error("Asset code must be 12 characters at max.");
+    throw new Error('Asset code must be 12 characters at max.');
   }
 
-  if (typeof opts.authorize === "boolean") {
+  if (typeof opts.authorize === 'boolean') {
     if (opts.authorize) {
       attributes.authorize = xdr.TrustLineFlags.authorizedFlag().value;
     } else {

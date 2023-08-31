@@ -26,7 +26,7 @@ export function generate(secretKey) {
 }
 
 function checkFastSigning() {
-  return typeof window === "undefined"
+  return typeof window === 'undefined'
     ? checkFastSigningNode()
     : checkFastSigningBrowser();
 }
@@ -37,7 +37,7 @@ function checkFastSigningNode() {
   let sodium;
   try {
     // eslint-disable-next-line
-    sodium = require("sodium-native");
+    sodium = require('sodium-native');
   } catch (err) {
     return checkFastSigningBrowser();
   }
@@ -76,7 +76,7 @@ function checkFastSigningBrowser() {
   // fallback to `tweetnacl` if we're in the browser or
   // if there was a failure installing `sodium-native`
   // eslint-disable-next-line
-  const nacl = require("tweetnacl");
+  const nacl = require('tweetnacl');
 
   actualMethods.generate = (secretKey) => {
     const secretKeyUint8 = new Uint8Array(secretKey);

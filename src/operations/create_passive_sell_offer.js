@@ -1,4 +1,4 @@
-import xdr from "../xdr";
+import xdr from '../xdr';
 
 /**
  * Returns a XDR CreatePasiveSellOfferOp. A "create passive offer" operation creates an
@@ -23,11 +23,11 @@ export function createPassiveSellOffer(opts) {
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
   if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+    throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
   attributes.amount = this._toXDRAmount(opts.amount);
   if (opts.price === undefined) {
-    throw new TypeError("price argument is required");
+    throw new TypeError('price argument is required');
   }
   attributes.price = this._toXDRPrice(opts.price);
   const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp(attributes);

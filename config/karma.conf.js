@@ -1,4 +1,4 @@
-const webpackConfig = require("./webpack.config.browser.js");
+const webpackConfig = require('./webpack.config.browser.js');
 
 delete webpackConfig.output;
 delete webpackConfig.entry; // karma fills these in
@@ -6,16 +6,16 @@ webpackConfig.plugins.shift(); // drop eslinter plugin
 
 module.exports = function (config) {
   config.set({
-    frameworks: ["mocha", "sinon-chai"],
-    browsers: ["FirefoxHeadless", "ChromeHeadless"],
+    frameworks: ['mocha', 'sinon-chai'],
+    browsers: ['FirefoxHeadless', 'ChromeHeadless'],
 
     files: [
-      "../dist/stellar-base.js", // webpack should build this first
-      "../test/unit/**/*.js"
+      '../dist/stellar-base.js', // webpack should build this first
+      '../test/unit/**/*.js'
     ],
 
     preprocessors: {
-      "../test/unit/**/*.js": ["webpack"]
+      '../test/unit/**/*.js': ['webpack']
     },
 
     webpack: webpackConfig,
@@ -26,9 +26,9 @@ module.exports = function (config) {
     colors: true,
     singleRun: true,
 
-    reporters: ["dots", "coverage"],
+    reporters: ['dots', 'coverage'],
     coverageReporter: {
-      type: "text-summary",
+      type: 'text-summary',
       instrumenterOptions: {
         istanbul: { noCompact: true }
       }

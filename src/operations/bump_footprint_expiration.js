@@ -1,4 +1,4 @@
-import xdr from "../xdr";
+import xdr from '../xdr';
 
 /**
  * Builds an operation to bump the expiration of a footprint (read and written

@@ -1,13 +1,13 @@
-import xdr from "./xdr";
-import { hash } from "./hashing";
-import { Keypair } from "./keypair";
+import xdr from './xdr';
+import { hash } from './hashing';
+import { Keypair } from './keypair';
 
 /**
  * @ignore
  */
 export class TransactionBase {
   constructor(tx, signatures, fee, networkPassphrase) {
-    if (typeof networkPassphrase !== "string") {
+    if (typeof networkPassphrase !== 'string') {
       throw new Error(
         `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
       );
@@ -28,7 +28,7 @@ export class TransactionBase {
   }
 
   set signatures(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   get tx() {
@@ -36,7 +36,7 @@ export class TransactionBase {
   }
 
   set tx(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -48,7 +48,7 @@ export class TransactionBase {
   }
 
   set fee(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -99,7 +99,7 @@ export class TransactionBase {
    * @returns {string} Signature string
    */
   getKeypairSignature(keypair) {
-    return keypair.sign(this.hash()).toString("base64");
+    return keypair.sign(this.hash()).toString('base64');
   }
 
   /**
@@ -126,28 +126,28 @@ export class TransactionBase {
    * @param {string} signature The base64 value of the signature XDR
    * @returns {void}
    */
-  addSignature(publicKey = "", signature = "") {
-    if (!signature || typeof signature !== "string") {
-      throw new Error("Invalid signature");
+  addSignature(publicKey = '', signature = '') {
+    if (!signature || typeof signature !== 'string') {
+      throw new Error('Invalid signature');
     }
 
-    if (!publicKey || typeof publicKey !== "string") {
-      throw new Error("Invalid publicKey");
+    if (!publicKey || typeof publicKey !== 'string') {
+      throw new Error('Invalid publicKey');
     }
 
     let keypair;
     let hint;
-    const signatureBuffer = Buffer.from(signature, "base64");
+    const signatureBuffer = Buffer.from(signature, 'base64');
 
     try {
       keypair = Keypair.fromPublicKey(publicKey);
       hint = keypair.signatureHint();
     } catch (e) {
-      throw new Error("Invalid publicKey");
+      throw new Error('Invalid publicKey');
     }
 
     if (!keypair.verify(this.hash(), signatureBuffer)) {
-      throw new Error("Invalid signature");
+      throw new Error('Invalid signature');
     }
 
     this.signatures.push(
@@ -177,12 +177,12 @@ export class TransactionBase {
    * @returns {void}
    */
   signHashX(preimage) {
-    if (typeof preimage === "string") {
-      preimage = Buffer.from(preimage, "hex");
+    if (typeof preimage === 'string') {
+      preimage = Buffer.from(preimage, 'hex');
     }
 
     if (preimage.length > 64) {
-      throw new Error("preimage cannnot be longer than 64 bytes");
+      throw new Error('preimage cannnot be longer than 64 bytes');
     }
 
     const signature = preimage;
@@ -200,11 +200,11 @@ export class TransactionBase {
   }
 
   signatureBase() {
-    throw new Error("Implement in subclass");
+    throw new Error('Implement in subclass');
   }
 
   toEnvelope() {
-    throw new Error("Implement in subclass");
+    throw new Error('Implement in subclass');
   }
 
   /**
@@ -212,6 +212,6 @@ export class TransactionBase {
    * @returns {string} XDR string
    */
   toXDR() {
-    return this.toEnvelope().toXDR().toString("base64");
+    return this.toEnvelope().toXDR().toString('base64');
   }
 }

@@ -1,14 +1,14 @@
-import xdr from "./xdr";
-import { hash } from "./hashing";
+import xdr from './xdr';
+import { hash } from './hashing';
 
-import { StrKey } from "./strkey";
-import { Operation } from "./operation";
-import { Memo } from "./memo";
-import { TransactionBase } from "./transaction_base";
+import { StrKey } from './strkey';
+import { Operation } from './operation';
+import { Memo } from './memo';
+import { TransactionBase } from './transaction_base';
 import {
   extractBaseAddress,
   encodeMuxedAccountToAddress
-} from "./util/decode_encode_muxed_account";
+} from './util/decode_encode_muxed_account';
 
 /**
  * Use {@link TransactionBuilder} to build a transaction object. If you have an
@@ -31,8 +31,8 @@ import {
  */
 export class Transaction extends TransactionBase {
   constructor(envelope, networkPassphrase) {
-    if (typeof envelope === "string") {
-      const buffer = Buffer.from(envelope, "base64");
+    if (typeof envelope === 'string') {
+      const buffer = Buffer.from(envelope, 'base64');
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
 
@@ -137,7 +137,7 @@ export class Transaction extends TransactionBase {
     return this._timeBounds;
   }
   set timeBounds(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -150,7 +150,7 @@ export class Transaction extends TransactionBase {
     return this._ledgerBounds;
   }
   set ledgerBounds(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -161,7 +161,7 @@ export class Transaction extends TransactionBase {
     return this._minAccountSequence;
   }
   set minAccountSequence(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -172,7 +172,7 @@ export class Transaction extends TransactionBase {
     return this._minAccountSequenceAge;
   }
   set minAccountSequenceAge(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -183,7 +183,7 @@ export class Transaction extends TransactionBase {
     return this._minAccountSequenceLedgerGap;
   }
   set minAccountSequenceLedgerGap(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -194,7 +194,7 @@ export class Transaction extends TransactionBase {
     return this._extraSigners;
   }
   set extraSigners(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -206,7 +206,7 @@ export class Transaction extends TransactionBase {
   }
 
   set sequence(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -218,7 +218,7 @@ export class Transaction extends TransactionBase {
   }
 
   set source(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -230,7 +230,7 @@ export class Transaction extends TransactionBase {
   }
 
   set operations(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -242,7 +242,7 @@ export class Transaction extends TransactionBase {
   }
 
   set memo(value) {
-    throw new Error("Transaction is immutable");
+    throw new Error('Transaction is immutable');
   }
 
   /**
@@ -337,7 +337,7 @@ export class Transaction extends TransactionBase {
       opIndex < 0 ||
       opIndex >= this.operations.length
     ) {
-      throw new RangeError("invalid operation index");
+      throw new RangeError('invalid operation index');
     }
 
     let op = this.operations[opIndex];
@@ -361,8 +361,8 @@ export class Transaction extends TransactionBase {
       })
     );
 
-    const opIdHash = hash(operationId.toXDR("raw"));
+    const opIdHash = hash(operationId.toXDR('raw'));
     const balanceId = xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(opIdHash);
-    return balanceId.toXDR("hex");
+    return balanceId.toXDR('hex');
   }
 }

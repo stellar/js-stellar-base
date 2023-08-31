@@ -1,39 +1,39 @@
-var path = require("path");
-var webpack = require("webpack");
+var path = require('path');
+var webpack = require('webpack');
 
-var ESLintPlugin = require("eslint-webpack-plugin");
-var TerserPlugin = require("terser-webpack-plugin");
-var NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+var ESLintPlugin = require('eslint-webpack-plugin');
+var TerserPlugin = require('terser-webpack-plugin');
+var NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const config = {
-  target: "web",
+  target: 'web',
   // https://stackoverflow.com/a/34018909
   entry: {
-    "stellar-base": path.resolve(__dirname, "../src/index.js"),
-    "stellar-base.min": path.resolve(__dirname, "../src/index.js")
+    'stellar-base': path.resolve(__dirname, '../src/index.js'),
+    'stellar-base.min': path.resolve(__dirname, '../src/index.js')
   },
   resolve: {
     fallback: {
-      stream: require.resolve("stream-browserify"),
-      buffer: require.resolve("buffer")
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer')
     },
-    extensions: [".ts", ".js"]
+    extensions: ['.ts', '.js']
   },
   output: {
     clean: true,
-    library: "StellarBase",
+    library: 'StellarBase',
     compareBeforeEmit: true,
-    path: path.resolve(__dirname, "../dist")
+    path: path.resolve(__dirname, '../dist')
   },
-  mode: process.env.NODE_ENV ?? "development",
-  devtool: process.env.NODE_ENV === "production" ? false : "source-map",
+  mode: process.env.NODE_ENV ?? 'development',
+  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
   module: {
     rules: [
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             cacheDirectory: true
           }
@@ -57,13 +57,13 @@ const config = {
   plugins: [
     // this must be first for karma to work (see line 5 of karma.conf.js)
     new ESLintPlugin({
-      overrideConfigFile: path.resolve(__dirname, "./.eslintrc.js")
+      overrideConfigFile: path.resolve(__dirname, './.eslintrc.js')
     }),
     // Ignore native modules (sodium-native)
     new webpack.IgnorePlugin({ resourceRegExp: /sodium-native/ }),
     new NodePolyfillPlugin(),
     new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"]
+      Buffer: ['buffer', 'Buffer']
     })
   ],
   watchOptions: {

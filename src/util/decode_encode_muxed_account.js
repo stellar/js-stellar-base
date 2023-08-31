@@ -1,5 +1,5 @@
-import xdr from "../xdr";
-import { StrKey } from "../strkey";
+import xdr from '../xdr';
+import { StrKey } from '../strkey';
 
 /**
  * Converts a Stellar address (in G... or M... form) to an `xdr.MuxedAccount`
@@ -54,10 +54,10 @@ export function encodeMuxedAccountToAddress(muxedAccount) {
  */
 export function encodeMuxedAccount(address, id) {
   if (!StrKey.isValidEd25519PublicKey(address)) {
-    throw new Error("address should be a Stellar account ID (G...)");
+    throw new Error('address should be a Stellar account ID (G...)');
   }
-  if (typeof id !== "string") {
-    throw new Error("id should be a string representing a number (uint64)");
+  if (typeof id !== 'string') {
+    throw new Error('id should be a string representing a number (uint64)');
   }
 
   return xdr.MuxedAccount.keyTypeMuxedEd25519(
@@ -119,6 +119,6 @@ function _encodeMuxedAccountFullyToAddress(muxedAccount) {
 
   const muxed = muxedAccount.med25519();
   return StrKey.encodeMed25519PublicKey(
-    Buffer.concat([muxed.ed25519(), muxed.id().toXDR("raw")])
+    Buffer.concat([muxed.ed25519(), muxed.id().toXDR('raw')])
   );
 }

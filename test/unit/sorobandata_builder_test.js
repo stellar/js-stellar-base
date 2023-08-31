@@ -1,7 +1,7 @@
 let xdr = StellarBase.xdr;
 let dataBuilder = StellarBase.SorobanDataBuilder;
 
-describe("SorobanTransactionData can be built", function () {
+describe('SorobanTransactionData can be built', function () {
   const address = new StellarBase.Address(
     StellarBase.Keypair.random().publicKey()
   );
@@ -27,16 +27,16 @@ describe("SorobanTransactionData can be built", function () {
     })
   );
 
-  it("constructs from xdr, base64, and nothing", function () {
+  it('constructs from xdr, base64, and nothing', function () {
     new dataBuilder();
     const fromRaw = new dataBuilder(sentinel).build();
-    const fromStr = new dataBuilder(sentinel.toXDR("base64")).build();
+    const fromStr = new dataBuilder(sentinel.toXDR('base64')).build();
 
     expect(fromRaw).to.eql(sentinel);
     expect(fromStr).to.eql(sentinel);
   });
 
-  it("sets properties as expected", function () {
+  it('sets properties as expected', function () {
     expect(
       new dataBuilder().setResources(1, 2, 3, 4).setRefundableFee(5).build()
     ).to.eql(sentinel);
@@ -47,7 +47,7 @@ describe("SorobanTransactionData can be built", function () {
     expect(withFootprint.resources().footprint().readWrite()[0]).to.eql(key);
   });
 
-  it("leaves untouched footprints untouched", function () {
+  it('leaves untouched footprints untouched', function () {
     const builder = new dataBuilder();
 
     const data = builder.setFootprint([key], [key]).build();
@@ -59,7 +59,7 @@ describe("SorobanTransactionData can be built", function () {
     expect(data2.resources().footprint().readWrite()).to.eql([]);
   });
 
-  it("makes copies on build()", function () {
+  it('makes copies on build()', function () {
     const builder = new dataBuilder();
     const first = builder.build();
     const second = builder.setRefundableFee(100).build();

@@ -1,5 +1,5 @@
-import xdr from "../xdr";
-import { Keypair } from "../keypair";
+import xdr from '../xdr';
+import { Keypair } from '../keypair';
 
 /**
  * Creates a trustline flag configuring operation.
@@ -41,8 +41,8 @@ import { Keypair } from "../keypair";
 export function setTrustLineFlags(opts = {}) {
   const attributes = {};
 
-  if (typeof opts.flags !== "object" || Object.keys(opts.flags).length === 0) {
-    throw new Error("opts.flags must be a map of boolean flags to modify");
+  if (typeof opts.flags !== 'object' || Object.keys(opts.flags).length === 0) {
+    throw new Error('opts.flags must be a map of boolean flags to modify');
   }
 
   const mapping = {

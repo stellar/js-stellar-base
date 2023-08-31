@@ -2,8 +2,8 @@ module.exports = {
   env: {
     mocha: true
   },
-  parser: "@babel/eslint-parser",
-  plugins: ["@babel", "prettier", "prefer-import"],
+  parser: '@babel/eslint-parser',
+  plugins: ['@babel', 'prettier', 'prefer-import'],
   globals: {
     StellarBase: true,
     chai: true,
@@ -11,6 +11,6 @@ module.exports = {
     expect: true
   },
   rules: {
-    "no-unused-vars": 0
+    'no-unused-vars': 0
   }
 };

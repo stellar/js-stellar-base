@@ -1,4 +1,4 @@
-import xdr from "../xdr";
+import xdr from '../xdr';
 
 /**
  * Create a new claim claimable balance operation.
@@ -19,7 +19,7 @@ export function claimClaimableBalance(opts = {}) {
   validateClaimableBalanceId(opts.balanceId);
 
   const attributes = {};
-  attributes.balanceId = xdr.ClaimableBalanceId.fromXDR(opts.balanceId, "hex");
+  attributes.balanceId = xdr.ClaimableBalanceId.fromXDR(opts.balanceId, 'hex');
   const claimClaimableBalanceOp = new xdr.ClaimClaimableBalanceOp(attributes);
 
   const opAttributes = {};
@@ -33,9 +33,9 @@ export function claimClaimableBalance(opts = {}) {
 
 export function validateClaimableBalanceId(balanceId) {
   if (
-    typeof balanceId !== "string" ||
+    typeof balanceId !== 'string' ||
     balanceId.length !== 8 + 64 /* 8b discriminant + 64b string */
   ) {
-    throw new Error("must provide a valid claimable balance id");
+    throw new Error('must provide a valid claimable balance id');
   }
 }

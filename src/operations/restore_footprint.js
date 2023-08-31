@@ -1,4 +1,4 @@
-import xdr from "../xdr";
+import xdr from '../xdr';
 
 /**
  * Builds a footprint restoration operation.

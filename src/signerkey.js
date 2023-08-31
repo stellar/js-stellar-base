@@ -1,5 +1,5 @@
-import xdr from "./xdr";
-import { StrKey, encodeCheck, decodeCheck } from "./strkey";
+import xdr from './xdr';
+import { StrKey, encodeCheck, decodeCheck } from './strkey';
 
 /**
  * A container class with helpers to convert between signer keys
@@ -36,7 +36,7 @@ export class SignerKey {
 
     const raw = decodeCheck(vb, address);
     switch (vb) {
-      case "signedPayload":
+      case 'signedPayload':
         return encoder(
           new xdr.SignerKeyEd25519SignedPayload({
             ed25519: raw.slice(0, 32),
@@ -44,9 +44,9 @@ export class SignerKey {
           })
         );
 
-      case "ed25519PublicKey": // falls through
-      case "preAuthTx": // falls through
-      case "sha256Hash": // falls through
+      case 'ed25519PublicKey': // falls through
+      case 'preAuthTx': // falls through
+      case 'sha256Hash': // falls through
       default:
         return encoder(raw);
     }
@@ -64,23 +64,23 @@ export class SignerKey {
 
     switch (signerKey.switch()) {
       case xdr.SignerKeyType.signerKeyTypeEd25519():
-        strkeyType = "ed25519PublicKey";
+        strkeyType = 'ed25519PublicKey';
         raw = signerKey.value();
         break;
 
       case xdr.SignerKeyType.signerKeyTypePreAuthTx():
-        strkeyType = "preAuthTx";
+        strkeyType = 'preAuthTx';
         raw = signerKey.value();
         break;
 
       case xdr.SignerKeyType.signerKeyTypeHashX():
-        strkeyType = "sha256Hash";
+        strkeyType = 'sha256Hash';
         raw = signerKey.value();
         break;
 
       case xdr.SignerKeyType.signerKeyTypeEd25519SignedPayload():
-        strkeyType = "signedPayload";
-        raw = signerKey.ed25519SignedPayload().toXDR("raw");
+        strkeyType = 'signedPayload';
+        raw = signerKey.ed25519SignedPayload().toXDR('raw');
         break;
 
       default:
