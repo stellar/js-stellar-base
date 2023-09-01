@@ -229,6 +229,15 @@ export class TransactionBuilder {
   }
 
   /**
+   * Removes the operations from the builder (useful when cloning).
+   * @returns {TransactionBuilder} this builder instance
+   */
+  clearOperations() {
+    this.operations = [];
+    return this;
+  }
+
+  /**
    * Adds a memo to the transaction.
    * @param {Memo} memo {@link Memo} object
    * @returns {TransactionBuilder}

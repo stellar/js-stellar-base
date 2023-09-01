@@ -25,7 +25,7 @@ XDR_FILES_NEXT= \
 	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_NEXT=$(addprefix xdr/next/,$(XDR_FILES_NEXT))
 
-XDRGEN_COMMIT=master
+XDRGEN_COMMIT=8d303b1
 DTSXDR_COMMIT=master
 
 all: generate

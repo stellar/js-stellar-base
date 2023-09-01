@@ -27,10 +27,12 @@ export class Address {
 
 export class Contract {
   constructor(contractId: string);
+  call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
   contractId(): string;
   address(): Address;
-  call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
-  getFootprint(): xdr.LedgerKey;
+  getFootprint(): xdr.LedgerKey[];
+
+  toString(): string;
 }
 
 export class MuxedAccount {
@@ -77,6 +79,7 @@ export class Asset {
   toXDRObject(): xdr.Asset;
   toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
   toTrustLineXDRObject(): xdr.TrustLineAsset;
+  contractId(): string;
 
   code: string;
   issuer: string;
@@ -1017,6 +1020,7 @@ export class TransactionBuilder {
     options?: TransactionBuilder.TransactionBuilderOptions
   );
   addOperation(operation: xdr.Operation): this;
+  clearOperations(): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
   setTimebounds(min: Date | number, max: Date | number): this;
@@ -1105,6 +1109,7 @@ export class XdrLargeInt {
   toU128(): xdr.ScVal;
   toI256(): xdr.ScVal;
   toU256(): xdr.ScVal;
+  toScVal(): xdr.ScVal;
 
   valueOf(): any; // FIXME
   toString(): string;
@@ -1115,7 +1120,7 @@ export class XdrLargeInt {
 }
 
 export class ScInt extends XdrLargeInt {
-  constructor(value: IntLike | ScInt, opts?: { type: ScIntType });
+  constructor(value: IntLike, opts?: { type: ScIntType });
 }
 
 export function scValToBigInt(scv: xdr.ScVal): bigint;
@@ -1135,7 +1140,8 @@ export function humanizeEvents(
 ): SorobanEvent[];
 
 export class SorobanDataBuilder {
-  constructor(data?: string | xdr.SorobanTransactionData);
+  constructor(data?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
+  static fromXDR(data: Uint8Array | Buffer | string): SorobanDataBuilder;
 
   setRefundableFee(fee: IntLike): SorobanDataBuilder;
   setResources(
@@ -1148,9 +1154,16 @@ export class SorobanDataBuilder {
     readOnly?: xdr.LedgerKey[] | null,
     readWrite?: xdr.LedgerKey[] | null
   ): SorobanDataBuilder;
+  appendFootprint(
+    readOnly: xdr.LedgerKey[],
+    readWrite: xdr.LedgerKey[]
+  ): SorobanDataBuilder;
 
-  setReadOnly(keys?: xdr.LedgerKey[]): SorobanDataBuilder;
-  setReadWrite(keys?: xdr.LedgerKey[]): SorobanDataBuilder;
+  setReadOnly(keys: xdr.LedgerKey[]): SorobanDataBuilder;
+  setReadWrite(keys: xdr.LedgerKey[]): SorobanDataBuilder;
+
+  getReadOnly(): xdr.LedgerKey[];
+  getReadWrite(): xdr.LedgerKey[];
 
   build(): xdr.SorobanTransactionData;
 }

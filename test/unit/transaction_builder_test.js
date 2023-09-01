@@ -946,6 +946,11 @@ describe('TransactionBuilder', function () {
         fee: '10000'
       }).build();
       expect(cloneTx.fee).to.equal('20000'); // double because two ops
+
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx)
+        .clearOperations()
+        .build();
+      expect(cloneTx.operations).to.be.empty;
     });
   });
 });
