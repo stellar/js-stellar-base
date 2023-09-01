@@ -34,6 +34,12 @@ describe('SorobanTransactionData can be built', function () {
 
     expect(fromRaw).to.eql(sentinel);
     expect(fromStr).to.eql(sentinel);
+
+    const baseline = new dataBuilder().build();
+    [null, '', 0].forEach((falsy) => {
+      const db = new dataBuilder(falsy).build();
+      expect(db).to.eql(baseline);
+    });
   });
 
   it('sets properties as expected', function () {

@@ -6,7 +6,8 @@ import xdr from './xdr';
  *
  * This is recommended for when you are building
  * {@link Operation.bumpFootprintExpiration} /
- * {@link Operation.restoreFootprint} operations to avoid (re)building the entire
+ * {@link Operation.restoreFootprint} operations and need to
+ * {@link TransactionBuilder.setSorobanData} to avoid (re)building the entire
  * data structure from scratch.
  *
  * @constructor
@@ -14,7 +15,8 @@ import xdr from './xdr';
  * @param {string | xdr.SorobanTransactionData} [sorobanData]  either a
  *      base64-encoded string that represents an
  *      {@link xdr.SorobanTransactionData} instance or an XDR instance itself
- *      (it will be copied); if omitted, it starts with an empty instance
+ *      (it will be copied); if omitted or "falsy" (e.g. an empty string), it
+ *      starts with an empty instance
  *
  * @example
  * // You want to use an existing data blob but override specific parts.
@@ -35,9 +37,7 @@ export class SorobanDataBuilder {
   constructor(sorobanData) {
     let data;
 
-    if (typeof sorobanData === 'string' || ArrayBuffer.isView(sorobanData)) {
-      data = SorobanDataBuilder.fromXDR(sorobanData);
-    } else if (!sorobanData) {
+    if (!sorobanData) {
       data = new xdr.SorobanTransactionData({
         resources: new xdr.SorobanResources({
           footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
@@ -49,8 +49,13 @@ export class SorobanDataBuilder {
         ext: new xdr.ExtensionPoint(0),
         refundableFee: new xdr.Int64(0)
       });
+    } else if (
+      typeof sorobanData === 'string' ||
+      ArrayBuffer.isView(sorobanData)
+    ) {
+      data = SorobanDataBuilder.fromXDR(sorobanData);
     } else {
-      data = xdr.SorobanTransactionData.fromXDR(sorobanData.toXDR()); // copy
+      data = SorobanDataBuilder.fromXDR(sorobanData.toXDR()); // copy
     }
 
     this._data = data;
@@ -180,11 +185,16 @@ export class SorobanDataBuilder {
 
   /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
   getReadOnly() {
-    return this._data.resources().footprint().readOnly();
+    return this.getFootprint().readOnly();
   }
 
   /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
   getReadWrite() {
-    return this._data.resources().footprint().readWrite();
+    return this.getFootprint().readWrite();
+  }
+
+  /** @returns {xdr.LedgerFootprint} the storage access pattern */
+  getFootprint() {
+    return this._data.resources().footprint();
   }
 }
