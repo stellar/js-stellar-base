@@ -79,14 +79,14 @@ export class Contract {
     return [
       xdr.LedgerKey.contractCode(
         new xdr.LedgerKeyContractCode({
-          hash: this._id,
+          hash: this._id
         })
       ),
       xdr.LedgerKey.contractData(
         new xdr.LedgerKeyContractData({
           contract: this.address().toScAddress(),
           key: xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: xdr.ContractDataDurability.persistent(),
+          durability: xdr.ContractDataDurability.persistent()
         })
       )
     ];

@@ -40,14 +40,14 @@ describe('Contract', function () {
       const expected = [
         new xdr.LedgerKey.contractCode(
           new xdr.LedgerKeyContractCode({
-            hash: StellarBase.StrKey.decodeContract(contract.contractId()),
+            hash: StellarBase.StrKey.decodeContract(contract.contractId())
           })
         ),
         new xdr.LedgerKey.contractData(
           new xdr.LedgerKeyContractData({
             contract: contract.address().toScAddress(),
             key: xdr.ScVal.scvLedgerKeyContractInstance(),
-            durability: xdr.ContractDataDurability.persistent(),
+            durability: xdr.ContractDataDurability.persistent()
           })
         )
       ];
