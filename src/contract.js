@@ -77,8 +77,7 @@ export class Contract {
       new xdr.LedgerKeyContractData({
         contract: this.address().toScAddress(),
         key: xdr.ScVal.scvLedgerKeyContractInstance(),
-        durability: xdr.ContractDataDurability.persistent(),
-        bodyType: xdr.ContractEntryBodyType.dataEntry()
+        durability: xdr.ContractDataDurability.persistent()
       })
     );
   }

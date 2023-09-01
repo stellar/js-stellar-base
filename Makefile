@@ -30,7 +30,7 @@ DTSXDR_COMMIT=master
 
 all: generate
 
-generate: src/generated/next_generated.js types/next.d.ts
+generate: src/generated/curr_generated.js types/curr.d.ts src/generated/next_generated.js types/next.d.ts
 
 src/generated/curr_generated.js: $(XDR_FILES_LOCAL_CURR)
 	mkdir -p $(dir $@)

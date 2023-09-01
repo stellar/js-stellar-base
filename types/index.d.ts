@@ -1142,7 +1142,6 @@ export class SorobanDataBuilder {
     cpuInstrs: number,
     readBytes: number,
     writeBytes: number,
-    metadataBytes: number
   ): SorobanDataBuilder;
 
   setFootprint(

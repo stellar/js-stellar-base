@@ -40,8 +40,7 @@ describe('Contract', function () {
         new StellarBase.xdr.LedgerKeyContractData({
           contract: contract.address().toScAddress(),
           key: StellarBase.xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: StellarBase.xdr.ContractDataDurability.persistent(),
-          bodyType: StellarBase.xdr.ContractEntryBodyType.dataEntry()
+          durability: StellarBase.xdr.ContractDataDurability.persistent()
         })
       )
         .toXDR()

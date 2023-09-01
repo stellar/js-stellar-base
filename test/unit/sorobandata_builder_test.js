@@ -11,19 +11,17 @@ describe('SorobanTransactionData can be built', function () {
       footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
       instructions: 1,
       readBytes: 2,
-      writeBytes: 3,
-      contractEventsSizeBytes: 4
+      writeBytes: 3
     }),
     ext: new xdr.ExtensionPoint(0),
-    refundableFee: new xdr.Int64(5)
+    refundableFee: new xdr.Int64(4)
   });
 
   const key = xdr.LedgerKey.contractData(
     new xdr.LedgerKeyContractData({
       contract: address.toScAddress(),
       key: address.toScVal(),
-      durability: xdr.ContractDataDurability.persistent(),
-      bodyType: xdr.ContractEntryBodyType.dataEntry()
+      durability: xdr.ContractDataDurability.persistent()
     })
   );
 
@@ -38,7 +36,7 @@ describe('SorobanTransactionData can be built', function () {
 
   it('sets properties as expected', function () {
     expect(
-      new dataBuilder().setResources(1, 2, 3, 4).setRefundableFee(5).build()
+      new dataBuilder().setResources(1, 2, 3).setRefundableFee(4).build()
     ).to.eql(sentinel);
 
     // this isn't a valid param but we're just checking that setters work

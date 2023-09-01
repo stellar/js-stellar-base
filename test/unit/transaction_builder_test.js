@@ -73,20 +73,10 @@ describe('TransactionBuilder', function () {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      sorobanTransactionData = new StellarBase.xdr.SorobanTransactionData({
-        resources: new StellarBase.xdr.SorobanResources({
-          footprint: new StellarBase.xdr.LedgerFootprint({
-            readOnly: [],
-            readWrite: []
-          }),
-          instructions: 0,
-          readBytes: 5,
-          writeBytes: 0,
-          contractEventsSizeBytes: 0
-        }),
-        refundableFee: StellarBase.xdr.Int64.fromString('1'),
-        ext: new StellarBase.xdr.ExtensionPoint(0)
-      });
+      sorobanTransactionData = new StellarBase.SorobanDataBuilder()
+        .setResources(0, 5, 0)
+        .setRefundableFee(1)
+        .build();
     });
 
     // shortcut for repeated code

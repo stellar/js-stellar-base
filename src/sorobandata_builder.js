@@ -43,8 +43,7 @@ export class SorobanDataBuilder {
           footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
           instructions: 0,
           readBytes: 0,
-          writeBytes: 0,
-          contractEventsSizeBytes: 0
+          writeBytes: 0
         }),
         ext: new xdr.ExtensionPoint(0),
         refundableFee: new xdr.Int64(0)
@@ -87,15 +86,13 @@ export class SorobanDataBuilder {
    * @param {number} cpuInstrs    number of CPU instructions
    * @param {number} readBytes    number of bytes being read
    * @param {number} writeBytes   number of bytes being written
-   * @param {number} eventsBytes  number of bytes of serialized contract events
    *
    * @returns {SorobanDataBuilder}
    */
-  setResources(cpuInstrs, readBytes, writeBytes, eventsBytes) {
+  setResources(cpuInstrs, readBytes, writeBytes) {
     this._data.resources().instructions(cpuInstrs);
     this._data.resources().readBytes(readBytes);
     this._data.resources().writeBytes(writeBytes);
-    this._data.resources().contractEventsSizeBytes(eventsBytes);
 
     return this;
   }
