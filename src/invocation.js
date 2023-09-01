@@ -181,6 +181,7 @@ export function buildInvocationTree(root) {
  *
  * @param {xdr.SorobanAuthorizedInvocation} root  the tree to explore
  * @param {InvocationWalker} callback  the callback to execute for each node
+ * @returns {void}
  */
 export function walkInvocationTree(root, callback) {
   walkHelper(root, 1, callback);
