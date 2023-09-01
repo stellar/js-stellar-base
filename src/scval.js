@@ -295,7 +295,7 @@ export function scValToNative(scv) {
       return (scv.vec() ?? []).map(scValToNative);
 
     case xdr.ScValType.scvAddress().value:
-      return Address.fromScVal(scv);
+      return Address.fromScVal(scv).toString();
 
     case xdr.ScValType.scvMap().value:
       return Object.fromEntries(
