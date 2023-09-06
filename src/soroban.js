@@ -22,11 +22,9 @@ export class Soroban {
 
     if (decimals > 0) {
       if (decimals > formatted.length) {
-        const targetShiftedLength = decimals - formatted.length;
-        const targetTotalLength = targetShiftedLength + formatted.length;
         formatted = [
           '0',
-          formatted.toString().padStart(targetTotalLength, '0')
+          formatted.toString().padStart(decimals, '0')
         ].join('.');
       } else {
         formatted = [
