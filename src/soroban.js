@@ -37,7 +37,7 @@ export class Soroban {
     }
 
     // remove trailing zero if any
-    return formatted.replace(/\.?0+$/, '');
+    return formatted.replace(/(\.\d*?)0+$/, '$1');
   }
 
   /**

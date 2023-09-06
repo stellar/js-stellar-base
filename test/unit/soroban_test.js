@@ -3,9 +3,10 @@ describe('Soroban', function () {
     const SUCCESS_TEST_CASES = [
       { amount: '1000000001', decimals: 7, expected: '100.0000001' },
       { amount: '10000000010', decimals: 5, expected: '100000.0001' },
-      { amount: '10000000010', decimals: 0, expected: '1000000001' },
+      { amount: '10000000010', decimals: 0, expected: '10000000010' },
       { amount: '10000', decimals: 10, expected: '0.000001' },
-      { amount: '1567890', decimals: 10, expected: '0.000156789' }
+      { amount: '1567890', decimals: 10, expected: '0.000156789' },
+      { amount: '1230', decimals: 0, expected: '1230' }
     ];
 
     const FAILED_TEST_CASES = [
