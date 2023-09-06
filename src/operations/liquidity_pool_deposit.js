@@ -31,12 +31,12 @@ export function liquidityPoolDeposit(opts = {}) {
   attributes.liquidityPoolId = xdr.PoolId.fromXDR(liquidityPoolId, 'hex');
 
   if (!this.isValidAmount(maxAmountA, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('maxAmountA'))
+    throw new TypeError(this.constructAmountRequirementsError('maxAmountA'));
   }
   attributes.maxAmountA = this._toXDRAmount(maxAmountA);
 
   if (!this.isValidAmount(maxAmountB, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('maxAmountB'))
+    throw new TypeError(this.constructAmountRequirementsError('maxAmountB'));
   }
   attributes.maxAmountB = this._toXDRAmount(maxAmountB);
 

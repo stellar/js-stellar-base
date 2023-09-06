@@ -21,10 +21,19 @@ export class Soroban {
     }
 
     if (decimals > 0) {
-      formatted = [
-        formatted.slice(0, -decimals),
-        formatted.slice(-decimals)
-      ].join('.');
+      if (decimals > formatted.length) {
+        const targetShiftedLength = decimals - formatted.length;
+        const targetTotalLength = targetShiftedLength + formatted.length;
+        formatted = [
+          '0',
+          formatted.toString().padStart(targetTotalLength, '0')
+        ].join('.');
+      } else {
+        formatted = [
+          formatted.slice(0, -decimals),
+          formatted.slice(-decimals)
+        ].join('.');
+      }
     }
 
     // remove trailing zero if any
@@ -34,7 +43,7 @@ export class Soroban {
   /**
    * parse token amount to use it on smart contract
    *
-   * This function takes the display value and its decimals (if the token has 
+   * This function takes the display value and its decimals (if the token has
    * any) and returns a string that'll be used within the smart contract.
    * @param {string} value - the token amount you want to use it on smart contract
    * @param {number} decimals - specify how many decimal places a token has

@@ -2478,8 +2478,9 @@ describe('Operation', function () {
       );
 
       opts.maxPrice = '0.55';
-      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.not
-        .throw();
+      expect(() =>
+        StellarBase.Operation.liquidityPoolDeposit(opts)
+      ).to.not.throw();
     });
 
     it('throws an error if prices are negative', function () {
@@ -2655,8 +2656,9 @@ describe('Operation', function () {
       );
 
       opts.minAmountB = '20000';
-      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.not
-        .throw();
+      expect(() =>
+        StellarBase.Operation.liquidityPoolWithdraw(opts)
+      ).to.not.throw();
     });
 
     it('creates a liquidityPoolWithdraw', function () {
