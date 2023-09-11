@@ -170,7 +170,7 @@ export function buildAuthEntry(envelope, signature, publicKey) {
         address: new Address(publicKey).toScAddress(),
         nonce: auth.nonce(),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
-        signatureArgs: [
+        signature: xdr.ScVal.scvVec([
           nativeToScVal(
             {
               public_key: StrKey.decodeEd25519PublicKey(publicKey),
@@ -185,7 +185,7 @@ export function buildAuthEntry(envelope, signature, publicKey) {
               }
             }
           )
-        ]
+        ])
       })
     )
   });
