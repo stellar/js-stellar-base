@@ -8,7 +8,7 @@
 
 ### Breaking Changes
  * **Node 16 is the new minimum version** to use the SDKs.
- * The XDR has been massively overhauled to support Soroban in Protocol 20, which means new operations, data structures, and a transaction format as well as new overlay features ([#538](https://github.com/stellar/js-stellar-base/pull/538)).
+ * The XDR has been massively overhauled to support [Soroban in Protocol 20](https://soroban.stellar.org/docs/category/fundamentals-and-concepts), which means new operations, data structures, and a transaction format as well as new overlay features ([#538](https://github.com/stellar/js-stellar-base/pull/538)).
 
 The core data structure of Soroban is a generic type called an `ScVal` (**s**mart **c**ontract **val**ue, which is a union of types that can basically represent anything [numbers, strings, arrays, maps, contract bytecode, etc.]). You can refer to the XDR for details, and you can utilize new APIs to make dealing with these complex values easier:
  - `nativeToScVal` helps convert native types to their closest Soroban equivalent
