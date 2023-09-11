@@ -3,8 +3,37 @@
 
 ## Unreleased
 
-### Fixes
 
+## [`v10.0.0-beta.0`](https://github.com/stellar/js-stellar-base/compare/v9.0.0...v10.0.0-beta.0): Protocol 20
+
+### Breaking Changes
+ * **Node 16 is the new minimum version** to use the SDKs.
+ * The XDR has been massively overhauled to support Soroban in Protocol 20, which means new operations, data structures, and a transaction format as well as new overlay features ([#538](https://github.com/stellar/js-stellar-base/pull/538)).
+
+The core data structure of Soroban is a generic type called an `ScVal` (**s**mart **c**ontract **val**ue, which is a union of types that can basically represent anything [numbers, strings, arrays, maps, contract bytecode, etc.]). You can refer to the XDR for details, and you can rely some new APIs to make dealing with these complex values easier:
+ - `nativeToScVal` helps convert native types to their closes Soroban equivalent
+ - `scValToNative` helps find the closest native JavaScript type(s) corresponding to a smart contract value
+ - `scValToBigInt` helps convert numeric `ScVal`s into native `bigint`s
+ - `ScInt` and `XdrLargeInt` help convert to and from `bigint`s to other types and form sized integer types for smart contract usage
+
+### Added
+The following are new APIs to deal with new Soroban constructs:
+ - **`Address`, which helps manage "smart" addresses in the Soroban context.** Addresses there (used for auth and identity purposes) can either be contracts (strkey `C...`) or accounts (strkey `G...`). This abstraction helps manage them and distinguish between them easily.
+ - **`Contract`, which helps manage contract identifiers.** The primary purpose is to build invocations of its methods via the generic `call(...)`, but it also provides utilities for converting to an `Address` or calculating its minimum footprint for state expiration.
+ - **Three new operations** have been added related to Soroban transactions:
+   * `invokeHostFunction` for calling contract code
+   * `bumpFootprintExpiration` for extending the state lifetime of Soroban data
+   * `restoreFootprint` for restoring expired, off-chain state back onto the ledger
+ - The `TransactionBuilder` now takes a `sorobanData` parameter (and has a corresponding `.setSorobanData()` builder method) which primarily describes the storage footprint of a Soroban (that is, which parts of the ledger state [in the form of `xdr.LedgerKey`s] it plans to read and write as part of the transaction).
+   * To facilitate building this out, there's a new `SorobanDataBuilder` factory to set fields individually
+ - The `TransactionBuilder` now has a `cloneFrom(tx, opts)` constructor method to create an instance from an existing transaction, also allowing parameter overrides via `opts`.
+ - The following are convenience methods for building out certain types of smart contract-related structures:
+   * `buildInvocationTree` and `walkInvocationTree` are both ways to visualize invocation calling trees better
+   * `authorizeInvocation` helps multiple parties sign invocation calling trees
+   * `humanizeEvents` helps make diagnostic events more readable
+ - We've added a GHA to track bundle size changes as PRs are made. This protocol upgrade adds +18% to the final, minified bundle size which is significant but acceptable given the size of the upgrade.
+
+### Fixes
 * Improves the error messages when passing invalid amounts to deposit and withdraw operations ([#679](https://github.com/stellar/js-stellar-base/pull/679)).
 
 
