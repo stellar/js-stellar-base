@@ -236,9 +236,9 @@ export class XdrLargeInt {
       case 'u128':
       case 'u256':
         return true;
+      default:
+        return false;
     }
-
-    return false;
   }
 
   /**

@@ -216,7 +216,7 @@ export function nativeToScVal(val, opts = {}) {
 
       return new ScInt(val, { type: opts?.type }).toScVal();
 
-    case 'string':
+    case 'string': {
       const optType = opts?.type ?? 'string';
       switch (optType) {
         case 'string':
@@ -237,6 +237,7 @@ export function nativeToScVal(val, opts = {}) {
             `invalid type (${opts.type}) specified for string value`
           );
       }
+    }
 
     case 'boolean':
       return xdr.ScVal.scvBool(val);
