@@ -31,7 +31,10 @@ describe('building authorization entries', function () {
     expect(cred.signatureExpirationLedger()).to.equal(123);
 
     let sig = cred.signature().vec();
-    expect(sig.length).to.equal(1, `signature isn't in the right format: ${sig}`);
+    expect(sig.length).to.equal(
+      1,
+      `signature isn't in the right format: ${sig}`
+    );
 
     const args = StellarBase.scValToNative(sig[0]);
     expect(

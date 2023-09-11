@@ -22,10 +22,9 @@ export class Soroban {
 
     if (decimals > 0) {
       if (decimals > formatted.length) {
-        formatted = [
-          '0',
-          formatted.toString().padStart(decimals, '0')
-        ].join('.');
+        formatted = ['0', formatted.toString().padStart(decimals, '0')].join(
+          '.'
+        );
       } else {
         formatted = [
           formatted.slice(0, -decimals),
