@@ -1,6 +1,8 @@
 const {
   xdr,
   ScInt,
+  Address,
+  Keypair,
   XdrLargeInt,
   scValToNative,
   nativeToScVal,
@@ -227,4 +229,19 @@ describe('parsing and building ScVals', function () {
     expect(() => nativeToScVal('12345', { type: 'notnumeric' })).to.throw();
     expect(() => nativeToScVal('use a Number', { type: 'i32' })).to.throw();
   });
+
+  it('lets strings be addresses', function() {
+    [
+      'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM',
+      'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE',
+      Keypair.random().publicKey(),
+      Keypair.random().publicKey(),
+    ].forEach(addr => {
+      const scv = nativeToScVal(addr, { type: 'address' });
+      const equiv = new Address(addr).toScVal();
+
+      expect(scv.switch().name).to.be.equal('scvAddress');
+      expect(scv).to.deep.equal(equiv);
+    })
+  })
 });

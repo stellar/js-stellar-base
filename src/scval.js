@@ -225,6 +225,9 @@ export function nativeToScVal(val, opts = {}) {
         case 'symbol':
           return xdr.ScVal.scvSymbol(val);
 
+        case 'address':
+          return new Address(val).toScVal();
+
         default:
           if (XdrLargeInt.isType(optType)) {
             return new XdrLargeInt(optType, val).toScVal();
