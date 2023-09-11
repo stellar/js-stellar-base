@@ -11,7 +11,7 @@
  * The XDR has been massively overhauled to support Soroban in Protocol 20, which means new operations, data structures, and a transaction format as well as new overlay features ([#538](https://github.com/stellar/js-stellar-base/pull/538)).
 
 The core data structure of Soroban is a generic type called an `ScVal` (**s**mart **c**ontract **val**ue, which is a union of types that can basically represent anything [numbers, strings, arrays, maps, contract bytecode, etc.]). You can refer to the XDR for details, and you can rely some new APIs to make dealing with these complex values easier:
- - `nativeToScVal` helps convert native types to their closes Soroban equivalent
+ - `nativeToScVal` helps convert native types to their closest Soroban equivalent
  - `scValToNative` helps find the closest native JavaScript type(s) corresponding to a smart contract value
  - `scValToBigInt` helps convert numeric `ScVal`s into native `bigint`s
  - `ScInt` and `XdrLargeInt` help convert to and from `bigint`s to other types and form sized integer types for smart contract usage
