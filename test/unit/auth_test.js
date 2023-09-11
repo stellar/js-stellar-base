@@ -28,12 +28,12 @@ describe('building authorization entries', function () {
     );
 
     let cred = entry.credentials().address();
-    let sig = cred.signature();
-
-    expect(sig.switch().name).to.be.equal('scvVec');
-    const args = StellarBase.scValToNative(sig.vec()[0]);
-
     expect(cred.signatureExpirationLedger()).to.equal(123);
+
+    let sig = cred.signature().vec();
+    expect(sig.length).to.equal(1, `signature isn't in the right format: ${sig}`);
+
+    const args = StellarBase.scValToNative(sig[0]);
     expect(
       StellarBase.StrKey.encodeEd25519PublicKey(args['public_key'])
     ).to.equal(kp.publicKey());
