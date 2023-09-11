@@ -2,7 +2,7 @@ import xdr from './xdr';
 
 import { Address } from './address';
 import { Contract } from './contract';
-import { ScInt, scValToBigInt } from './numbers/index';
+import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
 
 /**
  * Attempts to convert native types into smart contract values
@@ -219,7 +219,8 @@ export function nativeToScVal(val, opts = {}) {
       return new ScInt(val, { type: opts?.type }).toScVal();
 
     case 'string':
-      switch (opts?.type ?? 'string') {
+      const optType = opts?.type ?? 'string';
+      switch (optType) {
         case 'string':
           return xdr.ScVal.scvString(val);
 
@@ -227,6 +228,10 @@ export function nativeToScVal(val, opts = {}) {
           return xdr.ScVal.scvSymbol(val);
 
         default:
+          if (XdrLargeInt.isType(optType)) {
+            return new XdrLargeInt(optType, val);
+          }
+
           throw new TypeError(
             `invalid type (${opts.type}) specified for string value`
           );
