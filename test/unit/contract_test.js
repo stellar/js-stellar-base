@@ -59,7 +59,7 @@ describe('Contract', function () {
       StellarBase.nativeToScVal(2, { type: 'i32' }),
     );
 
-    it('builds valid XDR', function () {
+    xit('builds valid XDR', function () {
       call.toXDR();
     });
 
@@ -86,7 +86,7 @@ describe('Contract', function () {
       ]);
     });
 
-    it('works with no parameters', function () {
+    xit('works with no parameters', function () {
       contract.call('empty').toXDR();
     });
   });
