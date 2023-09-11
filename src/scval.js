@@ -65,7 +65,6 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *    `scvString`.
  *
  * @returns {xdr.ScVal} a wrapped, smart, XDR version of the input value
- *
  * @throws {TypeError} if...
  *  - there are arrays with more than one type in them
  *  - there are values that do not have a sensible conversion (e.g. random XDR
@@ -75,6 +74,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *  - the type you specified (via `opts.type`) is incompatible with the value
  *    you passed in (`val`), e.g. `nativeToScVal("a string", { type: 'i128' })`,
  *    though this does not apply for types that ignore `opts` (e.g. addresses).
+ * @see scValToNative
  *
  * @example
  * nativeToScVal(1000);                   // gives ScValType === scvU64
@@ -130,8 +130,6 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *
  * // Similarly, the inverse should work:
  * scValToNative(scv) == gigaMap;       // true
- *
- * @see scValToNative
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
@@ -229,7 +227,7 @@ export function nativeToScVal(val, opts = {}) {
 
         default:
           if (XdrLargeInt.isType(optType)) {
-            return new XdrLargeInt(optType, val);
+            return new XdrLargeInt(optType, val).toScVal();
           }
 
           throw new TypeError(
