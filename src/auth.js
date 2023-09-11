@@ -170,6 +170,11 @@ export function buildAuthEntry(envelope, signature, publicKey) {
         address: new Address(publicKey).toScAddress(),
         nonce: auth.nonce(),
         signatureExpirationLedger: auth.signatureExpirationLedger(),
+        // This structure is defined here:
+        // https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#stellar-account-signatures
+        //
+        // Encoding a contract structure as an ScVal means the keys are supposed
+        // to be symbols, hence the forced typing here.
         signature: xdr.ScVal.scvVec([
           nativeToScVal(
             {
@@ -177,8 +182,6 @@ export function buildAuthEntry(envelope, signature, publicKey) {
               signature
             },
             {
-              // force the keys to be interpreted as symbols (expected for
-              // Soroban [contracttype]s)
               type: {
                 public_key: ['symbol', null],
                 signature: ['symbol', null]
