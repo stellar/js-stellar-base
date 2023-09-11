@@ -1,3 +1,3 @@
-import xdr from './generated/next_generated';
+import xdr from './generated/curr_generated';
 
 export default xdr;
