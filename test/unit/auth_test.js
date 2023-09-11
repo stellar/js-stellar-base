@@ -6,7 +6,7 @@ describe('building authorization entries', function () {
   const invocation = new xdr.SorobanAuthorizedInvocation({
     function:
       xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
-        new xdr.SorobanAuthorizedContractFunction({
+        new xdr.InvokeContractArgs({
           contractAddress: new StellarBase.Address(contractId).toScAddress(),
           functionName: 'hello',
           args: [StellarBase.nativeToScVal('world!')]
@@ -28,12 +28,14 @@ describe('building authorization entries', function () {
     );
 
     let cred = entry.credentials().address();
-    let args = cred.signatureArgs().map((v) => StellarBase.scValToNative(v));
-
     expect(cred.signatureExpirationLedger()).to.equal(123);
-    expect(args.length).to.equal(1);
+
+    let sig = cred.signature().vec();
+    expect(sig.length).to.equal(1, `signature isn't in the right format: ${sig}`);
+
+    const args = StellarBase.scValToNative(sig[0]);
     expect(
-      StellarBase.StrKey.encodeEd25519PublicKey(args[0]['public_key'])
+      StellarBase.StrKey.encodeEd25519PublicKey(args['public_key'])
     ).to.equal(kp.publicKey());
     expect(entry.rootInvocation()).to.eql(invocation);
 
@@ -60,14 +62,11 @@ describe('building authorization entries', function () {
     )
       .then((entry) => {
         let cred = entry.credentials().address();
-        let args = cred
-          .signatureArgs()
-          .map((v) => StellarBase.scValToNative(v));
+        let args = StellarBase.scValToNative(cred.signature().vec()[0]);
 
         expect(cred.signatureExpirationLedger()).to.equal(123);
-        expect(args.length).to.equal(1);
         expect(
-          StellarBase.StrKey.encodeEd25519PublicKey(args[0]['public_key'])
+          StellarBase.StrKey.encodeEd25519PublicKey(args['public_key'])
         ).to.equal(kp.publicKey());
         expect(entry.rootInvocation()).to.eql(invocation);
 

@@ -16,7 +16,6 @@ import { StrKey } from './strkey';
  * @param {string} contractId - ID of the contract (ex.
  *     `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`).
  */
-// TODO: Support contract deployment, maybe?
 export class Contract {
   constructor(contractId) {
     try {
@@ -49,18 +48,21 @@ export class Contract {
   /**
    * Returns an operation that will invoke this contract call.
    *
-   * @param {string} method - name of the method to call
-   * @param {...xdr.ScVal} params - arguments to pass to the function call
-   * @returns {xdr.Operation} Build a InvokeHostFunctionOp operation to call the
-   * contract.
+   * @param {string}        method   name of the method to call
+   * @param {...xdr.ScVal}  params   arguments to pass to the function call
+   *
+   * @returns {xdr.Operation}   an InvokeHostFunctionOp operation to call the
+   *    contract with the given method and parameters
    */
   call(method, ...params) {
     return Operation.invokeHostFunction({
-      func: xdr.HostFunction.hostFunctionTypeInvokeContract([
-        this.address().toScVal(),
-        xdr.ScVal.scvSymbol(method),
-        ...params
-      ]),
+      func: xdr.HostFunction.hostFunctionTypeInvokeContract(
+        new xdr.InvokeContractArgs({
+          contractAddress: this.address().toScAddress(),
+          functionName: xdr.ScVal.scvSymbol(method),
+          args: params
+        })
+      ),
       auth: []
     });
   }
@@ -76,17 +78,13 @@ export class Contract {
   getFootprint() {
     return [
       xdr.LedgerKey.contractCode(
-        new xdr.LedgerKeyContractCode({
-          hash: this._id,
-          bodyType: xdr.ContractEntryBodyType.dataEntry()
-        })
+        new xdr.LedgerKeyContractCode({ hash: this._id })
       ),
       xdr.LedgerKey.contractData(
         new xdr.LedgerKeyContractData({
           contract: this.address().toScAddress(),
           key: xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: xdr.ContractDataDurability.persistent(),
-          bodyType: xdr.ContractEntryBodyType.dataEntry()
+          durability: xdr.ContractDataDurability.persistent()
         })
       )
     ];

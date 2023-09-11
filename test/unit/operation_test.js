@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import {
-  encodeMuxedAccountToAddress,
-  encodeMuxedAccount
-} from '../../src/util/decode_encode_muxed_account.js';
+const { encodeMuxedAccountToAddress, encodeMuxedAccount } = StellarBase;
 
 describe('Operation', function () {
   describe('.createAccount()', function () {
@@ -2018,8 +2015,17 @@ describe('Operation', function () {
 
   describe('invokeHostFunction()', function () {
     it('creates operation', function () {
+      const contractId =
+        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      const c = new StellarBase.Contract(contractId);
       const op = StellarBase.Operation.invokeHostFunction({
-        func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract([]),
+        func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+          new StellarBase.xdr.InvokeContractArgs({
+            contractAddress: c.address().toScAddress(),
+            functionName: 'hello',
+            args: [StellarBase.nativeToScVal('world')]
+          })
+        ),
         auth: []
       });
       var xdr = op.toXDR('hex');

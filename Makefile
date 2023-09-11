@@ -1,4 +1,4 @@
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/curr
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/9ac02641139e6717924fdad716f6e958d0168491
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FILES_CURR= \
 	Stellar-SCP.x \
@@ -6,10 +6,15 @@ XDR_FILES_CURR= \
 	Stellar-ledger.x \
 	Stellar-overlay.x \
 	Stellar-transaction.x \
-	Stellar-types.x
+	Stellar-types.x \
+	Stellar-contract.x \
+	Stellar-contract-env-meta.x \
+	Stellar-contract-meta.x \
+	Stellar-contract-spec.x \
+	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/e372df9f677961aac04c5a4cc80a3667f310b29f
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/440dc9512b6e72cf84965641c5eb495d6043ed73
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \
@@ -25,7 +30,7 @@ XDR_FILES_NEXT= \
 	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_NEXT=$(addprefix xdr/next/,$(XDR_FILES_NEXT))
 
-XDRGEN_COMMIT=8d303b1
+XDRGEN_COMMIT=master
 DTSXDR_COMMIT=master
 
 all: generate

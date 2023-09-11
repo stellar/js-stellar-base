@@ -37,7 +37,7 @@ function rk() {
 
 function makeInvocation(contract, name, ...args) {
   return xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
-    new xdr.SorobanAuthorizedContractFunction({
+    new xdr.InvokeContractArgs({
       contractAddress: contract.address().toScAddress(),
       functionName: name,
       args: args.map(nativeToScVal)
