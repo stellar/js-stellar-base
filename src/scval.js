@@ -2,7 +2,7 @@ import xdr from './xdr';
 
 import { Address } from './address';
 import { Contract } from './contract';
-import { ScInt, scValToBigInt } from './numbers/index';
+import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
 
 /**
  * Attempts to convert native types into smart contract values
@@ -65,7 +65,6 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *    `scvString`.
  *
  * @returns {xdr.ScVal} a wrapped, smart, XDR version of the input value
- *
  * @throws {TypeError} if...
  *  - there are arrays with more than one type in them
  *  - there are values that do not have a sensible conversion (e.g. random XDR
@@ -75,6 +74,7 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *  - the type you specified (via `opts.type`) is incompatible with the value
  *    you passed in (`val`), e.g. `nativeToScVal("a string", { type: 'i128' })`,
  *    though this does not apply for types that ignore `opts` (e.g. addresses).
+ * @see scValToNative
  *
  * @example
  * nativeToScVal(1000);                   // gives ScValType === scvU64
@@ -130,8 +130,6 @@ import { ScInt, scValToBigInt } from './numbers/index';
  *
  * // Similarly, the inverse should work:
  * scValToNative(scv) == gigaMap;       // true
- *
- * @see scValToNative
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
@@ -218,19 +216,28 @@ export function nativeToScVal(val, opts = {}) {
 
       return new ScInt(val, { type: opts?.type }).toScVal();
 
-    case 'string':
-      switch (opts?.type ?? 'string') {
+    case 'string': {
+      const optType = opts?.type ?? 'string';
+      switch (optType) {
         case 'string':
           return xdr.ScVal.scvString(val);
 
         case 'symbol':
           return xdr.ScVal.scvSymbol(val);
 
+        case 'address':
+          return new Address(val).toScVal();
+
         default:
+          if (XdrLargeInt.isType(optType)) {
+            return new XdrLargeInt(optType, val).toScVal();
+          }
+
           throw new TypeError(
             `invalid type (${opts.type}) specified for string value`
           );
       }
+    }
 
     case 'boolean':
       return xdr.ScVal.scvBool(val);

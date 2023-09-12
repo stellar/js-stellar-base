@@ -1084,6 +1084,7 @@ export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMu
 export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 export function extractBaseAddress(address: string): string;
 
+export type IntLike = string | number | bigint;
 export type ScIntType =
   | 'i64'
   | 'u64'
@@ -1091,8 +1092,6 @@ export type ScIntType =
   | 'u128'
   | 'i256'
   | 'u256';
-
-export type IntLike = string | number | bigint;
 
 export class XdrLargeInt {
   constructor(
@@ -1117,6 +1116,9 @@ export class XdrLargeInt {
     value: string;
     type: ScIntType;
   };
+
+  static isType(t: string): t is ScIntType;
+  static getType(scvType: string): ScIntType;
 }
 
 export class ScInt extends XdrLargeInt {

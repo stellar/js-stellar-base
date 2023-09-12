@@ -56,7 +56,7 @@ describe('Contract', function () {
     let call = contract.call(
       'method',
       StellarBase.nativeToScVal('arg!'),
-      StellarBase.nativeToScVal(2, { type: 'i32' }),
+      StellarBase.nativeToScVal(2, { type: 'i32' })
     );
 
     xit('builds valid XDR', function () {
