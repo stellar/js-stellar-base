@@ -13,7 +13,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: 16
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Depencencies
@@ -22,7 +22,7 @@ jobs:
       - name: Test & Build
         run: yarn preversion
 
-      - name: Publish npm package
-        run: yarn publish
+      - name: Publish release npm package
+        run: yarn publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

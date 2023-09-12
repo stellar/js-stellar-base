@@ -38,11 +38,26 @@ export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
 export { SignerKey } from './signerkey';
+export { Soroban } from './soroban';
 export {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
   extractBaseAddress,
   encodeMuxedAccount
 } from './util/decode_encode_muxed_account';
+
+//
+// Soroban
+//
+
+export { Contract } from './contract';
+export { Address } from './address';
+export * from './numbers';
+export * from './scval';
+export * from './events';
+export * from './sorobandata_builder';
+export * from './auth';
+
+export * from './invocation';
 
 export default module.exports;

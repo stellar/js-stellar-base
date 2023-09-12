@@ -1,4 +1,4 @@
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/curr
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/9ac02641139e6717924fdad716f6e958d0168491
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FILES_CURR= \
 	Stellar-SCP.x \
@@ -6,10 +6,15 @@ XDR_FILES_CURR= \
 	Stellar-ledger.x \
 	Stellar-overlay.x \
 	Stellar-transaction.x \
-	Stellar-types.x
+	Stellar-types.x \
+	Stellar-contract.x \
+	Stellar-contract-env-meta.x \
+	Stellar-contract-meta.x \
+	Stellar-contract-spec.x \
+	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/next
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/440dc9512b6e72cf84965641c5eb495d6043ed73
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \
@@ -20,7 +25,9 @@ XDR_FILES_NEXT= \
 	Stellar-types.x \
 	Stellar-contract.x \
 	Stellar-contract-env-meta.x \
-	Stellar-contract-spec.x
+	Stellar-contract-meta.x \
+	Stellar-contract-spec.x \
+	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_NEXT=$(addprefix xdr/next/,$(XDR_FILES_NEXT))
 
 XDRGEN_COMMIT=master
@@ -33,8 +40,8 @@ generate: src/generated/curr_generated.js types/curr.d.ts src/generated/next_gen
 src/generated/curr_generated.js: $(XDR_FILES_LOCAL_CURR)
 	mkdir -p $(dir $@)
 	> $@
-	docker run -it --rm -v $$PWD:/wd -w /wd ruby /bin/bash -c '\
-		gem install specific_install -v 0.3.7 && \
+	docker run -it --rm -v $$PWD:/wd -w /wd ruby:3.1 /bin/bash -c '\
+		gem install specific_install -v 0.3.8 && \
 		gem specific_install https://github.com/stellar/xdrgen.git -b $(XDRGEN_COMMIT) && \
 		xdrgen --language javascript --namespace curr --output src/generated $^ \
 		'
@@ -42,8 +49,8 @@ src/generated/curr_generated.js: $(XDR_FILES_LOCAL_CURR)
 src/generated/next_generated.js: $(XDR_FILES_LOCAL_NEXT)
 	mkdir -p $(dir $@)
 	> $@
-	docker run -it --rm -v $$PWD:/wd -w /wd ruby /bin/bash -c '\
-		gem install specific_install -v 0.3.7 && \
+	docker run -it --rm -v $$PWD:/wd -w /wd ruby:3.1 /bin/bash -c '\
+		gem install specific_install -v 0.3.8 && \
 		gem specific_install https://github.com/stellar/xdrgen.git -b $(XDRGEN_COMMIT) && \
 		xdrgen --language javascript --namespace next --output src/generated $^ \
 		'
@@ -53,7 +60,7 @@ types/curr.d.ts: src/generated/curr_generated.js
 		apk add --update git && \
 		git clone --depth 1 https://github.com/stellar/dts-xdr -b $(DTSXDR_COMMIT) --single-branch && \
 		cd /dts-xdr && \
-		yarn install && \
+		yarn install --network-concurrency 1 && \
 		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
 		yarn run prettier --write /wd/$@ \
@@ -64,7 +71,7 @@ types/next.d.ts: src/generated/next_generated.js
 		apk add --update git && \
 		git clone --depth 1 https://github.com/stellar/dts-xdr -b $(DTSXDR_COMMIT) --single-branch && \
 		cd /dts-xdr && \
-		yarn install && \
+		yarn install --network-concurrency 1 && \
 		OUT=/wd/$@ npx jscodeshift -t src/transform.js /wd/$< && \
 		cd /wd && \
 		yarn run prettier --write /wd/$@ \
@@ -83,6 +90,7 @@ $(XDR_FILES_LOCAL_NEXT):
 
 reset-xdr:
 	rm -f xdr/*/*.x
+	rm -f src/generated/*.js
 	rm -f types/curr.d.ts
 	rm -f types/next.d.ts
 	$(MAKE) generate

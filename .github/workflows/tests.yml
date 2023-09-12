@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        node-version: [14, 16, 18]
+        node-version: [16, 18, 20]
 
     steps:
       - name: Checkout
@@ -29,9 +29,6 @@ jobs:
       - name: Install Dependencies
         run: yarn install --network-concurrency 1
 
-      - name: Run Linter
-        run: yarn lint
-
       - name: Build All
         run: yarn build:prod
 
@@ -40,3 +37,6 @@ jobs:
 
       - name: Run Browser Tests
         run: yarn test:browser
+
+      - name: Run Linter Checks
+        run: yarn fmt && yarn lint && (git diff-index --quiet HEAD; git diff)

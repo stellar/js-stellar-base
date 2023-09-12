@@ -56,7 +56,10 @@ export const AuthImmutableFlag = 1 << 2;
 export const AuthClawbackEnabledFlag = 1 << 3;
 
 /**
- * `Operation` class represents [operations](https://developers.stellar.org/docs/glossary/operations/) in Stellar network.
+ * `Operation` class represents
+ * [operations](https://developers.stellar.org/docs/glossary/operations/) in
+ * Stellar network.
+ *
  * Use one of static methods to create operations:
  * * `{@link Operation.createAccount}`
  * * `{@link Operation.payment}`
@@ -88,6 +91,9 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.setTrustLineFlags}`
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
+ * * `{@link Operation.invokeHostFunction}`
+ * * `{@link Operation.bumpFootprintExpiration}`
+ * * `{@link Operation.restoreFootprint}`
  *
  * @class Operation
  */
@@ -367,6 +373,21 @@ export class Operation {
         result.amount = this._fromXDRAmount(attrs.amount());
         result.minAmountA = this._fromXDRAmount(attrs.minAmountA());
         result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
+        break;
+      }
+      case 'invokeHostFunction': {
+        result.type = 'invokeHostFunction';
+        result.func = attrs.hostFunction();
+        result.auth = attrs.auth() ?? [];
+        break;
+      }
+      case 'bumpFootprintExpiration': {
+        result.type = 'bumpFootprintExpiration';
+        result.ledgersToExpire = attrs.ledgersToExpire();
+        break;
+      }
+      case 'restoreFootprint': {
+        result.type = 'restoreFootprint';
         break;
       }
       default: {
@@ -650,3 +671,6 @@ Operation.clawback = ops.clawback;
 Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
+Operation.invokeHostFunction = ops.invokeHostFunction;
+Operation.bumpFootprintExpiration = ops.bumpFootprintExpiration;
+Operation.restoreFootprint = ops.restoreFootprint;

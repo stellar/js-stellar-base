@@ -30,3 +30,6 @@ export { clawback } from './clawback';
 export { setTrustLineFlags } from './set_trustline_flags';
 export { liquidityPoolDeposit } from './liquidity_pool_deposit';
 export { liquidityPoolWithdraw } from './liquidity_pool_withdraw';
+export { invokeHostFunction } from './invoke_host_function';
+export { bumpFootprintExpiration } from './bump_footprint_expiration';
+export { restoreFootprint } from './restore_footprint';

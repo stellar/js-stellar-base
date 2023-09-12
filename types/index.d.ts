@@ -12,6 +12,29 @@ export class Account {
   incrementSequenceNumber(): void;
 }
 
+export class Address {
+  constructor(address: string);
+  static fromString(address: string): Address;
+  static account(buffer: Buffer): Address;
+  static contract(buffer: Buffer): Address;
+  static fromScVal(scVal: xdr.ScVal): Address;
+  static fromScAddress(scAddress: xdr.ScAddress): Address;
+  toString(): string;
+  toScVal(): xdr.ScVal;
+  toScAddress(): xdr.ScAddress;
+  toBuffer(): Buffer;
+}
+
+export class Contract {
+  constructor(contractId: string);
+  call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
+  contractId(): string;
+  address(): Address;
+  getFootprint(): xdr.LedgerKey[];
+
+  toString(): string;
+}
+
 export class MuxedAccount {
   constructor(account: Account, sequence: string);
   static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount;
@@ -56,6 +79,7 @@ export class Asset {
   toXDRObject(): xdr.Asset;
   toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
   toTrustLineXDRObject(): xdr.TrustLineAsset;
+  contractId(): string;
 
   code: string;
   issuer: string;
@@ -219,7 +243,10 @@ export class Memo<T extends MemoType = MemoType> {
 
 export enum Networks {
   PUBLIC = 'Public Global Stellar Network ; September 2015',
-  TESTNET = 'Test SDF Network ; September 2015'
+  TESTNET = 'Test SDF Network ; September 2015',
+  FUTURENET = 'Test SDF Future Network ; October 2022',
+  SANDBOX = 'Local Sandbox Stellar Network ; September 2022',
+  STANDALONE = 'Standalone Network ; February 2017'
 }
 
 export const AuthRequiredFlag: 1;
@@ -341,6 +368,9 @@ export namespace OperationType {
   type SetTrustLineFlags = 'setTrustLineFlags';
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
+  type InvokeHostFunction = 'invokeHostFunction';
+  type BumpFootprintExpiration = 'bumpFootprintExpiration';
+  type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -366,7 +396,10 @@ export type OperationType =
   | OperationType.ClawbackClaimableBalance
   | OperationType.SetTrustLineFlags
   | OperationType.LiquidityPoolDeposit
-  | OperationType.LiquidityPoolWithdraw;
+  | OperationType.LiquidityPoolWithdraw
+  | OperationType.InvokeHostFunction
+  | OperationType.BumpFootprintExpiration
+  | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
   interface BaseOptions {
@@ -513,6 +546,14 @@ export namespace OperationOptions {
     minAmountA: string;
     minAmountB: string;
   }
+  interface InvokeHostFunction extends BaseOptions {
+    func: xdr.HostFunction;
+    auth: xdr.SorobanAuthorizationEntry[];
+  }
+  interface BumpFootprintExpiration extends BaseOptions {
+    ledgersToExpire: number;
+  }
+  type RestoreFootprint = BaseOptions;
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -543,7 +584,10 @@ export type OperationOptions =
   | OperationOptions.ClawbackClaimableBalance
   | OperationOptions.SetTrustLineFlags
   | OperationOptions.LiquidityPoolDeposit
-  | OperationOptions.LiquidityPoolWithdraw;
+  | OperationOptions.LiquidityPoolWithdraw
+  | OperationOptions.InvokeHostFunction
+  | OperationOptions.BumpFootprintExpiration
+  | OperationOptions.RestoreFootprint;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -824,6 +868,24 @@ export namespace Operation {
   function liquidityPoolWithdraw(
     options: OperationOptions.LiquidityPoolWithdraw
   ): xdr.Operation<LiquidityPoolWithdraw>;
+  interface InvokeHostFunction extends BaseOperation<OperationType.InvokeHostFunction> {
+    func: xdr.HostFunction;
+    auth?: xdr.SorobanAuthorizationEntry[];
+  }
+  function invokeHostFunction(
+    options: OperationOptions.InvokeHostFunction
+  ): xdr.Operation<InvokeHostFunction>;
+
+  function bumpFootprintExpiration(
+    options: OperationOptions.BumpFootprintExpiration
+  ): xdr.Operation<BumpFootprintExpiration>;
+  interface BumpFootprintExpiration extends BaseOperation<OperationType.BumpFootprintExpiration> {
+    ledgersToExpire: number;
+  }
+
+  function restoreFootprint(options: OperationOptions.RestoreFootprint):
+    xdr.Operation<RestoreFootprint>;
+  interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -859,7 +921,10 @@ export type Operation =
   | Operation.ClawbackClaimableBalance
   | Operation.SetTrustLineFlags
   | Operation.LiquidityPoolDeposit
-  | Operation.LiquidityPoolWithdraw;
+  | Operation.LiquidityPoolWithdraw
+  | Operation.InvokeHostFunction
+  | Operation.BumpFootprintExpiration
+  | Operation.RestoreFootprint;
 
 export namespace StrKey {
   function encodeEd25519PublicKey(data: Buffer): string;
@@ -883,6 +948,9 @@ export namespace StrKey {
 
   function encodeSha256Hash(data: Buffer): string;
   function decodeSha256Hash(address: string): Buffer;
+
+  function encodeContract(data: Buffer): string;
+  function decodeContract(address: string): Buffer;
 }
 
 export namespace SignerKey {
@@ -952,6 +1020,7 @@ export class TransactionBuilder {
     options?: TransactionBuilder.TransactionBuilderOptions
   );
   addOperation(operation: xdr.Operation): this;
+  clearOperations(): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
   setTimebounds(min: Date | number, max: Date | number): this;
@@ -960,8 +1029,14 @@ export class TransactionBuilder {
   setMinAccountSequenceAge(durationInSeconds: number): this;
   setMinAccountSequenceLedgerGap(gap: number): this;
   setExtraSigners(extraSigners: string[]): this;
+  setSorobanData(sorobanData: string | xdr.SorobanTransactionData): this;
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
+
+  static cloneFrom(
+    tx: Transaction,
+    optionOverrides?: TransactionBuilder.TransactionBuilderOptions
+  ): TransactionBuilder;
   static buildFeeBumpTransaction(
     feeSource: Keypair | string,
     baseFee: string,
@@ -992,6 +1067,7 @@ export namespace TransactionBuilder {
     minAccountSequenceAge?: number;
     minAccountSequenceLedgerGap?: number;
     extraSigners?: string[];
+    sorobanData?: string | xdr.SorobanTransactionData;
   }
 }
 
@@ -1007,3 +1083,154 @@ export function decodeAddressToMuxedAccount(address: string, supportMuxing: bool
 export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
 export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 export function extractBaseAddress(address: string): string;
+
+export type IntLike = string | number | bigint;
+export type ScIntType =
+  | 'i64'
+  | 'u64'
+  | 'i128'
+  | 'u128'
+  | 'i256'
+  | 'u256';
+
+export class XdrLargeInt {
+  constructor(
+    type: ScIntType,
+    values: IntLike | IntLike[]
+  );
+
+  toNumber(): number;
+  toBigInt(): bigint;
+
+  toI64(): xdr.ScVal;
+  toU64(): xdr.ScVal;
+  toI128(): xdr.ScVal;
+  toU128(): xdr.ScVal;
+  toI256(): xdr.ScVal;
+  toU256(): xdr.ScVal;
+  toScVal(): xdr.ScVal;
+
+  valueOf(): any; // FIXME
+  toString(): string;
+  toJSON(): {
+    value: string;
+    type: ScIntType;
+  };
+
+  static isType(t: string): t is ScIntType;
+  static getType(scvType: string): ScIntType;
+}
+
+export class ScInt extends XdrLargeInt {
+  constructor(value: IntLike, opts?: { type: ScIntType });
+}
+
+export function scValToBigInt(scv: xdr.ScVal): bigint;
+export function nativeToScVal(val: any, opts?: { type: ScIntType }): xdr.ScVal;
+export function scValToNative(scv: xdr.ScVal): any;
+
+interface SorobanEvent {
+  type: 'system'|'contract'|'diagnostic';   // xdr.ContractEventType.name
+  contractId?: string;                      // C... encoded strkey
+
+  topics: any[];  // essentially a call of map(event.body.topics, scValToNative)
+  data: any;      // similarly, scValToNative(rawEvent.data);
+}
+
+export function humanizeEvents(
+  events: xdr.DiagnosticEvent[] | xdr.ContractEvent[]
+): SorobanEvent[];
+
+export class SorobanDataBuilder {
+  constructor(data?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
+  static fromXDR(data: Uint8Array | Buffer | string): SorobanDataBuilder;
+
+  setRefundableFee(fee: IntLike): SorobanDataBuilder;
+  setResources(
+    cpuInstrs: number,
+    readBytes: number,
+    writeBytes: number
+  ): SorobanDataBuilder;
+
+  setFootprint(
+    readOnly?: xdr.LedgerKey[] | null,
+    readWrite?: xdr.LedgerKey[] | null
+  ): SorobanDataBuilder;
+  appendFootprint(
+    readOnly: xdr.LedgerKey[],
+    readWrite: xdr.LedgerKey[]
+  ): SorobanDataBuilder;
+
+  setReadOnly(keys: xdr.LedgerKey[]): SorobanDataBuilder;
+  setReadWrite(keys: xdr.LedgerKey[]): SorobanDataBuilder;
+
+  getFootprint(): xdr.LedgerFootprint;
+  getReadOnly(): xdr.LedgerKey[];
+  getReadWrite(): xdr.LedgerKey[];
+
+  build(): xdr.SorobanTransactionData;
+}
+
+export function authorizeInvocation(
+  signer: Keypair,
+  networkPassphrase: string,
+  validUntil: number,
+  invocation: xdr.SorobanAuthorizedInvocation
+): xdr.SorobanAuthorizationEntry;
+
+export function authorizeInvocationCallback(
+  publicKey: string,
+  signingMethod: (input: Buffer) => Buffer,
+  networkPassphrase: string,
+  validUntil: number,
+  invocation: xdr.SorobanAuthorizedInvocation
+): xdr.SorobanAuthorizationEntry;
+
+export function buildAuthEnvelope(
+  networkPassphrase: string,
+  validUntil: number,
+  invocation: xdr.SorobanAuthorizedInvocation
+): xdr.HashIdPreimage;
+
+export function buildAuthEntry(
+  envelope: xdr.HashIdPreimage,
+  signature: Buffer | Uint8Array,
+  publicKey: string
+): xdr.SorobanAuthorizationEntry;
+
+export interface CreateInvocation {
+  type: 'wasm' | 'sac';
+  token?: string;
+  wasm?: {
+      hash: string;
+      address: string;
+      salt: string;
+  };
+}
+
+export interface ExecuteInvocation {
+  source: string;
+  function: string;
+  args: any[];
+}
+
+export interface InvocationTree {
+  type: 'execute' | 'create';
+  args: CreateInvocation | ExecuteInvocation;
+  invocations: InvocationTree[];
+}
+
+export function buildInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation
+): InvocationTree;
+
+export type InvocationWalker = (
+  node: xdr.SorobanAuthorizedInvocation,
+  depth: number,
+  parent?: any
+) => boolean|null;
+
+export function walkInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation,
+  callback: InvocationWalker
+): void;

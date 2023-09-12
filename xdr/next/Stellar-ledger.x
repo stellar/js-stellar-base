@@ -47,17 +47,13 @@ struct StellarValue
     ext;
 };
 
-const MASK_LEDGER_HEADER_FLAGS = 0x7F;
+const MASK_LEDGER_HEADER_FLAGS = 0x7;
 
 enum LedgerHeaderFlags
 {
     DISABLE_LIQUIDITY_POOL_TRADING_FLAG = 0x1,
     DISABLE_LIQUIDITY_POOL_DEPOSIT_FLAG = 0x2,
-    DISABLE_LIQUIDITY_POOL_WITHDRAWAL_FLAG = 0x4,
-    DISABLE_CONTRACT_CREATE = 0x8,
-    DISABLE_CONTRACT_UPDATE = 0x10,
-    DISABLE_CONTRACT_REMOVE = 0x20,
-    DISABLE_CONTRACT_INVOKE = 0x40
+    DISABLE_LIQUIDITY_POOL_WITHDRAWAL_FLAG = 0x4
 };
 
 struct LedgerHeaderExtensionV1
@@ -127,7 +123,8 @@ enum LedgerUpgradeType
     LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
     LEDGER_UPGRADE_BASE_RESERVE = 4,
     LEDGER_UPGRADE_FLAGS = 5,
-    LEDGER_UPGRADE_CONFIG = 6
+    LEDGER_UPGRADE_CONFIG = 6,
+    LEDGER_UPGRADE_MAX_SOROBAN_TX_SET_SIZE = 7
 };
 
 struct ConfigUpgradeSetKey {
@@ -148,7 +145,12 @@ case LEDGER_UPGRADE_BASE_RESERVE:
 case LEDGER_UPGRADE_FLAGS:
     uint32 newFlags; // update flags
 case LEDGER_UPGRADE_CONFIG:
+    // Update arbitrary `ConfigSetting` entries identified by the key.
     ConfigUpgradeSetKey newConfig;
+case LEDGER_UPGRADE_MAX_SOROBAN_TX_SET_SIZE:
+    // Update ConfigSettingContractExecutionLanesV0.ledgerMaxTxCount without
+    // using `LEDGER_UPGRADE_CONFIG`.
+    uint32 newMaxSorobanTxSetSize;
 };
 
 struct ConfigUpgradeSet {
@@ -280,32 +282,6 @@ struct TransactionHistoryResultEntry
     ext;
 };
 
-struct TransactionResultPairV2
-{
-    Hash transactionHash;
-    Hash hashOfMetaHashes; // hash of hashes in TransactionMetaV3
-                           // TransactionResult is in the meta
-};
-
-struct TransactionResultSetV2
-{
-    TransactionResultPairV2 results<>;
-};
-
-struct TransactionHistoryResultEntryV2
-{
-    uint32 ledgerSeq;
-    TransactionResultSetV2 txResultSet;
-
-    // reserved for future use
-    union switch (int v)
-    {
-    case 0:
-        void;
-    }
-    ext;
-};
-
 struct LedgerHeaderHistoryEntry
 {
     Hash hash;
@@ -411,7 +387,7 @@ struct ContractEvent
     case 0:
         struct
         {
-            SCVec topics;
+            SCVal topics<>;
             SCVal data;
         } v0;
     }
@@ -424,34 +400,38 @@ struct DiagnosticEvent
     ContractEvent event;
 };
 
-struct OperationDiagnosticEvents
+struct SorobanTransactionMeta 
 {
-    DiagnosticEvent events<>;
-};
+    ExtensionPoint ext;
 
-struct OperationEvents
-{
-    ContractEvent events<>;
+    ContractEvent events<>;             // custom events populated by the
+                                        // contracts themselves.
+    SCVal returnValue;                  // return value of the host fn invocation
+
+    // Diagnostics events that are not hashed.
+    // This will contain all contract and diagnostic events. Even ones
+    // that were emitted in a failed contract call.
+    DiagnosticEvent diagnosticEvents<>;
 };
 
 struct TransactionMetaV3
 {
-    LedgerEntryChanges txChangesBefore; // tx level changes before operations
-                                        // are applied if any
-    OperationMeta operations<>;         // meta for each operation
-    LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
-                                        // applied if any
-    OperationEvents events<>;           // custom events populated by the
-                                        // contracts themselves. One list per operation.
-    TransactionResult txResult;
+    ExtensionPoint ext;
 
-    Hash hashes[3];                     // stores sha256(txChangesBefore, operations, txChangesAfter),
-                                        // sha256(events), and sha256(txResult)
+    LedgerEntryChanges txChangesBefore;  // tx level changes before operations
+                                         // are applied if any
+    OperationMeta operations<>;          // meta for each operation
+    LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
+                                         // applied if any
+    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
+                                         // Soroban transactions).
+};
 
-    // Diagnostics events that are not hashed. One list per operation.
-    // This will contain all contract and diagnostic events. Even ones
-    // that were emitted in a failed contract call.
-    OperationDiagnosticEvents diagnosticEvents<>;
+// This is in Stellar-ledger.x to due to a circular dependency 
+struct InvokeHostFunctionSuccessPreImage
+{
+    SCVal returnValue;
+    ContractEvent events<>;
 };
 
 // this is the meta produced when applying transactions
@@ -474,13 +454,6 @@ case 3:
 struct TransactionResultMeta
 {
     TransactionResultPair result;
-    LedgerEntryChanges feeProcessing;
-    TransactionMeta txApplyProcessing;
-};
-
-struct TransactionResultMetaV2
-{
-    TransactionResultPairV2 result;
     LedgerEntryChanges feeProcessing;
     TransactionMeta txApplyProcessing;
 };
@@ -529,23 +502,37 @@ struct LedgerCloseMetaV1
     SCPHistoryEntry scpInfo<>;
 };
 
-// only difference between V1 and V2 is this uses TransactionResultMetaV2
 struct LedgerCloseMetaV2
 {
+    // We forgot to add an ExtensionPoint in v1 but at least
+    // we can add one now in v2.
+    ExtensionPoint ext;
+
     LedgerHeaderHistoryEntry ledgerHeader;
-    
+
     GeneralizedTransactionSet txSet;
 
     // NB: transactions are sorted in apply order here
     // fees for all transactions are processed first
     // followed by applying transactions
-    TransactionResultMetaV2 txProcessing<>;
+    TransactionResultMeta txProcessing<>;
 
     // upgrades are applied last
     UpgradeEntryMeta upgradesProcessing<>;
 
     // other misc information attached to the ledger close
     SCPHistoryEntry scpInfo<>;
+
+    // Size in bytes of BucketList, to support downstream
+    // systems calculating storage fees correctly.
+    uint64 totalByteSizeOfBucketList;
+
+    // Expired temp keys that are being evicted at this ledger.
+    LedgerKey evictedTemporaryLedgerKeys<>;
+
+    // Expired restorable ledger entries that are being
+    // evicted at this ledger.
+    LedgerEntry evictedPersistentLedgerEntries<>;
 };
 
 union LedgerCloseMeta switch (int v)

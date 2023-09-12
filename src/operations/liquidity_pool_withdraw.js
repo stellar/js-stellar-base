@@ -24,17 +24,17 @@ export function liquidityPoolWithdraw(opts = {}) {
   attributes.liquidityPoolId = xdr.PoolId.fromXDR(opts.liquidityPoolId, 'hex');
 
   if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError('amount argument is required');
+    throw new TypeError(this.constructAmountRequirementsError('amount'));
   }
   attributes.amount = this._toXDRAmount(opts.amount);
 
   if (!this.isValidAmount(opts.minAmountA, true)) {
-    throw new TypeError('minAmountA argument is required');
+    throw new TypeError(this.constructAmountRequirementsError('minAmountA'));
   }
   attributes.minAmountA = this._toXDRAmount(opts.minAmountA);
 
   if (!this.isValidAmount(opts.minAmountB, true)) {
-    throw new TypeError('minAmountB argument is required');
+    throw new TypeError(this.constructAmountRequirementsError('minAmountB'));
   }
   attributes.minAmountB = this._toXDRAmount(opts.minAmountB);
 

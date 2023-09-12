@@ -1,5 +1,5 @@
 import { isValidDate } from '../../src/transaction_builder.js';
-import { encodeMuxedAccountToAddress } from '../../src/util/decode_encode_muxed_account.js';
+const { encodeMuxedAccountToAddress } = StellarBase;
 
 describe('TransactionBuilder', function () {
   describe('constructs a native payment transaction with one operation', function () {
@@ -58,6 +58,97 @@ describe('TransactionBuilder', function () {
 
     it('should have 100 stroops fee', function (done) {
       expect(transaction.fee).to.be.equal('100');
+      done();
+    });
+  });
+
+  describe('constructs a transaction with soroban data', function () {
+    var ext;
+    var source;
+    var sorobanTransactionData;
+    beforeEach(function () {
+      source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      sorobanTransactionData = new StellarBase.SorobanDataBuilder()
+        .setResources(0, 5, 0)
+        .setRefundableFee(1)
+        .build();
+    });
+
+    const contractId =
+      'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+    const c = new StellarBase.Contract(contractId);
+
+    it('should set the soroban data from object', function (done) {
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+        .setNetworkPassphrase(StellarBase.Networks.TESTNET)
+        .addOperation(
+          StellarBase.Operation.invokeHostFunction({
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'hello',
+                args: [StellarBase.nativeToScVal('world')]
+              })
+            ),
+            auth: []
+          })
+        )
+        .setSorobanData(sorobanTransactionData)
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(
+        transaction.toEnvelope().v1().tx().ext().sorobanData()
+      ).to.deep.equal(sorobanTransactionData);
+      done();
+    });
+    it('should set the soroban data from xdr string', function (done) {
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+        .setNetworkPassphrase(StellarBase.Networks.TESTNET)
+        .addOperation(
+          StellarBase.Operation.invokeHostFunction({
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'hello',
+                args: [StellarBase.nativeToScVal('world')]
+              })
+            ),
+            auth: []
+          })
+        )
+        .setSorobanData(sorobanTransactionData.toXDR('base64'))
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(
+        transaction.toEnvelope().v1().tx().ext().sorobanData()
+      ).to.deep.equal(sorobanTransactionData);
+      done();
+    });
+
+    it('should set the transaction Ext to default when soroban data present', function (done) {
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+        .setNetworkPassphrase(StellarBase.Networks.TESTNET)
+        .addOperation(
+          StellarBase.Operation.invokeHostFunction({
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'hello',
+                args: [StellarBase.nativeToScVal('world')]
+              })
+            ),
+            auth: []
+          })
+        )
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(transaction.toEnvelope().v1().tx().ext().switch()).equal(0);
       done();
     });
   });
@@ -816,6 +907,52 @@ describe('TransactionBuilder', function () {
       expect(decodedTx.innerTransaction.operations[0].source).to.equal(
         source.baseAccount().accountId()
       );
+    });
+
+    it('clones existing transactions', function () {
+      const operations = [
+        StellarBase.Operation.payment({
+          source: source.accountId(),
+          destination: destination,
+          amount: amount,
+          asset: asset
+        }),
+        StellarBase.Operation.clawback({
+          source: source.baseAccount().accountId(),
+          from: destination,
+          amount: amount,
+          asset: asset
+        })
+      ];
+
+      let builder = new StellarBase.TransactionBuilder(source, {
+        fee: '100',
+        timebounds: { minTime: 0, maxTime: 0 },
+        memo: new StellarBase.Memo(StellarBase.MemoText, 'Testing cloning'),
+        networkPassphrase
+      })
+        .addOperation(operations[0])
+        .addOperation(operations[1]);
+
+      let tx = builder.build();
+      let cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx).build();
+
+      expect(cloneTx).to.eql(
+        tx,
+        `txs differ:` +
+          `\n(src) ${JSON.stringify(tx, null, 2)}` +
+          `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`
+      );
+
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx, {
+        fee: '10000'
+      }).build();
+      expect(cloneTx.fee).to.equal('20000'); // double because two ops
+
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx)
+        .clearOperations()
+        .build();
+      expect(cloneTx.operations).to.be.empty;
     });
   });
 });

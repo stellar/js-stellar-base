@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import {
-  encodeMuxedAccountToAddress,
-  encodeMuxedAccount
-} from '../../src/util/decode_encode_muxed_account.js';
+const { encodeMuxedAccountToAddress, encodeMuxedAccount } = StellarBase;
 
 describe('Operation', function () {
   describe('.createAccount()', function () {
@@ -44,9 +41,7 @@ describe('Operation', function () {
         startingBalance: '0',
         source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       };
-      expect(() => StellarBase.Operation.createAccount(opts)).not.to.throw(
-        /startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal/
-      );
+      expect(() => StellarBase.Operation.createAccount(opts)).not.to.throw();
     });
 
     it('fails to create createAccount operation with an invalid startingBalance', function () {
@@ -56,7 +51,7 @@ describe('Operation', function () {
         source: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ'
       };
       expect(() => StellarBase.Operation.createAccount(opts)).to.throw(
-        /startingBalance must be of type String, represent a non-negative number and have at most 7 digits after the decimal/
+        /startingBalance argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
     });
 
@@ -2018,6 +2013,75 @@ describe('Operation', function () {
     });
   });
 
+  describe('invokeHostFunction()', function () {
+    it('creates operation', function () {
+      const contractId =
+        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      const c = new StellarBase.Contract(contractId);
+      const op = StellarBase.Operation.invokeHostFunction({
+        func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+          new StellarBase.xdr.InvokeContractArgs({
+            contractAddress: c.address().toScAddress(),
+            functionName: 'hello',
+            args: [StellarBase.nativeToScVal('world')]
+          })
+        ),
+        auth: []
+      });
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+
+      expect(operation.body().switch().name).to.equal('invokeHostFunction');
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('invokeHostFunction');
+      expect(obj.func.switch().name).to.equal('hostFunctionTypeInvokeContract');
+      expect(obj.auth).to.deep.equal([]);
+    });
+
+    it('throws when no func passed', function () {
+      expect(() =>
+        StellarBase.Operation.invokeHostFunction({
+          auth: []
+        })
+      ).to.throw(/\('func'\) required/);
+    });
+  });
+
+  describe('bumpFootprintExpiration()', function () {
+    it('creates operation', function () {
+      const op = StellarBase.Operation.bumpFootprintExpiration({
+        ledgersToExpire: 1234
+      });
+      const xdr = op.toXDR('hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+
+      expect(operation.body().switch().name).to.equal(
+        'bumpFootprintExpiration'
+      );
+      const obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('bumpFootprintExpiration');
+      expect(obj.ledgersToExpire).to.equal(1234);
+
+      expect(() => {
+        StellarBase.Operation.bumpFootprintExpiration({
+          ledgersToExpire: 0
+        });
+      }).to.throw(/ledger quantity/i);
+    });
+  });
+
+  describe('restoreFootprint()', function () {
+    it('creates operation', function () {
+      const op = StellarBase.Operation.restoreFootprint();
+      const xdr = op.toXDR('hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+
+      expect(operation.body().switch().name).to.equal('restoreFootprint');
+      const obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('restoreFootprint');
+    });
+  });
+
   describe('revokeTrustlineSponsorship()', function () {
     it('creates a revokeTrustlineSponsorship', function () {
       const account =
@@ -2401,12 +2465,12 @@ describe('Operation', function () {
       opts.liquidityPoolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
-        /maxAmountA argument is required/
+        /maxAmountA argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.maxAmountA = '10';
       expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.throw(
-        /maxAmountB argument is required/
+        /maxAmountB argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.maxAmountB = '20';
@@ -2420,8 +2484,9 @@ describe('Operation', function () {
       );
 
       opts.maxPrice = '0.55';
-      expect(() => StellarBase.Operation.liquidityPoolDeposit(opts)).to.not
-        .throw;
+      expect(() =>
+        StellarBase.Operation.liquidityPoolDeposit(opts)
+      ).to.not.throw();
     });
 
     it('throws an error if prices are negative', function () {
@@ -2583,22 +2648,23 @@ describe('Operation', function () {
       opts.liquidityPoolId =
         'dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /amount argument is required/
+        /amount argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.amount = '10';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /minAmountA argument is required/
+        /minAmountA argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.minAmountA = '10000';
       expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.throw(
-        /minAmountB argument is required/
+        /minAmountB argument must be of type String, represent a positive number and have at most 7 digits after the decimal/
       );
 
       opts.minAmountB = '20000';
-      expect(() => StellarBase.Operation.liquidityPoolWithdraw(opts)).to.not
-        .throw;
+      expect(() =>
+        StellarBase.Operation.liquidityPoolWithdraw(opts)
+      ).to.not.throw();
     });
 
     it('creates a liquidityPoolWithdraw', function () {

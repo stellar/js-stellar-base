@@ -4,6 +4,7 @@
 /tmp/
 /dist/
 /config/dist/
+/lib/
 /coverage/
 /jsdoc/
 .DS_Store
