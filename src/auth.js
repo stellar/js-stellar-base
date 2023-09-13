@@ -25,8 +25,8 @@ import { nativeToScVal } from './scval';
  */
 
 /**
- * Actually authorizes an existing authorization entry (in place!) using the
- * given the credentials and expiration details.
+ * Actually authorizes an existing authorization entry using the given the
+ * credentials and expiration details, returning a signed copy.
  *
  * This "fills out" the authorization entry with a signature, indicating to the
  * {@link Operation.invokeHostFunction} its attached to that:
@@ -108,8 +108,10 @@ export async function authorizeEntry(
     return entry;
   }
 
+  const clone = xdr.SorobanAuthorizationEntry.fromXDR(entry.toXDR());
+
   /** @type {xdr.SorobanAddressCredentials} */
-  const addrAuth = entry.credentials().address();
+  const addrAuth = clone.credentials().address();
   addrAuth.signatureExpirationLedger(validUntilLedgerSeq);
 
   const networkId = hash(Buffer.from(networkPassphrase));
@@ -117,7 +119,7 @@ export async function authorizeEntry(
     new xdr.HashIdPreimageSorobanAuthorization({
       networkId,
       nonce: addrAuth.nonce(),
-      invocation: entry.rootInvocation(),
+      invocation: clone.rootInvocation(),
       signatureExpirationLedger: addrAuth.signatureExpirationLedger()
     })
   );
@@ -154,7 +156,7 @@ export async function authorizeEntry(
   );
 
   addrAuth.signature(xdr.ScVal.scvVec([sigScVal]));
-  return entry;
+  return clone;
 }
 
 /**
@@ -176,13 +178,14 @@ export async function authorizeEntry(
  *    instance) input and returns the signature of the hash of the raw payload
  *    bytes (where the signing key should correspond to the address in the
  *    `entry`)
- * @param {string}  networkPassphrase   the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options)
  * @param {number}  validUntilLedgerSeq  the (exclusive) future ledger sequence
  *    number until which this authorization entry should be valid (if
  *    `currentLedgerSeq==validUntilLedgerSeq`, this is expired))
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
+ * @param {string}  [networkPassphrase]   the network passphrase is incorprated
+ *    into the signature (see {@link Networks} for options, default:
+ *    {@link Networks.FUTURENET})
  * @param {string}  [publicKey]   the public identity of the signer (when
  *    providing a {@link Keypair} to `signer`, this can be omitted, as it just
  *    uses {@link Keypair.publicKey})
@@ -196,10 +199,10 @@ export async function authorizeEntry(
  */
 export function authorizeInvocation(
   signer,
-  publicKey,
-  networkPassphrase,
   validUntilLedgerSeq,
-  invocation
+  invocation,
+  networkPassphrase = Networks.FUTURENET,
+  publicKey
 ) {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and
