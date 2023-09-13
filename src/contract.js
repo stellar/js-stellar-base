@@ -59,7 +59,7 @@ export class Contract {
       func: xdr.HostFunction.hostFunctionTypeInvokeContract(
         new xdr.InvokeContractArgs({
           contractAddress: this.address().toScAddress(),
-          functionName: xdr.ScVal.scvSymbol(method),
+          functionName: method,
           args: params
         })
       ),

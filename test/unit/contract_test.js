@@ -4,10 +4,13 @@ const NULL_ADDRESS = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM';
 describe('Contract', function () {
   describe('constructor', function () {
     it('parses strkeys', function () {
-      let contractId =
-        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
-      let contract = new Contract(contractId);
-      expect(contract.contractId('strkey')).to.equal(contractId);
+      [
+        NULL_ADDRESS,
+        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE'
+      ].forEach((cid) => {
+        const contract = new Contract(cid);
+        expect(contract.contractId()).to.equal(cid);
+      });
     });
 
     it('throws on obsolete hex ids', function () {
@@ -59,7 +62,11 @@ describe('Contract', function () {
       StellarBase.nativeToScVal(2, { type: 'i32' })
     );
 
-    xit('builds valid XDR', function () {
+    it('works with no parameters', function () {
+      contract.call('empty').toXDR();
+    });
+
+    it('builds valid XDR', function () {
       call.toXDR();
     });
 
@@ -84,10 +91,6 @@ describe('Contract', function () {
         xdr.ScVal.scvString('arg!'),
         xdr.ScVal.scvI32(2)
       ]);
-    });
-
-    xit('works with no parameters', function () {
-      contract.call('empty').toXDR();
     });
   });
 });
