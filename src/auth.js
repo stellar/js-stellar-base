@@ -183,12 +183,12 @@ export async function authorizeEntry(
  *    `currentLedgerSeq==validUntilLedgerSeq`, this is expired))
  * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
  *    we're authorizing (likely, this comes from transaction simulation)
- * @param {string}  [networkPassphrase]   the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options, default:
- *    {@link Networks.FUTURENET})
  * @param {string}  [publicKey]   the public identity of the signer (when
  *    providing a {@link Keypair} to `signer`, this can be omitted, as it just
  *    uses {@link Keypair.publicKey})
+ * @param {string}  [networkPassphrase]   the network passphrase is incorprated
+ *    into the signature (see {@link Networks} for options, default:
+ *    {@link Networks.FUTURENET})
  *
  * @returns {Promise<xdr.SorobanAuthorizationEntry>} a promise for an
  *    authorization entry that you can pass along to
@@ -201,8 +201,8 @@ export function authorizeInvocation(
   signer,
   validUntilLedgerSeq,
   invocation,
+  publicKey = '',
   networkPassphrase = Networks.FUTURENET,
-  publicKey
 ) {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and

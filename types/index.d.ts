@@ -1171,14 +1171,16 @@ export class SorobanDataBuilder {
   build(): xdr.SorobanTransactionData;
 }
 
-type SigningCallback = (preimage: xdr.HashIdPreimage) => Promise<Buffer|Uint8Array>
+export type SigningCallback = (
+  preimage: xdr.HashIdPreimage
+) => Promise<Buffer | Uint8Array | ArrayBuffer /* Buffer-like */>;
 
 export function authorizeInvocation(
   signer: Keypair | SigningCallback,
   validUntil: number,
   invocation: xdr.SorobanAuthorizedInvocation,
-  networkPassphrase?: string,
-  publicKey?: string
+  publicKey?: string,
+  networkPassphrase?: string
 ): Promise<xdr.SorobanAuthorizationEntry>;
 
 export function authorizeEntry(
