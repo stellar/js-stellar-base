@@ -1126,7 +1126,7 @@ export class ScInt extends XdrLargeInt {
 }
 
 export function scValToBigInt(scv: xdr.ScVal): bigint;
-export function nativeToScVal(val: any, opts?: { type: ScIntType }): xdr.ScVal;
+export function nativeToScVal(val: any, opts?: { type: any }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
 
 interface SorobanEvent {
