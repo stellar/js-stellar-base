@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## [`v10.0.0-beta.1`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.0...v10.0.0-beta.1)
+
 ### Fixed
  * `nativeToScVal` now allows anything to be passed to the `opts.type` specifier. Previously, it was only integer types ([#691](https://github.com/stellar/js-stellar-base/pull/691)).
  * `Contract.call()` now produces valid `Operation` XDR ([#692](https://github.com/stellar/js-stellar-base/pull/692)).
