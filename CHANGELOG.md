@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+### Fixed
+ * `nativeToScVal` now allows anything to be passed to the `opts.type` specifier. Previously, it was only integer types ([#691](https://github.com/stellar/js-stellar-base/pull/691)).
+
 
 ## [`v10.0.0-beta.0`](https://github.com/stellar/js-stellar-base/compare/v9.0.0...v10.0.0-beta.0): Protocol 20
 
