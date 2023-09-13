@@ -221,8 +221,8 @@ export function authorizeInvocation(
       new xdr.SorobanAddressCredentials({
         address: new Address(pk).toScAddress(),
         nonce,
-        signatureExpirationLedger: 0,     // replaced
-        signature: [xdr.ScVal.scvVoid()], // replaced
+        signatureExpirationLedger: 0,   // replaced
+        signature: xdr.ScVal.scvVec([]) // replaced
       })
     )
   });

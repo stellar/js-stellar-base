@@ -1,16 +1,16 @@
-const xdr = StellarBase.xdr;
+const { xdr, Address, scValToNative, StrKey } = StellarBase;
 
 describe('building authorization entries', function () {
-  const accountId = StellarBase.Keypair.random();
+  const kp = StellarBase.Keypair.random();
   const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
 
   const authEntry = new xdr.SorobanAuthorizationEntry({
     rootInvocation: new xdr.SorobanAuthorizedInvocation({
       function:
         xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
-          new xdr.SorobanAuthorizedContractFunction({
-            contractAddress: new StellarBase.Address(contractId).toScAddress(),
-            functionName: Buffer.from('hello'),
+          new xdr.InvokeContractArgs({
+            contractAddress: new Address(contractId).toScAddress(),
+            functionName: 'hello',
             args: [xdr.ScVal.scvU64(1234n)]
           })
         ),
@@ -18,7 +18,7 @@ describe('building authorization entries', function () {
     }),
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
-        address: new StellarBase.Address(accountId.publicKey()).toScAddress(),
+        address: new Address(kp.publicKey()).toScAddress(),
         nonce: new xdr.Int64(123456789101112n),
         signatureExpirationLedger: 0,
         signature: xdr.ScVal.scvVec([])
@@ -26,76 +26,50 @@ describe('building authorization entries', function () {
     )
   });
 
-  const bigIntHandler = (key, value) =>
-    typeof value === 'bigint' ? value.toString() : value; // return everything else unchanged
+  // handle bigints when serializing to JSON
+  const biHandler = (_, v) => (typeof v === 'bigint' ? v.toString() : v);
 
-  // clone it since it modifies it in-place
-  let ogEntry;
   it('built an mock entry correctly', function () {
-    const rawEntry = authEntry.toXDR();
-    ogEntry = xdr.SorobanAuthorizationEntry.fromXDR(rawEntry);
-    expect(ogEntry.toXDR('base64')).to.eql(
-      authEntry.toXDR('base64'),
-      `cloning entry didn't work; before: ${JSON.stringify(
-        authEntry,
-        bigIntHandler,
-        2
-      )}\nafter: ${JSON.stringify(ogEntry, bigIntHandler, 2)}`
-    );
+    authEntry.toXDR();
   });
 
-  it('signs the entry correctly', function (done) {
-    StellarBase.authorizeEntry(authEntry, accountId, 10)
-      .then((signedEntry) => {
-        expect(signedEntry.rootInvocation().toXDR('base64')).to.eql(
-          ogEntry.rootInvocation().toXDR('base64'),
-          `invocation tree changed; before: ${JSON.stringify(
-            ogEntry.rootInvocation(),
-            bigIntHandler,
-            2
-          )}\nafter: ${JSON.stringify(
-            signedEntry.rootInvocation(),
-            bigIntHandler,
-            2
-          )}`
-        );
+  [
+    [kp, 'Keypair'],
+    [(preimage) => kp.sign(StellarBase.hash(preimage.toXDR())), 'callback']
+  ].forEach(([signer, methodName]) => {
+    it(`signs the entry correctly (${methodName})`, function (done) {
+      StellarBase.authorizeEntry(authEntry, signer, 10)
+        .then((signedEntry) => {
+          expect(signedEntry.rootInvocation().toXDR()).to.eql(
+            authEntry.rootInvocation().toXDR(),
+            `invocation tree changed! before: ${authEntry.rootInvocation()},` +
+              `after: ${JSON.stringify(signedEntry)}`
+          );
 
-        const signedAddr = signedEntry.credentials().address();
-        expect(signedAddr.address()).to.eql(
-          ogEntry.credentials().address().address()
-        );
-        expect(signedAddr.signatureExpirationLedger()).to.eql(10);
-        expect(signedAddr.nonce()).to.eql(
-          ogEntry.credentials().address().nonce()
-        );
+          const signedAddr = signedEntry.credentials().address();
+          const entryAddr = authEntry.credentials().address();
+          expect(signedAddr.signatureExpirationLedger()).to.eql(10);
+          expect(signedAddr.address()).to.eql(entryAddr.address());
+          expect(signedAddr.nonce()).to.eql(entryAddr.nonce());
 
-        const sigVals = signedAddr
-          .signatureArgs()
-          .map(StellarBase.scValToNative);
+          const sigArgs = signedAddr.signature().vec().map(scValToNative);
+          expect(sigArgs).to.have.lengthOf(1);
 
-        expect(
-          StellarBase.StrKey.encodeEd25519PublicKey(sigVals[0]['public_key'])
-        ).to.eql(accountId.publicKey());
+          const sig = sigArgs[0];
+          expect(sig).to.have.property('public_key');
+          expect(sig).to.have.property('signature');
+          expect(StrKey.encodeEd25519PublicKey(sig.public_key)).to.eql(
+            kp.publicKey()
+          );
 
-        done();
-      })
-      .catch((err) => done(err));
+          done();
+        })
+        .catch((err) => done(err));
+    });
   });
 
-  it('works with a callback', function (done) {
-    StellarBase.authorizeEntry(
-      authEntry,
-      (preimage) => accountId.sign(StellarBase.hash(preimage.toXDR())),
-      10
-    )
-      .then((signedEntry) => {
-        done();
-      })
-      .catch((err) => done(err));
-  });
-
-  const randomKp = StellarBase.Keypair.random();
   it('throws with a random signer', function () {
+    const randomKp = StellarBase.Keypair.random();
     expect(
       StellarBase.authorizeEntry(authEntry, randomKp, 10)
     ).to.eventually.be.rejectedWith(/identity doesn't match/i);
@@ -109,5 +83,13 @@ describe('building authorization entries', function () {
         10
       )
     ).to.eventually.be.rejectedWith(/signature doesn't match/i);
+  });
+
+  it('can build from scratch', function (done) {
+    StellarBase.authorizeInvocation(kp, 10, authEntry.rootInvocation())
+      .then((signedEntry) => {
+        done();
+      })
+      .catch((err) => done(err));
   });
 });
