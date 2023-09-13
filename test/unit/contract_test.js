@@ -83,7 +83,7 @@ describe('Contract', function () {
     });
 
     it('passes the method name as the second arg', function () {
-      expect(args.functionName()).to.deep.equal(xdr.ScVal.scvSymbol('method'));
+      expect(args.functionName()).to.deep.equal('method');
     });
 
     it('passes all params after that', function () {
