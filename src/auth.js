@@ -28,13 +28,14 @@ import { nativeToScVal } from './scval';
  * Actually authorizes an existing authorization entry (in place!) using the
  * given the credentials and expiration details.
  *
- * This "fills out" the authorization entry, indicating to that the
- * {@link Operation.invokeHostFunction} its attached to that a particular
- * identity (i.e. signing {@link Keypair} or other signing method) approves the
- * execution of an particular invocation tree (i.e. a simulation-acquired
- * {@link xdr.SorobanAuthorizedInvocation}) on a particular network (uniquely
- * identified by its passphrase, see {@link Networks}) until a particular ledger
- * sequence (i.e. `validUntil`) is reached.
+ * This "fills out" the authorization entry with a signature, indicating to the
+ * {@link Operation.invokeHostFunction} its attached to that:
+ *   - a particular identity (i.e. signing {@link Keypair} or other signer)
+ *   - approving the execution of an invocation tree (i.e. a simulation-acquired
+ *     {@link xdr.SorobanAuthorizedInvocation} or otherwise built)
+ *   - on a particular network (uniquely identified by its passphrase, see
+ *     {@link Networks})
+ *   - until a particular ledger sequence is reached.
  *
  * This one lets you pass a either a {@link Keypair} (or, more accurately,
  * anything with a `sign(Buffer): Buffer` method) or a callback function (see
@@ -56,6 +57,7 @@ import { nativeToScVal } from './scval';
  *    authorization entry that you can pass along to
  *    {@link Operation.invokeHostFunction}
  *
+ * @see authorizeInvocation
  * @example
  * import { Server, Transaction, Networks, authorizeEntry } from 'soroban-client';
  *
@@ -123,10 +125,9 @@ export async function authorizeEntry(
 
   let signature;
   if (typeof signer === 'function') {
-    const sig = await signer(preimage);
-    signature = Buffer.from(sig);
+    signature = Buffer.from(await signer(preimage));
   } else {
-    signature = signer.sign(payload);
+    signature = Buffer.from(signer.sign(payload));
   }
   const publicKey = Address.fromScAddress(addrAuth.address()).toString();
 
@@ -134,14 +135,17 @@ export async function authorizeEntry(
     throw new Error(`signature doesn't match payload`);
   }
 
+  // This structure is defined here:
+  // https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#stellar-account-signatures
+  //
+  // Encoding a contract structure as an ScVal means the map keys are supposed
+  // to be symbols, hence the forced typing here.
   const sigScVal = nativeToScVal(
     {
       public_key: StrKey.decodeEd25519PublicKey(publicKey),
       signature
     },
     {
-      // force the keys to be interpreted as symbols (expected for
-      // Soroban [contracttype]s)
       type: {
         public_key: ['symbol', null],
         signature: ['symbol', null]
@@ -149,6 +153,81 @@ export async function authorizeEntry(
     }
   );
 
-  addrAuth.signatureArgs([sigScVal]);
+  addrAuth.signature(xdr.ScVal.scvVec([sigScVal]));
   return entry;
+}
+
+/**
+ * This builds an entry from scratch, allowing you to express authorization as a
+ * function of:
+ *   - a particular identity (i.e. signing {@link Keypair} or other signer)
+ *   - approving the execution of an invocation tree (i.e. a simulation-acquired
+ *     {@link xdr.SorobanAuthorizedInvocation} or otherwise built)
+ *   - on a particular network (uniquely identified by its passphrase, see
+ *     {@link Networks})
+ *   - until a particular ledger sequence is reached.
+ *
+ * This is in contrast to {@link authorizeEntry}, which signs an existing entry
+ * "in place".
+ *
+ * @param {Keypair | SigningCallback} signer  either a {@link Keypair} instance
+ *    (or anything with a `.sign(buf): Buffer-like` method) or a function which
+ *    takes a payload (a {@link xdr.HashIdPreimageSorobanAuthorization}
+ *    instance) input and returns the signature of the hash of the raw payload
+ *    bytes (where the signing key should correspond to the address in the
+ *    `entry`)
+ * @param {string}  networkPassphrase   the network passphrase is incorprated
+ *    into the signature (see {@link Networks} for options)
+ * @param {number}  validUntilLedgerSeq  the (exclusive) future ledger sequence
+ *    number until which this authorization entry should be valid (if
+ *    `currentLedgerSeq==validUntilLedgerSeq`, this is expired))
+ * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
+ *    we're authorizing (likely, this comes from transaction simulation)
+ * @param {string}  [publicKey]   the public identity of the signer (when
+ *    providing a {@link Keypair} to `signer`, this can be omitted, as it just
+ *    uses {@link Keypair.publicKey})
+ *
+ * @returns {Promise<xdr.SorobanAuthorizationEntry>} a promise for an
+ *    authorization entry that you can pass along to
+ *    {@link Operation.invokeHostFunction}
+ *
+ * @see authorizeEntry
+ * @example
+ */
+export function authorizeInvocation(
+  signer,
+  publicKey,
+  networkPassphrase,
+  validUntilLedgerSeq,
+  invocation
+) {
+  // We use keypairs as a source of randomness for the nonce to avoid mucking
+  // with any crypto dependencies. Note that this just has to be random and
+  // unique, not cryptographically secure, so it's fine.
+  const kp = Keypair.random().rawPublicKey();
+  const nonce = new xdr.Int64(bytesToInt64(kp));
+
+  const pk = publicKey || signer.publicKey();
+  if (!pk) {
+    throw new Error(`authorizeInvocation requires publicKey parameter`);
+  }
+
+  const entry = new xdr.SorobanAuthorizationEntry({
+    rootInvocation: invocation,
+    credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
+      new xdr.SorobanAddressCredentials({
+        address: new Address(pk).toScAddress(),
+        nonce,
+        signatureExpirationLedger: 0,     // replaced
+        signature: [xdr.ScVal.scvVoid()], // replaced
+      })
+    )
+  });
+
+  return authorizeEntry(entry, signer, validUntilLedgerSeq, networkPassphrase);
+}
+
+function bytesToInt64(bytes) {
+  // eslint-disable-next-line no-bitwise
+  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
 }

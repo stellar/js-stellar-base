@@ -27,6 +27,12 @@ struct SendMore
     uint32 numMessages;
 };
 
+struct SendMoreExtended
+{
+    uint32 numMessages;
+    uint32 numBytes;
+};
+
 struct AuthCert
 {
     Curve25519Public pubkey;
@@ -47,16 +53,14 @@ struct Hello
     uint256 nonce;
 };
 
-
-// During the roll-out phrase, pull mode will be optional.
+// During the roll-out phrase, nodes can disable flow control in bytes.
 // Therefore, we need a way to communicate with other nodes
-// that we want/don't want pull mode.
-// However, the goal is for everyone to enable it by default,
-// so we don't want to introduce a new member variable.
-// For now, we'll use the `flags` field (originally named
-// `unused`) in `Auth`.
-// 100 is just a number that is not 0.
-const AUTH_MSG_FLAG_PULL_MODE_REQUESTED = 100;
+// that we want/don't want flow control in bytes.
+// We use the `flags` field in the Auth message with a special value
+// set to communicate this. Note that AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED != 0
+// AND AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED != 100 (as previously
+// that value was used for other purposes).
+const AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED = 200;
 
 struct Auth
 {
@@ -83,7 +87,7 @@ struct PeerAddress
     uint32 numFailures;
 };
 
-// Next ID: 18
+// Next ID: 21
 enum MessageType
 {
     ERROR_MSG = 0,
@@ -112,6 +116,8 @@ enum MessageType
     SURVEY_RESPONSE = 15,
 
     SEND_MORE = 16,
+    SEND_MORE_EXTENDED = 20,
+
     FLOOD_ADVERT = 18,
     FLOOD_DEMAND = 19
 };
@@ -125,6 +131,12 @@ struct DontHave
 enum SurveyMessageCommandType
 {
     SURVEY_TOPOLOGY = 0
+};
+
+enum SurveyMessageResponseType
+{
+    SURVEY_TOPOLOGY_RESPONSE_V0 = 0,
+    SURVEY_TOPOLOGY_RESPONSE_V1 = 1
 };
 
 struct SurveyRequestMessage
@@ -181,7 +193,7 @@ struct PeerStats
 
 typedef PeerStats PeerStatList<25>;
 
-struct TopologyResponseBody
+struct TopologyResponseBodyV0
 {
     PeerStatList inboundPeers;
     PeerStatList outboundPeers;
@@ -190,10 +202,24 @@ struct TopologyResponseBody
     uint32 totalOutboundPeerCount;
 };
 
-union SurveyResponseBody switch (SurveyMessageCommandType type)
+struct TopologyResponseBodyV1
 {
-case SURVEY_TOPOLOGY:
-    TopologyResponseBody topologyResponseBody;
+    PeerStatList inboundPeers;
+    PeerStatList outboundPeers;
+
+    uint32 totalInboundPeerCount;
+    uint32 totalOutboundPeerCount;
+
+    uint32 maxInboundPeerCount;
+    uint32 maxOutboundPeerCount;
+};
+
+union SurveyResponseBody switch (SurveyMessageResponseType type)
+{
+case SURVEY_TOPOLOGY_RESPONSE_V0:
+    TopologyResponseBodyV0 topologyResponseBodyV0;
+case SURVEY_TOPOLOGY_RESPONSE_V1:
+    TopologyResponseBodyV1 topologyResponseBodyV1;
 };
 
 const TX_ADVERT_VECTOR_MAX_SIZE = 1000;
@@ -254,7 +280,8 @@ case GET_SCP_STATE:
     uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 case SEND_MORE:
     SendMore sendMoreMessage;
-
+case SEND_MORE_EXTENDED:
+    SendMoreExtended sendMoreExtendedMessage;
 // Pull mode
 case FLOOD_ADVERT:
      FloodAdvert floodAdvert;

@@ -38,6 +38,7 @@ export { Claimant } from './claimant';
 export { Networks } from './network';
 export { StrKey } from './strkey';
 export { SignerKey } from './signerkey';
+export { Soroban } from './soroban';
 export {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
@@ -56,5 +57,7 @@ export * from './scval';
 export * from './events';
 export * from './sorobandata_builder';
 export * from './auth';
+
+export * from './invocation';
 
 export default module.exports;

@@ -79,6 +79,7 @@ export class Asset {
   toXDRObject(): xdr.Asset;
   toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
   toTrustLineXDRObject(): xdr.TrustLineAsset;
+  contractId(): string;
 
   code: string;
   issuer: string;
@@ -1083,6 +1084,7 @@ export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMu
 export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 export function extractBaseAddress(address: string): string;
 
+export type IntLike = string | number | bigint;
 export type ScIntType =
   | 'i64'
   | 'u64'
@@ -1090,8 +1092,6 @@ export type ScIntType =
   | 'u128'
   | 'i256'
   | 'u256';
-
-export type IntLike = string | number | bigint;
 
 export class XdrLargeInt {
   constructor(
@@ -1116,6 +1116,9 @@ export class XdrLargeInt {
     value: string;
     type: ScIntType;
   };
+
+  static isType(t: string): t is ScIntType;
+  static getType(scvType: string): ScIntType;
 }
 
 export class ScInt extends XdrLargeInt {
@@ -1146,8 +1149,7 @@ export class SorobanDataBuilder {
   setResources(
     cpuInstrs: number,
     readBytes: number,
-    writeBytes: number,
-    metadataBytes: number
+    writeBytes: number
   ): SorobanDataBuilder;
 
   setFootprint(
@@ -1162,6 +1164,7 @@ export class SorobanDataBuilder {
   setReadOnly(keys: xdr.LedgerKey[]): SorobanDataBuilder;
   setReadWrite(keys: xdr.LedgerKey[]): SorobanDataBuilder;
 
+  getFootprint(): xdr.LedgerFootprint;
   getReadOnly(): xdr.LedgerKey[];
   getReadWrite(): xdr.LedgerKey[];
 
@@ -1194,3 +1197,40 @@ export function buildAuthEntry(
   signature: Buffer | Uint8Array,
   publicKey: string
 ): xdr.SorobanAuthorizationEntry;
+
+export interface CreateInvocation {
+  type: 'wasm' | 'sac';
+  token?: string;
+  wasm?: {
+      hash: string;
+      address: string;
+      salt: string;
+  };
+}
+
+export interface ExecuteInvocation {
+  source: string;
+  function: string;
+  args: any[];
+}
+
+export interface InvocationTree {
+  type: 'execute' | 'create';
+  args: CreateInvocation | ExecuteInvocation;
+  invocations: InvocationTree[];
+}
+
+export function buildInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation
+): InvocationTree;
+
+export type InvocationWalker = (
+  node: xdr.SorobanAuthorizedInvocation,
+  depth: number,
+  parent?: any
+) => boolean|null;
+
+export function walkInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation,
+  callback: InvocationWalker
+): void;

@@ -1,9 +1,13 @@
-const xdr = StellarBase.xdr;
-const ScInt = StellarBase.ScInt; // shorthand
-const [scValToNative, nativeToScVal] = [
-  StellarBase.scValToNative,
-  StellarBase.nativeToScVal
-];
+const {
+  xdr,
+  ScInt,
+  Address,
+  Keypair,
+  XdrLargeInt,
+  scValToNative,
+  nativeToScVal,
+  scValToBigInt
+} = StellarBase;
 
 describe('parsing and building ScVals', function () {
   const gigaMap = {
@@ -205,5 +209,32 @@ describe('parsing and building ScVals', function () {
 
   it('throws on arrays with mixed types', function () {
     expect(() => nativeToScVal([1, 'a', false])).to.throw(/same type/i);
+  });
+
+  it('lets strings be large integer ScVals', function () {
+    ['i64', 'i128', 'i256', 'u64', 'u128', 'u256'].forEach((type) => {
+      const scv = nativeToScVal('12345', { type });
+      expect(XdrLargeInt.getType(scv.switch().name)).to.equal(type);
+      expect(scValToBigInt(scv)).to.equal(BigInt(12345));
+    });
+
+    expect(() => nativeToScVal('not a number', { type: 'i128' })).to.throw();
+    expect(() => nativeToScVal('12345', { type: 'notnumeric' })).to.throw();
+    expect(() => nativeToScVal('use a Number', { type: 'i32' })).to.throw();
+  });
+
+  it('lets strings be addresses', function () {
+    [
+      'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM',
+      'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE',
+      Keypair.random().publicKey(),
+      Keypair.random().publicKey()
+    ].forEach((addr) => {
+      const scv = nativeToScVal(addr, { type: 'address' });
+      const equiv = new Address(addr).toScVal();
+
+      expect(scv.switch().name).to.be.equal('scvAddress');
+      expect(scv).to.deep.equal(equiv);
+    });
   });
 });

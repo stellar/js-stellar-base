@@ -21,7 +21,7 @@ describe('building authorization entries', function () {
         address: new StellarBase.Address(accountId.publicKey()).toScAddress(),
         nonce: new xdr.Int64(123456789101112n),
         signatureExpirationLedger: 0,
-        signatureArgs: []
+        signature: xdr.ScVal.scvVec([])
       })
     )
   });

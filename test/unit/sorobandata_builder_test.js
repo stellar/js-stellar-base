@@ -2,30 +2,21 @@ let xdr = StellarBase.xdr;
 let dataBuilder = StellarBase.SorobanDataBuilder;
 
 describe('SorobanTransactionData can be built', function () {
-  const address = new StellarBase.Address(
-    StellarBase.Keypair.random().publicKey()
-  );
+  const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+  const c = new StellarBase.Contract(contractId);
 
   const sentinel = new xdr.SorobanTransactionData({
     resources: new xdr.SorobanResources({
       footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
       instructions: 1,
       readBytes: 2,
-      writeBytes: 3,
-      extendedMetaDataSizeBytes: 4
+      writeBytes: 3
     }),
     ext: new xdr.ExtensionPoint(0),
     refundableFee: new xdr.Int64(5)
   });
 
-  const key = xdr.LedgerKey.contractData(
-    new xdr.LedgerKeyContractData({
-      contract: address.toScAddress(),
-      key: address.toScVal(),
-      durability: xdr.ContractDataDurability.persistent(),
-      bodyType: xdr.ContractEntryBodyType.dataEntry()
-    })
-  );
+  const key = c.getFootprint()[0];
 
   it('constructs from xdr, base64, and nothing', function () {
     new dataBuilder();
@@ -34,11 +25,17 @@ describe('SorobanTransactionData can be built', function () {
 
     expect(fromRaw).to.eql(sentinel);
     expect(fromStr).to.eql(sentinel);
+
+    const baseline = new dataBuilder().build();
+    [null, '', 0].forEach((falsy) => {
+      const db = new dataBuilder(falsy).build();
+      expect(db).to.eql(baseline);
+    });
   });
 
   it('sets properties as expected', function () {
     expect(
-      new dataBuilder().setResources(1, 2, 3, 4).setRefundableFee(5).build()
+      new dataBuilder().setResources(1, 2, 3).setRefundableFee(5).build()
     ).to.eql(sentinel);
 
     // this isn't a valid param but we're just checking that setters work

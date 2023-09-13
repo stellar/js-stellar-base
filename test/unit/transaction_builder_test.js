@@ -1,5 +1,5 @@
 import { isValidDate } from '../../src/transaction_builder.js';
-import { encodeMuxedAccountToAddress } from '../../src/util/decode_encode_muxed_account.js';
+const { encodeMuxedAccountToAddress } = StellarBase;
 
 describe('TransactionBuilder', function () {
   describe('constructs a native payment transaction with one operation', function () {
@@ -71,31 +71,27 @@ describe('TransactionBuilder', function () {
         'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
         '0'
       );
-      sorobanTransactionData = new StellarBase.xdr.SorobanTransactionData({
-        resources: new StellarBase.xdr.SorobanResources({
-          footprint: new StellarBase.xdr.LedgerFootprint({
-            readOnly: [],
-            readWrite: []
-          }),
-          instructions: 0,
-          readBytes: 5,
-          writeBytes: 0,
-          extendedMetaDataSizeBytes: 0
-        }),
-        refundableFee: StellarBase.xdr.Int64.fromString('1'),
-        ext: new StellarBase.xdr.ExtensionPoint(0)
-      });
+      sorobanTransactionData = new StellarBase.SorobanDataBuilder()
+        .setResources(0, 5, 0)
+        .setRefundableFee(1)
+        .build();
     });
 
+    const contractId =
+      'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+    const c = new StellarBase.Contract(contractId);
+
     it('should set the soroban data from object', function (done) {
-      let transaction = new StellarBase.TransactionBuilder(source, {
-        fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET
-      })
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+        .setNetworkPassphrase(StellarBase.Networks.TESTNET)
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
             func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
-              []
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'hello',
+                args: [StellarBase.nativeToScVal('world')]
+              })
             ),
             auth: []
           })
@@ -110,14 +106,16 @@ describe('TransactionBuilder', function () {
       done();
     });
     it('should set the soroban data from xdr string', function (done) {
-      let transaction = new StellarBase.TransactionBuilder(source, {
-        fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET
-      })
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+        .setNetworkPassphrase(StellarBase.Networks.TESTNET)
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
             func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
-              []
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'hello',
+                args: [StellarBase.nativeToScVal('world')]
+              })
             ),
             auth: []
           })
@@ -131,15 +129,18 @@ describe('TransactionBuilder', function () {
       ).to.deep.equal(sorobanTransactionData);
       done();
     });
+
     it('should set the transaction Ext to default when soroban data present', function (done) {
-      let transaction = new StellarBase.TransactionBuilder(source, {
-        fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET
-      })
+      let transaction = new StellarBase.TransactionBuilder(source, { fee: 100 })
+        .setNetworkPassphrase(StellarBase.Networks.TESTNET)
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
             func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
-              []
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'hello',
+                args: [StellarBase.nativeToScVal('world')]
+              })
             ),
             auth: []
           })
