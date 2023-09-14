@@ -1,10 +1,10 @@
 {
   "name": "stellar-base",
-  "version": "10.0.0-beta.1",
+  "version": "10.0.0-beta.2",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
-    "main": "./dist/stellar-base.min.js",
+    "main": "./dist/stellar-base.js",
     "sodium-native": false
   },
   "types": "./types/index.d.ts",
