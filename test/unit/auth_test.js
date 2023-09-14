@@ -1,78 +1,93 @@
-const xdr = StellarBase.xdr;
+const { xdr, Address, scValToNative, StrKey } = StellarBase;
 
 describe('building authorization entries', function () {
-  const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
   const kp = StellarBase.Keypair.random();
-  const invocation = new xdr.SorobanAuthorizedInvocation({
-    function:
-      xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
-        new xdr.InvokeContractArgs({
-          contractAddress: new StellarBase.Address(contractId).toScAddress(),
-          functionName: 'hello',
-          args: [StellarBase.nativeToScVal('world!')]
-        })
-      ),
-    subInvocations: []
-  });
+  const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
 
-  it('built an mock invocation correctly', function () {
-    invocation.toXDR();
-  });
-
-  it('works with keypairs', function () {
-    const entry = StellarBase.authorizeInvocation(
-      kp,
-      StellarBase.Networks.FUTURENET,
-      123,
-      invocation
-    );
-
-    let cred = entry.credentials().address();
-    expect(cred.signatureExpirationLedger()).to.equal(123);
-
-    let sig = cred.signature().vec();
-    expect(sig.length).to.equal(
-      1,
-      `signature isn't in the right format: ${sig}`
-    );
-
-    const args = StellarBase.scValToNative(sig[0]);
-    expect(
-      StellarBase.StrKey.encodeEd25519PublicKey(args['public_key'])
-    ).to.equal(kp.publicKey());
-    expect(entry.rootInvocation()).to.eql(invocation);
-
-    // TODO: Validate the signature using the XDR structure.
-
-    const nextEntry = StellarBase.authorizeInvocation(
-      kp,
-      StellarBase.Networks.FUTURENET,
-      123,
-      invocation
-    );
-    const nextCred = nextEntry.credentials().address();
-
-    expect(cred.nonce()).to.not.equal(nextCred.nonce());
-  });
-
-  it('works asynchronously', function (done) {
-    StellarBase.authorizeInvocationCallback(
-      kp.publicKey(),
-      async (v) => kp.sign(v),
-      StellarBase.Networks.FUTURENET,
-      123,
-      invocation
+  const authEntry = new xdr.SorobanAuthorizationEntry({
+    rootInvocation: new xdr.SorobanAuthorizedInvocation({
+      function:
+        xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
+          new xdr.InvokeContractArgs({
+            contractAddress: new Address(contractId).toScAddress(),
+            functionName: 'hello',
+            args: [xdr.ScVal.scvU64(1234n)]
+          })
+        ),
+      subInvocations: []
+    }),
+    credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
+      new xdr.SorobanAddressCredentials({
+        address: new Address(kp.publicKey()).toScAddress(),
+        nonce: new xdr.Int64(123456789101112n),
+        signatureExpirationLedger: 0,
+        signature: xdr.ScVal.scvVec([])
+      })
     )
-      .then((entry) => {
-        let cred = entry.credentials().address();
-        let args = StellarBase.scValToNative(cred.signature().vec()[0]);
+  });
 
-        expect(cred.signatureExpirationLedger()).to.equal(123);
-        expect(
-          StellarBase.StrKey.encodeEd25519PublicKey(args['public_key'])
-        ).to.equal(kp.publicKey());
-        expect(entry.rootInvocation()).to.eql(invocation);
+  // handle bigints when serializing to JSON
+  const biHandler = (_, v) => (typeof v === 'bigint' ? v.toString() : v);
 
+  it('built an mock entry correctly', function () {
+    authEntry.toXDR();
+  });
+
+  [
+    [kp, 'Keypair'],
+    [(preimage) => kp.sign(StellarBase.hash(preimage.toXDR())), 'callback']
+  ].forEach(([signer, methodName]) => {
+    it(`signs the entry correctly (${methodName})`, function (done) {
+      StellarBase.authorizeEntry(authEntry, signer, 10)
+        .then((signedEntry) => {
+          expect(signedEntry.rootInvocation().toXDR()).to.eql(
+            authEntry.rootInvocation().toXDR(),
+            `invocation tree changed! before: ${authEntry.rootInvocation()},` +
+              `after: ${JSON.stringify(signedEntry)}`
+          );
+
+          const signedAddr = signedEntry.credentials().address();
+          const entryAddr = authEntry.credentials().address();
+          expect(signedAddr.signatureExpirationLedger()).to.eql(10);
+          expect(signedAddr.address()).to.eql(entryAddr.address());
+          expect(signedAddr.nonce()).to.eql(entryAddr.nonce());
+
+          const sigArgs = signedAddr.signature().vec().map(scValToNative);
+          expect(sigArgs).to.have.lengthOf(1);
+
+          const sig = sigArgs[0];
+          expect(sig).to.have.property('public_key');
+          expect(sig).to.have.property('signature');
+          expect(StrKey.encodeEd25519PublicKey(sig.public_key)).to.eql(
+            kp.publicKey()
+          );
+
+          done();
+        })
+        .catch((err) => done(err));
+    });
+  });
+
+  it('throws with a random signer', function () {
+    const randomKp = StellarBase.Keypair.random();
+    expect(
+      StellarBase.authorizeEntry(authEntry, randomKp, 10)
+    ).to.eventually.be.rejectedWith(/identity doesn't match/i);
+  });
+
+  it('throws with a bad signature', function () {
+    expect(
+      StellarBase.authorizeEntry(
+        authEntry,
+        (_) => accountId.sign(Buffer.from('bs')),
+        10
+      )
+    ).to.eventually.be.rejectedWith(/signature doesn't match/i);
+  });
+
+  it('can build from scratch', function (done) {
+    StellarBase.authorizeInvocation(kp, 10, authEntry.rootInvocation())
+      .then((signedEntry) => {
         done();
       })
       .catch((err) => done(err));

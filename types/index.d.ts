@@ -1171,32 +1171,24 @@ export class SorobanDataBuilder {
   build(): xdr.SorobanTransactionData;
 }
 
+export type SigningCallback = (
+  preimage: xdr.HashIdPreimage
+) => Promise<Buffer | Uint8Array | ArrayBuffer /* Buffer-like */>;
+
 export function authorizeInvocation(
-  signer: Keypair,
-  networkPassphrase: string,
+  signer: Keypair | SigningCallback,
   validUntil: number,
-  invocation: xdr.SorobanAuthorizedInvocation
-): xdr.SorobanAuthorizationEntry;
+  invocation: xdr.SorobanAuthorizedInvocation,
+  publicKey?: string,
+  networkPassphrase?: string
+): Promise<xdr.SorobanAuthorizationEntry>;
 
-export function authorizeInvocationCallback(
-  publicKey: string,
-  signingMethod: (input: Buffer) => Buffer,
-  networkPassphrase: string,
-  validUntil: number,
-  invocation: xdr.SorobanAuthorizedInvocation
-): xdr.SorobanAuthorizationEntry;
-
-export function buildAuthEnvelope(
-  networkPassphrase: string,
-  validUntil: number,
-  invocation: xdr.SorobanAuthorizedInvocation
-): xdr.HashIdPreimage;
-
-export function buildAuthEntry(
-  envelope: xdr.HashIdPreimage,
-  signature: Buffer | Uint8Array,
-  publicKey: string
-): xdr.SorobanAuthorizationEntry;
+export function authorizeEntry(
+  entry: xdr.SorobanAuthorizationEntry,
+  signer: Keypair | SigningCallback,
+  validUntilLedgerSeq: number,
+  networkPassphrase?: string
+): Promise<xdr.SorobanAuthorizationEntry>;
 
 export interface CreateInvocation {
   type: 'wasm' | 'sac';
