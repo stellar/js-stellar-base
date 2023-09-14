@@ -202,7 +202,7 @@ export function authorizeInvocation(
   validUntilLedgerSeq,
   invocation,
   publicKey = '',
-  networkPassphrase = Networks.FUTURENET,
+  networkPassphrase = Networks.FUTURENET
 ) {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and
@@ -221,7 +221,7 @@ export function authorizeInvocation(
       new xdr.SorobanAddressCredentials({
         address: new Address(pk).toScAddress(),
         nonce,
-        signatureExpirationLedger: 0,   // replaced
+        signatureExpirationLedger: 0, // replaced
         signature: xdr.ScVal.scvVec([]) // replaced
       })
     )
