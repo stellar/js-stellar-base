@@ -4,6 +4,19 @@
 ## Unreleased
 
 
+## [`v10.0.0-beta.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.1...v10.0.0-beta.2)
+
+### Breaking Changes
+ * The wrappers around multi-party authorization have changed ([#678](https://github.com/stellar/js-stellar-base/pull/678)):
+  - `authorizeEntry` has been added to help sign auth entries in-place
+  - the signature for `authorizeInvocation` has changed: it now offers a callback approach by default and requires slightly different parameters
+  - `buildAuthEntry`, `buildAuthEnvelope`, and `authorizeInvocationCallback` have been removed
+
+### Fixed
+ * The TypeScript definitions for XDR schemas now point to the current protocol rather than vNext ([#694](https://github.com/stellar/js-stellar-base/pull/694)).
+ * Misc. dependencies have been updated to their latest versions ([#694](https://github.com/stellar/js-stellar-base/pull/694)).
+
+
 ## [`v10.0.0-beta.1`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.0...v10.0.0-beta.1)
 
 ### Fixed
