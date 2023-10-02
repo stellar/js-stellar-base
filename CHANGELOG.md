@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+### Fixed
+- The type definition for `Memo.hash` now allows `Buffer`s ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
+
 
 ## [`v10.0.0-beta.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.1...v10.0.0-beta.2)
 
