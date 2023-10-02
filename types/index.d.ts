@@ -211,7 +211,7 @@ export type MemoValue = null | string | Buffer;
 
 export class Memo<T extends MemoType = MemoType> {
   static fromXDRObject(memo: xdr.Memo): Memo;
-  static hash(hash: string): Memo<MemoType.Hash>;
+  static hash(hash: string | Buffer): Memo<MemoType.Hash>;
   static id(id: string): Memo<MemoType.ID>;
   static none(): Memo<MemoType.None>;
   static return(hash: string): Memo<MemoType.Return>;
