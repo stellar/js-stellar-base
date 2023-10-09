@@ -100,10 +100,10 @@ export async function authorizeEntry(
   validUntilLedgerSeq,
   networkPassphrase = Networks.FUTURENET
 ) {
-  // no-op
+  // no-op if it's source account auth
   if (
-    entry.credentials().switch() !==
-    xdr.SorobanCredentialsType.sorobanCredentialsAddress()
+    entry.credentials().switch().value !==
+    xdr.SorobanCredentialsType.sorobanCredentialsAddress().value
   ) {
     return entry;
   }
@@ -169,8 +169,7 @@ export async function authorizeEntry(
  *     {@link Networks})
  *   - until a particular ledger sequence is reached.
  *
- * This is in contrast to {@link authorizeEntry}, which signs an existing entry
- * "in place".
+ * This is in contrast to {@link authorizeEntry}, which signs an existing entry.
  *
  * @param {Keypair | SigningCallback} signer  either a {@link Keypair} instance
  *    (or anything with a `.sign(buf): Buffer-like` method) or a function which
