@@ -7,6 +7,14 @@
 - The type definition for `Memo.hash` now allows `Buffer`s ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
 
 
+## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)
+
+### Fixed
+* Fixes a bug where `authorizeEntry` might perform a no-op when it shouldn't ([#701](https://github.com/stellar/js-stellar-base/pull/701)).
+* Fixes a TypeScript bug where `Memo.hash` did not accept a `Buffer` ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
+* Upgrades a transient dependency for security ([#296](https://github.com/stellar/js-stellar-base/pull/696)).
+
+
 ## [`v10.0.0-beta.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.1...v10.0.0-beta.2)
 
 ### Breaking Changes
