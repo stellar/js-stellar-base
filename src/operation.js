@@ -674,3 +674,10 @@ Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
 Operation.bumpFootprintExpiration = ops.bumpFootprintExpiration;
 Operation.restoreFootprint = ops.restoreFootprint;
+
+// these are not `xdr.Operation`s directly, but are proxies for complex but
+// common versions of `Operation.invokeHostFunction`
+Operation.createStellarAssetContract = ops.createStellarAssetContract;
+Operation.invokeContractFunction = ops.invokeContractFunction;
+Operation.createCustomContract = ops.createCustomContract;
+Operation.uploadContractWasm = ops.uploadContractWasm;
