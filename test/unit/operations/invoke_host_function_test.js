@@ -1,26 +1,27 @@
-const { Contract, Operation, xdr } = StellarBase;
+const { Contract, Operation } = StellarBase;
 
 describe('Operation', function () {
-  beforeEach(function () {
-    const contractId =
-      'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
-    const c = new Contract(contractId);
-  });
-
   describe('.invokeHostFunction()', function () {
+    beforeEach(function () {
+      this.contractId =
+        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+      this.c = new Contract(this.contractId);
+    });
+
     it('creates operation', function () {
+
       const op = Operation.invokeHostFunction({
-        func: xdr.HostFunction.hostFunctionTypeInvokeContract(
-          new xdr.InvokeContractArgs({
+        auth: [],
+        func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+          new StellarBase.xdr.InvokeContractArgs({
             contractAddress: this.c.address().toScAddress(),
             functionName: 'hello',
             args: [StellarBase.nativeToScVal('world')]
           })
         ),
-        auth: []
       });
       var xdr = op.toXDR('hex');
-      var operation = xdr.Operation.fromXDR(xdr, 'hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
       expect(operation.body().switch().name).to.equal('invokeHostFunction');
       var obj = Operation.fromXDRObject(operation);
@@ -50,7 +51,7 @@ describe('Operation', function () {
         ledgersToExpire: 1234
       });
       const xdr = op.toXDR('hex');
-      const operation = xdr.Operation.fromXDR(xdr, 'hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
       expect(operation.body().switch().name).to.equal(
         'bumpFootprintExpiration'
@@ -71,7 +72,7 @@ describe('Operation', function () {
     it('creates operation', function () {
       const op = Operation.restoreFootprint();
       const xdr = op.toXDR('hex');
-      const operation = xdr.Operation.fromXDR(xdr, 'hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
       expect(operation.body().switch().name).to.equal('restoreFootprint');
       const obj = Operation.fromXDRObject(operation);

@@ -1,4 +1,4 @@
-const { Operation, xdr } = StellarBase;
+const { Operation } = StellarBase;
 
 describe('Operation', function () {
   describe('.bumpFootprintExpiration()', function () {
@@ -7,7 +7,7 @@ describe('Operation', function () {
         ledgersToExpire: 1234
       });
       const xdr = op.toXDR('hex');
-      const operation = xdr.Operation.fromXDR(xdr, 'hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
       expect(operation.body().switch().name).to.equal(
         'bumpFootprintExpiration'
@@ -28,7 +28,7 @@ describe('Operation', function () {
     it('creates operation', function () {
       const op = Operation.restoreFootprint();
       const xdr = op.toXDR('hex');
-      const operation = xdr.Operation.fromXDR(xdr, 'hex');
+      const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
       expect(operation.body().switch().name).to.equal('restoreFootprint');
       const obj = Operation.fromXDRObject(operation);
