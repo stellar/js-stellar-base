@@ -100,9 +100,9 @@ export function invokeContractFunction(opts) {
  * @param {Uint8Array|Buffer}  opts.wasmHash - the SHA-256 hash of the contract
  *    WASM you're uploading (see {@link hash} and
  *    {@link Operation.uploadContractWasm})
- * @param {Uint8Array|Buffer} [opts.salt] - an optional salt to distinguish
- *    deployment instances of the same wasm from the same user (if omitted, one
- *    will be generated for you)
+ * @param {Uint8Array|Buffer} [opts.salt] - an optional, 32-byte salt to
+ *    distinguish deployment instances of the same wasm from the same user (if
+ *    omitted, one will be generated for you)
  * @param {xdr.SorobanAuthorizationEntry[]} [opts.auth] - an optional list
  *    outlining the tree of authorizations required for the call
  * @param {string} [opts.source] - an optional source account
@@ -121,13 +121,20 @@ export function createCustomContract(opts) {
       `expected hash(contract WASM) in 'opts.wasmHash', got ${opts.wasmHash}`
     );
   }
+  if (salt.length !== 32) {
+    throw new TypeError(
+      `expected 32-byte salt in 'opts.salt', got ${opts.wasmHash}`
+    );
+  }
 
   return this.invokeHostFunction({
     source: opts.source,
     auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeCreateContract(
       new xdr.CreateContractArgs({
-        executable: Buffer.from(opts.wasmHash),
+        executable: xdr.ContractExecutable.contractExecutableWasm(
+          Buffer.from(opts.wasmHash)
+        ),
         contractIdPreimage:
           xdr.ContractIdPreimage.contractIdPreimageFromAddress(
             new xdr.ContractIdPreimageFromAddress({
@@ -147,7 +154,8 @@ export function createCustomContract(opts) {
  * @alias Operation.createStellarAssetContract
  *
  * @param {any}          opts - the set of parameters
- * @param {Asset|string} opts.asset - the Stellar asset to wrap
+ * @param {Asset|string} opts.asset - the Stellar asset to wrap, either as an
+ *    {@link Asset} object or in canonical form (SEP-11, `code:issuer`)
  * @param {xdr.SorobanAuthorizationEntry[]} [opts.auth] - an optional list
  *    outlining the tree of authorizations required for the call
  * @param {string} [opts.source] - an optional source account
@@ -155,19 +163,22 @@ export function createCustomContract(opts) {
  * @returns {xdr.Operation} an Invoke Host Function operation
  *    (xdr.InvokeHostFunctionOp)
  *
+ * @see https://stellar.org/protocol/sep-11#alphanum4-alphanum12
  * @see
  * https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions
- * @see https://soroban.stellar.org/docs/advanced-tutorials/stellar-asset-contract
+ * @see
+ * https://soroban.stellar.org/docs/advanced-tutorials/stellar-asset-contract
  * @see Operation.invokeHostFunction
  */
 export function createStellarAssetContract(opts) {
   let asset = opts.asset;
   if (typeof asset === 'string') {
-    asset = new Asset(asset);
+    const [code, issuer] = asset.split(':');
+    asset = new Asset(code, issuer); // handles 'xlm' by default
   }
 
   if (!(asset instanceof Asset)) {
-    throw new TypeError(`expected Asset in opts.asset, got ${asset}`);
+    throw new TypeError(`expected Asset in 'opts.asset', got ${asset}`);
   }
 
   return this.invokeHostFunction({
@@ -176,8 +187,9 @@ export function createStellarAssetContract(opts) {
     func: xdr.HostFunction.hostFunctionTypeCreateContract(
       new xdr.CreateContractArgs({
         executable: xdr.ContractExecutable.contractExecutableToken(),
-        contractIdPreimage:
-          xdr.ContractIdPreimage.contractIdPreimageFromAsset(asset)
+        contractIdPreimage: xdr.ContractIdPreimage.contractIdPreimageFromAsset(
+          asset.toXDRObject()
+        )
       })
     )
   });
