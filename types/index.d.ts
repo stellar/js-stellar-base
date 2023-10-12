@@ -546,14 +546,33 @@ export namespace OperationOptions {
     minAmountA: string;
     minAmountB: string;
   }
-  interface InvokeHostFunction extends BaseOptions {
-    func: xdr.HostFunction;
-    auth: xdr.SorobanAuthorizationEntry[];
-  }
   interface BumpFootprintExpiration extends BaseOptions {
     ledgersToExpire: number;
   }
   type RestoreFootprint = BaseOptions;
+
+  interface BaseInvocationOptions extends BaseOptions {
+    auth?: xdr.SorobanAuthorizationEntry[];
+  }
+  interface InvokeHostFunction extends BaseInvocationOptions {
+    func: xdr.HostFunction;
+  }
+  interface InvokeContractFunction extends BaseInvocationOptions {
+    contract: string;
+    function: string;
+    args: xdr.ScVal[];
+  }
+  interface CreateCustomContract extends BaseInvocationOptions {
+    address: Address;
+    wasmHash: Buffer | Uint8Array;
+    salt?: Buffer | Uint8Array;
+  }
+  interface CreateStellarAssetContract extends BaseOptions {
+    asset: Asset | string;
+  }
+  interface UploadContractWasm extends BaseOptions {
+    wasm: Buffer | Uint8Array;
+  }
 }
 export type OperationOptions =
   | OperationOptions.CreateAccount
@@ -587,7 +606,11 @@ export type OperationOptions =
   | OperationOptions.LiquidityPoolWithdraw
   | OperationOptions.InvokeHostFunction
   | OperationOptions.BumpFootprintExpiration
-  | OperationOptions.RestoreFootprint;
+  | OperationOptions.RestoreFootprint
+  | OperationOptions.CreateCustomContract
+  | OperationOptions.CreateStellarAssetContract
+  | OperationOptions.InvokeContractFunction
+  | OperationOptions.UploadContractWasm;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -886,6 +909,19 @@ export namespace Operation {
   function restoreFootprint(options: OperationOptions.RestoreFootprint):
     xdr.Operation<RestoreFootprint>;
   interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
+
+  function createCustomContract(
+    opts: OperationOptions.CreateCustomContract
+  ): xdr.Operation<InvokeHostFunction>;
+  function createStellarAssetContract(
+    opts: OperationOptions.CreateStellarAssetContract
+  ): xdr.Operation<InvokeHostFunction>;
+  function invokeContractFunction(
+    opts: OperationOptions.InvokeContractFunction
+  ): xdr.Operation<InvokeHostFunction>;
+  function uploadContractWasm(
+    opts: OperationOptions.UploadContractWasm
+  ): xdr.Operation<InvokeHostFunction>;
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>

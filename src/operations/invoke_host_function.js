@@ -1,4 +1,6 @@
 import xdr from '../xdr';
+
+import { Keypair } from '../keypair';
 import { Address } from '../address';
 import { Asset } from '../asset';
 
@@ -19,6 +21,11 @@ import { Asset } from '../asset';
  *    (xdr.InvokeHostFunctionOp)
  *
  * @see https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
+ * @see Operation.invokeContractFunction
+ * @see Operation.createCustomContract
+ * @see Operation.createStellarAssetContract
+ * @see Operation.uploadContractWasm
+ * @see Contract.call
  */
 export function invokeHostFunction(opts) {
   if (!opts.func) {
@@ -69,16 +76,16 @@ export function invokeContractFunction(opts) {
     throw new TypeError(`expected contract strkey instance, got ${c}`);
   }
 
-  return Operation.invokeHostFunction({
+  return this.invokeHostFunction({
     source: opts.source,
+    auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeInvokeContract(
       new xdr.InvokeContractArgs({
         contractAddress: c.toScAddress(),
         functionName: opts.function,
         args: opts.args
       })
-    ),
-    auth: opts.auth
+    )
   });
 }
 
@@ -90,8 +97,9 @@ export function invokeContractFunction(opts) {
  *
  * @param {any}     opts - the set of parameters
  * @param {Address} opts.address - the contract uploader address
- * @param {Buffer}  opts.wasmHash - the SHA-256 hash of the contract WASM you're
- *    uploading (see {@link hash} and {@link Operation.uploadContractWasm})
+ * @param {Uint8Array|Buffer}  opts.wasmHash - the SHA-256 hash of the contract
+ *    WASM you're uploading (see {@link hash} and
+ *    {@link Operation.uploadContractWasm})
  * @param {Uint8Array|Buffer} [opts.salt] - an optional salt to distinguish
  *    deployment instances of the same wasm from the same user (if omitted, one
  *    will be generated for you)
@@ -114,11 +122,12 @@ export function createCustomContract(opts) {
     );
   }
 
-  return Operation.invokeHostFunction({
+  return this.invokeHostFunction({
     source: opts.source,
+    auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeCreateContract(
       new xdr.CreateContractArgs({
-        executable: opts.wasmHash,
+        executable: Buffer.from(opts.wasmHash),
         contractIdPreimage:
           xdr.ContractIdPreimage.contractIdPreimageFromAddress(
             new xdr.ContractIdPreimageFromAddress({
@@ -127,13 +136,12 @@ export function createCustomContract(opts) {
             })
           )
       })
-    ),
-    auth: opts.auth
+    )
   });
 }
 
 /**
- * Returns an operation that wraps an existing Stellar asset.
+ * Returns an operation that wraps a Stellar asset into a token contract.
  *
  * @function
  * @alias Operation.createStellarAssetContract
@@ -153,7 +161,7 @@ export function createCustomContract(opts) {
  * @see Operation.invokeHostFunction
  */
 export function createStellarAssetContract(opts) {
-  const asset = opts.asset;
+  let asset = opts.asset;
   if (typeof asset === 'string') {
     asset = new Asset(asset);
   }
@@ -162,7 +170,7 @@ export function createStellarAssetContract(opts) {
     throw new TypeError(`expected Asset in opts.asset, got ${asset}`);
   }
 
-  return Operation.invokeHostFunction({
+  return this.invokeHostFunction({
     source: opts.source,
     auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeCreateContract(
@@ -194,7 +202,7 @@ export function createStellarAssetContract(opts) {
  * https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
  */
 export function uploadContractWasm(opts) {
-  return Operation.invokeHostFunction({
+  return this.invokeHostFunction({
     source: opts.source,
     auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeUploadContractWasm(
@@ -203,7 +211,7 @@ export function uploadContractWasm(opts) {
   });
 }
 
-/** Returns a random 256-bit "salt" value. */
+/** @returns {Buffer} a random 256-bit "salt" value. */
 function getSalty() {
   return Keypair.random().xdrPublicKey().value(); // ed25519 is 256 bits, too
 }

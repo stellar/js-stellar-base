@@ -53,17 +53,18 @@ export class Contract {
    *
    * @returns {xdr.Operation}   an InvokeHostFunctionOp operation to call the
    *    contract with the given method and parameters
+   *
+   * @see Operation.invokeHostFunction
+   * @see Operation.invokeContractFunction
+   * @see Operation.createCustomContract
+   * @see Operation.createStellarAssetContract
+   * @see Operation.uploadContractWasm
    */
   call(method, ...params) {
-    return Operation.invokeHostFunction({
-      func: xdr.HostFunction.hostFunctionTypeInvokeContract(
-        new xdr.InvokeContractArgs({
-          contractAddress: this.address().toScAddress(),
-          functionName: method,
-          args: params
-        })
-      ),
-      auth: []
+    return Operation.invokeContractFunction({
+      contract: this.address().toString(),
+      function: method,
+      args: params
     });
   }
 
