@@ -35,7 +35,7 @@ describe('SorobanTransactionData can be built', function () {
 
   it('sets properties as expected', function () {
     expect(
-      new dataBuilder().setResources(1, 2, 3).setRefundableFee(5).build()
+      new dataBuilder().setResources(1, 2, 3).setResourceFee(5).build()
     ).to.eql(sentinel);
 
     // this isn't a valid param but we're just checking that setters work
@@ -73,7 +73,7 @@ describe('SorobanTransactionData can be built', function () {
   it('makes copies on build()', function () {
     const builder = new dataBuilder();
     const first = builder.build();
-    const second = builder.setRefundableFee(100).build();
+    const second = builder.setResourceFee(100).build();
 
     expect(first.resourceFee()).to.not.eql(second.resourceFee());
   });

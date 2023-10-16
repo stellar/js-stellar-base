@@ -2057,7 +2057,7 @@ describe('Operation', function () {
 
       expect(operation.body().switch().name).to.equal('extendFootprintTtl');
       const obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('extendFootprintTtlOp');
+      expect(obj.type).to.be.equal('extendFootprintTtl');
       expect(obj.extendTo).to.equal(1234);
 
       expect(() => {

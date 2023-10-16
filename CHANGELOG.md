@@ -3,8 +3,15 @@
 
 ## Unreleased
 
-* XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([]()):
-  - TODO.
+### Breaking Changes
+* XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([#704](https://github.com/stellar/js-stellar-base/pull/704)):
+  - `Operation.bumpFootprintExpiration` is now `extendFootprintTtl` and its `ledgersToExpire` field is now named `extendTo`, but it serves the same purpose.
+  - In TypeScript, the `Operation.BumpFootprintExpiration` is now `Operation.ExtendFootprintTTL`
+  - `xdr.ContractExecutable.contractExecutableToken` is now `contractExecutableStellarAsset`
+  - `xdr.SorobanTransactionData.refundableFee` is now `resourceFee`
+  - In turn, `SorobanDataBuilder.setRefundableFee` is now `setResourceFee`
+  - This new fee encompasses the entirety of the Soroban-related resource fees. Note that this is distinct from the "network-inclusion" fee that you would set on your transaction (i.e. `TransactionBuilder(..., { fee: ... })`).
+
 
 ## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)
 

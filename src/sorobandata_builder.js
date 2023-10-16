@@ -72,11 +72,11 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * Sets the "refundable" fee portion of the Soroban data.
-   * @param {number | bigint | string} fee  the refundable fee to set (int64)
+   * Sets the resource fee portion of the Soroban data.
+   * @param {number | bigint | string} fee  the resource fee to set (int64)
    * @returns {SorobanDataBuilder}
    */
-  setRefundableFee(fee) {
+  setResourceFee(fee) {
     this._data.resourceFee(new xdr.Int64(fee));
     return this;
   }

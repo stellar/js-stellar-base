@@ -369,7 +369,7 @@ export namespace OperationType {
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
-  type ExtendFootprintTTLOp = 'extendFootprintTtlOp';
+  type ExtendFootprintTTL = 'extendFootprintTtlOp';
   type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
@@ -398,7 +398,7 @@ export type OperationType =
   | OperationType.LiquidityPoolDeposit
   | OperationType.LiquidityPoolWithdraw
   | OperationType.InvokeHostFunction
-  | OperationType.ExtendFootprintTTLOp
+  | OperationType.ExtendFootprintTTL
   | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
@@ -879,7 +879,7 @@ export namespace Operation {
   function extendFootprintTtlOp(
     options: OperationOptions.ExtendFootprintTTLOp
   ): xdr.Operation<ExtendFootprintTTLOp>;
-  interface ExtendFootprintTTLOp extends BaseOperation<OperationType.ExtendFootprintTTLOp> {
+  interface ExtendFootprintTTLOp extends BaseOperation<OperationType.ExtendFootprintTTL> {
     extendTo: number;
   }
 
@@ -1145,7 +1145,7 @@ export class SorobanDataBuilder {
   constructor(data?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
   static fromXDR(data: Uint8Array | Buffer | string): SorobanDataBuilder;
 
-  setRefundableFee(fee: IntLike): SorobanDataBuilder;
+  setResourceFee(fee: IntLike): SorobanDataBuilder;
   setResources(
     cpuInstrs: number,
     readBytes: number,
