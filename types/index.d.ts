@@ -369,7 +369,7 @@ export namespace OperationType {
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
-  type BumpFootprintExpiration = 'bumpFootprintExpiration';
+  type ExtendFootprintTTLOp = 'extendFootprintTtlOp';
   type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
@@ -398,7 +398,7 @@ export type OperationType =
   | OperationType.LiquidityPoolDeposit
   | OperationType.LiquidityPoolWithdraw
   | OperationType.InvokeHostFunction
-  | OperationType.BumpFootprintExpiration
+  | OperationType.ExtendFootprintTTLOp
   | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
@@ -550,8 +550,8 @@ export namespace OperationOptions {
     func: xdr.HostFunction;
     auth: xdr.SorobanAuthorizationEntry[];
   }
-  interface BumpFootprintExpiration extends BaseOptions {
-    ledgersToExpire: number;
+  interface ExtendFootprintTTLOp extends BaseOptions {
+    extendTo: number;
   }
   type RestoreFootprint = BaseOptions;
 }
@@ -586,7 +586,7 @@ export type OperationOptions =
   | OperationOptions.LiquidityPoolDeposit
   | OperationOptions.LiquidityPoolWithdraw
   | OperationOptions.InvokeHostFunction
-  | OperationOptions.BumpFootprintExpiration
+  | OperationOptions.ExtendFootprintTTLOp
   | OperationOptions.RestoreFootprint;
 
 export namespace Operation {
@@ -876,11 +876,11 @@ export namespace Operation {
     options: OperationOptions.InvokeHostFunction
   ): xdr.Operation<InvokeHostFunction>;
 
-  function bumpFootprintExpiration(
-    options: OperationOptions.BumpFootprintExpiration
-  ): xdr.Operation<BumpFootprintExpiration>;
-  interface BumpFootprintExpiration extends BaseOperation<OperationType.BumpFootprintExpiration> {
-    ledgersToExpire: number;
+  function extendFootprintTtlOp(
+    options: OperationOptions.ExtendFootprintTTLOp
+  ): xdr.Operation<ExtendFootprintTTLOp>;
+  interface ExtendFootprintTTLOp extends BaseOperation<OperationType.ExtendFootprintTTLOp> {
+    extendTo: number;
   }
 
   function restoreFootprint(options: OperationOptions.RestoreFootprint):
@@ -923,7 +923,7 @@ export type Operation =
   | Operation.LiquidityPoolDeposit
   | Operation.LiquidityPoolWithdraw
   | Operation.InvokeHostFunction
-  | Operation.BumpFootprintExpiration
+  | Operation.ExtendFootprintTTLOp
   | Operation.RestoreFootprint;
 
 export namespace StrKey {

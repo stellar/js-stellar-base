@@ -3,9 +3,8 @@
 
 ## Unreleased
 
-### Fixed
-- The type definition for `Memo.hash` now allows `Buffer`s ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
-
+* XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([]()):
+  - TODO.
 
 ## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)
 

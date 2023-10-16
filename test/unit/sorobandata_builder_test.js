@@ -13,7 +13,7 @@ describe('SorobanTransactionData can be built', function () {
       writeBytes: 3
     }),
     ext: new xdr.ExtensionPoint(0),
-    refundableFee: new xdr.Int64(5)
+    resourceFee: new xdr.Int64(5)
   });
 
   const key = c.getFootprint()[0];
@@ -75,6 +75,6 @@ describe('SorobanTransactionData can be built', function () {
     const first = builder.build();
     const second = builder.setRefundableFee(100).build();
 
-    expect(first.refundableFee()).to.not.eql(second.refundableFee());
+    expect(first.resourceFee()).to.not.eql(second.resourceFee());
   });
 });
