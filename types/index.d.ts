@@ -1227,7 +1227,7 @@ export function walkInvocationTree(
   callback: InvocationWalker
 ): void;
 
-export class Soroban {
-  static formatTokenAmount(address: string, decimals: number): string;
-  static parseTokenAmount(value: string, decimals: number): Address;
+export namespace Soroban {
+  function formatTokenAmount(address: string, decimals: number): string;
+  function parseTokenAmount(value: string, decimals: number): Address;
 }
