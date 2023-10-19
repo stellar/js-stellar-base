@@ -1226,3 +1226,8 @@ export function walkInvocationTree(
   root: xdr.SorobanAuthorizedInvocation,
   callback: InvocationWalker
 ): void;
+
+export class Soroban {
+  static formatTokenAmount(address: string, decimals: number): string;
+  static parseTokenAmount(value: string, decimals: number): Address;
+}
