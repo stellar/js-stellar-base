@@ -5,10 +5,9 @@ import xdr from './xdr';
  * items set to specific values.
  *
  * This is recommended for when you are building
- * {@link Operation.bumpFootprintExpiration} /
- * {@link Operation.restoreFootprint} operations and need to
- * {@link TransactionBuilder.setSorobanData} to avoid (re)building the entire
- * data structure from scratch.
+ * {@link Operation.extendFootprintTtlOp} / {@link Operation.restoreFootprint}
+ * operations and need to {@link TransactionBuilder.setSorobanData} to avoid
+ * (re)building the entire data structure from scratch.
  *
  * @constructor
  *
@@ -46,7 +45,7 @@ export class SorobanDataBuilder {
           writeBytes: 0
         }),
         ext: new xdr.ExtensionPoint(0),
-        refundableFee: new xdr.Int64(0)
+        resourceFee: new xdr.Int64(0)
       });
     } else if (
       typeof sorobanData === 'string' ||
@@ -73,12 +72,12 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * Sets the "refundable" fee portion of the Soroban data.
-   * @param {number | bigint | string} fee  the refundable fee to set (int64)
+   * Sets the resource fee portion of the Soroban data.
+   * @param {number | bigint | string} fee  the resource fee to set (int64)
    * @returns {SorobanDataBuilder}
    */
-  setRefundableFee(fee) {
-    this._data.refundableFee(new xdr.Int64(fee));
+  setResourceFee(fee) {
+    this._data.resourceFee(new xdr.Int64(fee));
     return this;
   }
 

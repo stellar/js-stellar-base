@@ -2047,24 +2047,22 @@ describe('Operation', function () {
     });
   });
 
-  describe('bumpFootprintExpiration()', function () {
+  describe('extendFootprintTtlOp()', function () {
     it('creates operation', function () {
-      const op = StellarBase.Operation.bumpFootprintExpiration({
-        ledgersToExpire: 1234
+      const op = StellarBase.Operation.extendFootprintTtlOp({
+        extendTo: 1234
       });
       const xdr = op.toXDR('hex');
       const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
-      expect(operation.body().switch().name).to.equal(
-        'bumpFootprintExpiration'
-      );
+      expect(operation.body().switch().name).to.equal('extendFootprintTtl');
       const obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('bumpFootprintExpiration');
-      expect(obj.ledgersToExpire).to.equal(1234);
+      expect(obj.type).to.be.equal('extendFootprintTtl');
+      expect(obj.extendTo).to.equal(1234);
 
       expect(() => {
-        StellarBase.Operation.bumpFootprintExpiration({
-          ledgersToExpire: 0
+        StellarBase.Operation.extendFootprintTtlOp({
+          extendTo: 0
         });
       }).to.throw(/ledger quantity/i);
     });
