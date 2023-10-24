@@ -369,7 +369,7 @@ export namespace OperationType {
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
-  type ExtendFootprintTTL = 'extendFootprintTtlOp';
+  type ExtendFootprintTTL = 'extendFootprintTtl';
   type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
@@ -550,7 +550,7 @@ export namespace OperationOptions {
     func: xdr.HostFunction;
     auth: xdr.SorobanAuthorizationEntry[];
   }
-  interface ExtendFootprintTTLOp extends BaseOptions {
+  interface ExtendFootprintTTL extends BaseOptions {
     extendTo: number;
   }
   type RestoreFootprint = BaseOptions;
@@ -586,7 +586,7 @@ export type OperationOptions =
   | OperationOptions.LiquidityPoolDeposit
   | OperationOptions.LiquidityPoolWithdraw
   | OperationOptions.InvokeHostFunction
-  | OperationOptions.ExtendFootprintTTLOp
+  | OperationOptions.ExtendFootprintTTL
   | OperationOptions.RestoreFootprint;
 
 export namespace Operation {
@@ -876,10 +876,10 @@ export namespace Operation {
     options: OperationOptions.InvokeHostFunction
   ): xdr.Operation<InvokeHostFunction>;
 
-  function extendFootprintTtlOp(
-    options: OperationOptions.ExtendFootprintTTLOp
-  ): xdr.Operation<ExtendFootprintTTLOp>;
-  interface ExtendFootprintTTLOp extends BaseOperation<OperationType.ExtendFootprintTTL> {
+  function extendFootprintTtl(
+    options: OperationOptions.ExtendFootprintTTL
+  ): xdr.Operation<ExtendFootprintTTL>;
+  interface ExtendFootprintTTL extends BaseOperation<OperationType.ExtendFootprintTTL> {
     extendTo: number;
   }
 
@@ -923,7 +923,7 @@ export type Operation =
   | Operation.LiquidityPoolDeposit
   | Operation.LiquidityPoolWithdraw
   | Operation.InvokeHostFunction
-  | Operation.ExtendFootprintTTLOp
+  | Operation.ExtendFootprintTTL
   | Operation.RestoreFootprint;
 
 export namespace StrKey {

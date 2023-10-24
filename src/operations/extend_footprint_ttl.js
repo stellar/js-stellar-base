@@ -11,7 +11,7 @@ import xdr from '../xdr';
  * usage as part of {@link xdr.SorobanResources}).
  *
  * @function
- * @alias Operation.extendFootprintTtlOp
+ * @alias Operation.extendFootprintTtl
  *
  * @param {object} opts - object holding operation parameters
  * @param {number} opts.extendTo - the number of ledgers past the LCL
@@ -22,18 +22,18 @@ import xdr from '../xdr';
  * @returns {xdr.Operation} a Bump Footprint Expiration operation
  *    (xdr.ExtendFootprintTTLOp)
  */
-export function extendFootprintTtlOp(opts) {
+export function extendFootprintTtl(opts) {
   if ((opts.extendTo ?? -1) <= 0) {
     throw new RangeError("extendTo isn't a ledger quantity (uint32)");
   }
 
-  const bumpFootprintOp = new xdr.ExtendFootprintTtlOp({
+  const extendFootprintOp = new xdr.ExtendFootprintTtlOp({
     ext: new xdr.ExtensionPoint(0),
     extendTo: opts.extendTo
   });
 
   const opAttributes = {
-    body: xdr.OperationBody.extendFootprintTtl(bumpFootprintOp)
+    body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp)
   };
   this.setSourceAccount(opAttributes, opts);
 

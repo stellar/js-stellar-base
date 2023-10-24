@@ -10,7 +10,7 @@ import { Claimant } from './claimant';
 import { StrKey } from './strkey';
 import { LiquidityPoolId } from './liquidity_pool_id';
 import xdr from './xdr';
-import * as ops from './operations/index';
+import * as ops from './operations';
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress
@@ -672,5 +672,5 @@ Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
-Operation.extendFootprintTtlOp = ops.extendFootprintTtlOp;
+Operation.extendFootprintTtl = ops.extendFootprintTtl;
 Operation.restoreFootprint = ops.restoreFootprint;

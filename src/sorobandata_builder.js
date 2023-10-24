@@ -5,7 +5,7 @@ import xdr from './xdr';
  * items set to specific values.
  *
  * This is recommended for when you are building
- * {@link Operation.extendFootprintTtlOp} / {@link Operation.restoreFootprint}
+ * {@link Operation.extendFootprintTtl} / {@link Operation.restoreFootprint}
  * operations and need to {@link TransactionBuilder.setSorobanData} to avoid
  * (re)building the entire data structure from scratch.
  *
