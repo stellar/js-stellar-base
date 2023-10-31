@@ -1,4 +1,4 @@
-// Automatically generated on 2023-09-11T12:23:00-08:00
+// Automatically generated on 2023-10-16T10:48:00-08:00
 import { Operation } from './index';
 
 export {};
@@ -319,7 +319,7 @@ export namespace xdr {
       | 'contractData'
       | 'contractCode'
       | 'configSetting'
-      | 'expiration';
+      | 'ttl';
 
     readonly value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -341,7 +341,7 @@ export namespace xdr {
 
     static configSetting(): LedgerEntryType;
 
-    static expiration(): LedgerEntryType;
+    static ttl(): LedgerEntryType;
   }
 
   class AccountFlags {
@@ -748,7 +748,7 @@ export namespace xdr {
       | 'liquidityPoolDeposit'
       | 'liquidityPoolWithdraw'
       | 'invokeHostFunction'
-      | 'bumpFootprintExpiration'
+      | 'extendFootprintTtl'
       | 'restoreFootprint';
 
     readonly value:
@@ -830,7 +830,7 @@ export namespace xdr {
 
     static invokeHostFunction(): OperationType;
 
-    static bumpFootprintExpiration(): OperationType;
+    static extendFootprintTtl(): OperationType;
 
     static restoreFootprint(): OperationType;
   }
@@ -1643,7 +1643,7 @@ export namespace xdr {
       | 'invokeHostFunctionMalformed'
       | 'invokeHostFunctionTrapped'
       | 'invokeHostFunctionResourceLimitExceeded'
-      | 'invokeHostFunctionEntryExpired'
+      | 'invokeHostFunctionEntryArchived'
       | 'invokeHostFunctionInsufficientRefundableFee';
 
     readonly value: 0 | -1 | -2 | -3 | -4 | -5;
@@ -1656,27 +1656,27 @@ export namespace xdr {
 
     static invokeHostFunctionResourceLimitExceeded(): InvokeHostFunctionResultCode;
 
-    static invokeHostFunctionEntryExpired(): InvokeHostFunctionResultCode;
+    static invokeHostFunctionEntryArchived(): InvokeHostFunctionResultCode;
 
     static invokeHostFunctionInsufficientRefundableFee(): InvokeHostFunctionResultCode;
   }
 
-  class BumpFootprintExpirationResultCode {
+  class ExtendFootprintTtlResultCode {
     readonly name:
-      | 'bumpFootprintExpirationSuccess'
-      | 'bumpFootprintExpirationMalformed'
-      | 'bumpFootprintExpirationResourceLimitExceeded'
-      | 'bumpFootprintExpirationInsufficientRefundableFee';
+      | 'extendFootprintTtlSuccess'
+      | 'extendFootprintTtlMalformed'
+      | 'extendFootprintTtlResourceLimitExceeded'
+      | 'extendFootprintTtlInsufficientRefundableFee';
 
     readonly value: 0 | -1 | -2 | -3;
 
-    static bumpFootprintExpirationSuccess(): BumpFootprintExpirationResultCode;
+    static extendFootprintTtlSuccess(): ExtendFootprintTtlResultCode;
 
-    static bumpFootprintExpirationMalformed(): BumpFootprintExpirationResultCode;
+    static extendFootprintTtlMalformed(): ExtendFootprintTtlResultCode;
 
-    static bumpFootprintExpirationResourceLimitExceeded(): BumpFootprintExpirationResultCode;
+    static extendFootprintTtlResourceLimitExceeded(): ExtendFootprintTtlResultCode;
 
-    static bumpFootprintExpirationInsufficientRefundableFee(): BumpFootprintExpirationResultCode;
+    static extendFootprintTtlInsufficientRefundableFee(): ExtendFootprintTtlResultCode;
   }
 
   class RestoreFootprintResultCode {
@@ -2020,13 +2020,13 @@ export namespace xdr {
   }
 
   class ContractExecutableType {
-    readonly name: 'contractExecutableWasm' | 'contractExecutableToken';
+    readonly name: 'contractExecutableWasm' | 'contractExecutableStellarAsset';
 
     readonly value: 0 | 1;
 
     static contractExecutableWasm(): ContractExecutableType;
 
-    static contractExecutableToken(): ContractExecutableType;
+    static contractExecutableStellarAsset(): ContractExecutableType;
   }
 
   class ScAddressType {
@@ -2195,33 +2195,28 @@ export namespace xdr {
   class ContractCostType {
     readonly name:
       | 'wasmInsnExec'
-      | 'wasmMemAlloc'
-      | 'hostMemAlloc'
-      | 'hostMemCpy'
-      | 'hostMemCmp'
+      | 'memAlloc'
+      | 'memCpy'
+      | 'memCmp'
       | 'dispatchHostFunction'
       | 'visitObject'
       | 'valSer'
       | 'valDeser'
       | 'computeSha256Hash'
       | 'computeEd25519PubKey'
-      | 'mapEntry'
-      | 'vecEntry'
       | 'verifyEd25519Sig'
-      | 'vmMemRead'
-      | 'vmMemWrite'
       | 'vmInstantiation'
       | 'vmCachedInstantiation'
       | 'invokeVmFunction'
       | 'computeKeccak256Hash'
-      | 'computeEcdsaSecp256k1Key'
       | 'computeEcdsaSecp256k1Sig'
       | 'recoverEcdsaSecp256k1Key'
       | 'int256AddSub'
       | 'int256Mul'
       | 'int256Div'
       | 'int256Pow'
-      | 'int256Shift';
+      | 'int256Shift'
+      | 'chaCha20DrawBytes';
 
     readonly value:
       | 0
@@ -2246,22 +2241,15 @@ export namespace xdr {
       | 19
       | 20
       | 21
-      | 22
-      | 23
-      | 24
-      | 25
-      | 26
-      | 27;
+      | 22;
 
     static wasmInsnExec(): ContractCostType;
 
-    static wasmMemAlloc(): ContractCostType;
+    static memAlloc(): ContractCostType;
 
-    static hostMemAlloc(): ContractCostType;
+    static memCpy(): ContractCostType;
 
-    static hostMemCpy(): ContractCostType;
-
-    static hostMemCmp(): ContractCostType;
+    static memCmp(): ContractCostType;
 
     static dispatchHostFunction(): ContractCostType;
 
@@ -2275,15 +2263,7 @@ export namespace xdr {
 
     static computeEd25519PubKey(): ContractCostType;
 
-    static mapEntry(): ContractCostType;
-
-    static vecEntry(): ContractCostType;
-
     static verifyEd25519Sig(): ContractCostType;
-
-    static vmMemRead(): ContractCostType;
-
-    static vmMemWrite(): ContractCostType;
 
     static vmInstantiation(): ContractCostType;
 
@@ -2292,8 +2272,6 @@ export namespace xdr {
     static invokeVmFunction(): ContractCostType;
 
     static computeKeccak256Hash(): ContractCostType;
-
-    static computeEcdsaSecp256k1Key(): ContractCostType;
 
     static computeEcdsaSecp256k1Sig(): ContractCostType;
 
@@ -2308,6 +2286,8 @@ export namespace xdr {
     static int256Pow(): ContractCostType;
 
     static int256Shift(): ContractCostType;
+
+    static chaCha20DrawBytes(): ContractCostType;
   }
 
   class ConfigSettingId {
@@ -2322,7 +2302,7 @@ export namespace xdr {
       | 'configSettingContractCostParamsMemoryBytes'
       | 'configSettingContractDataKeySizeBytes'
       | 'configSettingContractDataEntrySizeBytes'
-      | 'configSettingStateExpiration'
+      | 'configSettingStateArchival'
       | 'configSettingContractExecutionLanes'
       | 'configSettingBucketlistSizeWindow'
       | 'configSettingEvictionIterator';
@@ -2349,7 +2329,7 @@ export namespace xdr {
 
     static configSettingContractDataEntrySizeBytes(): ConfigSettingId;
 
-    static configSettingStateExpiration(): ConfigSettingId;
+    static configSettingStateArchival(): ConfigSettingId;
 
     static configSettingContractExecutionLanes(): ConfigSettingId;
 
@@ -3517,28 +3497,28 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class ExpirationEntry {
-    constructor(attributes: { keyHash: Buffer; expirationLedgerSeq: number });
+  class TtlEntry {
+    constructor(attributes: { keyHash: Buffer; liveUntilLedgerSeq: number });
 
     keyHash(value?: Buffer): Buffer;
 
-    expirationLedgerSeq(value?: number): number;
+    liveUntilLedgerSeq(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): ExpirationEntry;
+    static read(io: Buffer): TtlEntry;
 
-    static write(value: ExpirationEntry, io: Buffer): void;
+    static write(value: TtlEntry, io: Buffer): void;
 
-    static isValid(value: ExpirationEntry): boolean;
+    static isValid(value: TtlEntry): boolean;
 
-    static toXDR(value: ExpirationEntry): Buffer;
+    static toXDR(value: TtlEntry): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): ExpirationEntry;
+    static fromXDR(input: Buffer, format?: 'raw'): TtlEntry;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): ExpirationEntry;
+    static fromXDR(input: string, format: 'hex' | 'base64'): TtlEntry;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -3879,7 +3859,7 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class LedgerKeyExpiration {
+  class LedgerKeyTtl {
     constructor(attributes: { keyHash: Buffer });
 
     keyHash(value?: Buffer): Buffer;
@@ -3888,20 +3868,17 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): LedgerKeyExpiration;
+    static read(io: Buffer): LedgerKeyTtl;
 
-    static write(value: LedgerKeyExpiration, io: Buffer): void;
+    static write(value: LedgerKeyTtl, io: Buffer): void;
 
-    static isValid(value: LedgerKeyExpiration): boolean;
+    static isValid(value: LedgerKeyTtl): boolean;
 
-    static toXDR(value: LedgerKeyExpiration): Buffer;
+    static toXDR(value: LedgerKeyTtl): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyExpiration;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerKeyTtl;
 
-    static fromXDR(
-      input: string,
-      format: 'hex' | 'base64',
-    ): LedgerKeyExpiration;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerKeyTtl;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -4912,46 +4889,6 @@ export namespace xdr {
 
   class LedgerCloseMetaV1 {
     constructor(attributes: {
-      ledgerHeader: LedgerHeaderHistoryEntry;
-      txSet: GeneralizedTransactionSet;
-      txProcessing: TransactionResultMeta[];
-      upgradesProcessing: UpgradeEntryMeta[];
-      scpInfo: ScpHistoryEntry[];
-    });
-
-    ledgerHeader(value?: LedgerHeaderHistoryEntry): LedgerHeaderHistoryEntry;
-
-    txSet(value?: GeneralizedTransactionSet): GeneralizedTransactionSet;
-
-    txProcessing(value?: TransactionResultMeta[]): TransactionResultMeta[];
-
-    upgradesProcessing(value?: UpgradeEntryMeta[]): UpgradeEntryMeta[];
-
-    scpInfo(value?: ScpHistoryEntry[]): ScpHistoryEntry[];
-
-    toXDR(format?: 'raw'): Buffer;
-
-    toXDR(format: 'hex' | 'base64'): string;
-
-    static read(io: Buffer): LedgerCloseMetaV1;
-
-    static write(value: LedgerCloseMetaV1, io: Buffer): void;
-
-    static isValid(value: LedgerCloseMetaV1): boolean;
-
-    static toXDR(value: LedgerCloseMetaV1): Buffer;
-
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV1;
-
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV1;
-
-    static validateXDR(input: Buffer, format?: 'raw'): boolean;
-
-    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
-  }
-
-  class LedgerCloseMetaV2 {
-    constructor(attributes: {
       ext: ExtensionPoint;
       ledgerHeader: LedgerHeaderHistoryEntry;
       txSet: GeneralizedTransactionSet;
@@ -4985,17 +4922,17 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): LedgerCloseMetaV2;
+    static read(io: Buffer): LedgerCloseMetaV1;
 
-    static write(value: LedgerCloseMetaV2, io: Buffer): void;
+    static write(value: LedgerCloseMetaV1, io: Buffer): void;
 
-    static isValid(value: LedgerCloseMetaV2): boolean;
+    static isValid(value: LedgerCloseMetaV1): boolean;
 
-    static toXDR(value: LedgerCloseMetaV2): Buffer;
+    static toXDR(value: LedgerCloseMetaV1): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV2;
+    static fromXDR(input: Buffer, format?: 'raw'): LedgerCloseMetaV1;
 
-    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV2;
+    static fromXDR(input: string, format: 'hex' | 'base64'): LedgerCloseMetaV1;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -6721,31 +6658,31 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class BumpFootprintExpirationOp {
-    constructor(attributes: { ext: ExtensionPoint; ledgersToExpire: number });
+  class ExtendFootprintTtlOp {
+    constructor(attributes: { ext: ExtensionPoint; extendTo: number });
 
     ext(value?: ExtensionPoint): ExtensionPoint;
 
-    ledgersToExpire(value?: number): number;
+    extendTo(value?: number): number;
 
     toXDR(format?: 'raw'): Buffer;
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): BumpFootprintExpirationOp;
+    static read(io: Buffer): ExtendFootprintTtlOp;
 
-    static write(value: BumpFootprintExpirationOp, io: Buffer): void;
+    static write(value: ExtendFootprintTtlOp, io: Buffer): void;
 
-    static isValid(value: BumpFootprintExpirationOp): boolean;
+    static isValid(value: ExtendFootprintTtlOp): boolean;
 
-    static toXDR(value: BumpFootprintExpirationOp): Buffer;
+    static toXDR(value: ExtendFootprintTtlOp): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): BumpFootprintExpirationOp;
+    static fromXDR(input: Buffer, format?: 'raw'): ExtendFootprintTtlOp;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64',
-    ): BumpFootprintExpirationOp;
+    ): ExtendFootprintTtlOp;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -7105,14 +7042,14 @@ export namespace xdr {
     constructor(attributes: {
       ext: ExtensionPoint;
       resources: SorobanResources;
-      refundableFee: Int64;
+      resourceFee: Int64;
     });
 
     ext(value?: ExtensionPoint): ExtensionPoint;
 
     resources(value?: SorobanResources): SorobanResources;
 
-    refundableFee(value?: Int64): Int64;
+    resourceFee(value?: Int64): Int64;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -9086,30 +9023,30 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class StateExpirationSettings {
+  class StateArchivalSettings {
     constructor(attributes: {
-      maxEntryExpiration: number;
-      minTempEntryExpiration: number;
-      minPersistentEntryExpiration: number;
+      maxEntryTtl: number;
+      minTemporaryTtl: number;
+      minPersistentTtl: number;
       persistentRentRateDenominator: Int64;
       tempRentRateDenominator: Int64;
-      maxEntriesToExpire: number;
+      maxEntriesToArchive: number;
       bucketListSizeWindowSampleSize: number;
       evictionScanSize: Uint64;
       startingEvictionScanLevel: number;
     });
 
-    maxEntryExpiration(value?: number): number;
+    maxEntryTtl(value?: number): number;
 
-    minTempEntryExpiration(value?: number): number;
+    minTemporaryTtl(value?: number): number;
 
-    minPersistentEntryExpiration(value?: number): number;
+    minPersistentTtl(value?: number): number;
 
     persistentRentRateDenominator(value?: Int64): Int64;
 
     tempRentRateDenominator(value?: Int64): Int64;
 
-    maxEntriesToExpire(value?: number): number;
+    maxEntriesToArchive(value?: number): number;
 
     bucketListSizeWindowSampleSize(value?: number): number;
 
@@ -9121,20 +9058,20 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): StateExpirationSettings;
+    static read(io: Buffer): StateArchivalSettings;
 
-    static write(value: StateExpirationSettings, io: Buffer): void;
+    static write(value: StateArchivalSettings, io: Buffer): void;
 
-    static isValid(value: StateExpirationSettings): boolean;
+    static isValid(value: StateArchivalSettings): boolean;
 
-    static toXDR(value: StateExpirationSettings): Buffer;
+    static toXDR(value: StateArchivalSettings): Buffer;
 
-    static fromXDR(input: Buffer, format?: 'raw'): StateExpirationSettings;
+    static fromXDR(input: Buffer, format?: 'raw'): StateArchivalSettings;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64',
-    ): StateExpirationSettings;
+    ): StateArchivalSettings;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -9867,7 +9804,7 @@ export namespace xdr {
 
     configSetting(value?: ConfigSettingEntry): ConfigSettingEntry;
 
-    expiration(value?: ExpirationEntry): ExpirationEntry;
+    ttl(value?: TtlEntry): TtlEntry;
 
     static account(value: AccountEntry): LedgerEntryData;
 
@@ -9887,7 +9824,7 @@ export namespace xdr {
 
     static configSetting(value: ConfigSettingEntry): LedgerEntryData;
 
-    static expiration(value: ExpirationEntry): LedgerEntryData;
+    static ttl(value: TtlEntry): LedgerEntryData;
 
     value():
       | AccountEntry
@@ -9899,7 +9836,7 @@ export namespace xdr {
       | ContractDataEntry
       | ContractCodeEntry
       | ConfigSettingEntry
-      | ExpirationEntry;
+      | TtlEntry;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -9977,7 +9914,7 @@ export namespace xdr {
 
     configSetting(value?: LedgerKeyConfigSetting): LedgerKeyConfigSetting;
 
-    expiration(value?: LedgerKeyExpiration): LedgerKeyExpiration;
+    ttl(value?: LedgerKeyTtl): LedgerKeyTtl;
 
     static account(value: LedgerKeyAccount): LedgerKey;
 
@@ -9997,7 +9934,7 @@ export namespace xdr {
 
     static configSetting(value: LedgerKeyConfigSetting): LedgerKey;
 
-    static expiration(value: LedgerKeyExpiration): LedgerKey;
+    static ttl(value: LedgerKeyTtl): LedgerKey;
 
     value():
       | LedgerKeyAccount
@@ -10009,7 +9946,7 @@ export namespace xdr {
       | LedgerKeyContractData
       | LedgerKeyContractCode
       | LedgerKeyConfigSetting
-      | LedgerKeyExpiration;
+      | LedgerKeyTtl;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -10614,15 +10551,11 @@ export namespace xdr {
 
     v1(value?: LedgerCloseMetaV1): LedgerCloseMetaV1;
 
-    v2(value?: LedgerCloseMetaV2): LedgerCloseMetaV2;
-
     static 0(value: LedgerCloseMetaV0): LedgerCloseMeta;
 
     static 1(value: LedgerCloseMetaV1): LedgerCloseMeta;
 
-    static 2(value: LedgerCloseMetaV2): LedgerCloseMeta;
-
-    value(): LedgerCloseMetaV0 | LedgerCloseMetaV1 | LedgerCloseMetaV2;
+    value(): LedgerCloseMetaV0 | LedgerCloseMetaV1;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -11256,9 +11189,7 @@ export namespace xdr {
 
     invokeHostFunctionOp(value?: InvokeHostFunctionOp): InvokeHostFunctionOp;
 
-    bumpFootprintExpirationOp(
-      value?: BumpFootprintExpirationOp,
-    ): BumpFootprintExpirationOp;
+    extendFootprintTtlOp(value?: ExtendFootprintTtlOp): ExtendFootprintTtlOp;
 
     restoreFootprintOp(value?: RestoreFootprintOp): RestoreFootprintOp;
 
@@ -11322,9 +11253,7 @@ export namespace xdr {
 
     static invokeHostFunction(value: InvokeHostFunctionOp): OperationBody;
 
-    static bumpFootprintExpiration(
-      value: BumpFootprintExpirationOp,
-    ): OperationBody;
+    static extendFootprintTtl(value: ExtendFootprintTtlOp): OperationBody;
 
     static restoreFootprint(value: RestoreFootprintOp): OperationBody;
 
@@ -11352,7 +11281,7 @@ export namespace xdr {
       | LiquidityPoolDepositOp
       | LiquidityPoolWithdrawOp
       | InvokeHostFunctionOp
-      | BumpFootprintExpirationOp
+      | ExtendFootprintTtlOp
       | RestoreFootprintOp
       | void;
 
@@ -12839,7 +12768,7 @@ export namespace xdr {
 
     static invokeHostFunctionResourceLimitExceeded(): InvokeHostFunctionResult;
 
-    static invokeHostFunctionEntryExpired(): InvokeHostFunctionResult;
+    static invokeHostFunctionEntryArchived(): InvokeHostFunctionResult;
 
     static invokeHostFunctionInsufficientRefundableFee(): InvokeHostFunctionResult;
 
@@ -12869,16 +12798,16 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
-  class BumpFootprintExpirationResult {
-    switch(): BumpFootprintExpirationResultCode;
+  class ExtendFootprintTtlResult {
+    switch(): ExtendFootprintTtlResultCode;
 
-    static bumpFootprintExpirationSuccess(): BumpFootprintExpirationResult;
+    static extendFootprintTtlSuccess(): ExtendFootprintTtlResult;
 
-    static bumpFootprintExpirationMalformed(): BumpFootprintExpirationResult;
+    static extendFootprintTtlMalformed(): ExtendFootprintTtlResult;
 
-    static bumpFootprintExpirationResourceLimitExceeded(): BumpFootprintExpirationResult;
+    static extendFootprintTtlResourceLimitExceeded(): ExtendFootprintTtlResult;
 
-    static bumpFootprintExpirationInsufficientRefundableFee(): BumpFootprintExpirationResult;
+    static extendFootprintTtlInsufficientRefundableFee(): ExtendFootprintTtlResult;
 
     value(): void;
 
@@ -12886,23 +12815,20 @@ export namespace xdr {
 
     toXDR(format: 'hex' | 'base64'): string;
 
-    static read(io: Buffer): BumpFootprintExpirationResult;
+    static read(io: Buffer): ExtendFootprintTtlResult;
 
-    static write(value: BumpFootprintExpirationResult, io: Buffer): void;
+    static write(value: ExtendFootprintTtlResult, io: Buffer): void;
 
-    static isValid(value: BumpFootprintExpirationResult): boolean;
+    static isValid(value: ExtendFootprintTtlResult): boolean;
 
-    static toXDR(value: BumpFootprintExpirationResult): Buffer;
+    static toXDR(value: ExtendFootprintTtlResult): Buffer;
 
-    static fromXDR(
-      input: Buffer,
-      format?: 'raw',
-    ): BumpFootprintExpirationResult;
+    static fromXDR(input: Buffer, format?: 'raw'): ExtendFootprintTtlResult;
 
     static fromXDR(
       input: string,
       format: 'hex' | 'base64',
-    ): BumpFootprintExpirationResult;
+    ): ExtendFootprintTtlResult;
 
     static validateXDR(input: Buffer, format?: 'raw'): boolean;
 
@@ -13025,9 +12951,9 @@ export namespace xdr {
       value?: InvokeHostFunctionResult,
     ): InvokeHostFunctionResult;
 
-    bumpFootprintExpirationResult(
-      value?: BumpFootprintExpirationResult,
-    ): BumpFootprintExpirationResult;
+    extendFootprintTtlResult(
+      value?: ExtendFootprintTtlResult,
+    ): ExtendFootprintTtlResult;
 
     restoreFootprintResult(
       value?: RestoreFootprintResult,
@@ -13105,8 +13031,8 @@ export namespace xdr {
       value: InvokeHostFunctionResult,
     ): OperationResultTr;
 
-    static bumpFootprintExpiration(
-      value: BumpFootprintExpirationResult,
+    static extendFootprintTtl(
+      value: ExtendFootprintTtlResult,
     ): OperationResultTr;
 
     static restoreFootprint(value: RestoreFootprintResult): OperationResultTr;
@@ -13137,7 +13063,7 @@ export namespace xdr {
       | LiquidityPoolDepositResult
       | LiquidityPoolWithdrawResult
       | InvokeHostFunctionResult
-      | BumpFootprintExpirationResult
+      | ExtendFootprintTtlResult
       | RestoreFootprintResult;
 
     toXDR(format?: 'raw'): Buffer;
@@ -13568,7 +13494,7 @@ export namespace xdr {
 
     static contractExecutableWasm(value: Buffer): ContractExecutable;
 
-    static contractExecutableToken(): ContractExecutable;
+    static contractExecutableStellarAsset(): ContractExecutable;
 
     value(): Buffer | void;
 
@@ -14049,9 +13975,7 @@ export namespace xdr {
 
     contractDataEntrySizeBytes(value?: number): number;
 
-    stateExpirationSettings(
-      value?: StateExpirationSettings,
-    ): StateExpirationSettings;
+    stateArchivalSettings(value?: StateArchivalSettings): StateArchivalSettings;
 
     contractExecutionLanes(
       value?: ConfigSettingContractExecutionLanesV0,
@@ -14099,8 +14023,8 @@ export namespace xdr {
       value: number,
     ): ConfigSettingEntry;
 
-    static configSettingStateExpiration(
-      value: StateExpirationSettings,
+    static configSettingStateArchival(
+      value: StateArchivalSettings,
     ): ConfigSettingEntry;
 
     static configSettingContractExecutionLanes(
@@ -14126,7 +14050,7 @@ export namespace xdr {
       | ContractCostParamEntry[]
       | number
       | number
-      | StateExpirationSettings
+      | StateArchivalSettings
       | ConfigSettingContractExecutionLanesV0
       | Uint64[]
       | EvictionIterator;

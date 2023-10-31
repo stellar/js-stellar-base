@@ -73,7 +73,7 @@ describe('TransactionBuilder', function () {
       );
       sorobanTransactionData = new StellarBase.SorobanDataBuilder()
         .setResources(0, 5, 0)
-        .setRefundableFee(1)
+        .setResourceFee(1)
         .build();
     });
 

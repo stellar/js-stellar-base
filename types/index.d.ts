@@ -369,7 +369,7 @@ export namespace OperationType {
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
-  type BumpFootprintExpiration = 'bumpFootprintExpiration';
+  type ExtendFootprintTTL = 'extendFootprintTtl';
   type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
@@ -398,7 +398,7 @@ export type OperationType =
   | OperationType.LiquidityPoolDeposit
   | OperationType.LiquidityPoolWithdraw
   | OperationType.InvokeHostFunction
-  | OperationType.BumpFootprintExpiration
+  | OperationType.ExtendFootprintTTL
   | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
@@ -550,8 +550,8 @@ export namespace OperationOptions {
     func: xdr.HostFunction;
     auth: xdr.SorobanAuthorizationEntry[];
   }
-  interface BumpFootprintExpiration extends BaseOptions {
-    ledgersToExpire: number;
+  interface ExtendFootprintTTL extends BaseOptions {
+    extendTo: number;
   }
   type RestoreFootprint = BaseOptions;
 }
@@ -586,7 +586,7 @@ export type OperationOptions =
   | OperationOptions.LiquidityPoolDeposit
   | OperationOptions.LiquidityPoolWithdraw
   | OperationOptions.InvokeHostFunction
-  | OperationOptions.BumpFootprintExpiration
+  | OperationOptions.ExtendFootprintTTL
   | OperationOptions.RestoreFootprint;
 
 export namespace Operation {
@@ -876,11 +876,11 @@ export namespace Operation {
     options: OperationOptions.InvokeHostFunction
   ): xdr.Operation<InvokeHostFunction>;
 
-  function bumpFootprintExpiration(
-    options: OperationOptions.BumpFootprintExpiration
-  ): xdr.Operation<BumpFootprintExpiration>;
-  interface BumpFootprintExpiration extends BaseOperation<OperationType.BumpFootprintExpiration> {
-    ledgersToExpire: number;
+  function extendFootprintTtl(
+    options: OperationOptions.ExtendFootprintTTL
+  ): xdr.Operation<ExtendFootprintTTL>;
+  interface ExtendFootprintTTL extends BaseOperation<OperationType.ExtendFootprintTTL> {
+    extendTo: number;
   }
 
   function restoreFootprint(options: OperationOptions.RestoreFootprint):
@@ -923,7 +923,7 @@ export type Operation =
   | Operation.LiquidityPoolDeposit
   | Operation.LiquidityPoolWithdraw
   | Operation.InvokeHostFunction
-  | Operation.BumpFootprintExpiration
+  | Operation.ExtendFootprintTTL
   | Operation.RestoreFootprint;
 
 export namespace StrKey {
@@ -1145,7 +1145,7 @@ export class SorobanDataBuilder {
   constructor(data?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
   static fromXDR(data: Uint8Array | Buffer | string): SorobanDataBuilder;
 
-  setRefundableFee(fee: IntLike): SorobanDataBuilder;
+  setResourceFee(fee: IntLike): SorobanDataBuilder;
   setResources(
     cpuInstrs: number,
     readBytes: number,

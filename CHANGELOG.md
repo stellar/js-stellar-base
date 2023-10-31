@@ -3,8 +3,14 @@
 
 ## Unreleased
 
-### Fixed
-- The type definition for `Memo.hash` now allows `Buffer`s ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
+### Breaking Changes
+* XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([#704](https://github.com/stellar/js-stellar-base/pull/704)):
+  - `Operation.bumpFootprintExpiration` is now `extendFootprintTtl` and its `ledgersToExpire` field is now named `extendTo`, but it serves the same purpose.
+  - In TypeScript, the `Operation.BumpFootprintExpiration` is now `Operation.ExtendFootprintTTL`
+  - `xdr.ContractExecutable.contractExecutableToken` is now `contractExecutableStellarAsset`
+  - `xdr.SorobanTransactionData.refundableFee` is now `resourceFee`
+  - In turn, `SorobanDataBuilder.setRefundableFee` is now `setResourceFee`
+  - This new fee encompasses the entirety of the Soroban-related resource fees. Note that this is distinct from the "network-inclusion" fee that you would set on your transaction (i.e. `TransactionBuilder(..., { fee: ... })`).
 
 ### Breaking Changes
 - `Contract.getFootprint()` now only returns a single result: the ledger key of the deployed instance for the given ID, because the key for the code entry was incorrect (it should not be the ID but rather the WASM hash, which is not calculatable w/o network access) ([#TODO](https://github.com/stellar/js-stellar-base/pull/TODO)).
