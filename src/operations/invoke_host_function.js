@@ -186,7 +186,7 @@ export function createStellarAssetContract(opts) {
     auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeCreateContract(
       new xdr.CreateContractArgs({
-        executable: xdr.ContractExecutable.contractExecutableToken(),
+        executable: xdr.ContractExecutable.contractExecutableStellarAsset(),
         contractIdPreimage: xdr.ContractIdPreimage.contractIdPreimageFromAsset(
           asset.toXDRObject()
         )
