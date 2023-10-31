@@ -30,7 +30,7 @@ export class Contract {
   call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
   contractId(): string;
   address(): Address;
-  getFootprint(): xdr.LedgerKey[];
+  getFootprint(): xdr.LedgerKey;
 
   toString(): string;
 }

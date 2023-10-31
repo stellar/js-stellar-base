@@ -6,6 +6,9 @@
 ### Fixed
 - The type definition for `Memo.hash` now allows `Buffer`s ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
 
+### Breaking Changes
+- `Contract.getFootprint()` now only returns a single result: the ledger key of the deployed instance for the given ID, because the key for the code entry was incorrect (it should not be the ID but rather the WASM hash, which is not calculatable w/o network access) ([#TODO](https://github.com/stellar/js-stellar-base/pull/TODO)).
+
 
 ## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)
 

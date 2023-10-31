@@ -69,24 +69,18 @@ export class Contract {
 
   /**
    * Returns the read-only footprint entries necessary for any invocations to
-   * this contract, for convenience when adding it to your transaction's overall
-   * footprint or doing bump/restore operations.
+   * this contract, for convenience when manually adding it to your
+   * transaction's overall footprint or doing bump/restore operations.
    *
-   * @returns {xdr.LedgerKey[]} the ledger keys containing the contract's code
-   *    (first) and its deployed contract instance (second)
+   * @returns {xdr.LedgerKey} the ledger key for the deployed contract instance
    */
   getFootprint() {
-    return [
-      xdr.LedgerKey.contractCode(
-        new xdr.LedgerKeyContractCode({ hash: this._id })
-      ),
-      xdr.LedgerKey.contractData(
-        new xdr.LedgerKeyContractData({
-          contract: this.address().toScAddress(),
-          key: xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: xdr.ContractDataDurability.persistent()
-        })
-      )
-    ];
+    return xdr.LedgerKey.contractData(
+      new xdr.LedgerKeyContractData({
+        contract: this.address().toScAddress(),
+        key: xdr.ScVal.scvLedgerKeyContractInstance(),
+        durability: xdr.ContractDataDurability.persistent()
+      })
+    );
   }
 }
