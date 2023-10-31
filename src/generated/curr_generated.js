@@ -476,7 +476,7 @@ var types = XDR.config((xdr) => {
   //       CONTRACT_DATA = 6,
   //       CONTRACT_CODE = 7,
   //       CONFIG_SETTING = 8,
-  //       EXPIRATION = 9
+  //       TTL = 9
   //   };
   //
   // ===========================================================================
@@ -490,7 +490,7 @@ var types = XDR.config((xdr) => {
     contractData: 6,
     contractCode: 7,
     configSetting: 8,
-    expiration: 9,
+    ttl: 9,
   });
 
   // === xdr source ============================================================
@@ -1522,16 +1522,16 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   struct ExpirationEntry {
-  //       // Hash of the LedgerKey that is associated with this ExpirationEntry
+  //   struct TTLEntry {
+  //       // Hash of the LedgerKey that is associated with this TTLEntry
   //       Hash keyHash;
-  //       uint32 expirationLedgerSeq;
+  //       uint32 liveUntilLedgerSeq;
   //   };
   //
   // ===========================================================================
-  xdr.struct("ExpirationEntry", [
+  xdr.struct("TtlEntry", [
     ["keyHash", xdr.lookup("Hash")],
-    ["expirationLedgerSeq", xdr.lookup("Uint32")],
+    ["liveUntilLedgerSeq", xdr.lookup("Uint32")],
   ]);
 
   // === xdr source ============================================================
@@ -1592,8 +1592,8 @@ var types = XDR.config((xdr) => {
   //           ContractCodeEntry contractCode;
   //       case CONFIG_SETTING:
   //           ConfigSettingEntry configSetting;
-  //       case EXPIRATION:
-  //           ExpirationEntry expiration;
+  //       case TTL:
+  //           TTLEntry ttl;
   //       }
   //
   // ===========================================================================
@@ -1610,7 +1610,7 @@ var types = XDR.config((xdr) => {
       ["contractData", "contractData"],
       ["contractCode", "contractCode"],
       ["configSetting", "configSetting"],
-      ["expiration", "expiration"],
+      ["ttl", "ttl"],
     ],
     arms: {
       account: xdr.lookup("AccountEntry"),
@@ -1622,7 +1622,7 @@ var types = XDR.config((xdr) => {
       contractData: xdr.lookup("ContractDataEntry"),
       contractCode: xdr.lookup("ContractCodeEntry"),
       configSetting: xdr.lookup("ConfigSettingEntry"),
-      expiration: xdr.lookup("ExpirationEntry"),
+      ttl: xdr.lookup("TtlEntry"),
     },
   });
 
@@ -1675,8 +1675,8 @@ var types = XDR.config((xdr) => {
   //           ContractCodeEntry contractCode;
   //       case CONFIG_SETTING:
   //           ConfigSettingEntry configSetting;
-  //       case EXPIRATION:
-  //           ExpirationEntry expiration;
+  //       case TTL:
+  //           TTLEntry ttl;
   //       }
   //       data;
   //
@@ -1816,12 +1816,12 @@ var types = XDR.config((xdr) => {
   //
   //   struct
   //       {
-  //           // Hash of the LedgerKey that is associated with this ExpirationEntry
+  //           // Hash of the LedgerKey that is associated with this TTLEntry
   //           Hash keyHash;
   //       }
   //
   // ===========================================================================
-  xdr.struct("LedgerKeyExpiration", [["keyHash", xdr.lookup("Hash")]]);
+  xdr.struct("LedgerKeyTtl", [["keyHash", xdr.lookup("Hash")]]);
 
   // === xdr source ============================================================
   //
@@ -1882,12 +1882,12 @@ var types = XDR.config((xdr) => {
   //       {
   //           ConfigSettingID configSettingID;
   //       } configSetting;
-  //   case EXPIRATION:
+  //   case TTL:
   //       struct
   //       {
-  //           // Hash of the LedgerKey that is associated with this ExpirationEntry
+  //           // Hash of the LedgerKey that is associated with this TTLEntry
   //           Hash keyHash;
-  //       } expiration;
+  //       } ttl;
   //   };
   //
   // ===========================================================================
@@ -1904,7 +1904,7 @@ var types = XDR.config((xdr) => {
       ["contractData", "contractData"],
       ["contractCode", "contractCode"],
       ["configSetting", "configSetting"],
-      ["expiration", "expiration"],
+      ["ttl", "ttl"],
     ],
     arms: {
       account: xdr.lookup("LedgerKeyAccount"),
@@ -1916,7 +1916,7 @@ var types = XDR.config((xdr) => {
       contractData: xdr.lookup("LedgerKeyContractData"),
       contractCode: xdr.lookup("LedgerKeyContractCode"),
       configSetting: xdr.lookup("LedgerKeyConfigSetting"),
-      expiration: xdr.lookup("LedgerKeyExpiration"),
+      ttl: xdr.lookup("LedgerKeyTtl"),
     },
   });
 
@@ -3049,43 +3049,8 @@ var types = XDR.config((xdr) => {
   //
   //   struct LedgerCloseMetaV1
   //   {
-  //       LedgerHeaderHistoryEntry ledgerHeader;
-  //
-  //       GeneralizedTransactionSet txSet;
-  //
-  //       // NB: transactions are sorted in apply order here
-  //       // fees for all transactions are processed first
-  //       // followed by applying transactions
-  //       TransactionResultMeta txProcessing<>;
-  //
-  //       // upgrades are applied last
-  //       UpgradeEntryMeta upgradesProcessing<>;
-  //
-  //       // other misc information attached to the ledger close
-  //       SCPHistoryEntry scpInfo<>;
-  //   };
-  //
-  // ===========================================================================
-  xdr.struct("LedgerCloseMetaV1", [
-    ["ledgerHeader", xdr.lookup("LedgerHeaderHistoryEntry")],
-    ["txSet", xdr.lookup("GeneralizedTransactionSet")],
-    [
-      "txProcessing",
-      xdr.varArray(xdr.lookup("TransactionResultMeta"), 2147483647),
-    ],
-    [
-      "upgradesProcessing",
-      xdr.varArray(xdr.lookup("UpgradeEntryMeta"), 2147483647),
-    ],
-    ["scpInfo", xdr.varArray(xdr.lookup("ScpHistoryEntry"), 2147483647)],
-  ]);
-
-  // === xdr source ============================================================
-  //
-  //   struct LedgerCloseMetaV2
-  //   {
-  //       // We forgot to add an ExtensionPoint in v1 but at least
-  //       // we can add one now in v2.
+  //       // We forgot to add an ExtensionPoint in v0 but at least
+  //       // we can add one now in v1.
   //       ExtensionPoint ext;
   //
   //       LedgerHeaderHistoryEntry ledgerHeader;
@@ -3107,16 +3072,16 @@ var types = XDR.config((xdr) => {
   //       // systems calculating storage fees correctly.
   //       uint64 totalByteSizeOfBucketList;
   //
-  //       // Expired temp keys that are being evicted at this ledger.
+  //       // Temp keys that are being evicted at this ledger.
   //       LedgerKey evictedTemporaryLedgerKeys<>;
   //
-  //       // Expired restorable ledger entries that are being
+  //       // Archived restorable ledger entries that are being
   //       // evicted at this ledger.
   //       LedgerEntry evictedPersistentLedgerEntries<>;
   //   };
   //
   // ===========================================================================
-  xdr.struct("LedgerCloseMetaV2", [
+  xdr.struct("LedgerCloseMetaV1", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["ledgerHeader", xdr.lookup("LedgerHeaderHistoryEntry")],
     ["txSet", xdr.lookup("GeneralizedTransactionSet")],
@@ -3148,8 +3113,6 @@ var types = XDR.config((xdr) => {
   //       LedgerCloseMetaV0 v0;
   //   case 1:
   //       LedgerCloseMetaV1 v1;
-  //   case 2:
-  //       LedgerCloseMetaV2 v2;
   //   };
   //
   // ===========================================================================
@@ -3159,12 +3122,10 @@ var types = XDR.config((xdr) => {
     switches: [
       [0, "v0"],
       [1, "v1"],
-      [2, "v2"],
     ],
     arms: {
       v0: xdr.lookup("LedgerCloseMetaV0"),
       v1: xdr.lookup("LedgerCloseMetaV1"),
-      v2: xdr.lookup("LedgerCloseMetaV2"),
     },
   });
 
@@ -3944,7 +3905,7 @@ var types = XDR.config((xdr) => {
   //       LIQUIDITY_POOL_DEPOSIT = 22,
   //       LIQUIDITY_POOL_WITHDRAW = 23,
   //       INVOKE_HOST_FUNCTION = 24,
-  //       BUMP_FOOTPRINT_EXPIRATION = 25,
+  //       EXTEND_FOOTPRINT_TTL = 25,
   //       RESTORE_FOOTPRINT = 26
   //   };
   //
@@ -3975,7 +3936,7 @@ var types = XDR.config((xdr) => {
     liquidityPoolDeposit: 22,
     liquidityPoolWithdraw: 23,
     invokeHostFunction: 24,
-    bumpFootprintExpiration: 25,
+    extendFootprintTtl: 25,
     restoreFootprint: 26,
   });
 
@@ -4715,16 +4676,16 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   struct BumpFootprintExpirationOp
+  //   struct ExtendFootprintTTLOp
   //   {
   //       ExtensionPoint ext;
-  //       uint32 ledgersToExpire;
+  //       uint32 extendTo;
   //   };
   //
   // ===========================================================================
-  xdr.struct("BumpFootprintExpirationOp", [
+  xdr.struct("ExtendFootprintTtlOp", [
     ["ext", xdr.lookup("ExtensionPoint")],
-    ["ledgersToExpire", xdr.lookup("Uint32")],
+    ["extendTo", xdr.lookup("Uint32")],
   ]);
 
   // === xdr source ============================================================
@@ -4791,8 +4752,8 @@ var types = XDR.config((xdr) => {
   //           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
   //       case INVOKE_HOST_FUNCTION:
   //           InvokeHostFunctionOp invokeHostFunctionOp;
-  //       case BUMP_FOOTPRINT_EXPIRATION:
-  //           BumpFootprintExpirationOp bumpFootprintExpirationOp;
+  //       case EXTEND_FOOTPRINT_TTL:
+  //           ExtendFootprintTTLOp extendFootprintTTLOp;
   //       case RESTORE_FOOTPRINT:
   //           RestoreFootprintOp restoreFootprintOp;
   //       }
@@ -4827,7 +4788,7 @@ var types = XDR.config((xdr) => {
       ["liquidityPoolDeposit", "liquidityPoolDepositOp"],
       ["liquidityPoolWithdraw", "liquidityPoolWithdrawOp"],
       ["invokeHostFunction", "invokeHostFunctionOp"],
-      ["bumpFootprintExpiration", "bumpFootprintExpirationOp"],
+      ["extendFootprintTtl", "extendFootprintTtlOp"],
       ["restoreFootprint", "restoreFootprintOp"],
     ],
     arms: {
@@ -4856,7 +4817,7 @@ var types = XDR.config((xdr) => {
       liquidityPoolDepositOp: xdr.lookup("LiquidityPoolDepositOp"),
       liquidityPoolWithdrawOp: xdr.lookup("LiquidityPoolWithdrawOp"),
       invokeHostFunctionOp: xdr.lookup("InvokeHostFunctionOp"),
-      bumpFootprintExpirationOp: xdr.lookup("BumpFootprintExpirationOp"),
+      extendFootprintTtlOp: xdr.lookup("ExtendFootprintTtlOp"),
       restoreFootprintOp: xdr.lookup("RestoreFootprintOp"),
     },
   });
@@ -4922,8 +4883,8 @@ var types = XDR.config((xdr) => {
   //           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
   //       case INVOKE_HOST_FUNCTION:
   //           InvokeHostFunctionOp invokeHostFunctionOp;
-  //       case BUMP_FOOTPRINT_EXPIRATION:
-  //           BumpFootprintExpirationOp bumpFootprintExpirationOp;
+  //       case EXTEND_FOOTPRINT_TTL:
+  //           ExtendFootprintTTLOp extendFootprintTTLOp;
   //       case RESTORE_FOOTPRINT:
   //           RestoreFootprintOp restoreFootprintOp;
   //       }
@@ -5272,15 +5233,23 @@ var types = XDR.config((xdr) => {
   //   {
   //       ExtensionPoint ext;
   //       SorobanResources resources;
-  //       // Portion of transaction `fee` allocated to refundable fees.
-  //       int64 refundableFee;
+  //       // Amount of the transaction `fee` allocated to the Soroban resource fees.
+  //       // The fraction of `resourceFee` corresponding to `resources` specified
+  //       // above is *not* refundable (i.e. fees for instructions, ledger I/O), as
+  //       // well as fees for the transaction size.
+  //       // The remaining part of the fee is refundable and the charged value is
+  //       // based on the actual consumption of refundable resources (events, ledger
+  //       // rent bumps).
+  //       // The `inclusionFee` used for prioritization of the transaction is defined
+  //       // as `tx.fee - resourceFee`.
+  //       int64 resourceFee;
   //   };
   //
   // ===========================================================================
   xdr.struct("SorobanTransactionData", [
     ["ext", xdr.lookup("ExtensionPoint")],
     ["resources", xdr.lookup("SorobanResources")],
-    ["refundableFee", xdr.lookup("Int64")],
+    ["resourceFee", xdr.lookup("Int64")],
   ]);
 
   // === xdr source ============================================================
@@ -7256,7 +7225,7 @@ var types = XDR.config((xdr) => {
   //       INVOKE_HOST_FUNCTION_MALFORMED = -1,
   //       INVOKE_HOST_FUNCTION_TRAPPED = -2,
   //       INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3,
-  //       INVOKE_HOST_FUNCTION_ENTRY_EXPIRED = -4,
+  //       INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED = -4,
   //       INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE = -5
   //   };
   //
@@ -7266,7 +7235,7 @@ var types = XDR.config((xdr) => {
     invokeHostFunctionMalformed: -1,
     invokeHostFunctionTrapped: -2,
     invokeHostFunctionResourceLimitExceeded: -3,
-    invokeHostFunctionEntryExpired: -4,
+    invokeHostFunctionEntryArchived: -4,
     invokeHostFunctionInsufficientRefundableFee: -5,
   });
 
@@ -7279,7 +7248,7 @@ var types = XDR.config((xdr) => {
   //   case INVOKE_HOST_FUNCTION_MALFORMED:
   //   case INVOKE_HOST_FUNCTION_TRAPPED:
   //   case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
-  //   case INVOKE_HOST_FUNCTION_ENTRY_EXPIRED:
+  //   case INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED:
   //   case INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE:
   //       void;
   //   };
@@ -7293,7 +7262,7 @@ var types = XDR.config((xdr) => {
       ["invokeHostFunctionMalformed", xdr.void()],
       ["invokeHostFunctionTrapped", xdr.void()],
       ["invokeHostFunctionResourceLimitExceeded", xdr.void()],
-      ["invokeHostFunctionEntryExpired", xdr.void()],
+      ["invokeHostFunctionEntryArchived", xdr.void()],
       ["invokeHostFunctionInsufficientRefundableFee", xdr.void()],
     ],
     arms: {
@@ -7303,46 +7272,46 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   enum BumpFootprintExpirationResultCode
+  //   enum ExtendFootprintTTLResultCode
   //   {
   //       // codes considered as "success" for the operation
-  //       BUMP_FOOTPRINT_EXPIRATION_SUCCESS = 0,
+  //       EXTEND_FOOTPRINT_TTL_SUCCESS = 0,
   //
   //       // codes considered as "failure" for the operation
-  //       BUMP_FOOTPRINT_EXPIRATION_MALFORMED = -1,
-  //       BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED = -2,
-  //       BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE = -3
+  //       EXTEND_FOOTPRINT_TTL_MALFORMED = -1,
+  //       EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED = -2,
+  //       EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE = -3
   //   };
   //
   // ===========================================================================
-  xdr.enum("BumpFootprintExpirationResultCode", {
-    bumpFootprintExpirationSuccess: 0,
-    bumpFootprintExpirationMalformed: -1,
-    bumpFootprintExpirationResourceLimitExceeded: -2,
-    bumpFootprintExpirationInsufficientRefundableFee: -3,
+  xdr.enum("ExtendFootprintTtlResultCode", {
+    extendFootprintTtlSuccess: 0,
+    extendFootprintTtlMalformed: -1,
+    extendFootprintTtlResourceLimitExceeded: -2,
+    extendFootprintTtlInsufficientRefundableFee: -3,
   });
 
   // === xdr source ============================================================
   //
-  //   union BumpFootprintExpirationResult switch (BumpFootprintExpirationResultCode code)
+  //   union ExtendFootprintTTLResult switch (ExtendFootprintTTLResultCode code)
   //   {
-  //   case BUMP_FOOTPRINT_EXPIRATION_SUCCESS:
+  //   case EXTEND_FOOTPRINT_TTL_SUCCESS:
   //       void;
-  //   case BUMP_FOOTPRINT_EXPIRATION_MALFORMED:
-  //   case BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED:
-  //   case BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE:
+  //   case EXTEND_FOOTPRINT_TTL_MALFORMED:
+  //   case EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED:
+  //   case EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE:
   //       void;
   //   };
   //
   // ===========================================================================
-  xdr.union("BumpFootprintExpirationResult", {
-    switchOn: xdr.lookup("BumpFootprintExpirationResultCode"),
+  xdr.union("ExtendFootprintTtlResult", {
+    switchOn: xdr.lookup("ExtendFootprintTtlResultCode"),
     switchName: "code",
     switches: [
-      ["bumpFootprintExpirationSuccess", xdr.void()],
-      ["bumpFootprintExpirationMalformed", xdr.void()],
-      ["bumpFootprintExpirationResourceLimitExceeded", xdr.void()],
-      ["bumpFootprintExpirationInsufficientRefundableFee", xdr.void()],
+      ["extendFootprintTtlSuccess", xdr.void()],
+      ["extendFootprintTtlMalformed", xdr.void()],
+      ["extendFootprintTtlResourceLimitExceeded", xdr.void()],
+      ["extendFootprintTtlInsufficientRefundableFee", xdr.void()],
     ],
     arms: {},
   });
@@ -7472,8 +7441,8 @@ var types = XDR.config((xdr) => {
   //           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
   //       case INVOKE_HOST_FUNCTION:
   //           InvokeHostFunctionResult invokeHostFunctionResult;
-  //       case BUMP_FOOTPRINT_EXPIRATION:
-  //           BumpFootprintExpirationResult bumpFootprintExpirationResult;
+  //       case EXTEND_FOOTPRINT_TTL:
+  //           ExtendFootprintTTLResult extendFootprintTTLResult;
   //       case RESTORE_FOOTPRINT:
   //           RestoreFootprintResult restoreFootprintResult;
   //       }
@@ -7508,7 +7477,7 @@ var types = XDR.config((xdr) => {
       ["liquidityPoolDeposit", "liquidityPoolDepositResult"],
       ["liquidityPoolWithdraw", "liquidityPoolWithdrawResult"],
       ["invokeHostFunction", "invokeHostFunctionResult"],
-      ["bumpFootprintExpiration", "bumpFootprintExpirationResult"],
+      ["extendFootprintTtl", "extendFootprintTtlResult"],
       ["restoreFootprint", "restoreFootprintResult"],
     ],
     arms: {
@@ -7545,9 +7514,7 @@ var types = XDR.config((xdr) => {
       liquidityPoolDepositResult: xdr.lookup("LiquidityPoolDepositResult"),
       liquidityPoolWithdrawResult: xdr.lookup("LiquidityPoolWithdrawResult"),
       invokeHostFunctionResult: xdr.lookup("InvokeHostFunctionResult"),
-      bumpFootprintExpirationResult: xdr.lookup(
-        "BumpFootprintExpirationResult"
-      ),
+      extendFootprintTtlResult: xdr.lookup("ExtendFootprintTtlResult"),
       restoreFootprintResult: xdr.lookup("RestoreFootprintResult"),
     },
   });
@@ -7609,8 +7576,8 @@ var types = XDR.config((xdr) => {
   //           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
   //       case INVOKE_HOST_FUNCTION:
   //           InvokeHostFunctionResult invokeHostFunctionResult;
-  //       case BUMP_FOOTPRINT_EXPIRATION:
-  //           BumpFootprintExpirationResult bumpFootprintExpirationResult;
+  //       case EXTEND_FOOTPRINT_TTL:
+  //           ExtendFootprintTTLResult extendFootprintTTLResult;
   //       case RESTORE_FOOTPRINT:
   //           RestoreFootprintResult restoreFootprintResult;
   //       }
@@ -8468,13 +8435,13 @@ var types = XDR.config((xdr) => {
   //   enum ContractExecutableType
   //   {
   //       CONTRACT_EXECUTABLE_WASM = 0,
-  //       CONTRACT_EXECUTABLE_TOKEN = 1
+  //       CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
   //   };
   //
   // ===========================================================================
   xdr.enum("ContractExecutableType", {
     contractExecutableWasm: 0,
-    contractExecutableToken: 1,
+    contractExecutableStellarAsset: 1,
   });
 
   // === xdr source ============================================================
@@ -8483,7 +8450,7 @@ var types = XDR.config((xdr) => {
   //   {
   //   case CONTRACT_EXECUTABLE_WASM:
   //       Hash wasm_hash;
-  //   case CONTRACT_EXECUTABLE_TOKEN:
+  //   case CONTRACT_EXECUTABLE_STELLAR_ASSET:
   //       void;
   //   };
   //
@@ -8493,7 +8460,7 @@ var types = XDR.config((xdr) => {
     switchName: "type",
     switches: [
       ["contractExecutableWasm", "wasmHash"],
-      ["contractExecutableToken", xdr.void()],
+      ["contractExecutableStellarAsset", xdr.void()],
     ],
     arms: {
       wasmHash: xdr.lookup("Hash"),
@@ -9465,96 +9432,81 @@ var types = XDR.config((xdr) => {
   //   enum ContractCostType {
   //       // Cost of running 1 wasm instruction
   //       WasmInsnExec = 0,
-  //       // Cost of growing wasm linear memory by 1 page
-  //       WasmMemAlloc = 1,
-  //       // Cost of allocating a chuck of host memory (in bytes)
-  //       HostMemAlloc = 2,
-  //       // Cost of copying a chuck of bytes into a pre-allocated host memory
-  //       HostMemCpy = 3,
-  //       // Cost of comparing two slices of host memory
-  //       HostMemCmp = 4,
+  //       // Cost of allocating a slice of memory (in bytes)
+  //       MemAlloc = 1,
+  //       // Cost of copying a slice of bytes into a pre-allocated memory
+  //       MemCpy = 2,
+  //       // Cost of comparing two slices of memory
+  //       MemCmp = 3,
   //       // Cost of a host function dispatch, not including the actual work done by
   //       // the function nor the cost of VM invocation machinary
-  //       DispatchHostFunction = 5,
+  //       DispatchHostFunction = 4,
   //       // Cost of visiting a host object from the host object storage. Exists to
   //       // make sure some baseline cost coverage, i.e. repeatly visiting objects
   //       // by the guest will always incur some charges.
-  //       VisitObject = 6,
+  //       VisitObject = 5,
   //       // Cost of serializing an xdr object to bytes
-  //       ValSer = 7,
+  //       ValSer = 6,
   //       // Cost of deserializing an xdr object from bytes
-  //       ValDeser = 8,
+  //       ValDeser = 7,
   //       // Cost of computing the sha256 hash from bytes
-  //       ComputeSha256Hash = 9,
+  //       ComputeSha256Hash = 8,
   //       // Cost of computing the ed25519 pubkey from bytes
-  //       ComputeEd25519PubKey = 10,
-  //       // Cost of accessing an entry in a Map.
-  //       MapEntry = 11,
-  //       // Cost of accessing an entry in a Vec
-  //       VecEntry = 12,
+  //       ComputeEd25519PubKey = 9,
   //       // Cost of verifying ed25519 signature of a payload.
-  //       VerifyEd25519Sig = 13,
-  //       // Cost of reading a slice of vm linear memory
-  //       VmMemRead = 14,
-  //       // Cost of writing to a slice of vm linear memory
-  //       VmMemWrite = 15,
+  //       VerifyEd25519Sig = 10,
   //       // Cost of instantiation a VM from wasm bytes code.
-  //       VmInstantiation = 16,
+  //       VmInstantiation = 11,
   //       // Cost of instantiation a VM from a cached state.
-  //       VmCachedInstantiation = 17,
+  //       VmCachedInstantiation = 12,
   //       // Cost of invoking a function on the VM. If the function is a host function,
   //       // additional cost will be covered by `DispatchHostFunction`.
-  //       InvokeVmFunction = 18,
+  //       InvokeVmFunction = 13,
   //       // Cost of computing a keccak256 hash from bytes.
-  //       ComputeKeccak256Hash = 19,
-  //       // Cost of computing an ECDSA secp256k1 pubkey from bytes.
-  //       ComputeEcdsaSecp256k1Key = 20,
+  //       ComputeKeccak256Hash = 14,
   //       // Cost of computing an ECDSA secp256k1 signature from bytes.
-  //       ComputeEcdsaSecp256k1Sig = 21,
+  //       ComputeEcdsaSecp256k1Sig = 15,
   //       // Cost of recovering an ECDSA secp256k1 key from a signature.
-  //       RecoverEcdsaSecp256k1Key = 22,
+  //       RecoverEcdsaSecp256k1Key = 16,
   //       // Cost of int256 addition (`+`) and subtraction (`-`) operations
-  //       Int256AddSub = 23,
+  //       Int256AddSub = 17,
   //       // Cost of int256 multiplication (`*`) operation
-  //       Int256Mul = 24,
+  //       Int256Mul = 18,
   //       // Cost of int256 division (`/`) operation
-  //       Int256Div = 25,
+  //       Int256Div = 19,
   //       // Cost of int256 power (`exp`) operation
-  //       Int256Pow = 26,
+  //       Int256Pow = 20,
   //       // Cost of int256 shift (`shl`, `shr`) operation
-  //       Int256Shift = 27
+  //       Int256Shift = 21,
+  //       // Cost of drawing random bytes using a ChaCha20 PRNG
+  //       ChaCha20DrawBytes = 22
   //   };
   //
   // ===========================================================================
   xdr.enum("ContractCostType", {
     wasmInsnExec: 0,
-    wasmMemAlloc: 1,
-    hostMemAlloc: 2,
-    hostMemCpy: 3,
-    hostMemCmp: 4,
-    dispatchHostFunction: 5,
-    visitObject: 6,
-    valSer: 7,
-    valDeser: 8,
-    computeSha256Hash: 9,
-    computeEd25519PubKey: 10,
-    mapEntry: 11,
-    vecEntry: 12,
-    verifyEd25519Sig: 13,
-    vmMemRead: 14,
-    vmMemWrite: 15,
-    vmInstantiation: 16,
-    vmCachedInstantiation: 17,
-    invokeVmFunction: 18,
-    computeKeccak256Hash: 19,
-    computeEcdsaSecp256k1Key: 20,
-    computeEcdsaSecp256k1Sig: 21,
-    recoverEcdsaSecp256k1Key: 22,
-    int256AddSub: 23,
-    int256Mul: 24,
-    int256Div: 25,
-    int256Pow: 26,
-    int256Shift: 27,
+    memAlloc: 1,
+    memCpy: 2,
+    memCmp: 3,
+    dispatchHostFunction: 4,
+    visitObject: 5,
+    valSer: 6,
+    valDeser: 7,
+    computeSha256Hash: 8,
+    computeEd25519PubKey: 9,
+    verifyEd25519Sig: 10,
+    vmInstantiation: 11,
+    vmCachedInstantiation: 12,
+    invokeVmFunction: 13,
+    computeKeccak256Hash: 14,
+    computeEcdsaSecp256k1Sig: 15,
+    recoverEcdsaSecp256k1Key: 16,
+    int256AddSub: 17,
+    int256Mul: 18,
+    int256Div: 19,
+    int256Pow: 20,
+    int256Shift: 21,
+    chaCha20DrawBytes: 22,
   });
 
   // === xdr source ============================================================
@@ -9576,17 +9528,17 @@ var types = XDR.config((xdr) => {
 
   // === xdr source ============================================================
   //
-  //   struct StateExpirationSettings {
-  //       uint32 maxEntryExpiration;
-  //       uint32 minTempEntryExpiration;
-  //       uint32 minPersistentEntryExpiration;
+  //   struct StateArchivalSettings {
+  //       uint32 maxEntryTTL;
+  //       uint32 minTemporaryTTL;
+  //       uint32 minPersistentTTL;
   //
   //       // rent_fee = wfee_rate_average / rent_rate_denominator_for_type
   //       int64 persistentRentRateDenominator;
   //       int64 tempRentRateDenominator;
   //
-  //       // max number of entries that emit expiration meta in a single ledger
-  //       uint32 maxEntriesToExpire;
+  //       // max number of entries that emit archival meta in a single ledger
+  //       uint32 maxEntriesToArchive;
   //
   //       // Number of snapshots to use when calculating average BucketList size
   //       uint32 bucketListSizeWindowSampleSize;
@@ -9599,13 +9551,13 @@ var types = XDR.config((xdr) => {
   //   };
   //
   // ===========================================================================
-  xdr.struct("StateExpirationSettings", [
-    ["maxEntryExpiration", xdr.lookup("Uint32")],
-    ["minTempEntryExpiration", xdr.lookup("Uint32")],
-    ["minPersistentEntryExpiration", xdr.lookup("Uint32")],
+  xdr.struct("StateArchivalSettings", [
+    ["maxEntryTtl", xdr.lookup("Uint32")],
+    ["minTemporaryTtl", xdr.lookup("Uint32")],
+    ["minPersistentTtl", xdr.lookup("Uint32")],
     ["persistentRentRateDenominator", xdr.lookup("Int64")],
     ["tempRentRateDenominator", xdr.lookup("Int64")],
-    ["maxEntriesToExpire", xdr.lookup("Uint32")],
+    ["maxEntriesToArchive", xdr.lookup("Uint32")],
     ["bucketListSizeWindowSampleSize", xdr.lookup("Uint32")],
     ["evictionScanSize", xdr.lookup("Uint64")],
     ["startingEvictionScanLevel", xdr.lookup("Uint32")],
@@ -9660,7 +9612,7 @@ var types = XDR.config((xdr) => {
   //       CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES = 7,
   //       CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES = 8,
   //       CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES = 9,
-  //       CONFIG_SETTING_STATE_EXPIRATION = 10,
+  //       CONFIG_SETTING_STATE_ARCHIVAL = 10,
   //       CONFIG_SETTING_CONTRACT_EXECUTION_LANES = 11,
   //       CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12,
   //       CONFIG_SETTING_EVICTION_ITERATOR = 13
@@ -9678,7 +9630,7 @@ var types = XDR.config((xdr) => {
     configSettingContractCostParamsMemoryBytes: 7,
     configSettingContractDataKeySizeBytes: 8,
     configSettingContractDataEntrySizeBytes: 9,
-    configSettingStateExpiration: 10,
+    configSettingStateArchival: 10,
     configSettingContractExecutionLanes: 11,
     configSettingBucketlistSizeWindow: 12,
     configSettingEvictionIterator: 13,
@@ -9708,8 +9660,8 @@ var types = XDR.config((xdr) => {
   //       uint32 contractDataKeySizeBytes;
   //   case CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES:
   //       uint32 contractDataEntrySizeBytes;
-  //   case CONFIG_SETTING_STATE_EXPIRATION:
-  //       StateExpirationSettings stateExpirationSettings;
+  //   case CONFIG_SETTING_STATE_ARCHIVAL:
+  //       StateArchivalSettings stateArchivalSettings;
   //   case CONFIG_SETTING_CONTRACT_EXECUTION_LANES:
   //       ConfigSettingContractExecutionLanesV0 contractExecutionLanes;
   //   case CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW:
@@ -9739,7 +9691,7 @@ var types = XDR.config((xdr) => {
       ],
       ["configSettingContractDataKeySizeBytes", "contractDataKeySizeBytes"],
       ["configSettingContractDataEntrySizeBytes", "contractDataEntrySizeBytes"],
-      ["configSettingStateExpiration", "stateExpirationSettings"],
+      ["configSettingStateArchival", "stateArchivalSettings"],
       ["configSettingContractExecutionLanes", "contractExecutionLanes"],
       ["configSettingBucketlistSizeWindow", "bucketListSizeWindow"],
       ["configSettingEvictionIterator", "evictionIterator"],
@@ -9757,7 +9709,7 @@ var types = XDR.config((xdr) => {
       contractCostParamsMemBytes: xdr.lookup("ContractCostParams"),
       contractDataKeySizeBytes: xdr.lookup("Uint32"),
       contractDataEntrySizeBytes: xdr.lookup("Uint32"),
-      stateExpirationSettings: xdr.lookup("StateExpirationSettings"),
+      stateArchivalSettings: xdr.lookup("StateArchivalSettings"),
       contractExecutionLanes: xdr.lookup(
         "ConfigSettingContractExecutionLanesV0"
       ),

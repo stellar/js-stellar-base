@@ -194,7 +194,6 @@ export async function authorizeEntry(
  *    {@link Operation.invokeHostFunction}
  *
  * @see authorizeEntry
- * @example
  */
 export function authorizeInvocation(
   signer,

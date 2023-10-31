@@ -28,7 +28,7 @@ export class XdrLargeInt {
   int; // child class of a jsXdr.LargeInt
 
   /**
-   * @type {string} - one of i64, u64, i128, u128, i256, or u256
+   * @type {string}   one of 'i64', 'u64', 'i128', 'u128', 'i256', or 'u256'
    */
   type;
 

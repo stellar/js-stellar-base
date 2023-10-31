@@ -69,7 +69,8 @@ describe('parsing invocation trees', function () {
                 xdr.ContractIdPreimage.contractIdPreimageFromAsset(
                   new Asset('TEST', nftId).toXDRObject()
                 ),
-              executable: xdr.ContractExecutable.contractExecutableToken()
+              executable:
+                xdr.ContractExecutable.contractExecutableStellarAsset()
             })
           ),
         subInvocations: []

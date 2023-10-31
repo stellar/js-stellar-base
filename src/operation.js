@@ -10,7 +10,7 @@ import { Claimant } from './claimant';
 import { StrKey } from './strkey';
 import { LiquidityPoolId } from './liquidity_pool_id';
 import xdr from './xdr';
-import * as ops from './operations/index';
+import * as ops from './operations';
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress
@@ -92,7 +92,7 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.liquidityPoolDeposit}`
  * * `{@link Operation.liquidityPoolWithdraw}`
  * * `{@link Operation.invokeHostFunction}`
- * * `{@link Operation.bumpFootprintExpiration}`
+ * * `{@link Operation.extendFootprintTtlOp}`
  * * `{@link Operation.restoreFootprint}`
  *
  * @class Operation
@@ -381,9 +381,9 @@ export class Operation {
         result.auth = attrs.auth() ?? [];
         break;
       }
-      case 'bumpFootprintExpiration': {
-        result.type = 'bumpFootprintExpiration';
-        result.ledgersToExpire = attrs.ledgersToExpire();
+      case 'extendFootprintTtl': {
+        result.type = 'extendFootprintTtl';
+        result.extendTo = attrs.extendTo();
         break;
       }
       case 'restoreFootprint': {
@@ -672,7 +672,7 @@ Operation.setTrustLineFlags = ops.setTrustLineFlags;
 Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
 Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
 Operation.invokeHostFunction = ops.invokeHostFunction;
-Operation.bumpFootprintExpiration = ops.bumpFootprintExpiration;
+Operation.extendFootprintTtl = ops.extendFootprintTtl;
 Operation.restoreFootprint = ops.restoreFootprint;
 
 // these are not `xdr.Operation`s directly, but are proxies for complex but

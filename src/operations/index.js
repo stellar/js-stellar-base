@@ -37,5 +37,5 @@ export {
   createCustomContract,
   uploadContractWasm
 } from './invoke_host_function';
-export { bumpFootprintExpiration } from './bump_footprint_expiration';
+export { extendFootprintTtl } from './extend_footprint_ttl';
 export { restoreFootprint } from './restore_footprint';

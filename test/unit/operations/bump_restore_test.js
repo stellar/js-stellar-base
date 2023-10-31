@@ -1,25 +1,19 @@
 const { Operation } = StellarBase;
 
 describe('Operation', function () {
-  describe('.bumpFootprintExpiration()', function () {
+  describe('.extendFootprintTtl()', function () {
     it('creates operation', function () {
-      const op = Operation.bumpFootprintExpiration({
-        ledgersToExpire: 1234
-      });
+      const op = StellarBase.Operation.extendFootprintTtl({ extendTo: 1234 });
       const xdr = op.toXDR('hex');
       const operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
 
-      expect(operation.body().switch().name).to.equal(
-        'bumpFootprintExpiration'
-      );
-      const obj = Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('bumpFootprintExpiration');
-      expect(obj.ledgersToExpire).to.equal(1234);
+      expect(operation.body().switch().name).to.equal('extendFootprintTtl');
+      const obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('extendFootprintTtl');
+      expect(obj.extendTo).to.equal(1234);
 
       expect(() => {
-        Operation.bumpFootprintExpiration({
-          ledgersToExpire: 0
-        });
+        StellarBase.Operation.extendFootprintTtl({ extendTo: 0 });
       }).to.throw(/ledger quantity/i);
     });
   });

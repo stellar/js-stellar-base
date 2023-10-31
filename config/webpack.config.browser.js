@@ -22,7 +22,6 @@ const config = {
   output: {
     clean: true,
     library: 'StellarBase',
-    compareBeforeEmit: true,
     path: path.resolve(__dirname, '../dist')
   },
   mode: process.env.NODE_ENV ?? 'development',
