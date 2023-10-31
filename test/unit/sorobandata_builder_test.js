@@ -6,17 +6,17 @@ describe('SorobanTransactionData can be built', function () {
   const c = new StellarBase.Contract(contractId);
 
   const sentinel = new xdr.SorobanTransactionData({
+    ext: new xdr.ExtensionPoint(0),
     resources: new xdr.SorobanResources({
       footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
       instructions: 1,
       readBytes: 2,
       writeBytes: 3
     }),
-    ext: new xdr.ExtensionPoint(0),
     resourceFee: new xdr.Int64(5)
   });
 
-  const key = c.getFootprint()[0];
+  const key = c.getFootprint(); // arbitrary key for testing
 
   it('constructs from xdr, base64, and nothing', function () {
     new dataBuilder();
