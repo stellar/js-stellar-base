@@ -11,6 +11,7 @@
   - `xdr.SorobanTransactionData.refundableFee` is now `resourceFee`
   - In turn, `SorobanDataBuilder.setRefundableFee` is now `setResourceFee`
   - This new fee encompasses the entirety of the Soroban-related resource fees. Note that this is distinct from the "network-inclusion" fee that you would set on your transaction (i.e. `TransactionBuilder(..., { fee: ... })`).
+- `Contract.getFootprint()` now only returns a single result: the ledger key of the deployed instance for the given ID, because the key for the code entry was incorrect (it should not be the ID but rather the WASM hash, which is not calculatable w/o network access) ([#709](https://github.com/stellar/js-stellar-base/pull/709)).
 
 
 ## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)

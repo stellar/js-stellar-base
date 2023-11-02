@@ -35,20 +35,13 @@ describe('Contract', function () {
       expect(contract.contractId()).to.equal(NULL_ADDRESS);
 
       const actual = contract.getFootprint();
-      const expected = [
-        new xdr.LedgerKey.contractCode(
-          new xdr.LedgerKeyContractCode({
-            hash: StellarBase.StrKey.decodeContract(contract.contractId())
-          })
-        ),
-        new xdr.LedgerKey.contractData(
-          new xdr.LedgerKeyContractData({
-            contract: contract.address().toScAddress(),
-            key: xdr.ScVal.scvLedgerKeyContractInstance(),
-            durability: xdr.ContractDataDurability.persistent()
-          })
-        )
-      ];
+      const expected = new xdr.LedgerKey.contractData(
+        new xdr.LedgerKeyContractData({
+          contract: contract.address().toScAddress(),
+          key: xdr.ScVal.scvLedgerKeyContractInstance(),
+          durability: xdr.ContractDataDurability.persistent()
+        })
+      );
 
       expect(actual).to.eql(expected);
     });
