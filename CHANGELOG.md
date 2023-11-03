@@ -6,7 +6,7 @@
 
 ## [`v10.0.0-beta.4`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.3...v10.0.0-beta.4)
 ### Fixed
-- You can now correctly clone transactions (`TransactionBuilder.cloneFrom`) with large sequence numbers ([TODO]()).
+- You can now correctly clone transactions (`TransactionBuilder.cloneFrom`) with large sequence numbers ([#711](https://github.com/stellar/js-stellar-base/pull/711)).
 
 
 ## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)
