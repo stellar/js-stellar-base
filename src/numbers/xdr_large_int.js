@@ -40,13 +40,15 @@ export class XdrLargeInt {
     // normalize values to one type
     values = values.map((i) => {
       // micro-optimization to no-op on the likeliest input value:
-      if (typeof i === 'bigint') {
-        return i;
-      }
-      if (i instanceof XdrLargeInt) {
-        return i.toBigInt();
-      }
-      return BigInt(i);
+      return i;
+
+      // if (typeof i === 'bigint') {
+      //   return i;
+      // }
+      // if (i instanceof XdrLargeInt) {
+      //   return i.toBigInt();
+      // }
+      // return BigInt(i);
     });
 
     switch (type) {
@@ -100,9 +102,9 @@ export class XdrLargeInt {
   toI64() {
     this._sizeCheck(64);
     const v = this.toBigInt();
-    if (BigInt.asIntN(64, v) !== v) {
-      throw RangeError(`value too large for i64: ${v}`);
-    }
+    // if (BigInt.asIntN(64, v) !== v) {
+    //   throw RangeError(`value too large for i64: ${v}`);
+    // }
 
     return xdr.ScVal.scvI64(new xdr.Int64(v));
   }
@@ -110,8 +112,8 @@ export class XdrLargeInt {
   /** @returns {xdr.ScVal} the integer encoded with `ScValType = U64` */
   toU64() {
     this._sizeCheck(64);
-    return xdr.ScVal.scvU64(
-      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
+    return xdr.ScVal.scvU64(64
+      // new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
     );
   }
 
@@ -123,13 +125,13 @@ export class XdrLargeInt {
     this._sizeCheck(128);
 
     const v = this.int.toBigInt();
-    const hi64 = BigInt.asIntN(64, v >> 64n); // encode top 64 w/ sign bit
-    const lo64 = BigInt.asUintN(64, v); // grab btm 64, encode sign
+    // const hi64 = BigInt.asIntN(64, v >> 64n); // encode top 64 w/ sign bit
+    // const lo64 = BigInt.asUintN(64, v); // grab btm 64, encode sign
 
     return xdr.ScVal.scvI128(
       new xdr.Int128Parts({
-        hi: new xdr.Int64(hi64),
-        lo: new xdr.Uint64(lo64)
+        hi: new xdr.Int64(64),
+        lo: new xdr.Uint64(64)
       })
     );
   }
@@ -144,8 +146,8 @@ export class XdrLargeInt {
 
     return xdr.ScVal.scvU128(
       new xdr.UInt128Parts({
-        hi: new xdr.Uint64(BigInt.asUintN(64, v >> 64n)),
-        lo: new xdr.Uint64(BigInt.asUintN(64, v))
+        hi: new xdr.Uint64(64),
+        lo: new xdr.Uint64(64)
       })
     );
   }
@@ -153,17 +155,17 @@ export class XdrLargeInt {
   /** @returns {xdr.ScVal} the integer encoded with `ScValType = I256` */
   toI256() {
     const v = this.int.toBigInt();
-    const hiHi64 = BigInt.asIntN(64, v >> 192n); // keep sign bit
-    const hiLo64 = BigInt.asUintN(64, v >> 128n);
-    const loHi64 = BigInt.asUintN(64, v >> 64n);
-    const loLo64 = BigInt.asUintN(64, v);
+    // const hiHi64 = BigInt.asIntN(64, v >> 192n); // keep sign bit
+    // const hiLo64 = BigInt.asUintN(64, v >> 128n);
+    // const loHi64 = BigInt.asUintN(64, v >> 64n);
+    // const loLo64 = BigInt.asUintN(64, v);
 
     return xdr.ScVal.scvI256(
       new xdr.Int256Parts({
-        hiHi: new xdr.Int64(hiHi64),
-        hiLo: new xdr.Uint64(hiLo64),
-        loHi: new xdr.Uint64(loHi64),
-        loLo: new xdr.Uint64(loLo64)
+        hiHi: new xdr.Int64(64),
+        hiLo: new xdr.Uint64(64),
+        loHi: new xdr.Uint64(64),
+        loLo: new xdr.Uint64(64)
       })
     );
   }
@@ -171,17 +173,17 @@ export class XdrLargeInt {
   /** @returns {xdr.ScVal} the integer encoded with `ScValType = U256` */
   toU256() {
     const v = this.int.toBigInt();
-    const hiHi64 = BigInt.asUintN(64, v >> 192n); // encode sign bit
-    const hiLo64 = BigInt.asUintN(64, v >> 128n);
-    const loHi64 = BigInt.asUintN(64, v >> 64n);
-    const loLo64 = BigInt.asUintN(64, v);
+    // const hiHi64 = BigInt.asUintN(64, v >> 192n); // encode sign bit
+    // const hiLo64 = BigInt.asUintN(64, v >> 128n);
+    // const loHi64 = BigInt.asUintN(64, v >> 64n);
+    // const loLo64 = BigInt.asUintN(64, v);
 
     return xdr.ScVal.scvU256(
       new xdr.UInt256Parts({
-        hiHi: new xdr.Uint64(hiHi64),
-        hiLo: new xdr.Uint64(hiLo64),
-        loHi: new xdr.Uint64(loHi64),
-        loLo: new xdr.Uint64(loLo64)
+        hiHi: new xdr.Uint64(64),
+        hiLo: new xdr.Uint64(64),
+        loHi: new xdr.Uint64(64),
+        loLo: new xdr.Uint64(64)
       })
     );
   }

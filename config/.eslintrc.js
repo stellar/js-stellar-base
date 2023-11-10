@@ -1,7 +1,6 @@
 module.exports = {
   env: {
-    es6: true,
-    es2020: true
+    es6: true
   },
   extends: ['airbnb-base', 'prettier'],
   plugins: ['@babel', 'prettier', 'prefer-import'],

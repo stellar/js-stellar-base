@@ -31,8 +31,6 @@ export function scValToBigInt(scv) {
   switch (scv.switch().name) {
     case 'scvU32':
     case 'scvI32':
-      return BigInt(scv.value());
-
     case 'scvU64':
     case 'scvI64':
       return new XdrLargeInt(scIntType, scv.value()).toBigInt();
