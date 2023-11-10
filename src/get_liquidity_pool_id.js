@@ -6,6 +6,18 @@ import { hash } from './hashing';
 export const LiquidityPoolFeeV18 = 30;
 
 /**
+ * TEST STELLAR-BASE 333
+ *
+ * @export
+ * @param {string} value – A test string value
+ *
+ * @return {string} test return string
+ */
+export function getTestLog(value) {
+  return `${value} BASE 333`;
+}
+
+/**
  * getLiquidityPoolId computes the Pool ID for the given assets, fee and pool type.
  *
  * @see [stellar-core getPoolID](https://github.com/stellar/stellar-core/blob/9f3a48c6a8f1aa77b6043a055d0638661f718080/src/ledger/test/LedgerTxnTests.cpp#L3746-L3751)

@@ -59,10 +59,10 @@ export class Soroban {
       throw new Error(`Invalid decimal value: ${value}`);
     }
 
-    const shifted = BigInt(
-      whole + (fraction?.padEnd(decimals, '0') ?? '0'.repeat(decimals))
-    );
+    // const shifted = BigInt(
+    //   whole + (fraction?.padEnd(decimals, '0') ?? '0'.repeat(decimals))
+    // );
 
-    return shifted.toString();
+    return whole;
   }
 }

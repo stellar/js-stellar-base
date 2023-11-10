@@ -9,6 +9,7 @@ export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';
 export {
   getLiquidityPoolId,
+  getTestLog,
   LiquidityPoolFeeV18
 } from './get_liquidity_pool_id';
 export { Keypair } from './keypair';

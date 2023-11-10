@@ -171,6 +171,9 @@ export class Keypair {
 
 export const LiquidityPoolFeeV18 = 30;
 
+// TEST 333
+export function getTestLog(value: string): string;
+
 export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
 
 export namespace LiquidityPoolParameters {
