@@ -1229,5 +1229,5 @@ export function walkInvocationTree(
 
 export namespace Soroban {
   function formatTokenAmount(address: string, decimals: number): string;
-  function parseTokenAmount(value: string, decimals: number): Address;
+  function parseTokenAmount(value: string, decimals: number): string;
 }
