@@ -22,14 +22,10 @@ import xdr from '../xdr';
  *    integer-like values interpreted in big-endian order
  */
 export class XdrLargeInt {
-  /**
-   * @type {xdr.LargeInt}
-   */
+  /** @type {xdr.LargeInt} */
   int; // child class of a jsXdr.LargeInt
 
-  /**
-   * @type {string}   one of 'i64', 'u64', 'i128', 'u128', 'i256', or 'u256'
-   */
+  /** @type {string} */
   type;
 
   constructor(type, values) {
