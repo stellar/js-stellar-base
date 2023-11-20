@@ -1,5 +1,5 @@
 /* eslint no-bitwise: ["error", {"allow": [">>"]}] */
-import { Hyper, UnsignedHyper } from 'js-xdr';
+import { Hyper, UnsignedHyper } from '@stellar/js-xdr';
 
 import { Uint128 } from './uint128';
 import { Uint256 } from './uint256';

@@ -1,6 +1,6 @@
 /* eslint-disable no-bitwise */
 
-import { Hyper } from 'js-xdr';
+import { Hyper } from '@stellar/js-xdr';
 import BigNumber from 'bignumber.js';
 import { trimEnd } from './util/util';
 import { best_r } from './util/continued_fraction';

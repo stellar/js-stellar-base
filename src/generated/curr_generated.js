@@ -4,7 +4,7 @@
 /* jshint maxstatements:2147483647  */
 /* jshint esnext:true  */
 
-import * as XDR from "js-xdr";
+import * as XDR from "@stellar/js-xdr";
 
 var types = XDR.config((xdr) => {
   // Workaround for https://github.com/stellar/xdrgen/issues/152

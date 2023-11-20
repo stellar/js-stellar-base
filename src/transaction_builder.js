@@ -1,4 +1,4 @@
-import { UnsignedHyper } from 'js-xdr';
+import { UnsignedHyper } from '@stellar/js-xdr';
 import BigNumber from 'bignumber.js';
 
 import xdr from './xdr';
