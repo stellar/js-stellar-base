@@ -1,25 +1,29 @@
 /**
- * Soroban helper class
- * formatting, parsing, and etc
  * @class Soroban
+ * Soroban helper class to assist with formatting and parsing token amounts.
  */
 export class Soroban {
   /**
-   * All arithmetic inside the contract is performed on integers to
-   * avoid potential precision and consistency issues of floating-point
+   * Given a whole number smart contract amount of a token and an amount of
+   * decimal places (if the token has any), it returns a "display" value.
    *
-   * This function takes the smart contract value and its decimals (if the token has any) and returns a display value
-   * @param {string} amount - the token amount you want to display
-   * @param {number} decimals - specify how many decimal places a token has
-   * @returns {string} - display value
+   * All arithmetic inside the contract is performed on integers to avoid
+   * potential precision and consistency issues of floating-point.
+   *
+   * @param {string} amount   the token amount you want to display
+   * @param {number} decimals specify how many decimal places a token has
+   *
+   * @returns {string} the display value
+   * @throws {TypeError} if the given amount has a decimal point already
+   * @example
+   * formatTokenAmount("123000", 4) === "12.3";
    */
   static formatTokenAmount(amount, decimals) {
-    let formatted = amount;
-
     if (amount.includes('.')) {
-      throw new Error('No decimal is allowed');
+      throw new TypeError('No decimals are allowed');
     }
 
+    let formatted = amount;
     if (decimals > 0) {
       if (decimals > formatted.length) {
         formatted = ['0', formatted.toString().padStart(decimals, '0')].join(
@@ -38,19 +42,24 @@ export class Soroban {
   }
 
   /**
-   * parse token amount to use it on smart contract
+   * Parse a token amount to use it on smart contract
    *
    * This function takes the display value and its decimals (if the token has
    * any) and returns a string that'll be used within the smart contract.
-   * @param {string} value - the token amount you want to use it on smart contract
-   * @param {number} decimals - specify how many decimal places a token has
-   * @returns {string} - smart contract value
    *
+   * @param {string} value      the token amount you want to use it on smart
+   *    contract which you've been displaying in a UI
+   * @param {number} decimals   the number of decimal places expected in the
+   *    display value (different than the "actual" number, because suffix zeroes
+   *    might not be present)
+   *
+   * @returns {string}  the whole number token amount represented by the display
+   *    value with the decimal places shifted over
    *
    * @example
    * const displayValueAmount = "123.4560"
-   * const parsedAmountForSmartContract = parseTokenAmount("123.4560", 5);
-   * parsedAmountForSmartContract === "12345600"
+   * const parsedAmtForSmartContract = parseTokenAmount(displayValueAmount, 5);
+   * parsedAmtForSmartContract === "12345600"
    */
   static parseTokenAmount(value, decimals) {
     const [whole, fraction, ...rest] = value.split('.').slice();

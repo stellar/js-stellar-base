@@ -181,7 +181,7 @@ export class TransactionBuilder {
       throw new TypeError(`expected a 'Transaction', got: ${tx}`);
     }
 
-    const sequenceNum = `${parseInt(tx.sequence, 10) - 1}`;
+    const sequenceNum = (BigInt(tx.sequence) - 1n).toString();
 
     let source;
     // rebuild the source account based on the strkey
