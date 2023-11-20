@@ -13,12 +13,12 @@ describe('Soroban', function () {
       {
         amount: '1000000001.1',
         decimals: 7,
-        expected: /No decimal is allowed/
+        expected: /No decimals are allowed/
       },
       {
         amount: '10000.00001.1',
         decimals: 4,
-        expected: /No decimal is allowed/
+        expected: /No decimals are allowed/
       }
     ];
 

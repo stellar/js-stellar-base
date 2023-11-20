@@ -1,7 +1,4 @@
-/**
- * @class Soroban
- * Soroban helper class to assist with formatting and parsing token amounts.
- */
+/** Soroban helper class to assist with formatting and parsing token amounts. */
 export class Soroban {
   /**
    * Given a whole number smart contract amount of a token and an amount of
