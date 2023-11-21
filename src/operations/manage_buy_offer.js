@@ -1,4 +1,4 @@
-import { Hyper } from 'js-xdr';
+import { Hyper } from '@stellar/js-xdr';
 import xdr from '../xdr';
 /**
  * Returns a XDR ManageBuyOfferOp. A "manage buy offer" operation creates, updates, or

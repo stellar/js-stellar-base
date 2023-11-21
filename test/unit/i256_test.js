@@ -1,4 +1,4 @@
-// import { XdrWriter, XdrReader } from 'js-xdr';
+// import { XdrWriter, XdrReader } from '@stellar/js-xdr';
 const I256 = StellarBase.Int256; // shorthand
 
 describe('I256.isValid', function () {

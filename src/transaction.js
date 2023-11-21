@@ -154,8 +154,9 @@ export class Transaction extends TransactionBase {
   }
 
   /**
-   * @type {string} 64 bit account sequence
+   * 64 bit account sequence
    * @readonly
+   * @type {string}
    */
   get minAccountSequence() {
     return this._minAccountSequence;
@@ -165,7 +166,8 @@ export class Transaction extends TransactionBase {
   }
 
   /**
-   * @type {number} 64 bit number of seconds
+   * 64 bit number of seconds
+   * @type {number}
    * @readonly
    */
   get minAccountSequenceAge() {
@@ -176,7 +178,8 @@ export class Transaction extends TransactionBase {
   }
 
   /**
-   * @type {number} 32 bit number of ledgers
+   * 32 bit number of ledgers
+   * @type {number}
    * @readonly
    */
   get minAccountSequenceLedgerGap() {
@@ -187,7 +190,8 @@ export class Transaction extends TransactionBase {
   }
 
   /**
-   * @type {string[]}   array of extra signers (@{link StrKey}s)
+   * array of extra signers ({@link StrKey}s)
+   * @type {string[]}
    * @readonly
    */
   get extraSigners() {
@@ -204,7 +208,6 @@ export class Transaction extends TransactionBase {
   get sequence() {
     return this._sequence;
   }
-
   set sequence(value) {
     throw new Error('Transaction is immutable');
   }
@@ -216,7 +219,6 @@ export class Transaction extends TransactionBase {
   get source() {
     return this._source;
   }
-
   set source(value) {
     throw new Error('Transaction is immutable');
   }
@@ -228,7 +230,6 @@ export class Transaction extends TransactionBase {
   get operations() {
     return this._operations;
   }
-
   set operations(value) {
     throw new Error('Transaction is immutable');
   }
@@ -240,7 +241,6 @@ export class Transaction extends TransactionBase {
   get memo() {
     return Memo.fromXDRObject(this._memo);
   }
-
   set memo(value) {
     throw new Error('Transaction is immutable');
   }
