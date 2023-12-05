@@ -24,7 +24,7 @@ jobs:
 
       - name: Publish npm package to both places
         run: |
-          yarn publish --tag beta --access public
+          yarn publish --access public
           sed -i -e 's#"@stellar/stellar-base"#"stellar-base"#' package.json
           yarn publish
         env:
