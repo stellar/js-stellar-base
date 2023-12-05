@@ -4,6 +4,7 @@
 ## [`v10.0.0`](https://github.com/stellar/js-stellar-base/compare/v9.0.0...v10.0.0): Protocol 20 Stable Release
 
 ### Breaking Changes
+* The new minimum supported Node version is Node 18.
 * XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([#704](https://github.com/stellar/js-stellar-base/pull/704)):
   - `Operation.bumpFootprintExpiration` is now `extendFootprintTtl` and its `ledgersToExpire` field is now named `extendTo`, but it serves the same purpose.
   - In TypeScript, the `Operation.BumpFootprintExpiration` is now `Operation.ExtendFootprintTTL`

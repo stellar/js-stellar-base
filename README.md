@@ -48,13 +48,13 @@ relative to your html file.
 1. Install it using yarn:
 
 ```shell
-yarn add stellar-base
+yarn add @stellar/stellar-base
 ```
 
 2. require/import it in your JavaScript:
 
 ```js
-var StellarBase = require('stellar-base');
+var StellarBase = require('@stellar/stellar-base');
 ```
 
 ### To self host for use in the browser
@@ -98,9 +98,9 @@ Make sure that you are using the latest version number. They can be found on the
 
 ### To develop and test js-stellar-base itself
 
-1. Install Node 16.x
+1. Install Node 18.x
 
-We support the oldest LTS release of Node, which is [currently 16.x](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 16 so you don't get surprised when your code works locally but breaks in CI.
+We support the oldest LTS release of Node, which is [currently 18.x](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 16 so you don't get surprised when your code works locally but breaks in CI.
 
 If you work on several projects that use different Node versions, you might find helpful to install a NodeJS version manager:
 
