@@ -12,11 +12,11 @@ import { XdrLargeInt } from './xdr_large_int';
  * example, you could do `new XdrLargeInt('u128', bytes...).toBigInt()`.
  *
  * @example
- * import sdk from "stellar-base";
+ * import { xdr, ScInt } from "@stellar/stellar-base";
  *
  * // You have an ScVal from a contract and want to parse it into JS native.
- * const value = sdk.xdr.ScVal.fromXDR(someXdr, "base64");
- * const bigi = sdk.ScInt.fromScVal(value); // grab it as a BigInt
+ * const value = xdr.ScVal.fromXDR(someXdr, "base64");
+ * const bigi = ScInt.fromScVal(value); // grab it as a BigInt
  * let sci = new ScInt(bigi);
  *
  * sci.toNumber(); // gives native JS type (w/ size check)
@@ -24,7 +24,7 @@ import { XdrLargeInt } from './xdr_large_int';
  * sci.toU64();    // gives ScValType-specific XDR constructs (with size checks)
  *
  * // You have a number and want to shove it into a contract.
- * sci = sdk.ScInt(0xdeadcafebabe);
+ * sci = ScInt(0xdeadcafebabe);
  * sci.toBigInt() // returns 244838016400062n
  * sci.toNumber() // throws: too large
  *
@@ -35,16 +35,16 @@ import { XdrLargeInt } from './xdr_large_int';
  * const scValU64  = sci.toU64();
  *
  * // Lots of ways to initialize:
- * sdk.ScInt("123456789123456789")
- * sdk.ScInt(123456789123456789n);
- * sdk.ScInt(1n << 140n);
- * sdk.ScInt(-42);
- * sdk.ScInt.fromScVal(scValU128); // from above
+ * ScInt("123456789123456789")
+ * ScInt(123456789123456789n);
+ * ScInt(1n << 140n);
+ * ScInt(-42);
+ * ScInt.fromScVal(scValU128); // from above
  *
  * // If you know the type ahead of time (accessing `.raw` is faster than
  * // conversions), you can specify the type directly (otherwise, it's
  * // interpreted from the numbers you pass in):
- * const i = sdk.ScInt(123456789n, { type: "u256" });
+ * const i = ScInt(123456789n, { type: "u256" });
  *
  * // For example, you can use the underlying `sdk.U256` and convert it to an
  * // `xdr.ScVal` directly like so:
