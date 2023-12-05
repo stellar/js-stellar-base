@@ -1,4 +1,4 @@
-import { Hyper } from 'js-xdr';
+import { Hyper } from '@stellar/js-xdr';
 import BigNumber from 'bignumber.js';
 import xdr from '../xdr';
 import { Asset } from '../asset';

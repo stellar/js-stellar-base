@@ -22,7 +22,16 @@ jobs:
       - name: Test & Build
         run: yarn preversion
 
-      - name: Publish release npm package
-        run: yarn publish --tag beta
+      - name: Publish npm package to both places
+        run: |
+          yarn publish --tag beta --access public
+          sed -i -e 's#"@stellar/stellar-base"#"stellar-base"#' package.json
+          yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Deprecate the old package
+        run: |
+          npm deprecate stellar-base@latest "⚠️ This package has moved to @stellar/stellar-base! 🚚"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

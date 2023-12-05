@@ -53,40 +53,35 @@ export class Contract {
    *
    * @returns {xdr.Operation}   an InvokeHostFunctionOp operation to call the
    *    contract with the given method and parameters
+   *
+   * @see Operation.invokeHostFunction
+   * @see Operation.invokeContractFunction
+   * @see Operation.createCustomContract
+   * @see Operation.createStellarAssetContract
+   * @see Operation.uploadContractWasm
    */
   call(method, ...params) {
-    return Operation.invokeHostFunction({
-      func: xdr.HostFunction.hostFunctionTypeInvokeContract(
-        new xdr.InvokeContractArgs({
-          contractAddress: this.address().toScAddress(),
-          functionName: method,
-          args: params
-        })
-      ),
-      auth: []
+    return Operation.invokeContractFunction({
+      contract: this.address().toString(),
+      function: method,
+      args: params
     });
   }
 
   /**
    * Returns the read-only footprint entries necessary for any invocations to
-   * this contract, for convenience when adding it to your transaction's overall
-   * footprint or doing bump/restore operations.
+   * this contract, for convenience when manually adding it to your
+   * transaction's overall footprint or doing bump/restore operations.
    *
-   * @returns {xdr.LedgerKey[]} the ledger keys containing the contract's code
-   *    (first) and its deployed contract instance (second)
+   * @returns {xdr.LedgerKey} the ledger key for the deployed contract instance
    */
   getFootprint() {
-    return [
-      xdr.LedgerKey.contractCode(
-        new xdr.LedgerKeyContractCode({ hash: this._id })
-      ),
-      xdr.LedgerKey.contractData(
-        new xdr.LedgerKeyContractData({
-          contract: this.address().toScAddress(),
-          key: xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: xdr.ContractDataDurability.persistent()
-        })
-      )
-    ];
+    return xdr.LedgerKey.contractData(
+      new xdr.LedgerKeyContractData({
+        contract: this.address().toScAddress(),
+        key: xdr.ScVal.scvLedgerKeyContractInstance(),
+        durability: xdr.ContractDataDurability.persistent()
+      })
+    );
   }
 }

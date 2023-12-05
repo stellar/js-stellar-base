@@ -135,7 +135,7 @@ export function buildInvocationTree(root) {
           break;
         }
 
-        // contractExecutableToken
+        // contractExecutableStellarAsset
         case 1:
           output.args.type = 'sac';
           output.args.asset = Asset.fromOperation(

@@ -1,4 +1,4 @@
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/9ac02641139e6717924fdad716f6e958d0168491
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/bb54e505f814386a3f45172e0b7e95b7badbe969
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FILES_CURR= \
 	Stellar-SCP.x \
@@ -14,7 +14,7 @@ XDR_FILES_CURR= \
 	Stellar-contract-config-setting.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/440dc9512b6e72cf84965641c5eb495d6043ed73
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/bb54e505f814386a3f45172e0b7e95b7badbe969
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \

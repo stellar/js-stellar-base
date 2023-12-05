@@ -1,4 +1,4 @@
-import { UnsignedHyper } from 'js-xdr';
+import { UnsignedHyper } from '@stellar/js-xdr';
 import randomBytes from 'randombytes';
 
 describe('Transaction', function () {

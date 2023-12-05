@@ -30,7 +30,7 @@ export class Contract {
   call(method: string, ...params: xdr.ScVal[]): xdr.Operation<Operation.InvokeHostFunction>;
   contractId(): string;
   address(): Address;
-  getFootprint(): xdr.LedgerKey[];
+  getFootprint(): xdr.LedgerKey;
 
   toString(): string;
 }
@@ -369,7 +369,7 @@ export namespace OperationType {
   type LiquidityPoolDeposit = 'liquidityPoolDeposit';
   type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
   type InvokeHostFunction = 'invokeHostFunction';
-  type BumpFootprintExpiration = 'bumpFootprintExpiration';
+  type ExtendFootprintTTL = 'extendFootprintTtl';
   type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
@@ -398,7 +398,7 @@ export type OperationType =
   | OperationType.LiquidityPoolDeposit
   | OperationType.LiquidityPoolWithdraw
   | OperationType.InvokeHostFunction
-  | OperationType.BumpFootprintExpiration
+  | OperationType.ExtendFootprintTTL
   | OperationType.RestoreFootprint;
 
 export namespace OperationOptions {
@@ -546,12 +546,32 @@ export namespace OperationOptions {
     minAmountA: string;
     minAmountB: string;
   }
-  interface InvokeHostFunction extends BaseOptions {
-    func: xdr.HostFunction;
-    auth: xdr.SorobanAuthorizationEntry[];
+
+  interface BaseInvocationOptions extends BaseOptions {
+    auth?: xdr.SorobanAuthorizationEntry[];
   }
-  interface BumpFootprintExpiration extends BaseOptions {
-    ledgersToExpire: number;
+  interface InvokeHostFunction extends BaseInvocationOptions {
+    func: xdr.HostFunction;
+  }
+  interface InvokeContractFunction extends BaseInvocationOptions {
+    contract: string;
+    function: string;
+    args: xdr.ScVal[];
+  }
+  interface CreateCustomContract extends BaseInvocationOptions {
+    address: Address;
+    wasmHash: Buffer | Uint8Array;
+    salt?: Buffer | Uint8Array;
+  }
+  interface CreateStellarAssetContract extends BaseOptions {
+    asset: Asset | string;
+  }
+  interface UploadContractWasm extends BaseOptions {
+    wasm: Buffer | Uint8Array;
+  }
+
+  interface ExtendFootprintTTL extends BaseOptions {
+    extendTo: number;
   }
   type RestoreFootprint = BaseOptions;
 }
@@ -586,8 +606,12 @@ export type OperationOptions =
   | OperationOptions.LiquidityPoolDeposit
   | OperationOptions.LiquidityPoolWithdraw
   | OperationOptions.InvokeHostFunction
-  | OperationOptions.BumpFootprintExpiration
-  | OperationOptions.RestoreFootprint;
+  | OperationOptions.ExtendFootprintTTL
+  | OperationOptions.RestoreFootprint
+  | OperationOptions.CreateCustomContract
+  | OperationOptions.CreateStellarAssetContract
+  | OperationOptions.InvokeContractFunction
+  | OperationOptions.UploadContractWasm;
 
 export namespace Operation {
   interface BaseOperation<T extends OperationType = OperationType> {
@@ -876,16 +900,29 @@ export namespace Operation {
     options: OperationOptions.InvokeHostFunction
   ): xdr.Operation<InvokeHostFunction>;
 
-  function bumpFootprintExpiration(
-    options: OperationOptions.BumpFootprintExpiration
-  ): xdr.Operation<BumpFootprintExpiration>;
-  interface BumpFootprintExpiration extends BaseOperation<OperationType.BumpFootprintExpiration> {
-    ledgersToExpire: number;
+  function extendFootprintTtl(
+    options: OperationOptions.ExtendFootprintTTL
+  ): xdr.Operation<ExtendFootprintTTL>;
+  interface ExtendFootprintTTL extends BaseOperation<OperationType.ExtendFootprintTTL> {
+    extendTo: number;
   }
 
   function restoreFootprint(options: OperationOptions.RestoreFootprint):
     xdr.Operation<RestoreFootprint>;
   interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
+
+  function createCustomContract(
+    opts: OperationOptions.CreateCustomContract
+  ): xdr.Operation<InvokeHostFunction>;
+  function createStellarAssetContract(
+    opts: OperationOptions.CreateStellarAssetContract
+  ): xdr.Operation<InvokeHostFunction>;
+  function invokeContractFunction(
+    opts: OperationOptions.InvokeContractFunction
+  ): xdr.Operation<InvokeHostFunction>;
+  function uploadContractWasm(
+    opts: OperationOptions.UploadContractWasm
+  ): xdr.Operation<InvokeHostFunction>;
 
   function fromXDRObject<T extends Operation = Operation>(
     xdrOperation: xdr.Operation<T>
@@ -923,7 +960,7 @@ export type Operation =
   | Operation.LiquidityPoolDeposit
   | Operation.LiquidityPoolWithdraw
   | Operation.InvokeHostFunction
-  | Operation.BumpFootprintExpiration
+  | Operation.ExtendFootprintTTL
   | Operation.RestoreFootprint;
 
 export namespace StrKey {
@@ -1145,7 +1182,7 @@ export class SorobanDataBuilder {
   constructor(data?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
   static fromXDR(data: Uint8Array | Buffer | string): SorobanDataBuilder;
 
-  setRefundableFee(fee: IntLike): SorobanDataBuilder;
+  setResourceFee(fee: IntLike): SorobanDataBuilder;
   setResources(
     cpuInstrs: number,
     readBytes: number,
