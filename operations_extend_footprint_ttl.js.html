@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Uint256 - Documentation</title>
+    <title>operations/extend_footprint_ttl.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,198 +29,60 @@
 
 <div id="main">
     
-    <h1 class="page-title">Uint256</h1>
+    <h1 class="page-title">operations/extend_footprint_ttl.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        Uint256
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="Uint256"><span class="type-signature"></span>new Uint256<span class="signature">(&hellip;args)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Construct an unsigned 256-bit integer that can be XDR-encoded.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="numbers_uint256.js.html">numbers/uint256.js</a>, <a href="numbers_uint256.js.html#line10">line 10</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>args</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Array.&lt;(number|bigint|string)></code></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
-            
-
-            
-
-            <td class="description last">
-                <p>one or more slices to encode
-in big-endian format (i.e. earlier elements are higher bits)</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import xdr from '../xdr';
+
+/**
+ * Builds an operation to bump the expiration of a footprint (read and written
+ * ledger keys). Its only parameter is the number of ledgers to extend
+ * expiration for.
+ *
+ * The footprint itself is derived from the transaction (see
+ * {@link TransactionBuilder}'s `opts.sorobanData` parameter, which is a
+ * {@link xdr.SorobanTransactionData} instance that contains fee data &amp; resource
+ * usage as part of {@link xdr.SorobanResources}).
+ *
+ * @function
+ * @alias Operation.extendFootprintTtl
+ *
+ * @param {object} opts - object holding operation parameters
+ * @param {number} opts.extendTo - the number of ledgers past the LCL
+ *    (last closed ledger) by which to extend the validity of the ledger keys in
+ *    this transaction
+ * @param {string} [opts.source] - an optional source account
+ *
+ * @returns {xdr.Operation} a Bump Footprint Expiration operation
+ *    (xdr.ExtendFootprintTTLOp)
+ */
+export function extendFootprintTtl(opts) {
+  if ((opts.extendTo ?? -1) &lt;= 0) {
+    throw new RangeError("extendTo isn't a ledger quantity (uint32)");
+  }
+
+  const extendFootprintOp = new xdr.ExtendFootprintTtlOp({
+    ext: new xdr.ExtensionPoint(0),
+    extendTo: opts.extendTo
+  });
+
+  const opAttributes = {
+    body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp)
+  };
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
