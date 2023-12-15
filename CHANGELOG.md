@@ -1,5 +1,10 @@
 # Changelog
 
+## [`v10.0.1`](https://github.com/stellar/js-stellar-base/compare/v10.0.0...v10.0.1)
+
+### Fixed
+* The TypeScript definition for `Asset.contractId()` now includes a missing parameter (the `networkPassphrase` changes the ID for a contract; [#718](https://github.com/stellar/js-stellar-base/pull/#718)).
+
 
 ## [`v10.0.0`](https://github.com/stellar/js-stellar-base/compare/v9.0.0...v10.0.0): Protocol 20 Stable Release
 
