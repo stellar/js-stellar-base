@@ -1,9 +1,9 @@
 import xdr from '../xdr';
 
 /**
- * Builds an operation to bump the expiration of a footprint (read and written
- * ledger keys). Its only parameter is the number of ledgers to extend
- * expiration for.
+ * Builds an operation to bump the time-to-live of a footprint (read and written
+ * ledger keys). Its only parameter is the new, absolute ledger sequence number
+ * at which the entry will expire.
  *
  * The footprint itself is derived from the transaction (see
  * {@link TransactionBuilder}'s `opts.sorobanData` parameter, which is a
@@ -14,12 +14,11 @@ import xdr from '../xdr';
  * @alias Operation.extendFootprintTtl
  *
  * @param {object} opts - object holding operation parameters
- * @param {number} opts.extendTo - the number of ledgers past the LCL
- *    (last closed ledger) by which to extend the validity of the ledger keys in
- *    this transaction
+ * @param {number} opts.extendTo - the absolute ledger sequence number at which
+ *     the transaction's ledger keys will now expire
  * @param {string} [opts.source] - an optional source account
  *
- * @returns {xdr.Operation} a Bump Footprint Expiration operation
+ * @returns {xdr.Operation} an Extend Footprint TTL operation
  *    (xdr.ExtendFootprintTTLOp)
  */
 export function extendFootprintTtl(opts) {

@@ -32,6 +32,6 @@ jobs:
 
       - name: Deprecate the old package
         run: |
-          npm deprecate stellar-base@latest "⚠️ This package has moved to @stellar/stellar-base! 🚚"
+          npm deprecate stellar-base@"<= 10.0.1" "⚠️ This package has moved to @stellar/stellar-base! 🚚"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

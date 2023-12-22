@@ -27,7 +27,7 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 Using yarn to include js-stellar-base in your own project:
 
 ```shell
-yarn add stellar-base
+yarn add @stellar/stellar-base
 ```
 
 For browsers, [use Bower to install it](#to-use-in-the-browser). It exports a
