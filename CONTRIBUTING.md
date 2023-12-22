@@ -22,6 +22,8 @@ Once all of the PRs for a particular release are in, it's time to actually publi
 
  - [ ] Ensure that all of the PRs in this delta are accurately reflected in the [CHANGELOG](./CHANGELOG.md), broken down by impact and linking to the corresponding PRs. Update the file if necessary.
 
+ - [ ] Ensure that the version being deprecated in the `npm_publish.yml` Action matches the latest `package.json` version: we want to ensure everything in `stellar-base` gets deprecated, but `@stellar/stellar-base` is not.
+
  - [ ] Run `yarn preversion` to build and test an optimized bundle and ensure Typescript compatibility (one of the most common sources of bugs, since this library is written purely in JS but must be usable from TS).
 
  - [ ] Run `yarn version` to update the version number in the package.json (or modify the `"version"` field manually).
