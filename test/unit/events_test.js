@@ -14,9 +14,10 @@ describe('humanizing raw events', function () {
   // workaround for xdr.ContractEventBody.0(...) being invalid lol
   const cloneAndSet = (newBody) => {
     const clone = new xdr.ContractEventBody(
-      0, new xdr.ContractEventV0({
+      0,
+      new xdr.ContractEventV0({
         topics: [],
-        data: xdr.ScVal.scvVoid(),
+        data: xdr.ScVal.scvVoid()
       })
     );
     clone.v0().topics(newBody.topics);
