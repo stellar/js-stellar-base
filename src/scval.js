@@ -101,7 +101,12 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  * // ]
  *
  * @example
- * import { nativeToScVal, scValToNative, ScInt, xdr } from 'stellar-base';
+ * import {
+ *   nativeToScVal,
+ *   scValToNative,
+ *   ScInt,
+ *   xdr
+ * } from '@stellar/stellar-base';
  *
  * let gigaMap = {
  *   bool: true,
