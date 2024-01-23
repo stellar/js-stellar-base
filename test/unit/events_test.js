@@ -37,6 +37,17 @@ describe('humanizing raw events', function () {
           data: data1
         })
       })
+    }),
+    new xdr.DiagnosticEvent({
+      inSuccessfulContractCall: true,
+      event: new xdr.ContractEvent({
+        ext: new xdr.ExtensionPoint(0),
+        type: xdr.ContractEventType.contract(),
+        body: cloneAndSet({
+          topics: topics1,
+          data: data1
+        })
+      })
     })
   ];
 
@@ -52,6 +63,11 @@ describe('humanizing raw events', function () {
     expect(readable[0]).to.eql({
       type: 'contract',
       contractId: contractId,
+      topics: topics1.map(scValToNative),
+      data: scValToNative(data1)
+    });
+    expect(readable[1]).to.eql({
+      type: 'contract',
       topics: topics1.map(scValToNative),
       data: scValToNative(data1)
     });
