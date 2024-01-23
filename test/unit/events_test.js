@@ -12,9 +12,14 @@ describe('humanizing raw events', function () {
   const data1 = nativeToScVal({ hello: 'world' });
 
   // workaround for xdr.ContractEventBody.0(...) being invalid lol
-  const bodyModel = xdr.ContractEventBody.fromXDR('AAAAAAAAAAAAAAAB', 'base64');
   const cloneAndSet = (newBody) => {
-    const clone = xdr.ContractEventBody.fromXDR(bodyModel.toXDR());
+    const clone = new xdr.ContractEventBody(
+      0,
+      new xdr.ContractEventV0({
+        topics: [],
+        data: xdr.ScVal.scvVoid()
+      })
+    );
     clone.v0().topics(newBody.topics);
     clone.v0().data(newBody.data);
     return clone;
@@ -26,6 +31,17 @@ describe('humanizing raw events', function () {
       event: new xdr.ContractEvent({
         ext: new xdr.ExtensionPoint(0),
         contractId: StellarBase.StrKey.decodeContract(contractId),
+        type: xdr.ContractEventType.contract(),
+        body: cloneAndSet({
+          topics: topics1,
+          data: data1
+        })
+      })
+    }),
+    new xdr.DiagnosticEvent({
+      inSuccessfulContractCall: true,
+      event: new xdr.ContractEvent({
+        ext: new xdr.ExtensionPoint(0),
         type: xdr.ContractEventType.contract(),
         body: cloneAndSet({
           topics: topics1,
@@ -47,6 +63,11 @@ describe('humanizing raw events', function () {
     expect(readable[0]).to.eql({
       type: 'contract',
       contractId: contractId,
+      topics: topics1.map(scValToNative),
+      data: scValToNative(data1)
+    });
+    expect(readable[1]).to.eql({
+      type: 'contract',
       topics: topics1.map(scValToNative),
       data: scValToNative(data1)
     });
