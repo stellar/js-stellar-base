@@ -51,7 +51,7 @@ export const TimeoutInfinite = 0;
  * source account.</p>
  *
  * <p><strong>Be careful about unsubmitted transactions!</strong> When you build
- * a transaction, stellar-sdk automatically increments the source account's
+ * a transaction, `stellar-sdk` automatically increments the source account's
  * sequence number. If you end up not submitting this transaction and submitting
  * another one instead, it'll fail due to the sequence number being wrong. So if
  * you decide not to use a built transaction, make sure to update the source

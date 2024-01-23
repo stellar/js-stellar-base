@@ -59,7 +59,12 @@ import { nativeToScVal } from './scval';
  *
  * @see authorizeInvocation
  * @example
- * import { Server, Transaction, Networks, authorizeEntry } from 'soroban-client';
+ * import {
+ *   SorobanRpc,
+ *   Transaction,
+ *   Networks,
+ *   authorizeEntry
+ * } from '@stellar/stellar-sdk';
  *
  * // Assume signPayloadCallback is a well-formed signing callback.
  * //
@@ -71,7 +76,7 @@ import { nativeToScVal } from './scval';
  * }
  *
  * function multiPartyAuth(
- *    server: Server,
+ *    server: SorobanRpc.Server,
  *    // assume this involves multi-party auth
  *    tx: Transaction,
  * ) {
@@ -83,10 +88,10 @@ import { nativeToScVal } from './scval';
  *              entry,
  *              signPayloadCallback,
  *              currentLedger + 1000,
- *              Networks.FUTURENET);
+ *              Networks.TESTNET);
  *          ));
  *
- *          return server.prepareTransaction(tx, Networks.FUTURENET, simResult);
+ *          return server.prepareTransaction(tx, simResult);
  *      })
  *      .then((preppedTx) => {
  *        preppedTx.sign(source);

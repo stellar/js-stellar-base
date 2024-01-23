@@ -3,8 +3,8 @@ import { XdrLargeInt } from './xdr_large_int';
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
  *
- * You can instantiate this value either from bigints, strings, or numbers
- * (whole numbers, or this will throw).
+ * You can instantiate this "**s**mart **c**ontract integer" value either from
+ * bigints, strings, or numbers (whole numbers, or this will throw).
  *
  * If you need to create a native BigInt from a list of integer "parts" (for
  * example, you have a series of encoded 32-bit integers that represent a larger
@@ -12,11 +12,11 @@ import { XdrLargeInt } from './xdr_large_int';
  * example, you could do `new XdrLargeInt('u128', bytes...).toBigInt()`.
  *
  * @example
- * import { xdr, ScInt } from "@stellar/stellar-base";
+ * import { xdr, ScInt, scValToBigInt } from "@stellar/stellar-base";
  *
  * // You have an ScVal from a contract and want to parse it into JS native.
  * const value = xdr.ScVal.fromXDR(someXdr, "base64");
- * const bigi = ScInt.fromScVal(value); // grab it as a BigInt
+ * const bigi = scValToBigInt(value); // grab it as a BigInt
  * let sci = new ScInt(bigi);
  *
  * sci.toNumber(); // gives native JS type (w/ size check)
@@ -39,7 +39,7 @@ import { XdrLargeInt } from './xdr_large_int';
  * ScInt(123456789123456789n);
  * ScInt(1n << 140n);
  * ScInt(-42);
- * ScInt.fromScVal(scValU128); // from above
+ * ScInt(scValToBigInt(scValU128)); // from above
  *
  * // If you know the type ahead of time (accessing `.raw` is faster than
  * // conversions), you can specify the type directly (otherwise, it's
@@ -67,10 +67,8 @@ import { XdrLargeInt } from './xdr_large_int';
  *
  * @throws {RangeError} if the `value` is invalid (e.g. floating point), too
  *    large (i.e. exceeds a 256-bit value), or doesn't fit in the `opts.type`
- *
  * @throws {TypeError} on missing parameters, or if the "signedness" of `opts`
  *    doesn't match input `value`, e.g. passing `{type: 'u64'}` yet passing -1n
- *
  * @throws {SyntaxError} if a string `value` can't be parsed as a big integer
  */
 export class ScInt extends XdrLargeInt {

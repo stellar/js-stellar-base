@@ -58,7 +58,7 @@ import { scValToNative } from './scval';
  * `tx`, which we assume has an `Operation.invokeHostFunction` inside of it:
  *
  * ```typescript
- * import { Server, buildInvocationTree } from 'soroban-client';
+ * import { Server, buildInvocationTree } from '@stellar/stellar-sdk';
  *
  * const s = new Server("fill in accordingly");
  *
