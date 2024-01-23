@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+
+## [`v10.0.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.1...v10.0.2)
+
+### Fixed
+* The `contractId` field is correctly omitted from humanized events when it wasn't present in the structure ([#721](https://github.com/stellar/js-stellar-base/pull/721)).
+* Misc. outdated or incorrect documentation has been updated ([#723](https://github.com/stellar/js-stellar-base/pull/723), [#720](https://github.com/stellar/js-stellar-base/pull/720)).
+* Dependencies have been updated ([#724](https://github.com/stellar/js-stellar-base/pull/724)).
+
+
 ## [`v10.0.1`](https://github.com/stellar/js-stellar-base/compare/v10.0.0...v10.0.1)
 
 ### Fixed
