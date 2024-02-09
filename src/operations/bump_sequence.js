@@ -1,5 +1,5 @@
 import { Hyper } from '@stellar/js-xdr';
-import BigNumber from 'bignumber.js';
+import BigNumber from '../util/bignumber';
 import xdr from '../xdr';
 
 /**
