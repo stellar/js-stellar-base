@@ -1,5 +1,5 @@
 import { Hyper } from '@stellar/js-xdr';
-import BigNumber from 'bignumber.js';
+import BigNumber from '../util/bignumber';
 import xdr from '../xdr';
 import { Asset } from '../asset';
 import { LiquidityPoolAsset } from '../liquidity_pool_asset';

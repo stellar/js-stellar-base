@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from './bignumber';
 
 // eslint-disable-next-line no-bitwise
 const MAX_INT = ((1 << 31) >>> 0) - 1;

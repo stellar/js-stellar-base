@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from './util/bignumber';
 
 import { StrKey } from './strkey';
 
