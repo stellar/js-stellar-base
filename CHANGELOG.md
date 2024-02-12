@@ -2,8 +2,17 @@
 
 ## Unreleased
 
+
+## [`v11.0.0`](https://github.com/stellar/js-stellar-base/compare/v10.0.2...v11.0.0)
+
+**Note:** This version is (still) compatible with Protocol 20.
+
 ### Breaking Changes
 * Starting from **v10.0.0-beta.0**, we set [`BigNumber.DEBUG`](https://mikemcl.github.io/bignumber.js/#debug) in `bignumber.js` to `true`, which would affect all code using `BigNumber`. In this release, we have removed the relevant setting, meaning that `BigNumber.DEBUG` will remain at its default setting, which is not enabling DEBUG mode. ([#729](https://github.com/stellar/js-stellar-base/pull/729)).
+
+### Fixed
+* Dependencies have been updated to their latest compatible versions ([#726](https://github.com/stellar/js-stellar-base/pull/729), [TODO]()).
+
 
 ## [`v10.0.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.1...v10.0.2)
 
