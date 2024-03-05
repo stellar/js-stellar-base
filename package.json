@@ -115,6 +115,7 @@
     "taffydb": "^2.7.3",
     "terser-webpack-plugin": "^5.3.10",
     "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.1"
   },
@@ -124,8 +125,7 @@
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.3",
-    "typescript": "^5.3.3"
+    "tweetnacl": "^1.0.3"
   },
   "optionalDependencies": {
     "sodium-native": "^4.0.8"
