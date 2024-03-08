@@ -62,7 +62,7 @@ const config = {
     new webpack.IgnorePlugin({ resourceRegExp: /sodium-native/ }),
     new NodePolyfillPlugin(),
     new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer']
+      Buffer: [path.resolve(__dirname, 'buffer.js'), 'default']
     })
   ],
   watchOptions: {
