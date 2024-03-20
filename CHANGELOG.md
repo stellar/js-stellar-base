@@ -6,7 +6,8 @@
 ## [`v11.0.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.0...v11.0.1)
 
 ### Fixed
-* Upgrade underlying dependencies, including `@stellar/js-xdr` which should broaden compatibility to pre-ES2016 environments.
+* Add compatibility with pre-ES2016 environments (like some React Native JS compilers) by adding a custom `Buffer.subarray` polyfill ([#733](https://github.com/stellar/js-stellar-base/pull/733)).
+* Upgrade underlying dependencies, including `@stellar/js-xdr` which should broaden compatibility to pre-ES2016 environments ([#734](https://github.com/stellar/js-stellar-base/pull/734), [#735](https://github.com/stellar/js-stellar-base/pull/735)).
 
 
 ## [`v11.0.0`](https://github.com/stellar/js-stellar-base/compare/v10.0.2...v11.0.0)
