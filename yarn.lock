@@ -1323,10 +1323,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@stellar/js-xdr@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@stellar/js-xdr/-/js-xdr-3.1.0.tgz#37c23e6c913d011f750808f3d8b60174b633e137"
-  integrity sha512-mYTyFnhgyQgyvpAYZRO1LurUn2MxcIZRj74zZz/BxKEk7zrL4axhQ1ez0HL2BRi0wlG6cHn5BeD/t9Xcyp7CSQ==
+"@stellar/js-xdr@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@stellar/js-xdr/-/js-xdr-3.1.1.tgz#be0ff90c8a861d6e1101bca130fa20e74d5599bb"
+  integrity sha512-3gnPjAz78htgqsNEDkEsKHKosV2BF2iZkoHCNxpmZwUxiPsw+2VaXMed8RRMe0rGk3d5GZe7RrSba8zV80J3Ag==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
