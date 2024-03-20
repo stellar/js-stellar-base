@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## [`v11.0.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.0...v11.0.1)
+
+### Fixed
+* Upgrade underlying dependencies, including `@stellar/js-xdr` which should broaden compatibility to pre-ES2016 environments.
+
+
 ## [`v11.0.0`](https://github.com/stellar/js-stellar-base/compare/v10.0.2...v11.0.0)
 
 **Note:** This version is (still) compatible with Protocol 20. Most people should be unaffected by the technically-breaking changes below and can treat this more like a v10.0.3 patch release.
