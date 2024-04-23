@@ -8,6 +8,12 @@ import * as XDR from '@stellar/js-xdr';
 
 
 var types = XDR.config(xdr => {
+// Workaround for https://github.com/stellar/xdrgen/issues/152
+//
+// The "correct" way would be to replace bare instances of each constant with
+// xdr.lookup("..."), but that's more error-prone.
+const SCSYMBOL_LIMIT = 32;
+const SC_SPEC_DOC_LIMIT = 1024;
 
 // === xdr source ============================================================
 //
@@ -180,7 +186,7 @@ xdr.union("ScpStatementPledges", {
 //   {
 //       NodeID nodeID;    // v
 //       uint64 slotIndex; // i
-//   
+//
 //       union switch (SCPStatementType type)
 //       {
 //       case SCP_ST_PREPARE:
@@ -332,10 +338,10 @@ xdr.enum("AssetType", {
 //   {
 //   case ASSET_TYPE_CREDIT_ALPHANUM4:
 //       AssetCode4 assetCode4;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM12:
 //       AssetCode12 assetCode12;
-//   
+//
 //       // add other asset types here in the future
 //   };
 //
@@ -387,13 +393,13 @@ xdr.struct("AlphaNum12", [
 //   {
 //   case ASSET_TYPE_NATIVE: // Not credit
 //       void;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM4:
 //       AlphaNum4 alphaNum4;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM12:
 //       AlphaNum12 alphaNum12;
-//   
+//
 //       // add other asset types here in the future
 //   };
 //
@@ -506,7 +512,7 @@ xdr.struct("Signer", [
 //
 //   enum AccountFlags
 //   { // masks for each flag
-//   
+//
 //       // Flags set on issuer accounts
 //       // TrustLines are created with authorized set to "false" requiring
 //       // the issuer to set it for each TrustLine
@@ -565,10 +571,10 @@ xdr.typedef("SponsorshipDescriptor", xdr.option(xdr.lookup("AccountId")));
 //       // We can use this to add more fields, or because it is first, to
 //       // change AccountEntryExtensionV3 into a union.
 //       ExtensionPoint ext;
-//   
+//
 //       // Ledger number at which `seqNum` took on its present value.
 //       uint32 seqLedger;
-//   
+//
 //       // Time at which `seqNum` took on its present value.
 //       TimePoint seqTime;
 //   };
@@ -610,7 +616,7 @@ xdr.union("AccountEntryExtensionV2Ext", {
 //       uint32 numSponsored;
 //       uint32 numSponsoring;
 //       SponsorshipDescriptor signerSponsoringIDs<MAX_SIGNERS>;
-//   
+//
 //       union switch (int v)
 //       {
 //       case 0:
@@ -657,7 +663,7 @@ xdr.union("AccountEntryExtensionV1Ext", {
 //   struct AccountEntryExtensionV1
 //   {
 //       Liabilities liabilities;
-//   
+//
 //       union switch (int v)
 //       {
 //       case 0:
@@ -708,15 +714,15 @@ xdr.union("AccountEntryExt", {
 //                                 // drives the reserve
 //       AccountID* inflationDest; // Account to vote for during inflation
 //       uint32 flags;             // see AccountFlags
-//   
+//
 //       string32 homeDomain; // can be used for reverse federation and memo lookup
-//   
+//
 //       // fields used for signatures
 //       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 //       Thresholds thresholds;
-//   
+//
 //       Signer signers<MAX_SIGNERS>; // possible signers for this account
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -802,16 +808,16 @@ xdr.enum("LiquidityPoolType", {
 //   {
 //   case ASSET_TYPE_NATIVE: // Not credit
 //       void;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM4:
 //       AlphaNum4 alphaNum4;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM12:
 //       AlphaNum12 alphaNum12;
-//   
+//
 //   case ASSET_TYPE_POOL_SHARE:
 //       PoolID liquidityPoolID;
-//   
+//
 //       // add other asset types here in the future
 //   };
 //
@@ -856,7 +862,7 @@ xdr.union("TrustLineEntryExtensionV2Ext", {
 //   struct TrustLineEntryExtensionV2
 //   {
 //       int32 liquidityPoolUseCount;
-//   
+//
 //       union switch (int v)
 //       {
 //       case 0:
@@ -899,7 +905,7 @@ xdr.union("TrustLineEntryV1Ext", {
 //   struct
 //           {
 //               Liabilities liabilities;
-//   
+//
 //               union switch (int v)
 //               {
 //               case 0:
@@ -926,7 +932,7 @@ xdr.struct("TrustLineEntryV1", [
 //           struct
 //           {
 //               Liabilities liabilities;
-//   
+//
 //               union switch (int v)
 //               {
 //               case 0:
@@ -959,10 +965,10 @@ xdr.union("TrustLineEntryExt", {
 //       TrustLineAsset asset; // type of asset (with issuer)
 //       int64 balance;        // how much of this asset the user has.
 //                             // Asset defines the unit for this;
-//   
+//
 //       int64 limit;  // balance cannot be above this
 //       uint32 flags; // see TrustLineFlags
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -972,7 +978,7 @@ xdr.union("TrustLineEntryExt", {
 //           struct
 //           {
 //               Liabilities liabilities;
-//   
+//
 //               union switch (int v)
 //               {
 //               case 0:
@@ -1045,7 +1051,7 @@ xdr.union("OfferEntryExt", {
 //       Asset selling; // A
 //       Asset buying;  // B
 //       int64 amount;  // amount of A
-//   
+//
 //       /* price for this offer:
 //           price of A in terms of B
 //           price=AmountB/AmountA=priceNumerator/priceDenominator
@@ -1053,7 +1059,7 @@ xdr.union("OfferEntryExt", {
 //       */
 //       Price price;
 //       uint32 flags; // see OfferEntryFlags
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -1101,7 +1107,7 @@ xdr.union("DataEntryExt", {
 //       AccountID accountID; // account this data belongs to
 //       string64 dataName;
 //       DataValue dataValue;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -1313,7 +1319,7 @@ xdr.union("ClaimableBalanceEntryExtensionV1Ext", {
 //           void;
 //       }
 //       ext;
-//   
+//
 //       uint32 flags; // see ClaimableBalanceFlags
 //   };
 //
@@ -1352,16 +1358,16 @@ xdr.union("ClaimableBalanceEntryExt", {
 //   {
 //       // Unique identifier for this ClaimableBalanceEntry
 //       ClaimableBalanceID balanceID;
-//   
+//
 //       // List of claimants with associated predicate
 //       Claimant claimants<10>;
-//   
+//
 //       // Any asset including native
 //       Asset asset;
-//   
+//
 //       // Amount of asset
 //       int64 amount;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -1403,7 +1409,7 @@ xdr.struct("LiquidityPoolConstantProductParameters", [
 //   struct
 //           {
 //               LiquidityPoolConstantProductParameters params;
-//   
+//
 //               int64 reserveA;        // amount of A in the pool
 //               int64 reserveB;        // amount of B in the pool
 //               int64 totalPoolShares; // total number of pool shares issued
@@ -1428,7 +1434,7 @@ xdr.struct("LiquidityPoolEntryConstantProduct", [
 //           struct
 //           {
 //               LiquidityPoolConstantProductParameters params;
-//   
+//
 //               int64 reserveA;        // amount of A in the pool
 //               int64 reserveB;        // amount of B in the pool
 //               int64 totalPoolShares; // total number of pool shares issued
@@ -1454,14 +1460,14 @@ xdr.union("LiquidityPoolEntryBody", {
 //   struct LiquidityPoolEntry
 //   {
 //       PoolID liquidityPoolID;
-//   
+//
 //       union switch (LiquidityPoolType type)
 //       {
 //       case LIQUIDITY_POOL_CONSTANT_PRODUCT:
 //           struct
 //           {
 //               LiquidityPoolConstantProductParameters params;
-//   
+//
 //               int64 reserveA;        // amount of A in the pool
 //               int64 reserveB;        // amount of B in the pool
 //               int64 totalPoolShares; // total number of pool shares issued
@@ -1495,7 +1501,7 @@ xdr.enum("ContractDataDurability", {
 //
 //   struct ContractDataEntry {
 //       ExtensionPoint ext;
-//   
+//
 //       SCAddress contract;
 //       SCVal key;
 //       ContractDataDurability durability;
@@ -1597,7 +1603,7 @@ xdr.union("ContractCodeEntryExt", {
 //                   ContractCodeCostInputs costInputs;
 //               } v1;
 //       } ext;
-//   
+//
 //       Hash hash;
 //       opaque code<>;
 //   };
@@ -1647,7 +1653,7 @@ xdr.union("LedgerEntryExtensionV1Ext", {
 //   struct LedgerEntryExtensionV1
 //   {
 //       SponsorshipDescriptor sponsoringID;
-//   
+//
 //       union switch (int v)
 //       {
 //       case 0:
@@ -1746,7 +1752,7 @@ xdr.union("LedgerEntryExt", {
 //   struct LedgerEntry
 //   {
 //       uint32 lastModifiedLedgerSeq; // ledger the LedgerEntry was last changed
-//   
+//
 //       union switch (LedgerEntryType type)
 //       {
 //       case ACCOUNT:
@@ -1771,7 +1777,7 @@ xdr.union("LedgerEntryExt", {
 //           TTLEntry ttl;
 //       }
 //       data;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -1930,34 +1936,34 @@ xdr.struct("LedgerKeyTtl", [
 //       {
 //           AccountID accountID;
 //       } account;
-//   
+//
 //   case TRUSTLINE:
 //       struct
 //       {
 //           AccountID accountID;
 //           TrustLineAsset asset;
 //       } trustLine;
-//   
+//
 //   case OFFER:
 //       struct
 //       {
 //           AccountID sellerID;
 //           int64 offerID;
 //       } offer;
-//   
+//
 //   case DATA:
 //       struct
 //       {
 //           AccountID accountID;
 //           string64 dataName;
 //       } data;
-//   
+//
 //   case CLAIMABLE_BALANCE:
 //       struct
 //       {
 //           ClaimableBalanceID balanceID;
 //       } claimableBalance;
-//   
+//
 //   case LIQUIDITY_POOL:
 //       struct
 //       {
@@ -2112,14 +2118,14 @@ xdr.union("StellarValueExt", {
 //   {
 //       Hash txSetHash;      // transaction set to apply to previous ledger
 //       TimePoint closeTime; // network close time
-//   
+//
 //       // upgrades to apply to the previous ledger (usually empty)
 //       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
 //       // unknown steps during consensus if needed.
 //       // see notes below on 'LedgerUpgrade' for more detail
 //       // max size is dictated by number of upgrade types (+ room for future)
 //       UpgradeType upgrades<6>;
-//   
+//
 //       // reserved for future use
 //       union switch (StellarValueType v)
 //       {
@@ -2186,7 +2192,7 @@ xdr.union("LedgerHeaderExtensionV1Ext", {
 //   struct LedgerHeaderExtensionV1
 //   {
 //       uint32 flags; // LedgerHeaderFlags
-//   
+//
 //       union switch (int v)
 //       {
 //       case 0:
@@ -2233,28 +2239,28 @@ xdr.union("LedgerHeaderExt", {
 //       StellarValue scpValue;   // what consensus agreed to
 //       Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
 //       Hash bucketListHash;     // hash of the ledger state
-//   
+//
 //       uint32 ledgerSeq; // sequence number of this ledger
-//   
+//
 //       int64 totalCoins; // total number of stroops in existence.
 //                         // 10,000,000 stroops in 1 XLM
-//   
+//
 //       int64 feePool;       // fees burned since last inflation run
 //       uint32 inflationSeq; // inflation sequence number
-//   
+//
 //       uint64 idPool; // last used global ID, used for generating objects
-//   
+//
 //       uint32 baseFee;     // base fee per operation in stroops
 //       uint32 baseReserve; // account base reserve in stroops
-//   
+//
 //       uint32 maxTxSetSize; // maximum size a transaction set can be
-//   
+//
 //       Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
 //                         // in time without walking the chain back ledger by ledger
 //                         // each slot contains the oldest ledger that is mod of
 //                         // either 50  5000  50000 or 500000 depending on index
 //                         // skipList[0] mod(50), skipList[1] mod(5000), etc
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -2425,7 +2431,7 @@ xdr.union("BucketMetadataExt", {
 //   {
 //       // Indicates the protocol version used to create / merge this bucket.
 //       uint32 ledgerVersion;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -2448,7 +2454,7 @@ xdr.struct("BucketMetadata", [
 //   case LIVEENTRY:
 //   case INITENTRY:
 //       LedgerEntry liveEntry;
-//   
+//
 //   case DEADENTRY:
 //       LedgerKey deadEntry;
 //   case METAENTRY:
@@ -2648,7 +2654,7 @@ xdr.union("TransactionHistoryEntryExt", {
 //   {
 //       uint32 ledgerSeq;
 //       TransactionSet txSet;
-//   
+//
 //       // when v != 0, txSet must be empty
 //       union switch (int v)
 //       {
@@ -2692,7 +2698,7 @@ xdr.union("TransactionHistoryResultEntryExt", {
 //   {
 //       uint32 ledgerSeq;
 //       TransactionResultSet txResultSet;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -2734,7 +2740,7 @@ xdr.union("LedgerHeaderHistoryEntryExt", {
 //   {
 //       Hash hash;
 //       LedgerHeader header;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -2961,10 +2967,10 @@ xdr.union("ContractEventBody", {
 //       // We can use this to add more fields, or because it
 //       // is first, to change ContractEvent into a union.
 //       ExtensionPoint ext;
-//   
+//
 //       Hash* contractID;
 //       ContractEventType type;
-//   
+//
 //       union switch (int v)
 //       {
 //       case 0:
@@ -3004,22 +3010,22 @@ xdr.struct("DiagnosticEvent", [
 //   struct SorobanTransactionMetaExtV1
 //   {
 //       ExtensionPoint ext;
-//   
+//
 //       // The following are the components of the overall Soroban resource fee
 //       // charged for the transaction.
 //       // The following relation holds:
 //       // `resourceFeeCharged = totalNonRefundableResourceFeeCharged + totalRefundableResourceFeeCharged`
-//       // where `resourceFeeCharged` is the overall fee charged for the 
-//       // transaction. Also, `resourceFeeCharged` <= `sorobanData.resourceFee` 
+//       // where `resourceFeeCharged` is the overall fee charged for the
+//       // transaction. Also, `resourceFeeCharged` <= `sorobanData.resourceFee`
 //       // i.e.we never charge more than the declared resource fee.
-//       // The inclusion fee for charged the Soroban transaction can be found using 
+//       // The inclusion fee for charged the Soroban transaction can be found using
 //       // the following equation:
 //       // `result.feeCharged = resourceFeeCharged + inclusionFeeCharged`.
-//   
+//
 //       // Total amount (in stroops) that has been charged for non-refundable
 //       // Soroban resources.
 //       // Non-refundable resources are charged based on the usage declared in
-//       // the transaction envelope (such as `instructions`, `readBytes` etc.) and 
+//       // the transaction envelope (such as `instructions`, `readBytes` etc.) and
 //       // is charged regardless of the success of the transaction.
 //       int64 totalNonRefundableResourceFeeCharged;
 //       // Total amount (in stroops) that has been charged for refundable
@@ -3068,14 +3074,14 @@ xdr.union("SorobanTransactionMetaExt", {
 
 // === xdr source ============================================================
 //
-//   struct SorobanTransactionMeta 
+//   struct SorobanTransactionMeta
 //   {
 //       SorobanTransactionMetaExt ext;
-//   
+//
 //       ContractEvent events<>;             // custom events populated by the
 //                                           // contracts themselves.
 //       SCVal returnValue;                  // return value of the host fn invocation
-//   
+//
 //       // Diagnostics events that are not hashed.
 //       // This will contain all contract and diagnostic events. Even ones
 //       // that were emitted in a failed contract call.
@@ -3095,13 +3101,13 @@ xdr.struct("SorobanTransactionMeta", [
 //   struct TransactionMetaV3
 //   {
 //       ExtensionPoint ext;
-//   
+//
 //       LedgerEntryChanges txChangesBefore;  // tx level changes before operations
 //                                            // are applied if any
 //       OperationMeta operations<>;          // meta for each operation
 //       LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
 //                                            // applied if any
-//       SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
+//       SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for
 //                                            // Soroban transactions).
 //   };
 //
@@ -3197,15 +3203,15 @@ xdr.struct("UpgradeEntryMeta", [
 //       LedgerHeaderHistoryEntry ledgerHeader;
 //       // NB: txSet is sorted in "Hash order"
 //       TransactionSet txSet;
-//   
+//
 //       // NB: transactions are sorted in apply order here
 //       // fees for all transactions are processed first
 //       // followed by applying transactions
 //       TransactionResultMeta txProcessing<>;
-//   
+//
 //       // upgrades are applied last
 //       UpgradeEntryMeta upgradesProcessing<>;
-//   
+//
 //       // other misc information attached to the ledger close
 //       SCPHistoryEntry scpInfo<>;
 //   };
@@ -3261,29 +3267,29 @@ xdr.union("LedgerCloseMetaExt", {
 //   struct LedgerCloseMetaV1
 //   {
 //       LedgerCloseMetaExt ext;
-//   
+//
 //       LedgerHeaderHistoryEntry ledgerHeader;
-//   
+//
 //       GeneralizedTransactionSet txSet;
-//   
+//
 //       // NB: transactions are sorted in apply order here
 //       // fees for all transactions are processed first
 //       // followed by applying transactions
 //       TransactionResultMeta txProcessing<>;
-//   
+//
 //       // upgrades are applied last
 //       UpgradeEntryMeta upgradesProcessing<>;
-//   
+//
 //       // other misc information attached to the ledger close
 //       SCPHistoryEntry scpInfo<>;
-//   
+//
 //       // Size in bytes of BucketList, to support downstream
 //       // systems calculating storage fees correctly.
 //       uint64 totalByteSizeOfBucketList;
-//   
+//
 //       // Temp keys that are being evicted at this ledger.
 //       LedgerKey evictedTemporaryLedgerKeys<>;
-//   
+//
 //       // Archived restorable ledger entries that are being
 //       // evicted at this ledger.
 //       LedgerEntry evictedPersistentLedgerEntries<>;
@@ -3517,31 +3523,31 @@ xdr.struct("PeerAddress", [
 //       ERROR_MSG = 0,
 //       AUTH = 2,
 //       DONT_HAVE = 3,
-//   
+//
 //       GET_PEERS = 4, // gets a list of peers this guy knows about
 //       PEERS = 5,
-//   
+//
 //       GET_TX_SET = 6, // gets a particular txset by hash
 //       TX_SET = 7,
 //       GENERALIZED_TX_SET = 17,
-//   
+//
 //       TRANSACTION = 8, // pass on a tx you have heard about
-//   
+//
 //       // SCP
 //       GET_SCP_QUORUMSET = 9,
 //       SCP_QUORUMSET = 10,
 //       SCP_MESSAGE = 11,
 //       GET_SCP_STATE = 12,
-//   
+//
 //       // new messages
 //       HELLO = 13,
-//   
+//
 //       SURVEY_REQUEST = 14,
 //       SURVEY_RESPONSE = 15,
-//   
+//
 //       SEND_MORE = 16,
 //       SEND_MORE_EXTENDED = 20,
-//   
+//
 //       FLOOD_ADVERT = 18,
 //       FLOOD_DEMAND = 19
 //   };
@@ -3696,12 +3702,12 @@ xdr.struct("SignedSurveyResponseMessage", [
 //       uint64 bytesRead;
 //       uint64 bytesWritten;
 //       uint64 secondsConnected;
-//   
+//
 //       uint64 uniqueFloodBytesRecv;
 //       uint64 duplicateFloodBytesRecv;
 //       uint64 uniqueFetchBytesRecv;
 //       uint64 duplicateFetchBytesRecv;
-//   
+//
 //       uint64 uniqueFloodMessageRecv;
 //       uint64 duplicateFloodMessageRecv;
 //       uint64 uniqueFetchMessageRecv;
@@ -3740,7 +3746,7 @@ xdr.typedef("PeerStatList", xdr.varArray(xdr.lookup("PeerStats"), 25));
 //   {
 //       PeerStatList inboundPeers;
 //       PeerStatList outboundPeers;
-//   
+//
 //       uint32 totalInboundPeerCount;
 //       uint32 totalOutboundPeerCount;
 //   };
@@ -3759,10 +3765,10 @@ xdr.struct("TopologyResponseBodyV0", [
 //   {
 //       PeerStatList inboundPeers;
 //       PeerStatList outboundPeers;
-//   
+//
 //       uint32 totalInboundPeerCount;
 //       uint32 totalOutboundPeerCount;
-//   
+//
 //       uint32 maxInboundPeerCount;
 //       uint32 maxOutboundPeerCount;
 //   };
@@ -3869,23 +3875,23 @@ xdr.struct("FloodDemand", [
 //       void;
 //   case PEERS:
 //       PeerAddress peers<100>;
-//   
+//
 //   case GET_TX_SET:
 //       uint256 txSetHash;
 //   case TX_SET:
 //       TransactionSet txSet;
 //   case GENERALIZED_TX_SET:
 //       GeneralizedTransactionSet generalizedTxSet;
-//   
+//
 //   case TRANSACTION:
 //       TransactionEnvelope transaction;
-//   
+//
 //   case SURVEY_REQUEST:
 //       SignedSurveyRequestMessage signedSurveyRequestMessage;
-//   
+//
 //   case SURVEY_RESPONSE:
 //       SignedSurveyResponseMessage signedSurveyResponseMessage;
-//   
+//
 //   // SCP
 //   case GET_SCP_QUORUMSET:
 //       uint256 qSetHash;
@@ -4181,11 +4187,11 @@ xdr.struct("PaymentOp", [
 //       int64 sendMax;   // the maximum amount of sendAsset to
 //                        // send (excluding fees).
 //                        // The operation will fail if can't be met
-//   
+//
 //       MuxedAccount destination; // recipient of the payment
 //       Asset destAsset;          // what they end up with
 //       int64 destAmount;         // amount they end up with
-//   
+//
 //       Asset path<5>; // additional hops it must go through to get there
 //   };
 //
@@ -4205,13 +4211,13 @@ xdr.struct("PathPaymentStrictReceiveOp", [
 //   {
 //       Asset sendAsset;  // asset we pay with
 //       int64 sendAmount; // amount of sendAsset to send (excluding fees)
-//   
+//
 //       MuxedAccount destination; // recipient of the payment
 //       Asset destAsset;          // what they end up with
 //       int64 destMin;            // the minimum amount of dest asset to
 //                                 // be received
 //                                 // The operation will fail if it can't be met
-//   
+//
 //       Asset path<5>; // additional hops it must go through to get there
 //   };
 //
@@ -4233,7 +4239,7 @@ xdr.struct("PathPaymentStrictSendOp", [
 //       Asset buying;
 //       int64 amount; // amount being sold. if set to 0, delete the offer
 //       Price price;  // price of thing being sold in terms of what you are buying
-//   
+//
 //       // 0=create a new offer, otherwise edit an existing offer
 //       int64 offerID;
 //   };
@@ -4256,7 +4262,7 @@ xdr.struct("ManageSellOfferOp", [
 //       int64 buyAmount; // amount being bought. if set to 0, delete the offer
 //       Price price;     // price of thing being bought in terms of what you are
 //                        // selling
-//   
+//
 //       // 0=create a new offer, otherwise edit an existing offer
 //       int64 offerID;
 //   };
@@ -4293,18 +4299,18 @@ xdr.struct("CreatePassiveSellOfferOp", [
 //   struct SetOptionsOp
 //   {
 //       AccountID* inflationDest; // sets the inflation destination
-//   
+//
 //       uint32* clearFlags; // which flags to clear
 //       uint32* setFlags;   // which flags to set
-//   
+//
 //       // account threshold manipulation
 //       uint32* masterWeight; // weight of the master account
 //       uint32* lowThreshold;
 //       uint32* medThreshold;
 //       uint32* highThreshold;
-//   
+//
 //       string32* homeDomain; // sets the home domain
-//   
+//
 //       // Add, update or remove a signer for the account
 //       // signer is deleted if the weight is 0
 //       Signer* signer;
@@ -4329,16 +4335,16 @@ xdr.struct("SetOptionsOp", [
 //   {
 //   case ASSET_TYPE_NATIVE: // Not credit
 //       void;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM4:
 //       AlphaNum4 alphaNum4;
-//   
+//
 //   case ASSET_TYPE_CREDIT_ALPHANUM12:
 //       AlphaNum12 alphaNum12;
-//   
+//
 //   case ASSET_TYPE_POOL_SHARE:
 //       LiquidityPoolParameters liquidityPool;
-//   
+//
 //       // add other asset types here in the future
 //   };
 //
@@ -4364,7 +4370,7 @@ xdr.union("ChangeTrustAsset", {
 //   struct ChangeTrustOp
 //   {
 //       ChangeTrustAsset line;
-//   
+//
 //       // if limit is set to 0, deletes the trust line
 //       int64 limit;
 //   };
@@ -4381,7 +4387,7 @@ xdr.struct("ChangeTrustOp", [
 //   {
 //       AccountID trustor;
 //       AssetCode asset;
-//   
+//
 //       // One of 0, AUTHORIZED_FLAG, or AUTHORIZED_TO_MAINTAIN_LIABILITIES_FLAG
 //       uint32 authorize;
 //   };
@@ -4549,7 +4555,7 @@ xdr.struct("ClawbackClaimableBalanceOp", [
 //   {
 //       AccountID trustor;
 //       Asset asset;
-//   
+//
 //       uint32 clearFlags; // which flags to clear
 //       uint32 setFlags;   // which flags to set
 //   };
@@ -4794,7 +4800,7 @@ xdr.struct("SorobanAuthorizedInvocation", [
 //   {
 //       SCAddress address;
 //       int64 nonce;
-//       uint32 signatureExpirationLedger;    
+//       uint32 signatureExpirationLedger;
 //       SCVal signature;
 //   };
 //
@@ -5029,7 +5035,7 @@ xdr.union("OperationBody", {
 //       // if not set, the runtime defaults to "sourceAccount" specified at
 //       // the transaction level
 //       MuxedAccount* sourceAccount;
-//   
+//
 //       union switch (OperationType type)
 //       {
 //       case CREATE_ACCOUNT:
@@ -5117,7 +5123,7 @@ xdr.struct("HashIdPreimageOperationId", [
 //   struct
 //       {
 //           AccountID sourceAccount;
-//           SequenceNumber seqNum; 
+//           SequenceNumber seqNum;
 //           uint32 opNum;
 //           PoolID liquidityPoolID;
 //           Asset asset;
@@ -5179,7 +5185,7 @@ xdr.struct("HashIdPreimageSorobanAuthorization", [
 //       struct
 //       {
 //           AccountID sourceAccount;
-//           SequenceNumber seqNum; 
+//           SequenceNumber seqNum;
 //           uint32 opNum;
 //           PoolID liquidityPoolID;
 //           Asset asset;
@@ -5306,12 +5312,12 @@ xdr.struct("LedgerBounds", [
 //   struct PreconditionsV2
 //   {
 //       TimeBounds* timeBounds;
-//   
+//
 //       // Transaction only valid for ledger numbers n such that
 //       // minLedger <= n < maxLedger (if maxLedger == 0, then
 //       // only minLedger is checked)
 //       LedgerBounds* ledgerBounds;
-//   
+//
 //       // If NULL, only valid when sourceAccount's sequence number
 //       // is seqNum - 1.  Otherwise, valid when sourceAccount's
 //       // sequence number n satisfies minSeqNum <= n < tx.seqNum.
@@ -5319,16 +5325,16 @@ xdr.struct("LedgerBounds", [
 //       // is always raised to tx.seqNum, and a transaction is not
 //       // valid if tx.seqNum is too high to ensure replay protection.
 //       SequenceNumber* minSeqNum;
-//   
+//
 //       // For the transaction to be valid, the current ledger time must
 //       // be at least minSeqAge greater than sourceAccount's seqTime.
 //       Duration minSeqAge;
-//   
+//
 //       // For the transaction to be valid, the current ledger number
 //       // must be at least minSeqLedgerGap greater than sourceAccount's
 //       // seqLedger.
 //       uint32 minSeqLedgerGap;
-//   
+//
 //       // For the transaction to be valid, there must be a signature
 //       // corresponding to every Signer in this array, even if the
 //       // signature is not otherwise required by the sourceAccount or
@@ -5406,12 +5412,12 @@ xdr.struct("LedgerFootprint", [
 // === xdr source ============================================================
 //
 //   struct SorobanResources
-//   {   
+//   {
 //       // The ledger footprint of the transaction.
 //       LedgerFootprint footprint;
 //       // The maximum number of instructions this transaction can use
-//       uint32 instructions; 
-//   
+//       uint32 instructions;
+//
 //       // The maximum number of bytes this transaction can read from ledger
 //       uint32 readBytes;
 //       // The maximum number of bytes this transaction can write to ledger
@@ -5433,7 +5439,7 @@ xdr.struct("SorobanResources", [
 //       ExtensionPoint ext;
 //       SorobanResources resources;
 //       // Amount of the transaction `fee` allocated to the Soroban resource fees.
-//       // The fraction of `resourceFee` corresponding to `resources` specified 
+//       // The fraction of `resourceFee` corresponding to `resources` specified
 //       // above is *not* refundable (i.e. fees for instructions, ledger I/O), as
 //       // well as fees for the transaction size.
 //       // The remaining part of the fee is refundable and the charged value is
@@ -5544,20 +5550,20 @@ xdr.union("TransactionExt", {
 //   {
 //       // account used to run the transaction
 //       MuxedAccount sourceAccount;
-//   
+//
 //       // the fee the sourceAccount will pay
 //       uint32 fee;
-//   
+//
 //       // sequence number to consume in the account
 //       SequenceNumber seqNum;
-//   
+//
 //       // validity conditions
 //       Preconditions cond;
-//   
+//
 //       Memo memo;
-//   
+//
 //       Operation operations<MAX_OPS_PER_TX>;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -5777,11 +5783,11 @@ xdr.enum("ClaimAtomType", {
 //       // emitted to identify the offer
 //       uint256 sellerEd25519; // Account that owns the offer
 //       int64 offerID;
-//   
+//
 //       // amount and asset taken from the owner
 //       Asset assetSold;
 //       int64 amountSold;
-//   
+//
 //       // amount and asset sent to the owner
 //       Asset assetBought;
 //       int64 amountBought;
@@ -5804,11 +5810,11 @@ xdr.struct("ClaimOfferAtomV0", [
 //       // emitted to identify the offer
 //       AccountID sellerID; // Account that owns the offer
 //       int64 offerID;
-//   
+//
 //       // amount and asset taken from the owner
 //       Asset assetSold;
 //       int64 amountSold;
-//   
+//
 //       // amount and asset sent to the owner
 //       Asset assetBought;
 //       int64 amountBought;
@@ -5829,11 +5835,11 @@ xdr.struct("ClaimOfferAtom", [
 //   struct ClaimLiquidityAtom
 //   {
 //       PoolID liquidityPoolID;
-//   
+//
 //       // amount and asset taken from the pool
 //       Asset assetSold;
 //       int64 amountSold;
-//   
+//
 //       // amount and asset sent to the pool
 //       Asset assetBought;
 //       int64 amountBought;
@@ -5882,7 +5888,7 @@ xdr.union("ClaimAtom", {
 //   {
 //       // codes considered as "success" for the operation
 //       CREATE_ACCOUNT_SUCCESS = 0, // account was created
-//   
+//
 //       // codes considered as "failure" for the operation
 //       CREATE_ACCOUNT_MALFORMED = -1,   // invalid destination
 //       CREATE_ACCOUNT_UNDERFUNDED = -2, // not enough funds in source account
@@ -5934,7 +5940,7 @@ xdr.union("CreateAccountResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       PAYMENT_SUCCESS = 0, // payment successfully completed
-//   
+//
 //       // codes considered as "failure" for the operation
 //       PAYMENT_MALFORMED = -1,          // bad input
 //       PAYMENT_UNDERFUNDED = -2,        // not enough funds in source account
@@ -6005,7 +6011,7 @@ xdr.union("PaymentResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       PATH_PAYMENT_STRICT_RECEIVE_SUCCESS = 0, // success
-//   
+//
 //       // codes considered as "failure" for the operation
 //       PATH_PAYMENT_STRICT_RECEIVE_MALFORMED = -1, // bad input
 //       PATH_PAYMENT_STRICT_RECEIVE_UNDERFUNDED =
@@ -6136,7 +6142,7 @@ xdr.union("PathPaymentStrictReceiveResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       PATH_PAYMENT_STRICT_SEND_SUCCESS = 0, // success
-//   
+//
 //       // codes considered as "failure" for the operation
 //       PATH_PAYMENT_STRICT_SEND_MALFORMED = -1, // bad input
 //       PATH_PAYMENT_STRICT_SEND_UNDERFUNDED =
@@ -6249,7 +6255,7 @@ xdr.union("PathPaymentStrictSendResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       MANAGE_SELL_OFFER_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       MANAGE_SELL_OFFER_MALFORMED = -1, // generated offer would be invalid
 //       MANAGE_SELL_OFFER_SELL_NO_TRUST =
@@ -6263,11 +6269,11 @@ xdr.union("PathPaymentStrictSendResult", {
 //           -8, // would cross an offer from the same user
 //       MANAGE_SELL_OFFER_SELL_NO_ISSUER = -9, // no issuer for what we're selling
 //       MANAGE_SELL_OFFER_BUY_NO_ISSUER = -10, // no issuer for what we're buying
-//   
+//
 //       // update errors
 //       MANAGE_SELL_OFFER_NOT_FOUND =
 //           -11, // offerID does not match an existing offer
-//   
+//
 //       MANAGE_SELL_OFFER_LOW_RESERVE =
 //           -12 // not enough funds to create a new Offer
 //   };
@@ -6336,7 +6342,7 @@ xdr.union("ManageOfferSuccessResultOffer", {
 //   {
 //       // offers that got claimed while creating this offer
 //       ClaimAtom offersClaimed<>;
-//   
+//
 //       union switch (ManageOfferEffect effect)
 //       {
 //       case MANAGE_OFFER_CREATED:
@@ -6405,7 +6411,7 @@ xdr.union("ManageSellOfferResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       MANAGE_BUY_OFFER_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       MANAGE_BUY_OFFER_MALFORMED = -1,     // generated offer would be invalid
 //       MANAGE_BUY_OFFER_SELL_NO_TRUST = -2, // no trust line for what we're selling
@@ -6417,11 +6423,11 @@ xdr.union("ManageSellOfferResult", {
 //       MANAGE_BUY_OFFER_CROSS_SELF = -8, // would cross an offer from the same user
 //       MANAGE_BUY_OFFER_SELL_NO_ISSUER = -9, // no issuer for what we're selling
 //       MANAGE_BUY_OFFER_BUY_NO_ISSUER = -10, // no issuer for what we're buying
-//   
+//
 //       // update errors
 //       MANAGE_BUY_OFFER_NOT_FOUND =
 //           -11, // offerID does not match an existing offer
-//   
+//
 //       MANAGE_BUY_OFFER_LOW_RESERVE = -12 // not enough funds to create a new Offer
 //   };
 //
@@ -7011,7 +7017,7 @@ xdr.union("ClaimClaimableBalanceResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       BEGIN_SPONSORING_FUTURE_RESERVES_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       BEGIN_SPONSORING_FUTURE_RESERVES_MALFORMED = -1,
 //       BEGIN_SPONSORING_FUTURE_RESERVES_ALREADY_SPONSORED = -2,
@@ -7059,7 +7065,7 @@ xdr.union("BeginSponsoringFutureReservesResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       END_SPONSORING_FUTURE_RESERVES_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       END_SPONSORING_FUTURE_RESERVES_NOT_SPONSORED = -1
 //   };
@@ -7099,7 +7105,7 @@ xdr.union("EndSponsoringFutureReservesResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       REVOKE_SPONSORSHIP_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       REVOKE_SPONSORSHIP_DOES_NOT_EXIST = -1,
 //       REVOKE_SPONSORSHIP_NOT_SPONSOR = -2,
@@ -7154,7 +7160,7 @@ xdr.union("RevokeSponsorshipResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       CLAWBACK_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       CLAWBACK_MALFORMED = -1,
 //       CLAWBACK_NOT_CLAWBACK_ENABLED = -2,
@@ -7205,7 +7211,7 @@ xdr.union("ClawbackResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       CLAWBACK_CLAIMABLE_BALANCE_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       CLAWBACK_CLAIMABLE_BALANCE_DOES_NOT_EXIST = -1,
 //       CLAWBACK_CLAIMABLE_BALANCE_NOT_ISSUER = -2,
@@ -7253,7 +7259,7 @@ xdr.union("ClawbackClaimableBalanceResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       SET_TRUST_LINE_FLAGS_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       SET_TRUST_LINE_FLAGS_MALFORMED = -1,
 //       SET_TRUST_LINE_FLAGS_NO_TRUST_LINE = -2,
@@ -7309,7 +7315,7 @@ xdr.union("SetTrustLineFlagsResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       LIQUIDITY_POOL_DEPOSIT_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       LIQUIDITY_POOL_DEPOSIT_MALFORMED = -1,      // bad input
 //       LIQUIDITY_POOL_DEPOSIT_NO_TRUST = -2,       // no trust line for one of the
@@ -7376,7 +7382,7 @@ xdr.union("LiquidityPoolDepositResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       LIQUIDITY_POOL_WITHDRAW_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,    // bad input
 //       LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,     // no trust line for one of the
@@ -7434,7 +7440,7 @@ xdr.union("LiquidityPoolWithdrawResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       INVOKE_HOST_FUNCTION_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       INVOKE_HOST_FUNCTION_MALFORMED = -1,
 //       INVOKE_HOST_FUNCTION_TRAPPED = -2,
@@ -7490,7 +7496,7 @@ xdr.union("InvokeHostFunctionResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       EXTEND_FOOTPRINT_TTL_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       EXTEND_FOOTPRINT_TTL_MALFORMED = -1,
 //       EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED = -2,
@@ -7537,7 +7543,7 @@ xdr.union("ExtendFootprintTtlResult", {
 //   {
 //       // codes considered as "success" for the operation
 //       RESTORE_FOOTPRINT_SUCCESS = 0,
-//   
+//
 //       // codes considered as "failure" for the operation
 //       RESTORE_FOOTPRINT_MALFORMED = -1,
 //       RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED = -2,
@@ -7583,7 +7589,7 @@ xdr.union("RestoreFootprintResult", {
 //   enum OperationResultCode
 //   {
 //       opINNER = 0, // inner object result is valid
-//   
+//
 //       opBAD_AUTH = -1,            // too few valid signatures / wrong network
 //       opNO_ACCOUNT = -2,          // source account was not found
 //       opNOT_SUPPORTED = -3,       // operation not supported at this time
@@ -7823,21 +7829,21 @@ xdr.union("OperationResult", {
 //   {
 //       txFEE_BUMP_INNER_SUCCESS = 1, // fee bump inner transaction succeeded
 //       txSUCCESS = 0,                // all operations succeeded
-//   
+//
 //       txFAILED = -1, // one of the operations failed (none were applied)
-//   
+//
 //       txTOO_EARLY = -2,         // ledger closeTime before minTime
 //       txTOO_LATE = -3,          // ledger closeTime after maxTime
 //       txMISSING_OPERATION = -4, // no operation was specified
 //       txBAD_SEQ = -5,           // sequence number does not match source account
-//   
+//
 //       txBAD_AUTH = -6,             // too few valid signatures / wrong network
 //       txINSUFFICIENT_BALANCE = -7, // fee would bring account below reserve
 //       txNO_ACCOUNT = -8,           // source account not found
 //       txINSUFFICIENT_FEE = -9,     // fee is too small
 //       txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
 //       txINTERNAL_ERROR = -11,      // an unknown error occurred
-//   
+//
 //       txNOT_SUPPORTED = -12,          // transaction type not supported
 //       txFEE_BUMP_INNER_FAILED = -13,  // fee bump inner transaction failed
 //       txBAD_SPONSORSHIP = -14,        // sponsorship not confirmed
@@ -7949,7 +7955,7 @@ xdr.union("InnerTransactionResultExt", {
 //   {
 //       // Always 0. Here for binary compatibility.
 //       int64 feeCharged;
-//   
+//
 //       union switch (TransactionResultCode code)
 //       {
 //       // txFEE_BUMP_INNER_SUCCESS is not included
@@ -7975,7 +7981,7 @@ xdr.union("InnerTransactionResultExt", {
 //           void;
 //       }
 //       result;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -8090,7 +8096,7 @@ xdr.union("TransactionResultExt", {
 //   struct TransactionResult
 //   {
 //       int64 feeCharged; // actual fee charged for the transaction
-//   
+//
 //       union switch (TransactionResultCode code)
 //       {
 //       case txFEE_BUMP_INNER_SUCCESS:
@@ -8118,7 +8124,7 @@ xdr.union("TransactionResultExt", {
 //           void;
 //       }
 //       result;
-//   
+//
 //       // reserved for future use
 //       union switch (int v)
 //       {
@@ -8421,49 +8427,49 @@ xdr.struct("HmacSha256Mac", [
 //       SCV_BOOL = 0,
 //       SCV_VOID = 1,
 //       SCV_ERROR = 2,
-//   
+//
 //       // 32 bits is the smallest type in WASM or XDR; no need for u8/u16.
 //       SCV_U32 = 3,
 //       SCV_I32 = 4,
-//   
+//
 //       // 64 bits is naturally supported by both WASM and XDR also.
 //       SCV_U64 = 5,
 //       SCV_I64 = 6,
-//   
+//
 //       // Time-related u64 subtypes with their own functions and formatting.
 //       SCV_TIMEPOINT = 7,
 //       SCV_DURATION = 8,
-//   
+//
 //       // 128 bits is naturally supported by Rust and we use it for Soroban
 //       // fixed-point arithmetic prices / balances / similar "quantities". These
 //       // are represented in XDR as a pair of 2 u64s.
 //       SCV_U128 = 9,
 //       SCV_I128 = 10,
-//   
+//
 //       // 256 bits is the size of sha256 output, ed25519 keys, and the EVM machine
 //       // word, so for interop use we include this even though it requires a small
 //       // amount of Rust guest and/or host library code.
 //       SCV_U256 = 11,
 //       SCV_I256 = 12,
-//   
+//
 //       // Bytes come in 3 flavors, 2 of which have meaningfully different
 //       // formatting and validity-checking / domain-restriction.
 //       SCV_BYTES = 13,
 //       SCV_STRING = 14,
 //       SCV_SYMBOL = 15,
-//   
+//
 //       // Vecs and maps are just polymorphic containers of other ScVals.
 //       SCV_VEC = 16,
 //       SCV_MAP = 17,
-//   
+//
 //       // Address is the universal identifier for contracts and classic
 //       // accounts.
 //       SCV_ADDRESS = 18,
-//   
+//
 //       // The following are the internal SCVal variants that are not
-//       // exposed to the contracts. 
+//       // exposed to the contracts.
 //       SCV_CONTRACT_INSTANCE = 19,
-//   
+//
 //       // SCV_LEDGER_KEY_CONTRACT_INSTANCE and SCV_LEDGER_KEY_NONCE are unique
 //       // symbolic SCVals used as the key for ledger entries for a contract's
 //       // instance and an address' nonce, respectively.
@@ -8802,19 +8808,19 @@ xdr.struct("ScContractInstance", [
 //
 //   union SCVal switch (SCValType type)
 //   {
-//   
+//
 //   case SCV_BOOL:
 //       bool b;
 //   case SCV_VOID:
 //       void;
 //   case SCV_ERROR:
 //       SCError error;
-//   
+//
 //   case SCV_U32:
 //       uint32 u32;
 //   case SCV_I32:
 //       int32 i32;
-//   
+//
 //   case SCV_U64:
 //       uint64 u64;
 //   case SCV_I64:
@@ -8823,41 +8829,41 @@ xdr.struct("ScContractInstance", [
 //       TimePoint timepoint;
 //   case SCV_DURATION:
 //       Duration duration;
-//   
+//
 //   case SCV_U128:
 //       UInt128Parts u128;
 //   case SCV_I128:
 //       Int128Parts i128;
-//   
+//
 //   case SCV_U256:
 //       UInt256Parts u256;
 //   case SCV_I256:
 //       Int256Parts i256;
-//   
+//
 //   case SCV_BYTES:
 //       SCBytes bytes;
 //   case SCV_STRING:
 //       SCString str;
 //   case SCV_SYMBOL:
 //       SCSymbol sym;
-//   
+//
 //   // Vec and Map are recursive so need to live
 //   // behind an option, due to xdrpp limitations.
 //   case SCV_VEC:
 //       SCVec *vec;
 //   case SCV_MAP:
 //       SCMap *map;
-//   
+//
 //   case SCV_ADDRESS:
 //       SCAddress address;
-//   
+//
 //   // Special SCVals reserved for system-constructed contract-data
 //   // ledger keys, not generally usable elsewhere.
 //   case SCV_LEDGER_KEY_CONTRACT_INSTANCE:
 //       void;
 //   case SCV_LEDGER_KEY_NONCE:
 //       SCNonceKey nonce_key;
-//   
+//
 //   case SCV_CONTRACT_INSTANCE:
 //       SCContractInstance instance;
 //   };
@@ -9018,7 +9024,7 @@ xdr.const("SC_SPEC_DOC_LIMIT", 1024);
 //   enum SCSpecType
 //   {
 //       SC_SPEC_TYPE_VAL = 0,
-//   
+//
 //       // Types with no parameters.
 //       SC_SPEC_TYPE_BOOL = 1,
 //       SC_SPEC_TYPE_VOID = 2,
@@ -9037,7 +9043,7 @@ xdr.const("SC_SPEC_DOC_LIMIT", 1024);
 //       SC_SPEC_TYPE_STRING = 16,
 //       SC_SPEC_TYPE_SYMBOL = 17,
 //       SC_SPEC_TYPE_ADDRESS = 19,
-//   
+//
 //       // Types with parameters.
 //       SC_SPEC_TYPE_OPTION = 1000,
 //       SC_SPEC_TYPE_RESULT = 1001,
@@ -9045,7 +9051,7 @@ xdr.const("SC_SPEC_DOC_LIMIT", 1024);
 //       SC_SPEC_TYPE_MAP = 1004,
 //       SC_SPEC_TYPE_TUPLE = 1005,
 //       SC_SPEC_TYPE_BYTES_N = 1006,
-//   
+//
 //       // User defined types.
 //       SC_SPEC_TYPE_UDT = 2000
 //   };
@@ -9549,7 +9555,7 @@ xdr.struct("ConfigSettingContractExecutionLanesV0", [
 //       int64 txMaxInstructions;
 //       // Cost of 10000 instructions
 //       int64 feeRatePerInstructionsIncrement;
-//   
+//
 //       // Memory limit per transaction. Unlike instructions, there is no fee
 //       // for memory, just the limit.
 //       uint32 txMemoryLimit;
@@ -9575,7 +9581,7 @@ xdr.struct("ConfigSettingContractComputeV0", [
 //       uint32 ledgerMaxWriteLedgerEntries;
 //       // Maximum number of bytes that can be written per ledger
 //       uint32 ledgerMaxWriteBytes;
-//   
+//
 //       // Maximum number of ledger entry read operations per transaction
 //       uint32 txMaxReadLedgerEntries;
 //       // Maximum number of bytes that can be read per transaction
@@ -9584,18 +9590,18 @@ xdr.struct("ConfigSettingContractComputeV0", [
 //       uint32 txMaxWriteLedgerEntries;
 //       // Maximum number of bytes that can be written per transaction
 //       uint32 txMaxWriteBytes;
-//   
+//
 //       int64 feeReadLedgerEntry;  // Fee per ledger entry read
 //       int64 feeWriteLedgerEntry; // Fee per ledger entry write
-//   
+//
 //       int64 feeRead1KB;  // Fee for reading 1KB
-//   
+//
 //       // The following parameters determine the write fee per 1KB.
 //       // Write fee grows linearly until bucket list reaches this size
 //       int64 bucketListTargetSizeBytes;
 //       // Fee per 1KB write when the bucket list is empty
 //       int64 writeFee1KBBucketListLow;
-//       // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes` 
+//       // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes`
 //       int64 writeFee1KBBucketListHigh;
 //       // Write fee multiplier for any additional data past the first `bucketListTargetSizeBytes`
 //       uint32 bucketListWriteFeeGrowthFactor;
@@ -9656,7 +9662,7 @@ xdr.struct("ConfigSettingContractEventsV0", [
 //       uint32 ledgerMaxTxsSizeBytes;
 //       // Maximum size in bytes for a transaction
 //       uint32 txMaxSizeBytes;
-//   
+//
 //       // Fee for 1 KB of transaction size
 //       int64 feeTxSize1KB;
 //   };
@@ -9682,7 +9688,7 @@ xdr.struct("ConfigSettingContractBandwidthV0", [
 //       // Cost of a host function dispatch, not including the actual work done by
 //       // the function nor the cost of VM invocation machinary
 //       DispatchHostFunction = 4,
-//       // Cost of visiting a host object from the host object storage. Exists to 
+//       // Cost of visiting a host object from the host object storage. Exists to
 //       // make sure some baseline cost coverage, i.e. repeatly visiting objects
 //       // by the guest will always incur some charges.
 //       VisitObject = 5,
@@ -9722,7 +9728,7 @@ xdr.struct("ConfigSettingContractBandwidthV0", [
 //       Int256Shift = 21,
 //       // Cost of drawing random bytes using a ChaCha20 PRNG
 //       ChaCha20DrawBytes = 22,
-//   
+//
 //       // Cost of parsing wasm bytes that only encode instructions.
 //       ParseWasmInstructions = 23,
 //       // Cost of parsing a known number of wasm functions.
@@ -9743,7 +9749,7 @@ xdr.struct("ConfigSettingContractBandwidthV0", [
 //       ParseWasmExports = 31,
 //       // Cost of parsing a known number of data segment bytes.
 //       ParseWasmDataSegmentBytes = 32,
-//   
+//
 //       // Cost of instantiating wasm bytes that only encode instructions.
 //       InstantiateWasmInstructions = 33,
 //       // Cost of instantiating a known number of wasm functions.
@@ -9764,7 +9770,7 @@ xdr.struct("ConfigSettingContractBandwidthV0", [
 //       InstantiateWasmExports = 41,
 //       // Cost of instantiating a known number of data segment bytes.
 //       InstantiateWasmDataSegmentBytes = 42,
-//   
+//
 //       // Cost of decoding a bytes array representing an uncompressed SEC-1 encoded
 //       // point on a 256-bit elliptic curve
 //       Sec1DecodePointUncompressed = 43,
@@ -9826,7 +9832,7 @@ xdr.enum("ContractCostType", {
 //   struct ContractCostParamEntry {
 //       // use `ext` to add more terms (e.g. higher order polynomials) in the future
 //       ExtensionPoint ext;
-//   
+//
 //       int64 constTerm;
 //       int64 linearTerm;
 //   };
@@ -9844,23 +9850,23 @@ xdr.struct("ContractCostParamEntry", [
 //       uint32 maxEntryTTL;
 //       uint32 minTemporaryTTL;
 //       uint32 minPersistentTTL;
-//   
+//
 //       // rent_fee = wfee_rate_average / rent_rate_denominator_for_type
 //       int64 persistentRentRateDenominator;
 //       int64 tempRentRateDenominator;
-//   
+//
 //       // max number of entries that emit archival meta in a single ledger
 //       uint32 maxEntriesToArchive;
-//   
+//
 //       // Number of snapshots to use when calculating average BucketList size
 //       uint32 bucketListSizeWindowSampleSize;
-//   
+//
 //       // How often to sample the BucketList size for the average, in ledgers
 //       uint32 bucketListWindowSamplePeriod;
-//   
+//
 //       // Maximum number of bytes that we scan for eviction per ledger
 //       uint32 evictionScanSize;
-//   
+//
 //       // Lowest BucketList level to be scanned to evict entries
 //       uint32 startingEvictionScanLevel;
 //   };
