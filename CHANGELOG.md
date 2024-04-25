@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## [`v11.1.0`](https://github.com/stellar/js-stellar-base/compare/v11.1.0...v11.1.1)
+
+### Added
+* The generated XDR has been upgraded to match the upcoming Protocol 21, namely stellar/stellar-xdr@1a04392432dacc0092caaeae22a600ea1af3c6a5 ([TODO]()).
+
+
 ## [`v11.0.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.0...v11.0.1)
 
 ### Fixed
