@@ -1,7 +1,7 @@
 // TypeScript Version: 2.9
 
 /// <reference types="node" />
-import { xdr } from "./xdr";
+import { xdr } from './xdr';
 
 export { xdr };
 
@@ -53,12 +53,16 @@ export class MuxedAccount {
 }
 
 export namespace AssetType {
-  type native = "native";
-  type credit4 = "credit_alphanum4";
-  type credit12 = "credit_alphanum12";
-  type liquidityPoolShares = "liquidity_pool_shares";
+  type native = 'native';
+  type credit4 = 'credit_alphanum4';
+  type credit12 = 'credit_alphanum12';
+  type liquidityPoolShares = 'liquidity_pool_shares';
 }
-export type AssetType = AssetType.native | AssetType.credit4 | AssetType.credit12 | AssetType.liquidityPoolShares;
+export type AssetType =
+  | AssetType.native
+  | AssetType.credit4
+  | AssetType.credit12
+  | AssetType.liquidityPoolShares;
 
 export class Asset {
   static native(): Asset;
@@ -126,7 +130,7 @@ export class Claimant {
 
 export const FastSigning: boolean;
 
-export type KeypairType = "ed25519";
+export type KeypairType = 'ed25519';
 
 export class Keypair {
   static fromRawEd25519Seed(secretSeed: Buffer): Keypair;
@@ -138,14 +142,14 @@ export class Keypair {
   constructor(
     keys:
       | {
-          type: KeypairType;
-          secretKey: string | Buffer;
-          publicKey?: string | Buffer;
-        }
+        type: KeypairType;
+        secretKey: string | Buffer;
+        publicKey?: string | Buffer
+      }
       | {
-          type: KeypairType;
-          publicKey: string | Buffer;
-        }
+        type: KeypairType;
+        publicKey: string | Buffer
+      }
   );
 
   readonly type: KeypairType;
@@ -167,10 +171,7 @@ export class Keypair {
 
 export const LiquidityPoolFeeV18 = 30;
 
-export function getLiquidityPoolId(
-  liquidityPoolType: LiquidityPoolType,
-  liquidityPoolParameters: LiquidityPoolParameters
-): Buffer;
+export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
 
 export namespace LiquidityPoolParameters {
   interface ConstantProduct {
@@ -179,18 +180,20 @@ export namespace LiquidityPoolParameters {
     fee: number;
   }
 }
-export type LiquidityPoolParameters = LiquidityPoolParameters.ConstantProduct;
+export type LiquidityPoolParameters =
+  | LiquidityPoolParameters.ConstantProduct;
 
 export namespace LiquidityPoolType {
-  type constantProduct = "constant_product";
+  type constantProduct = 'constant_product';
 }
-export type LiquidityPoolType = LiquidityPoolType.constantProduct;
+export type LiquidityPoolType =
+  | LiquidityPoolType.constantProduct;
 
-export const MemoNone = "none";
-export const MemoID = "id";
-export const MemoText = "text";
-export const MemoHash = "hash";
-export const MemoReturn = "return";
+export const MemoNone = 'none';
+export const MemoID = 'id';
+export const MemoText = 'text';
+export const MemoHash = 'hash';
+export const MemoReturn = 'return';
 export namespace MemoType {
   type None = typeof MemoNone;
   type ID = typeof MemoID;
@@ -198,7 +201,12 @@ export namespace MemoType {
   type Hash = typeof MemoHash;
   type Return = typeof MemoReturn;
 }
-export type MemoType = MemoType.None | MemoType.ID | MemoType.Text | MemoType.Hash | MemoType.Return;
+export type MemoType =
+  | MemoType.None
+  | MemoType.ID
+  | MemoType.Text
+  | MemoType.Hash
+  | MemoType.Return;
 export type MemoValue = null | string | Buffer;
 
 export class Memo<T extends MemoType = MemoType> {
@@ -211,31 +219,34 @@ export class Memo<T extends MemoType = MemoType> {
 
   constructor(type: MemoType.None, value?: null);
   constructor(type: MemoType.Hash | MemoType.Return, value: Buffer);
-  constructor(type: MemoType.Hash | MemoType.Return | MemoType.ID | MemoType.Text, value: string);
+  constructor(
+    type: MemoType.Hash | MemoType.Return | MemoType.ID | MemoType.Text,
+    value: string
+  );
   constructor(type: T, value: MemoValue);
 
   type: T;
   value: T extends MemoType.None
     ? null
     : T extends MemoType.ID
-      ? string
-      : T extends MemoType.Text
-        ? string | Buffer // github.com/stellar/js-stellar-base/issues/152
-        : T extends MemoType.Hash
-          ? Buffer
-          : T extends MemoType.Return
-            ? Buffer
-            : MemoValue;
+    ? string
+    : T extends MemoType.Text
+    ? string | Buffer // github.com/stellar/js-stellar-base/issues/152
+    : T extends MemoType.Hash
+    ? Buffer
+    : T extends MemoType.Return
+    ? Buffer
+    : MemoValue;
 
   toXDRObject(): xdr.Memo;
 }
 
 export enum Networks {
-  PUBLIC = "Public Global Stellar Network ; September 2015",
-  TESTNET = "Test SDF Network ; September 2015",
-  FUTURENET = "Test SDF Future Network ; October 2022",
-  SANDBOX = "Local Sandbox Stellar Network ; September 2022",
-  STANDALONE = "Standalone Network ; February 2017",
+  PUBLIC = 'Public Global Stellar Network ; September 2015',
+  TESTNET = 'Test SDF Network ; September 2015',
+  FUTURENET = 'Test SDF Future Network ; October 2022',
+  SANDBOX = 'Local Sandbox Stellar Network ; September 2022',
+  STANDALONE = 'Standalone Network ; February 2017'
 }
 
 export const AuthRequiredFlag: 1;
@@ -248,7 +259,11 @@ export namespace AuthFlag {
   type revocable = typeof AuthRevocableFlag;
   type clawbackEnabled = typeof AuthClawbackEnabledFlag;
 }
-export type AuthFlag = AuthFlag.required | AuthFlag.immutable | AuthFlag.revocable | AuthFlag.clawbackEnabled;
+export type AuthFlag =
+  | AuthFlag.required
+  | AuthFlag.immutable
+  | AuthFlag.revocable
+  | AuthFlag.clawbackEnabled;
 
 export namespace TrustLineFlag {
   type deauthorize = 0;
@@ -292,7 +307,11 @@ export namespace SignerKeyOptions {
     ed25519SignedPayload: string;
   }
 }
-export type Signer = Signer.Ed25519PublicKey | Signer.Sha256Hash | Signer.PreAuthTx | Signer.Ed25519SignedPayload;
+export type Signer =
+  | Signer.Ed25519PublicKey
+  | Signer.Sha256Hash
+  | Signer.PreAuthTx
+  | Signer.Ed25519SignedPayload;
 
 export type SignerKeyOptions =
   | SignerKeyOptions.Ed25519PublicKey
@@ -325,39 +344,39 @@ export type SignerOptions =
   | SignerOptions.Ed25519SignedPayload;
 
 export namespace OperationType {
-  type CreateAccount = "createAccount";
-  type Payment = "payment";
-  type PathPaymentStrictReceive = "pathPaymentStrictReceive";
-  type PathPaymentStrictSend = "pathPaymentStrictSend";
-  type CreatePassiveSellOffer = "createPassiveSellOffer";
-  type ManageSellOffer = "manageSellOffer";
-  type ManageBuyOffer = "manageBuyOffer";
-  type SetOptions = "setOptions";
-  type ChangeTrust = "changeTrust";
-  type AllowTrust = "allowTrust";
-  type AccountMerge = "accountMerge";
-  type Inflation = "inflation";
-  type ManageData = "manageData";
-  type BumpSequence = "bumpSequence";
-  type CreateClaimableBalance = "createClaimableBalance";
-  type ClaimClaimableBalance = "claimClaimableBalance";
-  type BeginSponsoringFutureReserves = "beginSponsoringFutureReserves";
-  type EndSponsoringFutureReserves = "endSponsoringFutureReserves";
-  type RevokeAccountSponsorship = "revokeAccountSponsorship";
-  type RevokeTrustlineSponsorship = "revokeTrustlineSponsorship";
-  type RevokeOfferSponsorship = "revokeOfferSponsorship";
-  type RevokeDataSponsorship = "revokeDataSponsorship";
-  type RevokeClaimableBalanceSponsorship = "revokeClaimableBalanceSponsorship";
-  type RevokeLiquidityPoolSponsorship = "revokeLiquidityPoolSponsorship";
-  type RevokeSignerSponsorship = "revokeSignerSponsorship";
-  type Clawback = "clawback";
-  type ClawbackClaimableBalance = "clawbackClaimableBalance";
-  type SetTrustLineFlags = "setTrustLineFlags";
-  type LiquidityPoolDeposit = "liquidityPoolDeposit";
-  type LiquidityPoolWithdraw = "liquidityPoolWithdraw";
-  type InvokeHostFunction = "invokeHostFunction";
-  type ExtendFootprintTTL = "extendFootprintTtl";
-  type RestoreFootprint = "restoreFootprint";
+  type CreateAccount = 'createAccount';
+  type Payment = 'payment';
+  type PathPaymentStrictReceive = 'pathPaymentStrictReceive';
+  type PathPaymentStrictSend = 'pathPaymentStrictSend';
+  type CreatePassiveSellOffer = 'createPassiveSellOffer';
+  type ManageSellOffer = 'manageSellOffer';
+  type ManageBuyOffer = 'manageBuyOffer';
+  type SetOptions = 'setOptions';
+  type ChangeTrust = 'changeTrust';
+  type AllowTrust = 'allowTrust';
+  type AccountMerge = 'accountMerge';
+  type Inflation = 'inflation';
+  type ManageData = 'manageData';
+  type BumpSequence = 'bumpSequence';
+  type CreateClaimableBalance = 'createClaimableBalance';
+  type ClaimClaimableBalance = 'claimClaimableBalance';
+  type BeginSponsoringFutureReserves = 'beginSponsoringFutureReserves';
+  type EndSponsoringFutureReserves = 'endSponsoringFutureReserves';
+  type RevokeAccountSponsorship = 'revokeAccountSponsorship';
+  type RevokeTrustlineSponsorship = 'revokeTrustlineSponsorship';
+  type RevokeOfferSponsorship = 'revokeOfferSponsorship';
+  type RevokeDataSponsorship = 'revokeDataSponsorship';
+  type RevokeClaimableBalanceSponsorship = 'revokeClaimableBalanceSponsorship';
+  type RevokeLiquidityPoolSponsorship = 'revokeLiquidityPoolSponsorship';
+  type RevokeSignerSponsorship = 'revokeSignerSponsorship';
+  type Clawback = 'clawback';
+  type ClawbackClaimableBalance = 'clawbackClaimableBalance';
+  type SetTrustLineFlags = 'setTrustLineFlags';
+  type LiquidityPoolDeposit = 'liquidityPoolDeposit';
+  type LiquidityPoolWithdraw = 'liquidityPoolWithdraw';
+  type InvokeHostFunction = 'invokeHostFunction';
+  type ExtendFootprintTTL = 'extendFootprintTtl';
+  type RestoreFootprint = 'restoreFootprint';
 }
 export type OperationType =
   | OperationType.CreateAccount
@@ -379,6 +398,7 @@ export type OperationType =
   | OperationType.BeginSponsoringFutureReserves
   | OperationType.EndSponsoringFutureReserves
   | OperationType.RevokeAccountSponsorship
+  | OperationType.RevokeTrustlineSponsorship
   | OperationType.RevokeTrustlineSponsorship
   | OperationType.RevokeOfferSponsorship
   | OperationType.RevokeDataSponsorship
@@ -615,7 +635,9 @@ export namespace Operation {
   interface AccountMerge extends BaseOperation<OperationType.AccountMerge> {
     destination: string;
   }
-  function accountMerge(options: OperationOptions.AccountMerge): xdr.Operation<AccountMerge>;
+  function accountMerge(
+    options: OperationOptions.AccountMerge
+  ): xdr.Operation<AccountMerge>;
 
   interface AllowTrust extends BaseOperation<OperationType.AllowTrust> {
     trustor: string;
@@ -623,21 +645,28 @@ export namespace Operation {
     // this is a boolean or a number so that it can support protocol 12 or 13
     authorize: boolean | TrustLineFlag | undefined;
   }
-  function allowTrust(options: OperationOptions.AllowTrust): xdr.Operation<AllowTrust>;
+  function allowTrust(
+    options: OperationOptions.AllowTrust
+  ): xdr.Operation<AllowTrust>;
 
   interface ChangeTrust extends BaseOperation<OperationType.ChangeTrust> {
     line: Asset | LiquidityPoolAsset;
     limit: string;
   }
-  function changeTrust(options: OperationOptions.ChangeTrust): xdr.Operation<ChangeTrust>;
+  function changeTrust(
+    options: OperationOptions.ChangeTrust
+  ): xdr.Operation<ChangeTrust>;
 
   interface CreateAccount extends BaseOperation<OperationType.CreateAccount> {
     destination: string;
     startingBalance: string;
   }
-  function createAccount(options: OperationOptions.CreateAccount): xdr.Operation<CreateAccount>;
+  function createAccount(
+    options: OperationOptions.CreateAccount
+  ): xdr.Operation<CreateAccount>;
 
-  interface CreatePassiveSellOffer extends BaseOperation<OperationType.CreatePassiveSellOffer> {
+  interface CreatePassiveSellOffer
+    extends BaseOperation<OperationType.CreatePassiveSellOffer> {
     selling: Asset;
     buying: Asset;
     amount: string;
@@ -648,22 +677,29 @@ export namespace Operation {
   ): xdr.Operation<CreatePassiveSellOffer>;
 
   interface Inflation extends BaseOperation<OperationType.Inflation> {}
-  function inflation(options: OperationOptions.Inflation): xdr.Operation<Inflation>;
+  function inflation(
+    options: OperationOptions.Inflation
+  ): xdr.Operation<Inflation>;
 
   interface ManageData extends BaseOperation<OperationType.ManageData> {
     name: string;
     value?: Buffer;
   }
-  function manageData(options: OperationOptions.ManageData): xdr.Operation<ManageData>;
+  function manageData(
+    options: OperationOptions.ManageData
+  ): xdr.Operation<ManageData>;
 
-  interface ManageSellOffer extends BaseOperation<OperationType.ManageSellOffer> {
+  interface ManageSellOffer
+    extends BaseOperation<OperationType.ManageSellOffer> {
     selling: Asset;
     buying: Asset;
     amount: string;
     price: string;
     offerId: string;
   }
-  function manageSellOffer(options: OperationOptions.ManageSellOffer): xdr.Operation<ManageSellOffer>;
+  function manageSellOffer(
+    options: OperationOptions.ManageSellOffer
+  ): xdr.Operation<ManageSellOffer>;
 
   interface ManageBuyOffer extends BaseOperation<OperationType.ManageBuyOffer> {
     selling: Asset;
@@ -672,9 +708,12 @@ export namespace Operation {
     price: string;
     offerId: string;
   }
-  function manageBuyOffer(options: OperationOptions.ManageBuyOffer): xdr.Operation<ManageBuyOffer>;
+  function manageBuyOffer(
+    options: OperationOptions.ManageBuyOffer
+  ): xdr.Operation<ManageBuyOffer>;
 
-  interface PathPaymentStrictReceive extends BaseOperation<OperationType.PathPaymentStrictReceive> {
+  interface PathPaymentStrictReceive
+    extends BaseOperation<OperationType.PathPaymentStrictReceive> {
     sendAsset: Asset;
     sendMax: string;
     destination: string;
@@ -686,7 +725,8 @@ export namespace Operation {
     options: OperationOptions.PathPaymentStrictReceive
   ): xdr.Operation<PathPaymentStrictReceive>;
 
-  interface PathPaymentStrictSend extends BaseOperation<OperationType.PathPaymentStrictSend> {
+  interface PathPaymentStrictSend
+    extends BaseOperation<OperationType.PathPaymentStrictSend> {
     sendAsset: Asset;
     sendAmount: string;
     destination: string;
@@ -694,7 +734,9 @@ export namespace Operation {
     destMin: string;
     path: Asset[];
   }
-  function pathPaymentStrictSend(options: OperationOptions.PathPaymentStrictSend): xdr.Operation<PathPaymentStrictSend>;
+  function pathPaymentStrictSend(
+    options: OperationOptions.PathPaymentStrictSend
+  ): xdr.Operation<PathPaymentStrictSend>;
 
   interface Payment extends BaseOperation<OperationType.Payment> {
     amount: string;
@@ -703,7 +745,8 @@ export namespace Operation {
   }
   function payment(options: OperationOptions.Payment): xdr.Operation<Payment>;
 
-  interface SetOptions<T extends SignerOptions = SignerOptions> extends BaseOperation<OperationType.SetOptions> {
+  interface SetOptions<T extends SignerOptions = SignerOptions>
+    extends BaseOperation<OperationType.SetOptions> {
     inflationDest?: string;
     clearFlags?: AuthFlag;
     setFlags?: AuthFlag;
@@ -715,12 +758,12 @@ export namespace Operation {
     signer: T extends { ed25519PublicKey: any }
       ? Signer.Ed25519PublicKey
       : T extends { sha256Hash: any }
-        ? Signer.Sha256Hash
-        : T extends { preAuthTx: any }
-          ? Signer.PreAuthTx
-          : T extends { ed25519SignedPayload: any }
-            ? Signer.Ed25519SignedPayload
-            : never;
+      ? Signer.Sha256Hash
+      : T extends { preAuthTx: any }
+      ? Signer.PreAuthTx
+      : T extends { ed25519SignedPayload: any }
+      ? Signer.Ed25519SignedPayload
+      : never;
   }
   function setOptions<T extends SignerOptions = never>(
     options: OperationOptions.SetOptions<T>
@@ -729,7 +772,9 @@ export namespace Operation {
   interface BumpSequence extends BaseOperation<OperationType.BumpSequence> {
     bumpTo: string;
   }
-  function bumpSequence(options: OperationOptions.BumpSequence): xdr.Operation<BumpSequence>;
+  function bumpSequence(
+    options: OperationOptions.BumpSequence
+  ): xdr.Operation<BumpSequence>;
 
   interface CreateClaimableBalance extends BaseOperation<OperationType.CreateClaimableBalance> {
     amount: string;
@@ -743,7 +788,9 @@ export namespace Operation {
   interface ClaimClaimableBalance extends BaseOperation<OperationType.ClaimClaimableBalance> {
     balanceId: string;
   }
-  function claimClaimableBalance(options: OperationOptions.ClaimClaimableBalance): xdr.Operation<ClaimClaimableBalance>;
+  function claimClaimableBalance(
+    options: OperationOptions.ClaimClaimableBalance
+  ): xdr.Operation<ClaimClaimableBalance>;
 
   interface BeginSponsoringFutureReserves extends BaseOperation<OperationType.BeginSponsoringFutureReserves> {
     sponsoredId: string;
@@ -752,7 +799,8 @@ export namespace Operation {
     options: OperationOptions.BeginSponsoringFutureReserves
   ): xdr.Operation<BeginSponsoringFutureReserves>;
 
-  interface EndSponsoringFutureReserves extends BaseOperation<OperationType.EndSponsoringFutureReserves> {}
+  interface EndSponsoringFutureReserves extends BaseOperation<OperationType.EndSponsoringFutureReserves> {
+  }
   function endSponsoringFutureReserves(
     options: OperationOptions.BaseOptions
   ): xdr.Operation<EndSponsoringFutureReserves>;
@@ -784,7 +832,9 @@ export namespace Operation {
     account: string;
     name: string;
   }
-  function revokeDataSponsorship(options: OperationOptions.RevokeDataSponsorship): xdr.Operation<RevokeDataSponsorship>;
+  function revokeDataSponsorship(
+    options: OperationOptions.RevokeDataSponsorship
+  ): xdr.Operation<RevokeDataSponsorship>;
 
   interface RevokeClaimableBalanceSponsorship extends BaseOperation<OperationType.RevokeClaimableBalanceSponsorship> {
     balanceId: string;
@@ -813,7 +863,9 @@ export namespace Operation {
     amount: string;
     from: string;
   }
-  function clawback(options: OperationOptions.Clawback): xdr.Operation<Clawback>;
+  function clawback(
+    options: OperationOptions.Clawback
+  ): xdr.Operation<Clawback>;
 
   interface ClawbackClaimableBalance extends BaseOperation<OperationType.ClawbackClaimableBalance> {
     balanceId: string;
@@ -831,7 +883,9 @@ export namespace Operation {
       clawbackEnabled?: boolean;
     };
   }
-  function setTrustLineFlags(options: OperationOptions.SetTrustLineFlags): xdr.Operation<SetTrustLineFlags>;
+  function setTrustLineFlags(
+    options: OperationOptions.SetTrustLineFlags
+  ): xdr.Operation<SetTrustLineFlags>;
   interface LiquidityPoolDeposit extends BaseOperation<OperationType.LiquidityPoolDeposit> {
     liquidityPoolId: string;
     maxAmountA: string;
@@ -839,36 +893,53 @@ export namespace Operation {
     minPrice: string;
     maxPrice: string;
   }
-  function liquidityPoolDeposit(options: OperationOptions.LiquidityPoolDeposit): xdr.Operation<LiquidityPoolDeposit>;
+  function liquidityPoolDeposit(
+    options: OperationOptions.LiquidityPoolDeposit
+  ): xdr.Operation<LiquidityPoolDeposit>;
   interface LiquidityPoolWithdraw extends BaseOperation<OperationType.LiquidityPoolWithdraw> {
     liquidityPoolId: string;
     amount: string;
     minAmountA: string;
     minAmountB: string;
   }
-  function liquidityPoolWithdraw(options: OperationOptions.LiquidityPoolWithdraw): xdr.Operation<LiquidityPoolWithdraw>;
+  function liquidityPoolWithdraw(
+    options: OperationOptions.LiquidityPoolWithdraw
+  ): xdr.Operation<LiquidityPoolWithdraw>;
   interface InvokeHostFunction extends BaseOperation<OperationType.InvokeHostFunction> {
     func: xdr.HostFunction;
     auth?: xdr.SorobanAuthorizationEntry[];
   }
-  function invokeHostFunction(options: OperationOptions.InvokeHostFunction): xdr.Operation<InvokeHostFunction>;
+  function invokeHostFunction(
+    options: OperationOptions.InvokeHostFunction
+  ): xdr.Operation<InvokeHostFunction>;
 
-  function extendFootprintTtl(options: OperationOptions.ExtendFootprintTTL): xdr.Operation<ExtendFootprintTTL>;
+  function extendFootprintTtl(
+    options: OperationOptions.ExtendFootprintTTL
+  ): xdr.Operation<ExtendFootprintTTL>;
   interface ExtendFootprintTTL extends BaseOperation<OperationType.ExtendFootprintTTL> {
     extendTo: number;
   }
 
-  function restoreFootprint(options: OperationOptions.RestoreFootprint): xdr.Operation<RestoreFootprint>;
+  function restoreFootprint(options: OperationOptions.RestoreFootprint):
+    xdr.Operation<RestoreFootprint>;
   interface RestoreFootprint extends BaseOperation<OperationType.RestoreFootprint> {}
 
-  function createCustomContract(opts: OperationOptions.CreateCustomContract): xdr.Operation<InvokeHostFunction>;
+  function createCustomContract(
+    opts: OperationOptions.CreateCustomContract
+  ): xdr.Operation<InvokeHostFunction>;
   function createStellarAssetContract(
     opts: OperationOptions.CreateStellarAssetContract
   ): xdr.Operation<InvokeHostFunction>;
-  function invokeContractFunction(opts: OperationOptions.InvokeContractFunction): xdr.Operation<InvokeHostFunction>;
-  function uploadContractWasm(opts: OperationOptions.UploadContractWasm): xdr.Operation<InvokeHostFunction>;
+  function invokeContractFunction(
+    opts: OperationOptions.InvokeContractFunction
+  ): xdr.Operation<InvokeHostFunction>;
+  function uploadContractWasm(
+    opts: OperationOptions.UploadContractWasm
+  ): xdr.Operation<InvokeHostFunction>;
 
-  function fromXDRObject<T extends Operation = Operation>(xdrOperation: xdr.Operation<T>): T;
+  function fromXDRObject<T extends Operation = Operation>(
+    xdrOperation: xdr.Operation<T>
+  ): T;
 }
 export type Operation =
   | Operation.CreateAccount
@@ -954,13 +1025,22 @@ export class TransactionI {
 }
 
 export class FeeBumpTransaction extends TransactionI {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+  constructor(
+    envelope: string | xdr.TransactionEnvelope,
+    networkPassphrase: string
+  );
   feeSource: string;
   innerTransaction: Transaction;
 }
 
-export class Transaction<TMemo extends Memo = Memo, TOps extends Operation[] = Operation[]> extends TransactionI {
-  constructor(envelope: string | xdr.TransactionEnvelope, networkPassphrase: string);
+export class Transaction<
+  TMemo extends Memo = Memo,
+  TOps extends Operation[] = Operation[]
+> extends TransactionI {
+  constructor(
+    envelope: string | xdr.TransactionEnvelope,
+    networkPassphrase: string
+  );
   memo: TMemo;
   operations: TOps;
   sequence: string;
@@ -981,11 +1061,14 @@ export class Transaction<TMemo extends Memo = Memo, TOps extends Operation[] = O
   getClaimableBalanceId(opIndex: number): string;
 }
 
-export const BASE_FEE = "100";
+export const BASE_FEE = '100';
 export const TimeoutInfinite = 0;
 
 export class TransactionBuilder {
-  constructor(sourceAccount: Account, options?: TransactionBuilder.TransactionBuilderOptions);
+  constructor(
+    sourceAccount: Account,
+    options?: TransactionBuilder.TransactionBuilderOptions
+  );
   addOperation(operation: xdr.Operation): this;
   clearOperations(): this;
   addMemo(memo: Memo): this;
@@ -1000,7 +1083,10 @@ export class TransactionBuilder {
   build(): Transaction;
   setNetworkPassphrase(networkPassphrase: string): this;
 
-  static cloneFrom(tx: Transaction, optionOverrides?: TransactionBuilder.TransactionBuilderOptions): TransactionBuilder;
+  static cloneFrom(
+    tx: Transaction,
+    optionOverrides?: TransactionBuilder.TransactionBuilderOptions
+  ): TransactionBuilder;
   static buildFeeBumpTransaction(
     feeSource: Keypair | string,
     baseFee: string,
@@ -1037,7 +1123,11 @@ export namespace TransactionBuilder {
 
 export function hash(data: Buffer): Buffer;
 export function sign(data: Buffer, rawSecret: Buffer): Buffer;
-export function verify(data: Buffer, signature: Buffer, rawPublicKey: Buffer): boolean;
+export function verify(
+  data: Buffer,
+  signature: Buffer,
+  rawPublicKey: Buffer
+): boolean;
 
 export function decodeAddressToMuxedAccount(address: string, supportMuxing: boolean): xdr.MuxedAccount;
 export function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
@@ -1045,10 +1135,19 @@ export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccou
 export function extractBaseAddress(address: string): string;
 
 export type IntLike = string | number | bigint;
-export type ScIntType = "i64" | "u64" | "i128" | "u128" | "i256" | "u256";
+export type ScIntType =
+  | 'i64'
+  | 'u64'
+  | 'i128'
+  | 'u128'
+  | 'i256'
+  | 'u256';
 
 export class XdrLargeInt {
-  constructor(type: ScIntType, values: IntLike | IntLike[]);
+  constructor(
+    type: ScIntType,
+    values: IntLike | IntLike[]
+  );
 
   toNumber(): number;
   toBigInt(): bigint;
@@ -1081,24 +1180,36 @@ export function nativeToScVal(val: any, opts?: { type: any }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
 
 interface SorobanEvent {
-  type: "system" | "contract" | "diagnostic"; // xdr.ContractEventType.name
-  contractId?: string; // C... encoded strkey
+  type: 'system'|'contract'|'diagnostic';   // xdr.ContractEventType.name
+  contractId?: string;                      // C... encoded strkey
 
-  topics: any[]; // essentially a call of map(event.body.topics, scValToNative)
-  data: any; // similarly, scValToNative(rawEvent.data);
+  topics: any[];  // essentially a call of map(event.body.topics, scValToNative)
+  data: any;      // similarly, scValToNative(rawEvent.data);
 }
 
-export function humanizeEvents(events: xdr.DiagnosticEvent[] | xdr.ContractEvent[]): SorobanEvent[];
+export function humanizeEvents(
+  events: xdr.DiagnosticEvent[] | xdr.ContractEvent[]
+): SorobanEvent[];
 
 export class SorobanDataBuilder {
   constructor(data?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
   static fromXDR(data: Uint8Array | Buffer | string): SorobanDataBuilder;
 
   setResourceFee(fee: IntLike): SorobanDataBuilder;
-  setResources(cpuInstrs: number, readBytes: number, writeBytes: number): SorobanDataBuilder;
+  setResources(
+    cpuInstrs: number,
+    readBytes: number,
+    writeBytes: number
+  ): SorobanDataBuilder;
 
-  setFootprint(readOnly?: xdr.LedgerKey[] | null, readWrite?: xdr.LedgerKey[] | null): SorobanDataBuilder;
-  appendFootprint(readOnly: xdr.LedgerKey[], readWrite: xdr.LedgerKey[]): SorobanDataBuilder;
+  setFootprint(
+    readOnly?: xdr.LedgerKey[] | null,
+    readWrite?: xdr.LedgerKey[] | null
+  ): SorobanDataBuilder;
+  appendFootprint(
+    readOnly: xdr.LedgerKey[],
+    readWrite: xdr.LedgerKey[]
+  ): SorobanDataBuilder;
 
   setReadOnly(keys: xdr.LedgerKey[]): SorobanDataBuilder;
   setReadWrite(keys: xdr.LedgerKey[]): SorobanDataBuilder;
@@ -1130,12 +1241,12 @@ export function authorizeEntry(
 ): Promise<xdr.SorobanAuthorizationEntry>;
 
 export interface CreateInvocation {
-  type: "wasm" | "sac";
+  type: 'wasm' | 'sac';
   token?: string;
   wasm?: {
-    hash: string;
-    address: string;
-    salt: string;
+      hash: string;
+      address: string;
+      salt: string;
   };
 }
 
@@ -1146,16 +1257,25 @@ export interface ExecuteInvocation {
 }
 
 export interface InvocationTree {
-  type: "execute" | "create";
+  type: 'execute' | 'create';
   args: CreateInvocation | ExecuteInvocation;
   invocations: InvocationTree[];
 }
 
-export function buildInvocationTree(root: xdr.SorobanAuthorizedInvocation): InvocationTree;
+export function buildInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation
+): InvocationTree;
 
-export type InvocationWalker = (node: xdr.SorobanAuthorizedInvocation, depth: number, parent?: any) => boolean | null;
+export type InvocationWalker = (
+  node: xdr.SorobanAuthorizedInvocation,
+  depth: number,
+  parent?: any
+) => boolean|null;
 
-export function walkInvocationTree(root: xdr.SorobanAuthorizedInvocation, callback: InvocationWalker): void;
+export function walkInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation,
+  callback: InvocationWalker
+): void;
 
 export namespace Soroban {
   function formatTokenAmount(address: string, decimals: number): string;
