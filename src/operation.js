@@ -383,7 +383,7 @@ export class Operation {
       }
       case 'extendFootprintTtl': {
         result.type = 'extendFootprintTtl';
-        result.extendTo = attrs.extendTo();
+        result.minimumTtl = attrs.extendTo();
         break;
       }
       case 'restoreFootprint': {
