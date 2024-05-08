@@ -1,2 +1,4 @@
-import * as jsxdr from "@stellar/js-xdr";
-export default jsxdr;
+import { XdrWriter, XdrReader } from "@stellar/js-xdr";
+
+const cereal = { XdrWriter, XdrReader };
+export default cereal;

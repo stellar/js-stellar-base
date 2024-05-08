@@ -1268,3 +1268,41 @@ export namespace Soroban {
   function formatTokenAmount(address: string, decimals: number): string;
   function parseTokenAmount(value: string, decimals: number): string;
 }
+
+export namespace cereal {
+  // These belong in @stellar/js-xdr but that would be a huge lift since we'd
+  // need types for the whole thing.
+  export class XdrWriter {
+    constructor(buffer?: Buffer|number);
+
+    alloc(size: number): number;
+    resize(minRequiredSize: number): void;
+    finalize(): Buffer;
+    toArray(): number[];
+
+    write(value: Buffer|string, size: number): XdrReader;
+    writeInt32BE(value: number): void;
+    writeUInt32BE(value: number): void;
+    writeBigInt64BE(value: BigInt): void;
+    writeBigUInt64BE(value: BigInt): void;
+    writeFloatBE(value: number): void;
+    writeDoubleBE(value: number): void;
+  }
+
+  export class XdrReader {
+    constructor(data: Buffer);
+
+    eof: boolean;
+    advance(size: number): number;
+    rewind(): void;
+    ensureInputConsumed(): void;
+
+    read(size: number): Buffer;
+    readInt32BE(): number;
+    readUInt32BE(): number;
+    readBigInt64BE(): BigInt;
+    readBigUInt64BE(): BigInt;
+    readFloatBE(): number;
+    readDoubleBE(): number;
+  }
+}

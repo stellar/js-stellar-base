@@ -1,4 +1,9 @@
 describe('Soroban', function () {
+  it('should have XDR serialization', function() {
+    expect(StellarBase.cereal).not.to.be.undefined;
+    console.log(StellarBase.cereal);
+  });
+
   describe('formatTokenAmount', function () {
     const SUCCESS_TEST_CASES = [
       { amount: '1000000001', decimals: 7, expected: '100.0000001' },
