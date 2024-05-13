@@ -343,7 +343,7 @@ export function encodeCheck(versionByteName, data) {
 
   const versionBuffer = Buffer.from([versionByte]);
   const payload = Buffer.concat([versionBuffer, data]);
-  const checksum = calculateChecksum(payload);
+  const checksum = Buffer.from(calculateChecksum(payload));
   const unencoded = Buffer.concat([payload, checksum]);
 
   return base32.encode(unencoded);
