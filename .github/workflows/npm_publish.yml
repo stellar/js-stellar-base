@@ -13,7 +13,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Depencencies
@@ -32,7 +32,9 @@ jobs:
 
       - name: Deprecate the old package
         run: |
-          npm deprecate stellar-base@"<= 11.0.0" "⚠️ This package has moved to @stellar/stellar-base! 🚚"
+          V=$(cat package.json | jq '.version' | sed -e 's/\"//g')
+          echo "Deprecating stellar-base@$V"
+          npm deprecate stellar-base@"<= $V" "⚠️ This package has moved to @stellar/stellar-base! 🚚"
           npm deprecate @stellar/stellar-base@"= 11.1.0" "⚠️ This version contains breaking changes, use v11.0.1 for compatibility or upgrade to v12."
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
