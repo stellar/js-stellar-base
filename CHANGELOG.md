@@ -13,6 +13,7 @@
 
 ### Fixed
 * Updated various dependencies ([#737](https://github.com/stellar/js-stellar-base/pull/737), [#739](https://github.com/stellar/js-stellar-base/pull/739)).
+* `Buffer` and `Uint8Array` compatibility has improved in `StrKey` ([#746](https://github.com/stellar/js-stellar-base/pull/746)).
 
 
 ## [`v11.0.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.0...v11.0.1)
