@@ -1,7 +1,9 @@
 /* eslint-disable import/no-import-module-exports */
 import xdr from './xdr';
+import cereal from './jsxdr';
 
 export { xdr };
+export { cereal };
 export { hash } from './hashing';
 export { sign, verify, FastSigning } from './signing';
 export {
