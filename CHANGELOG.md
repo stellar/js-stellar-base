@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## [`v12.0.0`](https://github.com/stellar/js-stellar-base/compare/v11.0.1...v12.0.0)
+
+This is a re-tag of v12.0.0-rc.1 with only developer dependency updates in-between.
+
+
 ## [`v12.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.1...v12.0.0-rc.1)
 
 ### Breaking Changes
