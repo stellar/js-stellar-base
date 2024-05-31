@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Breaking Changes
+* `Operation.extendFootprintTtl`'s `extendTo` field is now named `minimumTtl` for clarity: the value is a quantity of ledgers relative to the last-closed ledger.
+
 
 ## [`v12.0.0`](https://github.com/stellar/js-stellar-base/compare/v11.0.1...v12.0.0)
 

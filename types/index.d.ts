@@ -571,7 +571,7 @@ export namespace OperationOptions {
   }
 
   interface ExtendFootprintTTL extends BaseOptions {
-    extendTo: number;
+    minimumTtl: number;
   }
   type RestoreFootprint = BaseOptions;
 }
@@ -904,7 +904,7 @@ export namespace Operation {
     options: OperationOptions.ExtendFootprintTTL
   ): xdr.Operation<ExtendFootprintTTL>;
   interface ExtendFootprintTTL extends BaseOperation<OperationType.ExtendFootprintTTL> {
-    extendTo: number;
+    minimumTtl: number;
   }
 
   function restoreFootprint(options: OperationOptions.RestoreFootprint):
