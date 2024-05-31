@@ -696,15 +696,15 @@ export class TransactionBuilder {
     networkPassphrase
   ) {
     const innerOps = innerTx.operations.length;
-    const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
+    // const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
     const base = new BigNumber(baseFee);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction
-    if (base.lt(innerBaseFeeRate)) {
-      throw new Error(
-        `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
-      );
-    }
+    // if (base.lt(innerBaseFeeRate)) {
+    //   throw new Error(
+    //     `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
+    //   );
+    // }
 
     const minBaseFee = new BigNumber(BASE_FEE);
 
