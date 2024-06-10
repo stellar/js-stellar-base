@@ -4,9 +4,9 @@ import xdr from '../xdr';
  * Builds an operation to restore the archived ledger entries specified
  * by the ledger keys.
  *
- * The ledger keys to restore are specified separately from the operation 
+ * The ledger keys to restore are specified separately from the operation
  * in read-write footprint of the transaction.
- * 
+ *
  * It takes no parameters because the relevant footprint is derived from the
  * transaction itself. See {@link TransactionBuilder}'s `opts.sorobanData`
  * parameter (or {@link TransactionBuilder.setSorobanData} /
