@@ -6,7 +6,7 @@ import xdr from '../xdr';
  * the transaction.
  *
  * The only parameter of the operation itself is the new minimum TTL for
- * all the provided entries. If an entry already has a higher TTL, than it
+ * all the provided entries. If an entry already has a higher TTL, then it
  * will just be skipped.
  *
  * TTL is the number of ledgers from the current ledger (exclusive) until
