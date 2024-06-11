@@ -988,6 +988,7 @@ export namespace StrKey {
 
   function encodeContract(data: Buffer): string;
   function decodeContract(address: string): Buffer;
+  function isValidContract(address: string): boolean;
 }
 
 export namespace SignerKey {
