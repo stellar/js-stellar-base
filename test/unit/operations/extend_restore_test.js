@@ -14,7 +14,7 @@ describe('Operation', function () {
 
       expect(() => {
         StellarBase.Operation.extendFootprintTtl({ extendTo: 0 });
-      }).to.throw(/ledger quantity/i);
+      }).to.throw(/has to be positive/i);
     });
   });
 
