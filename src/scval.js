@@ -354,12 +354,12 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvError().value:
       // Distinguish errors from the user contract.
       if (scv.error().switch() === xdr.ScErrorType.sceContract().value) {
-        return { "type": "contract", "code": scv.error().contractCode() };
+        return { type: 'contract', code: scv.error().contractCode() };
       }
       return {
-        "type": "soroban",
-        "code": scv.error().code().value,
-        "value": scv.error().code().name,
+        type: 'soroban',
+        code: scv.error().code().value,
+        value: scv.error().code().name
       };
 
     // in the fallthrough case, just return the underlying value directly
