@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Fixed
+* `scValToNative` would fail when the values contained error codes because the parsing routine hadn't been updated to the new error schemas. Errors are now converted to the following format:
+
+```typescript
+interface Error {
+  type: "contract" | "soroban";
+  code: number;
+  value?: string; // only present for type === 'soroban'
+}
+```
+
+You can refer to the [XDR documentation](https://github.com/stellar/stellar-xdr/blob/70180d5e8d9caee9e8645ed8a38c36a8cf403cd9/Stellar-contract.x#L76-L115) for additional explanations for each error code.
+
 
 ## [`v12.0.0`](https://github.com/stellar/js-stellar-base/compare/v11.0.1...v12.0.0)
 

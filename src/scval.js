@@ -351,22 +351,16 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvDuration().value:
       return new xdr.Uint64(scv.value()).toBigInt();
 
-    case xdr.ScValType.scvStatus().value:
-      // TODO: Convert each status type into a human-readable error string?
-      switch (scv.value().switch()) {
-        case xdr.ScStatusType.sstOk().value:
-        case xdr.ScStatusType.sstUnknownError().value:
-        case xdr.ScStatusType.sstHostValueError().value:
-        case xdr.ScStatusType.sstHostObjectError().value:
-        case xdr.ScStatusType.sstHostFunctionError().value:
-        case xdr.ScStatusType.sstHostStorageError().value:
-        case xdr.ScStatusType.sstHostContextError().value:
-        case xdr.ScStatusType.sstVmError().value:
-        case xdr.ScStatusType.sstContractError().value:
-        case xdr.ScStatusType.sstHostAuthError().value:
-        default:
-          break;
+    case xdr.ScValType.scvError().value:
+      // Distinguish errors from the user contract.
+      if (scv.error().switch() === xdr.ScErrorType.sceContract().value) {
+        return { "type": "contract", "code": scv.error().contractCode() };
       }
+      return {
+        "type": "soroban",
+        "code": scv.error().code().value,
+        "value": scv.error().code().name,
+      };
 
     // in the fallthrough case, just return the underlying value directly
     default:
