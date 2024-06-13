@@ -352,15 +352,19 @@ export function scValToNative(scv) {
       return new xdr.Uint64(scv.value()).toBigInt();
 
     case xdr.ScValType.scvError().value:
-      // Distinguish errors from the user contract.
-      if (scv.error().switch() === xdr.ScErrorType.sceContract().value) {
-        return { type: 'contract', code: scv.error().contractCode() };
+      switch (scv.error().switch().value) {
+        // Distinguish errors from the user contract.
+        case xdr.ScErrorType.sceContract().value:
+          return { type: 'contract', code: scv.error().contractCode() };
+        default: {
+          const err = scv.error();
+          return {
+            type: 'system',
+            code: err.code().value,
+            value: err.code().name
+          };
+        }
       }
-      return {
-        type: 'soroban',
-        code: scv.error().code().value,
-        value: scv.error().code().name
-      };
 
     // in the fallthrough case, just return the underlying value directly
     default:

@@ -237,4 +237,22 @@ describe('parsing and building ScVals', function () {
       expect(scv).to.deep.equal(equiv);
     });
   });
+
+  it('parses errors', function () {
+    const userErr = xdr.ScVal.scvError(xdr.ScError.sceContract(1234));
+    const systemErr = xdr.ScVal.scvError(
+      xdr.ScError.sceWasmVm(xdr.ScErrorCode.scecInvalidInput())
+    );
+
+    const native = scValToNative(xdr.ScVal.scvVec([userErr, systemErr]));
+
+    expect(native).to.deep.equal([
+      { type: 'contract', code: 1234 },
+      {
+        type: 'system',
+        code: systemErr.error().code().value,
+        value: systemErr.error().code().name
+      }
+    ]);
+  });
 });
