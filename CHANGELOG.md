@@ -6,13 +6,14 @@
 ## [`v12.0.1`](https://github.com/stellar/js-stellar-base/compare/v12.0.0...v12.0.1)
 
 ### Fixed
-* `scValToNative` would fail when the values contained error codes because the parsing routine hadn't been updated to the new error schemas. Errors are now converted to the following format:
+* Export TypeScript definition for `StrKey.isValidContract` ([#751](https://github.com/stellar/js-stellar-base/pull/751)).
+* `scValToNative` would fail when the values contained error codes because the parsing routine hadn't been updated to the new error schemas. Errors are now converted to the following format ([#753](https://github.com/stellar/js-stellar-base/pull/753)):
 
 ```typescript
 interface Error {
-  type: "contract" | "soroban";
+  type: "contract" | "system";
   code: number;
-  value?: string; // only present for type === 'soroban'
+  value?: string; // only present for type === 'system'
 }
 ```
 
