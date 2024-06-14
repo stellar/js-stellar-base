@@ -11,9 +11,9 @@
 
 ```typescript
 interface Error {
-  type: "contract" | "soroban";
+  type: "contract" | "system";
   code: number;
-  value?: string; // only present for type === 'soroban'
+  value?: string; // only present for type === 'system'
 }
 ```
 
