@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## [`v12.0.1`](https://github.com/stellar/js-stellar-base/compare/v12.0.0...v12.0.1)
+
 ### Fixed
 * `scValToNative` would fail when the values contained error codes because the parsing routine hadn't been updated to the new error schemas. Errors are now converted to the following format:
 
