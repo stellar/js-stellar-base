@@ -226,14 +226,39 @@ export class TransactionBuilder {
   addOperation(operation) {
     this.operations.push(operation);
     return this;
+  }	
+  
+  /**
+  * Adds an operation to the transaction at a specific index.
+  *
+  * @param {xdr.Operation} operation - The xdr operation object to add, use {@link Operation} static methods.
+  * @param {number} index - The index at which to insert the operation.
+  *
+  * @returns {TransactionBuilder} - The TransactionBuilder instance for method chaining.
+  */
+  addOperationAtIndex(operation, index) {
+    this.operations.splice(index, 0, operation);
+    return this;
   }
 
   /**
-   * Removes the operations from the builder (useful when cloning).
-   * @returns {TransactionBuilder} this builder instance
-   */
+  * Removes the operations from the builder (useful when cloning).
+  * @returns {TransactionBuilder} this builder instance
+  */
   clearOperations() {
     this.operations = [];
+    return this;
+  }
+
+  /**
+  * Removes the operation at the specified index from the transaction.
+  *
+  * @param {number} index - The index of the operation to remove.
+  *
+  * @returns {TransactionBuilder} The TransactionBuilder instance for method chaining.
+  */
+  clearOperationAtIndex(index) {
+    this.operations.splice(index, 1);
     return this;
   }
 
