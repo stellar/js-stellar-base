@@ -120,7 +120,7 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
-    "@stellar/js-xdr": "git+https://github.com/stellar/js-xdr#robust-ctor-check",
+    "@stellar/js-xdr": "git+https://github.com/stellar/js-xdr#1b9701d2",
     "base32.js": "^0.1.0",
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",

@@ -1334,9 +1334,9 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.2.tgz#821f8442f4175d8f0467b9daf26e3a18e2d02af2"
   integrity sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==
 
-"@stellar/js-xdr@git+https://github.com/stellar/js-xdr#robust-ctor-check":
+"@stellar/js-xdr@git+https://github.com/stellar/js-xdr#1b9701d2":
   version "3.1.1"
-  resolved "git+https://github.com/stellar/js-xdr#3982f0609203c71fb384c4b2cd2417c168d57809"
+  resolved "git+https://github.com/stellar/js-xdr#1b9701d2fcce944d4b032157633fffb15cd3ce50"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
