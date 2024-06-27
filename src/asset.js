@@ -185,12 +185,12 @@ export class Asset {
    *  - `unknown` as the error case (which should never occur)
    */
   getAssetType() {
-    switch (this.getRawAssetType()) {
-      case xdr.AssetType.assetTypeNative():
+    switch (this.getRawAssetType().value) {
+      case xdr.AssetType.assetTypeNative().value:
         return 'native';
-      case xdr.AssetType.assetTypeCreditAlphanum4():
+      case xdr.AssetType.assetTypeCreditAlphanum4().value:
         return 'credit_alphanum4';
-      case xdr.AssetType.assetTypeCreditAlphanum12():
+      case xdr.AssetType.assetTypeCreditAlphanum12().value:
         return 'credit_alphanum12';
       default:
         return 'unknown';
