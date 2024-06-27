@@ -32,15 +32,10 @@ describe('parsing and building ScVals', function () {
   const targetScv = xdr.ScVal.scvMap(
     [
       ['bool', xdr.ScVal.scvBool(true)],
-      ['void', xdr.ScVal.scvVoid()],
-      ['u32', xdr.ScVal.scvU32(1)],
-      ['i32', xdr.ScVal.scvI32(1)],
-      ['u64', xdr.ScVal.scvU64(new xdr.Uint64(1))],
-      ['i64', xdr.ScVal.scvI64(new xdr.Int64(-1))],
-      ['u128', new ScInt(1, { type: 'u128' }).toScVal()],
       ['i128', new ScInt(1, { type: 'i128' }).toScVal()],
-      ['u256', new ScInt(1, { type: 'u256' }).toScVal()],
       ['i256', new ScInt(1, { type: 'i256' }).toScVal()],
+      ['i32', xdr.ScVal.scvI32(1)],
+      ['i64', xdr.ScVal.scvI64(new xdr.Int64(-1))],
       [
         'map',
         xdr.ScVal.scvMap([
@@ -49,19 +44,24 @@ describe('parsing and building ScVals', function () {
             val: xdr.ScVal.scvU64(new xdr.Uint64(1))
           }),
           new xdr.ScMapEntry({
+            key: xdr.ScVal.scvString('etc'),
+            val: xdr.ScVal.scvBool(false)
+          }),
+          new xdr.ScMapEntry({
             key: xdr.ScVal.scvString('nested'),
             val: xdr.ScVal.scvString('values')
           }),
-          new xdr.ScMapEntry({
-            key: xdr.ScVal.scvString('etc'),
-            val: xdr.ScVal.scvBool(false)
-          })
         ])
       ],
+      ['u128', new ScInt(1, { type: 'u128' }).toScVal()],
+      ['u256', new ScInt(1, { type: 'u256' }).toScVal()],
+      ['u32', xdr.ScVal.scvU32(1)],
+      ['u64', xdr.ScVal.scvU64(new xdr.Uint64(1))],
       [
         'vec',
         xdr.ScVal.scvVec(['same', 'type', 'list'].map(xdr.ScVal.scvString))
-      ]
+      ],
+      ['void', xdr.ScVal.scvVoid()],
     ].map(([type, scv]) => {
       return new xdr.ScMapEntry({
         key: new xdr.ScVal.scvString(type),
@@ -182,12 +182,12 @@ describe('parsing and building ScVals', function () {
     scv = nativeToScVal(
       {
         hello: 'world',
-        goodbye: [1, 2, 3]
+        there: [1, 2, 3]
       },
       {
         type: {
           hello: ['symbol', null],
-          goodbye: [null, 'i32']
+          there: [null, 'i32']
         }
       }
     );

@@ -138,7 +138,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
-    case 'object':
+    case 'object': {
       if (val === null) {
         return xdr.ScVal.scvVoid();
       }
@@ -190,8 +190,14 @@ export function nativeToScVal(val, opts = {}) {
         );
       }
 
+      // The Soroban runtime expects maps to have their keys in sorted order, so
+      // let's do that here as part of the conversion to prevent confusing error
+      // messages on execution.
+      const entries = Object.entries(val);
+      entries.sort((entry1, entry2) => entry1[0].localeCompare(entry2[0]));
+
       return xdr.ScVal.scvMap(
-        Object.entries(val).map(([k, v]) => {
+        entries.map(([k, v]) => {
           // the type can be specified with an entry for the key and the value,
           // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
           // 'u128' ]} or you can use `null` for the default interpretation
@@ -205,6 +211,7 @@ export function nativeToScVal(val, opts = {}) {
           });
         })
       );
+    }
 
     case 'number':
     case 'bigint':
