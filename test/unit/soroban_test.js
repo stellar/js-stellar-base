@@ -1,7 +1,6 @@
 describe('Soroban', function () {
   it('should have XDR serialization', function () {
     expect(StellarBase.cereal).not.to.be.undefined;
-    console.log(StellarBase.cereal);
   });
 
   describe('formatTokenAmount', function () {
