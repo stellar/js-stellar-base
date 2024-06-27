@@ -190,26 +190,25 @@ export function nativeToScVal(val, opts = {}) {
         );
       }
 
-      // The Soroban runtime expects maps to have their keys in sorted order, so
-      // let's do that here as part of the conversion to prevent confusing error
-      // messages on execution.
-      const entries = Object.entries(val);
-      entries.sort((entry1, entry2) => entry1[0].localeCompare(entry2[0]));
-
       return xdr.ScVal.scvMap(
-        entries.map(([k, v]) => {
-          // the type can be specified with an entry for the key and the value,
-          // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
-          // 'u128' ]} or you can use `null` for the default interpretation
-          const [keyType, valType] = (opts?.type ?? {})[k] ?? [null, null];
-          const keyOpts = keyType ? { type: keyType } : {};
-          const valOpts = valType ? { type: valType } : {};
+        Object.entries(val)
+          // The Soroban runtime expects maps to have their keys in sorted
+          // order, so let's do that here as part of the conversion to prevent
+          // confusing error messages on execution.
+          .sort((entry1, entry2) => entry1[0].localeCompare(entry2[0]))
+          .map(([k, v]) => {
+            // the type can be specified with an entry for the key and the value,
+            // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
+            // 'u128' ]} or you can use `null` for the default interpretation
+            const [keyType, valType] = (opts?.type ?? {})[k] ?? [null, null];
+            const keyOpts = keyType ? { type: keyType } : {};
+            const valOpts = valType ? { type: valType } : {};
 
-          return new xdr.ScMapEntry({
-            key: nativeToScVal(k, keyOpts),
-            val: nativeToScVal(v, valOpts)
-          });
-        })
+            return new xdr.ScMapEntry({
+              key: nativeToScVal(k, keyOpts),
+              val: nativeToScVal(v, valOpts)
+            });
+          })
       );
     }
 
