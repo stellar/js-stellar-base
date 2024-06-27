@@ -50,7 +50,7 @@ describe('parsing and building ScVals', function () {
           new xdr.ScMapEntry({
             key: xdr.ScVal.scvString('nested'),
             val: xdr.ScVal.scvString('values')
-          }),
+          })
         ])
       ],
       ['u128', new ScInt(1, { type: 'u128' }).toScVal()],
@@ -61,7 +61,7 @@ describe('parsing and building ScVals', function () {
         'vec',
         xdr.ScVal.scvVec(['same', 'type', 'list'].map(xdr.ScVal.scvString))
       ],
-      ['void', xdr.ScVal.scvVoid()],
+      ['void', xdr.ScVal.scvVoid()]
     ].map(([type, scv]) => {
       return new xdr.ScMapEntry({
         key: new xdr.ScVal.scvString(type),
