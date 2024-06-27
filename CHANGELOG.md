@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+* Improve the efficiency and portability of asset type retrieval ([#758](https://github.com/stellar/js-stellar-base/pull/758)).
+
 
 ## [`v12.0.1`](https://github.com/stellar/js-stellar-base/compare/v12.0.0...v12.0.1)
 
