@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+
+## [`v12.1.0`](https://github.com/stellar/js-stellar-base/compare/v12.0.1...v12.1.0)
+
+### Added
+* `TransactionBuilder` now has `addOperationAt` and `clearOperationAt` methods to allow manipulation of individual operations ([#757](https://github.com/stellar/js-stellar-base/pull/757)).
+
 ### Fixed
 * Improve the efficiency and portability of asset type retrieval ([#758](https://github.com/stellar/js-stellar-base/pull/758)).
 * `nativeToScVal` now correctly sorts maps lexicographically based on the keys to match what the Soroban environment expects ([#759](https://github.com/stellar/js-stellar-base/pull/759)).
