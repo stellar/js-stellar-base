@@ -236,7 +236,7 @@ export class TransactionBuilder {
    *
    * @returns {TransactionBuilder} - The TransactionBuilder instance for method chaining.
    */
-  addOperationAtIndex(operation, index) {
+  addOperationAt(operation, index) {
     this.operations.splice(index, 0, operation);
     return this;
   }
@@ -257,7 +257,7 @@ export class TransactionBuilder {
    *
    * @returns {TransactionBuilder} The TransactionBuilder instance for method chaining.
    */
-  clearOperationAtIndex(index) {
+  clearOperationAt(index) {
     this.operations.splice(index, 1);
     return this;
   }

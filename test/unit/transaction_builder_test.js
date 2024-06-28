@@ -954,5 +954,53 @@ describe('TransactionBuilder', function () {
         .build();
       expect(cloneTx.operations).to.be.empty;
     });
+
+    it('adds operations at a specific index', function () {
+        const builder = new StellarBase.TransactionBuilder(source, {
+          fee: '100',
+          timebounds: { minTime: 0, maxTime: 0 },
+          memo: new StellarBase.Memo(StellarBase.MemoText, 'Testing adding op at index'),
+          networkPassphrase
+        });
+
+        builder.addOperationAt(StellarBase.Operation.payment({
+          source: source.accountId(),
+          destination: destination,
+          amount: '1',
+          asset: asset
+        }), 0);
+
+        builder.addOperationAt(StellarBase.Operation.payment({
+          source: source.accountId(),
+          destination: destination,
+          amount: '2',
+          asset: asset
+        }), 1);
+
+        const tx = builder.build();
+        // Assert operations
+        expect(tx.operations.length).to.equal(2);
+        expect(tx.operations[0].source).to.equal(source.accountId());
+        expect(parseInt(tx.operations[0].amount)).to.equal(1);
+        expect(tx.operations[1].source).to.equal(source.accountId());
+        expect(parseInt(tx.operations[1].amount)).to.equal(2);
+
+        const clonedTx = StellarBase.TransactionBuilder.cloneFrom(tx)
+        clonedTx.clearOperationAt(0);
+        const newOperation = StellarBase.Operation.payment({
+          source: source.accountId(),
+          destination: destination,
+          amount: '3',
+          asset: asset
+        })
+        clonedTx.addOperationAt(newOperation, 0);
+        const newTx = clonedTx.build()
+        // Assert that the operations are the same, but the first one is updated
+        expect(newTx.operations.length).to.equal(2);
+        expect(newTx.operations[0].source).to.equal(source.accountId());
+        expect(parseInt(newTx.operations[0].amount)).to.equal(3);
+        expect(newTx.operations[1].source).to.equal(source.accountId());
+        expect(parseInt(newTx.operations[1].amount)).to.equal(2);
+    });
   });
 });
