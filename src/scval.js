@@ -138,7 +138,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
-    case 'object':
+    case 'object': {
       if (val === null) {
         return xdr.ScVal.scvVoid();
       }
@@ -191,20 +191,26 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       return xdr.ScVal.scvMap(
-        Object.entries(val).map(([k, v]) => {
-          // the type can be specified with an entry for the key and the value,
-          // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
-          // 'u128' ]} or you can use `null` for the default interpretation
-          const [keyType, valType] = (opts?.type ?? {})[k] ?? [null, null];
-          const keyOpts = keyType ? { type: keyType } : {};
-          const valOpts = valType ? { type: valType } : {};
+        Object.entries(val)
+          // The Soroban runtime expects maps to have their keys in sorted
+          // order, so let's do that here as part of the conversion to prevent
+          // confusing error messages on execution.
+          .sort(([key1], [key2]) => key1.localeCompare(key2))
+          .map(([k, v]) => {
+            // the type can be specified with an entry for the key and the value,
+            // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
+            // 'u128' ]} or you can use `null` for the default interpretation
+            const [keyType, valType] = (opts?.type ?? {})[k] ?? [null, null];
+            const keyOpts = keyType ? { type: keyType } : {};
+            const valOpts = valType ? { type: valType } : {};
 
-          return new xdr.ScMapEntry({
-            key: nativeToScVal(k, keyOpts),
-            val: nativeToScVal(v, valOpts)
-          });
-        })
+            return new xdr.ScMapEntry({
+              key: nativeToScVal(k, keyOpts),
+              val: nativeToScVal(v, valOpts)
+            });
+          })
       );
+    }
 
     case 'number':
     case 'bigint':
