@@ -211,6 +211,18 @@ describe('parsing and building ScVals', function () {
     expect(() => nativeToScVal([1, 'a', false])).to.throw(/same type/i);
   });
 
+  it('lets strings be small integer ScVals', function () {
+    ['i32', 'u32'].forEach((type) => {
+      const scv = nativeToScVal('12345', { type });
+      if (type === 'u32') {
+        expect(scv.switch()).to.eql(xdr.ScValType.scvU32());
+      } else {
+        expect(scv.switch()).to.eql(xdr.ScValType.scvI32());
+      }
+      expect(scv.value()).to.eql(12345);
+    });
+  });
+
   it('lets strings be large integer ScVals', function () {
     ['i64', 'i128', 'i256', 'u64', 'u128', 'u256'].forEach((type) => {
       const scv = nativeToScVal('12345', { type });
@@ -220,7 +232,6 @@ describe('parsing and building ScVals', function () {
 
     expect(() => nativeToScVal('not a number', { type: 'i128' })).to.throw();
     expect(() => nativeToScVal('12345', { type: 'notnumeric' })).to.throw();
-    expect(() => nativeToScVal('use a Number', { type: 'i32' })).to.throw();
   });
 
   it('lets strings be addresses', function () {

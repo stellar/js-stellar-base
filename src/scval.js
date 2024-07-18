@@ -239,6 +239,12 @@ export function nativeToScVal(val, opts = {}) {
         case 'address':
           return new Address(val).toScVal();
 
+        case 'u32':
+          return xdr.ScVal.scvU32(parseInt(val));
+
+        case 'i32':
+          return xdr.ScVal.scvI32(parseInt(val));
+
         default:
           if (XdrLargeInt.isType(optType)) {
             return new XdrLargeInt(optType, val).toScVal();
