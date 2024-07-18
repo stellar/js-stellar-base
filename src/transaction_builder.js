@@ -226,8 +226,8 @@ export class TransactionBuilder {
   addOperation(operation) {
     this.operations.push(operation);
     return this;
-  }	
-  
+  }
+
   /**
    * Adds an operation to the transaction at a specific index.
    *
