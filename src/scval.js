@@ -240,10 +240,10 @@ export function nativeToScVal(val, opts = {}) {
           return new Address(val).toScVal();
 
         case 'u32':
-          return xdr.ScVal.scvU32(parseInt(val));
+          return xdr.ScVal.scvU32(parseInt(val, 10));
 
         case 'i32':
-          return xdr.ScVal.scvI32(parseInt(val));
+          return xdr.ScVal.scvI32(parseInt(val, 10));
 
         default:
           if (XdrLargeInt.isType(optType)) {
