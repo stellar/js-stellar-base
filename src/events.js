@@ -19,7 +19,9 @@ import { scValToNative } from './scval';
  */
 export function humanizeEvents(events) {
   return events.map((e) => {
-    if (e instanceof xdr.DiagnosticEvent) {
+    // A pseudo-instanceof check for xdr.DiagnosticEvent more reliable
+    // in mixed SDK environments:
+    if (e.inSuccessfulContractCall) {
       return extractEvent(e.event());
     }
 
@@ -29,7 +31,8 @@ export function humanizeEvents(events) {
 
 function extractEvent(event) {
   return {
-    ...(event.contractId() != null && {
+    ...(event.contractId != null &&
+      event.contractId() != null && {
       contractId: StrKey.encodeContract(event.contractId())
     }),
     type: event.type().name,
