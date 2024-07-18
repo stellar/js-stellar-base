@@ -31,8 +31,8 @@ function extractEvent(event) {
   return {
     ...(event.contractId != null &&
       event.contractId() != null && {
-      contractId: StrKey.encodeContract(event.contractId())
-    }),
+        contractId: StrKey.encodeContract(event.contractId())
+      }),
     type: event.type().name,
     topics: event
       .body()
