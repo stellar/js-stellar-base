@@ -214,11 +214,9 @@ describe('parsing and building ScVals', function () {
   it('lets strings be small integer ScVals', function () {
     ['i32', 'u32'].forEach((type) => {
       const scv = nativeToScVal('12345', { type });
-      if (type === 'u32') {
-        expect(scv.switch()).to.eql(xdr.ScValType.scvU32());
-      } else {
-        expect(scv.switch()).to.eql(xdr.ScValType.scvI32());
-      }
+      expect(scv.switch()).to.eql(
+        type === 'u32' ? xdr.ScValType.scvU32() : xdr.ScValType.scvI32()
+      );
       expect(scv.value()).to.eql(12345);
     });
   });
