@@ -1,5 +1,3 @@
-import xdr from './xdr';
-
 import { StrKey } from './strkey';
 import { scValToNative } from './scval';
 
