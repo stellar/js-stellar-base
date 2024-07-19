@@ -29,8 +29,7 @@ export function humanizeEvents(events) {
 
 function extractEvent(event) {
   return {
-    ...(event.contractId != null &&
-      event.contractId() != null && {
+    ...(typeof event.contractId === 'function' && {
         contractId: StrKey.encodeContract(event.contractId())
       }),
     type: event.type().name,
