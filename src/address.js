@@ -23,7 +23,7 @@ export class Address {
       this._type = 'contract';
       this._key = StrKey.decodeContract(address);
     } else {
-      throw new Error('Unsupported address type');
+      throw new Error(`Unsupported address type: ${address}`);
     }
   }
 
