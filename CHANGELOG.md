@@ -6,6 +6,7 @@
 * Improve the efficiency and portability of asset type retrieval ([#758](https://github.com/stellar/js-stellar-base/pull/758)).
 * `nativeToScVal` now correctly sorts maps lexicographically based on the keys to match what the Soroban environment expects ([#759](https://github.com/stellar/js-stellar-base/pull/759)).
 * `nativeToScVal` now allows all integer types to come from strings ([#763](https://github.com/stellar/js-stellar-base/pull/763)).
+* `humanizeEvents` now handles events without a `contractId` set more reliably ([#764](https://github.com/stellar/js-stellar-base/pull/764)).
 
 
 ## [`v12.0.1`](https://github.com/stellar/js-stellar-base/compare/v12.0.0...v12.0.1)
