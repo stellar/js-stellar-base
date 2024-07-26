@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+* Fix the TypeScript definition of `walkInvocationTree` to allow void returns on the callback function as intended rather than forcing a `return null` ([#765](https://github.com/stellar/js-stellar-base/pull/765)).
+
 
 ## [`v12.1.0`](https://github.com/stellar/js-stellar-base/compare/v12.0.1...v12.1.0)
 
