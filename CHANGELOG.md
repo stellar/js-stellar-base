@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+* Add missing methods to TypeScript definitions ([]()).
+
 
 ## [`v12.1.0`](https://github.com/stellar/js-stellar-base/compare/v12.0.1...v12.1.0)
 
