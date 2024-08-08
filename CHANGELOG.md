@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Fixed
-* Add missing methods to TypeScript definitions ([]()).
+* Add missing methods to TypeScript definitions ([#766](https://github.com/stellar/js-stellar-base/pull/766)).
 
 
 ## [`v12.1.0`](https://github.com/stellar/js-stellar-base/compare/v12.0.1...v12.1.0)
