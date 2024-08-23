@@ -170,7 +170,7 @@ describe('Operation', function () {
         // check deep inner field to ensure ctor args match
         const ctorArgs = decodedOp.func.createContractV2().constructorArgs();
         expect(ctorArgs).to.eql(
-          args,
+          constructorArgs,
           `constructor parameters don't match: ${JSON.stringify(
             ctorArgs,
             null,
