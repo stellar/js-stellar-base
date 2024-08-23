@@ -24,6 +24,7 @@ import { Asset } from '../asset';
  * @see Operation.invokeContractFunction
  * @see Operation.createCustomContract
  * @see Operation.createStellarAssetContract
+ * @see Operation.createConstructableContract
  * @see Operation.uploadContractWasm
  * @see Contract.call
  */
@@ -112,6 +113,8 @@ export function invokeContractFunction(opts) {
  *
  * @see
  * https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
+ * @deprecated Please use {@link Operation.createConstructableContract} which
+ *    supports contracts with constructors.
  */
 export function createCustomContract(opts) {
   const salt = Buffer.from(opts.salt || getSalty());
@@ -219,6 +222,70 @@ export function uploadContractWasm(opts) {
     auth: opts.auth,
     func: xdr.HostFunction.hostFunctionTypeUploadContractWasm(
       Buffer.from(opts.wasm) // coalesce so we can drop `Buffer` someday
+    )
+  });
+}
+
+/**
+ * Returns an operation that creates a custom WASM contract and atomically
+ * invokes its constructor.
+ *
+ * @function
+ * @alias Operation.createConstructableContract
+ *
+ * @param {any}     opts - the set of parameters
+ * @param {Address} opts.address - the contract uploader address
+ * @param {Uint8Array|Buffer}  opts.wasmHash - the SHA-256 hash of the contract
+ *    WASM you're uploading (see {@link hash} and
+ *    {@link Operation.uploadContractWasm})
+ * @param {xdr.ScVal[]} opts.ctorArgs - the parameters to pass to the
+ *    constructor of this contract (see {@link nativeToScVal} for ways to easily
+ *    create these parameters from native JS values)
+ *
+ * @param {Uint8Array|Buffer} [opts.salt] - an optional, 32-byte salt to
+ *    distinguish deployment instances of the same wasm from the same user (if
+ *    omitted, one will be generated for you)
+ * @param {xdr.SorobanAuthorizationEntry[]} [opts.auth] - an optional list
+ *    outlining the tree of authorizations required for the call
+ * @param {string} [opts.source] - an optional source account
+ *
+ * @returns {xdr.Operation} an Invoke Host Function operation
+ *    (xdr.InvokeHostFunctionOp)
+ *
+ * @see
+ * https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
+ */
+export function createConstructableContract(opts) {
+  const salt = Buffer.from(opts.salt || getSalty());
+
+  if (!opts.wasmHash || opts.wasmHash.length !== 32) {
+    throw new TypeError(
+      `expected hash(contract WASM) in 'opts.wasmHash', got ${opts.wasmHash}`
+    );
+  }
+  if (salt.length !== 32) {
+    throw new TypeError(
+      `expected 32-byte salt in 'opts.salt', got ${opts.wasmHash}`
+    );
+  }
+
+  return this.invokeHostFunction({
+    source: opts.source,
+    auth: opts.auth,
+    func: xdr.HostFunction.hostFunctionTypeCreateContractV2(
+      new xdr.CreateContractArgsV2({
+        executable: xdr.ContractExecutable.contractExecutableWasm(
+          Buffer.from(opts.wasmHash)
+        ),
+        contractIdPreimage:
+          xdr.ContractIdPreimage.contractIdPreimageFromAddress(
+            new xdr.ContractIdPreimageFromAddress({
+              address: opts.address.toScAddress(),
+              salt
+            })
+          ),
+        constructorArgs: opts.ctorArgs ?? []
+      })
     )
   });
 }

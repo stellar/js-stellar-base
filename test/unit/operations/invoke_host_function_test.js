@@ -1,4 +1,4 @@
-const { Asset, Contract, Operation, hash } = StellarBase;
+const { Asset, Contract, Operation, hash, nativeToScVal } = StellarBase;
 
 describe('Operation', function () {
   describe('.invokeHostFunction()', function () {
@@ -15,7 +15,7 @@ describe('Operation', function () {
           new StellarBase.xdr.InvokeContractArgs({
             contractAddress: this.c.address().toScAddress(),
             functionName: 'hello',
-            args: [StellarBase.nativeToScVal('world')]
+            args: [nativeToScVal('world')]
           })
         )
       });
@@ -32,7 +32,7 @@ describe('Operation', function () {
         Operation.invokeContractFunction({
           contract: this.contractId,
           function: 'hello',
-          args: [StellarBase.nativeToScVal('world')]
+          args: [nativeToScVal('world')]
         }).toXDR('hex')
       ).to.eql(xdr);
     });
@@ -126,6 +126,57 @@ describe('Operation', function () {
           'hostFunctionTypeUploadContractWasm'
         );
         expect(decodedOp.func.wasm()).to.eql(wasm);
+        expect(decodedOp.auth).to.be.empty;
+      });
+
+      it('lets you create contracts with a constructor', function () {
+        const h = hash(Buffer.from('random stuff'));
+        const args = [
+          // note: using a string here doesn't work because once the operation
+          // is encoded/decoded it will be a Buffer internally and it'd be a
+          // mild pain in the ass to check equivalence
+          nativeToScVal(Buffer.from('admin name')),
+          nativeToScVal(1234, { type: 'i128' })
+        ];
+
+        const op = Operation.createConstructableContract({
+          address: this.c.address(),
+          ctorArgs: args,
+          wasmHash: h,
+          salt: h
+        });
+        expect(op.body().switch().name).to.equal('invokeHostFunction');
+
+        // round trip back
+
+        const xdr = op.toXDR('hex');
+        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+        const decodedOp = Operation.fromXDRObject(xdrOp, 'hex');
+
+        expect(decodedOp.type).to.equal('invokeHostFunction');
+        expect(decodedOp.func.switch().name).to.equal(
+          'hostFunctionTypeCreateContractV2'
+        );
+
+        // check deep inner field to ensure RT
+        expect(
+          decodedOp.func
+            .createContractV2()
+            .contractIdPreimage()
+            .fromAddress()
+            .salt()
+        ).to.eql(h, "hashes don't match");
+
+        // check deep inner field to ensure ctor args match
+        const ctorArgs = decodedOp.func.createContractV2().constructorArgs();
+        expect(ctorArgs).to.eql(
+          args,
+          `constructor parameters don't match: ${JSON.stringify(
+            ctorArgs,
+            null,
+            2
+          )} vs. ${JSON.stringify(args, null, 2)}`
+        );
         expect(decodedOp.auth).to.be.empty;
       });
     });
