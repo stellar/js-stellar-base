@@ -169,8 +169,8 @@ export function buildInvocationTree(root) {
  * @param {xdr.SorobanAuthorizedInvocation} [parent]  this `node`s parent node,
  *    if any (i.e. this doesn't exist at the root)
  *
- * @returns {boolean|undefined}   returning exactly `false` is a hint to stop
- *    exploring, other values are ignored
+ * @returns {boolean|null|undefined}   returning exactly `false` is a hint to
+ *    stop exploring, other values are ignored
  */
 
 /**

@@ -1258,7 +1258,7 @@ export type InvocationWalker = (
   node: xdr.SorobanAuthorizedInvocation,
   depth: number,
   parent?: any
-) => boolean|undefined;
+) => boolean|null|undefined;
 
 export function walkInvocationTree(
   root: xdr.SorobanAuthorizedInvocation,
