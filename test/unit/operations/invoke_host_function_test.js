@@ -131,7 +131,7 @@ describe('Operation', function () {
 
       it('lets you create contracts with a constructor', function () {
         const h = hash(Buffer.from('random stuff'));
-        const args = [
+        const constructorArgs = [
           // note: using a string here doesn't work because once the operation
           // is encoded/decoded it will be a Buffer internally and it'd be a
           // mild pain in the ass to check equivalence
@@ -141,7 +141,7 @@ describe('Operation', function () {
 
         const op = Operation.createConstructableContract({
           address: this.c.address(),
-          ctorArgs: args,
+          constructorArgs,
           wasmHash: h,
           salt: h
         });
@@ -175,7 +175,7 @@ describe('Operation', function () {
             ctorArgs,
             null,
             2
-          )} vs. ${JSON.stringify(args, null, 2)}`
+          )} vs. ${JSON.stringify(constructorArgs, null, 2)}`
         );
         expect(decodedOp.auth).to.be.empty;
       });

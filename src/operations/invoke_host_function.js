@@ -238,7 +238,7 @@ export function uploadContractWasm(opts) {
  * @param {Uint8Array|Buffer}  opts.wasmHash - the SHA-256 hash of the contract
  *    WASM you're uploading (see {@link hash} and
  *    {@link Operation.uploadContractWasm})
- * @param {xdr.ScVal[]} opts.ctorArgs - the parameters to pass to the
+ * @param {xdr.ScVal[]} opts.constructorArgs - the parameters to pass to the
  *    constructor of this contract (see {@link nativeToScVal} for ways to easily
  *    create these parameters from native JS values)
  *
@@ -284,7 +284,7 @@ export function createConstructableContract(opts) {
               salt
             })
           ),
-        constructorArgs: opts.ctorArgs ?? []
+        constructorArgs: opts.constructorArgs ?? []
       })
     )
   });
