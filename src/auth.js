@@ -136,7 +136,7 @@ export async function authorizeEntry(
   } else {
     signature = Buffer.from(signer.sign(payload));
   }
-  const publicKey = Address.fromScAddress(addrAuth.address()).toString();
+  const publicKey = signer.publicKey();
 
   if (!Keypair.fromPublicKey(publicKey).verify(payload, signature)) {
     throw new Error(`signature doesn't match payload`);
