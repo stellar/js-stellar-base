@@ -23,18 +23,6 @@ struct ConfigSettingContractComputeV0
     uint32 txMemoryLimit;
 };
 
-// Settings for running the contract transactions in parallel.
-struct ConfigSettingContractParallelComputeV0
-{
-    // Maximum number of threads that can be used to apply a
-    // transaction set to close the ledger.
-    // This doesn't limit or defined the actual number of 
-    // threads used and instead only defines the minimum number
-    // of physical threads that a tier-1 validator has to support
-    // in order to not fall out of sync with the network.
-    uint32 ledgerMaxParallelThreads;
-};
-
 // Ledger access settings for contracts.
 struct ConfigSettingContractLedgerCostV0
 {
@@ -263,8 +251,7 @@ enum ConfigSettingID
     CONFIG_SETTING_STATE_ARCHIVAL = 10,
     CONFIG_SETTING_CONTRACT_EXECUTION_LANES = 11,
     CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12,
-    CONFIG_SETTING_EVICTION_ITERATOR = 13,
-    CONFIG_SETTING_CONTRACT_PARALLEL_COMPUTE_V0 = 14
+    CONFIG_SETTING_EVICTION_ITERATOR = 13
 };
 
 union ConfigSettingEntry switch (ConfigSettingID configSettingID)
@@ -297,7 +284,5 @@ case CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW:
     uint64 bucketListSizeWindow<>;
 case CONFIG_SETTING_EVICTION_ITERATOR:
     EvictionIterator evictionIterator;
-case CONFIG_SETTING_CONTRACT_PARALLEL_COMPUTE_V0:
-    ConfigSettingContractParallelComputeV0 contractParallelCompute;
 };
 }
