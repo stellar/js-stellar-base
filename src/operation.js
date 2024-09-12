@@ -96,7 +96,6 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  *   - `{@link Operation.createStellarAssetContract}`
  *   - `{@link Operation.invokeContractFunction}`
  *   - `{@link Operation.createCustomContract}`
- *   - `{@link Operation.createConstructableContract}`
  *   - `{@link Operation.uploadContractWasm}`
  * * `{@link Operation.extendFootprintTtlOp}`
  * * `{@link Operation.restoreFootprint}`
@@ -686,5 +685,4 @@ Operation.restoreFootprint = ops.restoreFootprint;
 Operation.createStellarAssetContract = ops.createStellarAssetContract;
 Operation.invokeContractFunction = ops.invokeContractFunction;
 Operation.createCustomContract = ops.createCustomContract;
-Operation.createConstructableContract = ops.createConstructableContract;
 Operation.uploadContractWasm = ops.uploadContractWasm;

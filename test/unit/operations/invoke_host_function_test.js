@@ -63,12 +63,12 @@ describe('Operation', function () {
 
         expect(decodedOp.type).to.equal('invokeHostFunction');
         expect(decodedOp.func.switch().name).to.equal(
-          'hostFunctionTypeCreateContract'
+          'hostFunctionTypeCreateContractV2'
         );
         expect(
           // check deep inner field to ensure RT
           decodedOp.func
-            .createContract()
+            .createContractV2()
             .contractIdPreimage()
             .fromAddress()
             .salt()
@@ -139,7 +139,7 @@ describe('Operation', function () {
           nativeToScVal(1234, { type: 'i128' })
         ];
 
-        const op = Operation.createConstructableContract({
+        const op = Operation.createCustomContract({
           address: this.c.address(),
           constructorArgs,
           wasmHash: h,

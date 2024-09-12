@@ -561,12 +561,7 @@ export namespace OperationOptions {
   interface CreateCustomContract extends BaseInvocationOptions {
     address: Address;
     wasmHash: Buffer | Uint8Array;
-    salt?: Buffer | Uint8Array;
-  }
-  interface CreateConstructableContract extends BaseInvocationOptions {
-    address: Address;
-    wasmHash: Buffer | Uint8Array;
-    constructorArgs: xdr.ScVal[];
+    constructorArgs?: xdr.ScVal[];
     salt?: Buffer | Uint8Array;
   }
   interface CreateStellarAssetContract extends BaseOptions {
@@ -615,7 +610,6 @@ export type OperationOptions =
   | OperationOptions.ExtendFootprintTTL
   | OperationOptions.RestoreFootprint
   | OperationOptions.CreateCustomContract
-  | OperationOptions.CreateConstructableContract
   | OperationOptions.CreateStellarAssetContract
   | OperationOptions.InvokeContractFunction
   | OperationOptions.UploadContractWasm;
@@ -920,9 +914,6 @@ export namespace Operation {
 
   function createCustomContract(
     opts: OperationOptions.CreateCustomContract
-  ): xdr.Operation<InvokeHostFunction>;
-  function createConstructableContract(
-    opts: OperationOptions.CreateConstructableContract
   ): xdr.Operation<InvokeHostFunction>;
   function createStellarAssetContract(
     opts: OperationOptions.CreateStellarAssetContract

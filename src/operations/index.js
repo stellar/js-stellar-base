@@ -35,7 +35,6 @@ export {
   invokeContractFunction,
   createStellarAssetContract,
   createCustomContract,
-  createConstructableContract,
   uploadContractWasm
 } from './invoke_host_function';
 export { extendFootprintTtl } from './extend_footprint_ttl';
