@@ -132,10 +132,7 @@ describe('Operation', function () {
       it('lets you create contracts with a constructor', function () {
         const h = hash(Buffer.from('random stuff'));
         const constructorArgs = [
-          // note: using a string here doesn't work because once the operation
-          // is encoded/decoded it will be a Buffer internally and it'd be a
-          // mild pain in the ass to check equivalence
-          nativeToScVal(Buffer.from('admin name')),
+          nativeToScVal('admin name'),
           nativeToScVal(1234, { type: 'i128' })
         ];
 
@@ -169,15 +166,14 @@ describe('Operation', function () {
 
         // check deep inner field to ensure ctor args match
         const ctorArgs = decodedOp.func.createContractV2().constructorArgs();
-        expect(ctorArgs).to.eql(
-          constructorArgs,
-          `constructor parameters don't match: ${JSON.stringify(
-            ctorArgs,
-            null,
-            2
-          )} vs. ${JSON.stringify(constructorArgs, null, 2)}`
-        );
+
+        expect(ctorArgs).to.have.lengthOf(2);
+        expect(ctorArgs[1]).to.eql(constructorArgs[1]);
         expect(decodedOp.auth).to.be.empty;
+        // note: we used a string initially but once the operation is
+        // encoded/decoded it will be a Buffer internally, so we need to
+        // compare that way instead.
+        expect(ctorArgs[0].str().toString()).to.eql(constructorArgs[0].str());
       });
     });
   });
