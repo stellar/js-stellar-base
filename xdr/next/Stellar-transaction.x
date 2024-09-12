@@ -476,8 +476,7 @@ enum HostFunctionType
 {
     HOST_FUNCTION_TYPE_INVOKE_CONTRACT = 0,
     HOST_FUNCTION_TYPE_CREATE_CONTRACT = 1,
-    HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM = 2,
-    HOST_FUNCTION_TYPE_CREATE_CONTRACT_V2 = 3
+    HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM = 2
 };
 
 enum ContractIDPreimageType
@@ -504,14 +503,6 @@ struct CreateContractArgs
     ContractExecutable executable;
 };
 
-struct CreateContractArgsV2
-{
-    ContractIDPreimage contractIDPreimage;
-    ContractExecutable executable;
-    // Arguments of the contract's constructor.
-    SCVal constructorArgs<>;
-};
-
 struct InvokeContractArgs {
     SCAddress contractAddress;
     SCSymbol functionName;
@@ -526,29 +517,20 @@ case HOST_FUNCTION_TYPE_CREATE_CONTRACT:
     CreateContractArgs createContract;
 case HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM:
     opaque wasm<>;
-case HOST_FUNCTION_TYPE_CREATE_CONTRACT_V2:
-    CreateContractArgsV2 createContractV2;
 };
 
 enum SorobanAuthorizedFunctionType
 {
     SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN = 0,
-    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN = 1,
-    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_V2_HOST_FN = 2
+    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN = 1
 };
 
 union SorobanAuthorizedFunction switch (SorobanAuthorizedFunctionType type)
 {
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN:
     InvokeContractArgs contractFn;
-// This variant of auth payload for creating new contract instances is no
-// longer accepted after protocol 22.
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN:
     CreateContractArgs createContractHostFn;
-// This variant of auth payload for creating new contract instances
-// is only accepted in and after protocol 22.
-case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_V2_HOST_FN:
-    CreateContractArgsV2 createContractV2HostFn;
 };
 
 struct SorobanAuthorizedInvocation
@@ -819,56 +801,6 @@ struct LedgerFootprint
     LedgerKey readWrite<>;
 };
 
-enum ArchivalProofType
-{
-    EXISTENCE = 0,
-    NONEXISTENCE = 1
-};
-
-struct ArchivalProofNode
-{
-    uint32 index;
-    Hash hash;
-};
-
-typedef ArchivalProofNode ProofLevel<>;
-
-struct NonexistenceProofBody
-{
-    ColdArchiveBucketEntry entriesToProve<>;
-
-    // Vector of vectors, where proofLevels[level]
-    // contains all HashNodes that correspond with that level
-    ProofLevel proofLevels<>;
-};
-
-struct ExistenceProofBody
-{
-    LedgerKey keysToProve<>;
-
-    // Bounds for each key being proved, where bound[n]
-    // corresponds to keysToProve[n]
-    ColdArchiveBucketEntry lowBoundEntries<>;
-    ColdArchiveBucketEntry highBoundEntries<>;
-
-    // Vector of vectors, where proofLevels[level]
-    // contains all HashNodes that correspond with that level
-    ProofLevel proofLevels<>;
-};
-
-struct ArchivalProof
-{
-    uint32 epoch; // AST Subtree for this proof
-
-    union switch (ArchivalProofType t)
-    {
-    case EXISTENCE:
-        NonexistenceProofBody nonexistenceProof;
-    case NONEXISTENCE:
-        ExistenceProofBody existenceProof;
-    } body;
-};
-
 // Resource limits for a Soroban transaction.
 // The transaction will fail if it exceeds any of these limits.
 struct SorobanResources
@@ -887,13 +819,7 @@ struct SorobanResources
 // The transaction extension for Soroban.
 struct SorobanTransactionData
 {
-    union switch (int v)
-    {
-    case 0:
-        void;
-    case 1:
-        ArchivalProof proofs<>;
-    } ext;
+    ExtensionPoint ext;
     SorobanResources resources;
     // Amount of the transaction `fee` allocated to the Soroban resource fees.
     // The fraction of `resourceFee` corresponding to `resources` specified 
