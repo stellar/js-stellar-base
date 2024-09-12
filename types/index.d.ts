@@ -1019,6 +1019,7 @@ export class FeeBumpTransaction extends TransactionI {
   );
   feeSource: string;
   innerTransaction: Transaction;
+  get operations(): Operation[];
 }
 
 export class Transaction<
@@ -1058,7 +1059,9 @@ export class TransactionBuilder {
     options?: TransactionBuilder.TransactionBuilderOptions
   );
   addOperation(operation: xdr.Operation): this;
+  addOperationAt(op: xdr.Operation, i: number): this;
   clearOperations(): this;
+  clearOperationAt(i: number): this;
   addMemo(memo: Memo): this;
   setTimeout(timeoutInSeconds: number): this;
   setTimebounds(min: Date | number, max: Date | number): this;
@@ -1085,6 +1088,7 @@ export class TransactionBuilder {
     envelope: string | xdr.TransactionEnvelope,
     networkPassphrase: string
   ): Transaction | FeeBumpTransaction;
+
 }
 
 export namespace TransactionBuilder {

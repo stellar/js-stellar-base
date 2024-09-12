@@ -134,11 +134,13 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       minAmountA: "10000",
       minAmountB: "20000",
     })
-  ).addOperation(
+  ).addOperationAt(
     StellarSdk.Operation.setOptions({
       setFlags:   (StellarSdk.AuthImmutableFlag | StellarSdk.AuthRequiredFlag) as StellarSdk.AuthFlag,
       clearFlags: (StellarSdk.AuthRevocableFlag | StellarSdk.AuthClawbackEnabledFlag) as StellarSdk.AuthFlag,
-    })
+    }),
+    0
+  ).clearOperationAt(2
   ).addMemo(new StellarSdk.Memo(StellarSdk.MemoText, 'memo'))
   .setTimeout(5)
   .setTimebounds(Date.now(), Date.now() + 5000)
