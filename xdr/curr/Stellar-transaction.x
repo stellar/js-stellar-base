@@ -541,12 +541,16 @@ union SorobanAuthorizedFunction switch (SorobanAuthorizedFunctionType type)
 {
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN:
     InvokeContractArgs contractFn;
-// This variant of auth payload for creating new contract instances is no
-// longer accepted after protocol 22.
+// This variant of auth payload for creating new contract instances
+// doesn't allow specifying the constructor arguments, creating contracts
+// with constructors that take arguments is only possible by authorizing
+// `SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_V2_HOST_FN` 
+// (protocol 22+).
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN:
     CreateContractArgs createContractHostFn;
 // This variant of auth payload for creating new contract instances
-// is only accepted in and after protocol 22.
+// is only accepted in and after protocol 22. It allows authorizing the
+// contract constructor arguments.
 case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_V2_HOST_FN:
     CreateContractArgsV2 createContractV2HostFn;
 };
