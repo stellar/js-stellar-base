@@ -561,6 +561,7 @@ export namespace OperationOptions {
   interface CreateCustomContract extends BaseInvocationOptions {
     address: Address;
     wasmHash: Buffer | Uint8Array;
+    constructorArgs?: xdr.ScVal[];
     salt?: Buffer | Uint8Array;
   }
   interface CreateStellarAssetContract extends BaseOptions {
