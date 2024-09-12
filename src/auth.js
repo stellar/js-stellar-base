@@ -57,6 +57,10 @@ import { nativeToScVal } from './scval';
  *    authorization entry that you can pass along to
  *    {@link Operation.invokeHostFunction}
  *
+ * @note If using the `SigningCallback` variation, the signer is assumed to be
+ *    the entry's credential address. If you need a different key to sign the
+ *    entry, you will need to use different method (e.g., fork this code).
+ *
  * @see authorizeInvocation
  * @example
  * import {
@@ -131,12 +135,14 @@ export async function authorizeEntry(
   const payload = hash(preimage.toXDR());
 
   let signature;
+  let publicKey;
   if (typeof signer === 'function') {
     signature = Buffer.from(await signer(preimage));
+    publicKey = Address.fromScAddress(addrAuth.address()).toString();
   } else {
     signature = Buffer.from(signer.sign(payload));
+    publicKey = signer.publicKey();
   }
-  const publicKey = Address.fromScAddress(addrAuth.address()).toString();
 
   if (!Keypair.fromPublicKey(publicKey).verify(payload, signature)) {
     throw new Error(`signature doesn't match payload`);
