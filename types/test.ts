@@ -357,3 +357,9 @@ new StellarSdk.ScInt(BigInt(1234));   // $ExpectType ScInt
 (['i64', 'u64', 'i128', 'u128', 'i256', 'u256'] as StellarSdk.ScIntType[]).forEach((type) => {
   new StellarSdk.ScInt(1234, { type }); // $ExpectType ScInt
 });
+
+const root = new StellarSdk.xdr.SorobanAuthorizedInvocation({
+  function: new StellarSdk.xdr.SorobanAuthorizedFunction(),
+  subInvocations: [],
+});
+StellarSdk.walkInvocationTree(root, (_node, _depth, _parent) => {});
