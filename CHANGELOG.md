@@ -3,6 +3,17 @@
 ## Unreleased
 
 
+## [`v13.0.0-rc.0`](https://github.com/stellar/js-stellar-base/compare/v12.1.0...v12.1.1)
+
+**This is the first release that supports Protocol 22.** While the network has not upgraded yet, you can start integrating the new features into your codebase if you want a head start. Keep in mind that while the binary XDR is backwards-compatible, the naming and layout of structures is not. In other words, this build will continue to work on Protocol 21, but you may have to update code that references XDR directly.
+
+### Breaking Changes
+* XDR definitions have been upgraded to Protocol 22 ([#777](https://github.com/stellar/js-stellar-base/pull/777)).
+
+### Added
+* You can create contracts with constructors a new, optional parameter of `Operation.createCustomContract`, `constructorArgs: xdr.ScVal[]` ([#770](https://github.com/stellar/js-stellar-base/pull/770)).
+
+
 ## [`v12.1.1`](https://github.com/stellar/js-stellar-base/compare/v12.1.0...v12.1.1)
 
 ### Fixed
