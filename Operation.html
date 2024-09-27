@@ -98,7 +98,15 @@ Stellar network.</p>
 <li><code><a href="Operation.html#.setTrustLineFlags">Operation.setTrustLineFlags</a></code></li>
 <li><code><a href="Operation.html#.liquidityPoolDeposit">Operation.liquidityPoolDeposit</a></code></li>
 <li><code><a href="Operation.html#.liquidityPoolWithdraw">Operation.liquidityPoolWithdraw</a></code></li>
-<li><code><a href="Operation.html#.invokeHostFunction">Operation.invokeHostFunction</a></code></li>
+<li><code><a href="Operation.html#.invokeHostFunction">Operation.invokeHostFunction</a></code>, which has the following additional
+&quot;pseudo-operations&quot; that make building host functions easier:
+<ul>
+<li><code><a href="Operation.html#.createStellarAssetContract">Operation.createStellarAssetContract</a></code></li>
+<li><code><a href="Operation.html#.invokeContractFunction">Operation.invokeContractFunction</a></code></li>
+<li><code><a href="Operation.html#.createCustomContract">Operation.createCustomContract</a></code></li>
+<li><code><a href="Operation.html#.uploadContractWasm">Operation.uploadContractWasm</a></code></li>
+</ul>
+</li>
 <li><code>Operation.extendFootprintTtlOp</code></li>
 <li><code><a href="Operation.html#.restoreFootprint">Operation.restoreFootprint</a></code></li>
 </ul>
@@ -3111,7 +3119,8 @@ const op = Operation.createClaimableBalance({
 
 
 <div class="description">
-    <p>Returns an operation that creates a custom WASM contract.</p>
+    <p>Returns an operation that creates a custom WASM contract and atomically
+invokes its constructor.</p>
 </div>
 
 
@@ -3147,7 +3156,7 @@ const op = Operation.createClaimableBalance({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operations_invoke_host_function.js.html">operations/invoke_host_function.js</a>, <a href="operations_invoke_host_function.js.html#line116">line 116</a>
+        <a href="operations_invoke_host_function.js.html">operations/invoke_host_function.js</a>, <a href="operations_invoke_host_function.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -3308,6 +3317,44 @@ const op = Operation.createClaimableBalance({
                 <p>the SHA-256 hash of the contract
 WASM you're uploading (see hash and
 <a href="Operation.html#.uploadContractWasm">Operation.uploadContractWasm</a>)</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constructorArgs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array.&lt;xdr.ScVal></code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>the optional parameters to pass
+to the constructor of this contract (see <a href="global.html#nativeToScVal">nativeToScVal</a> for ways to
+easily create these parameters from native JS values)</p>
                 
             </td>
         </tr>
@@ -4009,7 +4056,7 @@ to manage this offer after using this operation to create it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operations_invoke_host_function.js.html">operations/invoke_host_function.js</a>, <a href="operations_invoke_host_function.js.html#line173">line 173</a>
+        <a href="operations_invoke_host_function.js.html">operations/invoke_host_function.js</a>, <a href="operations_invoke_host_function.js.html#line178">line 178</a>
     </li></ul></dd>
     
 
@@ -4824,7 +4871,7 @@ was used to create the operation (i.e. the <code>opts</code> parameter to most o
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line118">line 118</a>
+        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -5909,7 +5956,7 @@ towards validating the standard Stellar operations.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line415">line 415</a>
+        <a href="operation.js.html">operation.js</a>, <a href="operation.js.html#line420">line 420</a>
     </li></ul></dd>
     
 
@@ -13251,7 +13298,7 @@ Defaults to the transaction's source account.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="operations_invoke_host_function.js.html">operations/invoke_host_function.js</a>, <a href="operations_invoke_host_function.js.html#line216">line 216</a>
+        <a href="operations_invoke_host_function.js.html">operations/invoke_host_function.js</a>, <a href="operations_invoke_host_function.js.html#line221">line 221</a>
     </li></ul></dd>
     
 
@@ -13525,7 +13572,7 @@ outlining the tree of authorizations required for the call</p>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Thu Sep 12 2024 19:24:36 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Fri Sep 27 2024 18:32:23 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
