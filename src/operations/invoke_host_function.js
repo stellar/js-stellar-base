@@ -90,7 +90,8 @@ export function invokeContractFunction(opts) {
 }
 
 /**
- * Returns an operation that creates a custom WASM contract.
+ * Returns an operation that creates a custom WASM contract and atomically
+ * invokes its constructor.
  *
  * @function
  * @alias Operation.createCustomContract
@@ -100,6 +101,9 @@ export function invokeContractFunction(opts) {
  * @param {Uint8Array|Buffer}  opts.wasmHash - the SHA-256 hash of the contract
  *    WASM you're uploading (see {@link hash} and
  *    {@link Operation.uploadContractWasm})
+ * @param {xdr.ScVal[]} [opts.constructorArgs] - the optional parameters to pass
+ *    to the constructor of this contract (see {@link nativeToScVal} for ways to
+ *    easily create these parameters from native JS values)
  * @param {Uint8Array|Buffer} [opts.salt] - an optional, 32-byte salt to
  *    distinguish deployment instances of the same wasm from the same user (if
  *    omitted, one will be generated for you)
@@ -130,8 +134,8 @@ export function createCustomContract(opts) {
   return this.invokeHostFunction({
     source: opts.source,
     auth: opts.auth,
-    func: xdr.HostFunction.hostFunctionTypeCreateContract(
-      new xdr.CreateContractArgs({
+    func: xdr.HostFunction.hostFunctionTypeCreateContractV2(
+      new xdr.CreateContractArgsV2({
         executable: xdr.ContractExecutable.contractExecutableWasm(
           Buffer.from(opts.wasmHash)
         ),
@@ -141,7 +145,8 @@ export function createCustomContract(opts) {
               address: opts.address.toScAddress(),
               salt
             })
-          )
+          ),
+        constructorArgs: opts.constructorArgs ?? []
       })
     )
   });

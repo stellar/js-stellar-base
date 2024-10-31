@@ -1,4 +1,4 @@
-name: Tests
+name: Code Formatting
 
 on:
   push:
@@ -8,32 +8,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      max-parallel: 4
-      matrix:
-        node-version: [18, 20, 21]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
 
       # Workaround for some `yarn` nonsense, see:
       # https://github.com/yarnpkg/yarn/issues/6312#issuecomment-429685210
       - name: Install Dependencies
         run: yarn install --network-concurrency 1
 
-      - name: Build All
-        run: yarn build:prod
-
-      - name: Run Node Tests
-        run: yarn test:node
-
-      - name: Run Browser Tests
-        run: yarn test:browser
+      - name: Run Linter Checks
+        run: yarn fmt && yarn lint && (git diff-index --quiet HEAD; git diff)
