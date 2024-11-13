@@ -17,11 +17,13 @@ import { nativeToScVal } from './scval';
  *    whose hash you should sign, so that you can inspect the entire structure
  *    if necessary (rather than blindly signing a hash)
  *
- * @returns {Promise<Uint8Array>}   the signature of the raw payload (which is
- *    the sha256 hash of the preimage bytes, so `hash(preimage.toXDR())`) signed
- *    by the key corresponding to the public key in the entry you pass to
- *    {@link authorizeEntry} (decipherable from its
- *    `credentials().address().address()`)
+ * @returns {
+ *    Promise<Uint8Array> |
+ *    Promise<{signature: Uint8Array, signer: string}
+ * }  the signature of the raw payload (which is the sha256 hash of the preimage
+ *    bytes, so `hash(preimage.toXDR())`) signed by the key corresponding to the
+ *    public key in the entry you pass to {@link authorizeEntry} (decipherable
+ *    from its `credentials().address().address()`)
  */
 
 /**
@@ -43,10 +45,16 @@ import { nativeToScVal } from './scval';
  *
  * @param {xdr.SorobanAuthorizationEntry} entry   an unsigned authorization entr
  * @param {Keypair | SigningCallback} signer  either a {@link Keypair} instance
- *    or a function which takes a payload (a
- *    {@link xdr.HashIdPreimageSorobanAuthorization} instance) input and returns
- *    the signature of the hash of the raw payload bytes (where the signing key
- *    should correspond to the address in the `entry`)
+ *    or a function which takes a {@link xdr.HashIdPreimageSorobanAuthorization}
+ *    input payload and returns EITHER
+ *
+ *      (a) an object containing a `signature` in bytes and a `signer` in bytes
+ *          (the public key that created this signature), or
+ *      (b) just the signature of the hash of the raw payload bytes (where the
+ *          signing key should correspond to the address in the `entry`).
+ *
+ *    The latter option (b) is JUST for backwards compatibility and will be
+ *    removed in the future.
  * @param {number} validUntilLedgerSeq   the (exclusive) future ledger sequence
  *    number until which this authorization entry should be valid (if
  *    `currentLedgerSeq==validUntil`, this is expired))
@@ -137,8 +145,15 @@ export async function authorizeEntry(
   let signature;
   let publicKey;
   if (typeof signer === 'function') {
-    signature = Buffer.from(await signer(preimage));
-    publicKey = Address.fromScAddress(addrAuth.address()).toString();
+    const sigResult = await signer(preimage);
+    if (typeof sigResult === 'object') {
+      signature = Buffer.from(sigResult.signature);
+      publicKey = sigResult.signer;
+    } else {
+      // if using the deprecated form, assume it's for the entry
+      signature = Buffer.from(sigResult);
+      publicKey = Address.fromScAddress(addrAuth.address()).toString();
+    }
   } else {
     signature = Buffer.from(signer.sign(payload));
     publicKey = signer.publicKey();
