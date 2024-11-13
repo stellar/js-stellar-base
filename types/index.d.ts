@@ -1219,7 +1219,7 @@ export type SigningCallback = (
   preimage: xdr.HashIdPreimage
 ) => Promise<
   BufferLike |
-  { signature: BufferLike, signer: BufferLike }
+  { signature: BufferLike, publicKey: BufferLike }
 >;
 
 export function authorizeInvocation(

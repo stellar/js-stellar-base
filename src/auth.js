@@ -19,11 +19,12 @@ import { nativeToScVal } from './scval';
  *
  * @returns {
  *    Promise<Uint8Array> |
- *    Promise<{signature: Uint8Array, signer: string}
+ *    Promise<{signature: Uint8Array, publicKey: string}
  * }  the signature of the raw payload (which is the sha256 hash of the preimage
- *    bytes, so `hash(preimage.toXDR())`) signed by the key corresponding to the
- *    public key in the entry you pass to {@link authorizeEntry} (decipherable
- *    from its `credentials().address().address()`)
+ *    bytes, so `hash(preimage.toXDR())`) either naked, implying it is signed
+ *    by the key corresponding to the public key in the entry you pass to
+ *    {@link authorizeEntry} (decipherable from its
+ *    `credentials().address().address()`), or alongside an explicit `publicKey`.
  */
 
 /**
@@ -148,7 +149,7 @@ export async function authorizeEntry(
     const sigResult = await signer(preimage);
     if (typeof sigResult === 'object') {
       signature = Buffer.from(sigResult.signature);
-      publicKey = sigResult.signer;
+      publicKey = sigResult.publicKey;
     } else {
       // if using the deprecated form, assume it's for the entry
       signature = Buffer.from(sigResult);
