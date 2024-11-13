@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added
+* Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([]()):
+```typescript
+export type SigningCallback = (
+  preimage: xdr.HashIdPreimage
+) => Promise<
+  BufferLike |
+  { signature: BufferLike, signer: BufferLike }
+>;
+```
+
 
 ## [`v13.0.0`](https://github.com/stellar/js-stellar-base/compare/v12.1.1...v13.0.0)
 

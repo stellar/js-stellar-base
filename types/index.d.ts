@@ -1214,9 +1214,13 @@ export class SorobanDataBuilder {
   build(): xdr.SorobanTransactionData;
 }
 
+type BufferLike = Buffer | Uint8Array | ArrayBuffer;
 export type SigningCallback = (
   preimage: xdr.HashIdPreimage
-) => Promise<Buffer | Uint8Array | ArrayBuffer /* Buffer-like */>;
+) => Promise<
+  BufferLike |
+  { signature: BufferLike, signer: BufferLike }
+>;
 
 export function authorizeInvocation(
   signer: Keypair | SigningCallback,
