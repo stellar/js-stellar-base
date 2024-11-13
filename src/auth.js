@@ -49,10 +49,11 @@ import { nativeToScVal } from './scval';
  *    or a function which takes a {@link xdr.HashIdPreimageSorobanAuthorization}
  *    input payload and returns EITHER
  *
- *      (a) an object containing a `signature` in bytes and a `signer` in bytes
- *          (the public key that created this signature), or
- *      (b) just the signature of the hash of the raw payload bytes (where the
- *          signing key should correspond to the address in the `entry`).
+ *      (a) an object containing a `signature` of the hash of the raw payload bytes
+ *          as a Buffer-like and a `publicKey` string representing who just
+ *          created this signature, or
+ *      (b) just the naked signature of the hash of the raw payload bytes (where
+ *          the signing key is implied to be the address in the `entry`).
  *
  *    The latter option (b) is JUST for backwards compatibility and will be
  *    removed in the future.
@@ -67,8 +68,8 @@ import { nativeToScVal } from './scval';
  *    {@link Operation.invokeHostFunction}
  *
  * @note If using the `SigningCallback` variation, the signer is assumed to be
- *    the entry's credential address. If you need a different key to sign the
- *    entry, you will need to use different method (e.g., fork this code).
+ *    the entry's credential address unless you use the variant that returns
+ *    the object.
  *
  * @see authorizeInvocation
  * @example
@@ -147,7 +148,7 @@ export async function authorizeEntry(
   let publicKey;
   if (typeof signer === 'function') {
     const sigResult = await signer(preimage);
-    if (typeof sigResult === 'object') {
+    if (sigResult?.signature) {
       signature = Buffer.from(sigResult.signature);
       publicKey = sigResult.publicKey;
     } else {
