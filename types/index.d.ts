@@ -1240,6 +1240,7 @@ export interface CreateInvocation {
       hash: string;
       address: string;
       salt: string;
+      constructorArgs?: any[];
   };
 }
 
