@@ -6,7 +6,7 @@
 ## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
 
 ### Fixed
-* `buildInvocationTree` will now successfully walk creation invocations with constructor arguments ([]()).
+* `buildInvocationTree` will now successfully walk creation invocations with constructor arguments ([#784](https://github.com/stellar/js-stellar-base/pull/784)).
 
 
 ## [`v13.0.0`](https://github.com/stellar/js-stellar-base/compare/v12.1.1...v13.0.0)
