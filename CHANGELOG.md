@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
+
+### Fixed
+* `buildInvocationTree` will now successfully walk creation invocations with constructor arguments ([]()).
+
+
 ## [`v13.0.0`](https://github.com/stellar/js-stellar-base/compare/v12.1.1...v13.0.0)
 
 **This release supports Protocol 22.** While the network has not upgraded yet, you can start integrating the new features into your codebase if you want a head start. Keep in mind that while the binary XDR is backwards-compatible, the naming and layout of structures is not. In other words, this build will continue to work on Protocol 21, but you may have to update code that references XDR directly.
