@@ -30,7 +30,7 @@ const {
 //     |
 //     +--- someNft.transfer(invoker, someNft, 2)
 //     |
-//     +--- create(custom wasm contract)
+//     +--- createV2(custom wasm contract)
 function rk() {
   return Keypair.random().publicKey();
 }
@@ -116,8 +116,8 @@ describe('parsing invocation trees', function () {
       }),
       new xdr.SorobanAuthorizedInvocation({
         function:
-          xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeCreateContractHostFn(
-            new xdr.CreateContractArgs({
+          xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeCreateContractV2HostFn(
+            new xdr.CreateContractArgsV2({
               contractIdPreimage:
                 xdr.ContractIdPreimage.contractIdPreimageFromAddress(
                   new xdr.ContractIdPreimageFromAddress({
@@ -125,6 +125,11 @@ describe('parsing invocation trees', function () {
                     salt: Buffer.alloc(32, 0)
                   })
                 ),
+              constructorArgs: [1, '2', 3].map((arg, i) => {
+                return nativeToScVal(arg, {
+                  type: ['u32', 'string', 'i32'][i]
+                });
+              }),
               executable: xdr.ContractExecutable.contractExecutableWasm(
                 Buffer.alloc(32, '\x20')
               )
@@ -196,7 +201,8 @@ describe('parsing invocation trees', function () {
           wasm: {
             salt: '00'.repeat(32),
             hash: '20'.repeat(32),
-            address: nftContract.contractId()
+            address: nftContract.contractId(),
+            constructorArgs: [1, '2', 3]
           }
         },
         invocations: []
