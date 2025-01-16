@@ -172,13 +172,6 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (Array.isArray(val)) {
-        if (val.length > 0 && val.some((v) => typeof v !== typeof val[0])) {
-          throw new TypeError(
-            `array values (${val}) must have the same type (types: ${val
-              .map((v) => typeof v)
-              .join(',')})`
-          );
-        }
         return xdr.ScVal.scvVec(val.map((v) => nativeToScVal(v, opts)));
       }
 
