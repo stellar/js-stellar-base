@@ -379,14 +379,14 @@ export function scValToNative(scv) {
 
 /// Inject a sortable map builder into the xdr module.
 xdr.scvSortedMap = (items) => {
-  let sorted = Array.from(items).sort((a, b) => {
+  const sorted = Array.from(items).sort((a, b) => {
     // Both a and b are `ScMapEntry`s, so we need to sort by underlying key.
     //
     // We couldn't possibly handle every combination of keys since Soroban
     // maps don't enforce consistent types, so we do a best-effort and try
     // sorting by "number-like" or "string-like."
-    let nativeA = scValToNative(a.key()),
-      nativeB = scValToNative(b.key());
+    const nativeA = scValToNative(a.key());
+    const nativeB = scValToNative(b.key());
 
     switch (typeof nativeA) {
       case 'number':
