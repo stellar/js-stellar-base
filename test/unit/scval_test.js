@@ -288,7 +288,7 @@ describe('parsing and building ScVals', function () {
       expect(sample.value()[idx].key().value()).to.equal(val);
     });
 
-    const sorted = xdr.scvMapSorted(sample.value());
+    const sorted = xdr.scvSortedMap(sample.value());
     expect(sorted.switch().name).to.equal('scvMap');
     ['a', 'b', 'c'].forEach((val, idx) => {
       expect(sorted.value()[idx].key().value()).to.equal(val);
@@ -323,7 +323,7 @@ describe('parsing and building ScVals', function () {
       expect(sample.value()[idx].key().value().toBigInt()).to.equal(val);
     });
 
-    const sorted = xdr.scvMapSorted(sample.value());
+    const sorted = xdr.scvSortedMap(sample.value());
     expect(sorted.switch().name).to.equal('scvMap');
     [1n, 2n, 3n].forEach((val, idx) => {
       expect(sorted.value()[idx].key().value().toBigInt()).to.equal(val);
