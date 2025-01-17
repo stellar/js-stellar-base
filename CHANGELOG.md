@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## [`v13.1.0`](https://github.com/stellar/js-stellar-base/compare/v13.0.1...v13.1.0)
+
+### Added
+* Add an `xdr.scvSortedMap` to do a best-effort sorting on map keys prior to creation to conform to Soroban requirements ([#787](https://github.com/stellar/js-stellar-base/pull/787)).
+
+
 ## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
 
 ### Fixed
