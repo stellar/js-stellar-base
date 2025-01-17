@@ -44,6 +44,16 @@ export namespace xdr {
 
   type Hash = Opaque[]; // workaround, cause unknown
 
+  /**
+   * Returns an {@link ScVal} with a map type and sorted entries.
+   *
+   * @param items the key-value pairs to sort.
+   *
+   * @warning This only performs "best-effort" sorting, working best when the
+   * keys are all either numeric or string-like.
+   */
+  function scvSortedMap(items: ScMapEntry[]): ScVal;
+
   interface SignedInt {
     readonly MAX_VALUE: 2147483647;
     readonly MIN_VALUE: -2147483648;

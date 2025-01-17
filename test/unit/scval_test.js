@@ -81,8 +81,6 @@ describe('parsing and building ScVals', function () {
     // iterate for granular errors on failures
     targetScv.value().forEach((entry, idx) => {
       const actual = scv.value()[idx];
-      // console.log(idx, 'exp:', JSON.stringify(entry));
-      // console.log(idx, 'act:', JSON.stringify(actual));
       expect(entry).to.deep.equal(actual, `item ${idx} doesn't match`);
     });
 
@@ -207,8 +205,8 @@ describe('parsing and building ScVals', function () {
     );
   });
 
-  it('throws on arrays with mixed types', function () {
-    expect(() => nativeToScVal([1, 'a', false])).to.throw(/same type/i);
+  it('doesnt throw on arrays with mixed types', function () {
+    expect(nativeToScVal([1, 'a', false]).switch().name).to.equal('scvVec');
   });
 
   it('lets strings be small integer ScVals', function () {
@@ -263,5 +261,72 @@ describe('parsing and building ScVals', function () {
         value: systemErr.error().code().name
       }
     ]);
+  });
+
+  it('can sort maps by string', function () {
+    const sample = nativeToScVal(
+      { a: 1, b: 2, c: 3 },
+      {
+        type: {
+          a: ['symbol'],
+          b: ['symbol'],
+          c: ['symbol']
+        }
+      }
+    );
+    ['a', 'b', 'c'].forEach((val, idx) => {
+      expect(sample.value()[idx].key().value()).to.equal(val);
+    });
+
+    // nativeToScVal will sort, so we need to "unsort" to make sure it works.
+    // We'll do this by swapping 0 (a) and 2 (c).
+    let tmp = sample.value()[0];
+    sample.value()[0] = sample.value()[2];
+    sample.value()[2] = tmp;
+
+    ['c', 'b', 'a'].forEach((val, idx) => {
+      expect(sample.value()[idx].key().value()).to.equal(val);
+    });
+
+    const sorted = xdr.scvSortedMap(sample.value());
+    expect(sorted.switch().name).to.equal('scvMap');
+    ['a', 'b', 'c'].forEach((val, idx) => {
+      expect(sorted.value()[idx].key().value()).to.equal(val);
+    });
+  });
+
+  it('can sort number-like maps', function () {
+    const sample = nativeToScVal(
+      { 1: 'a', 2: 'b', 3: 'c' },
+      {
+        type: {
+          1: ['i64', 'symbol'],
+          2: ['i64', 'symbol'],
+          3: ['i64', 'symbol']
+        }
+      }
+    );
+    expect(sample.value()[0].key().switch().name).to.equal('scvI64');
+
+    [1n, 2n, 3n].forEach((val, idx) => {
+      let underlyingKey = sample.value()[idx].key().value();
+      expect(underlyingKey.toBigInt()).to.equal(val);
+    });
+
+    // nativeToScVal will sort, so we need to "unsort" to make sure it works.
+    // We'll do this by swapping 0th (1n) and 2nd (3n).
+    let tmp = sample.value()[0];
+    sample.value()[0] = sample.value()[2];
+    sample.value()[2] = tmp;
+
+    [3n, 2n, 1n].forEach((val, idx) => {
+      expect(sample.value()[idx].key().value().toBigInt()).to.equal(val);
+    });
+
+    const sorted = xdr.scvSortedMap(sample.value());
+    expect(sorted.switch().name).to.equal('scvMap');
+    [1n, 2n, 3n].forEach((val, idx) => {
+      expect(sorted.value()[idx].key().value().toBigInt()).to.equal(val);
+    });
   });
 });

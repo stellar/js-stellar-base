@@ -172,13 +172,6 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (Array.isArray(val)) {
-        if (val.length > 0 && val.some((v) => typeof v !== typeof val[0])) {
-          throw new TypeError(
-            `array values (${val}) must have the same type (types: ${val
-              .map((v) => typeof v)
-              .join(',')})`
-          );
-        }
         return xdr.ScVal.scvVec(val.map((v) => nativeToScVal(v, opts)));
       }
 
@@ -383,3 +376,27 @@ export function scValToNative(scv) {
       return scv.value();
   }
 }
+
+/// Inject a sortable map builder into the xdr module.
+xdr.scvSortedMap = (items) => {
+  const sorted = Array.from(items).sort((a, b) => {
+    // Both a and b are `ScMapEntry`s, so we need to sort by underlying key.
+    //
+    // We couldn't possibly handle every combination of keys since Soroban
+    // maps don't enforce consistent types, so we do a best-effort and try
+    // sorting by "number-like" or "string-like."
+    const nativeA = scValToNative(a.key());
+    const nativeB = scValToNative(b.key());
+
+    switch (typeof nativeA) {
+      case 'number':
+      case 'bigint':
+        return nativeA < nativeB ? -1 : 1;
+
+      default:
+        return nativeA.toString().localeCompare(nativeB.toString());
+    }
+  });
+
+  return xdr.ScVal.scvMap(sorted);
+};
