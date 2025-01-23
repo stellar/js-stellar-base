@@ -140,6 +140,21 @@ export class Transaction extends TransactionBase {
     throw new Error('Transaction is immutable');
   }
 
+  /** @type {xdr.SorobanResources|null} */
+  get sorobanResources() {
+    if (this._envelopeType == xdr.EnvelopeType.envelopeTypeTx()) {
+      ext = this._tx.v1().tx().ext()
+      if (ext.switch() == 1) {
+        return ext.sorobanData().resources();
+      }
+    }
+
+    return null;
+  }
+  set sorobanResources(value) {
+    throw new Error('Transaction is immutable');
+  }
+
   /**
    * @type {object}
    * @property {number} minLedger - smallest ledger bound (uint32)
