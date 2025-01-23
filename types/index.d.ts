@@ -1047,6 +1047,7 @@ export class Transaction<
   minAccountSequenceAge?: number;
   minAccountSequenceLedgerGap?: number;
   extraSigners?: string[];
+  sorobanResources?: xdr.SorobanResources;
 
   getClaimableBalanceId(opIndex: number): string;
 }
