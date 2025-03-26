@@ -1,5 +1,6 @@
 import xdr from './xdr';
 
+import { Keypair } from './keypair';
 import { Address } from './address';
 import { Contract } from './contract';
 import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
@@ -149,6 +150,10 @@ export function nativeToScVal(val, opts = {}) {
 
       if (val instanceof Address) {
         return val.toScVal();
+      }
+
+      if (val instanceof Keypair) {
+        return nativeToScVal(val.publicKey(), { type: "address" });
       }
 
       if (val instanceof Contract) {
