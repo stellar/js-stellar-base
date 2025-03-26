@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+* `nativeToScVal` now supports encoding `Keypair`s as addresses ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
+
+### Fixed
+* `scValToNative` will decode addresses more efficiently and reliably ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
+
 
 ## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
 
