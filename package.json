@@ -26,6 +26,9 @@
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "mocha": {
     "require": [
       "@babel/register",
