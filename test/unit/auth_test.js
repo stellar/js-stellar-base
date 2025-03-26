@@ -35,7 +35,16 @@ describe('building authorization entries', function () {
 
   [
     [kp, 'Keypair'],
-    [(preimage) => kp.sign(StellarBase.hash(preimage.toXDR())), 'callback']
+    [(preimage) => kp.sign(StellarBase.hash(preimage.toXDR())), 'callback'],
+    [
+      (preimage) => {
+        return {
+          signature: kp.sign(StellarBase.hash(preimage.toXDR())),
+          publicKey: kp.publicKey()
+        };
+      },
+      'callback w/ obj'
+    ]
   ].forEach(([signer, methodName]) => {
     it(`signs the entry correctly (${methodName})`, function (done) {
       StellarBase.authorizeEntry(authEntry, signer, 10)
@@ -87,9 +96,7 @@ describe('building authorization entries', function () {
 
   it('can build from scratch', function (done) {
     StellarBase.authorizeInvocation(kp, 10, authEntry.rootInvocation())
-      .then((signedEntry) => {
-        done();
-      })
+      .then((signedEntry) => done())
       .catch((err) => done(err));
   });
 });
