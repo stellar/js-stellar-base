@@ -153,7 +153,7 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (val instanceof Keypair) {
-        return nativeToScVal(val.publicKey(), { type: "address" });
+        return nativeToScVal(val.publicKey(), { type: 'address' });
       }
 
       if (val instanceof Contract) {
