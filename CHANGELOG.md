@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+* Removed [the custom `Buffer.subarray` polyfill](https://github.com/stellar/js-stellar-base/pull/733) introduced in v11.0.1 to address the issue of it not being usable in the React Native Hermes compiler. We recommend using [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative. If needed, please review and consider manually adding it to your project.
+
 ### Added
 * Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([]()):
 ```typescript
