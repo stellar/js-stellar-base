@@ -158,6 +158,7 @@ describe('parsing and building ScVals', function () {
       [1, 'u256', 'scvU256'],
       ['a', 'symbol', 'scvSymbol'],
       ['a', undefined, 'scvString'],
+      [Keypair.random(), undefined, 'scvAddress'],
       [Buffer.from('abcdefg'), undefined, 'scvBytes'],
       [Buffer.from('abcdefg'), 'string', 'scvString'],
       [Buffer.from('abcdefg'), 'symbol', 'scvSymbol']

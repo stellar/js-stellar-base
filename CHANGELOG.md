@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* `nativeToScVal` now supports encoding `Keypair`s as addresses ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
 * Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([]()):
 ```typescript
 export type SigningCallback = (
@@ -12,6 +13,9 @@ export type SigningCallback = (
   { signature: BufferLike, publicKey: string }
 >;
 ```
+
+### Fixed
+* `scValToNative` will decode addresses more efficiently and reliably ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
 
 
 ## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
