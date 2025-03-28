@@ -1,6 +1,6 @@
 {
   "name": "@stellar/stellar-base",
-  "version": "13.0.1",
+  "version": "13.1.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
@@ -73,11 +73,11 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
-    "@babel/cli": "^7.25.9",
-    "@babel/core": "^7.26.0",
-    "@babel/eslint-parser": "^7.25.9",
-    "@babel/eslint-plugin": "^7.25.9",
-    "@babel/preset-env": "^7.26.0",
+    "@babel/cli": "^7.27.0",
+    "@babel/core": "^7.26.10",
+    "@babel/eslint-parser": "^7.27.0",
+    "@babel/eslint-plugin": "^7.27.0",
+    "@babel/preset-env": "^7.26.9",
     "@babel/register": "^7.25.9",
     "@definitelytyped/dtslint": "^0.0.182",
     "@istanbuljs/nyc-config-babel": "3.0.0",
@@ -94,7 +94,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prefer-import": "^0.0.1",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-prettier": "^5.2.5",
     "eslint-webpack-plugin": "^4.2.0",
     "ghooks": "^2.0.4",
     "husky": "^8.0.3",
@@ -106,20 +106,20 @@
     "karma-mocha": "^2.0.0",
     "karma-sinon-chai": "^2.0.2",
     "karma-webpack": "^5.0.1",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^15.5.0",
     "minami": "^1.1.1",
     "mocha": "^10.8.2",
     "node-polyfill-webpack-plugin": "^3.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.5.3",
     "randombytes": "^2.1.0",
     "sinon": "^16.1.0",
     "sinon-chai": "^3.7.0",
     "taffydb": "^2.7.3",
-    "terser-webpack-plugin": "^5.3.10",
+    "terser-webpack-plugin": "^5.3.14",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3",
-    "webpack": "^5.96.1",
+    "typescript": "5.6.3",
+    "webpack": "^5.98.0",
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
@@ -131,6 +131,6 @@
     "tweetnacl": "^1.0.3"
   },
   "optionalDependencies": {
-    "sodium-native": "^4.3.0"
+    "sodium-native": "^4.3.3"
   }
 }
