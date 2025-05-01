@@ -14,7 +14,6 @@ const config = {
   },
   resolve: {
     fallback: {
-      crypto: require.resolve('crypto-browserify'),
       buffer: require.resolve('buffer'),
     },
     extensions: ['.ts', '.js']
