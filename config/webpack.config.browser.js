@@ -14,7 +14,7 @@ const config = {
   },
   resolve: {
     fallback: {
-      buffer: require.resolve('buffer'),
+      buffer: require.resolve('buffer')
     },
     extensions: ['.ts', '.js']
   },
