@@ -14,14 +14,18 @@ const config = {
   },
   resolve: {
     fallback: {
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer')
+      crypto: require.resolve('crypto-browserify'),
+      buffer: require.resolve('buffer'),
     },
     extensions: ['.ts', '.js']
   },
   output: {
     clean: true,
-    library: 'StellarBase',
+    library: {
+      name: 'StellarBase',
+      type: 'umd',
+      umdNamedDefine: true
+    },
     path: path.resolve(__dirname, '../dist')
   },
   mode: process.env.NODE_ENV ?? 'development',
@@ -30,7 +34,7 @@ const config = {
     rules: [
       {
         test: /\.m?js$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!(js-xdr))/,
         use: {
           loader: 'babel-loader',
           options: {
