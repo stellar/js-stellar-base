@@ -85,7 +85,6 @@
     "@typescript-eslint/parser": "^6.20.0",
     "babel-loader": "^9.2.1",
     "babel-plugin-istanbul": "^6.1.1",
-    "buffer": "^6.0.3",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.2",
     "cross-env": "^7.0.3",
@@ -128,7 +127,8 @@
     "base32.js": "^0.1.0",
     "bignumber.js": "^9.1.2",
     "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.3"
+    "tweetnacl": "^1.0.3",
+    "buffer": "^6.0.3"
   },
   "optionalDependencies": {
     "sodium-native": "^4.3.3"
