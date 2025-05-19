@@ -1198,7 +1198,7 @@ export class SorobanDataBuilder {
   setResourceFee(fee: IntLike): SorobanDataBuilder;
   setResources(
     cpuInstrs: number,
-    readBytes: number,
+    diskReadBytes: number,
     writeBytes: number
   ): SorobanDataBuilder;
 
