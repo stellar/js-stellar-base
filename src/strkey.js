@@ -12,7 +12,7 @@ const versionBytes = {
   signedPayload: 15 << 3, // P
   contract: 2 << 3, // C
   liquidityPool: 11 << 3, // L
-  claimableBalance: 1 << 3, // B
+  claimableBalance: 1 << 3 // B
 };
 
 const strkeyTypes = {
@@ -24,7 +24,7 @@ const strkeyTypes = {
   P: 'signedPayload',
   C: 'contract',
   L: 'liquidityPool',
-  B: 'claimableBalance',
+  B: 'claimableBalance'
 };
 
 /**

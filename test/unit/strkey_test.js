@@ -413,23 +413,34 @@ describe('StrKey', function () {
     });
   });
 
-  describe("#liquidityPools", function () {
-    it("valid w/ 32-byte hash", function() {
-      const strkey = "LA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUPJN";
-      const asHex = "3f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a"
+  describe('#liquidityPools', function () {
+    it('valid w/ 32-byte hash', function () {
+      const strkey = 'LA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUPJN';
+      const asHex =
+        '3f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a';
       expect(StellarBase.StrKey.isValidLiquidityPool(strkey)).to.be.true;
-      expect(StellarBase.StrKey.decodeLiquidityPool(strkey).toString("hex")).to.equal(asHex);
-      expect(StellarBase.StrKey.encodeLiquidityPool(Buffer.from(asHex, "hex"))).to.equal(strkey);
+      expect(
+        StellarBase.StrKey.decodeLiquidityPool(strkey).toString('hex')
+      ).to.equal(asHex);
+      expect(
+        StellarBase.StrKey.encodeLiquidityPool(Buffer.from(asHex, 'hex'))
+      ).to.equal(strkey);
     });
   });
 
-  describe("#claimableBalances", function () {
-    it("valid w/ 33-byte strkey", function() {
-      const strkey = "BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TU";
-      const asHex = "003f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a"
+  describe('#claimableBalances', function () {
+    it('valid w/ 33-byte strkey', function () {
+      const strkey =
+        'BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TU';
+      const asHex =
+        '003f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a';
       expect(StellarBase.StrKey.isValidClaimableBalance(strkey)).to.be.true;
-      expect(StellarBase.StrKey.decodeClaimableBalance(strkey).toString("hex")).to.equal(asHex);
-      expect(StellarBase.StrKey.encodeClaimableBalance(Buffer.from(asHex, "hex"))).to.equal(strkey);
+      expect(
+        StellarBase.StrKey.decodeClaimableBalance(strkey).toString('hex')
+      ).to.equal(asHex);
+      expect(
+        StellarBase.StrKey.encodeClaimableBalance(Buffer.from(asHex, 'hex'))
+      ).to.equal(strkey);
     });
   });
 
@@ -452,9 +463,9 @@ describe('StrKey', function () {
       // Invalid checksum
       'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUO',
       // Trailing bits should be zeroes
-      "BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TV",
+      'BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TV',
       // Invalid claimable balance type
-      "BAAT6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGXACA",
+      'BAAT6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGXACA'
 
       //
       // FIXME: The following test cases don't pass (i.e. don't throw).
