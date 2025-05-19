@@ -989,6 +989,14 @@ export namespace StrKey {
   function encodeContract(data: Buffer): string;
   function decodeContract(address: string): Buffer;
   function isValidContract(address: string): boolean;
+
+  function encodeClaimableBalance(data: Buffer): string;
+  function decodeClaimableBalance(address: string): Buffer;
+  function isValidClaimableBalance(address: string): boolean;
+
+  function encodeLiquidityPool(data: Buffer): string;
+  function decodeLiquidityPool(address: string): Buffer;
+  function isValidLiquidityPool(address: string): boolean;
 }
 
 export namespace SignerKey {
