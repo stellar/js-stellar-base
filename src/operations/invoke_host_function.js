@@ -76,6 +76,20 @@ export function invokeContractFunction(opts) {
     throw new TypeError(`expected contract strkey instance, got ${c}`);
   }
 
+  // Ensure that there are no claimable balance or liquidity pool IDs in the
+  // invocation because those are not allowed.
+  opts.args.forEach((arg) => {
+    try {
+      const scv = Address.fromScVal(arg);
+      switch (scv._type) {
+        case 'claimableBalance':
+        case 'liquidityPool':
+          throw new TypeError(`claimable balances and liquidity pools cannot be arguments to invokeHostFunction`)
+      }
+    } catch { // swallow non-Address errors
+    }
+  });
+
   return this.invokeHostFunction({
     source: opts.source,
     auth: opts.auth,
