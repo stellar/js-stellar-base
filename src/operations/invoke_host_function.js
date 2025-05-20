@@ -58,6 +58,7 @@ export function invokeHostFunction(opts) {
             throw new TypeError(
               `claimable balances and liquidity pools cannot be arguments to invokeHostFunction`
             );
+          default:
         }
       });
   }
