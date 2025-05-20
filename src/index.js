@@ -35,7 +35,7 @@ export { Account } from './account';
 export { MuxedAccount } from './muxed_account';
 export { Claimant } from './claimant';
 export { Networks } from './network';
-export { StrKey, strkeyTypes } from './strkey';
+export { StrKey } from './strkey';
 export { SignerKey } from './signerkey';
 export { Soroban } from './soroban';
 export {

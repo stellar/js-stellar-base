@@ -1,4 +1,3 @@
-import { MuxedAccount } from './muxed_account';
 import { StrKey } from './strkey';
 import xdr from './xdr';
 
@@ -99,11 +98,8 @@ export class Address {
   /**
    * Convert this from an xdr.ScVal type.
    *
-   * If the given ScVal is an address with a muxed account, this will instead
-   * return a {@link MuxedAccount} object.
-   *
    * @param {xdr.ScVal} scVal - The xdr.ScVal type to parse
-   * @returns {Address|MuxedAccount}
+   * @returns {Address}
    */
   static fromScVal(scVal) {
     return Address.fromScAddress(scVal.address());
