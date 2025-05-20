@@ -34,6 +34,34 @@ export function invokeHostFunction(opts) {
     );
   }
 
+  if (
+    opts.func.switch().value ===
+    xdr.HostFunctionType.hostFunctionTypeInvokeContract().value
+  ) {
+    // Ensure that there are no claimable balance or liquidity pool IDs in the
+    // invocation because those are not allowed.
+    opts.func
+      .invokeContract()
+      .args()
+      .forEach((arg) => {
+        let scv;
+        try {
+          scv = Address.fromScVal(arg);
+        } catch {
+          // swallow non-Address errors
+          return;
+        }
+
+        switch (scv._type) {
+          case 'claimableBalance':
+          case 'liquidityPool':
+            throw new TypeError(
+              `claimable balances and liquidity pools cannot be arguments to invokeHostFunction`
+            );
+        }
+      });
+  }
+
   const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
     hostFunction: opts.func,
     auth: opts.auth || []
@@ -75,20 +103,6 @@ export function invokeContractFunction(opts) {
   if (c._type !== 'contract') {
     throw new TypeError(`expected contract strkey instance, got ${c}`);
   }
-
-  // Ensure that there are no claimable balance or liquidity pool IDs in the
-  // invocation because those are not allowed.
-  opts.args.forEach((arg) => {
-    try {
-      const scv = Address.fromScVal(arg);
-      switch (scv._type) {
-        case 'claimableBalance':
-        case 'liquidityPool':
-          throw new TypeError(`claimable balances and liquidity pools cannot be arguments to invokeHostFunction`)
-      }
-    } catch { // swallow non-Address errors
-    }
-  });
 
   return this.invokeHostFunction({
     source: opts.source,
