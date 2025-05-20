@@ -69,7 +69,7 @@ export class Address {
   /**
    * Creates a new claimable balance Address object from a buffer of raw bytes.
    *
-   * @param {Buffer} buffer - The bytes of an address to parse.
+   * @param {Buffer} buffer - The bytes of a claimable balance ID to parse.
    * @returns {Address}
    */
   static claimableBalance(buffer) {
@@ -77,12 +77,21 @@ export class Address {
   }
 
   /**
+   * Creates a new liquidity pool Address object from a buffer of raw bytes.
    *
+   * @param {Buffer} buffer - The bytes of an LP ID to parse.
+   * @returns {Address}
    */
   static liquidityPool(buffer) {
     return new Address(StrKey.encodeLiquidityPool(buffer));
   }
 
+  /**
+  * Creates a new muxed account Address object from a buffer of raw bytes.
+  *
+  * @param {Buffer} buffer - The bytes of an address to parse.
+  * @returns {Address}
+  */
   static muxedAccount(buffer) {
     return new Address(StrKey.encodeMed25519PublicKey(buffer));
   }
