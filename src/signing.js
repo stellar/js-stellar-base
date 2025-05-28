@@ -12,7 +12,8 @@ export function verify(data, signature, publicKey) {
   return ed25519.verify(
     Buffer.from(signature),
     Buffer.from(data),
-    Buffer.from(publicKey), {
+    Buffer.from(publicKey),
+    {
       zip215: false
     }
   );
