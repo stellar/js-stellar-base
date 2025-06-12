@@ -5,7 +5,7 @@ import cereal from './jsxdr';
 export { xdr };
 export { cereal };
 export { hash } from './hashing';
-export { sign, verify, FastSigning } from './signing';
+export { sign, verify } from './signing';
 export {
   getLiquidityPoolId,
   LiquidityPoolFeeV18
