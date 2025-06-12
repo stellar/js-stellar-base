@@ -6,8 +6,9 @@ import xdr from './xdr';
  *
  * `Address` represents a single address in the Stellar network that can be
  * inputted to or outputted by a smart contract. An address can represent an
- * account, muxed account, contract, claimable balance (output only), or
- * liquidity pool (output only).
+ * account, muxed account, contract, claimable balance, or a liquidity pool
+ * (the latter two can only be present as the *output* of Core in the form
+ * of an event, never an input to a smart contract).
  *
  * @constructor
  *
