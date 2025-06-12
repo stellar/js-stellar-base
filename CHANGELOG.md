@@ -4,6 +4,7 @@
 
 ### Fixed
 * Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
+* Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
 
 ## [`v13.1.0`](https://github.com/stellar/js-stellar-base/compare/v13.0.1...v13.1.0)
 
