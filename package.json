@@ -123,14 +123,11 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
+    "@noble/curves": "^1.9.1",
     "@stellar/js-xdr": "^3.1.2",
     "base32.js": "^0.1.0",
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
-    "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.3"
-  },
-  "optionalDependencies": {
-    "sodium-native": "^4.3.3"
+    "sha.js": "^2.3.6"
   }
 }

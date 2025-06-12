@@ -1,7 +1,6 @@
 /* eslint no-bitwise: ["error", {"allow": ["^"]}] */
 
-import nacl from 'tweetnacl';
-
+import { ed25519 } from '@noble/curves/ed25519';
 import { sign, verify, generate } from './signing';
 import { StrKey } from './strkey';
 import { hash } from './hashing';
@@ -42,7 +41,7 @@ export class Keypair {
 
       this._secretSeed = keys.secretKey;
       this._publicKey = generate(keys.secretKey);
-      this._secretKey = Buffer.concat([keys.secretKey, this._publicKey]);
+      this._secretKey = keys.secretKey;
 
       if (
         keys.publicKey &&
@@ -113,7 +112,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static random() {
-    const secret = nacl.randomBytes(32);
+    const secret = ed25519.utils.randomPrivateKey();
     return this.fromRawEd25519Seed(secret);
   }
 
