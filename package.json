@@ -4,8 +4,7 @@
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
-    "./lib/index.js": "./dist/stellar-base.min.js",
-    "sodium-native": false
+    "./lib/index.js": "./dist/stellar-base.min.js"
   },
   "types": "./types/index.d.ts",
   "scripts": {
@@ -27,7 +26,7 @@
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "mocha": {
     "require": [

@@ -10,7 +10,7 @@
 ### Added
 * The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
 * Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
-* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([]()).
+* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([#801](https://github.com/stellar/js-stellar-base/pull/801)).
 
 ### Fixed
 * Remove nonexistent `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
