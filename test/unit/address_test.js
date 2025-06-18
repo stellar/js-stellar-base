@@ -4,6 +4,16 @@ describe('Address', function () {
   const MUXED_ADDRESS =
     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK';
 
+  const MUXED_ZERO = StellarBase.StrKey.encodeMed25519PublicKey(
+    Buffer.alloc(40)
+  );
+  const CLAIMABLE_BALANCE_ZERO = StellarBase.StrKey.encodeClaimableBalance(
+    Buffer.alloc(33)
+  );
+  const LIQUIDITY_POOL_ZERO = StellarBase.StrKey.encodeLiquidityPool(
+    Buffer.alloc(32)
+  );
+
   describe('.constructor', function () {
     it('fails to create Address object from an invalid address', function () {
       expect(() => new StellarBase.Address('GBBB')).to.throw(
@@ -11,130 +21,268 @@ describe('Address', function () {
       );
     });
 
-    it('creates an Address object for accounts', function () {
-      let account = new StellarBase.Address(ACCOUNT);
-      expect(account.toString()).to.equal(ACCOUNT);
-    });
-
-    it('creates an Address object for contracts', function () {
-      let account = new StellarBase.Address(CONTRACT);
-      expect(account.toString()).to.equal(CONTRACT);
-    });
-
-    it('wont create Address objects from muxed account strings', function () {
-      expect(() => {
-        new StellarBase.Account(MUXED_ADDRESS, '123');
-      }).to.throw(/MuxedAccount/);
+    [
+      ACCOUNT,
+      CONTRACT,
+      MUXED_ADDRESS,
+      CLAIMABLE_BALANCE_ZERO,
+      LIQUIDITY_POOL_ZERO
+    ].forEach((strkey) => {
+      const type = StellarBase.StrKey.types[strkey[0]];
+      it(`creates an Address for ${type}`, function () {
+        expect(new StellarBase.Address(strkey).toString()).to.equal(strkey);
+      });
     });
   });
 
   describe('static constructors', function () {
     it('.fromString', function () {
-      let account = StellarBase.Address.fromString(ACCOUNT);
-      expect(account.toString()).to.equal(ACCOUNT);
+      const a = StellarBase.Address.fromString(ACCOUNT);
+      expect(a.toString()).to.equal(ACCOUNT);
     });
 
     it('.account', function () {
-      let account = StellarBase.Address.account(Buffer.alloc(32));
-      expect(account.toString()).to.equal(
+      const a = StellarBase.Address.account(Buffer.alloc(32));
+      expect(a.toString()).to.equal(
         'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF'
       );
     });
 
     it('.contract', function () {
-      let account = StellarBase.Address.contract(Buffer.alloc(32));
-      expect(account.toString()).to.equal(
+      const c = StellarBase.Address.contract(Buffer.alloc(32));
+      expect(c.toString()).to.equal(
         'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4'
       );
     });
 
+    it('.muxedAccount', function () {
+      const m = StellarBase.Address.muxedAccount(Buffer.alloc(40));
+      expect(m.toString()).to.equal(MUXED_ZERO);
+    });
+
+    it('.claimableBalance', function () {
+      const cb = StellarBase.Address.claimableBalance(Buffer.alloc(33));
+      expect(cb.toString()).to.equal(CLAIMABLE_BALANCE_ZERO);
+    });
+
+    it('.liquidityPool', function () {
+      const lp = StellarBase.Address.liquidityPool(Buffer.alloc(32));
+      expect(lp.toString()).to.equal(LIQUIDITY_POOL_ZERO);
+    });
+
     describe('.fromScAddress', function () {
-      it('creates an Address object for accounts', function () {
-        let scAddress = StellarBase.xdr.ScAddress.scAddressTypeAccount(
+      it('parses account addresses', function () {
+        const sc = StellarBase.xdr.ScAddress.scAddressTypeAccount(
           StellarBase.xdr.PublicKey.publicKeyTypeEd25519(
             StellarBase.StrKey.decodeEd25519PublicKey(ACCOUNT)
           )
         );
-        let account = StellarBase.Address.fromScAddress(scAddress);
-        expect(account.toString()).to.equal(ACCOUNT);
+        const a = StellarBase.Address.fromScAddress(sc);
+        expect(a.toString()).to.equal(ACCOUNT);
       });
 
-      it('creates an Address object for contracts', function () {
-        let scAddress = StellarBase.xdr.ScAddress.scAddressTypeContract(
+      it('parses contract addresses', function () {
+        const sc = StellarBase.xdr.ScAddress.scAddressTypeContract(
           StellarBase.StrKey.decodeContract(CONTRACT)
         );
-        let contract = StellarBase.Address.fromScAddress(scAddress);
-        expect(contract.toString()).to.equal(CONTRACT);
+        const c = StellarBase.Address.fromScAddress(sc);
+        expect(c.toString()).to.equal(CONTRACT);
+      });
+
+      it('parses muxed-account addresses', function () {
+        const sc = StellarBase.xdr.ScAddress.scAddressTypeMuxedAccount(
+          StellarBase.StrKey.decodeMed25519PublicKey(MUXED_ADDRESS)
+        );
+        const m = StellarBase.Address.fromScAddress(sc);
+        expect(m.toString()).to.equal(MUXED_ADDRESS);
+      });
+
+      it('parses claimable-balance addresses', function () {
+        const sc = StellarBase.xdr.ScAddress.scAddressTypeClaimableBalance(
+          Buffer.alloc(33)
+        );
+        const cb = StellarBase.Address.fromScAddress(sc);
+        expect(cb.toString()).to.equal(CLAIMABLE_BALANCE_ZERO);
+      });
+
+      it('parses liquidity-pool addresses', function () {
+        const sc = StellarBase.xdr.ScAddress.scAddressTypeLiquidityPool(
+          Buffer.alloc(32)
+        );
+        const lp = StellarBase.Address.fromScAddress(sc);
+        expect(lp.toString()).to.equal(LIQUIDITY_POOL_ZERO);
       });
     });
 
     describe('.fromScVal', function () {
-      it('creates an Address object for accounts', function () {
-        let scVal = StellarBase.xdr.ScVal.scvAddress(
+      it('parses account ScVals', function () {
+        const scVal = StellarBase.xdr.ScVal.scvAddress(
           StellarBase.xdr.ScAddress.scAddressTypeAccount(
             StellarBase.xdr.PublicKey.publicKeyTypeEd25519(
               StellarBase.StrKey.decodeEd25519PublicKey(ACCOUNT)
             )
           )
         );
-        let account = StellarBase.Address.fromScVal(scVal);
-        expect(account.toString()).to.equal(ACCOUNT);
+        const a = StellarBase.Address.fromScVal(scVal);
+        expect(a.toString()).to.equal(ACCOUNT);
       });
 
-      it('creates an Address object for contracts', function () {
-        let scVal = StellarBase.xdr.ScVal.scvAddress(
+      it('parses contract ScVals', function () {
+        const scVal = StellarBase.xdr.ScVal.scvAddress(
           StellarBase.xdr.ScAddress.scAddressTypeContract(
             StellarBase.StrKey.decodeContract(CONTRACT)
           )
         );
-        let contract = StellarBase.Address.fromScVal(scVal);
-        expect(contract.toString()).to.equal(CONTRACT);
+        const c = StellarBase.Address.fromScVal(scVal);
+        expect(c.toString()).to.equal(CONTRACT);
+      });
+
+      it('parses muxed-account ScVals', function () {
+        const scVal = StellarBase.xdr.ScVal.scvAddress(
+          StellarBase.xdr.ScAddress.scAddressTypeMuxedAccount(
+            StellarBase.StrKey.decodeMed25519PublicKey(MUXED_ADDRESS)
+          )
+        );
+        const m = StellarBase.Address.fromScVal(scVal);
+        expect(m.toString()).to.equal(MUXED_ADDRESS);
+      });
+
+      it('parses claimable-balance ScVals', function () {
+        const scVal = StellarBase.xdr.ScVal.scvAddress(
+          StellarBase.xdr.ScAddress.scAddressTypeClaimableBalance(
+            Buffer.alloc(33)
+          )
+        );
+        const cb = StellarBase.Address.fromScVal(scVal);
+        expect(cb.toString()).to.equal(CLAIMABLE_BALANCE_ZERO);
+      });
+
+      it('parses liquidity-pool ScVals', function () {
+        const scVal = StellarBase.xdr.ScVal.scvAddress(
+          StellarBase.xdr.ScAddress.scAddressTypeLiquidityPool(Buffer.alloc(32))
+        );
+        const lp = StellarBase.Address.fromScVal(scVal);
+        expect(lp.toString()).to.equal(LIQUIDITY_POOL_ZERO);
       });
     });
   });
 
   describe('.toScAddress', function () {
-    it('converts accounts to an ScAddress', function () {
+    it('converts accounts', function () {
       const a = new StellarBase.Address(ACCOUNT);
       const s = a.toScAddress();
-      expect(s).to.be.instanceof(StellarBase.xdr.ScAddress);
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeAccount()
       );
     });
 
-    it('converts contracts to an ScAddress', function () {
-      const a = new StellarBase.Address(CONTRACT);
-      const s = a.toScAddress();
-      expect(s).to.be.instanceof(StellarBase.xdr.ScAddress);
+    it('converts contracts', function () {
+      const c = new StellarBase.Address(CONTRACT);
+      const s = c.toScAddress();
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeContract()
+      );
+    });
+
+    it('converts muxed accounts', function () {
+      const m = new StellarBase.Address(MUXED_ADDRESS);
+      const s = m.toScAddress();
+      expect(s).to.be.instanceof(StellarBase.xdr.ScAddress);
+      expect(s.switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeMuxedAccount()
+      );
+    });
+
+    it('converts claimable balances', function () {
+      const cb = new StellarBase.Address(CLAIMABLE_BALANCE_ZERO);
+      const s = cb.toScAddress();
+      expect(s.switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeClaimableBalance()
+      );
+    });
+
+    it('converts liquidity pools', function () {
+      const lp = new StellarBase.Address(LIQUIDITY_POOL_ZERO);
+      const s = lp.toScAddress();
+      expect(s.switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeLiquidityPool()
       );
     });
   });
 
   describe('.toScVal', function () {
-    it('converts to an ScAddress', function () {
+    it('wraps account ScAddress types', function () {
       const a = new StellarBase.Address(ACCOUNT);
-      const s = a.toScVal();
-      expect(s).to.be.instanceof(StellarBase.xdr.ScVal);
-      expect(s.address()).to.deep.equal(a.toScAddress());
+      expect(a.toScVal().address().switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeAccount()
+      );
+    });
+
+    it('wraps contract ScAddress types', function () {
+      const c = new StellarBase.Address(CONTRACT);
+      expect(c.toScVal().address().switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeContract()
+      );
+    });
+
+    it('wraps muxed-account ScAddress types', function () {
+      const m = new StellarBase.Address(MUXED_ADDRESS);
+      expect(m.toScVal().address().switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeMuxedAccount()
+      );
+    });
+
+    it('wraps liquidity-pool ScAddress types', function () {
+      const lp = new StellarBase.Address(LIQUIDITY_POOL_ZERO);
+      expect(lp.toScVal().address().switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeLiquidityPool()
+      );
+    });
+
+    it('wraps claimable-balance ScAddress types', function () {
+      const cb = new StellarBase.Address(CLAIMABLE_BALANCE_ZERO);
+      const val = cb.toScVal();
+      expect(val).to.be.instanceof(StellarBase.xdr.ScVal);
+      expect(val.address().switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeClaimableBalance()
+      );
     });
   });
 
   describe('.toBuffer', function () {
-    it('returns the raw public key bytes for accounts', function () {
+    it('returns the raw public-key bytes for accounts', function () {
       const a = new StellarBase.Address(ACCOUNT);
-      const b = a.toBuffer();
-      expect(b).to.deep.equal(
+      expect(a.toBuffer()).to.deep.equal(
         StellarBase.StrKey.decodeEd25519PublicKey(ACCOUNT)
       );
     });
 
-    it('returns the raw public key bytes for contracts', function () {
-      const a = new StellarBase.Address(CONTRACT);
-      const b = a.toBuffer();
-      expect(b).to.deep.equal(StellarBase.StrKey.decodeContract(CONTRACT));
+    it('returns the raw hash for contracts', function () {
+      const c = new StellarBase.Address(CONTRACT);
+      expect(c.toBuffer()).to.deep.equal(
+        StellarBase.StrKey.decodeContract(CONTRACT)
+      );
+    });
+
+    it('returns raw bytes for muxed accounts', function () {
+      const m = new StellarBase.Address(MUXED_ADDRESS);
+      expect(m.toBuffer()).to.deep.equal(
+        StellarBase.StrKey.decodeMed25519PublicKey(MUXED_ADDRESS)
+      );
+    });
+
+    it('returns raw bytes for claimable balances', function () {
+      const cb = new StellarBase.Address(CLAIMABLE_BALANCE_ZERO);
+      expect(cb.toBuffer()).to.deep.equal(
+        StellarBase.StrKey.decodeClaimableBalance(CLAIMABLE_BALANCE_ZERO)
+      );
+    });
+
+    it('returns raw bytes for liquidity pools', function () {
+      const lp = new StellarBase.Address(LIQUIDITY_POOL_ZERO);
+      expect(lp.toBuffer()).to.deep.equal(
+        StellarBase.StrKey.decodeLiquidityPool(LIQUIDITY_POOL_ZERO)
+      );
     });
   });
 });
