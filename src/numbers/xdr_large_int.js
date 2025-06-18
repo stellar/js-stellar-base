@@ -15,9 +15,9 @@ import xdr from '../xdr';
  * the type / width / size in bits of the integer you're targeting, regardless
  * of the input value(s) you provide.
  *
- * @param {string}  type - force a specific data type. the type choices are:
- *    'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (default: the smallest
- *    one that fits the `value`) (see {@link XdrLargeInt.isType})
+ * @param {string}  type - specifices a data type to use to represent the, one
+ *    of: 'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (see
+ *    {@link XdrLargeInt.isType})
  * @param {number|bigint|string|Array<number|bigint|string>} values   a list of
  *    integer-like values interpreted in big-endian order
  */
@@ -39,7 +39,7 @@ export class XdrLargeInt {
       if (typeof i === 'bigint') {
         return i;
       }
-      if (i instanceof XdrLargeInt) {
+      if (typeof i.toBigInt === 'function') {
         return i.toBigInt();
       }
       return BigInt(i);

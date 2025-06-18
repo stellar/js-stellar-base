@@ -61,7 +61,7 @@ export class Keypair {
   /**
    * Creates a new `Keypair` instance from secret. This can either be secret key or secret seed depending
    * on underlying public-key signature system. Currently `Keypair` only supports ed25519.
-   * @param {string} secret secret key (ex. `SDAKFNYEIAORZKKCYRILFQKLLOCNPL5SWJ3YY5NM3ZH6GJSZGXHZEPQS`)
+   * @param {string} secret secret key (ex. `SDAK....`)
    * @returns {Keypair}
    */
   static fromSecret(secret) {
