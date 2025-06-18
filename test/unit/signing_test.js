@@ -7,10 +7,7 @@ let publicKey = Buffer.from(
   'ffbdd7ef9933fe7249dc5ca1e7120b6d7b7b99a7a367e1a2fc6cb062fe420437',
   'hex'
 );
-let secretKey = Buffer.from(
-  '1123740522f11bfef6b3671f51e159ccf589ccf8965262dd5f97d1721d383dd4ffbdd7ef9933fe7249dc5ca1e7120b6d7b7b99a7a367e1a2fc6cb062fe420437',
-  'hex'
-);
+let secretKey = seed;
 
 describe('StellarBase#sign', function () {
   let expectedSig =

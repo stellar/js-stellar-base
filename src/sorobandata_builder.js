@@ -41,10 +41,10 @@ export class SorobanDataBuilder {
         resources: new xdr.SorobanResources({
           footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
           instructions: 0,
-          readBytes: 0,
+          diskReadBytes: 0,
           writeBytes: 0
         }),
-        ext: new xdr.ExtensionPoint(0),
+        ext: new xdr.SorobanTransactionDataExt(0),
         resourceFee: new xdr.Int64(0)
       });
     } else if (
@@ -88,14 +88,14 @@ export class SorobanDataBuilder {
    * by transaction simulation/preflight from a Soroban RPC server.
    *
    * @param {number} cpuInstrs      number of CPU instructions
-   * @param {number} readBytes      number of bytes being read
-   * @param {number} writeBytes     number of bytes being written
+   * @param {number} diskReadBytes  number of bytes being read from disk
+   * @param {number} writeBytes     number of bytes being written to disk/memory
    *
    * @returns {SorobanDataBuilder}
    */
-  setResources(cpuInstrs, readBytes, writeBytes) {
+  setResources(cpuInstrs, diskReadBytes, writeBytes) {
     this._data.resources().instructions(cpuInstrs);
-    this._data.resources().readBytes(readBytes);
+    this._data.resources().diskReadBytes(diskReadBytes);
     this._data.resources().writeBytes(writeBytes);
 
     return this;

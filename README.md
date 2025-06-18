@@ -146,8 +146,22 @@ earlier versions of Node, so the tests need to run on those versions.)
 
 #### Updating XDR definitions
 
+XDR updates are complicated due to the fact that you need workarounds for bugs
+in the generator, formatter, or a namespace adjustment.
+
 1. Make sure you have [Docker](https://www.docker.com/) installed and running.
-2. `make reset-xdr`
+2. Change the commit hash to the right version of [stellar-xdr](https://github.com/stellar/stellar-xdr) and add any filenames that might've been introduced.
+3. Run `make reset-xdr`
+4. Run `sed -ie s/\"/\'/g types/{curr,next}.d.ts` to minimize the diff (the generator's formatter uses `"` but the repo uses `'`).
+5. Move `xdr.Operation` into a hidden namespace to avoid conflicts with the SDK's `Operation`.
+6. Add generator workarounds:
+  * `type Hash = Opaque[]` is a necessary alias that doesn't get generated
+  * `Hyper`, `UnsignedHyper`, and `ScSpecEventV0` need their signatures
+    fixed because linting wants an `Array` instead of a naked `[]`.
+  * Some constants aren't generated correctly (e.g, Ctrl+F `SCSYMBOL_LIMIT` in `src/curr_generated.js`)
+7. Finally, make code adjustments related to the XDR (these are usually revealed by running the tests).
+
+As an example PR to follow, [stellar-base#800](https://github.com/stellar/js-stellar-base/pull/800) has detailed steps for each part of the process.
 
 ## Usage
 
