@@ -2,20 +2,23 @@
 
 ## Unreleased
 
+
 ## [`v14.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.1): Protocol 23
 
 ### Breaking Changes
 * This package now requires **>= Node 20**.
+* XDR definitions have been updated to align with Protocol 23 ([#800](https://github.com/stellar/js-stellar-base/pull/800)).
 
 ### Added
 * The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
 * Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
-* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([]()).
+* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([#801](https://github.com/stellar/js-stellar-base/pull/801)).
+* Added the ability for `nativeToScVal` to convert arrays with differing types to smart contract values, e.g., `nativeToScVal([1, "x", "y"], { type: [ "i128", "symbol" ]})` will give you a `Vec<i128, symbol, string>` ([#803](https://github.com/stellar/js-stellar-base/pull/803)).
 
 ### Fixed
-* Removed [the custom `Buffer.subarray` polyfill](https://github.com/stellar/js-stellar-base/pull/733) introduced in v11.0.1 to address the issue of it not being usable in the React Native Hermes engine. We recommend using [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative. If needed, please review and consider manually adding it to your project ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
-* Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
+* Removed the custom `Buffer.subarray` polyfill introduced in [#733](https://github.com/stellar/js-stellar-base/pull/733) in [v11.0.1](https://github.com/stellar/js-stellar-sdk/releases/tag/v11.0.1) as a workaround for React Native's Hermes engine. Please use [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative, if needed ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
 * Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
+* Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 
 
 ## [`v13.1.0`](https://github.com/stellar/js-stellar-base/compare/v13.0.1...v13.1.0)
