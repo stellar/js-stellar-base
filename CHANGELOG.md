@@ -2,10 +2,12 @@
 
 ## Unreleased
 
+
 ## [`v14.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.1): Protocol 23
 
 ### Breaking Changes
 * This package now requires **>= Node 20**.
+* XDR definitions have been updated to align with Protocol 23 ([#800](https://github.com/stellar/js-stellar-base/pull/800)).
 
 ### Added
 * The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
