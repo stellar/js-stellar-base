@@ -15,7 +15,7 @@ import xdr from '../xdr';
  * the type / width / size in bits of the integer you're targeting, regardless
  * of the input value(s) you provide.
  *
- * @param {string}  type - specifices a data type to use to represent the, one
+ * @param {string}  type - specifies a data type to use to represent the, one
  *    of: 'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (see
  *    {@link XdrLargeInt.isType})
  * @param {number|bigint|string|Array<number|bigint|string>} values   a list of
