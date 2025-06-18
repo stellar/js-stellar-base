@@ -143,8 +143,8 @@ var keypair = Keypair.random();
 
 
 ```js
-var key1 = Keypair.fromSecret('SBK2VIYYSVG76E7VC3QHYARNFLY2EAQXDHRC7BMXBBGIFG74ARPRMNQM');
-var key2 = Keypair.fromSecret('SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7');
+var key1 = Keypair.fromSecret('SBK2...');
+var key2 = Keypair.fromSecret('SAMZ...');
 
 // Create an Account object from an address and sequence number.
 var account=new StellarBase.Account("GD6WU64OEP5C4LRBH6NK3MHYIA2ADN6K6II6EXPNVUR3ERBXT4AN4ACD","2319149195853854");
@@ -165,5 +165,3 @@ transaction.sign(key1);
 transaction.sign(key2);
 // submit tx to Horizon...
 ```
-
-
