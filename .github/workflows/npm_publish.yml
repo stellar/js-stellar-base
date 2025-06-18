@@ -24,16 +24,6 @@ jobs:
 
       - name: Publish npm package to both places
         run: |
-          yarn publish --access public
-          sed -i -e 's#"@stellar/stellar-base"#"stellar-base"#' package.json
-          yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Deprecate the old package
-        run: |
-          V=$(cat package.json | jq '.version' | sed -e 's/\"//g')
-          echo "Deprecating stellar-base@$V"
-          npm deprecate stellar-base@"<= $V" "⚠️ This package has moved to @stellar/stellar-base! 🚚"
+          yarn publish --access public --tag protocol-23
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

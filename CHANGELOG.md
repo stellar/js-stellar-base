@@ -2,10 +2,21 @@
 
 ## Unreleased
 
+## [`v14.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.1): Protocol 23
+
+### Breaking Changes
+* This package now requires **>= Node 20**.
+
+### Added
+* The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
+* Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
+* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([]()).
+
 ### Fixed
 * Removed [the custom `Buffer.subarray` polyfill](https://github.com/stellar/js-stellar-base/pull/733) introduced in v11.0.1 to address the issue of it not being usable in the React Native Hermes engine. We recommend using [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative. If needed, please review and consider manually adding it to your project ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
 * Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 * Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
+
 
 ## [`v13.1.0`](https://github.com/stellar/js-stellar-base/compare/v13.0.1...v13.1.0)
 
