@@ -38,7 +38,6 @@ export class Contract {
 export class MuxedAccount {
   constructor(account: Account, sequence: string);
   static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount;
-  static parseBaseAddress(mAddress: string): string;
 
   /* Modeled after Account, above */
   accountId(): string;

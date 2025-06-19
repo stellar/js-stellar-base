@@ -3,10 +3,15 @@
 ## Unreleased
 
 ### Fixed
-* Removed [the custom `Buffer.subarray` polyfill](https://github.com/stellar/js-stellar-base/pull/733) introduced in v11.0.1 to address the issue of it not being usable in the React Native Hermes compiler. We recommend using [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative. If needed, please review and consider manually adding it to your project.
+* Removed [the custom `Buffer.subarray` polyfill](https://github.com/stellar/js-stellar-base/pull/733) introduced in v11.0.1 to address the issue of it not being usable in the React Native Hermes enginer. We recommend using [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative. If needed, please review and consider manually adding it to your project ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
+* Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
+* Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
+
+## [`v13.1.0`](https://github.com/stellar/js-stellar-base/compare/v13.0.1...v13.1.0)
 
 ### Added
-* Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([]()):
+* `nativeToScVal` now supports encoding `Keypair`s as addresses ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
+* Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([#783](https://github.com/stellar/js-stellar-base/pull/783)):
 ```typescript
 export type SigningCallback = (
   preimage: xdr.HashIdPreimage
@@ -15,6 +20,9 @@ export type SigningCallback = (
   { signature: BufferLike, publicKey: string }
 >;
 ```
+
+### Fixed
+* `scValToNative` will decode addresses more efficiently and reliably ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
 
 
 ## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
