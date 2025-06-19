@@ -228,7 +228,7 @@ export function uploadContractWasm(opts) {
   });
 }
 
-/** @returns {Buffer} a random 256-bit "salt" value. */
+/* Returns a random 256-bit "salt" value. */
 function getSalty() {
   return Keypair.random().xdrPublicKey().value(); // ed25519 is 256 bits, too
 }

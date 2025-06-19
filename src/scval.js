@@ -91,6 +91,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  * nativeToScVal(true); // scvBool
  * nativeToScVal([1, 2, 3]);                    // gives scvVec with each element as scvU64
  * nativeToScVal([1, 2, 3], { type: 'i128' });  // scvVec<scvI128>
+ * nativeToScVal([1, '2'], { type: ['i128', 'symbol'] });  // scvVec with diff types
  * nativeToScVal({ 'hello': 1, 'world': [ true, false ] }, {
  *   type: {
  *     'hello': [ 'symbol', 'i128' ],
@@ -126,6 +127,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *     etc: false
  *   },
  *   vec: ['same', 'type', 'list'],
+ *   vec: ['diff', 1, 'type', 2, 'list'],
  * };
  *
  * // then, simply:
@@ -177,7 +179,23 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (Array.isArray(val)) {
-        return xdr.ScVal.scvVec(val.map((v) => nativeToScVal(v, opts)));
+        return xdr.ScVal.scvVec(
+          val.map((v, idx) => {
+            // There may be different type specifications for each element in
+            // the array, so we need to apply those accordingly.
+            if (Array.isArray(opts.type)) {
+              return nativeToScVal(
+                v,
+                // only include a `{ type: ... }` if it's present (safer than
+                // `{type: undefined}`)
+                { ...(opts.type.length > idx && { type: opts.type[idx] }) }
+              );
+            }
+
+            // Otherwise apply a generic (or missing) type specifier on it.
+            return nativeToScVal(v, opts);
+          })
+        );
       }
 
       if ((val.constructor?.name ?? '') !== 'Object') {

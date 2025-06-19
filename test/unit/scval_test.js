@@ -209,6 +209,18 @@ describe('parsing and building ScVals', function () {
   it('doesnt throw on arrays with mixed types', function () {
     expect(nativeToScVal([1, 'a', false]).switch().name).to.equal('scvVec');
   });
+  it('allows type specifications across an array', function () {
+    const scv = nativeToScVal([1, 'a', false, 'b'], {
+      type: ['i128', 'symbol']
+    });
+    expect(scv.switch().name).to.equal('scvVec');
+    expect(scv.value().length).to.equal(4);
+    ['scvI128', 'scvSymbol', 'scvBool', 'scvString'].forEach(
+      (expectedType, idx) => {
+        expect(scv.value()[idx].switch().name).to.equal(expectedType);
+      }
+    );
+  });
 
   it('lets strings be small integer ScVals', function () {
     ['i32', 'u32'].forEach((type) => {
