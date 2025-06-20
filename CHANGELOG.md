@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Fixed
+* Removed [the custom `Buffer.subarray` polyfill](https://github.com/stellar/js-stellar-base/pull/733) introduced in v11.0.1 to address the issue of it not being usable in the React Native Hermes engine. We recommend using [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative. If needed, please review and consider manually adding it to your project ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
 * Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 * Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
 
