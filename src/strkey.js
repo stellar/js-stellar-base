@@ -33,6 +33,8 @@ const strkeyTypes = {
  * string (i.e. "GABCD...", etc.) representations.
  */
 export class StrKey {
+  static types = strkeyTypes;
+
   /**
    * Encodes `data` to strkey ed25519 public key.
    *

@@ -175,6 +175,22 @@ describe('Operation', function () {
         // compare that way instead.
         expect(ctorArgs[0].str().toString()).to.eql(constructorArgs[0].str());
       });
+
+      it('prevents invocation with claimable balances', function () {
+        expect(() =>
+          Operation.invokeContractFunction({
+            contract:
+              'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE',
+            function: 'increment',
+            args: [
+              nativeToScVal(
+                'LA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUPJN',
+                { type: 'address' }
+              )
+            ]
+          })
+        ).to.throw(/liquidity pool/);
+      });
     });
   });
 });
