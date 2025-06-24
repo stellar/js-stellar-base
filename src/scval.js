@@ -92,6 +92,8 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  * nativeToScVal([1, 2, 3]);                    // gives scvVec with each element as scvU64
  * nativeToScVal([1, 2, 3], { type: 'i128' });  // scvVec<scvI128>
  * nativeToScVal([1, '2'], { type: ['i128', 'symbol'] });  // scvVec with diff types
+ * nativeToScVal([1, '2', 3], { type: ['i128', 'symbol'] });
+ *    // scvVec with diff types, using the default when omitted
  * nativeToScVal({ 'hello': 1, 'world': [ true, false ] }, {
  *   type: {
  *     'hello': [ 'symbol', 'i128' ],
