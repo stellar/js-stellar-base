@@ -34,6 +34,35 @@ export function invokeHostFunction(opts) {
     );
   }
 
+  if (
+    opts.func.switch().value ===
+    xdr.HostFunctionType.hostFunctionTypeInvokeContract().value
+  ) {
+    // Ensure that there are no claimable balance or liquidity pool IDs in the
+    // invocation because those are not allowed.
+    opts.func
+      .invokeContract()
+      .args()
+      .forEach((arg) => {
+        let scv;
+        try {
+          scv = Address.fromScVal(arg);
+        } catch {
+          // swallow non-Address errors
+          return;
+        }
+
+        switch (scv._type) {
+          case 'claimableBalance':
+          case 'liquidityPool':
+            throw new TypeError(
+              `claimable balances and liquidity pools cannot be arguments to invokeHostFunction`
+            );
+          default:
+        }
+      });
+  }
+
   const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
     hostFunction: opts.func,
     auth: opts.auth || []
@@ -228,7 +257,7 @@ export function uploadContractWasm(opts) {
   });
 }
 
-/** @returns {Buffer} a random 256-bit "salt" value. */
+/* Returns a random 256-bit "salt" value. */
 function getSalty() {
   return Keypair.random().xdrPublicKey().value(); // ed25519 is 256 bits, too
 }

@@ -10,8 +10,8 @@ title: Transaction Examples
 
 ## Creating an account
 
-In the example below a new account is created by the source account with secret 
-`SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L`. The source account 
+In the example below a new account is created by the source account with secret
+`SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L`. The source account
 is giving the new account 25 XLM as its initial balance.
 
 
@@ -126,7 +126,7 @@ In each example, we'll use the root account.
 
 
 ```js
-var rootKeypair = StellarSdk.Keypair.fromSecret("SBQWY3DNPFWGSZTFNV4WQZLBOJ2GQYLTMJSWK3TTMVQXEY3INFXGO52X")
+var rootKeypair = StellarSdk.Keypair.fromSecret("SBQW...")
 var account = new StellarSdk.Account(rootkeypair.publicKey(), "46316927324160");
 
 var secondaryAddress = "GC6HHHS7SH7KNUAOBKVGT2QZIQLRB5UA7QAGLA3IROWPH4TN65UKNJPK";
@@ -166,11 +166,9 @@ var transaction = new StellarSdk.TransactionBuilder(account, {
     .setTimeout(30)
     .build();
 
-var secondKeypair = StellarSdk.Keypair.fromSecret("SAMZUAAPLRUH62HH3XE7NVD6ZSMTWPWGM6DS4X47HLVRHEBKP4U2H5E7");
+var secondKeypair = StellarSdk.Keypair.fromSecret("SAMZ...");
 
 // now we need to sign the transaction with both the root and the secondaryAddress
 transaction.sign(rootKeypair);
 transaction.sign(secondKeypair);
 ```
-
-

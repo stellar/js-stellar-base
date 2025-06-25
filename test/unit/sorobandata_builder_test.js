@@ -6,11 +6,11 @@ describe('SorobanTransactionData can be built', function () {
   const c = new StellarBase.Contract(contractId);
 
   const sentinel = new xdr.SorobanTransactionData({
-    ext: new xdr.ExtensionPoint(0),
+    ext: new xdr.SorobanTransactionDataExt(0),
     resources: new xdr.SorobanResources({
       footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
       instructions: 1,
-      readBytes: 2,
+      diskReadBytes: 2,
       writeBytes: 3
     }),
     resourceFee: new xdr.Int64(5)

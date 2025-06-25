@@ -10,7 +10,9 @@ const versionBytes = {
   preAuthTx: 19 << 3, // T
   sha256Hash: 23 << 3, // X
   signedPayload: 15 << 3, // P
-  contract: 2 << 3 // C
+  contract: 2 << 3, // C
+  liquidityPool: 11 << 3, // L
+  claimableBalance: 1 << 3 // B
 };
 
 const strkeyTypes = {
@@ -20,7 +22,9 @@ const strkeyTypes = {
   T: 'preAuthTx',
   X: 'sha256Hash',
   P: 'signedPayload',
-  C: 'contract'
+  C: 'contract',
+  L: 'liquidityPool',
+  B: 'claimableBalance'
 };
 
 /**
@@ -29,6 +33,8 @@ const strkeyTypes = {
  * string (i.e. "GABCD...", etc.) representations.
  */
 export class StrKey {
+  static types = strkeyTypes;
+
   /**
    * Encodes `data` to strkey ed25519 public key.
    *
@@ -205,6 +211,60 @@ export class StrKey {
     return isValid('contract', address);
   }
 
+  /**
+   * Encodes raw data to strkey claimable balance (B...).
+   * @param   {Buffer} data  data to encode
+   * @returns {string}
+   */
+  static encodeClaimableBalance(data) {
+    return encodeCheck('claimableBalance', data);
+  }
+
+  /**
+   * Decodes strkey contract (B...) to raw data.
+   * @param   {string} address  balance to decode
+   * @returns {Buffer}
+   */
+  static decodeClaimableBalance(address) {
+    return decodeCheck('claimableBalance', address);
+  }
+
+  /**
+   * Checks validity of alleged claimable balance (B...) strkey address.
+   * @param   {string} address  balance to check
+   * @returns {boolean}
+   */
+  static isValidClaimableBalance(address) {
+    return isValid('claimableBalance', address);
+  }
+
+  /**
+   * Encodes raw data to strkey liquidity pool (L...).
+   * @param   {Buffer} data  data to encode
+   * @returns {string}
+   */
+  static encodeLiquidityPool(data) {
+    return encodeCheck('liquidityPool', data);
+  }
+
+  /**
+   * Decodes strkey liquidity pool (L...) to raw data.
+   * @param   {string} address  address to decode
+   * @returns {Buffer}
+   */
+  static decodeLiquidityPool(address) {
+    return decodeCheck('liquidityPool', address);
+  }
+
+  /**
+   * Checks validity of alleged liquidity pool (L...) strkey address.
+   * @param   {string} address  pool to check
+   * @returns {boolean}
+   */
+  static isValidLiquidityPool(address) {
+    return isValid('liquidityPool', address);
+  }
+
   static getVersionByteForPrefix(address) {
     return strkeyTypes[address[0]];
   }
@@ -234,8 +294,15 @@ function isValid(versionByteName, encoded) {
     case 'ed25519SecretSeed': // falls through
     case 'preAuthTx': // falls through
     case 'sha256Hash': // falls through
-    case 'contract':
+    case 'contract': // falls through
+    case 'liquidityPool':
       if (encoded.length !== 56) {
+        return false;
+      }
+      break;
+
+    case 'claimableBalance':
+      if (encoded.length !== 58) {
         return false;
       }
       break;
@@ -270,7 +337,11 @@ function isValid(versionByteName, encoded) {
     case 'preAuthTx': // falls through
     case 'sha256Hash': // falls through
     case 'contract':
+    case 'liquidityPool':
       return decoded.length === 32;
+
+    case 'claimableBalance':
+      return decoded.length === 32 + 1; // +1 byte for discriminant
 
     case 'med25519PublicKey':
       return decoded.length === 40; // +8 bytes for the ID
