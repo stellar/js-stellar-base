@@ -62,8 +62,6 @@ const config = {
     new ESLintPlugin({
       overrideConfigFile: path.resolve(__dirname, './.eslintrc.js')
     }),
-    // Ignore native modules (sodium-native)
-    new webpack.IgnorePlugin({ resourceRegExp: /sodium-native/ }),
     new NodePolyfillPlugin(),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer']
