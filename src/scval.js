@@ -3,7 +3,7 @@ import xdr from './xdr';
 import { Keypair } from './keypair';
 import { Address } from './address';
 import { Contract } from './contract';
-import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
+import { XdrLargeInt } from './numbers';
 
 /**
  * Attempts to convert native types into smart contract values
@@ -21,7 +21,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *  - boolean -> scvBool
  *
  *  - number/bigint -> the smallest possible XDR integer type that will fit the
- *    input value (if you want a specific type, use {@link ScInt})
+ *    input value (if you want a specific type, use {@link XdrLargeInt})
  *
  *  - {@link Address} or {@link Contract} -> scvAddress (for contracts and
  *    public keys)
@@ -46,7 +46,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *    types for `val`:
  *
  *     - when `val` is an integer-like type (i.e. number|bigint), this will be
- *       forwarded to {@link ScInt} or forced to be u32/i32.
+ *       forwarded to {@link XdrLargeInt}.
  *
  *     - when `val` is an array type, this is forwarded to the recursion
  *
@@ -61,7 +61,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  *     - when `val` is a bytes-like type, this can be 'string', 'symbol', or
  *       'bytes' to force a particular interpretation
  *
- *    As a simple example, `nativeToScVal("hello", {type: 'symbol'})` will
+ *    As a simple example, `nativeToScVal('hello', {type: 'symbol'})` will
  *    return an `scvSymbol`, whereas without the type it would have been an
  *    `scvString`.
  *
@@ -243,7 +243,11 @@ export function nativeToScVal(val, opts = {}) {
           break;
       }
 
-      return new ScInt(val, { type: opts?.type }).toScVal();
+      if ((opts?.type ?? '') !== '') {
+        return new XdrLargeInt(opts.type, val).toScVal();
+      }
+
+      return XdrLargeInt.fromValue(val).toScVal();
 
     case 'string': {
       const optType = opts?.type ?? 'string';
@@ -331,7 +335,7 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvI128().value:
     case xdr.ScValType.scvU256().value:
     case xdr.ScValType.scvI256().value:
-      return scValToBigInt(scv);
+      return XdrLargeInt.fromScVal(scv).toBigInt();
 
     case xdr.ScValType.scvVec().value:
       return (scv.vec() ?? []).map(scValToNative);
