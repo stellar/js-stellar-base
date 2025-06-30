@@ -177,10 +177,9 @@ export class Address {
         return xdr.ScAddress.scAddressTypeLiquidityPool(this._key);
 
       case 'claimableBalance':
-        const idType = this._key.at(0);
         return xdr.ScAddress.scAddressTypeClaimableBalance(
           new xdr.ClaimableBalanceId(
-            `claimableBalanceIdTypeV${idType}`, // future-proof for cb v1
+            `claimableBalanceIdTypeV${this._key.at(0)}`, // future-proof for cb v1
             this._key.subarray(1)
           )
         );
