@@ -173,12 +173,26 @@ export class Address {
         );
       case 'contract':
         return xdr.ScAddress.scAddressTypeContract(this._key);
-      case 'claimableBalance':
-        return xdr.ScAddress.scAddressTypeClaimableBalance(this._key);
       case 'liquidityPool':
         return xdr.ScAddress.scAddressTypeLiquidityPool(this._key);
+
+      case 'claimableBalance':
+        const idType = this._key.at(0);
+        if (idType !== 0) {
+          throw new TypeError(
+            `expected claimable balance type 0, got type ${idType}`
+          );
+        }
+
+        return xdr.ScAddress.scAddressTypeClaimableBalance(
+          xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(this._key.subarray(1))
+        );
+
       case 'muxedAccount':
-        return xdr.ScAddress.scAddressTypeMuxedAccount(this._key);
+        return xdr.ScAddress.scAddressTypeMuxedAccount(
+          xdr.MuxedEd25519Account.fromXDR(this._key)
+        );
+
       default:
         throw new Error(`Unsupported address type: ${this._type}`);
     }
