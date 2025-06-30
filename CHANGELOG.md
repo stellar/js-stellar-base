@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Breaking Changes
-* `ScInt` and `scValToBigInt` have been removed to simplify the API surface. Please migrate in the following way ([#XXX](https://github.com/stellar/js-stellar-base/pull/XXX)):
+* `ScInt` and `scValToBigInt` have been removed to simplify the API surface. Please migrate in the following way ([#809](https://github.com/stellar/js-stellar-base/pull/809)):
 ```typescript
 // before:
 new ScInt(value);
@@ -19,7 +19,7 @@ Int.fromScVal(scv).toBigInt();
 ```
 
 ### Added
-* `XdrLargeInt` (renamed to `Int`) has new features ([]()):
+* `XdrLargeInt` (renamed to `Int`) has new features ([#809](https://github.com/stellar/js-stellar-base/pull/809)):
   - `fromValue(x: number|string|BigInt)` will create an `Int` of an appopriate size for the given value
   - `fromScVal(x: xdr.ScVal)` will create an `Int` from an `ScVal`
   - `.toU32()` will return an `ScVal` of the type `scvU32`
