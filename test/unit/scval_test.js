@@ -2,7 +2,7 @@ const {
   xdr,
   Address,
   Keypair,
-  XdrLargeInt,
+  Int,
   scValToNative,
   nativeToScVal,
   scValToBigInt
@@ -16,10 +16,10 @@ describe('parsing and building ScVals', function () {
     i32: xdr.ScVal.scvI32(1),
     u64: BigInt(2 ** 33),
     i64: BigInt(-1 * 2 ** 33),
-    u128: XdrLargeInt.fromValue(1).toU128(),
-    i128: XdrLargeInt.fromValue(1).toI128(),
-    u256: XdrLargeInt.fromValue(1).toU256(),
-    i256: XdrLargeInt.fromValue(1).toI256(),
+    u128: Int.fromValue(1).toU128(),
+    i128: Int.fromValue(1).toI128(),
+    u256: Int.fromValue(1).toU256(),
+    i256: Int.fromValue(1).toI256(),
     map: {
       arbitrary: 1n,
       nested: 'values',
@@ -31,8 +31,8 @@ describe('parsing and building ScVals', function () {
   const targetScv = xdr.ScVal.scvMap(
     [
       ['bool', xdr.ScVal.scvBool(true)],
-      ['i128', new XdrLargeInt('i128', 1).toScVal()],
-      ['i256', new XdrLargeInt('i256', 1).toScVal()],
+      ['i128', new Int('i128', 1).toScVal()],
+      ['i256', new Int('i256', 1).toScVal()],
       ['i32', xdr.ScVal.scvI32(1)],
       ['i64', xdr.ScVal.scvI64(new xdr.Int64(-1 * 2 ** 33))],
       [
@@ -52,8 +52,8 @@ describe('parsing and building ScVals', function () {
           })
         ])
       ],
-      ['u128', new XdrLargeInt('u128', 1).toScVal()],
-      ['u256', new XdrLargeInt('u256', 1).toScVal()],
+      ['u128', new Int('u128', 1).toScVal()],
+      ['u256', new Int('u256', 1).toScVal()],
       ['u32', xdr.ScVal.scvU32(1)],
       ['u64', xdr.ScVal.scvU64(new xdr.Uint64(2 ** 33))],
       [
@@ -98,14 +98,14 @@ describe('parsing and building ScVals', function () {
       [xdr.ScVal.scvVoid(), null],
       [xdr.ScVal.scvBool(true), true],
       [xdr.ScVal.scvBool(false), false],
-      [XdrLargeInt.fromValue(1).toU32(), 1],
-      [XdrLargeInt.fromValue(1).toI32(), 1],
-      [XdrLargeInt.fromValue(11).toU64(), 11n],
-      [XdrLargeInt.fromValue(11).toI64(), 11n],
-      [XdrLargeInt.fromValue(22).toU128(), 22n],
-      [XdrLargeInt.fromValue(22).toI128(), 22n],
-      [XdrLargeInt.fromValue(33).toU256(), 33n],
-      [XdrLargeInt.fromValue(33).toI256(), 33n],
+      [Int.fromValue(1).toU32(), 1],
+      [Int.fromValue(1).toI32(), 1],
+      [Int.fromValue(11).toU64(), 11n],
+      [Int.fromValue(11).toI64(), 11n],
+      [Int.fromValue(22).toU128(), 22n],
+      [Int.fromValue(22).toI128(), 22n],
+      [Int.fromValue(33).toU256(), 33n],
+      [Int.fromValue(33).toI256(), 33n],
       [xdr.ScVal.scvTimepoint(new xdr.Uint64(44n)), 44n],
       [xdr.ScVal.scvDuration(new xdr.Uint64(55n)), 55n],
       [xdr.ScVal.scvBytes(Buffer.alloc(32, 123)), Buffer.from('{'.repeat(32))],
@@ -125,7 +125,7 @@ describe('parsing and building ScVals', function () {
       [
         xdr.ScVal.scvMap(
           [
-            [XdrLargeInt.fromValue(0).toI256(), xdr.ScVal.scvBool(true)],
+            [Int.fromValue(0).toI256(), xdr.ScVal.scvBool(true)],
             [xdr.ScVal.scvBool(false), xdr.ScVal.scvString('second')],
             [
               xdr.ScVal.scvU32(2),
@@ -238,8 +238,8 @@ describe('parsing and building ScVals', function () {
   it('lets strings be large integer ScVals', function () {
     ['i64', 'i128', 'i256', 'u64', 'u128', 'u256'].forEach((type) => {
       const scv = nativeToScVal('12345', { type });
-      expect(XdrLargeInt.getType(scv.switch().name)).to.equal(type);
-      expect(XdrLargeInt.fromScVal(scv).toBigInt()).to.equal(BigInt(12345));
+      expect(Int.getType(scv.switch().name)).to.equal(type);
+      expect(Int.fromScVal(scv).toBigInt()).to.equal(BigInt(12345));
     });
 
     expect(() => nativeToScVal('not a number', { type: 'i128' })).to.throw();

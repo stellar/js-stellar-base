@@ -3,7 +3,7 @@ import xdr from './xdr';
 import { Keypair } from './keypair';
 import { Address } from './address';
 import { Contract } from './contract';
-import { XdrLargeInt } from './numbers';
+import { Int } from './numbers';
 
 /**
  * Attempts to convert native types into smart contract values
@@ -21,7 +21,7 @@ import { XdrLargeInt } from './numbers';
  *  - boolean -> scvBool
  *
  *  - number/bigint -> the smallest possible XDR integer type that will fit the
- *    input value (if you want a specific type, use {@link XdrLargeInt})
+ *    input value (if you want a specific type, use {@link Int})
  *
  *  - {@link Address} or {@link Contract} -> scvAddress (for contracts and
  *    public keys)
@@ -46,7 +46,7 @@ import { XdrLargeInt } from './numbers';
  *    types for `val`:
  *
  *     - when `val` is an integer-like type (i.e. number|bigint), this will be
- *       forwarded to {@link XdrLargeInt}.
+ *       forwarded to {@link Int}.
  *
  *     - when `val` is an array type, this is forwarded to the recursion
  *
@@ -244,10 +244,10 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if ((opts?.type ?? '') !== '') {
-        return new XdrLargeInt(opts.type, val).toScVal();
+        return new Int(opts.type, val).toScVal();
       }
 
-      return XdrLargeInt.fromValue(val).toScVal();
+      return Int.fromValue(val).toScVal();
 
     case 'string': {
       const optType = opts?.type ?? 'string';
@@ -268,8 +268,8 @@ export function nativeToScVal(val, opts = {}) {
           return xdr.ScVal.scvI32(parseInt(val, 10));
 
         default:
-          if (XdrLargeInt.isType(optType)) {
-            return new XdrLargeInt(optType, val).toScVal();
+          if (Int.isType(optType)) {
+            return new Int(optType, val).toScVal();
           }
 
           throw new TypeError(
@@ -335,7 +335,7 @@ export function scValToNative(scv) {
     case xdr.ScValType.scvI128().value:
     case xdr.ScValType.scvU256().value:
     case xdr.ScValType.scvI256().value:
-      return XdrLargeInt.fromScVal(scv).toBigInt();
+      return Int.fromScVal(scv).toBigInt();
 
     case xdr.ScValType.scvVec().value:
       return (scv.vec() ?? []).map(scValToNative);

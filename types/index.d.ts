@@ -1143,7 +1143,7 @@ export type ScIntType =
   | 'i256'
   | 'u256';
 
-export class XdrLargeInt {
+export class Int {
   constructor(
     type: ScIntType,
     values: IntLike | IntLike[]
@@ -1172,8 +1172,8 @@ export class XdrLargeInt {
   static isType(t: string): t is ScIntType;
   static getType(scvType: string): ScIntType;
 
-  static fromValue(x: IntLike): XdrLargeInt;
-  static fromScVal(x: xdr.ScVal): XdrLargeInt;
+  static fromValue(x: IntLike): Int;
+  static fromScVal(x: xdr.ScVal): Int;
 }
 
 export function nativeToScVal(val: any, opts?: { type: any }): xdr.ScVal;
