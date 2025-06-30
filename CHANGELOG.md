@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+### Breaking Changes
+* `ScInt` and `scValToBigInt` have been removed to simplify the API surface. Please migrate in the following way ([#XXX](https://github.com/stellar/js-stellar-base/pull/XXX)):
+```typescript
+// before:
+new ScInt(value);
+new ScInt(value, { type: 'i128' });
+// after:
+XdrLargeInt.fromValue(value);
+new XdrLargeInt('i128', value);
+
+// before:
+scValToBigInt(scv);
+// after:
+XdrLargeInt.fromScVal(scv).toBigInt();
+```
+
+### Added
+* `XdrLargeInt` has new features ([]()):
+  - `fromValue(x: number|string|BigInt)` will create an `XdrLargeInt` of an appopriate size for the given value
+  - `fromScVal(x: xdr.ScVal)` will create an `XdrLargeInt` from an `ScVal`
+  - `.toU32()` will return an `ScVal` of the type `scvU32`
+  - `.toI32()` will return an `ScVal` of the type `scvI32`
+  - the constructor now accepts `i32` and `u32` as the first `type` parameter
+
 
 ## [`v14.0.0-rc.2`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.2)
 

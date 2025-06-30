@@ -1152,6 +1152,8 @@ export class XdrLargeInt {
   toNumber(): number;
   toBigInt(): bigint;
 
+  toI32(): xdr.ScVal;
+  toU32(): xdr.ScVal;
   toI64(): xdr.ScVal;
   toU64(): xdr.ScVal;
   toI128(): xdr.ScVal;
@@ -1169,13 +1171,11 @@ export class XdrLargeInt {
 
   static isType(t: string): t is ScIntType;
   static getType(scvType: string): ScIntType;
+
+  static fromValue(x: IntLike): XdrLargeInt;
+  static fromScVal(x: xdr.ScVal): XdrLargeInt;
 }
 
-export class ScInt extends XdrLargeInt {
-  constructor(value: IntLike, opts?: { type: ScIntType });
-}
-
-export function scValToBigInt(scv: xdr.ScVal): bigint;
 export function nativeToScVal(val: any, opts?: { type: any }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
 
