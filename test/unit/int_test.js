@@ -244,18 +244,16 @@ describe('creating large integers', function () {
     });
 
     it('throws for non-integers', function () {
-      expect(() =>
-        Int.fromScVal(new xdr.ScVal.scvString('hello'))
-      ).to.throw(/integer/i);
+      expect(() => Int.fromScVal(new xdr.ScVal.scvString('hello'))).to.throw(
+        /integer/i
+      );
     });
   });
 
   describe('error handling', function () {
     ['u64', 'u128', 'u256'].forEach((type) => {
       it(`throws when signed parts and {type: '${type}'}`, function () {
-        expect(() => new StellarBase.Int(type, -2)).to.throw(
-          /positive/i
-        );
+        expect(() => new StellarBase.Int(type, -2)).to.throw(/positive/i);
       });
     });
 
