@@ -178,14 +178,11 @@ export class Address {
 
       case 'claimableBalance':
         const idType = this._key.at(0);
-        if (idType !== 0) {
-          throw new TypeError(
-            `expected claimable balance type 0, got type ${idType}`
-          );
-        }
-
         return xdr.ScAddress.scAddressTypeClaimableBalance(
-          xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(this._key.subarray(1))
+          new xdr.ClaimableBalanceId(
+            `claimableBalanceIdTypeV${idType}`, // future-proof for cb v1
+            this._key.subarray(1)
+          )
         );
 
       case 'muxedAccount':
