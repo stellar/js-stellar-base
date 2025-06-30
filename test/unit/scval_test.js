@@ -40,7 +40,7 @@ describe('parsing and building ScVals', function () {
         xdr.ScVal.scvMap([
           new xdr.ScMapEntry({
             key: xdr.ScVal.scvString('arbitrary'),
-            val: xdr.ScVal.scvU32(1),
+            val: xdr.ScVal.scvU32(1)
           }),
           new xdr.ScMapEntry({
             key: xdr.ScVal.scvString('etc'),
@@ -80,7 +80,9 @@ describe('parsing and building ScVals', function () {
     // iterate for granular errors on failures
     targetScv.value().forEach((entry, idx) => {
       const actual = scv.value()[idx];
-      expect(JSON.stringify(entry, null, 2)).to.eql(JSON.stringify(actual, null, 2));
+      expect(JSON.stringify(entry, null, 2)).to.eql(
+        JSON.stringify(actual, null, 2)
+      );
       expect(entry).to.deep.equal(
         actual,
         `item ${idx} doesn't match: ${JSON.stringify(entry, null, 2)} != ${JSON.stringify(actual, null, 2)}`
