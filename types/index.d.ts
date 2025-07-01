@@ -1135,7 +1135,9 @@ export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccou
 export function extractBaseAddress(address: string): string;
 
 export type IntLike = string | number | bigint;
-export type ScIntType =
+export type IntType =
+  | 'i32'
+  | 'u32'
   | 'i64'
   | 'u64'
   | 'i128'
@@ -1145,7 +1147,7 @@ export type ScIntType =
 
 export class Int {
   constructor(
-    type: ScIntType,
+    type: IntType,
     values: IntLike | IntLike[]
   );
 
@@ -1166,11 +1168,11 @@ export class Int {
   toString(): string;
   toJSON(): {
     value: string;
-    type: ScIntType;
+    type: IntType;
   };
 
-  static isType(t: string): t is ScIntType;
-  static getType(scvType: string): ScIntType;
+  static isType(t: string): t is IntType;
+  static getType(scvType: string): IntType;
 
   static fromValue(x: IntLike): Int;
   static fromScVal(x: xdr.ScVal): Int;
