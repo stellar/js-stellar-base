@@ -1,6 +1,6 @@
 {
   "name": "@stellar/stellar-base",
-  "version": "14.0.0-rc.1",
+  "version": "14.0.0-rc.2",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
@@ -15,7 +15,7 @@
     "build:browser:prod": "cross-env NODE_ENV=production yarn build:browser",
     "build:prod": "cross-env NODE_ENV=production yarn build",
     "test": "yarn build && yarn test:node && yarn test:browser",
-    "test:node": "NODE_OPTIONS=$(test ! $(node -v | awk -F'.' '{printf substr($1,2)}') = '18' && echo '--no-experimental-detect-module') yarn _nyc mocha",
+    "test:node": "NODE_OPTIONS=--no-experimental-detect-module yarn _nyc mocha",
     "test:browser": "karma start ./config/karma.conf.js",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/.eslintrc.js src/ && dtslint --localTs node_modules/typescript/lib types/",

@@ -174,6 +174,7 @@ describe('Address', function () {
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeAccount()
       );
+      expect(StellarBase.xdr.ScAddress.fromXDR(s.toXDR())).to.eql(s);
     });
 
     it('converts contracts', function () {
@@ -182,6 +183,7 @@ describe('Address', function () {
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeContract()
       );
+      expect(StellarBase.xdr.ScAddress.fromXDR(s.toXDR())).to.eql(s);
     });
 
     it('converts muxed accounts', function () {
@@ -191,6 +193,7 @@ describe('Address', function () {
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeMuxedAccount()
       );
+      expect(StellarBase.xdr.ScAddress.fromXDR(s.toXDR())).to.eql(s);
     });
 
     it('converts claimable balances', function () {
@@ -199,6 +202,7 @@ describe('Address', function () {
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeClaimableBalance()
       );
+      expect(StellarBase.xdr.ScAddress.fromXDR(s.toXDR())).to.eql(s);
     });
 
     it('converts liquidity pools', function () {
@@ -207,6 +211,7 @@ describe('Address', function () {
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeLiquidityPool()
       );
+      expect(StellarBase.xdr.ScAddress.fromXDR(s.toXDR())).to.eql(s);
     });
   });
 

@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## [`v14.0.0-rc.2`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.2)
+
+### Fixed
+* Fixes a bug in `Address.toScAddress()` that would prevent claimable balances and muxed accounts from being encoded correctly.
+
+
 ## [`v14.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.1): Protocol 23
 
 ### Breaking Changes
