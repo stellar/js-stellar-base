@@ -10,14 +10,14 @@ title: Transaction Examples
 
 ## Creating an account
 
-In the example below a new account is created by the source account with secret
-`SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L`. The source account
-is giving the new account 25 XLM as its initial balance.
+In the example below a new account is created by the source account with a
+random secret. The source account is giving the new account 25 XLM as its
+initial balance.
 
 
 ```javascript
 const server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-const source = StellarSdk.Keypair.fromSecret('SA3W53XXG64ITFFIYQSBIJDG26LMXYRIMEVMNQMFAQJOYCZACCYBA34L')
+const source = StellarSdk.Keypair.fromSecret('SA3W...')
 const destination = StellarSdk.Keypair.random()
 
 server.accounts()
