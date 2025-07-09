@@ -351,11 +351,11 @@ const sk = StellarSdk.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
 StellarSdk.SignerKey.encodeSignerKey(sk);                   // $ExpectType string
 StellarSdk.SignerKey.decodeAddress(sourceKey.publicKey());  // $ExpectType SignerKey
 
-new StellarSdk.ScInt(1234);           // $ExpectType ScInt
-new StellarSdk.ScInt('1234');         // $ExpectType ScInt
-new StellarSdk.ScInt(BigInt(1234));   // $ExpectType ScInt
-(['i64', 'u64', 'i128', 'u128', 'i256', 'u256'] as StellarSdk.ScIntType[]).forEach((type) => {
-  new StellarSdk.ScInt(1234, { type }); // $ExpectType ScInt
+StellarSdk.Int.fromValue(1234);           // $ExpectType Int
+StellarSdk.Int.fromValue('1234');         // $ExpectType Int
+StellarSdk.Int.fromValue(BigInt(1234));   // $ExpectType Int
+(['i32', 'u32', 'i64', 'u64', 'i128', 'u128', 'i256', 'u256'] as StellarSdk.IntType[]).forEach((type) => {
+  new StellarSdk.Int(type, 1234); // $ExpectType Int
 });
 
 const root = new StellarSdk.xdr.SorobanAuthorizedInvocation({
