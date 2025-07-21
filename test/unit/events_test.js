@@ -1,10 +1,4 @@
-const [nativeToScVal, scValToNative, ScInt, humanizeEvents, xdr] = [
-  StellarBase.nativeToScVal,
-  StellarBase.scValToNative,
-  StellarBase.ScInt,
-  StellarBase.humanizeEvents,
-  StellarBase.xdr
-]; // shorthand
+const { nativeToScVal, scValToNative, humanizeEvents, xdr } = StellarBase; // shorthand
 
 describe('humanizing raw events', function () {
   const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
