@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+### Fixed
+* Fixes muxed account handling in `Address` class ([#814](https://github.com/stellar/js-stellar-base/pull/814)).
 
 ## [`v14.0.0-rc.2`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.2)
 

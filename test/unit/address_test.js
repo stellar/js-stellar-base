@@ -3,6 +3,9 @@ describe('Address', function () {
   const CONTRACT = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
   const MUXED_ADDRESS =
     'MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK';
+  const MUXED_ADDRESS_ID = '9223372036854775808';
+  const MUXED_ADDRESS_BASE =
+    'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
 
   const MUXED_ZERO = StellarBase.StrKey.encodeMed25519PublicKey(
     Buffer.alloc(40)
@@ -91,7 +94,11 @@ describe('Address', function () {
 
       it('parses muxed-account addresses', function () {
         const sc = StellarBase.xdr.ScAddress.scAddressTypeMuxedAccount(
-          StellarBase.StrKey.decodeMed25519PublicKey(MUXED_ADDRESS)
+          new StellarBase.xdr.MuxedEd25519Account({
+            id: new StellarBase.xdr.Uint64(MUXED_ADDRESS_ID),
+            ed25519:
+              StellarBase.StrKey.decodeEd25519PublicKey(MUXED_ADDRESS_BASE)
+          })
         );
         const m = StellarBase.Address.fromScAddress(sc);
         expect(m.toString()).to.equal(MUXED_ADDRESS);
@@ -140,7 +147,11 @@ describe('Address', function () {
       it('parses muxed-account ScVals', function () {
         const scVal = StellarBase.xdr.ScVal.scvAddress(
           StellarBase.xdr.ScAddress.scAddressTypeMuxedAccount(
-            StellarBase.StrKey.decodeMed25519PublicKey(MUXED_ADDRESS)
+            new StellarBase.xdr.MuxedEd25519Account({
+              id: new StellarBase.xdr.Uint64(MUXED_ADDRESS_ID),
+              ed25519:
+                StellarBase.StrKey.decodeEd25519PublicKey(MUXED_ADDRESS_BASE)
+            })
           )
         );
         const m = StellarBase.Address.fromScVal(scVal);
@@ -193,6 +204,10 @@ describe('Address', function () {
       expect(s.switch()).to.equal(
         StellarBase.xdr.ScAddressType.scAddressTypeMuxedAccount()
       );
+      expect(s.muxedAccount().ed25519()).to.deep.equal(
+        StellarBase.StrKey.decodeEd25519PublicKey(MUXED_ADDRESS_BASE)
+      );
+      expect(s.muxedAccount().id().toString()).to.equal(MUXED_ADDRESS_ID);
       expect(StellarBase.xdr.ScAddress.fromXDR(s.toXDR())).to.eql(s);
     });
 
