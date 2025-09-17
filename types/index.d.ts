@@ -79,6 +79,7 @@ export class Asset {
   toChangeTrustXDRObject(): xdr.ChangeTrustAsset;
   toTrustLineXDRObject(): xdr.TrustLineAsset;
   contractId(networkPassphrase: string): string;
+  toString(): string;
 
   code: string;
   issuer: string;

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+
+## [`v14.0.1`](https://github.com/stellar/js-stellar-base/compare/v14.0.0...v14.0.1):
+
+### Fixed
+* Added missing `Asset.toString()` TypeScript definition ([#1218](https://github.com/stellar/js-stellar-sdk/pull/1218)).
+
+
 ## [`v14.0.0`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0): Protocol 23
 
 ### Breaking Changes
