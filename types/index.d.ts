@@ -1136,7 +1136,9 @@ export function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccou
 export function extractBaseAddress(address: string): string;
 
 export type IntLike = string | number | bigint;
-export type ScIntType =
+export type IntType =
+  | 'i32'
+  | 'u32'
   | 'i64'
   | 'u64'
   | 'i128'
@@ -1144,15 +1146,17 @@ export type ScIntType =
   | 'i256'
   | 'u256';
 
-export class XdrLargeInt {
+export class Int {
   constructor(
-    type: ScIntType,
+    type: IntType,
     values: IntLike | IntLike[]
   );
 
   toNumber(): number;
   toBigInt(): bigint;
 
+  toI32(): xdr.ScVal;
+  toU32(): xdr.ScVal;
   toI64(): xdr.ScVal;
   toU64(): xdr.ScVal;
   toI128(): xdr.ScVal;
@@ -1165,18 +1169,16 @@ export class XdrLargeInt {
   toString(): string;
   toJSON(): {
     value: string;
-    type: ScIntType;
+    type: IntType;
   };
 
-  static isType(t: string): t is ScIntType;
-  static getType(scvType: string): ScIntType;
+  static isType(t: string): t is IntType;
+  static getType(scvType: string): IntType;
+
+  static fromValue(x: IntLike): Int;
+  static fromScVal(x: xdr.ScVal): Int;
 }
 
-export class ScInt extends XdrLargeInt {
-  constructor(value: IntLike, opts?: { type: ScIntType });
-}
-
-export function scValToBigInt(scv: xdr.ScVal): bigint;
 export function nativeToScVal(val: any, opts?: { type: any }): xdr.ScVal;
 export function scValToNative(scv: xdr.ScVal): any;
 

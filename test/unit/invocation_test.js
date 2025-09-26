@@ -51,7 +51,7 @@ describe('parsing invocation trees', function () {
     1, 2, 3, 4
   ].map(() => {
     // ezpz method to generate random contract IDs
-    const buf = hash(Keypair.random().publicKey());
+    const buf = hash(rk());
     return new Contract(StrKey.encodeContract(buf));
   });
 
@@ -125,11 +125,9 @@ describe('parsing invocation trees', function () {
                     salt: Buffer.alloc(32, 0)
                   })
                 ),
-              constructorArgs: [1, '2', 3].map((arg, i) => {
-                return nativeToScVal(arg, {
-                  type: ['u32', 'string', 'i32'][i]
-                });
-              }),
+              constructorArgs: nativeToScVal([1, '2', 3], {
+                type: ['u32', 'string', 'i32']
+              }).vec(),
               executable: xdr.ContractExecutable.contractExecutableWasm(
                 Buffer.alloc(32, '\x20')
               )
@@ -145,7 +143,7 @@ describe('parsing invocation trees', function () {
     args: {
       source: nftContract.contractId(),
       function: 'purchase',
-      args: [`SomeNft:${nftId}`, '7']
+      args: [`SomeNft:${nftId}`, 7]
     },
     invocations: [
       {
