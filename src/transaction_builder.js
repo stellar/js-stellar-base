@@ -721,20 +721,27 @@ export class TransactionBuilder {
     networkPassphrase
   ) {
     const innerOps = innerTx.operations.length;
-    const innerBaseFeeRate = new BigNumber(innerTx.fee).div(innerOps);
-    const base = new BigNumber(baseFee);
+    let inclusionFee = new BigNumber(innerTx.fee).div(innerOps);
 
-    // The fee rate for fee bump is at least the fee rate of the inner transaction
-    if (base.lt(innerBaseFeeRate)) {
-      throw new Error(
-        `Invalid baseFee, it should be at least ${innerBaseFeeRate} stroops.`
-      );
+    // Do we need to do special Soroban fee handling? We only want the fee-bump
+    // requirement to match the inclusion fee, not the inclusion+resource fee.
+    const env = innerTx.toEnvelope();
+    switch (env.switch().value) {
+      case xdr.EnvelopeType.envelopeTypeTx().value:
+        const sorobanData = env.v1().tx().ext().value();
+        inclusionFee -= sorobanData?.resourceFee() ?? 0;
+        break;
     }
 
+    const base = new BigNumber(baseFee);
     const minBaseFee = new BigNumber(BASE_FEE);
 
-    // The fee rate is at least the minimum fee
-    if (base.lt(minBaseFee)) {
+    // The fee rate for fee bump is at least the fee rate of the inner transaction
+    if (base.lt(inclusionFee)) {
+      throw new Error(
+        `Invalid baseFee, it should be at least ${inclusionFee} stroops.`
+      );
+    } else if (base.lt(minBaseFee)) { // and at least the minimum fee
       throw new Error(
         `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
       );

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+* Stop double-counting the resource fee in fee-bump transactions, making them much cheaper to build without workarounds ([#](https://github.com/stellar/js-stellar-sdk/pull/TODO)).
+
 
 ## [`v14.0.1`](https://github.com/stellar/js-stellar-base/compare/v14.0.0...v14.0.1):
 
