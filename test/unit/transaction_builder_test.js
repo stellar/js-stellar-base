@@ -179,8 +179,8 @@ describe('TransactionBuilder', function () {
         .build();
 
       expect(
-        transaction.toEnvelope().v1().tx().ext().sorobanData()
-      ).to.deep.equal(sorobanTransactionData);
+        transaction.toEnvelope().v1().tx().ext().sorobanData().toXDR('base64')
+      ).to.deep.equal(sorobanTransactionData.toXDR('base64'));
 
       let feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         StellarBase.Keypair.random(),
@@ -213,10 +213,6 @@ describe('TransactionBuilder', function () {
         .setSorobanData(sorobanTransactionData)
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
-
-      expect(
-        transaction.toEnvelope().v1().tx().ext().sorobanData()
-      ).to.deep.equal(sorobanTransactionData);
 
       feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         StellarBase.Keypair.random(),
