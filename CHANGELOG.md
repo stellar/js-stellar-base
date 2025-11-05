@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Fixed
-* Stop double-counting the resource fee in fee-bump transactions, making them much cheaper to build without workarounds ([#817](https://github.com/stellar/js-stellar-sdk/pull/817)).
+* Lowered the maximum bid for fee-bumped Soroban transactions by not doubling the resource fee ([#817](https://github.com/stellar/js-stellar-sdk/pull/817)).
 
 
 ## [`v14.0.1`](https://github.com/stellar/js-stellar-base/compare/v14.0.0...v14.0.1):

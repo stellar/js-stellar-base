@@ -153,12 +153,14 @@ describe('TransactionBuilder', function () {
       done();
     });
 
-    it("should calculate fee bumps correctly with soroban data", function (done) {
-      sorobanTransactionData = new SorobanDataBuilder().setResourceFee(420).build();
+    it('should calculate fee bumps correctly with soroban data', function () {
+      sorobanTransactionData = new SorobanDataBuilder()
+        .setResourceFee(420)
+        .build();
 
       let transaction = new StellarBase.TransactionBuilder(source, {
-        fee: 620, /* assume BASE_FEE*2 + 420 resource fee */
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        fee: 620 /* assume BASE_FEE*2 + 420 resource fee */,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
@@ -180,16 +182,51 @@ describe('TransactionBuilder', function () {
         transaction.toEnvelope().v1().tx().ext().sorobanData()
       ).to.deep.equal(sorobanTransactionData);
 
-      const feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+      let feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         StellarBase.Keypair.random(),
-        "200", // omit resource fee
+        '200', // omit resource fee
         transaction,
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
 
-      expect(feeBump.fee).to.equal("400"); // fee bump is an "op" so double the base
+      expect(feeBump.fee).to.equal('820'); // fee bump is an "op" so double the base
+
+      sorobanTransactionData = new SorobanDataBuilder()
+        .setResourceFee(1000)
+        .build();
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: StellarBase.BASE_FEE, // P23+: fee doesn't need to include resources
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+          StellarBase.Operation.invokeHostFunction({
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'test',
+                args: []
+              })
+            ),
+            auth: []
+          })
+        )
+        .setSorobanData(sorobanTransactionData)
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(
+        transaction.toEnvelope().v1().tx().ext().sorobanData()
+      ).to.deep.equal(sorobanTransactionData);
+
+      feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        StellarBase.Keypair.random(),
+        '100', // omit resource fee
+        transaction,
+        StellarBase.Networks.TESTNET
+      );
+
+      expect(feeBump.fee).to.equal('1200'); // fee bump is an "op" so double the base
       sorobanTransactionData = null;
-      done();
     });
   });
 

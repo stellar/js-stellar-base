@@ -721,27 +721,39 @@ export class TransactionBuilder {
     networkPassphrase
   ) {
     const innerOps = innerTx.operations.length;
-    let inclusionFee = new BigNumber(innerTx.fee).div(innerOps);
+
+    const minBaseFee = new BigNumber(BASE_FEE);
+    let innerInclusionFee = new BigNumber(innerTx.fee).div(innerOps);
+    let resourceFee = new BigNumber(0);
 
     // Do we need to do special Soroban fee handling? We only want the fee-bump
     // requirement to match the inclusion fee, not the inclusion+resource fee.
     const env = innerTx.toEnvelope();
     switch (env.switch().value) {
-      case xdr.EnvelopeType.envelopeTypeTx().value:
+      case xdr.EnvelopeType.envelopeTypeTx().value: {
         const sorobanData = env.v1().tx().ext().value();
-        inclusionFee -= sorobanData?.resourceFee() ?? 0;
+        resourceFee = new BigNumber(sorobanData?.resourceFee() ?? 0);
+        innerInclusionFee = BigNumber.max(
+          minBaseFee,
+          innerInclusionFee.minus(resourceFee)
+        );
+        break;
+      }
+      default:
         break;
     }
 
     const base = new BigNumber(baseFee);
-    const minBaseFee = new BigNumber(BASE_FEE);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction
-    if (base.lt(inclusionFee)) {
+    if (base.lt(innerInclusionFee)) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${inclusionFee} stroops.`
+        `Invalid baseFee, it should be at least ${innerInclusionFee} stroops.`
       );
-    } else if (base.lt(minBaseFee)) { // and at least the minimum fee
+    }
+
+    // The fee rate is at least the minimum fee
+    if (base.lt(minBaseFee)) {
       throw new Error(
         `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
       );
@@ -778,7 +790,12 @@ export class TransactionBuilder {
 
     const tx = new xdr.FeeBumpTransaction({
       feeSource: feeSourceAccount,
-      fee: xdr.Int64.fromString(base.times(innerOps + 1).toString()),
+      fee: xdr.Int64.fromString(
+        base
+          .times(innerOps + 1)
+          .plus(resourceFee)
+          .toString()
+      ),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
         innerTxEnvelope.v1()
       ),
