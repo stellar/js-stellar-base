@@ -1,3 +1,4 @@
+import { SorobanDataBuilder } from '../../src/sorobandata_builder.js';
 import { isValidDate } from '../../src/transaction_builder.js';
 const { encodeMuxedAccountToAddress } = StellarBase;
 
@@ -150,6 +151,78 @@ describe('TransactionBuilder', function () {
 
       expect(transaction.toEnvelope().v1().tx().ext().switch()).equal(0);
       done();
+    });
+
+    it('should calculate fee bumps correctly with soroban data', function () {
+      sorobanTransactionData = new SorobanDataBuilder()
+        .setResourceFee(420)
+        .build();
+
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 620 /* assume BASE_FEE*2 + 420 resource fee */,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+          StellarBase.Operation.invokeHostFunction({
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'test',
+                args: []
+              })
+            ),
+            auth: []
+          })
+        )
+        .setSorobanData(sorobanTransactionData)
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(
+        transaction.toEnvelope().v1().tx().ext().sorobanData().toXDR('base64')
+      ).to.deep.equal(sorobanTransactionData.toXDR('base64'));
+
+      let feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        StellarBase.Keypair.random(),
+        '200', // omit resource fee
+        transaction,
+        StellarBase.Networks.TESTNET
+      );
+
+      expect(feeBump.fee).to.equal('820'); // fee bump is an "op" so double the base
+
+      sorobanTransactionData = new SorobanDataBuilder()
+        .setResourceFee(1000)
+        .build();
+      transaction = new StellarBase.TransactionBuilder(source, {
+        fee: StellarBase.BASE_FEE, // P23+: fee doesn't need to include resources
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+          StellarBase.Operation.invokeHostFunction({
+            func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
+              new StellarBase.xdr.InvokeContractArgs({
+                contractAddress: c.address().toScAddress(),
+                functionName: 'test',
+                args: []
+              })
+            ),
+            auth: []
+          })
+        )
+        .setSorobanData(sorobanTransactionData)
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
+        StellarBase.Keypair.random(),
+        '100', // omit resource fee
+        transaction,
+        StellarBase.Networks.TESTNET
+      );
+
+      expect(feeBump.fee).to.equal('1200'); // fee bump is an "op" so double the base
+      sorobanTransactionData = null;
     });
   });
 
@@ -363,6 +436,7 @@ describe('TransactionBuilder', function () {
       done();
     });
   });
+
   describe('timebounds', function () {
     it('requires maxTime', function () {
       let source = new StellarBase.Account(
@@ -427,6 +501,7 @@ describe('TransactionBuilder', function () {
       );
     });
   });
+
   describe('setTimeout', function () {
     it('not called', function () {
       let source = new StellarBase.Account(
@@ -569,6 +644,7 @@ describe('TransactionBuilder', function () {
       }).to.not.throw();
     });
   });
+
   describe('.buildFeeBumpTransaction', function () {
     it('builds a fee bump transaction', function (done) {
       const networkPassphrase = 'Standalone Network ; February 2017';
