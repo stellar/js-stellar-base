@@ -2,81 +2,86 @@
 
 ## Unreleased
 
-### Fixed
-* Lowered the maximum bid for fee-bumped Soroban transactions by not doubling the resource fee ([#817](https://github.com/stellar/js-stellar-sdk/pull/817)).
+## [`v14.0.2`](https://github.com/stellar/js-stellar-base/compare/v14.0.1...v14.0.2):
 
+### Fixed
+
+- Lowered the maximum bid for fee-bumped Soroban transactions by not doubling the resource fee ([#817](https://github.com/stellar/js-stellar-sdk/pull/817)).
 
 ## [`v14.0.1`](https://github.com/stellar/js-stellar-base/compare/v14.0.0...v14.0.1):
 
 ### Fixed
-* Added missing `Asset.toString()` TypeScript definition ([#1218](https://github.com/stellar/js-stellar-sdk/pull/1218)).
 
+- Added missing `Asset.toString()` TypeScript definition ([#1218](https://github.com/stellar/js-stellar-sdk/pull/1218)).
 
 ## [`v14.0.0`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0): Protocol 23
 
 ### Breaking Changes
-* This package now requires **>= Node 20**.
-* XDR definitions have been updated to align with Protocol 23 ([#800](https://github.com/stellar/js-stellar-base/pull/800)).
+
+- This package now requires **>= Node 20**.
+- XDR definitions have been updated to align with Protocol 23 ([#800](https://github.com/stellar/js-stellar-base/pull/800)).
 
 ### Added
-* The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
-* Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
-* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([#801](https://github.com/stellar/js-stellar-base/pull/801)).
-* Added the ability for `nativeToScVal` to convert arrays with differing types to smart contract values, e.g., `nativeToScVal([1, "x", "y"], { type: [ "i128", "symbol" ]})` will give you a `Vec<i128, symbol, string>` ([#803](https://github.com/stellar/js-stellar-base/pull/803)).
+
+- The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
+- Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
+- Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([#801](https://github.com/stellar/js-stellar-base/pull/801)).
+- Added the ability for `nativeToScVal` to convert arrays with differing types to smart contract values, e.g., `nativeToScVal([1, "x", "y"], { type: [ "i128", "symbol" ]})` will give you a `Vec<i128, symbol, string>` ([#803](https://github.com/stellar/js-stellar-base/pull/803)).
 
 ### Fixed
-* Removed the custom `Buffer.subarray` polyfill introduced in [#733](https://github.com/stellar/js-stellar-base/pull/733) in [v11.0.1](https://github.com/stellar/js-stellar-sdk/releases/tag/v11.0.1) as a workaround for React Native's Hermes engine. Please use [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative, if needed ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
-* Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
-* Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 
+- Removed the custom `Buffer.subarray` polyfill introduced in [#733](https://github.com/stellar/js-stellar-base/pull/733) in [v11.0.1](https://github.com/stellar/js-stellar-sdk/releases/tag/v11.0.1) as a workaround for React Native's Hermes engine. Please use [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative, if needed ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
+- Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
+- Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 
 ## [`v14.0.0-rc.2`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.2)
 
 ### Fixed
-* Fixes a bug in `Address.toScAddress()` that would prevent claimable balances and muxed accounts from being encoded correctly.
 
+- Fixes a bug in `Address.toScAddress()` that would prevent claimable balances and muxed accounts from being encoded correctly.
 
 ## [`v14.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v13.1.0...v14.0.0-rc.1): Protocol 23
 
 ### Breaking Changes
-* This package now requires **>= Node 20**.
-* XDR definitions have been updated to align with Protocol 23 ([#800](https://github.com/stellar/js-stellar-base/pull/800)).
+
+- This package now requires **>= Node 20**.
+- XDR definitions have been updated to align with Protocol 23 ([#800](https://github.com/stellar/js-stellar-base/pull/800)).
 
 ### Added
-* The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
-* Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
-* Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([#801](https://github.com/stellar/js-stellar-base/pull/801)).
-* Added the ability for `nativeToScVal` to convert arrays with differing types to smart contract values, e.g., `nativeToScVal([1, "x", "y"], { type: [ "i128", "symbol" ]})` will give you a `Vec<i128, symbol, string>` ([#803](https://github.com/stellar/js-stellar-base/pull/803)).
+
+- The `sodium-native` and `tweetnacl` dependencies have been replaced with `@noble/curves` ([#802](https://github.com/stellar/js-stellar-base/pull/802)).
+- Support for claimable balances and liquidity pools in `StrKey` ([#799](https://github.com/stellar/js-stellar-base/pull/799)).
+- Support for claimable balances, liquidity pools, and muxed accounts in `Address` ([#801](https://github.com/stellar/js-stellar-base/pull/801)).
+- Added the ability for `nativeToScVal` to convert arrays with differing types to smart contract values, e.g., `nativeToScVal([1, "x", "y"], { type: [ "i128", "symbol" ]})` will give you a `Vec<i128, symbol, string>` ([#803](https://github.com/stellar/js-stellar-base/pull/803)).
 
 ### Fixed
-* Removed the custom `Buffer.subarray` polyfill introduced in [#733](https://github.com/stellar/js-stellar-base/pull/733) in [v11.0.1](https://github.com/stellar/js-stellar-sdk/releases/tag/v11.0.1) as a workaround for React Native's Hermes engine. Please use [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative, if needed ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
-* Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
-* Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 
+- Removed the custom `Buffer.subarray` polyfill introduced in [#733](https://github.com/stellar/js-stellar-base/pull/733) in [v11.0.1](https://github.com/stellar/js-stellar-sdk/releases/tag/v11.0.1) as a workaround for React Native's Hermes engine. Please use [`@exodus/patch-broken-hermes-typed-arrays`](https://github.com/ExodusMovement/patch-broken-hermes-typed-arrays) as an alternative, if needed ([#795](https://github.com/stellar/js-stellar-base/pull/795)).
+- Fix browser compatibility with proper module resolution and UMD configuration ([#798](https://github.com/stellar/js-stellar-base/pull/798)).
+- Remove `MuxedAccount.parseBaseAddress` from TypeScript definitions ([#797](https://github.com/stellar/js-stellar-base/pull/797)).
 
 ## [`v13.1.0`](https://github.com/stellar/js-stellar-base/compare/v13.0.1...v13.1.0)
 
 ### Added
-* `nativeToScVal` now supports encoding `Keypair`s as addresses ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
-* Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([#783](https://github.com/stellar/js-stellar-base/pull/783)):
+
+- `nativeToScVal` now supports encoding `Keypair`s as addresses ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
+- Within `authorizeEntry`, the `SigningCallback` callback function should now return an object containing both the signature and the identity of the signer. In multi-signature situations, it isn't necessarily the case that the address within the authorization entry is the one that actually signs that entry. Thus, the callback now takes the following form, where the original `Promise<BufferLike>` option is preserved for backwards compatibility and should be considered deprecated ([#783](https://github.com/stellar/js-stellar-base/pull/783)):
+
 ```typescript
 export type SigningCallback = (
   preimage: xdr.HashIdPreimage
-) => Promise<
-  BufferLike |
-  { signature: BufferLike, publicKey: string }
->;
+) => Promise<BufferLike | { signature: BufferLike; publicKey: string }>;
 ```
 
 ### Fixed
-* `scValToNative` will decode addresses more efficiently and reliably ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
 
+- `scValToNative` will decode addresses more efficiently and reliably ([#794](https://github.com/stellar/js-stellar-base/pull/794)).
 
 ## [`v13.0.1`](https://github.com/stellar/js-stellar-base/compare/v13.0.0...v13.0.1)
 
 ### Fixed
-* `buildInvocationTree` will now successfully walk creation invocations with constructor arguments ([#784](https://github.com/stellar/js-stellar-base/pull/784)).
 
+- `buildInvocationTree` will now successfully walk creation invocations with constructor arguments ([#784](https://github.com/stellar/js-stellar-base/pull/784)).
 
 ## [`v13.0.0`](https://github.com/stellar/js-stellar-base/compare/v12.1.1...v13.0.0)
 
@@ -84,44 +89,46 @@ export type SigningCallback = (
 
 This version is unchanged from [`beta.1`](#v13.0.0-beta.1).
 
-
 ## [`v13.0.0-beta.1`](https://github.com/stellar/js-stellar-base/compare/v12.1.1...v13.0.0-beta.1)
 
 **This is the first release that supports Protocol 22.** While the network has not upgraded yet, you can start integrating the new features into your codebase if you want a head start. Keep in mind that while the binary XDR is backwards-compatible, the naming and layout of structures is not. In other words, this build will continue to work on Protocol 21, but you may have to update code that references XDR directly.
 
 ### Breaking Changes
-* XDR definitions have been upgraded to Protocol 22 ([#777](https://github.com/stellar/js-stellar-base/pull/777)).
+
+- XDR definitions have been upgraded to Protocol 22 ([#777](https://github.com/stellar/js-stellar-base/pull/777)).
 
 ### Added
-* You can create contracts with constructors a new, optional parameter of `Operation.createCustomContract`, `constructorArgs: xdr.ScVal[]` ([#770](https://github.com/stellar/js-stellar-base/pull/770)).
 
+- You can create contracts with constructors a new, optional parameter of `Operation.createCustomContract`, `constructorArgs: xdr.ScVal[]` ([#770](https://github.com/stellar/js-stellar-base/pull/770)).
 
 ## [`v12.1.1`](https://github.com/stellar/js-stellar-base/compare/v12.1.0...v12.1.1)
 
 ### Fixed
-* Add missing methods to TypeScript definitions ([#766](https://github.com/stellar/js-stellar-base/pull/766)).
-* Fix the TypeScript definition of `walkInvocationTree` to allow void returns on the callback function as intended rather than forcing a `return null` ([#765](https://github.com/stellar/js-stellar-base/pull/765)).
-* Fix `authorizeEntry` to use the correct public key when passing `Keypair`s ([#772](https://github.com/stellar/js-stellar-base/pull/772)).
-* Upgrade misc. dependencies ([#771](https://github.com/stellar/js-stellar-base/pull/771), [#773](https://github.com/stellar/js-stellar-base/pull/773)).
 
+- Add missing methods to TypeScript definitions ([#766](https://github.com/stellar/js-stellar-base/pull/766)).
+- Fix the TypeScript definition of `walkInvocationTree` to allow void returns on the callback function as intended rather than forcing a `return null` ([#765](https://github.com/stellar/js-stellar-base/pull/765)).
+- Fix `authorizeEntry` to use the correct public key when passing `Keypair`s ([#772](https://github.com/stellar/js-stellar-base/pull/772)).
+- Upgrade misc. dependencies ([#771](https://github.com/stellar/js-stellar-base/pull/771), [#773](https://github.com/stellar/js-stellar-base/pull/773)).
 
 ## [`v12.1.0`](https://github.com/stellar/js-stellar-base/compare/v12.0.1...v12.1.0)
 
 ### Added
-* `TransactionBuilder` now has `addOperationAt` and `clearOperationAt` methods to allow manipulation of individual operations ([#757](https://github.com/stellar/js-stellar-base/pull/757)).
+
+- `TransactionBuilder` now has `addOperationAt` and `clearOperationAt` methods to allow manipulation of individual operations ([#757](https://github.com/stellar/js-stellar-base/pull/757)).
 
 ### Fixed
-* Improve the efficiency and portability of asset type retrieval ([#758](https://github.com/stellar/js-stellar-base/pull/758)).
-* `nativeToScVal` now correctly sorts maps lexicographically based on the keys to match what the Soroban environment expects ([#759](https://github.com/stellar/js-stellar-base/pull/759)).
-* `nativeToScVal` now allows all integer types to come from strings ([#763](https://github.com/stellar/js-stellar-base/pull/763)).
-* `humanizeEvents` now handles events without a `contractId` set more reliably ([#764](https://github.com/stellar/js-stellar-base/pull/764)).
 
+- Improve the efficiency and portability of asset type retrieval ([#758](https://github.com/stellar/js-stellar-base/pull/758)).
+- `nativeToScVal` now correctly sorts maps lexicographically based on the keys to match what the Soroban environment expects ([#759](https://github.com/stellar/js-stellar-base/pull/759)).
+- `nativeToScVal` now allows all integer types to come from strings ([#763](https://github.com/stellar/js-stellar-base/pull/763)).
+- `humanizeEvents` now handles events without a `contractId` set more reliably ([#764](https://github.com/stellar/js-stellar-base/pull/764)).
 
 ## [`v12.0.1`](https://github.com/stellar/js-stellar-base/compare/v12.0.0...v12.0.1)
 
 ### Fixed
-* Export TypeScript definition for `StrKey.isValidContract` ([#751](https://github.com/stellar/js-stellar-base/pull/751)).
-* `scValToNative` would fail when the values contained error codes because the parsing routine hadn't been updated to the new error schemas. Errors are now converted to the following format ([#753](https://github.com/stellar/js-stellar-base/pull/753)):
+
+- Export TypeScript definition for `StrKey.isValidContract` ([#751](https://github.com/stellar/js-stellar-base/pull/751)).
+- `scValToNative` would fail when the values contained error codes because the parsing routine hadn't been updated to the new error schemas. Errors are now converted to the following format ([#753](https://github.com/stellar/js-stellar-base/pull/753)):
 
 ```typescript
 interface Error {
@@ -133,137 +140,145 @@ interface Error {
 
 You can refer to the [XDR documentation](https://github.com/stellar/stellar-xdr/blob/70180d5e8d9caee9e8645ed8a38c36a8cf403cd9/Stellar-contract.x#L76-L115) for additional explanations for each error code.
 
-
 ## [`v12.0.0`](https://github.com/stellar/js-stellar-base/compare/v11.0.1...v12.0.0)
 
 This is a re-tag of v12.0.0-rc.1 with only developer dependency updates in-between.
 
-
 ## [`v12.0.0-rc.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.1...v12.0.0-rc.1)
 
 ### Breaking Changes
-* The generated XDR has been upgraded to match the upcoming Protocol 21, namely [stellar/stellar-xdr@`1a04392`](https://github.com/stellar/stellar-xdr/commit/1a04392432dacc0092caaeae22a600ea1af3c6a5) ([#738](https://github.com/stellar/js-stellar-base/pull/738)).
+
+- The generated XDR has been upgraded to match the upcoming Protocol 21, namely [stellar/stellar-xdr@`1a04392`](https://github.com/stellar/stellar-xdr/commit/1a04392432dacc0092caaeae22a600ea1af3c6a5) ([#738](https://github.com/stellar/js-stellar-base/pull/738)).
 
 ### Added
-* To facilitate serialization and deserialization for downstream systems, this package now exports `cereal.XdrWriter` and `cereal.XdrReader` which come directly from `@stellar/js-xdr` ([#744](https://github.com/stellar/js-stellar-base/pull/744)).
+
+- To facilitate serialization and deserialization for downstream systems, this package now exports `cereal.XdrWriter` and `cereal.XdrReader` which come directly from `@stellar/js-xdr` ([#744](https://github.com/stellar/js-stellar-base/pull/744)).
 
 ### Fixed
-* Updated various dependencies ([#737](https://github.com/stellar/js-stellar-base/pull/737), [#739](https://github.com/stellar/js-stellar-base/pull/739)).
-* `Buffer` and `Uint8Array` compatibility has improved in `StrKey` ([#746](https://github.com/stellar/js-stellar-base/pull/746)).
 
+- Updated various dependencies ([#737](https://github.com/stellar/js-stellar-base/pull/737), [#739](https://github.com/stellar/js-stellar-base/pull/739)).
+- `Buffer` and `Uint8Array` compatibility has improved in `StrKey` ([#746](https://github.com/stellar/js-stellar-base/pull/746)).
 
 ## [`v11.0.1`](https://github.com/stellar/js-stellar-base/compare/v11.0.0...v11.0.1)
 
 ### Fixed
-* Add compatibility with pre-ES2016 environments (like some React Native JS compilers) by adding a custom `Buffer.subarray` polyfill ([#733](https://github.com/stellar/js-stellar-base/pull/733)).
-* Upgrade underlying dependencies, including `@stellar/js-xdr` which should broaden compatibility to pre-ES2016 environments ([#734](https://github.com/stellar/js-stellar-base/pull/734), [#735](https://github.com/stellar/js-stellar-base/pull/735)).
 
+- Add compatibility with pre-ES2016 environments (like some React Native JS compilers) by adding a custom `Buffer.subarray` polyfill ([#733](https://github.com/stellar/js-stellar-base/pull/733)).
+- Upgrade underlying dependencies, including `@stellar/js-xdr` which should broaden compatibility to pre-ES2016 environments ([#734](https://github.com/stellar/js-stellar-base/pull/734), [#735](https://github.com/stellar/js-stellar-base/pull/735)).
 
 ## [`v11.0.0`](https://github.com/stellar/js-stellar-base/compare/v10.0.2...v11.0.0)
 
 **Note:** This version is (still) compatible with Protocol 20. Most people should be unaffected by the technically-breaking changes below and can treat this more like a v10.0.3 patch release.
 
 ### Breaking Changes
-* Starting from **v10.0.0-beta.0**, we set [`BigNumber.DEBUG`](https://mikemcl.github.io/bignumber.js/#debug) in `bignumber.js` to `true` internally, which affects all code using `BigNumber`. This behavior has been fixed and only affects this library: globally, `BigNumber.DEBUG` now remains at its default setting (i.e. disabled). This is technically a breaking behavior change and is released as such ([#729](https://github.com/stellar/js-stellar-base/pull/729)).
+
+- Starting from **v10.0.0-beta.0**, we set [`BigNumber.DEBUG`](https://mikemcl.github.io/bignumber.js/#debug) in `bignumber.js` to `true` internally, which affects all code using `BigNumber`. This behavior has been fixed and only affects this library: globally, `BigNumber.DEBUG` now remains at its default setting (i.e. disabled). This is technically a breaking behavior change and is released as such ([#729](https://github.com/stellar/js-stellar-base/pull/729)).
 
 ### Fixed
-* Dependencies have been updated to their latest compatible versions ([#726](https://github.com/stellar/js-stellar-base/pull/729), [#730](https://github.com/stellar/js-stellar-base/pull/730)).
 
+- Dependencies have been updated to their latest compatible versions ([#726](https://github.com/stellar/js-stellar-base/pull/729), [#730](https://github.com/stellar/js-stellar-base/pull/730)).
 
 ## [`v10.0.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.1...v10.0.2)
 
 ### Fixed
-* The `contractId` field is correctly omitted from humanized events when it wasn't present in the structure ([#721](https://github.com/stellar/js-stellar-base/pull/721)).
-* Misc. outdated or incorrect documentation has been updated ([#723](https://github.com/stellar/js-stellar-base/pull/723), [#720](https://github.com/stellar/js-stellar-base/pull/720)).
-* Dependencies have been updated ([#724](https://github.com/stellar/js-stellar-base/pull/724)).
 
+- The `contractId` field is correctly omitted from humanized events when it wasn't present in the structure ([#721](https://github.com/stellar/js-stellar-base/pull/721)).
+- Misc. outdated or incorrect documentation has been updated ([#723](https://github.com/stellar/js-stellar-base/pull/723), [#720](https://github.com/stellar/js-stellar-base/pull/720)).
+- Dependencies have been updated ([#724](https://github.com/stellar/js-stellar-base/pull/724)).
 
 ## [`v10.0.1`](https://github.com/stellar/js-stellar-base/compare/v10.0.0...v10.0.1)
 
 ### Fixed
-* The TypeScript definition for `Asset.contractId()` now includes a missing parameter (the `networkPassphrase` changes the ID for a contract; [#718](https://github.com/stellar/js-stellar-base/pull/#718)).
 
+- The TypeScript definition for `Asset.contractId()` now includes a missing parameter (the `networkPassphrase` changes the ID for a contract; [#718](https://github.com/stellar/js-stellar-base/pull/#718)).
 
 ## [`v10.0.0`](https://github.com/stellar/js-stellar-base/compare/v9.0.0...v10.0.0): Protocol 20 Stable Release
 
 ### Breaking Changes
-* The new minimum supported Node version is Node 18.
-* XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([#704](https://github.com/stellar/js-stellar-base/pull/704)):
+
+- The new minimum supported Node version is Node 18.
+- XDR has been upgraded to the latest stable version ([stellar-xdr@`6a620d1`](https://github.com/stellar/stellar-xdr/tree/6a620d160aab22609c982d54578ff6a63bfcdc01)). This is mostly renames, but it includes the following relevant breaking changes ([#704](https://github.com/stellar/js-stellar-base/pull/704)):
   - `Operation.bumpFootprintExpiration` is now `extendFootprintTtl` and its `ledgersToExpire` field is now named `extendTo`, but it serves the same purpose.
   - In TypeScript, the `Operation.BumpFootprintExpiration` is now `Operation.ExtendFootprintTTL`
   - `xdr.ContractExecutable.contractExecutableToken` is now `contractExecutableStellarAsset`
   - `xdr.SorobanTransactionData.refundableFee` is now `resourceFee`
   - In turn, `SorobanDataBuilder.setRefundableFee` is now `setResourceFee`
   - This new fee encompasses the entirety of the Soroban-related resource fees. Note that this is distinct from the "network-inclusion" fee that you would set on your transaction (i.e. `TransactionBuilder(..., { fee: ... })`).
-- `Contract.getFootprint()` now only returns a single result: the ledger key of the deployed instance for the given ID, because the key for the code entry was incorrect (it should not be the ID but rather the WASM hash, which is not calculatable w/o network access) ([#709](https://github.com/stellar/js-stellar-base/pull/709)).
 
+* `Contract.getFootprint()` now only returns a single result: the ledger key of the deployed instance for the given ID, because the key for the code entry was incorrect (it should not be the ID but rather the WASM hash, which is not calculatable w/o network access) ([#709](https://github.com/stellar/js-stellar-base/pull/709)).
 
 ## [`v10.0.0-beta.4`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.3...v10.0.0-beta.4)
 
 ### Fixed
-- You can now correctly clone transactions (`TransactionBuilder.cloneFrom`) with large sequence numbers ([#711](https://github.com/stellar/js-stellar-base/pull/711)).
 
+- You can now correctly clone transactions (`TransactionBuilder.cloneFrom`) with large sequence numbers ([#711](https://github.com/stellar/js-stellar-base/pull/711)).
 
 ## [`v10.0.0-beta.3`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.2...v10.0.0-beta.3)
 
 ### Fixed
-* Fixes a bug where `authorizeEntry` might perform a no-op when it shouldn't ([#701](https://github.com/stellar/js-stellar-base/pull/701)).
-* Fixes a TypeScript bug where `Memo.hash` did not accept a `Buffer` ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
-* Upgrades a transient dependency for security ([#296](https://github.com/stellar/js-stellar-base/pull/696)).
 
+- Fixes a bug where `authorizeEntry` might perform a no-op when it shouldn't ([#701](https://github.com/stellar/js-stellar-base/pull/701)).
+- Fixes a TypeScript bug where `Memo.hash` did not accept a `Buffer` ([#698](https://github.com/stellar/js-stellar-base/pull/698)).
+- Upgrades a transient dependency for security ([#296](https://github.com/stellar/js-stellar-base/pull/696)).
 
 ## [`v10.0.0-beta.2`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.1...v10.0.0-beta.2)
 
 ### Breaking Changes
- * The wrappers around multi-party authorization have changed ([#678](https://github.com/stellar/js-stellar-base/pull/678)):
-  - `authorizeEntry` has been added to help sign auth entries in-place
-  - the signature for `authorizeInvocation` has changed: it now offers a callback approach by default and requires slightly different parameters
-  - `buildAuthEntry`, `buildAuthEnvelope`, and `authorizeInvocationCallback` have been removed
+
+- The wrappers around multi-party authorization have changed ([#678](https://github.com/stellar/js-stellar-base/pull/678)):
+
+* `authorizeEntry` has been added to help sign auth entries in-place
+* the signature for `authorizeInvocation` has changed: it now offers a callback approach by default and requires slightly different parameters
+* `buildAuthEntry`, `buildAuthEnvelope`, and `authorizeInvocationCallback` have been removed
 
 ### Fixed
- * The TypeScript definitions for XDR schemas now point to the current protocol rather than vNext ([#694](https://github.com/stellar/js-stellar-base/pull/694)).
- * Misc. dependencies have been updated to their latest versions ([#694](https://github.com/stellar/js-stellar-base/pull/694)).
 
+- The TypeScript definitions for XDR schemas now point to the current protocol rather than vNext ([#694](https://github.com/stellar/js-stellar-base/pull/694)).
+- Misc. dependencies have been updated to their latest versions ([#694](https://github.com/stellar/js-stellar-base/pull/694)).
 
 ## [`v10.0.0-beta.1`](https://github.com/stellar/js-stellar-base/compare/v10.0.0-beta.0...v10.0.0-beta.1)
 
 ### Fixed
- * `nativeToScVal` now allows anything to be passed to the `opts.type` specifier. Previously, it was only integer types ([#691](https://github.com/stellar/js-stellar-base/pull/691)).
- * `Contract.call()` now produces valid `Operation` XDR ([#692](https://github.com/stellar/js-stellar-base/pull/692)).
 
+- `nativeToScVal` now allows anything to be passed to the `opts.type` specifier. Previously, it was only integer types ([#691](https://github.com/stellar/js-stellar-base/pull/691)).
+- `Contract.call()` now produces valid `Operation` XDR ([#692](https://github.com/stellar/js-stellar-base/pull/692)).
 
 ## [`v10.0.0-beta.0`](https://github.com/stellar/js-stellar-base/compare/v9.0.0...v10.0.0-beta.0): Protocol 20
 
 ### Breaking Changes
- * **Node 16 is the new minimum version** to use the SDKs.
- * The XDR has been massively overhauled to support [Soroban in Protocol 20](https://soroban.stellar.org/docs/category/fundamentals-and-concepts), which means new operations, data structures, and a transaction format as well as new overlay features ([#538](https://github.com/stellar/js-stellar-base/pull/538)).
+
+- **Node 16 is the new minimum version** to use the SDKs.
+- The XDR has been massively overhauled to support [Soroban in Protocol 20](https://soroban.stellar.org/docs/category/fundamentals-and-concepts), which means new operations, data structures, and a transaction format as well as new overlay features ([#538](https://github.com/stellar/js-stellar-base/pull/538)).
 
 The core data structure of Soroban is a generic type called an `ScVal` (**s**mart **c**ontract **val**ue, which is a union of types that can basically represent anything [numbers, strings, arrays, maps, contract bytecode, etc.]). You can refer to the XDR for details, and you can utilize new APIs to make dealing with these complex values easier:
- - `nativeToScVal` helps convert native types to their closest Soroban equivalent
- - `scValToNative` helps find the closest native JavaScript type(s) corresponding to a smart contract value
- - `scValToBigInt` helps convert numeric `ScVal`s into native `bigint`s
- - `ScInt` and `XdrLargeInt` help convert to and from `bigint`s to other types and form sized integer types for smart contract usage
+
+- `nativeToScVal` helps convert native types to their closest Soroban equivalent
+- `scValToNative` helps find the closest native JavaScript type(s) corresponding to a smart contract value
+- `scValToBigInt` helps convert numeric `ScVal`s into native `bigint`s
+- `ScInt` and `XdrLargeInt` help convert to and from `bigint`s to other types and form sized integer types for smart contract usage
 
 ### Added
+
 The following are new APIs to deal with new Soroban constructs:
- - **`Address`, which helps manage "smart" addresses in the Soroban context.** Addresses there (used for auth and identity purposes) can either be contracts (strkey `C...`) or accounts (strkey `G...`). This abstraction helps manage them and distinguish between them easily.
- - **`Contract`, which helps manage contract identifiers.** The primary purpose is to build invocations of its methods via the generic `call(...)`, but it also provides utilities for converting to an `Address` or calculating its minimum footprint for state expiration.
- - **Three new operations** have been added related to Soroban transactions:
-   * `invokeHostFunction` for calling contract code
-   * `bumpFootprintExpiration` for extending the state lifetime of Soroban data
-   * `restoreFootprint` for restoring expired, off-chain state back onto the ledger
- - The `TransactionBuilder` now takes a `sorobanData` parameter (and has a corresponding `.setSorobanData()` builder method) which primarily describes the storage footprint of a Soroban (that is, which parts of the ledger state [in the form of `xdr.LedgerKey`s] it plans to read and write as part of the transaction).
-   * To facilitate building this out, there's a new `SorobanDataBuilder` factory to set fields individually
- - The `TransactionBuilder` now has a `cloneFrom(tx, opts)` constructor method to create an instance from an existing transaction, also allowing parameter overrides via `opts`.
- - The following are convenience methods for building out certain types of smart contract-related structures:
-   * `buildInvocationTree` and `walkInvocationTree` are both ways to visualize invocation calling trees better
-   * `authorizeInvocation` helps multiple parties sign invocation calling trees
-   * `humanizeEvents` helps make diagnostic events more readable
- - We've added a GHA to track bundle size changes as PRs are made. This protocol upgrade adds +18% to the final, minified bundle size which is significant but acceptable given the size of the upgrade.
+
+- **`Address`, which helps manage "smart" addresses in the Soroban context.** Addresses there (used for auth and identity purposes) can either be contracts (strkey `C...`) or accounts (strkey `G...`). This abstraction helps manage them and distinguish between them easily.
+- **`Contract`, which helps manage contract identifiers.** The primary purpose is to build invocations of its methods via the generic `call(...)`, but it also provides utilities for converting to an `Address` or calculating its minimum footprint for state expiration.
+- **Three new operations** have been added related to Soroban transactions:
+  - `invokeHostFunction` for calling contract code
+  - `bumpFootprintExpiration` for extending the state lifetime of Soroban data
+  - `restoreFootprint` for restoring expired, off-chain state back onto the ledger
+- The `TransactionBuilder` now takes a `sorobanData` parameter (and has a corresponding `.setSorobanData()` builder method) which primarily describes the storage footprint of a Soroban (that is, which parts of the ledger state [in the form of `xdr.LedgerKey`s] it plans to read and write as part of the transaction).
+  - To facilitate building this out, there's a new `SorobanDataBuilder` factory to set fields individually
+- The `TransactionBuilder` now has a `cloneFrom(tx, opts)` constructor method to create an instance from an existing transaction, also allowing parameter overrides via `opts`.
+- The following are convenience methods for building out certain types of smart contract-related structures:
+  - `buildInvocationTree` and `walkInvocationTree` are both ways to visualize invocation calling trees better
+  - `authorizeInvocation` helps multiple parties sign invocation calling trees
+  - `humanizeEvents` helps make diagnostic events more readable
+- We've added a GHA to track bundle size changes as PRs are made. This protocol upgrade adds +18% to the final, minified bundle size which is significant but acceptable given the size of the upgrade.
 
 ### Fixes
-* Improves the error messages when passing invalid amounts to deposit and withdraw operations ([#679](https://github.com/stellar/js-stellar-base/pull/679)).
 
+- Improves the error messages when passing invalid amounts to deposit and withdraw operations ([#679](https://github.com/stellar/js-stellar-base/pull/679)).
 
 ## [v9.0.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0)
 
@@ -273,8 +288,8 @@ This version is marked by a major version bump because of the significant upgrad
 
 The browser bundle size has decreased **significantly**:
 
-  * `stellar-base.min.js` is **340 KiB**, down from **1.2 MiB** previously.
-  * the new, unminified `stellar-base.js` is **895 KiB**.
+- `stellar-base.min.js` is **340 KiB**, down from **1.2 MiB** previously.
+- the new, unminified `stellar-base.js` is **895 KiB**.
 
 ### Breaking Changes
 
@@ -294,7 +309,6 @@ Though we have tried to maintain compatibility with older JavaScript implementat
 - Drop the `crc` dependency and inline it to lower bundle size ([#621](https://github.com/stellar/js-stellar-base/pull/621)).
 - Upgrade all dependencies to their latest versions ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
 
-
 ## [v9.0.0-beta.3](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
 ### Fix
@@ -302,9 +316,9 @@ Though we have tried to maintain compatibility with older JavaScript implementat
 - Fixes a bug when sorting mixed-case assets for liquidity pools ([#606](https://github.com/stellar/js-stellar-base/pull/606)).
 
 ### Update
+
 - Upgrade all dependencies to their latest versions ([#608](https://github.com/stellar/js-stellar-base/pull/608)).
 - Drop the `crc` dependency and inline it to lower bundle size ([#621](https://github.com/stellar/js-stellar-base/pull/621)).
-
 
 ## [v9.0.0-beta.2](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.1..v9.0.0-beta.2)
 
@@ -312,13 +326,11 @@ Though we have tried to maintain compatibility with older JavaScript implementat
 
 - Upgrades the `js-xdr` dependency (major performance improvements, see [`js-xdr@v2.0.0`](https://github.com/stellar/js-xdr/releases/tag/v2.0.0)) and other dependencies to their latest versions ([#592](https://github.com/stellar/js-stellar-base/pull/592)).
 
-
 ## [v9.0.0-beta.1](https://github.com/stellar/js-stellar-base/compare/v9.0.0-beta.0..v9.0.0-beta.1)
 
 ### Fix
 
 - Correct XDR type definition for raw `xdr.Operation`s ([#591](https://github.com/stellar/js-stellar-base/pull/591)).
-
 
 ## [v9.0.0-beta.0](https://github.com/stellar/js-stellar-base/compare/v8.2.2..v9.0.0-beta.0)
 
@@ -330,7 +342,6 @@ This version is marked by a major version bump because of the significant upgrad
 
 - Current and vNext XDR updated to latest versions ([#587](https://github.com/stellar/js-stellar-base/pull/587)).
 
-
 ## [v8.2.2](https://github.com/stellar/js-stellar-base/compare/v8.2.1..v8.2.2)
 
 ### Fix
@@ -341,28 +352,25 @@ This version is marked by a major version bump because of the significant upgrad
 
 ### Fix
 
-* Turn all XLM-like (i.e. casing agnostic) asset codes into the native asset with code `XLM` ([#546](https://github.com/stellar/js-stellar-base/pull/546)).
-
+- Turn all XLM-like (i.e. casing agnostic) asset codes into the native asset with code `XLM` ([#546](https://github.com/stellar/js-stellar-base/pull/546)).
 
 ## [v8.2.0](https://github.com/stellar/js-stellar-base/compare/v8.1.0..v8.2.0)
 
 ### Add
 
-* `Operation.setOptions` now supports the new [CAP-40](https://stellar.org/protocol/cap-40) signed payload signer (`ed25519SignedPayload`) thanks to @orbitlens ([#542](https://github.com/stellar/js-stellar-base/pull/542)).
-
+- `Operation.setOptions` now supports the new [CAP-40](https://stellar.org/protocol/cap-40) signed payload signer (`ed25519SignedPayload`) thanks to @orbitlens ([#542](https://github.com/stellar/js-stellar-base/pull/542)).
 
 ## [v8.1.0](https://github.com/stellar/js-stellar-base/compare/v8.0.1..v8.1.0)
 
 ### Add
 
-* `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array ([#535](https://github.com/stellar/js-stellar-base/pull/535)).
+- `TransactionBase.addDecoratedSignature` is a clearer way to add signatures directly to a built transaction without fiddling with the underlying `signatures` array ([#535](https://github.com/stellar/js-stellar-base/pull/535)).
 
-* Update the XDR definitions (and the way in which they're generated) to contain both the latest current XDR (which introduces [CAP-42](https://stellar.org/protocol/cap-42)) and the "v-next" XDR (which contains XDR related to Soroban and should be considered unstable) ([#537](https://github.com/stellar/js-stellar-base/pull/537)).
+- Update the XDR definitions (and the way in which they're generated) to contain both the latest current XDR (which introduces [CAP-42](https://stellar.org/protocol/cap-42)) and the "v-next" XDR (which contains XDR related to Soroban and should be considered unstable) ([#537](https://github.com/stellar/js-stellar-base/pull/537)).
 
 ### Fix
 
-* Correctly set `minAccountSequence` in `TransactionBuilder` for large values ([#539](https://github.com/stellar/js-stellar-base/pull/539), thank you @overcat!).
-
+- Correctly set `minAccountSequence` in `TransactionBuilder` for large values ([#539](https://github.com/stellar/js-stellar-base/pull/539), thank you @overcat!).
 
 ## [v8.0.1](https://github.com/stellar/js-stellar-base/compare/v8.0.0..v8.0.1)
 
@@ -370,11 +378,9 @@ This version is marked by a major version bump because of the significant upgrad
 
 - Correctly predict claimable balance IDs with large sequence numbers ([#530](https://github.com/stellar/js-stellar-base/pull/530), thank you @overcat!).
 
-
 ## [v8.0.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0)
 
 This is a promotion from the beta version without changes, now that the CAP-21 and CAP-40 implementations have made it into [stellar/stellar-core#master](https://github.com/stellar/stellar-core/tree/master/).
-
 
 ## [v8.0.0-beta.0](https://github.com/stellar/js-stellar-base/compare/v7.0.0..v8.0.0-beta.0)
 
@@ -387,28 +393,28 @@ This is considered a beta release until the XDR for the Stellar protocol stabili
 As of this release, the minimum supported version of NodeJS is **14.x**.
 
 - Two XDR types have been renamed:
-  * `xdr.OperationId` is now `xdr.HashIdPreimage`
-  * `xdr.OperationIdId` is now `xdr.HashIdPreimageOperationId`
+  - `xdr.OperationId` is now `xdr.HashIdPreimage`
+  - `xdr.OperationIdId` is now `xdr.HashIdPreimageOperationId`
 
 ### Add
 
 - Support for converting signed payloads ([CAP-40](https://stellar.org/protocol/cap-40)) to and from their StrKey (`P...`) representation ([#511](https://github.com/stellar/js-stellar-base/pull/511)):
-  * `Keypair.signPayloadDecorated(data)`
-  * `StrKey.encodeSignedPayload(buf)`
-  * `StrKey.decodeSignedPayload(str)`
-  * `StrKey.isValidSignedPayload(str)`
+  - `Keypair.signPayloadDecorated(data)`
+  - `StrKey.encodeSignedPayload(buf)`
+  - `StrKey.decodeSignedPayload(str)`
+  - `StrKey.isValidSignedPayload(str)`
 
 - Support for creating transactions with the new preconditions ([CAP-21](https://stellar.org/protocol/cap-21)) via `TransactionBuilder` ([#513](https://github.com/stellar/js-stellar-base/pull/513)).
 
 - A way to convert between addresses (like `G...` and `P...`, i.e. the `StrKey` class) and their respective signer keys (i.e. `xdr.SignerKey`s), particularly for use in the new transaction preconditions ([#520](https://github.com/stellar/js-stellar-base/pull/520)):
-  * `SignerKey.decodeAddress(address)`
-  * `SignerKey.encodeSignerKey(address)`
-  * `TransactionBuilder.setTimebounds(min, max)`
-  * `TransactionBuilder.setLedgerbounds(min, max)`
-  * `TransactionBuilder.setMinAccountSequence(seq)`
-  * `TransactionBuilder.setMinAccountSequenceAge(age)`
-  * `TransactionBuilder.setMinAccountSequenceLedgerGap(gap)`
-  * `TransactionBuilder.setExtraSigners([signers])`
+  - `SignerKey.decodeAddress(address)`
+  - `SignerKey.encodeSignerKey(address)`
+  - `TransactionBuilder.setTimebounds(min, max)`
+  - `TransactionBuilder.setLedgerbounds(min, max)`
+  - `TransactionBuilder.setMinAccountSequence(seq)`
+  - `TransactionBuilder.setMinAccountSequenceAge(age)`
+  - `TransactionBuilder.setMinAccountSequenceLedgerGap(gap)`
+  - `TransactionBuilder.setExtraSigners([signers])`
 
 ### Fix
 
@@ -417,11 +423,10 @@ As of this release, the minimum supported version of NodeJS is **14.x**.
 - Resolves a bug that incorrectly sorted `Asset`s with mixed-case asset codes (it preferred lowercase codes incorrectly) ([#516](https://github.com/stellar/js-stellar-base/pull/516)).
 
 - Update developer dependencies:
-  * `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))
-  * `ajv` ([#503](https://github.com/stellar/js-stellar-base/pull/503))
-  * `karma` ([#505](https://github.com/stellar/js-stellar-base/pull/505))
-  * `minimist` ([#514](https://github.com/stellar/js-stellar-base/pull/514))
-
+  - `isparta`, `jsdoc`, and `underscore` ([#500](https://github.com/stellar/js-stellar-base/pull/500))
+  - `ajv` ([#503](https://github.com/stellar/js-stellar-base/pull/503))
+  - `karma` ([#505](https://github.com/stellar/js-stellar-base/pull/505))
+  - `minimist` ([#514](https://github.com/stellar/js-stellar-base/pull/514))
 
 ## [v7.0.0](https://github.com/stellar/js-stellar-base/compare/v6.0.6..v7.0.0)
 
@@ -433,52 +438,51 @@ In [v5.2.0](https://github.com/stellar/js-stellar-base/releases/tag/v5.2.0), we 
 
 The following fields will now always support muxed properties:
 
-  * `FeeBumpTransaction.feeSource`
-  * `Transaction.sourceAccount`
-  * `Operation.sourceAccount`
-  * `Payment.destination`
-  * `PathPaymentStrictReceive.destination`
-  * `PathPaymentStrictSend.destination`
-  * `AccountMerge.destination`
-  * `Clawback.from`
+- `FeeBumpTransaction.feeSource`
+- `Transaction.sourceAccount`
+- `Operation.sourceAccount`
+- `Payment.destination`
+- `PathPaymentStrictReceive.destination`
+- `PathPaymentStrictSend.destination`
+- `AccountMerge.destination`
+- `Clawback.from`
 
 The following functions had a `withMuxing` parameter removed:
 
-  - `Operation.fromXDRObject`
-  - `Transaction.constructor`
-  - `FeeBumpTransaction.constructor`
-  - `TransactionBuilder.fromXDR`
-  - `TransactionBuilder.buildFeeBumpTransaction`
+- `Operation.fromXDRObject`
+- `Transaction.constructor`
+- `FeeBumpTransaction.constructor`
+- `TransactionBuilder.fromXDR`
+- `TransactionBuilder.buildFeeBumpTransaction`
 
 The following functions will no longer check the `opts` object for a `withMuxing` field:
 
-  - `TransactionBuilder.constructor`
-  - `Operation.setSourceAccount`
+- `TransactionBuilder.constructor`
+- `Operation.setSourceAccount`
 
 There are several other breaking changes:
 
-  - `TransactionBuilder.enableMuxedAccounts()` is removed
-  - `decodeAddressToMuxedAccount()` and `encodeMuxedAccountToAddress()` no longer accept a second boolean parameter
-  - `Account.createSubaccount()` and `MuxedAccount.createSubaccount()` are removed ([#487](https://github.com/stellar/js-stellar-base/pull/487)). You should prefer to create them manually:
+- `TransactionBuilder.enableMuxedAccounts()` is removed
+- `decodeAddressToMuxedAccount()` and `encodeMuxedAccountToAddress()` no longer accept a second boolean parameter
+- `Account.createSubaccount()` and `MuxedAccount.createSubaccount()` are removed ([#487](https://github.com/stellar/js-stellar-base/pull/487)). You should prefer to create them manually:
 
 ```js
-  let mux1 = new MuxedAccount(someAccount, '1');
+let mux1 = new MuxedAccount(someAccount, "1");
 
-  // before:
-  let mux2 = mux1.createSubaccount('2');
+// before:
+let mux2 = mux1.createSubaccount("2");
 
-  // now:
-  let mux2 = new MuxedAccount(mux1.baseAccount(), '2');
+// now:
+let mux2 = new MuxedAccount(mux1.baseAccount(), "2");
 ```
 
-
- - Introduced a new helper method to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
+- Introduced a new helper method to help convert from muxed account addresses to their underlying Stellar addresses ([#485](https://github.com/stellar/js-stellar-base/pull/485)):
 
 ```ts
 function extractBaseAddess(address: string): string;
 ```
 
- - The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
+- The following muxed account validation functions are now available from Typescript ([#483](https://github.com/stellar/js-stellar-base/pull/483/files)):
 
 ```typescript
 namespace StrKey {
@@ -487,8 +491,14 @@ namespace StrKey {
   function isValidMed25519PublicKey(publicKey: string): boolean;
 }
 
-function decodeAddressToMuxedAccount(address: string, supportMuxing: boolean): xdr.MuxedAccount;
-function encodeMuxedAccountToAddress(account: xdr.MuxedAccount, supportMuxing: boolean): string;
+function decodeAddressToMuxedAccount(
+  address: string,
+  supportMuxing: boolean
+): xdr.MuxedAccount;
+function encodeMuxedAccountToAddress(
+  account: xdr.MuxedAccount,
+  supportMuxing: boolean
+): string;
 function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 ```
 
@@ -498,13 +508,11 @@ function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 
 - Add `Buffer` as a parameter type option for the `Keypair` constructor in Typescript ([#484](https://github.com/stellar/js-stellar-base/pull/484)).
 
-
 ## [v6.0.6](https://github.com/stellar/js-stellar-base/compare/v6.0.5..v6.0.6)
 
 ### Fix
 
 - Upgrades dependencies: `path-parse` (1.0.6 --> 1.0.7) and `jszip` (3.4.0 to 3.7.1) ([#450](https://github.com/stellar/js-stellar-base/pull/450), [#458](https://github.com/stellar/js-stellar-base/pull/458)).
-
 
 ## [v6.0.5](https://github.com/stellar/js-stellar-base/compare/v6.0.4..v6.0.5)
 
@@ -512,28 +520,27 @@ This version bump fixes a security vulnerability in a _developer_ dependency; **
 
 Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-rvh2-c87w) for details.
 
-
 ### Security Fix
-- Pin `ua-parser-js` to a known safe version ([#477](https://github.com/stellar/js-stellar-base/pull/477)).
 
+- Pin `ua-parser-js` to a known safe version ([#477](https://github.com/stellar/js-stellar-base/pull/477)).
 
 ## [v6.0.4](https://github.com/stellar/js-stellar-base/compare/v6.0.3..v6.0.4)
 
 ### Fix
-- Allow muxed accounts when decoding transactions via `TransactionBuilder.fromXDR()` ([#470](https://github.com/stellar/js-stellar-base/pull/470)).
 
+- Allow muxed accounts when decoding transactions via `TransactionBuilder.fromXDR()` ([#470](https://github.com/stellar/js-stellar-base/pull/470)).
 
 ## [v6.0.3](https://github.com/stellar/js-stellar-base/compare/v6.0.2..v6.0.3)
 
 ### Fix
-- When creating a `Transaction`, forward the optional `withMuxing` flag along to its operations so that their properties are also decoded with the appropriate muxing state ([#469](https://github.com/stellar/js-stellar-base/pull/469)).
 
+- When creating a `Transaction`, forward the optional `withMuxing` flag along to its operations so that their properties are also decoded with the appropriate muxing state ([#469](https://github.com/stellar/js-stellar-base/pull/469)).
 
 ## [v6.0.2](https://github.com/stellar/js-stellar-base/compare/v6.0.1..v6.0.2)
 
 ### Fix
-- Fix Typescript signatures for operations to universally allow setting the `withMuxing` flag ([#466](https://github.com/stellar/js-stellar-base/pull/466)).
 
+- Fix Typescript signatures for operations to universally allow setting the `withMuxing` flag ([#466](https://github.com/stellar/js-stellar-base/pull/466)).
 
 ## [v6.0.1](https://github.com/stellar/js-stellar-base/compare/v5.3.2..v6.0.1)
 
@@ -553,69 +560,75 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
 ## [v5.3.2](https://github.com/stellar/js-stellar-base/compare/v5.3.1..v5.3.2)
 
 ### Fix
-- Update various dependencies to secure versions. Most are developer dependencies which means no or minimal downstream effects ([#446](https://github.com/stellar/js-stellar-base/pull/446), [#447](https://github.com/stellar/js-stellar-base/pull/447), [#392](https://github.com/stellar/js-stellar-base/pull/392), [#428](https://github.com/stellar/js-stellar-base/pull/428)); the only non-developer dependency upgrade is a patch version bump to `lodash` ([#449](https://github.com/stellar/js-stellar-base/pull/449)).
 
+- Update various dependencies to secure versions. Most are developer dependencies which means no or minimal downstream effects ([#446](https://github.com/stellar/js-stellar-base/pull/446), [#447](https://github.com/stellar/js-stellar-base/pull/447), [#392](https://github.com/stellar/js-stellar-base/pull/392), [#428](https://github.com/stellar/js-stellar-base/pull/428)); the only non-developer dependency upgrade is a patch version bump to `lodash` ([#449](https://github.com/stellar/js-stellar-base/pull/449)).
 
 ## [v5.3.1](https://github.com/stellar/js-stellar-base/compare/v5.3.0..v5.3.1)
 
 ### Fix
-- Creating operations with both muxed and unmuxed properties resulted in unintuitive XDR. Specifically, the unmuxed property would be transformed into the equivalent property with an ID of 0 ([#441](https://github.com/stellar/js-stellar-base/pull/441)).
 
+- Creating operations with both muxed and unmuxed properties resulted in unintuitive XDR. Specifically, the unmuxed property would be transformed into the equivalent property with an ID of 0 ([#441](https://github.com/stellar/js-stellar-base/pull/441)).
 
 ## [v5.3.0](https://github.com/stellar/js-stellar-base/compare/v5.2.1..v5.3.0)
 
 ### Add
-- **Opt-in support for muxed accounts.** In addition to the support introduced in [v5.2.0](https://github.com/stellar/js-stellar-base/releases/v5.2.0), this completes support for muxed accounts by enabling them for fee-bump transactions. Pass a muxed account address (in the `M...` form) as the first parameter (and explicitly opt-in to muxing by passing `true` as the last parameter) to `TransactionBuilder.buildFeeBumpTransaction` to make the `feeSource` a fully-muxed account instance ([#434](https://github.com/stellar/js-stellar-base/pull/434)).
 
+- **Opt-in support for muxed accounts.** In addition to the support introduced in [v5.2.0](https://github.com/stellar/js-stellar-base/releases/v5.2.0), this completes support for muxed accounts by enabling them for fee-bump transactions. Pass a muxed account address (in the `M...` form) as the first parameter (and explicitly opt-in to muxing by passing `true` as the last parameter) to `TransactionBuilder.buildFeeBumpTransaction` to make the `feeSource` a fully-muxed account instance ([#434](https://github.com/stellar/js-stellar-base/pull/434)).
 
 ## [v5.2.1](https://github.com/stellar/js-stellar-base/compare/v5.2.0..v5.2.1)
 
 ### Fix
-- Fix regression where raw public keys were [sometimes](https://github.com/stellar/js-stellar-sdk/issues/645) being parsed incorrectly ([#429](https://github.com/stellar/js-stellar-base/pull/429)).
 
+- Fix regression where raw public keys were [sometimes](https://github.com/stellar/js-stellar-sdk/issues/645) being parsed incorrectly ([#429](https://github.com/stellar/js-stellar-base/pull/429)).
 
 ## [v5.2.0](https://github.com/stellar/js-stellar-base/compare/v5.1.0..v5.2.0)
 
 ### Add
+
 - **Opt-in support for muxed accounts.** This introduces `M...` addresses from [SEP-23](https://stellar.org/protocol/sep-23), which multiplex a Stellar `G...` address across IDs to eliminate the need for ad-hoc multiplexing via the Transaction.memo field (see the relevant [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md) and [blog post](https://www.stellar.org/developers-blog/fixing-memo-less-payments) on the topic). The following operations now support muxed accounts ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
-  * `Payment.destination`
-  * `PathPaymentStrictReceive.destination`
-  * `PathPaymentStrictSend.destination`
-  * `Operation.sourceAccount`
-  * `AccountMerge.destination`
-  * `Transaction.sourceAccount`
+  - `Payment.destination`
+  - `PathPaymentStrictReceive.destination`
+  - `PathPaymentStrictSend.destination`
+  - `Operation.sourceAccount`
+  - `AccountMerge.destination`
+  - `Transaction.sourceAccount`
 
 - The above changeset also introduces a new high-level object, `MuxedAccount` (not to be confused with `xdr.MuxedAccount`, which is the underlying raw representation) to make working with muxed accounts easier. You can use it to easily create and manage muxed accounts and their underlying shared `Account`, passing them along to the supported operations and `TransactionBuilder` ([#416](https://github.com/stellar/js-stellar-base/pull/416)):
 
 ```js
-  const PUBKEY = 'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
-  const ACC = new StellarBase.Account(PUBKEY, '1');
+const PUBKEY = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ";
+const ACC = new StellarBase.Account(PUBKEY, "1");
 
-  const mux1 = new StellarBase.MuxedAccount(ACC, '1000');
-  console.log(mux1.accountId(), mux1.id());
-  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAD5DTGC 1000
+const mux1 = new StellarBase.MuxedAccount(ACC, "1000");
+console.log(mux1.accountId(), mux1.id());
+// MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAD5DTGC 1000
 
-  const mux2 = ACC.createSubaccount('2000');
-  console.log("Parent relationship preserved:",
-              mux2.baseAccount().accountId() === mux1.baseAccount().accountId());
-  console.log(mux2.accountId(), mux2.id());
-  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAH2B4RU 2000
+const mux2 = ACC.createSubaccount("2000");
+console.log(
+  "Parent relationship preserved:",
+  mux2.baseAccount().accountId() === mux1.baseAccount().accountId()
+);
+console.log(mux2.accountId(), mux2.id());
+// MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAH2B4RU 2000
 
-  mux1.setID('3000');
-  console.log("Underlying account unchanged:",
-              ACC.accountId() === mux1.baseAccount().accountId());
-  console.log(mux1.accountId(), mux1.id());
-  // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
+mux1.setID("3000");
+console.log(
+  "Underlying account unchanged:",
+  ACC.accountId() === mux1.baseAccount().accountId()
+);
+console.log(mux1.accountId(), mux1.id());
+// MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
 ```
 
 - You can refer to the [documentation](https://stellar.github.io/js-stellar-sdk/MuxedAccount.html) or the [test suite](../test/unit/muxed_account_test.js) for more uses of the API.
 
 ### Update
+
 - Modernize the minimum-supported browser versions for the library ([#419](https://github.com/stellar/js-stellar-base/pull/419)).
 
 ### Fix
-- Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
 
+- Update Typescript test for `SetOptions` to use authorization flags (e.g. `AuthRequiredFlag`) correctly ([#418](https://github.com/stellar/js-stellar-base/pull/418)).
 
 ## [v5.1.0](https://github.com/stellar/js-stellar-base/compare/v5.0.0..v5.1.0)
 
@@ -639,7 +652,6 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
 
 - `AllowTrustOpAsset` has been renamed to `AssetCode` ([#394](https://github.com/stellar/js-stellar-base/pull/394))
 
-
 ### Deprecated
 
 - `AllowTrustOp` is now a deprecated operation.
@@ -651,13 +663,11 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
 - Update TS definitions for XDRs ([#381](https://github.com/stellar/js-stellar-base/pull/381))
 - Fix typing for ManageData.value ([#379](https://github.com/stellar/js-stellar-base/pull/379))
 
-
 ## [v4.0.2](https://github.com/stellar/js-stellar-base/compare/v4.0.1..v4.0.2)
 
 ## Update
 
 - Fix deployment script.
-
 
 ## [v4.0.1](https://github.com/stellar/js-stellar-base/compare/v4.0.0..v4.0.1)
 
@@ -668,8 +678,9 @@ Please refer to the [security advisory](https://github.com/advisories/GHSA-pjwm-
 ## [v4.0.0](https://github.com/stellar/js-stellar-base/compare/v3.0.4..v4.0.0)
 
 ## Add
+
 - Add the `Claimant` class which helps the creation of claimable balances. ([#367](https://github.com/stellar/js-stellar-base/pull/367)).
-The default behavior of this class it to create claimants with an unconditional predicate if none is passed:
+  The default behavior of this class it to create claimants with an unconditional predicate if none is passed:
 
 ```
 const claimant = new StellarBase.Claimant(
@@ -703,41 +714,44 @@ const claimant = new StellarBase.Claimant(
 ```
 
 - Add `Operation.createClaimableBalance` ([#368](https://github.com/stellar/js-stellar-base/pull/368))
-Extend the operation class with a new helper to create claimable balance operations.
+  Extend the operation class with a new helper to create claimable balance operations.
 
 ```js
 const asset = new Asset(
-  'USD',
-  'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+  "USD",
+  "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
 );
-const amount = '100.0000000';
+const amount = "100.0000000";
 const claimants = [
   new Claimant(
-    'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
-     Claimant.predicateBeforeAbsoluteTime("4102444800000")
-  )
+    "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
+    Claimant.predicateBeforeAbsoluteTime("4102444800000")
+  ),
 ];
 
 const op = Operation.createClaimableBalance({
   asset,
   amount,
-  claimants
+  claimants,
 });
 ```
 
 - Add `Operation.claimClaimableBalance` ([#368](https://github.com/stellar/js-stellar-base/pull/368))
-Extend the operation class with a new helper to create claim claimable balance operations. It receives the `balanceId` as exposed by Horizon in the `/claimable_balances` end-point.
+  Extend the operation class with a new helper to create claim claimable balance operations. It receives the `balanceId` as exposed by Horizon in the `/claimable_balances` end-point.
 
 ```js
 const op = Operation.createClaimableBalance({
-  balanceId: '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
+  balanceId:
+    "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
 });
 ```
+
 - Add support for Sponsored Reserves (CAP33)([#369](https://github.com/stellar/js-stellar-base/pull/369/))
 
 Extend the operation class with helpers that allow sponsoring reserves and also revoke sponsorships.
 
 To start sponsoring reserves for an account use:
+
 - `Operation.beginSponsoringFutureReserves`
 - `Operation.endSponsoringFutureReserves`
 
@@ -858,11 +872,13 @@ The following enum values were rename in `OperationType`:
 ## [v3.0.2](https://github.com/stellar/js-stellar-base/compare/v3.0.1..v3.0.2)
 
 ### Fix
+
 - Extend `files` in npm package to include XDR type definitions ([#345](https://github.com/stellar/js-stellar-base/pull/345)).
 
 ## [v3.0.1](https://github.com/stellar/js-stellar-base/compare/v3.0.0..v3.0.1)
 
 ### Add
+
 - Add TypeScript definitions for auto-generated XDR code ([#342](https://github.com/stellar/js-stellar-base/pull/342)).
 
 ## [v3.0.0](https://github.com/stellar/js-stellar-base/compare/v2.1.9..v3.0.0)
@@ -870,6 +886,7 @@ The following enum values were rename in `OperationType`:
 This version brings protocol 13 support with backwards compatibility support for protocol 12.
 
 ### Add
+
 - Add `TransactionBuilder.buildFeeBumpTransaction` which makes it easy to create `FeeBumpTransaction` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - Adds a feature flag which allow consumers of this library to create V1 (protocol 13) transactions using the `TransactionBuilder` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - Add support for [CAP0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md): First-class multiplexed accounts ([#325](https://github.com/stellar/js-stellar-base/pull/325)).
@@ -878,6 +895,7 @@ This version brings protocol 13 support with backwards compatibility support for
 - Add `TransactionBuilder.fromXDR` which receives an xdr envelope and return a `Transaction` or `FeeBumpTransaction` ([#328](https://github.com/stellar/js-stellar-base/pull/328)).
 
 ### Update
+
 - Update XDR definitions with protocol 13 ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Extend `Transaction` to work with `TransactionV1Envelope` and `TransactionV0Envelope` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Add backward compatibility support for [CAP0018](https://github.com/stellar/stellar-protocol/blob/f01c9354aaab1e8ca97a25cf888829749cadf36a/core/cap-0018.md) ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
@@ -887,15 +905,15 @@ This version brings protocol 13 support with backwards compatibility support for
 
   The syntax for authorizing a trustline is still the same, but the authorize parameter is now a `number`.
 
-    ```js
-    Operation.allowTrust({
-      trustor: trustor.publicKey(),
-      assetCode: "COP",
-      authorize: 1
-    });
-    ```
+  ```js
+  Operation.allowTrust({
+    trustor: trustor.publicKey(),
+    assetCode: "COP",
+    authorize: 1,
+  });
+  ```
 
-  You can use still use a `boolean`; however, we recommend you update your code to pass a `number` instead. Finally,  using the value `2` for authorize to maintain liabilities will only be valid if Stellar Core is running on Protocol 13; otherwise, you'll get an error.
+  You can use still use a `boolean`; however, we recommend you update your code to pass a `number` instead. Finally, using the value `2` for authorize to maintain liabilities will only be valid if Stellar Core is running on Protocol 13; otherwise, you'll get an error.
 
 - ~Update operations builder to support multiplexed accounts ([#337](https://github.com/stellar/js-stellar-base/pull/337)).~
 
@@ -903,12 +921,12 @@ This version brings protocol 13 support with backwards compatibility support for
 
 - `Transaction.toEnvelope()` returns a protocol 13 `xdr.TransactionEnvelope` which is an `xdr.Union` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
   If you have code that looks like this - `transaction.toEnvelope().tx` - you have two options:
-    - You can grab the value wrapped by the union, calling `value()` like `transaction.toEnvelope().value().tx`.
-    - You can check which is the discriminant by using `switch()` and then call `v0()`, `v1()`, or `feeBump()`.
+  - You can grab the value wrapped by the union, calling `value()` like `transaction.toEnvelope().value().tx`.
+  - You can check which is the discriminant by using `switch()` and then call `v0()`, `v1()`, or `feeBump()`.
 - The return value from `Transaction.fee` changed from `number` to `string`. This brings support for `Int64` values ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - The const `BASE_FEE` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
-- The option `fee` passed to  `new TransactionBuilder({fee: ..})` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
-- The following fields, which were previously an `xdr.AccountID` are now a  `xdr.MuxedAccount` ([#325](https://github.com/stellar/js-stellar-base/pull/325)):
+- The option `fee` passed to `new TransactionBuilder({fee: ..})` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- The following fields, which were previously an `xdr.AccountID` are now a `xdr.MuxedAccount` ([#325](https://github.com/stellar/js-stellar-base/pull/325)):
   - `PaymentOp.destination`
   - `PathPaymentStrictReceiveOp.destination`
   - `PathPaymentStrictSendOp.destination`
@@ -918,6 +936,7 @@ This version brings protocol 13 support with backwards compatibility support for
   - `FeeBumpTransaction.feeSource`
 
   You can get the string representation by calling `StrKey.encodeMuxedAccount` which will return a `G..` or `M..` account.
+
 - Remove the following deprecated functions ([#331](https://github.com/stellar/js-stellar-base/pull/331)):
   - `Operation.manageOffer`
   - `Operation.createPassiveOffer`
@@ -933,6 +952,7 @@ This version brings protocol 13 support with backwards compatibility support for
 - Update operations builder to support multiplexed accounts ([#337](https://github.com/stellar/js-stellar-base/pull/337)).
 
   This allows you to specify an `M` account as the destination or source:
+
   ```
   var destination = 'MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6';
   var amount = '1000.0000000';
@@ -957,6 +977,7 @@ This version brings protocol 13 support with backwards compatibility support for
 This version brings protocol 13 support with backwards compatibility support for protocol 12.
 
 ### Add
+
 - Add `TransactionBuilder.buildFeeBumpTransaction` which makes it easy to create `FeeBumpTransaction` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - Adds a feature flag which allow consumers of this library to create V1 (protocol 13) transactions using the `TransactionBuilder` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - Add support for [CAP0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md): First-class multiplexed accounts ([#325](https://github.com/stellar/js-stellar-base/pull/325)).
@@ -965,6 +986,7 @@ This version brings protocol 13 support with backwards compatibility support for
 - Add `TransactionBuilder.fromXDR` which receives an xdr envelope and return a `Transaction` or `FeeBumpTransaction` ([#328](https://github.com/stellar/js-stellar-base/pull/328)).
 
 ### Update
+
 - Update XDR definitions with protocol 13 ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Extend `Transaction` to work with `TransactionV1Envelope` and `TransactionV0Envelope` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
 - Add backward compatibility support for [CAP0018](https://github.com/stellar/stellar-protocol/blob/f01c9354aaab1e8ca97a25cf888829749cadf36a/core/cap-0018.md) ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
@@ -973,12 +995,12 @@ This version brings protocol 13 support with backwards compatibility support for
 
 - `Transaction.toEnvelope()` returns a protocol 13 `xdr.TransactionEnvelope` which is an `xdr.Union` ([#317](https://github.com/stellar/js-stellar-base/pull/317)).
   If you have code that looks like this `transaction.toEnvelope().tx` you have two options:
-    - You can grab the value wrapped by the union, calling `value()` like `transaction.toEnvelope().value().tx`.
-    - You can check which is the discriminant by using `switch()` and then call `v0()`, `v1()`, or `feeBump()`.
+  - You can grab the value wrapped by the union, calling `value()` like `transaction.toEnvelope().value().tx`.
+  - You can check which is the discriminant by using `switch()` and then call `v0()`, `v1()`, or `feeBump()`.
 - The return value from `Transaction.fee` changed from `number` to `string`. This brings support for `Int64` values ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
 - The const `BASE_FEE` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
-- The option `fee` passed to  `new TransactionBuilder({fee: ..})` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
-- The following fields, which were previously an `xdr.AccountID` are now a  `xdr.MuxedAccount` ([#325](https://github.com/stellar/js-stellar-base/pull/325)):
+- The option `fee` passed to `new TransactionBuilder({fee: ..})` changed from `number` to `string` ([#321](https://github.com/stellar/js-stellar-base/pull/321)).
+- The following fields, which were previously an `xdr.AccountID` are now a `xdr.MuxedAccount` ([#325](https://github.com/stellar/js-stellar-base/pull/325)):
   - `PaymentOp.destination`
   - `PathPaymentStrictReceiveOp.destination`
   - `PathPaymentStrictSendOp.destination`
@@ -988,6 +1010,7 @@ This version brings protocol 13 support with backwards compatibility support for
   - `FeeBumpTransaction.feeSource`
 
   You can get the string representation by calling `StrKey.encodeMuxedAccount` which will return a `G..` or `M..` account.
+
 - Remove the following deprecated functions ([#331](https://github.com/stellar/js-stellar-base/pull/331)):
   - `Operation.manageOffer`
   - `Operation.createPassiveOffer`
@@ -996,46 +1019,54 @@ This version brings protocol 13 support with backwards compatibility support for
 - Remove the `Network` class ([#331](https://github.com/stellar/js-stellar-base/pull/331)).
 - Remove `vendor/base58.js` ([#331](https://github.com/stellar/js-stellar-base/pull/331)).
 
-
 ## [v2.1.9](https://github.com/stellar/js-stellar-base/compare/v2.1.8..v2.1.9)
 
 ### Fix
+
 - Update dependencies which depend on minimist. ([#332](https://github.com/stellar/js-stellar-base/pull/332))
 
 ## [v2.1.8](https://github.com/stellar/js-stellar-base/compare/v2.1.7..v2.1.8)
 
 ### Fix
+
 - Fix `setTimeout(0)` and partially defined timebounds ([#315](https://github.com/stellar/js-stellar-base/pull/315)).
 
 ## [v2.1.7](https://github.com/stellar/js-stellar-base/compare/v2.1.6..v2.1.7)
 
 ### Fix
+
 - Fix TypeScript options for `ManageData` operation to allow setting value to `null` ([#310](https://github.com/stellar/js-stellar-base/issues/310))
 - Fix crash on partially defined time bounds ([#303](https://github.com/stellar/js-stellar-base/issues/303))
 
 ## [v2.1.6](https://github.com/stellar/js-stellar-base/compare/v2.1.5..v2.1.6)
 
 ### Fix
+
 - Fix npm deployment.
 
 ## [v2.1.5](https://github.com/stellar/js-stellar-base/compare/v2.1.4..v2.1.5)
 
 ### Add
+
 - Add `toXDR` type to Transaction class ([#296](https://github.com/stellar/js-stellar-base/issues/296))
 
 ### Fix
+
 - Fix doc link ([#298](https://github.com/stellar/js-stellar-base/issues/298))
 
 ### Remove
+
 - Remove node engine restriction ([#294](https://github.com/stellar/js-stellar-base/issues/294))
 
 ### Update
+
 - Update creating an account example ([#299](https://github.com/stellar/js-stellar-base/issues/299))
 - Use `console.trace` to get line num in `Networks.use` ([#300](https://github.com/stellar/js-stellar-base/issues/300))
 
 ## [v2.1.4](https://github.com/stellar/js-stellar-base/compare/v2.1.3..v2.1.4)
 
 ## Update
+
 - Regenerate the XDR definitions to include MetaV2 ([#288](https://github.com/stellar/js-stellar-base/issues/288))
 
 ## [v2.1.3](https://github.com/stellar/js-stellar-base/compare/v2.1.2...v2.1.3)
@@ -1066,76 +1097,77 @@ This release adds support for [stellar-core protocol 12 release](https://github.
 
 ### Add ➕
 
- - `Operation.pathPaymentStrictSend`: Sends a path payments, debiting from the source account exactly a specified amount of one asset, crediting at least a given amount of another asset. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+- `Operation.pathPaymentStrictSend`: Sends a path payments, debiting from the source account exactly a specified amount of one asset, crediting at least a given amount of another asset. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
 
-    The following operation will debit exactly 10 USD from the source account, crediting at least 9.2 EUR in the destination account 💸:
-    ```js
-    var sendAsset = new StellarBase.Asset(
-      'USD',
-      'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-    );
-    var sendAmount = '10';
-    var destination =
-      'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
-    var destAsset = new StellarBase.Asset(
-      'USD',
-      'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-    );
-    var destMin = '9.2';
-    var path = [
-      new StellarBase.Asset(
-        'USD',
-        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
-      ),
-      new StellarBase.Asset(
-        'EUR',
-        'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
-      )
-    ];
-    let op = StellarBase.Operation.pathPaymentStrictSend({
-      sendAsset,
-      sendAmount,
-      destination,
-      destAsset,
-      destMin,
-      path
-    });
-    ```
- - `Operation.pathPaymentStrictReceive`: This behaves the same as the former `pathPayments` operation. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+  The following operation will debit exactly 10 USD from the source account, crediting at least 9.2 EUR in the destination account 💸:
 
-   The following operation will debit maximum 10 USD from the source account, crediting exactly 9.2 EUR in the destination account  💸:
-   ```js
-   var sendAsset = new StellarBase.Asset(
-     'USD',
-     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-   );
-   var sendMax = '10';
-   var destination =
-     'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
-   var destAsset = new StellarBase.Asset(
-     'USD',
-     'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
-   );
-   var destAmount = '9.2';
-   var path = [
-     new StellarBase.Asset(
-       'USD',
-       'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB'
-     ),
-     new StellarBase.Asset(
-       'EUR',
-       'GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL'
-     )
-   ];
-   let op = StellarBase.Operation.pathPaymentStrictReceive({
-     sendAsset,
-     sendMax,
-     destination,
-     destAsset,
-     destAmount,
-     path
-   });
-   ```
+  ```js
+  var sendAsset = new StellarBase.Asset(
+    "USD",
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+  );
+  var sendAmount = "10";
+  var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+  var destAsset = new StellarBase.Asset(
+    "USD",
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+  );
+  var destMin = "9.2";
+  var path = [
+    new StellarBase.Asset(
+      "USD",
+      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB"
+    ),
+    new StellarBase.Asset(
+      "EUR",
+      "GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL"
+    ),
+  ];
+  let op = StellarBase.Operation.pathPaymentStrictSend({
+    sendAsset,
+    sendAmount,
+    destination,
+    destAsset,
+    destMin,
+    path,
+  });
+  ```
+
+- `Operation.pathPaymentStrictReceive`: This behaves the same as the former `pathPayments` operation. ([#274](https://github.com/stellar/js-stellar-base/pull/274)).
+
+  The following operation will debit maximum 10 USD from the source account, crediting exactly 9.2 EUR in the destination account 💸:
+
+  ```js
+  var sendAsset = new StellarBase.Asset(
+    "USD",
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+  );
+  var sendMax = "10";
+  var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+  var destAsset = new StellarBase.Asset(
+    "USD",
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+  );
+  var destAmount = "9.2";
+  var path = [
+    new StellarBase.Asset(
+      "USD",
+      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB"
+    ),
+    new StellarBase.Asset(
+      "EUR",
+      "GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL"
+    ),
+  ];
+  let op = StellarBase.Operation.pathPaymentStrictReceive({
+    sendAsset,
+    sendMax,
+    destination,
+    destAsset,
+    destAmount,
+    path,
+  });
+  ```
 
 ## Deprecated ❗️
 
@@ -1144,6 +1176,7 @@ This release adds support for [stellar-core protocol 12 release](https://github.
 ## [v2.0.2](https://github.com/stellar/js-stellar-base/compare/v2.0.1...v2.0.2)
 
 ### Fix
+
 - Fix issue [#269](https://github.com/stellar/js-stellar-base/issues/269). ManageBuyOffer should extend BaseOptions and inherited property "source". ([#270](https://github.com/stellar/js-stellar-base/pull/270)).
 
 ## [v2.0.1](https://github.com/stellar/js-stellar-base/compare/v2.0.0...v2.0.1)
@@ -1159,11 +1192,13 @@ No changes. Fixes deploy script and includes changes from [v2.0.0](https://githu
 ## [v1.1.2](https://github.com/stellar/js-stellar-base/compare/v1.1.1...v1.1.2)
 
 ### Fix
+
 - Fix no-network warnings ([#248](https://github.com/stellar/js-stellar-base/issues/248))
 
 ## [v1.1.1](https://github.com/stellar/js-stellar-base/compare/v1.1.0...v1.1.1)
 
 ### Fix
+
 - Add types for new networkPassphrase argument. Fix [#237](https://github.com/stellar/js-stellar-base/issues/237). ([#238](https://github.com/stellar/js-stellar-base/issues/238))
 
 ## [v1.1.0](https://github.com/stellar/js-stellar-base/compare/v1.0.3...v1.1.0)
@@ -1177,7 +1212,7 @@ is not passed:
 #### `Keypair.master`
 
 ```js
-Keypair.master(Networks.TESTNET)
+Keypair.master(Networks.TESTNET);
 ```
 
 #### constructor for `Transaction`
@@ -1187,13 +1222,13 @@ const xenv = new xdr.TransactionEnvelope({ tx: xtx });
 new Transaction(xenv, Networks.TESTNET);
 ```
 
-#### constructor for  `TransactionBuilder` and method `TransactionBuilder.setNetworkPassphrase`
+#### constructor for `TransactionBuilder` and method `TransactionBuilder.setNetworkPassphrase`
 
 ```js
 const transaction = new StellarSdk.TransactionBuilder(account, {
   fee: StellarSdk.BASE_FEE,
-  networkPassphrase: Networks.TESTNET
-})
+  networkPassphrase: Networks.TESTNET,
+});
 ```
 
 See [#207](https://github.com/stellar/js-stellar-base/issues/207) and [#112](https://github.com/stellar/js-stellar-base/issues/112) for more information.
@@ -1201,9 +1236,11 @@ See [#207](https://github.com/stellar/js-stellar-base/issues/207) and [#112](htt
 The `Network` class will be removed on the `2.0` release.
 
 ### Add
+
 - Add docs for BASE_FEE const. ([#211](https://github.com/stellar/js-stellar-base/issues/211))
 
 ### Fix
+
 - Fix typo. ([#213](https://github.com/stellar/js-stellar-base/issues/213))
 
 ## [v1.0.3](https://github.com/stellar/js-stellar-base/compare/v1.0.2...v1.0.3)
@@ -1215,6 +1252,7 @@ The `Network` class will be removed on the `2.0` release.
 - Add BASE_FEE to TS types ([#209](https://github.com/stellar/js-stellar-base/issues/209))
 
 ### Fix
+
 - Fix typo in types ([#194](https://github.com/stellar/js-stellar-base/issues/194))
 - Fix types: Fee is no longer optional ([#195](https://github.com/stellar/js-stellar-base/issues/195))
 - Fix typings for Account Sequence Number ([#203](https://github.com/stellar/js-stellar-base/issues/203))
