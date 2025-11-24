@@ -51,6 +51,24 @@ describe('creating large integers', function () {
       expect(u64.high).to.equal(-1);
     });
 
+    it('handles timepoint', function () {
+      let b = new StellarBase.ScInt(sentinel);
+      expect(b.toBigInt()).to.equal(sentinel);
+      expect(b.toNumber()).to.equal(Number(sentinel));
+      let u64 = b.toTimepoint().timepoint();
+      expect(u64.low).to.equal(Number(sentinel));
+      expect(u64.high).to.equal(0);
+    });
+
+    it('handles duration', function () {
+      let b = new StellarBase.ScInt(sentinel);
+      expect(b.toBigInt()).to.equal(sentinel);
+      expect(b.toNumber()).to.equal(Number(sentinel));
+      let u64 = b.toDuration().duration();
+      expect(u64.low).to.equal(Number(sentinel));
+      expect(u64.high).to.equal(0);
+    });
+
     it('handles i64', function () {
       let b = new StellarBase.ScInt(sentinel);
       expect(b.toBigInt()).to.equal(sentinel);

@@ -35,6 +35,8 @@ export function scValToBigInt(scv) {
 
     case 'scvU64':
     case 'scvI64':
+    case 'scvTimepoint':
+    case 'scvDuration':
       return new XdrLargeInt(scIntType, scv.value()).toBigInt();
 
     case 'scvU128':

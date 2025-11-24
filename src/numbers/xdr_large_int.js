@@ -56,6 +56,8 @@ export class XdrLargeInt {
         this.int = new Int256(values);
         break;
       case 'u64':
+      case 'timepoint':
+      case 'duration':
         this.int = new UnsignedHyper(values);
         break;
       case 'u128':
@@ -107,6 +109,22 @@ export class XdrLargeInt {
   toU64() {
     this._sizeCheck(64);
     return xdr.ScVal.scvU64(
+      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
+    );
+  }
+
+  /** @returns {xdr.ScVal} the integer encoded with `ScValType = Timepoint` */
+  toTimepoint() {
+    this._sizeCheck(64);
+    return xdr.ScVal.scvTimepoint(
+      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
+    );
+  }
+
+  /** @returns {xdr.ScVal} the integer encoded with `ScValType = Duration` */
+  toDuration() {
+    this._sizeCheck(64);
+    return xdr.ScVal.scvDuration(
       new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
     );
   }
@@ -197,6 +215,10 @@ export class XdrLargeInt {
         return this.toU128();
       case 'u256':
         return this.toU256();
+      case 'timepoint':
+        return this.toTimepoint();
+      case 'duration':
+        return this.toDuration();
       default:
         throw TypeError(`invalid type: ${this.type}`);
     }
@@ -231,6 +253,8 @@ export class XdrLargeInt {
       case 'u64':
       case 'u128':
       case 'u256':
+      case 'timepoint':
+      case 'duration':
         return true;
       default:
         return false;
