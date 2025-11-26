@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Add conversions for timepoint and duration scval types ([#819](https://github.com/stellar/js-stellar-base/pull/819))
+
 ## [`v14.0.2`](https://github.com/stellar/js-stellar-base/compare/v14.0.1...v14.0.2):
 
 ### Fixed

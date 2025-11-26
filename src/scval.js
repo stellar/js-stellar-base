@@ -294,7 +294,7 @@ export function nativeToScVal(val, opts = {}) {
  *
  *  - void -> `null`
  *  - u32, i32 -> `number`
- *  - u64, i64, u128, i128, u256, i256 -> `bigint`
+ *  - u64, i64, u128, i128, u256, i256, timepoint, duration -> `bigint`
  *  - vec -> `Array` of any of the above (via recursion)
  *  - map -> key-value object of any of the above (via recursion)
  *  - bool -> `boolean`

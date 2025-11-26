@@ -17,6 +17,8 @@ describe('parsing and building ScVals', function () {
     i32: xdr.ScVal.scvI32(1),
     u64: 1n,
     i64: -1n,
+    timepoint: new ScInt(1443571200n).toTimepoint(),
+    duration: new ScInt(1000n).toDuration(),
     u128: new ScInt(1).toU128(),
     i128: new ScInt(1).toI128(),
     u256: new ScInt(1).toU256(),
@@ -32,6 +34,7 @@ describe('parsing and building ScVals', function () {
   const targetScv = xdr.ScVal.scvMap(
     [
       ['bool', xdr.ScVal.scvBool(true)],
+      ['duration', new ScInt(1000n, { type: 'duration' }).toScVal()],
       ['i128', new ScInt(1, { type: 'i128' }).toScVal()],
       ['i256', new ScInt(1, { type: 'i256' }).toScVal()],
       ['i32', xdr.ScVal.scvI32(1)],
@@ -53,6 +56,7 @@ describe('parsing and building ScVals', function () {
           })
         ])
       ],
+      ['timepoint', new ScInt(1443571200n, { type: 'timepoint' }).toScVal()],
       ['u128', new ScInt(1, { type: 'u128' }).toScVal()],
       ['u256', new ScInt(1, { type: 'u256' }).toScVal()],
       ['u32', xdr.ScVal.scvU32(1)],
@@ -156,6 +160,8 @@ describe('parsing and building ScVals', function () {
       [1, 'i64', 'scvI64'],
       [1, 'i128', 'scvI128'],
       [1, 'u256', 'scvU256'],
+      [2, 'timepoint', 'scvTimepoint'],
+      [3, 'duration', 'scvDuration'],
       ['a', 'symbol', 'scvSymbol'],
       ['a', undefined, 'scvString'],
       [Keypair.random(), undefined, 'scvAddress'],
