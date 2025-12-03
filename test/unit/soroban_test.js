@@ -9,8 +9,10 @@ describe('Soroban', function () {
       { amount: '10000000010', decimals: 5, expected: '100000.0001' },
       { amount: '10000000010', decimals: 0, expected: '10000000010' },
       { amount: '10000', decimals: 10, expected: '0.000001' },
+      { amount: '10000', decimals: 4, expected: '1.0' },
       { amount: '1567890', decimals: 10, expected: '0.000156789' },
-      { amount: '1230', decimals: 0, expected: '1230' }
+      { amount: '1230', decimals: 0, expected: '1230' },
+      { amount: '1230', decimals: 1, expected: '123.0' }
     ];
 
     const FAILED_TEST_CASES = [

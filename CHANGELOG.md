@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+* Fixes a bug in `Soroban.formatTokenAmount` that would occasionally cause the returned floating-point-like string to end in a decimal point ([#821](https://github.com/stellar/js-stellar-base/pull/821)).
+
+
 ## [`v14.0.3`](https://github.com/stellar/js-stellar-base/compare/v14.0.2...v14.0.3):
 
 ### Fixed
