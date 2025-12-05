@@ -12,7 +12,8 @@ describe('Soroban', function () {
       { amount: '10000', decimals: 4, expected: '1.0' },
       { amount: '1567890', decimals: 10, expected: '0.000156789' },
       { amount: '1230', decimals: 0, expected: '1230' },
-      { amount: '1230', decimals: 1, expected: '123.0' }
+      { amount: '1230', decimals: 1, expected: '123.0' },
+      { amount: '123', decimals: 3, expected: '0.123' }
     ];
 
     const FAILED_TEST_CASES = [
