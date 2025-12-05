@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Fixed
-* Fixes a bug in `Soroban.formatTokenAmount` that would occasionally cause the returned floating-point-like string to end in a decimal point ([#821](https://github.com/stellar/js-stellar-base/pull/821)).
+* Fixes a bug in `Soroban.formatTokenAmount` that would cause a lack of leading or trailing zeroes at the decimal point in some cases ([#821](https://github.com/stellar/js-stellar-base/pull/821), [#823](https://github.com/stellar/js-stellar-base/pull/823)).
 
 
 ## [`v14.0.3`](https://github.com/stellar/js-stellar-base/compare/v14.0.2...v14.0.3):
