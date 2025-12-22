@@ -106,10 +106,24 @@ describe('Address', function () {
 
       it('parses claimable-balance addresses', function () {
         const sc = StellarBase.xdr.ScAddress.scAddressTypeClaimableBalance(
-          Buffer.alloc(33)
+          new StellarBase.xdr.ClaimableBalanceId(
+            'claimableBalanceIdTypeV0',
+            Buffer.alloc(32)
+          )
         );
         const cb = StellarBase.Address.fromScAddress(sc);
         expect(cb.toString()).to.equal(CLAIMABLE_BALANCE_ZERO);
+      });
+
+      it('parses claimable-balance from decoded XDR', function () {
+        // XDR: ScVal containing claimable balance address
+        const xdrBase64 =
+          'AAAAEgAAAAMAAAAAGZ8agta/ETY/tCE7KG10xWweJ9IBmnhmy0alCNG6gOE=';
+        const scVal = StellarBase.xdr.ScVal.fromXDR(xdrBase64, 'base64');
+        const addr = StellarBase.Address.fromScVal(scVal);
+        expect(addr.toString()).to.equal(
+          'BAABTHY2QLLL6EJWH62CCOZINV2MK3A6E7JADGTYM3FUNJII2G5IBYM2TU'
+        );
       });
 
       it('parses liquidity-pool addresses', function () {
@@ -161,7 +175,10 @@ describe('Address', function () {
       it('parses claimable-balance ScVals', function () {
         const scVal = StellarBase.xdr.ScVal.scvAddress(
           StellarBase.xdr.ScAddress.scAddressTypeClaimableBalance(
-            Buffer.alloc(33)
+            new StellarBase.xdr.ClaimableBalanceId(
+              'claimableBalanceIdTypeV0',
+              Buffer.alloc(32)
+            )
           )
         );
         const cb = StellarBase.Address.fromScVal(scVal);
