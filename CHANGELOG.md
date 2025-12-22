@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+
+## [`v14.0.4`](https://github.com/stellar/js-stellar-base/compare/v14.0.3...v14.0.4):
+
 ### Fixed
+* Fixes a bug in `Address` which prevented it from decoding claimable balances ([#825](https://github.com/stellar/js-stellar-base/pull/825)).
 * Fixes a bug in `Soroban.formatTokenAmount` that would cause a lack of leading or trailing zeroes at the decimal point in some cases ([#821](https://github.com/stellar/js-stellar-base/pull/821), [#823](https://github.com/stellar/js-stellar-base/pull/823)).
 
 
