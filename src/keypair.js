@@ -8,6 +8,12 @@ import { hash } from './hashing';
 import xdr from './xdr';
 
 /**
+ * SEP-53 message signing prefix.
+ * @see https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0053.md
+ */
+const SEP53_MESSAGE_PREFIX = Buffer.from('Stellar Signed Message:\n');
+
+/**
  * `Keypair` represents public (and secret) keys of the account.
  *
  * Currently `Keypair` only supports ed25519 but in a future this class can be abstraction layer for other
@@ -272,4 +278,57 @@ export class Keypair {
       signature
     });
   }
+
+  /**
+   * Signs an arbitrary message according to SEP-53.
+   *
+   * This method prepends the SEP-53 prefix "Stellar Signed Message:\n" to the
+   * message, hashes the result with SHA-256, and signs the hash.
+   *
+   * @param {string|Buffer} message The message to sign (string or Buffer)
+   * @returns {Buffer} The 64-byte ed25519 signature
+   * @throws {Error} If no secret key is available
+   *
+   * @see https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0053.md
+   */
+  signMessage(message) {
+    if (!this.canSign()) {
+      throw new Error('cannot sign: no secret key available');
+    }
+
+    const messageHash = calculateMessageHash(message);
+    return this.sign(messageHash);
+  }
+
+  /**
+   * Verifies a SEP-53 signed message.
+   *
+   * This method prepends the SEP-53 prefix "Stellar Signed Message:\n" to the
+   * message, hashes the result with SHA-256, and verifies the signature against
+   * this hash.
+   *
+   * @param {string|Buffer} message The original message that was signed
+   * @param {Buffer} signature The 64-byte signature to verify
+   * @returns {boolean} True if the signature is valid, false otherwise
+   *
+   * @see https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0053.md
+   */
+  verifyMessage(message, signature) {
+    const messageHash = calculateMessageHash(message);
+    return this.verify(messageHash, signature);
+  }
+}
+
+/**
+ * Calculate the SHA-256 hash of a message with the SEP-53 prefix.
+ *
+ * @param {string|Buffer} message The message to hash
+ * @returns {Buffer} The SHA-256 hash
+ * @private
+ */
+function calculateMessageHash(message) {
+  const messageBytes =
+    typeof message === 'string' ? Buffer.from(message, 'utf8') : message;
+  const payload = Buffer.concat([SEP53_MESSAGE_PREFIX, messageBytes]);
+  return hash(payload);
 }
