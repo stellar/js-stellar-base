@@ -645,6 +645,89 @@ describe('TransactionBuilder', function () {
     });
   });
 
+  describe('ledgerbounds without timebounds', function () {
+    it('allows building with ledgerbounds.maxLedger > 0 and no setTimeout', function () {
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination:
+              'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
+            asset: StellarBase.Asset.native(),
+            amount: '1000'
+          })
+        )
+        .setLedgerbounds(0, 100)
+        .build();
+
+      expect(transaction.ledgerBounds.minLedger).to.equal(0);
+      expect(transaction.ledgerBounds.maxLedger).to.equal(100);
+      // timebounds defaults to infinite when only ledgerbounds are set
+      expect(transaction.timeBounds.minTime).to.equal('0');
+      expect(transaction.timeBounds.maxTime).to.equal('0');
+    });
+
+    it('still requires setTimeout when ledgerbounds.maxLedger is 0', function () {
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      let transactionBuilder = new StellarBase.TransactionBuilder(source, {
+        fee: 100
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination:
+              'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
+            asset: StellarBase.Asset.native(),
+            amount: '1000'
+          })
+        )
+        .setLedgerbounds(0, 0); // maxLedger of 0 means no upper bound
+
+      expect(() => transactionBuilder.build()).to.throw(
+        /TimeBounds has to be set/
+      );
+    });
+
+    it('allows combining ledgerbounds with explicit timebounds', function () {
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      let transaction = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET,
+        timebounds: {
+          minTime: 0,
+          maxTime: 1000
+        },
+        ledgerbounds: {
+          minLedger: 0,
+          maxLedger: 100
+        }
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination:
+              'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
+            asset: StellarBase.Asset.native(),
+            amount: '1000'
+          })
+        )
+        .build();
+
+      expect(transaction.ledgerBounds.maxLedger).to.equal(100);
+      expect(transaction.timeBounds.maxTime).to.equal('1000');
+    });
+  });
+
   describe('.buildFeeBumpTransaction', function () {
     it('builds a fee bump transaction', function (done) {
       const networkPassphrase = 'Standalone Network ; February 2017';
