@@ -27,4 +27,4 @@ jobs:
         run: yarn preversion
 
       - name: Publish npm package to both places
-        run: yarn publish --access public
+        run: yarn publish --access public --provenance
