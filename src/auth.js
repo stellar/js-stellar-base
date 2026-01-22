@@ -17,9 +17,8 @@ import { nativeToScVal } from './scval';
  *    whose hash you should sign, so that you can inspect the entire structure
  *    if necessary (rather than blindly signing a hash)
  *
- * @returns {
- *    Promise<Uint8Array | {signature: Uint8Array, publicKey: string}>
- * }  the signature of the raw payload (which is the sha256 hash of the preimage
+ * @returns {Promise<Uint8Array | {signature: Uint8Array, publicKey: string}>}
+ *    the signature of the raw payload (which is the sha256 hash of the preimage
  *    bytes, so `hash(preimage.toXDR())`) either naked, implying it is signed
  *    by the key corresponding to the public key in the entry you pass to
  *    {@link authorizeEntry} (decipherable from its
