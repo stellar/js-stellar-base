@@ -592,14 +592,24 @@ export class TransactionBuilder {
       memo: this.memo ? this.memo.toXDRObject() : null
     };
 
+    // Allow building without explicit timebounds if ledgerbounds with maxLedger is set,
+    // since that provides an alternative upper bound on transaction validity.
+    const hasValidLedgerBounds =
+      this.ledgerbounds !== null && this.ledgerbounds.maxLedger > 0;
+
     if (
       this.timebounds === null ||
       typeof this.timebounds.minTime === 'undefined' ||
       typeof this.timebounds.maxTime === 'undefined'
     ) {
-      throw new Error(
-        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
-      );
+      if (hasValidLedgerBounds) {
+        // Default to infinite timebounds when ledger bounds provide the constraint
+        this.timebounds = { minTime: 0, maxTime: 0 };
+      } else {
+        throw new Error(
+          'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+        );
+      }
     }
 
     if (isValidDate(this.timebounds.minTime)) {
