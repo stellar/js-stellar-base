@@ -196,3 +196,171 @@ describe('Keypair.sign*Decorated', function () {
     });
   });
 });
+
+describe('Keypair.signMessage and Keypair.verifyMessage (SEP-53)', function () {
+  // Test vectors from SEP-53 specification
+  // https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0053.md
+  const SEP53_TEST_PUBLIC_KEY =
+    'GBXFXNDLV4LSWA4VB7YIL5GBD7BVNR22SGBTDKMO2SBZZHDXSKZYCP7L';
+  const SEP53_TEST_SECRET_KEY =
+    'SAKICEVQLYWGSOJS4WW7HZJWAHZVEEBS527LHK5V4MLJALYKICQCJXMW';
+
+  // Test case from SEP-53: message = "Hello, World!"
+  // Signature in base64 from spec: fO5dbYhXUhBMhe6kId/cuVq/AfEnHRHEvsP8vXh03M1uLpi5e46yO2Q8rEBzu3feXQewcQE5GArp88u6ePK6BA==
+  const SEP53_TEST_MESSAGE = 'Hello, World!';
+  const SEP53_TEST_SIGNATURE_BASE64 =
+    'fO5dbYhXUhBMhe6kId/cuVq/AfEnHRHEvsP8vXh03M1uLpi5e46yO2Q8rEBzu3feXQewcQE5GArp88u6ePK6BA==';
+
+  describe('Keypair.signMessage', function () {
+    it('signs a message correctly according to SEP-53', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const signature = kp.signMessage(SEP53_TEST_MESSAGE);
+
+      expect(signature.length).to.equal(64);
+      expect(Buffer.from(signature).toString('base64')).to.equal(
+        SEP53_TEST_SIGNATURE_BASE64
+      );
+    });
+
+    it('signs a message passed as Buffer', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const messageBuffer = Buffer.from(SEP53_TEST_MESSAGE, 'utf8');
+      const signature = kp.signMessage(messageBuffer);
+
+      expect(Buffer.from(signature).toString('base64')).to.equal(
+        SEP53_TEST_SIGNATURE_BASE64
+      );
+    });
+
+    it('throws an error when keypair has no secret key', function () {
+      const kp = StellarBase.Keypair.fromPublicKey(SEP53_TEST_PUBLIC_KEY);
+      expect(() => kp.signMessage(SEP53_TEST_MESSAGE)).to.throw(
+        /cannot sign.*no secret key/
+      );
+    });
+
+    it('produces consistent signatures for the same message', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const sig1 = kp.signMessage(SEP53_TEST_MESSAGE);
+      const sig2 = kp.signMessage(SEP53_TEST_MESSAGE);
+
+      expect(Buffer.from(sig1).toString('base64')).to.equal(
+        Buffer.from(sig2).toString('base64')
+      );
+    });
+
+    it('produces different signatures for different messages', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const sig1 = kp.signMessage('Message A');
+      const sig2 = kp.signMessage('Message B');
+
+      expect(Buffer.from(sig1).toString('base64')).to.not.equal(
+        Buffer.from(sig2).toString('base64')
+      );
+    });
+
+    it('handles empty messages', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const signature = kp.signMessage('');
+
+      expect(signature.length).to.equal(64);
+    });
+
+    it('handles unicode messages correctly', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const unicodeMessage = '🚀 Stellar to the moon! 月へ';
+      const signature = kp.signMessage(unicodeMessage);
+
+      expect(signature.length).to.equal(64);
+
+      // Verify it can be verified
+      expect(kp.verifyMessage(unicodeMessage, signature)).to.be.true;
+    });
+  });
+
+  describe('Keypair.verifyMessage', function () {
+    it('verifies a valid SEP-53 signature', function () {
+      const kp = StellarBase.Keypair.fromPublicKey(SEP53_TEST_PUBLIC_KEY);
+      const signature = Buffer.from(SEP53_TEST_SIGNATURE_BASE64, 'base64');
+
+      expect(kp.verifyMessage(SEP53_TEST_MESSAGE, signature)).to.be.true;
+    });
+
+    it('verifies a message passed as Buffer', function () {
+      const kp = StellarBase.Keypair.fromPublicKey(SEP53_TEST_PUBLIC_KEY);
+      const messageBuffer = Buffer.from(SEP53_TEST_MESSAGE, 'utf8');
+      const signature = Buffer.from(SEP53_TEST_SIGNATURE_BASE64, 'base64');
+
+      expect(kp.verifyMessage(messageBuffer, signature)).to.be.true;
+    });
+
+    it('rejects an invalid signature', function () {
+      const kp = StellarBase.Keypair.fromPublicKey(SEP53_TEST_PUBLIC_KEY);
+      const invalidSignature = Buffer.alloc(64, 0);
+
+      expect(kp.verifyMessage(SEP53_TEST_MESSAGE, invalidSignature)).to.be
+        .false;
+    });
+
+    it('rejects a signature for a different message', function () {
+      const kp = StellarBase.Keypair.fromPublicKey(SEP53_TEST_PUBLIC_KEY);
+      const signature = Buffer.from(SEP53_TEST_SIGNATURE_BASE64, 'base64');
+
+      expect(kp.verifyMessage('Different message', signature)).to.be.false;
+    });
+
+    it('rejects a signature from a different signer', function () {
+      // Create a different keypair
+      const differentKp = StellarBase.Keypair.fromSecret(
+        'SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36'
+      );
+      const signature = Buffer.from(SEP53_TEST_SIGNATURE_BASE64, 'base64');
+
+      expect(differentKp.verifyMessage(SEP53_TEST_MESSAGE, signature)).to.be
+        .false;
+    });
+
+    it('works with keypair that has secret key', function () {
+      const kp = StellarBase.Keypair.fromSecret(SEP53_TEST_SECRET_KEY);
+      const signature = Buffer.from(SEP53_TEST_SIGNATURE_BASE64, 'base64');
+
+      expect(kp.verifyMessage(SEP53_TEST_MESSAGE, signature)).to.be.true;
+    });
+  });
+
+  describe('round-trip signing and verification', function () {
+    it('can sign and verify with the same keypair', function () {
+      const kp = StellarBase.Keypair.random();
+      const message = 'Test message for round-trip';
+      const signature = kp.signMessage(message);
+
+      expect(kp.verifyMessage(message, signature)).to.be.true;
+    });
+
+    it('can sign and verify with separate keypairs (secret and public)', function () {
+      const secretKp = StellarBase.Keypair.random();
+      const publicKp = StellarBase.Keypair.fromPublicKey(secretKp.publicKey());
+
+      const message = 'Test message';
+      const signature = secretKp.signMessage(message);
+
+      expect(publicKp.verifyMessage(message, signature)).to.be.true;
+    });
+
+    it('handles long messages', function () {
+      const kp = StellarBase.Keypair.random();
+      const longMessage = 'A'.repeat(10000);
+      const signature = kp.signMessage(longMessage);
+
+      expect(kp.verifyMessage(longMessage, signature)).to.be.true;
+    });
+
+    it('handles binary data as Buffer', function () {
+      const kp = StellarBase.Keypair.random();
+      const binaryData = Buffer.from([0x00, 0x01, 0x02, 0xff, 0xfe, 0xfd]);
+      const signature = kp.signMessage(binaryData);
+
+      expect(kp.verifyMessage(binaryData, signature)).to.be.true;
+    });
+  });
+});
