@@ -13,7 +13,9 @@ const config = {
     'stellar-base': fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
       ? path.resolve(__dirname, '../src/index.ts')
       : path.resolve(__dirname, '../src/index.js'),
-    'stellar-base.min': fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
+    'stellar-base.min': fs.existsSync(
+      path.resolve(__dirname, '../src/index.ts')
+    )
       ? path.resolve(__dirname, '../src/index.ts')
       : path.resolve(__dirname, '../src/index.js')
   },
