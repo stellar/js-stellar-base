@@ -54,7 +54,7 @@ yarn add @stellar/stellar-base
 2. require/import it in your JavaScript:
 
 ```js
-var StellarBase = require('@stellar/stellar-base');
+var StellarBase = require("@stellar/stellar-base");
 ```
 
 ### To self host for use in the browser
@@ -98,15 +98,15 @@ Make sure that you are using the latest version number. They can be found on the
 
 ### To develop and test js-stellar-base itself
 
-1. Install Node 18.x
+1. Install Node 20.x
 
-We support the oldest LTS release of Node, which is [currently 18.x](https://nodejs.org/en/about/releases/). Please likewise install and develop on Node 16 so you don't get surprised when your code works locally but breaks in CI.
+We support the oldest LTS release of Node, which is [currently 20.x](https://nodejs.org/en/about/releases/).
 
 If you work on several projects that use different Node versions, you might find helpful to install a NodeJS version manager:
 
-  - https://github.com/creationix/nvm
-  - https://github.com/wbyoung/avn
-  - https://github.com/asdf-vm/asdf
+- https://github.com/creationix/nvm
+- https://github.com/wbyoung/avn
+- https://github.com/asdf-vm/asdf
 
 2. Install Yarn
 
@@ -140,10 +140,6 @@ as well as fixing any formatting errors with
 yarn fmt
 ```
 
-If you're working on a file not in `src`, limit your code to Node 6.16 ES! See
-what's supported here: https://node.green/. (Our npm library must support
-earlier versions of Node, so the tests need to run on those versions.)
-
 #### Updating XDR definitions
 
 XDR updates are complicated due to the fact that you need workarounds for bugs
@@ -155,10 +151,12 @@ in the generator, formatter, or a namespace adjustment.
 4. Run `sed -ie s/\"/\'/g types/{curr,next}.d.ts` to minimize the diff (the generator's formatter uses `"` but the repo uses `'`).
 5. Move `xdr.Operation` into a hidden namespace to avoid conflicts with the SDK's `Operation`.
 6. Add generator workarounds:
-  * `type Hash = Opaque[]` is a necessary alias that doesn't get generated
-  * `Hyper`, `UnsignedHyper`, and `ScSpecEventV0` need their signatures
-    fixed because linting wants an `Array` instead of a naked `[]`.
-  * Some constants aren't generated correctly (e.g, Ctrl+F `SCSYMBOL_LIMIT` in `src/curr_generated.js`)
+
+- `type Hash = Opaque[]` is a necessary alias that doesn't get generated
+- `Hyper`, `UnsignedHyper`, and `ScSpecEventV0` need their signatures
+  fixed because linting wants an `Array` instead of a naked `[]`.
+- Some constants aren't generated correctly (e.g, Ctrl+F `SCSYMBOL_LIMIT` in `src/curr_generated.js`)
+
 7. Finally, make code adjustments related to the XDR (these are usually revealed by running the tests).
 
 As an example PR to follow, [stellar-base#800](https://github.com/stellar/js-stellar-base/pull/800) has detailed steps for each part of the process.
