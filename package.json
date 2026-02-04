@@ -16,7 +16,7 @@
     "build:browser:prod": "cross-env NODE_ENV=production yarn build:browser",
     "build:prod": "cross-env NODE_ENV=production yarn build",
     "test": "yarn build && yarn test:node && yarn test:browser",
-    "test:node": "NODE_OPTIONS=--no-experimental-detect-module yarn _nyc mocha",
+    "test:node": "NODE_OPTIONS=--no-experimental-detect-module yarn _nyc mocha --config ./mocharc.tsnode.json",
     "test:browser": "karma start ./config/karma.conf.js",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/.eslintrc.js src/ && dtslint --localTs node_modules/typescript/lib types/",
@@ -28,15 +28,6 @@
   },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "mocha": {
-    "require": [
-      "@babel/register",
-      "./test/test-helper.js"
-    ],
-    "reporter": "dot",
-    "recursive": true,
-    "timeout": 5000
   },
   "nyc": {
     "sourceMap": false,
@@ -78,6 +69,7 @@
     "@babel/eslint-parser": "^7.28.0",
     "@babel/eslint-plugin": "^7.27.1",
     "@babel/preset-env": "^7.28.3",
+"@babel/preset-typescript": "^7.28.3",
     "@babel/register": "^7.28.3",
     "@definitelytyped/dtslint": "^0.0.182",
     "@istanbuljs/nyc-config-babel": "3.0.0",

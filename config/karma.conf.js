@@ -11,7 +11,7 @@ module.exports = function (config) {
 
     files: [
       '../dist/stellar-base.js', // webpack should build this first
-      '../test/test-helper.js',
+      '../test/test-helper-browser.js',
       '../test/unit/**/*.js'
     ],
 

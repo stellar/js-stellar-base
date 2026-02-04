@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('fs');
 var webpack = require('webpack');
 
 var ESLintPlugin = require('eslint-webpack-plugin');
@@ -9,8 +10,12 @@ const config = {
   target: 'web',
   // https://stackoverflow.com/a/34018909
   entry: {
-    'stellar-base': path.resolve(__dirname, '../src/index.js'),
-    'stellar-base.min': path.resolve(__dirname, '../src/index.js')
+    'stellar-base': fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
+      ? path.resolve(__dirname, '../src/index.ts')
+      : path.resolve(__dirname, '../src/index.js'),
+    'stellar-base.min': fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
+      ? path.resolve(__dirname, '../src/index.ts')
+      : path.resolve(__dirname, '../src/index.js')
   },
   resolve: {
     fallback: {
@@ -32,6 +37,17 @@ const config = {
   devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: ['@babel/preset-env', '@babel/preset-typescript']
+          }
+        }
+      },
       {
         test: /\.m?js$/,
         exclude: /node_modules\/(?!(js-xdr))/,
