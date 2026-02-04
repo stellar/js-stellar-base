@@ -3,7 +3,7 @@
 [![Tests](https://github.com/stellar/js-stellar-base/actions/workflows/tests.yml/badge.svg)](https://github.com/stellar/js-stellar-base/actions/workflows/tests.yml)
 [![Code Climate](https://codeclimate.com/github/stellar/js-stellar-base/badges/gpa.svg)](https://codeclimate.com/github/stellar/js-stellar-base)
 [![Coverage Status](https://coveralls.io/repos/stellar/js-stellar-base/badge.svg?branch=master&service=github)](https://coveralls.io/github/stellar/js-stellar-base?branch=master)
-[![Dependency Status](https://david-dm.org/stellar/js-stellar-base.svg)](https://david-dm.org/stellar/js-stellar-base)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/stellar/js-stellar-base)
 
 The stellar-base library is the lowest-level stellar helper library. It consists
 of classes to read, write, hash, and sign the xdr structures that are used in
