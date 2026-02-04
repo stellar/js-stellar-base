@@ -1,0 +1,9 @@
+{
+  // This is the root config for IDE support and type-checking. For builds, use tsconfig.cjs.json.
+  "extends": "./tsconfig.base.json",
+  "include": ["src", "test"],
+  "exclude": ["node_modules", "lib", "dist"],
+  "compilerOptions": {
+    "noEmit": true
+  }
+}
