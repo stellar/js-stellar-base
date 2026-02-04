@@ -21,7 +21,7 @@
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/.eslintrc.js src/ && dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "yarn clean && yarn fmt && yarn lint && yarn build:prod && yarn test",
-    "fmt": "prettier --config ./config/prettier.config.js --ignore-path ./config/.prettierignore --write './**/*.js'",
+    "fmt": "prettier --config ./config/prettier.config.cjs --ignore-path ./config/.prettierignore --write './**/*.js'",
     "prepare": "yarn build:prod",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
@@ -69,7 +69,7 @@
     "@babel/eslint-parser": "^7.28.0",
     "@babel/eslint-plugin": "^7.27.1",
     "@babel/preset-env": "^7.28.3",
-"@babel/preset-typescript": "^7.28.3",
+    "@babel/preset-typescript": "^7.28.3",
     "@babel/register": "^7.28.3",
     "@definitelytyped/dtslint": "^0.0.182",
     "@istanbuljs/nyc-config-babel": "3.0.0",

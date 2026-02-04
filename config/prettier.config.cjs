@@ -7,7 +7,6 @@ module.exports = {
   semi: true,
   singleQuote: true,
   tabWidth: 2,
-  parser: 'babel',
   trailingComma: 'none',
   useTabs: false
 };
