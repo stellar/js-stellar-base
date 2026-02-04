@@ -3,10 +3,15 @@
   "version": "14.0.4",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/cjs/index.js",
-  "browser": {
-    "./lib/index.js": "./dist/stellar-base.min.js"
-  },
+  "browser": "./dist/stellar-base.min.js",
   "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "browser": "./dist/stellar-base.min.js",
+      "require": "./lib/cjs/index.js",
+      "default": "./lib/cjs/index.js"
+    }
+  },
   "scripts": {
     "build": "yarn build:cjs && yarn build:browser",
     "build:cjs": "tsc -p tsconfig.cjs.json",
