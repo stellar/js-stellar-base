@@ -1,48 +1,49 @@
-var path = require("path");
-var webpack = require("webpack");
+var path = require('path');
+var webpack = require('webpack');
+var fs = require('fs');
+var ESLintPlugin = require('eslint-webpack-plugin');
+var TerserPlugin = require('terser-webpack-plugin');
+var NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
-var ESLintPlugin = require("eslint-webpack-plugin");
-var TerserPlugin = require("terser-webpack-plugin");
-var NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-const entryFile = fs.existsSync(path.resolve(__dirname, "../src/index.ts"))
-  ? path.resolve(__dirname, "../src/index.ts")
-  : path.resolve(__dirname, "../src/index.js");
+const entryFile = fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
+  ? path.resolve(__dirname, '../src/index.ts')
+  : path.resolve(__dirname, '../src/index.js');
 
 const config = {
-  target: "web",
+  target: 'web',
   // https://stackoverflow.com/a/34018909
   entry: {
-    "stellar-base": entryFile,
-    "stellar-base.min": entryFile
+    'stellar-base': entryFile,
+    'stellar-base.min': entryFile
   },
   resolve: {
     fallback: {
-      stream: require.resolve("stream-browserify"),
-      buffer: require.resolve("buffer")
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer')
     },
-    extensions: [".ts", ".js"]
+    extensions: ['.ts', '.js']
   },
   output: {
     clean: true,
     library: {
-      name: "StellarBase",
-      type: "umd",
+      name: 'StellarBase',
+      type: 'umd',
       umdNamedDefine: true
     },
-    path: path.resolve(__dirname, "../dist")
+    path: path.resolve(__dirname, '../dist')
   },
-  mode: process.env.NODE_ENV ?? "development",
-  devtool: process.env.NODE_ENV === "production" ? false : "source-map",
+  mode: process.env.NODE_ENV ?? 'development',
+  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
   module: {
     rules: [
       {
         test: /\.ts$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             cacheDirectory: true,
-            presets: ["@babel/preset-env", "@babel/preset-typescript"]
+            presets: ['@babel/preset-env', '@babel/preset-typescript']
           }
         }
       },
@@ -50,7 +51,7 @@ const config = {
         test: /\.m?js$/,
         exclude: /node_modules\/(?!(js-xdr))/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             cacheDirectory: true
           }
@@ -74,11 +75,11 @@ const config = {
   plugins: [
     // this must be first for karma to work (see line 5 of karma.conf.js)
     new ESLintPlugin({
-      overrideConfigFile: path.resolve(__dirname, "./.eslintrc.js")
+      overrideConfigFile: path.resolve(__dirname, './.eslintrc.js')
     }),
     new NodePolyfillPlugin(),
     new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"]
+      Buffer: ['buffer', 'Buffer']
     })
   ],
   watchOptions: {
