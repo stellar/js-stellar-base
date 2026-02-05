@@ -160,8 +160,8 @@ StellarSdk.TransactionBuilder.fromXDR(transaction.toXDR(), StellarSdk.Networks.T
 StellarSdk.TransactionBuilder.fromXDR(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
 
 const sig = StellarSdk.xdr.DecoratedSignature.fromXDR(Buffer.of(1, 2)); // $ExpectType DecoratedSignature
-sig.hint(); // $ExpectType Buffer
-sig.signature(); // $ExpectType Buffer
+sig.hint(); // $ExpectType Buffer<ArrayBufferLike>
+sig.signature(); // $ExpectType Buffer<ArrayBufferLike>
 
 StellarSdk.Memo.none(); // $ExpectType Memo<"none">
 StellarSdk.Memo.text('asdf'); // $ExpectType Memo<"text">
@@ -170,9 +170,9 @@ StellarSdk.Memo.return('asdf'); // $ExpectType Memo<"return">
 StellarSdk.Memo.hash('asdf'); // $ExpectType Memo<"hash">
 StellarSdk.Memo.none().value; // $ExpectType null
 StellarSdk.Memo.id('asdf').value; // $ExpectType string
-StellarSdk.Memo.text('asdf').value; // $ExpectType string | Buffer
-StellarSdk.Memo.return('asdf').value; // $ExpectType Buffer
-StellarSdk.Memo.hash('asdf').value; // $ExpectType Buffer
+StellarSdk.Memo.text('asdf').value; // $ExpectType string | Buffer<ArrayBufferLike>
+StellarSdk.Memo.return('asdf').value; // $ExpectType Buffer<ArrayBufferLike>
+StellarSdk.Memo.hash('asdf').value; // $ExpectType Buffer<ArrayBufferLike>
 
 const feeBumptransaction = StellarSdk.TransactionBuilder.buildFeeBumpTransaction(masterKey, "120", transaction, StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction
 
@@ -181,7 +181,7 @@ feeBumptransaction.innerTransaction; // $ExpectType Transaction<Memo<MemoType>, 
 feeBumptransaction.fee; // $ExpectType string
 feeBumptransaction.toXDR(); // $ExpectType string
 feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
-feeBumptransaction.hash(); // $ExpectType Buffer
+feeBumptransaction.hash(); // $ExpectType Buffer<ArrayBufferLike>
 
 StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
 StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
@@ -235,7 +235,7 @@ const op = StellarSdk.xdr.AllowTrustOp.fromXDR(
 );
 op; // $ExpectType AllowTrustOp
 op.authorize(); // $ExpectType number
-op.trustor().ed25519(); // $ExpectType Buffer
+op.trustor().ed25519(); // $ExpectType Buffer<ArrayBufferLike>
 op.trustor(); // $ExpectedType AccountId
 const e = StellarSdk.xdr.LedgerEntry.fromXDR(
   "AAAAAAAAAAC2LgFRDBZ3J52nLm30kq2iMgrO7dYzYAN3hvjtf1IHWg==",
@@ -248,7 +248,7 @@ const a = StellarSdk.xdr.AccountEntry.fromXDR(
   'base64'
 );
 a; // $ExpectType AccountEntry
-a.homeDomain(); // $ExpectType string | Buffer
+a.homeDomain(); // $ExpectType string | Buffer<ArrayBufferLike>
 const t = StellarSdk.xdr.TransactionV0.fromXDR(
     // tslint:disable:max-line-length
     '1bzMAeuKubyXUug/Xnyj1KYkv+cSUtCSvAczI2b459kAAABkAS/5cwAAABMAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAsBL/lzAAAAFAAAAAA=',
@@ -258,11 +258,11 @@ t; // $ExpectType TransactionV0
 t.timeBounds(); // $ExpectType TimeBounds | null
 
 StellarSdk.xdr.Uint64.fromString("12"); // $ExpectType UnsignedHyper
-StellarSdk.xdr.Int32.toXDR(-1); // $ExpectType Buffer
-StellarSdk.xdr.Uint32.toXDR(1); // $ExpectType Buffer
-StellarSdk.xdr.String32.toXDR("hellow world"); // $ExpectedType Buffer
-StellarSdk.xdr.Hash.toXDR(Buffer.alloc(32)); // $ExpectedType Buffer
-StellarSdk.xdr.Signature.toXDR(Buffer.alloc(9, 'a')); // $ExpectedType Buffer
+StellarSdk.xdr.Int32.toXDR(-1); // $ExpectType Buffer<ArrayBufferLike>
+StellarSdk.xdr.Uint32.toXDR(1); // $ExpectType Buffer<ArrayBufferLike>
+StellarSdk.xdr.String32.toXDR("hellow world"); // $ExpectedType Buffer<ArrayBufferLike>
+StellarSdk.xdr.Hash.toXDR(Buffer.alloc(32)); // $ExpectedType Buffer<ArrayBufferLike>
+StellarSdk.xdr.Signature.toXDR(Buffer.alloc(9, 'a')); // $ExpectedType Buffer<ArrayBufferLike>
 
 const change = StellarSdk.xdr.LedgerEntryChange.fromXDR(
   // tslint:disable:max-line-length
@@ -270,7 +270,7 @@ const change = StellarSdk.xdr.LedgerEntryChange.fromXDR(
   'base64'
 );
 change; // $ExpectType LedgerEntryChange
-const raw = StellarSdk.xdr.LedgerEntryChanges.toXDR([change]); // $ExpectType Buffer
+const raw = StellarSdk.xdr.LedgerEntryChanges.toXDR([change]); // $ExpectType Buffer<ArrayBufferLike>
 StellarSdk.xdr.LedgerEntryChanges.fromXDR(raw); // $ExpectType LedgerEntryChange[]
 
 StellarSdk.xdr.Asset.assetTypeNative(); // $ExpectType Asset
@@ -318,25 +318,25 @@ const lpWithdraw = StellarSdk.xdr.LiquidityPoolWithdrawOp.fromXDR(
 );
 lpWithdraw; // $ExpectType LiquidityPoolWithdrawOp
 
-const pubkey = masterKey.rawPublicKey(); // $ExpectType Buffer
-const seckey = masterKey.rawSecretKey(); // $ExpectType Buffer
+const pubkey = masterKey.rawPublicKey(); // $ExpectType Buffer<ArrayBufferLike>
+const seckey = masterKey.rawSecretKey(); // $ExpectType Buffer<ArrayBufferLike>
 const muxed = StellarSdk.encodeMuxedAccount(masterKey.publicKey(), '1'); // $ExpectType MuxedAccount
-const muxkey = muxed.toXDR("raw"); // $ExpectType Buffer
+const muxkey = muxed.toXDR("raw"); // $ExpectType Buffer<ArrayBufferLike>
 
 let result = StellarSdk.StrKey.encodeEd25519PublicKey(pubkey);  // $ExpectType string
-StellarSdk.StrKey.decodeEd25519PublicKey(result);               // $ExpectType Buffer
+StellarSdk.StrKey.decodeEd25519PublicKey(result);               // $ExpectType Buffer<ArrayBufferLike>
 StellarSdk.StrKey.isValidEd25519PublicKey(result);              // $ExpectType boolean
 
 result = StellarSdk.StrKey.encodeEd25519SecretSeed(seckey); // $ExpectType string
-StellarSdk.StrKey.decodeEd25519SecretSeed(result);          // $ExpectType Buffer
+StellarSdk.StrKey.decodeEd25519SecretSeed(result);          // $ExpectType Buffer<ArrayBufferLike>
 StellarSdk.StrKey.isValidEd25519SecretSeed(result);         // $ExpectType boolean
 
 result = StellarSdk.StrKey.encodeMed25519PublicKey(muxkey);   // $ExpectType string
-StellarSdk.StrKey.decodeMed25519PublicKey(result);            // $ExpectType Buffer
+StellarSdk.StrKey.decodeMed25519PublicKey(result);            // $ExpectType Buffer<ArrayBufferLike>
 StellarSdk.StrKey.isValidMed25519PublicKey(result);           // $ExpectType boolean
 
 result = StellarSdk.StrKey.encodeSignedPayload(pubkey);   // $ExpectType string
-StellarSdk.StrKey.decodeSignedPayload(result);            // $ExpectType Buffer
+StellarSdk.StrKey.decodeSignedPayload(result);            // $ExpectType Buffer<ArrayBufferLike>
 StellarSdk.StrKey.isValidSignedPayload(result);           // $ExpectType boolean
 
 const muxedAddr = StellarSdk.encodeMuxedAccountToAddress(muxed, true);  // $ExpectType string

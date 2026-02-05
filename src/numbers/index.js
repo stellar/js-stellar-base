@@ -1,10 +1,10 @@
-import { XdrLargeInt } from './xdr_large_int';
+import { XdrLargeInt } from "./xdr_large_int";
 
-export { Uint128 } from './uint128';
-export { Uint256 } from './uint256';
-export { Int128 } from './int128';
-export { Int256 } from './int256';
-export { ScInt } from './sc_int';
+export { Uint128 } from "./uint128";
+export { Uint256 } from "./uint256";
+export { Int128 } from "./int128";
+export { Int256 } from "./int256";
+export { ScInt } from "./sc_int";
 export { XdrLargeInt };
 
 /**
@@ -29,25 +29,25 @@ export function scValToBigInt(scv) {
   const scIntType = XdrLargeInt.getType(scv.switch().name);
 
   switch (scv.switch().name) {
-    case 'scvU32':
-    case 'scvI32':
+    case "scvU32":
+    case "scvI32":
       return BigInt(scv.value());
 
-    case 'scvU64':
-    case 'scvI64':
-    case 'scvTimepoint':
-    case 'scvDuration':
+    case "scvU64":
+    case "scvI64":
+    case "scvTimepoint":
+    case "scvDuration":
       return new XdrLargeInt(scIntType, scv.value()).toBigInt();
 
-    case 'scvU128':
-    case 'scvI128':
+    case "scvU128":
+    case "scvI128":
       return new XdrLargeInt(scIntType, [
         scv.value().lo(),
         scv.value().hi()
       ]).toBigInt();
 
-    case 'scvU256':
-    case 'scvI256':
+    case "scvU256":
+    case "scvI256":
       return new XdrLargeInt(scIntType, [
         scv.value().loLo(),
         scv.value().loHi(),

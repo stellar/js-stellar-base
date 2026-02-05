@@ -1,4 +1,4 @@
-import xdr from '../xdr';
+import xdr from "../xdr";
 
 /**
  * Creates a liquidity pool deposit operation.
@@ -26,27 +26,27 @@ export function liquidityPoolDeposit(opts = {}) {
   const attributes = {};
 
   if (!liquidityPoolId) {
-    throw new TypeError('liquidityPoolId argument is required');
+    throw new TypeError("liquidityPoolId argument is required");
   }
-  attributes.liquidityPoolId = xdr.PoolId.fromXDR(liquidityPoolId, 'hex');
+  attributes.liquidityPoolId = xdr.PoolId.fromXDR(liquidityPoolId, "hex");
 
   if (!this.isValidAmount(maxAmountA, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('maxAmountA'));
+    throw new TypeError(this.constructAmountRequirementsError("maxAmountA"));
   }
   attributes.maxAmountA = this._toXDRAmount(maxAmountA);
 
   if (!this.isValidAmount(maxAmountB, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('maxAmountB'));
+    throw new TypeError(this.constructAmountRequirementsError("maxAmountB"));
   }
   attributes.maxAmountB = this._toXDRAmount(maxAmountB);
 
   if (minPrice === undefined) {
-    throw new TypeError('minPrice argument is required');
+    throw new TypeError("minPrice argument is required");
   }
   attributes.minPrice = this._toXDRPrice(minPrice);
 
   if (maxPrice === undefined) {
-    throw new TypeError('maxPrice argument is required');
+    throw new TypeError("maxPrice argument is required");
   }
   attributes.maxPrice = this._toXDRPrice(maxPrice);
 

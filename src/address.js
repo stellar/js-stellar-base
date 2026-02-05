@@ -1,5 +1,5 @@
-import { StrKey } from './strkey';
-import xdr from './xdr';
+import { StrKey } from "./strkey";
+import xdr from "./xdr";
 
 /**
  * Create a new Address object.
@@ -17,19 +17,19 @@ import xdr from './xdr';
 export class Address {
   constructor(address) {
     if (StrKey.isValidEd25519PublicKey(address)) {
-      this._type = 'account';
+      this._type = "account";
       this._key = StrKey.decodeEd25519PublicKey(address);
     } else if (StrKey.isValidContract(address)) {
-      this._type = 'contract';
+      this._type = "contract";
       this._key = StrKey.decodeContract(address);
     } else if (StrKey.isValidMed25519PublicKey(address)) {
-      this._type = 'muxedAccount';
+      this._type = "muxedAccount";
       this._key = StrKey.decodeMed25519PublicKey(address);
     } else if (StrKey.isValidClaimableBalance(address)) {
-      this._type = 'claimableBalance';
+      this._type = "claimableBalance";
       this._key = StrKey.decodeClaimableBalance(address);
     } else if (StrKey.isValidLiquidityPool(address)) {
-      this._type = 'liquidityPool';
+      this._type = "liquidityPool";
       this._key = StrKey.decodeLiquidityPool(address);
     } else {
       throw new Error(`Unsupported address type: ${address}`);
@@ -121,7 +121,7 @@ export class Address {
       case xdr.ScAddressType.scAddressTypeMuxedAccount().value: {
         const raw = Buffer.concat([
           scAddress.muxedAccount().ed25519(),
-          scAddress.muxedAccount().id().toXDR('raw')
+          scAddress.muxedAccount().id().toXDR("raw")
         ]);
         return Address.muxedAccount(raw);
       }
@@ -145,18 +145,18 @@ export class Address {
    */
   toString() {
     switch (this._type) {
-      case 'account':
+      case "account":
         return StrKey.encodeEd25519PublicKey(this._key);
-      case 'contract':
+      case "contract":
         return StrKey.encodeContract(this._key);
-      case 'claimableBalance':
+      case "claimableBalance":
         return StrKey.encodeClaimableBalance(this._key);
-      case 'liquidityPool':
+      case "liquidityPool":
         return StrKey.encodeLiquidityPool(this._key);
-      case 'muxedAccount':
+      case "muxedAccount":
         return StrKey.encodeMed25519PublicKey(this._key);
       default:
-        throw new Error('Unsupported address type');
+        throw new Error("Unsupported address type");
     }
   }
 
@@ -176,16 +176,16 @@ export class Address {
    */
   toScAddress() {
     switch (this._type) {
-      case 'account':
+      case "account":
         return xdr.ScAddress.scAddressTypeAccount(
           xdr.PublicKey.publicKeyTypeEd25519(this._key)
         );
-      case 'contract':
+      case "contract":
         return xdr.ScAddress.scAddressTypeContract(this._key);
-      case 'liquidityPool':
+      case "liquidityPool":
         return xdr.ScAddress.scAddressTypeLiquidityPool(this._key);
 
-      case 'claimableBalance':
+      case "claimableBalance":
         return xdr.ScAddress.scAddressTypeClaimableBalance(
           new xdr.ClaimableBalanceId(
             `claimableBalanceIdTypeV${this._key.at(0)}`, // future-proof for cb v1
@@ -193,11 +193,11 @@ export class Address {
           )
         );
 
-      case 'muxedAccount':
+      case "muxedAccount":
         return xdr.ScAddress.scAddressTypeMuxedAccount(
           new xdr.MuxedEd25519Account({
             ed25519: this._key.subarray(0, 32),
-            id: xdr.Uint64.fromXDR(this._key.subarray(32, 40), 'raw')
+            id: xdr.Uint64.fromXDR(this._key.subarray(32, 40), "raw")
           })
         );
 

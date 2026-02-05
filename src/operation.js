@@ -1,23 +1,23 @@
 /* eslint-disable no-bitwise */
 
-import { Hyper } from '@stellar/js-xdr';
-import BigNumber from './util/bignumber';
-import { trimEnd } from './util/util';
-import { best_r } from './util/continued_fraction';
-import { Asset } from './asset';
-import { LiquidityPoolAsset } from './liquidity_pool_asset';
-import { Claimant } from './claimant';
-import { StrKey } from './strkey';
-import { LiquidityPoolId } from './liquidity_pool_id';
-import xdr from './xdr';
-import * as ops from './operations';
+import { Hyper } from "@stellar/js-xdr";
+import BigNumber from "./util/bignumber";
+import { trimEnd } from "./util/util";
+import { best_r } from "./util/continued_fraction";
+import { Asset } from "./asset";
+import { LiquidityPoolAsset } from "./liquidity_pool_asset";
+import { Claimant } from "./claimant";
+import { StrKey } from "./strkey";
+import { LiquidityPoolId } from "./liquidity_pool_id";
+import xdr from "./xdr";
+import * as ops from "./operations";
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress
-} from './util/decode_encode_muxed_account';
+} from "./util/decode_encode_muxed_account";
 
 const ONE = 10000000;
-const MAX_INT64 = '9223372036854775807';
+const MAX_INT64 = "9223372036854775807";
 
 /**
  * When set using `{@link Operation.setOptions}` option, requires the issuing
@@ -108,7 +108,7 @@ export class Operation {
       try {
         opAttributes.sourceAccount = decodeAddressToMuxedAccount(opts.source);
       } catch (e) {
-        throw new Error('Source address is invalid');
+        throw new Error("Source address is invalid");
       }
     }
   }
@@ -130,21 +130,21 @@ export class Operation {
     const operationName = operation.body().switch().name;
 
     switch (operationName) {
-      case 'createAccount': {
-        result.type = 'createAccount';
+      case "createAccount": {
+        result.type = "createAccount";
         result.destination = accountIdtoAddress(attrs.destination());
         result.startingBalance = this._fromXDRAmount(attrs.startingBalance());
         break;
       }
-      case 'payment': {
-        result.type = 'payment';
+      case "payment": {
+        result.type = "payment";
         result.destination = encodeMuxedAccountToAddress(attrs.destination());
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         break;
       }
-      case 'pathPaymentStrictReceive': {
-        result.type = 'pathPaymentStrictReceive';
+      case "pathPaymentStrictReceive": {
+        result.type = "pathPaymentStrictReceive";
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendMax = this._fromXDRAmount(attrs.sendMax());
         result.destination = encodeMuxedAccountToAddress(attrs.destination());
@@ -160,8 +160,8 @@ export class Operation {
         });
         break;
       }
-      case 'pathPaymentStrictSend': {
-        result.type = 'pathPaymentStrictSend';
+      case "pathPaymentStrictSend": {
+        result.type = "pathPaymentStrictSend";
         result.sendAsset = Asset.fromOperation(attrs.sendAsset());
         result.sendAmount = this._fromXDRAmount(attrs.sendAmount());
         result.destination = encodeMuxedAccountToAddress(attrs.destination());
@@ -177,8 +177,8 @@ export class Operation {
         });
         break;
       }
-      case 'changeTrust': {
-        result.type = 'changeTrust';
+      case "changeTrust": {
+        result.type = "changeTrust";
         switch (attrs.line().switch()) {
           case xdr.AssetType.assetTypePoolShare():
             result.line = LiquidityPoolAsset.fromOperation(attrs.line());
@@ -190,16 +190,16 @@ export class Operation {
         result.limit = this._fromXDRAmount(attrs.limit());
         break;
       }
-      case 'allowTrust': {
-        result.type = 'allowTrust';
+      case "allowTrust": {
+        result.type = "allowTrust";
         result.trustor = accountIdtoAddress(attrs.trustor());
         result.assetCode = attrs.asset().value().toString();
-        result.assetCode = trimEnd(result.assetCode, '\0');
+        result.assetCode = trimEnd(result.assetCode, "\0");
         result.authorize = attrs.authorize();
         break;
       }
-      case 'setOptions': {
-        result.type = 'setOptions';
+      case "setOptions": {
+        result.type = "setOptions";
         if (attrs.inflationDest()) {
           result.inflationDest = accountIdtoAddress(attrs.inflationDest());
         }
@@ -213,19 +213,19 @@ export class Operation {
         // home_domain is checked by iscntrl in stellar-core
         result.homeDomain =
           attrs.homeDomain() !== undefined
-            ? attrs.homeDomain().toString('ascii')
+            ? attrs.homeDomain().toString("ascii")
             : undefined;
 
         if (attrs.signer()) {
           const signer = {};
           const arm = attrs.signer().key().arm();
-          if (arm === 'ed25519') {
+          if (arm === "ed25519") {
             signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
-          } else if (arm === 'preAuthTx') {
+          } else if (arm === "preAuthTx") {
             signer.preAuthTx = attrs.signer().key().preAuthTx();
-          } else if (arm === 'hashX') {
+          } else if (arm === "hashX") {
             signer.sha256Hash = attrs.signer().key().hashX();
-          } else if (arm === 'ed25519SignedPayload') {
+          } else if (arm === "ed25519SignedPayload") {
             const signedPayload = attrs.signer().key().ed25519SignedPayload();
             signer.ed25519SignedPayload = StrKey.encodeSignedPayload(
               signedPayload.toXDR()
@@ -238,9 +238,9 @@ export class Operation {
         break;
       }
       // the next case intentionally falls through!
-      case 'manageOffer':
-      case 'manageSellOffer': {
-        result.type = 'manageSellOffer';
+      case "manageOffer":
+      case "manageSellOffer": {
+        result.type = "manageSellOffer";
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.amount = this._fromXDRAmount(attrs.amount());
@@ -248,8 +248,8 @@ export class Operation {
         result.offerId = attrs.offerId().toString();
         break;
       }
-      case 'manageBuyOffer': {
-        result.type = 'manageBuyOffer';
+      case "manageBuyOffer": {
+        result.type = "manageBuyOffer";
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.buyAmount = this._fromXDRAmount(attrs.buyAmount());
@@ -258,38 +258,38 @@ export class Operation {
         break;
       }
       // the next case intentionally falls through!
-      case 'createPassiveOffer':
-      case 'createPassiveSellOffer': {
-        result.type = 'createPassiveSellOffer';
+      case "createPassiveOffer":
+      case "createPassiveSellOffer": {
+        result.type = "createPassiveSellOffer";
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.amount = this._fromXDRAmount(attrs.amount());
         result.price = this._fromXDRPrice(attrs.price());
         break;
       }
-      case 'accountMerge': {
-        result.type = 'accountMerge';
+      case "accountMerge": {
+        result.type = "accountMerge";
         result.destination = encodeMuxedAccountToAddress(attrs);
         break;
       }
-      case 'manageData': {
-        result.type = 'manageData';
+      case "manageData": {
+        result.type = "manageData";
         // manage_data.name is checked by iscntrl in stellar-core
-        result.name = attrs.dataName().toString('ascii');
+        result.name = attrs.dataName().toString("ascii");
         result.value = attrs.dataValue();
         break;
       }
-      case 'inflation': {
-        result.type = 'inflation';
+      case "inflation": {
+        result.type = "inflation";
         break;
       }
-      case 'bumpSequence': {
-        result.type = 'bumpSequence';
+      case "bumpSequence": {
+        result.type = "bumpSequence";
         result.bumpTo = attrs.bumpTo().toString();
         break;
       }
-      case 'createClaimableBalance': {
-        result.type = 'createClaimableBalance';
+      case "createClaimableBalance": {
+        result.type = "createClaimableBalance";
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         result.claimants = [];
@@ -298,38 +298,38 @@ export class Operation {
         });
         break;
       }
-      case 'claimClaimableBalance': {
-        result.type = 'claimClaimableBalance';
-        result.balanceId = attrs.toXDR('hex');
+      case "claimClaimableBalance": {
+        result.type = "claimClaimableBalance";
+        result.balanceId = attrs.toXDR("hex");
         break;
       }
-      case 'beginSponsoringFutureReserves': {
-        result.type = 'beginSponsoringFutureReserves';
+      case "beginSponsoringFutureReserves": {
+        result.type = "beginSponsoringFutureReserves";
         result.sponsoredId = accountIdtoAddress(attrs.sponsoredId());
         break;
       }
-      case 'endSponsoringFutureReserves': {
-        result.type = 'endSponsoringFutureReserves';
+      case "endSponsoringFutureReserves": {
+        result.type = "endSponsoringFutureReserves";
         break;
       }
-      case 'revokeSponsorship': {
+      case "revokeSponsorship": {
         extractRevokeSponshipDetails(attrs, result);
         break;
       }
-      case 'clawback': {
-        result.type = 'clawback';
+      case "clawback": {
+        result.type = "clawback";
         result.amount = this._fromXDRAmount(attrs.amount());
         result.from = encodeMuxedAccountToAddress(attrs.from());
         result.asset = Asset.fromOperation(attrs.asset());
         break;
       }
-      case 'clawbackClaimableBalance': {
-        result.type = 'clawbackClaimableBalance';
-        result.balanceId = attrs.toXDR('hex');
+      case "clawbackClaimableBalance": {
+        result.type = "clawbackClaimableBalance";
+        result.balanceId = attrs.toXDR("hex");
         break;
       }
-      case 'setTrustLineFlags': {
-        result.type = 'setTrustLineFlags';
+      case "setTrustLineFlags": {
+        result.type = "setTrustLineFlags";
         result.asset = Asset.fromOperation(attrs.asset());
         result.trustor = accountIdtoAddress(attrs.trustor());
 
@@ -363,36 +363,36 @@ export class Operation {
 
         break;
       }
-      case 'liquidityPoolDeposit': {
-        result.type = 'liquidityPoolDeposit';
-        result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
+      case "liquidityPoolDeposit": {
+        result.type = "liquidityPoolDeposit";
+        result.liquidityPoolId = attrs.liquidityPoolId().toString("hex");
         result.maxAmountA = this._fromXDRAmount(attrs.maxAmountA());
         result.maxAmountB = this._fromXDRAmount(attrs.maxAmountB());
         result.minPrice = this._fromXDRPrice(attrs.minPrice());
         result.maxPrice = this._fromXDRPrice(attrs.maxPrice());
         break;
       }
-      case 'liquidityPoolWithdraw': {
-        result.type = 'liquidityPoolWithdraw';
-        result.liquidityPoolId = attrs.liquidityPoolId().toString('hex');
+      case "liquidityPoolWithdraw": {
+        result.type = "liquidityPoolWithdraw";
+        result.liquidityPoolId = attrs.liquidityPoolId().toString("hex");
         result.amount = this._fromXDRAmount(attrs.amount());
         result.minAmountA = this._fromXDRAmount(attrs.minAmountA());
         result.minAmountB = this._fromXDRAmount(attrs.minAmountB());
         break;
       }
-      case 'invokeHostFunction': {
-        result.type = 'invokeHostFunction';
+      case "invokeHostFunction": {
+        result.type = "invokeHostFunction";
         result.func = attrs.hostFunction();
         result.auth = attrs.auth() ?? [];
         break;
       }
-      case 'extendFootprintTtl': {
-        result.type = 'extendFootprintTtl';
+      case "extendFootprintTtl": {
+        result.type = "extendFootprintTtl";
         result.extendTo = attrs.extendTo();
         break;
       }
-      case 'restoreFootprint': {
-        result.type = 'restoreFootprint';
+      case "restoreFootprint": {
+        result.type = "restoreFootprint";
         break;
       }
       default: {
@@ -418,7 +418,7 @@ export class Operation {
    * @returns {boolean}
    */
   static isValidAmount(value, allowZero = false) {
-    if (typeof value !== 'string') {
+    if (typeof value !== "string") {
       return false;
     }
 
@@ -463,16 +463,16 @@ export class Operation {
    * @returns {undefined|Number}
    */
   static _checkUnsignedIntValue(name, value, isValidFunction = null) {
-    if (typeof value === 'undefined') {
+    if (typeof value === "undefined") {
       return undefined;
     }
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       value = parseFloat(value);
     }
 
     switch (true) {
-      case typeof value !== 'number' ||
+      case typeof value !== "number" ||
         !Number.isFinite(value) ||
         value % 1 !== 0:
         throw new Error(`${name} value is invalid`);
@@ -536,7 +536,7 @@ export class Operation {
     }
 
     if (xdrObject.n() < 0 || xdrObject.d() < 0) {
-      throw new Error('price must be positive');
+      throw new Error("price must be positive");
     }
 
     return xdrObject;
@@ -545,16 +545,16 @@ export class Operation {
 
 function extractRevokeSponshipDetails(attrs, result) {
   switch (attrs.switch().name) {
-    case 'revokeSponsorshipLedgerEntry': {
+    case "revokeSponsorshipLedgerEntry": {
       const ledgerKey = attrs.ledgerKey();
       switch (ledgerKey.switch().name) {
         case xdr.LedgerEntryType.account().name: {
-          result.type = 'revokeAccountSponsorship';
+          result.type = "revokeAccountSponsorship";
           result.account = accountIdtoAddress(ledgerKey.account().accountId());
           break;
         }
         case xdr.LedgerEntryType.trustline().name: {
-          result.type = 'revokeTrustlineSponsorship';
+          result.type = "revokeTrustlineSponsorship";
           result.account = accountIdtoAddress(
             ledgerKey.trustLine().accountId()
           );
@@ -570,31 +570,31 @@ function extractRevokeSponshipDetails(attrs, result) {
           break;
         }
         case xdr.LedgerEntryType.offer().name: {
-          result.type = 'revokeOfferSponsorship';
+          result.type = "revokeOfferSponsorship";
           result.seller = accountIdtoAddress(ledgerKey.offer().sellerId());
           result.offerId = ledgerKey.offer().offerId().toString();
           break;
         }
         case xdr.LedgerEntryType.data().name: {
-          result.type = 'revokeDataSponsorship';
+          result.type = "revokeDataSponsorship";
           result.account = accountIdtoAddress(ledgerKey.data().accountId());
-          result.name = ledgerKey.data().dataName().toString('ascii');
+          result.name = ledgerKey.data().dataName().toString("ascii");
           break;
         }
         case xdr.LedgerEntryType.claimableBalance().name: {
-          result.type = 'revokeClaimableBalanceSponsorship';
+          result.type = "revokeClaimableBalanceSponsorship";
           result.balanceId = ledgerKey
             .claimableBalance()
             .balanceId()
-            .toXDR('hex');
+            .toXDR("hex");
           break;
         }
         case xdr.LedgerEntryType.liquidityPool().name: {
-          result.type = 'revokeLiquidityPoolSponsorship';
+          result.type = "revokeLiquidityPoolSponsorship";
           result.liquidityPoolId = ledgerKey
             .liquidityPool()
             .liquidityPoolId()
-            .toString('hex');
+            .toString("hex");
           break;
         }
         default: {
@@ -603,8 +603,8 @@ function extractRevokeSponshipDetails(attrs, result) {
       }
       break;
     }
-    case 'revokeSponsorshipSigner': {
-      result.type = 'revokeSignerSponsorship';
+    case "revokeSponsorshipSigner": {
+      result.type = "revokeSignerSponsorship";
       result.account = accountIdtoAddress(attrs.signer().accountId());
       result.signer = convertXDRSignerKeyToObject(attrs.signer().signerKey());
       break;
@@ -625,11 +625,11 @@ function convertXDRSignerKeyToObject(signerKey) {
       break;
     }
     case xdr.SignerKeyType.signerKeyTypePreAuthTx().name: {
-      attrs.preAuthTx = signerKey.preAuthTx().toString('hex');
+      attrs.preAuthTx = signerKey.preAuthTx().toString("hex");
       break;
     }
     case xdr.SignerKeyType.signerKeyTypeHashX().name: {
-      attrs.sha256Hash = signerKey.hashX().toString('hex');
+      attrs.sha256Hash = signerKey.hashX().toString("hex");
       break;
     }
     default: {

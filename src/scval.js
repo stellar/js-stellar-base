@@ -1,9 +1,9 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
-import { Keypair } from './keypair';
-import { Address } from './address';
-import { Contract } from './contract';
-import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
+import { Keypair } from "./keypair";
+import { Address } from "./address";
+import { Contract } from "./contract";
+import { ScInt, XdrLargeInt, scValToBigInt } from "./numbers/index";
 
 /**
  * Attempts to convert native types into smart contract values
@@ -143,7 +143,7 @@ import { ScInt, XdrLargeInt, scValToBigInt } from './numbers/index';
  */
 export function nativeToScVal(val, opts = {}) {
   switch (typeof val) {
-    case 'object': {
+    case "object": {
       if (val === null) {
         return xdr.ScVal.scvVoid();
       }
@@ -157,7 +157,7 @@ export function nativeToScVal(val, opts = {}) {
       }
 
       if (val instanceof Keypair) {
-        return nativeToScVal(val.publicKey(), { type: 'address' });
+        return nativeToScVal(val.publicKey(), { type: "address" });
       }
 
       if (val instanceof Contract) {
@@ -166,12 +166,12 @@ export function nativeToScVal(val, opts = {}) {
 
       if (val instanceof Uint8Array || Buffer.isBuffer(val)) {
         const copy = Uint8Array.from(val);
-        switch (opts?.type ?? 'bytes') {
-          case 'bytes':
+        switch (opts?.type ?? "bytes") {
+          case "bytes":
             return xdr.ScVal.scvBytes(copy);
-          case 'symbol':
+          case "symbol":
             return xdr.ScVal.scvSymbol(copy);
-          case 'string':
+          case "string":
             return xdr.ScVal.scvString(copy);
           default:
             throw new TypeError(
@@ -200,7 +200,7 @@ export function nativeToScVal(val, opts = {}) {
         );
       }
 
-      if ((val.constructor?.name ?? '') !== 'Object') {
+      if ((val.constructor?.name ?? "") !== "Object") {
         throw new TypeError(
           `cannot interpret ${
             val.constructor?.name
@@ -230,13 +230,13 @@ export function nativeToScVal(val, opts = {}) {
       );
     }
 
-    case 'number':
-    case 'bigint':
+    case "number":
+    case "bigint":
       switch (opts?.type) {
-        case 'u32':
+        case "u32":
           return xdr.ScVal.scvU32(val);
 
-        case 'i32':
+        case "i32":
           return xdr.ScVal.scvI32(val);
 
         default:
@@ -245,22 +245,22 @@ export function nativeToScVal(val, opts = {}) {
 
       return new ScInt(val, { type: opts?.type }).toScVal();
 
-    case 'string': {
-      const optType = opts?.type ?? 'string';
+    case "string": {
+      const optType = opts?.type ?? "string";
       switch (optType) {
-        case 'string':
+        case "string":
           return xdr.ScVal.scvString(val);
 
-        case 'symbol':
+        case "symbol":
           return xdr.ScVal.scvSymbol(val);
 
-        case 'address':
+        case "address":
           return new Address(val).toScVal();
 
-        case 'u32':
+        case "u32":
           return xdr.ScVal.scvU32(parseInt(val, 10));
 
-        case 'i32':
+        case "i32":
           return xdr.ScVal.scvI32(parseInt(val, 10));
 
         default:
@@ -274,13 +274,13 @@ export function nativeToScVal(val, opts = {}) {
       }
     }
 
-    case 'boolean':
+    case "boolean":
       return xdr.ScVal.scvBool(val);
 
-    case 'undefined':
+    case "undefined":
       return xdr.ScVal.scvVoid();
 
-    case 'function': // FIXME: Is this too helpful?
+    case "function": // FIXME: Is this too helpful?
       return nativeToScVal(val());
 
     default:
@@ -385,11 +385,11 @@ export function scValToNative(scv) {
       switch (scv.error().switch().value) {
         // Distinguish errors from the user contract.
         case xdr.ScErrorType.sceContract().value:
-          return { type: 'contract', code: scv.error().contractCode() };
+          return { type: "contract", code: scv.error().contractCode() };
         default: {
           const err = scv.error();
           return {
-            type: 'system',
+            type: "system",
             code: err.code().value,
             value: err.code().name
           };
@@ -414,8 +414,8 @@ xdr.scvSortedMap = (items) => {
     const nativeB = scValToNative(b.key());
 
     switch (typeof nativeA) {
-      case 'number':
-      case 'bigint':
+      case "number":
+      case "bigint":
         return nativeA < nativeB ? -1 : 1;
 
       default:

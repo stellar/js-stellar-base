@@ -1,7 +1,7 @@
 /* eslint no-bitwise: ["error", {"allow": ["<<", ">>", "^", "&", "&="]}] */
 
-import base32 from 'base32.js';
-import { verifyChecksum } from './util/checksum';
+import base32 from "base32.js";
+import { verifyChecksum } from "./util/checksum";
 
 const versionBytes = {
   ed25519PublicKey: 6 << 3, // G (when encoded in base32)
@@ -16,15 +16,15 @@ const versionBytes = {
 };
 
 const strkeyTypes = {
-  G: 'ed25519PublicKey',
-  S: 'ed25519SecretSeed',
-  M: 'med25519PublicKey',
-  T: 'preAuthTx',
-  X: 'sha256Hash',
-  P: 'signedPayload',
-  C: 'contract',
-  L: 'liquidityPool',
-  B: 'claimableBalance'
+  G: "ed25519PublicKey",
+  S: "ed25519SecretSeed",
+  M: "med25519PublicKey",
+  T: "preAuthTx",
+  X: "sha256Hash",
+  P: "signedPayload",
+  C: "contract",
+  L: "liquidityPool",
+  B: "claimableBalance"
 };
 
 /**
@@ -42,7 +42,7 @@ export class StrKey {
    * @returns {string}        "G..." representation of the key
    */
   static encodeEd25519PublicKey(data) {
-    return encodeCheck('ed25519PublicKey', data);
+    return encodeCheck("ed25519PublicKey", data);
   }
 
   /**
@@ -55,7 +55,7 @@ export class StrKey {
    * @returns {Buffer}        raw key
    */
   static decodeEd25519PublicKey(data) {
-    return decodeCheck('ed25519PublicKey', data);
+    return decodeCheck("ed25519PublicKey", data);
   }
 
   /**
@@ -64,7 +64,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidEd25519PublicKey(publicKey) {
-    return isValid('ed25519PublicKey', publicKey);
+    return isValid("ed25519PublicKey", publicKey);
   }
 
   /**
@@ -73,7 +73,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeEd25519SecretSeed(data) {
-    return encodeCheck('ed25519SecretSeed', data);
+    return encodeCheck("ed25519SecretSeed", data);
   }
 
   /**
@@ -82,7 +82,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeEd25519SecretSeed(address) {
-    return decodeCheck('ed25519SecretSeed', address);
+    return decodeCheck("ed25519SecretSeed", address);
   }
 
   /**
@@ -91,7 +91,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidEd25519SecretSeed(seed) {
-    return isValid('ed25519SecretSeed', seed);
+    return isValid("ed25519SecretSeed", seed);
   }
 
   /**
@@ -100,7 +100,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeMed25519PublicKey(data) {
-    return encodeCheck('med25519PublicKey', data);
+    return encodeCheck("med25519PublicKey", data);
   }
 
   /**
@@ -109,7 +109,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeMed25519PublicKey(address) {
-    return decodeCheck('med25519PublicKey', address);
+    return decodeCheck("med25519PublicKey", address);
   }
 
   /**
@@ -118,7 +118,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidMed25519PublicKey(publicKey) {
-    return isValid('med25519PublicKey', publicKey);
+    return isValid("med25519PublicKey", publicKey);
   }
 
   /**
@@ -127,7 +127,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodePreAuthTx(data) {
-    return encodeCheck('preAuthTx', data);
+    return encodeCheck("preAuthTx", data);
   }
 
   /**
@@ -136,7 +136,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodePreAuthTx(address) {
-    return decodeCheck('preAuthTx', address);
+    return decodeCheck("preAuthTx", address);
   }
 
   /**
@@ -145,7 +145,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeSha256Hash(data) {
-    return encodeCheck('sha256Hash', data);
+    return encodeCheck("sha256Hash", data);
   }
 
   /**
@@ -154,7 +154,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeSha256Hash(address) {
-    return decodeCheck('sha256Hash', address);
+    return decodeCheck("sha256Hash", address);
   }
 
   /**
@@ -163,7 +163,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeSignedPayload(data) {
-    return encodeCheck('signedPayload', data);
+    return encodeCheck("signedPayload", data);
   }
 
   /**
@@ -172,7 +172,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeSignedPayload(address) {
-    return decodeCheck('signedPayload', address);
+    return decodeCheck("signedPayload", address);
   }
 
   /**
@@ -181,7 +181,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidSignedPayload(address) {
-    return isValid('signedPayload', address);
+    return isValid("signedPayload", address);
   }
 
   /**
@@ -190,7 +190,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeContract(data) {
-    return encodeCheck('contract', data);
+    return encodeCheck("contract", data);
   }
 
   /**
@@ -199,7 +199,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeContract(address) {
-    return decodeCheck('contract', address);
+    return decodeCheck("contract", address);
   }
 
   /**
@@ -208,7 +208,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidContract(address) {
-    return isValid('contract', address);
+    return isValid("contract", address);
   }
 
   /**
@@ -217,7 +217,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeClaimableBalance(data) {
-    return encodeCheck('claimableBalance', data);
+    return encodeCheck("claimableBalance", data);
   }
 
   /**
@@ -226,7 +226,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeClaimableBalance(address) {
-    return decodeCheck('claimableBalance', address);
+    return decodeCheck("claimableBalance", address);
   }
 
   /**
@@ -235,7 +235,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidClaimableBalance(address) {
-    return isValid('claimableBalance', address);
+    return isValid("claimableBalance", address);
   }
 
   /**
@@ -244,7 +244,7 @@ export class StrKey {
    * @returns {string}
    */
   static encodeLiquidityPool(data) {
-    return encodeCheck('liquidityPool', data);
+    return encodeCheck("liquidityPool", data);
   }
 
   /**
@@ -253,7 +253,7 @@ export class StrKey {
    * @returns {Buffer}
    */
   static decodeLiquidityPool(address) {
-    return decodeCheck('liquidityPool', address);
+    return decodeCheck("liquidityPool", address);
   }
 
   /**
@@ -262,7 +262,7 @@ export class StrKey {
    * @returns {boolean}
    */
   static isValidLiquidityPool(address) {
-    return isValid('liquidityPool', address);
+    return isValid("liquidityPool", address);
   }
 
   static getVersionByteForPrefix(address) {
@@ -284,36 +284,36 @@ export class StrKey {
  *     and (c) output length.
  */
 function isValid(versionByteName, encoded) {
-  if (typeof encoded !== 'string') {
+  if (typeof encoded !== "string") {
     return false;
   }
 
   // basic length checks on the strkey lengths
   switch (versionByteName) {
-    case 'ed25519PublicKey': // falls through
-    case 'ed25519SecretSeed': // falls through
-    case 'preAuthTx': // falls through
-    case 'sha256Hash': // falls through
-    case 'contract': // falls through
-    case 'liquidityPool':
+    case "ed25519PublicKey": // falls through
+    case "ed25519SecretSeed": // falls through
+    case "preAuthTx": // falls through
+    case "sha256Hash": // falls through
+    case "contract": // falls through
+    case "liquidityPool":
       if (encoded.length !== 56) {
         return false;
       }
       break;
 
-    case 'claimableBalance':
+    case "claimableBalance":
       if (encoded.length !== 58) {
         return false;
       }
       break;
 
-    case 'med25519PublicKey':
+    case "med25519PublicKey":
       if (encoded.length !== 69) {
         return false;
       }
       break;
 
-    case 'signedPayload':
+    case "signedPayload":
       if (encoded.length < 56 || encoded.length > 165) {
         return false;
       }
@@ -323,7 +323,7 @@ function isValid(versionByteName, encoded) {
       return false;
   }
 
-  let decoded = '';
+  let decoded = "";
   try {
     decoded = decodeCheck(versionByteName, encoded);
   } catch (err) {
@@ -332,21 +332,21 @@ function isValid(versionByteName, encoded) {
 
   // basic length checks on the resulting buffer sizes
   switch (versionByteName) {
-    case 'ed25519PublicKey': // falls through
-    case 'ed25519SecretSeed': // falls through
-    case 'preAuthTx': // falls through
-    case 'sha256Hash': // falls through
-    case 'contract':
-    case 'liquidityPool':
+    case "ed25519PublicKey": // falls through
+    case "ed25519SecretSeed": // falls through
+    case "preAuthTx": // falls through
+    case "sha256Hash": // falls through
+    case "contract":
+    case "liquidityPool":
       return decoded.length === 32;
 
-    case 'claimableBalance':
+    case "claimableBalance":
       return decoded.length === 32 + 1; // +1 byte for discriminant
 
-    case 'med25519PublicKey':
+    case "med25519PublicKey":
       return decoded.length === 40; // +8 bytes for the ID
 
-    case 'signedPayload':
+    case "signedPayload":
       return (
         // 32 for the signer, +4 for the payload size, then either +4 for the
         // min or +64 for the max payload
@@ -359,8 +359,8 @@ function isValid(versionByteName, encoded) {
 }
 
 export function decodeCheck(versionByteName, encoded) {
-  if (typeof encoded !== 'string') {
-    throw new TypeError('encoded argument must be of type String');
+  if (typeof encoded !== "string") {
+    throw new TypeError("encoded argument must be of type String");
   }
 
   const decoded = base32.decode(encoded);
@@ -370,7 +370,7 @@ export function decodeCheck(versionByteName, encoded) {
   const checksum = decoded.slice(-2);
 
   if (encoded !== base32.encode(decoded)) {
-    throw new Error('invalid encoded string');
+    throw new Error("invalid encoded string");
   }
 
   const expectedVersion = versionBytes[versionByteName];
@@ -378,7 +378,7 @@ export function decodeCheck(versionByteName, encoded) {
   if (expectedVersion === undefined) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
-        `Expected one of ${Object.keys(versionBytes).join(', ')}`
+        `Expected one of ${Object.keys(versionBytes).join(", ")}`
     );
   }
 
@@ -399,7 +399,7 @@ export function decodeCheck(versionByteName, encoded) {
 
 export function encodeCheck(versionByteName, data) {
   if (data === null || data === undefined) {
-    throw new Error('cannot encode null data');
+    throw new Error("cannot encode null data");
   }
 
   const versionByte = versionBytes[versionByteName];
@@ -407,7 +407,7 @@ export function encodeCheck(versionByteName, data) {
   if (versionByte === undefined) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
-        `Expected one of ${Object.keys(versionBytes).join(', ')}`
+        `Expected one of ${Object.keys(versionBytes).join(", ")}`
     );
   }
   data = Buffer.from(data);

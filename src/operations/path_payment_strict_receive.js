@@ -1,5 +1,5 @@
-import xdr from '../xdr';
-import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
+import xdr from "../xdr";
+import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account";
 
 /**
  * Creates a PathPaymentStrictReceive operation.
@@ -30,13 +30,13 @@ import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account
 export function pathPaymentStrictReceive(opts) {
   switch (true) {
     case !opts.sendAsset:
-      throw new Error('Must specify a send asset');
+      throw new Error("Must specify a send asset");
     case !this.isValidAmount(opts.sendMax):
-      throw new TypeError(this.constructAmountRequirementsError('sendMax'));
+      throw new TypeError(this.constructAmountRequirementsError("sendMax"));
     case !opts.destAsset:
-      throw new Error('Must provide a destAsset for a payment operation');
+      throw new Error("Must provide a destAsset for a payment operation");
     case !this.isValidAmount(opts.destAmount):
-      throw new TypeError(this.constructAmountRequirementsError('destAmount'));
+      throw new TypeError(this.constructAmountRequirementsError("destAmount"));
     default:
       break;
   }
@@ -47,7 +47,7 @@ export function pathPaymentStrictReceive(opts) {
   try {
     attributes.destination = decodeAddressToMuxedAccount(opts.destination);
   } catch (e) {
-    throw new Error('destination is invalid');
+    throw new Error("destination is invalid");
   }
 
   attributes.destAsset = opts.destAsset.toXDRObject();

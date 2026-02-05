@@ -18,28 +18,28 @@ export class Soroban {
    * formatTokenAmount("123", 3) === "0.123";
    */
   static formatTokenAmount(amount, decimals) {
-    if (amount.includes('.')) {
-      throw new TypeError('No decimals are allowed');
+    if (amount.includes(".")) {
+      throw new TypeError("No decimals are allowed");
     }
 
     let formatted = amount;
     if (decimals > 0) {
       if (decimals > formatted.length) {
-        formatted = ['0', formatted.toString().padStart(decimals, '0')].join(
-          '.'
+        formatted = ["0", formatted.toString().padStart(decimals, "0")].join(
+          "."
         );
       } else {
         formatted = [
           formatted.slice(0, -decimals),
           formatted.slice(-decimals)
-        ].join('.');
+        ].join(".");
       }
     }
 
     return formatted
-      .replace(/(\.\d*?)0+$/, '$1') // strip trailing zeroes
-      .replace(/\.$/, '.0') // but keep at least one
-      .replace(/^\./, '0.'); // and a leading one
+      .replace(/(\.\d*?)0+$/, "$1") // strip trailing zeroes
+      .replace(/\.$/, ".0") // but keep at least one
+      .replace(/^\./, "0."); // and a leading one
   }
 
   /**
@@ -63,14 +63,14 @@ export class Soroban {
    * parsedAmtForSmartContract === "12345600"
    */
   static parseTokenAmount(value, decimals) {
-    const [whole, fraction, ...rest] = value.split('.').slice();
+    const [whole, fraction, ...rest] = value.split(".").slice();
 
     if (rest.length) {
       throw new Error(`Invalid decimal value: ${value}`);
     }
 
     const shifted = BigInt(
-      whole + (fraction?.padEnd(decimals, '0') ?? '0'.repeat(decimals))
+      whole + (fraction?.padEnd(decimals, "0") ?? "0".repeat(decimals))
     );
 
     return shifted.toString();

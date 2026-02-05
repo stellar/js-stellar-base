@@ -1,5 +1,5 @@
-import xdr from '../xdr';
-import { validateClaimableBalanceId } from './claim_claimable_balance';
+import xdr from "../xdr";
+import { validateClaimableBalanceId } from "./claim_claimable_balance";
 
 /**
  * Creates a clawback operation for a claimable balance.
@@ -23,7 +23,7 @@ export function clawbackClaimableBalance(opts = {}) {
   validateClaimableBalanceId(opts.balanceId);
 
   const attributes = {
-    balanceId: xdr.ClaimableBalanceId.fromXDR(opts.balanceId, 'hex')
+    balanceId: xdr.ClaimableBalanceId.fromXDR(opts.balanceId, "hex")
   };
 
   const opAttributes = {

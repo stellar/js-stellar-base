@@ -1,4 +1,4 @@
-import xdr from '../xdr';
+import xdr from "../xdr";
 
 /**
  * Builds an operation to restore the archived ledger entries specified

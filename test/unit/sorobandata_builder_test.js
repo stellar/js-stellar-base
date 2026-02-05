@@ -1,8 +1,8 @@
 let xdr = StellarBase.xdr;
 let dataBuilder = StellarBase.SorobanDataBuilder;
 
-describe('SorobanTransactionData can be built', function () {
-  const contractId = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+describe("SorobanTransactionData can be built", function () {
+  const contractId = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
   const c = new StellarBase.Contract(contractId);
 
   const sentinel = new xdr.SorobanTransactionData({
@@ -18,22 +18,22 @@ describe('SorobanTransactionData can be built', function () {
 
   const key = c.getFootprint(); // arbitrary key for testing
 
-  it('constructs from xdr, base64, and nothing', function () {
+  it("constructs from xdr, base64, and nothing", function () {
     new dataBuilder();
     const fromRaw = new dataBuilder(sentinel).build();
-    const fromStr = new dataBuilder(sentinel.toXDR('base64')).build();
+    const fromStr = new dataBuilder(sentinel.toXDR("base64")).build();
 
     expect(fromRaw).to.eql(sentinel);
     expect(fromStr).to.eql(sentinel);
 
     const baseline = new dataBuilder().build();
-    [null, '', 0].forEach((falsy) => {
+    [null, "", 0].forEach((falsy) => {
       const db = new dataBuilder(falsy).build();
       expect(db).to.eql(baseline);
     });
   });
 
-  it('sets properties as expected', function () {
+  it("sets properties as expected", function () {
     expect(
       new dataBuilder().setResources(1, 2, 3).setResourceFee(5).build()
     ).to.eql(sentinel);
@@ -44,7 +44,7 @@ describe('SorobanTransactionData can be built', function () {
     expect(withFootprint.resources().footprint().readWrite()[0]).to.eql(key);
   });
 
-  it('leaves untouched footprints untouched', function () {
+  it("leaves untouched footprints untouched", function () {
     const builder = new dataBuilder();
 
     const data = builder.setFootprint([key], [key]).build();
@@ -56,7 +56,7 @@ describe('SorobanTransactionData can be built', function () {
     expect(data2.resources().footprint().readWrite()).to.eql([]);
   });
 
-  it('appends footprints', function () {
+  it("appends footprints", function () {
     const builder = new dataBuilder();
 
     const data = builder
@@ -70,7 +70,7 @@ describe('SorobanTransactionData can be built', function () {
     expect(built.resources().footprint().readWrite()).to.eql([key]);
   });
 
-  it('makes copies on build()', function () {
+  it("makes copies on build()", function () {
     const builder = new dataBuilder();
     const first = builder.build();
     const second = builder.setResourceFee(100).build();

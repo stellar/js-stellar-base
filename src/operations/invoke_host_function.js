@@ -1,8 +1,8 @@
-import xdr from '../xdr';
+import xdr from "../xdr";
 
-import { Keypair } from '../keypair';
-import { Address } from '../address';
-import { Asset } from '../asset';
+import { Keypair } from "../keypair";
+import { Address } from "../address";
+import { Asset } from "../asset";
 
 /**
  * Invokes a single smart contract host function.
@@ -53,8 +53,8 @@ export function invokeHostFunction(opts) {
         }
 
         switch (scv._type) {
-          case 'claimableBalance':
-          case 'liquidityPool':
+          case "claimableBalance":
+          case "liquidityPool":
             throw new TypeError(
               `claimable balances and liquidity pools cannot be arguments to invokeHostFunction`
             );
@@ -101,7 +101,7 @@ export function invokeHostFunction(opts) {
  */
 export function invokeContractFunction(opts) {
   const c = new Address(opts.contract);
-  if (c._type !== 'contract') {
+  if (c._type !== "contract") {
     throw new TypeError(`expected contract strkey instance, got ${c}`);
   }
 
@@ -206,8 +206,8 @@ export function createCustomContract(opts) {
  */
 export function createStellarAssetContract(opts) {
   let asset = opts.asset;
-  if (typeof asset === 'string') {
-    const [code, issuer] = asset.split(':');
+  if (typeof asset === "string") {
+    const [code, issuer] = asset.split(":");
     asset = new Asset(code, issuer); // handles 'xlm' by default
   }
 

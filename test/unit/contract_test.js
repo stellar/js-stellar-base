@@ -1,36 +1,36 @@
 const { Contract, xdr } = StellarBase;
-const NULL_ADDRESS = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM';
+const NULL_ADDRESS = "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM";
 
-describe('Contract', function () {
-  describe('constructor', function () {
-    it('parses strkeys', function () {
+describe("Contract", function () {
+  describe("constructor", function () {
+    it("parses strkeys", function () {
       [
         NULL_ADDRESS,
-        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE'
+        "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE"
       ].forEach((cid) => {
         const contract = new Contract(cid);
         expect(contract.contractId()).to.equal(cid);
       });
     });
 
-    it('throws on obsolete hex ids', function () {
-      expect(() => new Contract('0'.repeat(63) + '1')).to.throw();
+    it("throws on obsolete hex ids", function () {
+      expect(() => new Contract("0".repeat(63) + "1")).to.throw();
     });
 
-    it('throws on invalid ids', function () {
-      expect(() => new Contract('foobar')).to.throw();
+    it("throws on invalid ids", function () {
+      expect(() => new Contract("foobar")).to.throw();
     });
   });
 
-  describe('address', function () {
-    it('returns the contract address', function () {
+  describe("address", function () {
+    it("returns the contract address", function () {
       let contract = new Contract(NULL_ADDRESS);
       expect(contract.address().toString()).to.equal(NULL_ADDRESS);
     });
   });
 
-  describe('getFootprint', function () {
-    it('includes the correct contract ledger keys', function () {
+  describe("getFootprint", function () {
+    it("includes the correct contract ledger keys", function () {
       let contract = new Contract(NULL_ADDRESS);
       expect(contract.contractId()).to.equal(NULL_ADDRESS);
 
@@ -47,19 +47,19 @@ describe('Contract', function () {
     });
   });
 
-  describe('call', function () {
+  describe("call", function () {
     const contract = new Contract(NULL_ADDRESS);
     let call = contract.call(
-      'method',
-      StellarBase.nativeToScVal('arg!'),
-      StellarBase.nativeToScVal(2, { type: 'i32' })
+      "method",
+      StellarBase.nativeToScVal("arg!"),
+      StellarBase.nativeToScVal(2, { type: "i32" })
     );
 
-    it('works with no parameters', function () {
-      contract.call('empty').toXDR();
+    it("works with no parameters", function () {
+      contract.call("empty").toXDR();
     });
 
-    it('builds valid XDR', function () {
+    it("builds valid XDR", function () {
       call.toXDR();
     });
 
@@ -69,19 +69,19 @@ describe('Contract', function () {
       .hostFunction()
       .invokeContract();
 
-    it('passes the contract id as an ScAddress', function () {
+    it("passes the contract id as an ScAddress", function () {
       expect(args.contractAddress()).to.deep.equal(
         new Contract(NULL_ADDRESS).address().toScAddress()
       );
     });
 
-    it('passes the method name as the second arg', function () {
-      expect(args.functionName()).to.deep.equal('method');
+    it("passes the method name as the second arg", function () {
+      expect(args.functionName()).to.deep.equal("method");
     });
 
-    it('passes all params after that', function () {
+    it("passes all params after that", function () {
       expect(args.args()).to.deep.equal([
-        xdr.ScVal.scvString('arg!'),
+        xdr.ScVal.scvString("arg!"),
         xdr.ScVal.scvI32(2)
       ]);
     });

@@ -1,16 +1,16 @@
 // import { XdrWriter, XdrReader } from '@stellar/js-xdr';
 const I256 = StellarBase.Int256; // shorthand
 
-describe('I256.isValid', function () {
-  it('returns true for I256 instances', function () {
+describe("I256.isValid", function () {
+  it("returns true for I256 instances", function () {
     expect(I256.isValid(I256.MIN_VALUE)).to.be.true;
     expect(I256.isValid(I256.MAX_VALUE)).to.be.true;
-    expect(I256.isValid(I256.fromString('0'))).to.be.true;
-    expect(I256.isValid(I256.fromString('-1'))).to.be.true;
+    expect(I256.isValid(I256.fromString("0"))).to.be.true;
+    expect(I256.isValid(I256.fromString("-1"))).to.be.true;
     expect(I256.isValid(5n)).to.be.true;
   });
 
-  it('returns false for non I256', function () {
+  it("returns false for non I256", function () {
     expect(I256.isValid(null)).to.be.false;
     expect(I256.isValid(undefined)).to.be.false;
     expect(I256.isValid([])).to.be.false;
@@ -20,8 +20,8 @@ describe('I256.isValid', function () {
   });
 });
 
-describe('I256.slice', function () {
-  it('slices number to parts', function () {
+describe("I256.slice", function () {
+  it("slices number to parts", function () {
     expect(
       new I256(
         -0x7fffffff800000005fffffffa00000003fffffffc00000001ffffffffn
@@ -40,19 +40,19 @@ describe('I256.slice', function () {
   });
 });
 
-describe('I256.fromString', function () {
-  it('works for positive numbers', function () {
-    expect(I256.fromString('1059').toString()).to.eql('1059');
+describe("I256.fromString", function () {
+  it("works for positive numbers", function () {
+    expect(I256.fromString("1059").toString()).to.eql("1059");
   });
 
-  it('works for negative numbers', function () {
+  it("works for negative numbers", function () {
     expect(
-      I256.fromString('-105909234885029834059234850234985028304085').toString()
-    ).to.eql('-105909234885029834059234850234985028304085');
+      I256.fromString("-105909234885029834059234850234985028304085").toString()
+    ).to.eql("-105909234885029834059234850234985028304085");
   });
 
-  it('fails when providing a string with a decimal place', function () {
-    expect(() => I256.fromString('105946095601.5')).to.throw(/bigint-like/);
+  it("fails when providing a string with a decimal place", function () {
+    expect(() => I256.fromString("105946095601.5")).to.throw(/bigint-like/);
   });
 });
 

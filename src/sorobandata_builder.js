@@ -1,4 +1,4 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
 /**
  * Supports building {@link xdr.SorobanTransactionData} structures with various
@@ -48,7 +48,7 @@ export class SorobanDataBuilder {
         resourceFee: new xdr.Int64(0)
       });
     } else if (
-      typeof sorobanData === 'string' ||
+      typeof sorobanData === "string" ||
       ArrayBuffer.isView(sorobanData)
     ) {
       data = SorobanDataBuilder.fromXDR(sorobanData);
@@ -67,7 +67,7 @@ export class SorobanDataBuilder {
   static fromXDR(data) {
     return xdr.SorobanTransactionData.fromXDR(
       data,
-      typeof data === 'string' ? 'base64' : 'raw'
+      typeof data === "string" ? "base64" : "raw"
     );
   }
 

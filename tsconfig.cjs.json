@@ -1,0 +1,15 @@
+{
+  // This file is used to compile for cjs It should exclude all test files.
+  "extends": "./tsconfig.base.json",
+  "include": ["src"],
+  "exclude": ["test"],
+
+  "compilerOptions": {
+    "outDir": "./lib/cjs",
+    "sourceMap": true,
+    "rootDir": "./src",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "esModuleInterop": true
+  }
+}

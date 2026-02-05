@@ -1,4 +1,4 @@
-import xdr from '../xdr';
+import xdr from "../xdr";
 
 /**
  * Builds an operation to bump the time-to-live (TTL) of the ledger keys. The
@@ -32,7 +32,7 @@ import xdr from '../xdr';
  */
 export function extendFootprintTtl(opts) {
   if ((opts.extendTo ?? -1) <= 0) {
-    throw new RangeError('extendTo has to be positive');
+    throw new RangeError("extendTo has to be positive");
   }
 
   const extendFootprintOp = new xdr.ExtendFootprintTtlOp({

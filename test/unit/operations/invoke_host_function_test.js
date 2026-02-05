@@ -1,69 +1,69 @@
 const { Asset, Contract, Operation, hash, nativeToScVal } = StellarBase;
 
-describe('Operation', function () {
-  describe('.invokeHostFunction()', function () {
+describe("Operation", function () {
+  describe(".invokeHostFunction()", function () {
     beforeEach(function () {
       this.contractId =
-        'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+        "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
       this.c = new Contract(this.contractId);
     });
 
-    it('creates operation', function () {
+    it("creates operation", function () {
       const op = Operation.invokeHostFunction({
         auth: [],
         func: StellarBase.xdr.HostFunction.hostFunctionTypeInvokeContract(
           new StellarBase.xdr.InvokeContractArgs({
             contractAddress: this.c.address().toScAddress(),
-            functionName: 'hello',
-            args: [nativeToScVal('world')]
+            functionName: "hello",
+            args: [nativeToScVal("world")]
           })
         )
       });
-      var xdr = op.toXDR('hex');
-      var operation = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
+      var xdr = op.toXDR("hex");
+      var operation = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
 
-      expect(operation.body().switch().name).to.equal('invokeHostFunction');
+      expect(operation.body().switch().name).to.equal("invokeHostFunction");
       var obj = Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal('invokeHostFunction');
-      expect(obj.func.switch().name).to.equal('hostFunctionTypeInvokeContract');
+      expect(obj.type).to.be.equal("invokeHostFunction");
+      expect(obj.func.switch().name).to.equal("hostFunctionTypeInvokeContract");
       expect(obj.auth).to.deep.equal([]);
 
       expect(
         Operation.invokeContractFunction({
           contract: this.contractId,
-          function: 'hello',
-          args: [nativeToScVal('world')]
-        }).toXDR('hex')
+          function: "hello",
+          args: [nativeToScVal("world")]
+        }).toXDR("hex")
       ).to.eql(xdr);
     });
 
-    it('throws when no func passed', function () {
+    it("throws when no func passed", function () {
       expect(() => Operation.invokeHostFunction({ auth: [] })).to.throw(
         /\('func'\) required/
       );
     });
 
-    describe('abstractions', function () {
-      it('lets you create custom contracts', function () {
+    describe("abstractions", function () {
+      it("lets you create custom contracts", function () {
         let op;
-        const h = hash(Buffer.from('random stuff'));
+        const h = hash(Buffer.from("random stuff"));
 
         op = Operation.createCustomContract({
           address: this.c.address(),
           wasmHash: h,
           salt: h
         });
-        expect(op.body().switch().name).to.equal('invokeHostFunction');
+        expect(op.body().switch().name).to.equal("invokeHostFunction");
 
         // round trip back
 
-        const xdr = op.toXDR('hex');
-        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
-        const decodedOp = Operation.fromXDRObject(xdrOp, 'hex');
+        const xdr = op.toXDR("hex");
+        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
+        const decodedOp = Operation.fromXDRObject(xdrOp, "hex");
 
-        expect(decodedOp.type).to.equal('invokeHostFunction');
+        expect(decodedOp.type).to.equal("invokeHostFunction");
         expect(decodedOp.func.switch().name).to.equal(
-          'hostFunctionTypeCreateContractV2'
+          "hostFunctionTypeCreateContractV2"
         );
         expect(
           // check deep inner field to ensure RT
@@ -76,28 +76,28 @@ describe('Operation', function () {
         expect(decodedOp.auth).to.be.empty;
       });
 
-      describe('lets you wrap tokens', function () {
+      describe("lets you wrap tokens", function () {
         [
-          'USD:GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP',
+          "USD:GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP",
           Asset.native(),
           new Asset(
-            'USD',
-            'GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP'
+            "USD",
+            "GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP"
           )
         ].forEach((asset) => {
           it(`with asset ${asset.toString()}`, function () {
             const op = Operation.createStellarAssetContract({ asset });
-            expect(op.body().switch().name).to.equal('invokeHostFunction');
+            expect(op.body().switch().name).to.equal("invokeHostFunction");
 
             // round trip back
 
-            const xdr = op.toXDR('hex');
-            const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
-            const decodedOp = Operation.fromXDRObject(xdrOp, 'hex');
+            const xdr = op.toXDR("hex");
+            const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
+            const decodedOp = Operation.fromXDRObject(xdrOp, "hex");
 
-            expect(decodedOp.type).to.equal('invokeHostFunction');
+            expect(decodedOp.type).to.equal("invokeHostFunction");
             expect(decodedOp.func.switch().name).to.equal(
-              'hostFunctionTypeCreateContract'
+              "hostFunctionTypeCreateContract"
             );
             expect(
               // check deep inner field to ensure RT
@@ -110,30 +110,30 @@ describe('Operation', function () {
         });
       });
 
-      it('lets you upload wasm', function () {
+      it("lets you upload wasm", function () {
         const wasm = Buffer.alloc(512);
         const op = Operation.uploadContractWasm({ wasm });
-        expect(op.body().switch().name).to.equal('invokeHostFunction');
+        expect(op.body().switch().name).to.equal("invokeHostFunction");
 
         // round trip back
 
-        const xdr = op.toXDR('hex');
-        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
-        const decodedOp = Operation.fromXDRObject(xdrOp, 'hex');
+        const xdr = op.toXDR("hex");
+        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
+        const decodedOp = Operation.fromXDRObject(xdrOp, "hex");
 
-        expect(decodedOp.type).to.equal('invokeHostFunction');
+        expect(decodedOp.type).to.equal("invokeHostFunction");
         expect(decodedOp.func.switch().name).to.equal(
-          'hostFunctionTypeUploadContractWasm'
+          "hostFunctionTypeUploadContractWasm"
         );
         expect(decodedOp.func.wasm()).to.eql(wasm);
         expect(decodedOp.auth).to.be.empty;
       });
 
-      it('lets you create contracts with a constructor', function () {
-        const h = hash(Buffer.from('random stuff'));
+      it("lets you create contracts with a constructor", function () {
+        const h = hash(Buffer.from("random stuff"));
         const constructorArgs = [
-          nativeToScVal('admin name'),
-          nativeToScVal(1234, { type: 'i128' })
+          nativeToScVal("admin name"),
+          nativeToScVal(1234, { type: "i128" })
         ];
 
         const op = Operation.createCustomContract({
@@ -142,17 +142,17 @@ describe('Operation', function () {
           wasmHash: h,
           salt: h
         });
-        expect(op.body().switch().name).to.equal('invokeHostFunction');
+        expect(op.body().switch().name).to.equal("invokeHostFunction");
 
         // round trip back
 
-        const xdr = op.toXDR('hex');
-        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, 'hex');
-        const decodedOp = Operation.fromXDRObject(xdrOp, 'hex');
+        const xdr = op.toXDR("hex");
+        const xdrOp = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
+        const decodedOp = Operation.fromXDRObject(xdrOp, "hex");
 
-        expect(decodedOp.type).to.equal('invokeHostFunction');
+        expect(decodedOp.type).to.equal("invokeHostFunction");
         expect(decodedOp.func.switch().name).to.equal(
-          'hostFunctionTypeCreateContractV2'
+          "hostFunctionTypeCreateContractV2"
         );
 
         // check deep inner field to ensure RT
@@ -176,16 +176,16 @@ describe('Operation', function () {
         expect(ctorArgs[0].str().toString()).to.eql(constructorArgs[0].str());
       });
 
-      it('prevents invocation with claimable balances', function () {
+      it("prevents invocation with claimable balances", function () {
         expect(() =>
           Operation.invokeContractFunction({
             contract:
-              'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE',
-            function: 'increment',
+              "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE",
+            function: "increment",
             args: [
               nativeToScVal(
-                'LA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUPJN',
-                { type: 'address' }
+                "LA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUPJN",
+                { type: "address" }
               )
             ]
           })

@@ -45,7 +45,7 @@ function makeInvocation(contract, name, ...args) {
   );
 }
 
-describe('parsing invocation trees', function () {
+describe("parsing invocation trees", function () {
   const invoker = rk();
   const [nftContract, swapContract, xlmContract, usdcContract] = [
     1, 2, 3, 4
@@ -59,7 +59,7 @@ describe('parsing invocation trees', function () {
   const usdcId = rk();
   const dest = rk();
   const rootInvocation = new xdr.SorobanAuthorizedInvocation({
-    function: makeInvocation(nftContract, 'purchase', `SomeNft:${nftId}`, 7),
+    function: makeInvocation(nftContract, "purchase", `SomeNft:${nftId}`, 7),
     subInvocations: [
       new xdr.SorobanAuthorizedInvocation({
         function:
@@ -67,7 +67,7 @@ describe('parsing invocation trees', function () {
             new xdr.CreateContractArgs({
               contractIdPreimage:
                 xdr.ContractIdPreimage.contractIdPreimageFromAsset(
-                  new Asset('TEST', nftId).toXDRObject()
+                  new Asset("TEST", nftId).toXDRObject()
                 ),
               executable:
                 xdr.ContractExecutable.contractExecutableStellarAsset()
@@ -78,8 +78,8 @@ describe('parsing invocation trees', function () {
       new xdr.SorobanAuthorizedInvocation({
         function: makeInvocation(
           swapContract,
-          'swap',
-          'native',
+          "swap",
+          "native",
           `USDC:${usdcId}`,
           new Address(invoker).toScVal(),
           new Address(dest).toScVal()
@@ -88,18 +88,18 @@ describe('parsing invocation trees', function () {
           new xdr.SorobanAuthorizedInvocation({
             function: makeInvocation(
               xlmContract,
-              'transfer',
+              "transfer",
               new Address(invoker).toScVal(),
-              '7'
+              "7"
             ),
             subInvocations: []
           }),
           new xdr.SorobanAuthorizedInvocation({
             function: makeInvocation(
               usdcContract,
-              'transfer',
+              "transfer",
               new Address(invoker).toScVal(),
-              '1'
+              "1"
             ),
             subInvocations: []
           })
@@ -108,9 +108,9 @@ describe('parsing invocation trees', function () {
       new xdr.SorobanAuthorizedInvocation({
         function: makeInvocation(
           nftContract,
-          'transfer',
+          "transfer",
           nftContract.address().toScVal(),
-          '2'
+          "2"
         ),
         subInvocations: []
       }),
@@ -125,13 +125,13 @@ describe('parsing invocation trees', function () {
                     salt: Buffer.alloc(32, 0)
                   })
                 ),
-              constructorArgs: [1, '2', 3].map((arg, i) => {
+              constructorArgs: [1, "2", 3].map((arg, i) => {
                 return nativeToScVal(arg, {
-                  type: ['u32', 'string', 'i32'][i]
+                  type: ["u32", "string", "i32"][i]
                 });
               }),
               executable: xdr.ContractExecutable.contractExecutableWasm(
-                Buffer.alloc(32, '\x20')
+                Buffer.alloc(32, "\x20")
               )
             })
           ),
@@ -141,68 +141,68 @@ describe('parsing invocation trees', function () {
   });
 
   const expectedParsed = {
-    type: 'execute',
+    type: "execute",
     args: {
       source: nftContract.contractId(),
-      function: 'purchase',
-      args: [`SomeNft:${nftId}`, '7']
+      function: "purchase",
+      args: [`SomeNft:${nftId}`, "7"]
     },
     invocations: [
       {
-        type: 'create',
+        type: "create",
         args: {
-          type: 'sac',
+          type: "sac",
           asset: `TEST:${nftId}`
         },
         invocations: []
       },
       {
-        type: 'execute',
+        type: "execute",
         args: {
           source: swapContract.contractId(),
-          function: 'swap',
-          args: ['native', `USDC:${usdcId}`, invoker, dest]
+          function: "swap",
+          args: ["native", `USDC:${usdcId}`, invoker, dest]
         },
         invocations: [
           {
-            type: 'execute',
+            type: "execute",
             args: {
               source: xlmContract.contractId(),
-              function: 'transfer',
-              args: [invoker, '7']
+              function: "transfer",
+              args: [invoker, "7"]
             },
             invocations: []
           },
           {
-            type: 'execute',
+            type: "execute",
             args: {
               source: usdcContract.contractId(),
-              function: 'transfer',
-              args: [invoker, '1']
+              function: "transfer",
+              args: [invoker, "1"]
             },
             invocations: []
           }
         ]
       },
       {
-        type: 'execute',
+        type: "execute",
         args: {
           source: nftContract.contractId(),
-          function: 'transfer',
-          args: [nftContract.contractId(), '2']
+          function: "transfer",
+          args: [nftContract.contractId(), "2"]
         },
         invocations: []
       },
 
       {
-        type: 'create',
+        type: "create",
         args: {
-          type: 'wasm',
+          type: "wasm",
           wasm: {
-            salt: '00'.repeat(32),
-            hash: '20'.repeat(32),
+            salt: "00".repeat(32),
+            hash: "20".repeat(32),
             address: nftContract.contractId(),
-            constructorArgs: [1, '2', 3]
+            constructorArgs: [1, "2", 3]
           }
         },
         invocations: []
@@ -210,32 +210,32 @@ describe('parsing invocation trees', function () {
     ]
   };
 
-  it('builds an invocation tree', function () {
+  it("builds an invocation tree", function () {
     expect(() => rootInvocation.toXDR()).not.to.throw(
       undefined,
-      'the rootInvocation is not a valid SorobanAuthorizedInvocation instance'
+      "the rootInvocation is not a valid SorobanAuthorizedInvocation instance"
     );
   });
 
-  it('outputs a human-readable version of it', function () {
+  it("outputs a human-readable version of it", function () {
     const parsed = buildInvocationTree(rootInvocation);
     expect(
       JSON.stringify(
         parsed,
-        (_, val) => (typeof val === 'bigint' ? val.toString() : val),
+        (_, val) => (typeof val === "bigint" ? val.toString() : val),
         2
       )
     ).to.deep.equal(JSON.stringify(expectedParsed, null, 2));
   });
 
-  it('walks correctly', function () {
+  it("walks correctly", function () {
     let walkCount = 0;
     let walkSet = {};
     let maxDepth = 0;
 
     walkInvocationTree(rootInvocation, (node, depth, parent) => {
       walkCount++;
-      const s = node.toXDR('base64');
+      const s = node.toXDR("base64");
       walkSet[s] = s in walkSet ? walkSet[s] + 1 : 1;
       maxDepth = Math.max(maxDepth, depth);
       return true;
