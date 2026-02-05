@@ -1,23 +1,19 @@
 var path = require('path');
-var fs = require('fs');
 var webpack = require('webpack');
 
 var ESLintPlugin = require('eslint-webpack-plugin');
 var TerserPlugin = require('terser-webpack-plugin');
 var NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const entryFile = fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
+  ? path.resolve(__dirname, '../src/index.ts')
+  : path.resolve(__dirname, '../src/index.js');
 
 const config = {
   target: 'web',
   // https://stackoverflow.com/a/34018909
   entry: {
-    'stellar-base': fs.existsSync(path.resolve(__dirname, '../src/index.ts'))
-      ? path.resolve(__dirname, '../src/index.ts')
-      : path.resolve(__dirname, '../src/index.js'),
-    'stellar-base.min': fs.existsSync(
-      path.resolve(__dirname, '../src/index.ts')
-    )
-      ? path.resolve(__dirname, '../src/index.ts')
-      : path.resolve(__dirname, '../src/index.js')
+    'stellar-base': entryFile,
+    'stellar-base.min': entryFile
   },
   resolve: {
     fallback: {
