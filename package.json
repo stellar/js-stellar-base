@@ -73,8 +73,8 @@
     "@babel/core": "^7.28.5",
     "@babel/eslint-parser": "^7.28.5",
     "@babel/eslint-plugin": "^7.27.1",
-    "@babel/preset-typescript": "^7.28.3",
     "@babel/preset-env": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.3",
     "@babel/register": "^7.28.3",
     "@definitelytyped/dtslint": "^0.0.182",
     "@istanbuljs/nyc-config-babel": "3.0.0",
@@ -115,7 +115,7 @@
     "taffydb": "^2.7.3",
     "terser-webpack-plugin": "^5.3.16",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
+    "typescript": "5.9.3",
     "webpack": "^5.104.1",
     "webpack-cli": "^5.1.1"
   },
