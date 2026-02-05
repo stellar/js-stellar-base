@@ -1,12 +1,12 @@
-import xdr from './xdr';
-import { Account } from './account';
-import { StrKey } from './strkey';
+import xdr from "./xdr";
+import { Account } from "./account";
+import { StrKey } from "./strkey";
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
   encodeMuxedAccount,
   extractBaseAddress
-} from './util/decode_encode_muxed_account';
+} from "./util/decode_encode_muxed_account";
 
 /**
  * Represents a muxed account for transactions and operations.
@@ -49,7 +49,7 @@ export class MuxedAccount {
   constructor(baseAccount, id) {
     const accountId = baseAccount.accountId();
     if (!StrKey.isValidEd25519PublicKey(accountId)) {
-      throw new Error('accountId is invalid');
+      throw new Error("accountId is invalid");
     }
 
     this.account = baseAccount;
@@ -97,8 +97,8 @@ export class MuxedAccount {
   }
 
   setId(id) {
-    if (typeof id !== 'string') {
-      throw new Error('id should be a string representing a number (uint64)');
+    if (typeof id !== "string") {
+      throw new Error("id should be a string representing a number (uint64)");
     }
 
     this._muxedXdr.med25519().id(xdr.Uint64.fromString(id));

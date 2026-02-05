@@ -1,4 +1,4 @@
-import OriginBigNumber from 'bignumber.js';
+import OriginBigNumber from "bignumber.js";
 
 const BigNumber = OriginBigNumber.clone();
 

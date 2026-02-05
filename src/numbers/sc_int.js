@@ -1,4 +1,4 @@
-import { XdrLargeInt } from './xdr_large_int';
+import { XdrLargeInt } from "./xdr_large_int";
 
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
@@ -74,15 +74,15 @@ import { XdrLargeInt } from './xdr_large_int';
 export class ScInt extends XdrLargeInt {
   constructor(value, opts) {
     const signed = value < 0;
-    let type = opts?.type ?? '';
-    if (type.startsWith('u') && signed) {
+    let type = opts?.type ?? "";
+    if (type.startsWith("u") && signed) {
       throw TypeError(`specified type ${opts.type} yet negative (${value})`);
     }
 
     // If unspecified, we make a best guess at the type based on the bit length
     // of the value, treating 64 as a minimum and 256 as a maximum.
-    if (type === '') {
-      type = signed ? 'i' : 'u';
+    if (type === "") {
+      type = signed ? "i" : "u";
       const bitlen = nearestBigIntSize(value);
 
       switch (bitlen) {

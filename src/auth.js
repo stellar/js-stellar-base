@@ -1,12 +1,12 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
-import { Keypair } from './keypair';
-import { StrKey } from './strkey';
-import { Networks } from './network';
-import { hash } from './hashing';
+import { Keypair } from "./keypair";
+import { StrKey } from "./strkey";
+import { Networks } from "./network";
+import { hash } from "./hashing";
 
-import { Address } from './address';
-import { nativeToScVal } from './scval';
+import { Address } from "./address";
+import { nativeToScVal } from "./scval";
 
 /**
  * @async
@@ -144,7 +144,7 @@ export async function authorizeEntry(
 
   let signature;
   let publicKey;
-  if (typeof signer === 'function') {
+  if (typeof signer === "function") {
     const sigResult = await signer(preimage);
     if (sigResult?.signature) {
       signature = Buffer.from(sigResult.signature);
@@ -175,8 +175,8 @@ export async function authorizeEntry(
     },
     {
       type: {
-        public_key: ['symbol', null],
-        signature: ['symbol', null]
+        public_key: ["symbol", null],
+        signature: ["symbol", null]
       }
     }
   );
@@ -225,7 +225,7 @@ export function authorizeInvocation(
   signer,
   validUntilLedgerSeq,
   invocation,
-  publicKey = '',
+  publicKey = "",
   networkPassphrase = Networks.FUTURENET
 ) {
   // We use keypairs as a source of randomness for the nonce to avoid mucking

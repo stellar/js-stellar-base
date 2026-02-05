@@ -1,4 +1,4 @@
-import { LargeInt } from '@stellar/js-xdr';
+import { LargeInt } from "@stellar/js-xdr";
 
 export class Uint256 extends LargeInt {
   /**

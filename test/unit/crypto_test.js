@@ -1,8 +1,8 @@
-import crypto from 'crypto';
+import crypto from "crypto";
 
 function expectBuffersToBeEqual(left, right) {
-  const leftHex = left.toString('hex');
-  const rightHex = right.toString('hex');
+  const leftHex = left.toString("hex");
+  const rightHex = right.toString("hex");
   expect(leftHex).to.eql(rightHex);
 }
 
@@ -15,9 +15,9 @@ function expectBuffersToBeEqual(left, right) {
   used on the site.
 */
 
-it('new hashing function behaves like crypto', () => {
-  const input = 'I really hope this works';
-  const cryptoHash = crypto.createHash('sha256').update(input).digest();
+it("new hashing function behaves like crypto", () => {
+  const input = "I really hope this works";
+  const cryptoHash = crypto.createHash("sha256").update(input).digest();
 
   const newHash = StellarBase.hash(input);
 

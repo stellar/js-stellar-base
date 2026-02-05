@@ -1,6 +1,6 @@
-import { Asset } from './asset';
-import { Address } from './address';
-import { scValToNative } from './scval';
+import { Asset } from "./asset";
+import { Address } from "./address";
+import { scValToNative } from "./scval";
 
 /**
  * @typedef CreateInvocation
@@ -94,7 +94,7 @@ export function buildInvocationTree(root) {
   switch (fn.switch().value) {
     // sorobanAuthorizedFunctionTypeContractFn
     case 0:
-      output.type = 'execute';
+      output.type = "execute";
       output.args = {
         source: Address.fromScAddress(inner.contractAddress()).toString(),
         function: inner.functionName(),
@@ -107,7 +107,7 @@ export function buildInvocationTree(root) {
     case 1: // fallthrough: just no ctor args in V1
     case 2: {
       const createV2 = fn.switch().value === 2;
-      output.type = 'create';
+      output.type = "create";
       output.args = {};
 
       // If the executable is a WASM, the preimage MUST be an address. If it's a
@@ -132,10 +132,10 @@ export function buildInvocationTree(root) {
           /** @type {xdr.ContractIdPreimageFromAddress} */
           const details = preimage.fromAddress();
 
-          output.args.type = 'wasm';
+          output.args.type = "wasm";
           output.args.wasm = {
-            salt: details.salt().toString('hex'),
-            hash: exec.wasmHash().toString('hex'),
+            salt: details.salt().toString("hex"),
+            hash: exec.wasmHash().toString("hex"),
             address: Address.fromScAddress(details.address()).toString(),
             // only apply constructor args for WASM+CreateV2 scenario
             ...(createV2 && {
@@ -149,7 +149,7 @@ export function buildInvocationTree(root) {
 
         // contractExecutableStellarAsset
         case 1:
-          output.args.type = 'sac';
+          output.args.type = "sac";
           output.args.asset = Asset.fromOperation(
             preimage.fromAsset()
           ).toString();

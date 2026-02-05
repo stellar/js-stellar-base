@@ -1,29 +1,29 @@
-describe('Soroban', function () {
-  it('should have XDR serialization', function () {
+describe("Soroban", function () {
+  it("should have XDR serialization", function () {
     expect(StellarBase.cereal).not.to.be.undefined;
   });
 
-  describe('formatTokenAmount', function () {
+  describe("formatTokenAmount", function () {
     const SUCCESS_TEST_CASES = [
-      { amount: '1000000001', decimals: 7, expected: '100.0000001' },
-      { amount: '10000000010', decimals: 5, expected: '100000.0001' },
-      { amount: '10000000010', decimals: 0, expected: '10000000010' },
-      { amount: '10000', decimals: 10, expected: '0.000001' },
-      { amount: '10000', decimals: 4, expected: '1.0' },
-      { amount: '1567890', decimals: 10, expected: '0.000156789' },
-      { amount: '1230', decimals: 0, expected: '1230' },
-      { amount: '1230', decimals: 1, expected: '123.0' },
-      { amount: '123', decimals: 3, expected: '0.123' }
+      { amount: "1000000001", decimals: 7, expected: "100.0000001" },
+      { amount: "10000000010", decimals: 5, expected: "100000.0001" },
+      { amount: "10000000010", decimals: 0, expected: "10000000010" },
+      { amount: "10000", decimals: 10, expected: "0.000001" },
+      { amount: "10000", decimals: 4, expected: "1.0" },
+      { amount: "1567890", decimals: 10, expected: "0.000156789" },
+      { amount: "1230", decimals: 0, expected: "1230" },
+      { amount: "1230", decimals: 1, expected: "123.0" },
+      { amount: "123", decimals: 3, expected: "0.123" }
     ];
 
     const FAILED_TEST_CASES = [
       {
-        amount: '1000000001.1',
+        amount: "1000000001.1",
         decimals: 7,
         expected: /No decimals are allowed/
       },
       {
-        amount: '10000.00001.1',
+        amount: "10000.00001.1",
         decimals: 4,
         expected: /No decimals are allowed/
       }
@@ -52,16 +52,16 @@ describe('Soroban', function () {
     });
   });
 
-  describe('parseTokenAmount', function () {
+  describe("parseTokenAmount", function () {
     const SUCCESS_TEST_CASES = [
-      { amount: '100', decimals: 2, expected: '10000' },
-      { amount: '123.4560', decimals: 5, expected: '12345600' },
-      { amount: '100', decimals: 5, expected: '10000000' }
+      { amount: "100", decimals: 2, expected: "10000" },
+      { amount: "123.4560", decimals: 5, expected: "12345600" },
+      { amount: "100", decimals: 5, expected: "10000000" }
     ];
 
     const FAILED_TEST_CASES = [
       {
-        amount: '1000000.001.1',
+        amount: "1000000.001.1",
         decimals: 7,
         expected: /Invalid decimal value/i
       }

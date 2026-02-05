@@ -1,5 +1,5 @@
-import xdr from '../xdr';
-import { decodeAddressToMuxedAccount } from '../util/decode_encode_muxed_account';
+import xdr from "../xdr";
+import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account";
 
 /**
  * Transfers native balance to destination account.
@@ -21,7 +21,7 @@ export function accountMerge(opts) {
       decodeAddressToMuxedAccount(opts.destination)
     );
   } catch (e) {
-    throw new Error('destination is invalid');
+    throw new Error("destination is invalid");
   }
   this.setSourceAccount(opAttributes, opts);
 

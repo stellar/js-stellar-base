@@ -1,19 +1,19 @@
-import { UnsignedHyper } from '@stellar/js-xdr';
-import BigNumber from './util/bignumber';
+import { UnsignedHyper } from "@stellar/js-xdr";
+import BigNumber from "./util/bignumber";
 
-import xdr from './xdr';
+import xdr from "./xdr";
 
-import { Account } from './account';
-import { MuxedAccount } from './muxed_account';
-import { decodeAddressToMuxedAccount } from './util/decode_encode_muxed_account';
+import { Account } from "./account";
+import { MuxedAccount } from "./muxed_account";
+import { decodeAddressToMuxedAccount } from "./util/decode_encode_muxed_account";
 
-import { Transaction } from './transaction';
-import { FeeBumpTransaction } from './fee_bump_transaction';
-import { SorobanDataBuilder } from './sorobandata_builder';
+import { Transaction } from "./transaction";
+import { FeeBumpTransaction } from "./fee_bump_transaction";
+import { SorobanDataBuilder } from "./sorobandata_builder";
 
-import { StrKey } from './strkey';
-import { SignerKey } from './signerkey';
-import { Memo } from './memo';
+import { StrKey } from "./strkey";
+import { SignerKey } from "./signerkey";
+import { Memo } from "./memo";
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -25,7 +25,7 @@ import { Memo } from './memo';
  * @constant
  * @see [Fees](https://developers.stellar.org/docs/glossary/fees/)
  */
-export const BASE_FEE = '100'; // Stroops
+export const BASE_FEE = "100"; // Stroops
 
 /**
  * @constant
@@ -126,11 +126,11 @@ export const TimeoutInfinite = 0;
 export class TransactionBuilder {
   constructor(sourceAccount, opts = {}) {
     if (!sourceAccount) {
-      throw new Error('must specify source account for the transaction');
+      throw new Error("must specify source account for the transaction");
     }
 
     if (opts.fee === undefined) {
-      throw new Error('must specify fee for the transaction (in stroops)');
+      throw new Error("must specify fee for the transaction (in stroops)");
     }
 
     this.source = sourceAccount;
@@ -306,12 +306,12 @@ export class TransactionBuilder {
   setTimeout(timeoutSeconds) {
     if (this.timebounds !== null && this.timebounds.maxTime > 0) {
       throw new Error(
-        'TimeBounds.max_time has been already set - setting timeout would overwrite it.'
+        "TimeBounds.max_time has been already set - setting timeout would overwrite it."
       );
     }
 
     if (timeoutSeconds < 0) {
-      throw new Error('timeout cannot be negative');
+      throw new Error("timeout cannot be negative");
     }
 
     if (timeoutSeconds > 0) {
@@ -353,16 +353,16 @@ export class TransactionBuilder {
    */
   setTimebounds(minEpochOrDate, maxEpochOrDate) {
     // Force it to a date type
-    if (typeof minEpochOrDate === 'number') {
+    if (typeof minEpochOrDate === "number") {
       minEpochOrDate = new Date(minEpochOrDate * 1000);
     }
-    if (typeof maxEpochOrDate === 'number') {
+    if (typeof maxEpochOrDate === "number") {
       maxEpochOrDate = new Date(maxEpochOrDate * 1000);
     }
 
     if (this.timebounds !== null) {
       throw new Error(
-        'TimeBounds has been already set - setting timebounds would overwrite it.'
+        "TimeBounds has been already set - setting timebounds would overwrite it."
       );
     }
 
@@ -370,13 +370,13 @@ export class TransactionBuilder {
     const minTime = Math.floor(minEpochOrDate.valueOf() / 1000);
     const maxTime = Math.floor(maxEpochOrDate.valueOf() / 1000);
     if (minTime < 0) {
-      throw new Error('min_time cannot be negative');
+      throw new Error("min_time cannot be negative");
     }
     if (maxTime < 0) {
-      throw new Error('max_time cannot be negative');
+      throw new Error("max_time cannot be negative");
     }
     if (maxTime > 0 && minTime > maxTime) {
-      throw new Error('min_time cannot be greater than max_time');
+      throw new Error("min_time cannot be greater than max_time");
     }
 
     this.timebounds = { minTime, maxTime };
@@ -402,18 +402,18 @@ export class TransactionBuilder {
   setLedgerbounds(minLedger, maxLedger) {
     if (this.ledgerbounds !== null) {
       throw new Error(
-        'LedgerBounds has been already set - setting ledgerbounds would overwrite it.'
+        "LedgerBounds has been already set - setting ledgerbounds would overwrite it."
       );
     }
 
     if (minLedger < 0) {
-      throw new Error('min_ledger cannot be negative');
+      throw new Error("min_ledger cannot be negative");
     }
     if (maxLedger < 0) {
-      throw new Error('max_ledger cannot be negative');
+      throw new Error("max_ledger cannot be negative");
     }
     if (maxLedger > 0 && minLedger > maxLedger) {
-      throw new Error('min_ledger cannot be greater than max_ledger');
+      throw new Error("min_ledger cannot be greater than max_ledger");
     }
 
     this.ledgerbounds = { minLedger, maxLedger };
@@ -441,7 +441,7 @@ export class TransactionBuilder {
   setMinAccountSequence(minAccountSequence) {
     if (this.minAccountSequence !== null) {
       throw new Error(
-        'min_account_sequence has been already set - setting min_account_sequence would overwrite it.'
+        "min_account_sequence has been already set - setting min_account_sequence would overwrite it."
       );
     }
 
@@ -463,17 +463,17 @@ export class TransactionBuilder {
    * @returns {TransactionBuilder}
    */
   setMinAccountSequenceAge(durationInSeconds) {
-    if (typeof durationInSeconds !== 'number') {
-      throw new Error('min_account_sequence_age must be a number');
+    if (typeof durationInSeconds !== "number") {
+      throw new Error("min_account_sequence_age must be a number");
     }
     if (this.minAccountSequenceAge !== null) {
       throw new Error(
-        'min_account_sequence_age has been already set - setting min_account_sequence_age would overwrite it.'
+        "min_account_sequence_age has been already set - setting min_account_sequence_age would overwrite it."
       );
     }
 
     if (durationInSeconds < 0) {
-      throw new Error('min_account_sequence_age cannot be negative');
+      throw new Error("min_account_sequence_age cannot be negative");
     }
 
     this.minAccountSequenceAge = durationInSeconds;
@@ -496,12 +496,12 @@ export class TransactionBuilder {
   setMinAccountSequenceLedgerGap(gap) {
     if (this.minAccountSequenceLedgerGap !== null) {
       throw new Error(
-        'min_account_sequence_ledger_gap has been already set - setting min_account_sequence_ledger_gap would overwrite it.'
+        "min_account_sequence_ledger_gap has been already set - setting min_account_sequence_ledger_gap would overwrite it."
       );
     }
 
     if (gap < 0) {
-      throw new Error('min_account_sequence_ledger_gap cannot be negative');
+      throw new Error("min_account_sequence_ledger_gap cannot be negative");
     }
 
     this.minAccountSequenceLedgerGap = gap;
@@ -521,17 +521,17 @@ export class TransactionBuilder {
    */
   setExtraSigners(extraSigners) {
     if (!Array.isArray(extraSigners)) {
-      throw new Error('extra_signers must be an array of strings.');
+      throw new Error("extra_signers must be an array of strings.");
     }
 
     if (this.extraSigners !== null) {
       throw new Error(
-        'extra_signers has been already set - setting extra_signers would overwrite it.'
+        "extra_signers has been already set - setting extra_signers would overwrite it."
       );
     }
 
     if (extraSigners.length > 2) {
-      throw new Error('extra_signers cannot be longer than 2 elements.');
+      throw new Error("extra_signers cannot be longer than 2 elements.");
     }
 
     this.extraSigners = [...extraSigners];
@@ -594,11 +594,11 @@ export class TransactionBuilder {
 
     if (
       this.timebounds === null ||
-      typeof this.timebounds.minTime === 'undefined' ||
-      typeof this.timebounds.maxTime === 'undefined'
+      typeof this.timebounds.minTime === "undefined" ||
+      typeof this.timebounds.maxTime === "undefined"
     ) {
       throw new Error(
-        'TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).'
+        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite)."
       );
     }
 
@@ -624,13 +624,13 @@ export class TransactionBuilder {
         ledgerBounds = new xdr.LedgerBounds(this.ledgerbounds);
       }
 
-      let minSeqNum = this.minAccountSequence || '0';
+      let minSeqNum = this.minAccountSequence || "0";
       minSeqNum = xdr.SequenceNumber.fromString(minSeqNum);
 
       const minSeqAge = UnsignedHyper.fromString(
         this.minAccountSequenceAge !== null
           ? this.minAccountSequenceAge.toString()
-          : '0'
+          : "0"
       );
 
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
@@ -782,7 +782,7 @@ export class TransactionBuilder {
     }
 
     let feeSourceAccount;
-    if (typeof feeSource === 'string') {
+    if (typeof feeSource === "string") {
       feeSourceAccount = decodeAddressToMuxedAccount(feeSource);
     } else {
       feeSourceAccount = feeSource.xdrMuxedAccount();
@@ -825,8 +825,8 @@ export class TransactionBuilder {
    * @returns {Transaction|FeeBumpTransaction}
    */
   static fromXDR(envelope, networkPassphrase) {
-    if (typeof envelope === 'string') {
-      envelope = xdr.TransactionEnvelope.fromXDR(envelope, 'base64');
+    if (typeof envelope === "string") {
+      envelope = xdr.TransactionEnvelope.fromXDR(envelope, "base64");
     }
 
     if (envelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {

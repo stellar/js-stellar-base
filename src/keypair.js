@@ -1,11 +1,11 @@
 /* eslint no-bitwise: ["error", {"allow": ["^"]}] */
 
-import { ed25519 } from '@noble/curves/ed25519';
-import { sign, verify, generate } from './signing';
-import { StrKey } from './strkey';
-import { hash } from './hashing';
+import { ed25519 } from "@noble/curves/ed25519";
+import { sign, verify, generate } from "./signing";
+import { StrKey } from "./strkey";
+import { hash } from "./hashing";
 
-import xdr from './xdr';
+import xdr from "./xdr";
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
@@ -26,8 +26,8 @@ import xdr from './xdr';
  */
 export class Keypair {
   constructor(keys) {
-    if (keys.type !== 'ed25519') {
-      throw new Error('Invalid keys type');
+    if (keys.type !== "ed25519") {
+      throw new Error("Invalid keys type");
     }
 
     this.type = keys.type;
@@ -36,7 +36,7 @@ export class Keypair {
       keys.secretKey = Buffer.from(keys.secretKey);
 
       if (keys.secretKey.length !== 32) {
-        throw new Error('secretKey length is invalid');
+        throw new Error("secretKey length is invalid");
       }
 
       this._secretSeed = keys.secretKey;
@@ -47,13 +47,13 @@ export class Keypair {
         keys.publicKey &&
         !this._publicKey.equals(Buffer.from(keys.publicKey))
       ) {
-        throw new Error('secretKey does not match publicKey');
+        throw new Error("secretKey does not match publicKey");
       }
     } else {
       this._publicKey = Buffer.from(keys.publicKey);
 
       if (this._publicKey.length !== 32) {
-        throw new Error('publicKey length is invalid');
+        throw new Error("publicKey length is invalid");
       }
     }
   }
@@ -76,7 +76,7 @@ export class Keypair {
    * @returns {Keypair}
    */
   static fromRawEd25519Seed(rawSeed) {
-    return new this({ type: 'ed25519', secretKey: rawSeed });
+    return new this({ type: "ed25519", secretKey: rawSeed });
   }
 
   /**
@@ -87,7 +87,7 @@ export class Keypair {
   static master(networkPassphrase) {
     if (!networkPassphrase) {
       throw new Error(
-        'No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.'
+        "No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`."
       );
     }
 
@@ -102,9 +102,9 @@ export class Keypair {
   static fromPublicKey(publicKey) {
     publicKey = StrKey.decodeEd25519PublicKey(publicKey);
     if (publicKey.length !== 32) {
-      throw new Error('Invalid Stellar public key');
+      throw new Error("Invalid Stellar public key");
     }
-    return new this({ type: 'ed25519', publicKey });
+    return new this({ type: "ed25519", publicKey });
   }
 
   /**
@@ -136,8 +136,8 @@ export class Keypair {
    * @return {xdr.MuxedAccount}
    */
   xdrMuxedAccount(id) {
-    if (typeof id !== 'undefined') {
-      if (typeof id !== 'string') {
+    if (typeof id !== "undefined") {
+      if (typeof id !== "string") {
         throw new TypeError(`expected string for ID, got ${typeof id}`);
       }
 
@@ -180,14 +180,14 @@ export class Keypair {
    */
   secret() {
     if (!this._secretSeed) {
-      throw new Error('no secret key available');
+      throw new Error("no secret key available");
     }
 
-    if (this.type === 'ed25519') {
+    if (this.type === "ed25519") {
       return StrKey.encodeEd25519SecretSeed(this._secretSeed);
     }
 
-    throw new Error('Invalid Keypair type');
+    throw new Error("Invalid Keypair type");
   }
 
   /**
@@ -213,7 +213,7 @@ export class Keypair {
    */
   sign(data) {
     if (!this.canSign()) {
-      throw new Error('cannot sign: no secret key available');
+      throw new Error("cannot sign: no secret key available");
     }
 
     return sign(data, this._secretKey);

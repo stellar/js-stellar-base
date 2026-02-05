@@ -1,5 +1,5 @@
-import { StrKey } from './strkey';
-import { scValToNative } from './scval';
+import { StrKey } from "./strkey";
+import { scValToNative } from "./scval";
 
 /**
  * Converts raw diagnostic or contract events into something with a flatter,
@@ -29,7 +29,7 @@ export function humanizeEvents(events) {
 
 function extractEvent(event) {
   return {
-    ...(typeof event.contractId === 'function' &&
+    ...(typeof event.contractId === "function" &&
       event.contractId() != null && {
         contractId: StrKey.encodeContract(event.contractId())
       }),

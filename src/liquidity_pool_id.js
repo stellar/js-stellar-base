@@ -1,4 +1,4 @@
-import xdr from './xdr';
+import xdr from "./xdr";
 
 /**
  * LiquidityPoolId class represents the asset referenced by a trustline to a
@@ -10,10 +10,10 @@ import xdr from './xdr';
 export class LiquidityPoolId {
   constructor(liquidityPoolId) {
     if (!liquidityPoolId) {
-      throw new Error('liquidityPoolId cannot be empty');
+      throw new Error("liquidityPoolId cannot be empty");
     }
     if (!/^[a-f0-9]{64}$/.test(liquidityPoolId)) {
-      throw new Error('Liquidity pool ID is not a valid hash');
+      throw new Error("Liquidity pool ID is not a valid hash");
     }
 
     this.liquidityPoolId = liquidityPoolId;
@@ -27,7 +27,7 @@ export class LiquidityPoolId {
   static fromOperation(tlAssetXdr) {
     const assetType = tlAssetXdr.switch();
     if (assetType === xdr.AssetType.assetTypePoolShare()) {
-      const liquidityPoolId = tlAssetXdr.liquidityPoolId().toString('hex');
+      const liquidityPoolId = tlAssetXdr.liquidityPoolId().toString("hex");
       return new this(liquidityPoolId);
     }
 
@@ -44,8 +44,8 @@ export class LiquidityPoolId {
    * @returns {xdr.TrustLineAsset} XDR LiquidityPoolId object
    */
   toXDRObject() {
-    const xdrPoolId = xdr.PoolId.fromXDR(this.liquidityPoolId, 'hex');
-    return new xdr.TrustLineAsset('assetTypePoolShare', xdrPoolId);
+    const xdrPoolId = xdr.PoolId.fromXDR(this.liquidityPoolId, "hex");
+    return new xdr.TrustLineAsset("assetTypePoolShare", xdrPoolId);
   }
 
   /**
@@ -60,7 +60,7 @@ export class LiquidityPoolId {
    * @returns {AssetType.liquidityPoolShares} asset type. Can only be `liquidity_pool_shares`.
    */
   getAssetType() {
-    return 'liquidity_pool_shares';
+    return "liquidity_pool_shares";
   }
 
   /**
