@@ -163,6 +163,8 @@ export class Keypair {
   signPayloadDecorated(data: Buffer): xdr.DecoratedSignature;
   signatureHint(): Buffer;
   verify(data: Buffer, signature: Buffer): boolean;
+  signMessage(message: string | Buffer): Buffer;
+  verifyMessage(message: string | Buffer, signature: Buffer): boolean;
 
   xdrAccountId(): xdr.AccountId;
   xdrPublicKey(): xdr.PublicKey;
