@@ -19,7 +19,6 @@ export function bumpSequence(opts) {
   }
 
   try {
-    // eslint-disable-next-line no-new
     new BigNumber(opts.bumpTo);
   } catch (e) {
     throw new Error("bumpTo must be a stringified number");

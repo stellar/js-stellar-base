@@ -146,7 +146,6 @@ export class Asset {
     const padLength = this.code.length <= 4 ? 4 : 12;
     const paddedCode = this.code.padEnd(padLength, "\0");
 
-    // eslint-disable-next-line new-cap
     const assetType = new xdrType({
       assetCode: paddedCode,
       issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()

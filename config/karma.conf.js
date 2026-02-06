@@ -2,10 +2,18 @@ const webpackConfig = require("./webpack.config.browser.js");
 
 delete webpackConfig.output;
 delete webpackConfig.entry; // karma fills these in
-webpackConfig.plugins.shift(); // drop eslinter plugin
 
 module.exports = function (config) {
   config.set({
+    // Explicitly require plugins so pnpm's strict node_modules works
+    plugins: [
+      require("karma-mocha"),
+      require("karma-sinon-chai"),
+      require("karma-chrome-launcher"),
+      require("karma-firefox-launcher"),
+      require("karma-webpack"),
+      require("karma-coverage")
+    ],
     frameworks: ["mocha", "sinon-chai"],
     browsers: ["FirefoxHeadless", "ChromeHeadless"],
 

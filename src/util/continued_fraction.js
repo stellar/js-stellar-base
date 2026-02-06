@@ -1,6 +1,5 @@
 import BigNumber from "./bignumber";
 
-// eslint-disable-next-line no-bitwise
 const MAX_INT = ((1 << 31) >>> 0) - 1;
 
 /**
@@ -20,7 +19,6 @@ export function best_r(rawNumber) {
   ];
   let i = 2;
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     if (number.gt(MAX_INT)) {
       break;

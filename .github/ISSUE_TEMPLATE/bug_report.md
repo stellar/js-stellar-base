@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **What version are you on?**
-Check `yarn.lock` or `package-lock.json` to find out precisely what version of `stellar-base` you're running.
+Check `pnpm-lock.yaml` or `package-lock.json` to find out precisely what version of `stellar-base` you're running.
 
 **To Reproduce**
 Steps to reproduce the behavior:
