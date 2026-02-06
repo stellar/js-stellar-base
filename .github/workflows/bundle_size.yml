@@ -9,16 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'pnpm'
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.3
+
+      - name: Install Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "pnpm"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -30,5 +30,5 @@ jobs:
         uses: preactjs/compressed-size-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: 'dist/*.js'
-          compression: 'none'
+          pattern: "dist/*.js"
+          compression: "none"
