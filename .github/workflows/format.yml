@@ -2,7 +2,7 @@ name: Code Formatting
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
 
 jobs:
@@ -16,11 +16,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+          cache: 'pnpm'
 
-      # Workaround for some `yarn` nonsense, see:
-      # https://github.com/yarnpkg/yarn/issues/6312#issuecomment-429685210
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+
       - name: Install Dependencies
-        run: yarn install --network-concurrency 1
+        run: pnpm install --frozen-lockfile
 
       - name: Run Linter Checks
-        run: yarn fmt && yarn lint && (git diff-index --quiet HEAD; git diff)
+        run:
+          pnpm run fmt && pnpm run lint && (git diff-index --quiet HEAD; git
+          diff)

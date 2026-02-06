@@ -4,7 +4,7 @@ on:
     types: [published]
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write # Required for OIDC
   contents: read
 
 jobs:
@@ -19,12 +19,18 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
-      - name: Install Depencencies
-        run: yarn install
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Test & Build
-        run: yarn preversion
+        run: pnpm run preversion
 
       - name: Publish npm package to both places
-        run: yarn publish --access public --provenance
+        run: pnpm publish --access public --provenance

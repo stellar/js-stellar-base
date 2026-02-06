@@ -2,7 +2,7 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
 
 jobs:
@@ -23,17 +23,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      # Workaround for some `yarn` nonsense, see:
-      # https://github.com/yarnpkg/yarn/issues/6312#issuecomment-429685210
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+
       - name: Install Dependencies
-        run: yarn install --network-concurrency 1
+        run: pnpm install --frozen-lockfile
 
       - name: Build All
-        run: yarn build:prod
+        run: pnpm run build:prod
 
       - name: Run Node Tests
-        run: yarn test:node
+        run: pnpm run test:node
 
       - name: Run Browser Tests
-        run: yarn test:browser
+        run: pnpm run test:browser

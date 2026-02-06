@@ -13,18 +13,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+          cache: 'pnpm'
 
-      # Workaround for some `yarn` nonsense, see:
-      # https://github.com/yarnpkg/yarn/issues/6312#issuecomment-429685210
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+
       - name: Install Dependencies
-        run: yarn install --network-concurrency 1
+        run: pnpm install --frozen-lockfile
 
       - name: Build All
-        run: yarn build:prod
+        run: pnpm run build:prod
 
       - name: Report Bundle Size
         uses: preactjs/compressed-size-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: "dist/*.js"
-          compression: "none"
+          pattern: 'dist/*.js'
+          compression: 'none'
