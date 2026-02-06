@@ -107,7 +107,6 @@ export function setOptions(opts) {
         opts.signer.ed25519PublicKey
       );
 
-      // eslint-disable-next-line new-cap
       key = new xdr.SignerKey.signerKeyTypeEd25519(rawKey);
       setValues += 1;
     }
@@ -126,7 +125,6 @@ export function setOptions(opts) {
         throw new Error("signer.preAuthTx must be 32 bytes Buffer.");
       }
 
-      // eslint-disable-next-line new-cap
       key = new xdr.SignerKey.signerKeyTypePreAuthTx(opts.signer.preAuthTx);
       setValues += 1;
     }
@@ -145,7 +143,6 @@ export function setOptions(opts) {
         throw new Error("signer.sha256Hash must be 32 bytes Buffer.");
       }
 
-      // eslint-disable-next-line new-cap
       key = new xdr.SignerKey.signerKeyTypeHashX(opts.signer.sha256Hash);
       setValues += 1;
     }
@@ -160,7 +157,6 @@ export function setOptions(opts) {
       const signedPayloadXdr =
         xdr.SignerKeyEd25519SignedPayload.fromXDR(rawKey);
 
-      // eslint-disable-next-line new-cap
       key = xdr.SignerKey.signerKeyTypeEd25519SignedPayload(signedPayloadXdr);
       setValues += 1;
     }
