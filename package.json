@@ -5,6 +5,7 @@
   "main": "./lib/cjs/index.js",
   "browser": "./dist/stellar-base.min.js",
   "types": "./types/index.d.ts",
+  "packageManager": "pnpm@9.15.3",
   "exports": {
     ".": {
       "browser": "./dist/stellar-base.min.js",
@@ -13,21 +14,21 @@
     }
   },
   "scripts": {
-    "build": "yarn build:cjs && yarn build:browser",
+    "build": "pnpm run build:cjs && pnpm run build:browser",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:node": "babel --out-dir ./lib/ ./src/",
     "build:browser": "webpack -c ./config/webpack.config.browser.js",
-    "build:node:prod": "cross-env NODE_ENV=production yarn build",
-    "build:browser:prod": "cross-env NODE_ENV=production yarn build:browser",
-    "build:prod": "cross-env NODE_ENV=production yarn build",
-    "test": "yarn build && yarn test:node && yarn test:browser",
-    "test:node": "NODE_OPTIONS=--no-experimental-detect-module yarn _nyc mocha --config ./mocharc.tsnode.json",
+    "build:node:prod": "cross-env NODE_ENV=production pnpm run build",
+    "build:browser:prod": "cross-env NODE_ENV=production pnpm run build:browser",
+    "build:prod": "cross-env NODE_ENV=production pnpm run build",
+    "test": "pnpm run build && pnpm run test:node && pnpm run test:browser",
+    "test:node": "NODE_OPTIONS=--no-experimental-detect-module pnpm run _nyc mocha --config ./mocharc.tsnode.json",
     "test:browser": "karma start ./config/karma.conf.js",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/eslint.config.cjs src/ && dtslint --localTs node_modules/typescript/lib types/",
-    "preversion": "yarn clean && yarn fmt && yarn lint && yarn build:prod && yarn test",
+    "preversion": "pnpm run clean && pnpm run fmt && pnpm run lint && pnpm run build:prod && pnpm run test",
     "fmt": "prettier --config ./config/prettier.config.cjs --ignore-path ./config/.prettierignore --write './**/*.js'",
-    "prepare": "yarn build:prod",
+    "prepare": "pnpm run build:prod",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
   },
@@ -51,8 +52,8 @@
   },
   "lint-staged": {
     "**/*.{js,json}": [
-      "yarn fmt",
-      "yarn lint"
+      "pnpm run fmt",
+      "pnpm run lint"
     ]
   },
   "repository": {
@@ -102,7 +103,7 @@
     "mocha": "^10.8.2",
     "node-polyfill-webpack-plugin": "^3.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "randombytes": "^2.1.0",
     "sinon": "^16.1.0",
     "sinon-chai": "^3.7.0",
