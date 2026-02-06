@@ -12,22 +12,32 @@ implementation in JavaScript that can be used on either Node.js or web browsers.
 
 - **[API Reference](https://stellar.github.io/js-stellar-base/)**
 
-> **Warning!** The Node version of this package uses the [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as an [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
-> This means that if for any reason installation of this package fails, `stellar-base` will fallback to the much slower implementation contained in [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
+> **Warning!** The Node version of this package uses the
+> [`sodium-native`](https://www.npmjs.com/package/sodium-native) package, a
+> native implementation of [Ed25519](https://ed25519.cr.yp.to/) in Node.js, as
+> an
+> [optional dependency](https://docs.npmjs.com/files/package.json#optionaldependencies).
+> This means that if for any reason installation of this package fails,
+> `stellar-base` will fallback to the much slower implementation contained in
+> [`tweetnacl`](https://www.npmjs.com/package/tweetnacl).
 >
-> If you'd explicitly prefer **not** to install the `sodium-native` package, pass the appropriate flag to skip optional dependencies when installing this package (e.g. `--no-optional` if using `npm install` or `--without-optional` using `yarn install`).
+> If you'd explicitly prefer **not** to install the `sodium-native` package,
+> pass the appropriate flag to skip optional dependencies when installing this
+> package (e.g. `--no-optional` if using `npm install` or `--no-optional` using
+> `pnpm install`).
 >
-> If you are using `stellar-base` in a browser you can ignore this. However, for production backend deployments you should most likely be using `sodium-native`.
-> If `sodium-native` is successfully installed and working,
+> If you are using `stellar-base` in a browser you can ignore this. However, for
+> production backend deployments you should most likely be using
+> `sodium-native`. If `sodium-native` is successfully installed and working,
 > `StellarBase.FastSigning` variable will be equal `true`. Otherwise it will be
 > `false`.
 
 ## Quick start
 
-Using yarn to include js-stellar-base in your own project:
+Using pnpm to include js-stellar-base in your own project:
 
 ```shell
-yarn add @stellar/stellar-base
+pnpm add @stellar/stellar-base
 ```
 
 For browsers, [use Bower to install it](#to-use-in-the-browser). It exports a
@@ -45,16 +55,16 @@ relative to your html file.
 
 ### To use as a module in a Node.js project
 
-1. Install it using yarn:
+1. Install it using pnpm:
 
 ```shell
-yarn add @stellar/stellar-base
+pnpm add @stellar/stellar-base
 ```
 
 2. require/import it in your JavaScript:
 
 ```js
-var StellarBase = require("@stellar/stellar-base");
+var StellarBase = require('@stellar/stellar-base');
 ```
 
 ### To self host for use in the browser
@@ -100,17 +110,21 @@ Make sure that you are using the latest version number. They can be found on the
 
 1. Install Node 20.x
 
-We support the oldest LTS release of Node, which is [currently 20.x](https://nodejs.org/en/about/releases/).
+We support the oldest LTS release of Node, which is
+[currently 20.x](https://nodejs.org/en/about/releases/).
 
-If you work on several projects that use different Node versions, you might find helpful to install a NodeJS version manager:
+If you work on several projects that use different Node versions, you might find
+helpful to install a NodeJS version manager:
 
 - https://github.com/creationix/nvm
 - https://github.com/wbyoung/avn
 - https://github.com/asdf-vm/asdf
 
-2. Install Yarn
+2. Install pnpm
 
-This project uses [Yarn](https://yarnpkg.com/) to manages its dependencies. To install Yarn, follow the project instructions available at https://yarnpkg.com/en/docs/install.
+This project uses [pnpm](https://pnpm.io/) to manage its dependencies. To
+install pnpm, follow the project instructions available at
+https://pnpm.io/installation.
 
 3. Clone the repo
 
@@ -122,7 +136,7 @@ git clone https://github.com/stellar/js-stellar-base.git
 
 ```shell
 cd js-stellar-base
-yarn
+pnpm install
 ```
 
 5. Observe the project's code style
@@ -131,13 +145,13 @@ While you're making changes, make sure to regularly run the linter to catch any
 linting errors (in addition to making sure your text editor supports ESLint)
 
 ```shell
-yarn lint
+pnpm run lint
 ```
 
 as well as fixing any formatting errors with
 
 ```shell
-yarn fmt
+pnpm run fmt
 ```
 
 #### Updating XDR definitions
@@ -146,20 +160,28 @@ XDR updates are complicated due to the fact that you need workarounds for bugs
 in the generator, formatter, or a namespace adjustment.
 
 1. Make sure you have [Docker](https://www.docker.com/) installed and running.
-2. Change the commit hash to the right version of [stellar-xdr](https://github.com/stellar/stellar-xdr) and add any filenames that might've been introduced.
+2. Change the commit hash to the right version of
+   [stellar-xdr](https://github.com/stellar/stellar-xdr) and add any filenames
+   that might've been introduced.
 3. Run `make reset-xdr`
-4. Run `sed -ie s/\"/\'/g types/{curr,next}.d.ts` to minimize the diff (the generator's formatter uses `"` but the repo uses `'`).
-5. Move `xdr.Operation` into a hidden namespace to avoid conflicts with the SDK's `Operation`.
+4. Run `sed -ie s/\"/\'/g types/{curr,next}.d.ts` to minimize the diff (the
+   generator's formatter uses `"` but the repo uses `'`).
+5. Move `xdr.Operation` into a hidden namespace to avoid conflicts with the
+   SDK's `Operation`.
 6. Add generator workarounds:
 
 - `type Hash = Opaque[]` is a necessary alias that doesn't get generated
-- `Hyper`, `UnsignedHyper`, and `ScSpecEventV0` need their signatures
-  fixed because linting wants an `Array` instead of a naked `[]`.
-- Some constants aren't generated correctly (e.g, Ctrl+F `SCSYMBOL_LIMIT` in `src/curr_generated.js`)
+- `Hyper`, `UnsignedHyper`, and `ScSpecEventV0` need their signatures fixed
+  because linting wants an `Array` instead of a naked `[]`.
+- Some constants aren't generated correctly (e.g, Ctrl+F `SCSYMBOL_LIMIT` in
+  `src/curr_generated.js`)
 
-7. Finally, make code adjustments related to the XDR (these are usually revealed by running the tests).
+7. Finally, make code adjustments related to the XDR (these are usually revealed
+   by running the tests).
 
-As an example PR to follow, [stellar-base#800](https://github.com/stellar/js-stellar-base/pull/800) has detailed steps for each part of the process.
+As an example PR to follow,
+[stellar-base#800](https://github.com/stellar/js-stellar-base/pull/800) has
+detailed steps for each part of the process.
 
 ## Usage
 
@@ -171,14 +193,14 @@ For information on how to use js-stellar-base, take a look at the docs in the
 To run all tests:
 
 ```shell
-yarn test
+pnpm run test
 ```
 
 To run a specific set of tests:
 
 ```shell
-yarn test:node
-yarn test:browser
+pnpm run test:node
+pnpm run test:browser
 ```
 
 Tests are also run automatically in Github Actions for every master commit and
