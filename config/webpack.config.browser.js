@@ -1,7 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
 var fs = require("fs");
-var ESLintPlugin = require("eslint-webpack-plugin");
 var TerserPlugin = require("terser-webpack-plugin");
 var NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
@@ -73,10 +72,6 @@ const config = {
     ]
   },
   plugins: [
-    // this must be first for karma to work (see line 5 of karma.conf.js)
-    new ESLintPlugin({
-      overrideConfigFile: path.resolve(__dirname, "./.eslintrc.js")
-    }),
     new NodePolyfillPlugin(),
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
