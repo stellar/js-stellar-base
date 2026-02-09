@@ -24,6 +24,9 @@
     "test": "pnpm run build && pnpm run test:node && pnpm run test:browser",
     "test:node": "NODE_OPTIONS=--no-experimental-detect-module pnpm run _nyc -- mocha --config ./mocharc.tsnode.json",
     "test:browser": "karma start ./config/karma.conf.js",
+    "test:vitest": "vitest",
+    "test:vitest:ui": "vitest --ui",
+    "test:vitest:coverage": "vitest --coverage",
     "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
     "lint": "eslint -c ./config/eslint.config.cjs src/ && dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "pnpm run clean && pnpm run fmt && pnpm run lint && pnpm run build:prod && pnpm run test",
@@ -114,6 +117,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.54.0",
+    "vitest": "^2.0.5",
     "webpack": "^5.104.1",
     "webpack-cli": "^5.1.1"
   },
