@@ -44,6 +44,19 @@ const javascriptConfig = [
     rules: {
       "no-unused-vars": ["error", { caughtErrors: "none" }]
     }
+  },
+  {
+    name: "test/globals",
+    files: ["test/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.mocha,
+        StellarBase: "readonly",
+        expect: "readonly",
+        chai: "readonly",
+        sinon: "readonly"
+      }
+    }
   }
 ];
 
