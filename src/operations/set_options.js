@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import xdr from "../xdr";
 import { Keypair } from "../keypair";
 import { StrKey } from "../strkey";
