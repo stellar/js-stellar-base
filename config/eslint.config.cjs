@@ -62,6 +62,7 @@ const javascriptConfig = [
 
 module.exports = eslintConfig.defineConfig(
   includeIgnoreFile(gitignorePath),
+  { ignores: ["src/generated"] },
   javascriptConfig,
   tseslint.configs.recommendedTypeChecked.map(addTypeScriptLanguageOptions),
   addTypeScriptLanguageOptions({
