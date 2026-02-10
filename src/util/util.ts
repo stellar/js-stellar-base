@@ -1,4 +1,7 @@
-export const trimEnd = (input, char) => {
+export const trimEnd = (
+  input: number | string,
+  char: string
+): number | string => {
   const isNumber = typeof input === "number";
   let str = String(input);
 

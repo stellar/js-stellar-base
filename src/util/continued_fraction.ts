@@ -1,21 +1,23 @@
-import BigNumber from "./bignumber";
+import BigNumber from "./bignumber.js";
 
 const MAX_INT = ((1 << 31) >>> 0) - 1;
 
 /**
  * Calculates and returns the best rational approximation of the given real number.
  * @private
- * @param {string|number|BigNumber} rawNumber Real number
+ * @param rawNumber - Real number
  * @throws Error Throws `Error` when the best rational approximation cannot be found.
- * @returns {array} first element is n (numerator), second element is d (denominator)
+ * @returns first element is n (numerator), second element is d (denominator)
  */
-export function best_r(rawNumber) {
+export function best_r(
+  rawNumber: BigNumber | number | string,
+): [number, number] {
   let number = new BigNumber(rawNumber);
   let a;
   let f;
-  const fractions = [
+  const fractions: [BigNumber, BigNumber][] = [
     [new BigNumber(0), new BigNumber(1)],
-    [new BigNumber(1), new BigNumber(0)]
+    [new BigNumber(1), new BigNumber(0)],
   ];
   let i = 2;
 
@@ -25,8 +27,10 @@ export function best_r(rawNumber) {
     }
     a = number.integerValue(BigNumber.ROUND_FLOOR);
     f = number.minus(a);
-    const h = a.times(fractions[i - 1][0]).plus(fractions[i - 2][0]);
-    const k = a.times(fractions[i - 1][1]).plus(fractions[i - 2][1]);
+    const prev1 = fractions[i - 1]!;
+    const prev2 = fractions[i - 2]!;
+    const h = a.times(prev1[0]).plus(prev2[0]);
+    const k = a.times(prev1[1]).plus(prev2[1]);
     if (h.gt(MAX_INT) || k.gt(MAX_INT)) {
       break;
     }
@@ -37,7 +41,7 @@ export function best_r(rawNumber) {
     number = new BigNumber(1).div(f);
     i += 1;
   }
-  const [n, d] = fractions[fractions.length - 1];
+  const [n, d] = fractions[fractions.length - 1]!;
 
   if (n.isZero() || d.isZero()) {
     throw new Error("Couldn't find approximation");
