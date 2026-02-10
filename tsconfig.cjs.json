@@ -10,6 +10,8 @@
     "rootDir": "./src",
     "module": "commonjs",
     "moduleResolution": "node10",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationDir": "./type_validation"
   }
 }

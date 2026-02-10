@@ -1,5 +1,3 @@
-/* eslint-disable no-bitwise */
-
 import { Hyper } from "@stellar/js-xdr";
 import BigNumber from "./util/bignumber";
 import { trimEnd } from "./util/util";

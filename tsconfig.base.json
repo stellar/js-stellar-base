@@ -19,7 +19,7 @@
     "noUncheckedIndexedAccess": true,
 
     // JavaScript support
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
 
     // Interop constraints

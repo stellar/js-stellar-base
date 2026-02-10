@@ -1,4 +1,7 @@
-export function verifyChecksum(expected, actual) {
+export function verifyChecksum(
+  expected: Uint8Array,
+  actual: Uint8Array
+): boolean {
   if (expected.length !== actual.length) {
     return false;
   }
