@@ -92,6 +92,7 @@
     "chai-as-promised": "^7.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^9.39.2",
+    "eslint-plugin-import-x": "^4.16.1",
     "ghooks": "^2.0.4",
     "globals": "^17.3.0",
     "husky": "^8.0.3",
