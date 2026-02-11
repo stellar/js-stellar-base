@@ -35,4 +35,23 @@ declare module "@stellar/js-xdr" {
     static isValid(value: unknown): boolean;
     static fromString(value: string): UnsignedHyper;
   }
+
+  export class XdrWriter {
+    constructor(size?: number);
+    write(buffer: Buffer): void;
+    result(): Buffer;
+  }
+
+  export class XdrReader {
+    constructor(buffer: Buffer);
+    read(size: number): Buffer;
+  }
+
+  export namespace xdr {
+    // Placeholder for XDR types - to be expanded as needed
+    // This namespace contains the generated XDR type definitions
+    // We'll add specific types here as they're encountered during migration
+  }
+
+  export const xdr: typeof xdr;
 }
