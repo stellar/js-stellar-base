@@ -10,14 +10,14 @@ const MAX_INT = ((1 << 31) >>> 0) - 1;
  * @returns first element is n (numerator), second element is d (denominator)
  */
 export function best_r(
-  rawNumber: BigNumber | number | string,
+  rawNumber: BigNumber | number | string
 ): [number, number] {
   let number = new BigNumber(rawNumber);
   let a;
   let f;
   const fractions: [BigNumber, BigNumber][] = [
     [new BigNumber(0), new BigNumber(1)],
-    [new BigNumber(1), new BigNumber(0)],
+    [new BigNumber(1), new BigNumber(0)]
   ];
   let i = 2;
 
@@ -27,8 +27,13 @@ export function best_r(
     }
     a = number.integerValue(BigNumber.ROUND_FLOOR);
     f = number.minus(a);
-    const prev1 = fractions[i - 1]!;
-    const prev2 = fractions[i - 2]!;
+    const prev1 = fractions[i - 1];
+    const prev2 = fractions[i - 2];
+    if (!prev1 || !prev2) {
+      throw new Error(
+        "Unexpected error calculating best rational approximation"
+      );
+    }
     const h = a.times(prev1[0]).plus(prev2[0]);
     const k = a.times(prev1[1]).plus(prev2[1]);
     if (h.gt(MAX_INT) || k.gt(MAX_INT)) {
@@ -41,7 +46,11 @@ export function best_r(
     number = new BigNumber(1).div(f);
     i += 1;
   }
-  const [n, d] = fractions[fractions.length - 1]!;
+  const lastFraction = fractions[fractions.length - 1];
+  if (!lastFraction) {
+    throw new Error("Unexpected error calculating best rational approximation");
+  }
+  const [n, d] = lastFraction;
 
   if (n.isZero() || d.isZero()) {
     throw new Error("Couldn't find approximation");
