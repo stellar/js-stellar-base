@@ -20,7 +20,10 @@ const config = {
       stream: require.resolve("stream-browserify"),
       buffer: require.resolve("buffer")
     },
-    extensions: [".ts", ".js"]
+    extensions: [".ts", ".js"],
+    extensionAlias: {
+      ".js": [".ts", ".js"]
+    }
   },
   output: {
     clean: true,
