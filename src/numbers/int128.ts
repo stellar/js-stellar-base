@@ -7,7 +7,7 @@ export class Int128 extends LargeInt {
    * @param  args - one or more slices to encode
    *     in big-endian format (i.e. earlier elements are higher bits)
    */
-  constructor(...args: Array<number | bigint | string>) {
+  constructor(...args: Array<bigint | number | string>) {
     super(args);
   }
 
