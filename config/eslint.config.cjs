@@ -4,6 +4,7 @@ const globals = require("globals");
 const tseslint = require("typescript-eslint");
 const { includeIgnoreFile } = require("@eslint/compat");
 const path = require("path");
+const importPlugin = require("eslint-plugin-import-x");
 
 const gitignorePath = path.resolve(__dirname, "..", ".gitignore");
 
@@ -78,5 +79,12 @@ module.exports = eslintConfig.defineConfig(
       "@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "none" }],
       "no-return-await": "off"
     }
-  })
+  }),
+  {
+    files: ["**/*.ts"],
+    plugins: { "import-x": importPlugin },
+    rules: {
+      "import-x/extensions": ["error", "always", { ignorePackages: true }]
+    }
+  }
 );

@@ -8,3 +8,4 @@
 /coverage/
 /jsdoc/
 .DS_Store
+.vscode/settings.json
