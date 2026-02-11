@@ -223,6 +223,10 @@ describe("Uint128", () => {
       // Uint128 MIN_VALUE should be 0, not negative like Int128
       const minValue = new Uint128(0);
       expect(minValue.toBigInt()).toBe(0n);
+
+      // Verify negative values are rejected
+      expect(() => new Uint128(-1)).toThrow();
+      expect(() => new Uint128(-42n)).toThrow();
     });
   });
 });
