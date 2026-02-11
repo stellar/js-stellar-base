@@ -4,18 +4,18 @@ export class Int256 extends LargeInt {
   /**
    * Construct a signed 256-bit integer that can be XDR-encoded.
    *
-   * @param  {Array<number|bigint|string>}  args - one or more slices to encode
+   * @param args - one or more slices to encode
    *     in big-endian format (i.e. earlier elements are higher bits)
    */
-  constructor(...args) {
+  constructor(...args: Array<number | bigint | string>) {
     super(args);
   }
 
-  get unsigned() {
+  get unsigned(): boolean {
     return false;
   }
 
-  get size() {
+  get size(): number {
     return 256;
   }
 }
