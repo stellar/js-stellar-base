@@ -1,9 +1,10 @@
+import { describe, it, expect } from "vitest";
 import { best_r } from "../../../src/util/continued_fraction.js";
 import BigNumber from "bignumber.js";
 
-describe("best_r", function () {
-  it("correctly calculates the best rational approximation", function () {
-    var tests = [
+describe("best_r", () => {
+  it("correctly calculates the best rational approximation", () => {
+    const tests: [string, BigNumber | string][] = [
       ["1,10", "0.1"],
       ["1,100", "0.01"],
       ["1,1000", "0.001"],
@@ -26,15 +27,17 @@ describe("best_r", function () {
       ["118,37", new BigNumber(118).div(37)]
     ];
 
-    for (var i in tests) {
-      expect(best_r(tests[i][1]).toString()).to.be.equal(tests[i][0]);
+    for (const [expected, input] of tests) {
+      expect(best_r(input).toString()).toBe(expected);
     }
   });
 
-  it("throws an error when best rational approximation cannot be found", function () {
-    expect(() => best_r("0.0000000003")).to.throw(
+  it("throws an error when best rational approximation cannot be found", () => {
+    expect(() => best_r("0.0000000003")).toThrowError(
       /Couldn't find approximation/
     );
-    expect(() => best_r("2147483648")).to.throw(/Couldn't find approximation/);
+    expect(() => best_r("2147483648")).toThrowError(
+      /Couldn't find approximation/
+    );
   });
 });
