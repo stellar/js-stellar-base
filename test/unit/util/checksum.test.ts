@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { verifyChecksum } from "../../../src/util/checksum";
+import { verifyChecksum } from "../../../src/util/checksum.js";
 
 describe("verifyChecksum", () => {
   it("returns true for identical arrays", () => {

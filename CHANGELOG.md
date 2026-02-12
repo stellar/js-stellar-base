@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Breaking Changes
+
+- Removed the unused `supportMuxing` parameter from
+  `decodeAddressToMuxedAccount` and `encodeMuxedAccountToAddress` type
+  declarations. The parameter was previously accepted but silently ignored at
+  runtime. TypeScript callers passing this argument will need to remove it.
 
 ## [`v14.0.4`](https://github.com/stellar/js-stellar-base/compare/v14.0.3...v14.0.4):
 
