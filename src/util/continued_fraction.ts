@@ -10,14 +10,14 @@ const MAX_INT = ((1 << 31) >>> 0) - 1;
  * @returns first element is n (numerator), second element is d (denominator)
  */
 export function best_r(
-  rawNumber: BigNumber | number | string
+  rawNumber: BigNumber | number | string,
 ): [number, number] {
   let number = new BigNumber(rawNumber);
   let a;
   let f;
   const fractions: [BigNumber, BigNumber][] = [
     [new BigNumber(0), new BigNumber(1)],
-    [new BigNumber(1), new BigNumber(0)]
+    [new BigNumber(1), new BigNumber(0)],
   ];
   let i = 2;
 
@@ -31,7 +31,7 @@ export function best_r(
     const prev2 = fractions[i - 2];
     if (!prev1 || !prev2) {
       throw new Error(
-        "Unexpected error calculating best rational approximation"
+        `Continued fraction approximation failed: missing fraction elements at indices ${i - 1} and/or ${i - 2}`,
       );
     }
     const h = a.times(prev1[0]).plus(prev2[0]);
@@ -48,7 +48,9 @@ export function best_r(
   }
   const lastFraction = fractions[fractions.length - 1];
   if (!lastFraction) {
-    throw new Error("Unexpected error calculating best rational approximation");
+    throw new Error(
+      "Missing last fraction element in continued fraction approximation",
+    );
   }
   const [n, d] = lastFraction;
 
