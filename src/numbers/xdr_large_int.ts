@@ -1,21 +1,22 @@
 /* eslint no-bitwise: ["error", {"allow": [">>"]}] */
 import { Hyper, UnsignedHyper } from "@stellar/js-xdr";
 
-import { Uint128 } from "./uint128";
-import { Uint256 } from "./uint256";
-import { Int128 } from "./int128";
-import { Int256 } from "./int256";
+import { Uint128 } from "./uint128.js";
+import { Uint256 } from "./uint256.js";
+import { Int128 } from "./int128.js";
+import { Int256 } from "./int256.js";
 
 // TODO: remove this after pulling the latest update
 // @ts-ignore
 import xdr from "../xdr.js";
 
+type BigIntLike = { toBigInt(): bigint };
 type XdrLargeIntValues =
-  | Array<bigint | number | string>
+  | Array<bigint | number | string | BigIntLike>
   | bigint
   | number
-  | string;
-type BigIntLike = { toBigInt(): bigint };
+  | string
+  | BigIntLike;
 type XdrLargeIntType =
   | "i64"
   | "i128"
@@ -50,7 +51,7 @@ export class XdrLargeInt {
     }
 
     // normalize values to one type
-    values = values.map((i) => {
+    const normalizedValues: bigint[] = values.map((i) => {
       // micro-optimization to no-op on the likeliest input value:
       if (typeof i === "bigint") {
         return i;
@@ -63,7 +64,7 @@ export class XdrLargeInt {
       ) {
         return (i as BigIntLike).toBigInt();
       }
-      return BigInt(i);
+      return BigInt(i as string | number);
     });
 
     // Note: API difference in XDR constructors:
@@ -71,24 +72,24 @@ export class XdrLargeInt {
     // - Int128/Uint128/Int256/Uint256 accept rest parameters (require spread operator)
     switch (type) {
       case "i64":
-        this.int = new Hyper(values);
+        this.int = new Hyper(normalizedValues);
         break;
       case "i128":
-        this.int = new Int128(...values);
+        this.int = new Int128(...normalizedValues);
         break;
       case "i256":
-        this.int = new Int256(...values);
+        this.int = new Int256(...normalizedValues);
         break;
       case "u64":
       case "timepoint":
       case "duration":
-        this.int = new UnsignedHyper(values);
+        this.int = new UnsignedHyper(normalizedValues);
         break;
       case "u128":
-        this.int = new Uint128(...values);
+        this.int = new Uint128(...normalizedValues);
         break;
       case "u256":
-        this.int = new Uint256(...values);
+        this.int = new Uint256(...normalizedValues);
         break;
       default:
         throw TypeError(`invalid type: ${type}`);
