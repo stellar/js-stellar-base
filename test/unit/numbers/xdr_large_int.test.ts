@@ -2,8 +2,7 @@ import { describe, it, expect } from "vitest";
 import { XdrLargeInt } from "../../../src/numbers/xdr_large_int.js";
 import { Int128 } from "../../../src/numbers/int128.js";
 import { Uint128 } from "../../../src/numbers/uint128.js";
-// TODO: remove this after pulling the latest update
-// @ts-expect-error temp fix for xdr types
+
 import xdr from "../../../src/xdr.js";
 
 describe("XdrLargeInt", () => {
@@ -98,10 +97,12 @@ describe("XdrLargeInt", () => {
       });
 
       it("throws TypeError for invalid type", () => {
-        expect(() => new XdrLargeInt("invalid" as any, 100)).toThrow(TypeError);
-        expect(() => new XdrLargeInt("invalid" as any, 100)).toThrow(
-          /invalid type/,
-        );
+        expect(
+          () => new XdrLargeInt("invalid" as unknown as string, 100),
+        ).toThrow(TypeError);
+        expect(
+          () => new XdrLargeInt("invalid" as unknown as string, 100),
+        ).toThrow(/invalid type/);
       });
     });
 
@@ -443,7 +444,10 @@ describe("XdrLargeInt", () => {
         expect(scVal.switch()).toEqual(xdr.ScValType.scvU128());
 
         const u128 = scVal.u128();
-        const reconstructed = new Uint128(u128.lo(), u128.hi()).toBigInt();
+        const reconstructed = new Uint128(
+          u128.lo().toBigInt(),
+          u128.hi().toBigInt(),
+        ).toBigInt();
         expect(reconstructed).toBe(maxU128);
       });
     });
@@ -633,7 +637,10 @@ describe("XdrLargeInt", () => {
       const scVal = original.toScVal();
       const i128 = scVal.i128();
 
-      const reconstructed = new Int128(i128.lo(), i128.hi()).toBigInt();
+      const reconstructed = new Int128(
+        i128.lo().toBigInt(),
+        i128.hi().toBigInt(),
+      ).toBigInt();
       expect(reconstructed).toBe(value);
     });
 
@@ -680,8 +687,12 @@ describe("XdrLargeInt", () => {
 
   describe("error handling", () => {
     it("throws TypeError for invalid type in constructor", () => {
-      expect(() => new XdrLargeInt("invalid" as any, 42)).toThrow(TypeError);
-      expect(() => new XdrLargeInt("i32" as any, 42)).toThrow(TypeError);
+      expect(() => new XdrLargeInt("invalid" as unknown as string, 42)).toThrow(
+        TypeError,
+      );
+      expect(() => new XdrLargeInt("i32" as unknown as string, 42)).toThrow(
+        TypeError,
+      );
     });
 
     it("throws RangeError for oversized values in size-checked methods", () => {

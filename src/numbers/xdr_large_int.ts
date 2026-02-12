@@ -1,12 +1,10 @@
-import { Hyper, UnsignedHyper } from "@stellar/js-xdr";
+import { Hyper, LargeInt, UnsignedHyper } from "@stellar/js-xdr";
 
 import { Uint128 } from "./uint128.js";
 import { Uint256 } from "./uint256.js";
 import { Int128 } from "./int128.js";
 import { Int256 } from "./int256.js";
 
-// TODO: remove this after pulling the latest update
-// @ts-expect-error temp fix for xdr types
 import xdr from "../xdr.js";
 
 type BigIntLike = { toBigInt(): bigint };
@@ -25,8 +23,7 @@ type XdrLargeIntValues =
  * of the input value(s) you provide.
  */
 export class XdrLargeInt {
-  // child class of a jsXdr.LargeInt
-  int: xdr.LargeInt;
+  int: LargeInt;
   type: string;
 
   /**
@@ -248,7 +245,7 @@ export class XdrLargeInt {
     }
   }
 
-  valueOf(): any {
+  valueOf(): unknown {
     return this.int.valueOf();
   }
 
