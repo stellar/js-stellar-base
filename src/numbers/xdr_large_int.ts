@@ -1,4 +1,3 @@
-/* eslint no-bitwise: ["error", {"allow": [">>"]}] */
 import { Hyper, UnsignedHyper } from "@stellar/js-xdr";
 
 import { Uint128 } from "./uint128.js";
@@ -7,25 +6,16 @@ import { Int128 } from "./int128.js";
 import { Int256 } from "./int256.js";
 
 // TODO: remove this after pulling the latest update
-// @ts-ignore
+// @ts-expect-error temp fix for xdr types
 import xdr from "../xdr.js";
 
 type BigIntLike = { toBigInt(): bigint };
 type XdrLargeIntValues =
-  | Array<bigint | number | string | BigIntLike>
+  | Array<BigIntLike | bigint | number | string>
+  | BigIntLike
   | bigint
   | number
-  | string
-  | BigIntLike;
-type XdrLargeIntType =
-  | "i64"
-  | "i128"
-  | "i256"
-  | "u64"
-  | "u128"
-  | "u256"
-  | "timepoint"
-  | "duration";
+  | string;
 
 /**
  * A wrapper class to represent large XDR-encodable integers.
@@ -37,7 +27,7 @@ type XdrLargeIntType =
 export class XdrLargeInt {
   // child class of a jsXdr.LargeInt
   int: xdr.LargeInt;
-  type: XdrLargeIntType;
+  type: string;
 
   /**
    * @param type - specifies a data type to use to represent the integer, one
@@ -45,7 +35,7 @@ export class XdrLargeInt {
    *    {@link XdrLargeInt.isType})
    * @param values - a list of integer-like values interpreted in big-endian order
    */
-  constructor(type: XdrLargeIntType, values: XdrLargeIntValues) {
+  constructor(type: string, values: XdrLargeIntValues) {
     if (!(values instanceof Array)) {
       values = [values];
     }
@@ -60,11 +50,11 @@ export class XdrLargeInt {
         typeof i === "object" &&
         i !== null &&
         "toBigInt" in i &&
-        typeof (i as BigIntLike).toBigInt === "function"
+        typeof i.toBigInt === "function"
       ) {
-        return (i as BigIntLike).toBigInt();
+        return i.toBigInt();
       }
-      return BigInt(i as string | number);
+      return BigInt(i as number | string);
     });
 
     // Note: API difference in XDR constructors:
@@ -279,7 +269,7 @@ export class XdrLargeInt {
     }
   }
 
-  static isType(type: string): type is XdrLargeIntType {
+  static isType(type: string) {
     switch (type) {
       case "i64":
       case "i128":

@@ -3,7 +3,7 @@ import { XdrLargeInt } from "../../../src/numbers/xdr_large_int.js";
 import { Int128 } from "../../../src/numbers/int128.js";
 import { Uint128 } from "../../../src/numbers/uint128.js";
 // TODO: remove this after pulling the latest update
-// @ts-ignore
+// @ts-expect-error temp fix for xdr types
 import xdr from "../../../src/xdr.js";
 
 describe("XdrLargeInt", () => {
