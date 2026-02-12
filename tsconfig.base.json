@@ -34,6 +34,8 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     // Skip type checking for node modules
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // Allow importing types from `node_modules/@types` (default) and our custom `types` directory.
+    "typeRoots": ["./types", "./node_modules/@types"]
   }
 }
