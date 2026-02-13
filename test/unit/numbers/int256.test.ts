@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Int256 } from "../../../src/numbers/int256";
+import { Int256 } from "../../../src/numbers/int256.js";
 
 describe("Int256", () => {
   describe("constructor", () => {
@@ -197,28 +197,23 @@ describe("Int256", () => {
 
   describe("type validation", () => {
     it("throws for null", () => {
-      expect(() => new Int256(null as any)).toThrow();
+      // @ts-expect-error - intentionally testing invalid input
+      expect(() => new Int256(null)).toThrow();
     });
 
     it("throws for undefined", () => {
-      expect(() => new Int256(undefined as any)).toThrow();
+      // @ts-expect-error - intentionally testing invalid input
+      expect(() => new Int256(undefined)).toThrow();
     });
 
     it("throws for objects", () => {
-      expect(() => new Int256({} as any)).toThrow();
+      // @ts-expect-error - intentionally testing invalid input
+      expect(() => new Int256({})).toThrow();
     });
 
     it("throws for non-spread arrays", () => {
-      expect(() => new Int256([] as any)).toThrow();
-    });
-  });
-
-  describe("inheritance", () => {
-    it("extends LargeInt", () => {
-      const int256 = new Int256(42);
-      expect(int256).toBeInstanceOf(Int256);
-      // Verify it has LargeInt methods/properties
-      expect(typeof int256.toBigInt).toBe("function");
+      // @ts-expect-error - intentionally testing invalid input
+      expect(() => new Int256([])).toThrow();
     });
   });
 
@@ -235,6 +230,79 @@ describe("Int256", () => {
       // Int256 can handle 256-bit values, Int128 only 128-bit
       const huge256Value = 2n ** 254n;
       expect(new Int256(huge256Value).toBigInt()).toBe(huge256Value);
+    });
+  });
+
+  // ========================================
+  // Tests migrated from i256_test.js
+  // Ensuring no test coverage is lost during JS to TS migration
+  // ========================================
+
+  describe("Int256.isValid - from i256_test.js", () => {
+    it("returns true for Int256 instances", () => {
+      expect(Int256.isValid(Int256.MIN_VALUE)).toBe(true);
+      expect(Int256.isValid(Int256.MAX_VALUE)).toBe(true);
+      expect(Int256.isValid(Int256.fromString("0"))).toBe(true);
+      expect(Int256.isValid(Int256.fromString("-1"))).toBe(true);
+      expect(Int256.isValid(5n)).toBe(true);
+    });
+
+    it("returns false for non Int256", () => {
+      expect(Int256.isValid(null)).toBe(false);
+      expect(Int256.isValid(undefined)).toBe(false);
+      expect(Int256.isValid([])).toBe(false);
+      expect(Int256.isValid({})).toBe(false);
+      expect(Int256.isValid(1)).toBe(false);
+      expect(Int256.isValid(true)).toBe(false);
+    });
+  });
+
+  describe("Int256.slice - from i256_test.js", () => {
+    it("slices number to parts", () => {
+      const testValue =
+        -0x7fffffff800000005fffffffa00000003fffffffc00000001ffffffffn;
+
+      // slice() method exists at runtime but the type system can't resolve it yet
+      expect(new Int256(testValue).slice(32)).toEqual([
+        1n,
+        -2n,
+        3n,
+        -4n,
+        5n,
+        -6n,
+        7n,
+        -8n,
+      ]);
+
+      expect(new Int256(testValue).slice(64)).toEqual([
+        -0x1ffffffffn,
+        -0x3fffffffdn,
+        -0x5fffffffbn,
+        -0x7fffffff9n,
+      ]);
+
+      expect(new Int256(testValue).slice(128)).toEqual([
+        -0x3fffffffc00000001ffffffffn,
+        -0x7fffffff800000005fffffffbn,
+      ]);
+    });
+  });
+
+  describe("Int256.fromString - from i256_test.js", () => {
+    it("works for positive numbers", () => {
+      expect(Int256.fromString("1059").toString()).toBe("1059");
+    });
+
+    it("works for negative numbers", () => {
+      expect(
+        Int256.fromString(
+          "-105909234885029834059234850234985028304085",
+        ).toString(),
+      ).toBe("-105909234885029834059234850234985028304085");
+    });
+
+    it("fails when providing a string with a decimal place", () => {
+      expect(() => Int256.fromString("105946095601.5")).toThrow(/bigint-like/);
     });
   });
 });

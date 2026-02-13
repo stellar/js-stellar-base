@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Uint256 } from "../../../src/numbers/uint256";
+import { Uint256 } from "../../../src/numbers/uint256.js";
 
 describe("Uint256", () => {
   describe("constructor", () => {
