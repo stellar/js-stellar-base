@@ -266,7 +266,7 @@ export class XdrLargeInt {
     }
   }
 
-  static isType(type: string) {
+  static isType(type: string): boolean {
     switch (type) {
       case "i64":
       case "i128":
