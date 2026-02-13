@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { ScInt } from "../../../src/numbers/sc_int.js";
+import { Int128 } from "../../../src/numbers/int128.js";
+import { Uint128 } from "../../../src/numbers/uint128.js";
+import { Int256 } from "../../../src/numbers/int256.js";
+import { Uint256 } from "../../../src/numbers/uint256.js";
+import { scValToBigInt, XdrLargeInt } from "../../../src/numbers/index.js";
+import xdr from "../../../src/xdr.js";
 
 describe("ScInt", () => {
   describe("constructor - input type conversion", () => {
@@ -334,6 +340,337 @@ describe("ScInt", () => {
     it("has toBigInt method from parent", () => {
       const sci = new ScInt(42n);
       expect(typeof sci.toBigInt).toBe("function");
+    });
+  });
+
+  // ========================================
+  // Tests migrated from scint_test.js
+  // Ensuring no test coverage is lost during JS to TS migration
+  // ========================================
+
+  describe("creating large integers - from scint_test.js", () => {
+    describe("picks the right types", () => {
+      const typeTests = {
+        u64: [1, "1", 0xdeadbeef, (1n << 64n) - 1n],
+        u128: [1n << 64n, (1n << 128n) - 1n],
+        u256: [1n << 128n, (1n << 256n) - 1n],
+      };
+
+      Object.entries(typeTests).forEach(([type, values]) => {
+        values.forEach((value) => {
+          it(`picks ${type} for ${value}`, () => {
+            const bi = new ScInt(value);
+            expect(bi.type).toBe(type);
+            expect(bi.toBigInt()).toBe(BigInt(value));
+          });
+        });
+      });
+    });
+
+    it("has correct utility methods", () => {
+      const v =
+        123456789123456789123456789123456789123456789123456789123456789123456789n;
+      const i = new ScInt(v);
+      expect(i.valueOf()).toEqual(new Uint256(v));
+      expect(i.toString()).toBe(
+        "123456789123456789123456789123456789123456789123456789123456789123456789",
+      );
+      expect(i.toJSON()).toEqual({ value: v.toString(), type: "u256" });
+    });
+
+    describe("64 bit inputs", () => {
+      const sentinel = 800000085n;
+
+      it("handles u64", () => {
+        let b = new ScInt(sentinel);
+        expect(b.toBigInt()).toBe(sentinel);
+        expect(b.toNumber()).toBe(Number(sentinel));
+        let u64 = b.toU64().u64();
+        expect(u64.low).toBe(Number(sentinel));
+        expect(u64.high).toBe(0);
+
+        b = new ScInt(-sentinel);
+        expect(b.toBigInt()).toBe(-sentinel);
+        expect(b.toNumber()).toBe(Number(-sentinel));
+        u64 = b.toU64().u64();
+        expect(u64.low).toBe(b.toNumber());
+        expect(u64.high).toBe(-1);
+      });
+
+      it("handles timepoint", () => {
+        const b = new ScInt(sentinel);
+        expect(b.toBigInt()).toBe(sentinel);
+        expect(b.toNumber()).toBe(Number(sentinel));
+        const u64 = b.toTimepoint().timepoint();
+        expect(u64.low).toBe(Number(sentinel));
+        expect(u64.high).toBe(0);
+      });
+
+      it("handles duration", () => {
+        const b = new ScInt(sentinel);
+        expect(b.toBigInt()).toBe(sentinel);
+        expect(b.toNumber()).toBe(Number(sentinel));
+        const u64 = b.toDuration().duration();
+        expect(u64.low).toBe(Number(sentinel));
+        expect(u64.high).toBe(0);
+      });
+
+      it("handles i64", () => {
+        const b = new ScInt(sentinel);
+        expect(b.toBigInt()).toBe(sentinel);
+        expect(b.toNumber()).toBe(Number(sentinel));
+        const i64 = b.toI64().i64();
+
+        expect(new xdr.Int64([i64.low, i64.high]).toBigInt()).toBe(sentinel);
+      });
+
+      it("upscales u64 to 128", () => {
+        const b = new ScInt(sentinel);
+        const i128 = b.toI128().i128();
+        expect(i128.lo().toBigInt()).toBe(sentinel);
+        expect(i128.hi().toBigInt()).toBe(0n);
+      });
+
+      it("upscales i64 to 128", () => {
+        const b = new ScInt(-sentinel);
+        const i128 = b.toI128().i128();
+        const hi = i128.hi().toBigInt();
+        const lo = i128.lo().toBigInt();
+
+        const assembled = new Int128(lo, hi).toBigInt();
+        expect(assembled).toBe(-sentinel);
+      });
+
+      it("upscales i64 to 256", () => {
+        const b = new ScInt(sentinel);
+        const i = b.toI256().i256();
+
+        const [hiHi, hiLo, loHi, loLo] = [
+          i.hiHi(),
+          i.hiLo(),
+          i.loHi(),
+          i.loLo(),
+        ].map((i) => i.toBigInt()) as [bigint, bigint, bigint, bigint];
+
+        expect(hiHi).toBe(0n);
+        expect(hiLo).toBe(0n);
+        expect(loHi).toBe(0n);
+        expect(loLo).toBe(sentinel);
+
+        let assembled = new Int256(loLo, loHi, hiLo, hiHi).toBigInt();
+        expect(assembled).toBe(sentinel);
+
+        assembled = new Uint256(loLo, loHi, hiLo, hiHi).toBigInt();
+        expect(assembled).toBe(sentinel);
+      });
+
+      it("upscales negative i64 to 256", () => {
+        const b = new ScInt(-sentinel);
+        const i = b.toI256().i256();
+
+        const [hiHi, hiLo, loHi, loLo] = [
+          i.hiHi(),
+          i.hiLo(),
+          i.loHi(),
+          i.loLo(),
+        ].map((i) => i.toBigInt()) as [bigint, bigint, bigint, bigint];
+
+        expect(hiHi).toBe(-1n);
+        expect(hiLo).toBe(BigInt.asUintN(64, -1n));
+        expect(loHi).toBe(BigInt.asUintN(64, -1n));
+        expect(loLo).toBe(BigInt.asUintN(64, -sentinel));
+
+        let assembled = new Int256(loLo, loHi, hiLo, hiHi).toBigInt();
+        expect(assembled).toBe(-sentinel);
+
+        assembled = new Uint256(loLo, loHi, hiLo, hiHi).toBigInt();
+        expect(assembled).toBe(BigInt.asUintN(256, -sentinel));
+      });
+    });
+
+    describe("128 bit inputs", () => {
+      const sentinel = 800000000000000000000085n; // 80 bits long
+
+      it("handles inputs", () => {
+        let b = new ScInt(sentinel);
+        expect(b.toBigInt()).toBe(sentinel);
+        expect(() => b.toNumber()).toThrow(/not in range/i);
+        expect(() => b.toU64()).toThrow(/too large/i);
+        expect(() => b.toI64()).toThrow(/too large/i);
+
+        let u128 = b.toU128().u128();
+        expect(
+          new Uint128(
+            u128.lo().low,
+            u128.lo().high,
+            u128.hi().low,
+            u128.hi().high,
+          ).toBigInt(),
+        ).toBe(sentinel);
+
+        b = new ScInt(-sentinel);
+        u128 = b.toU128().u128();
+        expect(
+          new Uint128(
+            u128.lo().low,
+            u128.lo().high,
+            u128.hi().low,
+            u128.hi().high,
+          ).toBigInt(),
+        ).toBe(BigInt.asUintN(128, -sentinel));
+
+        b = new ScInt(sentinel);
+        let i128 = b.toI128().i128();
+        expect(
+          new Int128(
+            i128.lo().low,
+            i128.lo().high,
+            i128.hi().low,
+            i128.hi().high,
+          ).toBigInt(),
+        ).toBe(sentinel);
+
+        b = new ScInt(-sentinel);
+        i128 = b.toI128().i128();
+        expect(
+          new Int128(
+            i128.lo().low,
+            i128.lo().high,
+            i128.hi().low,
+            i128.hi().high,
+          ).toBigInt(),
+        ).toBe(-sentinel);
+      });
+
+      it("upscales to 256 bits", () => {
+        const sentinel = 800000000000000000000085n;
+        const b = new ScInt(-sentinel);
+        const i256 = b.toI256().i256();
+        const u256 = b.toU256().u256();
+
+        expect(
+          new Int256(
+            i256.loLo().low,
+            i256.loLo().high,
+            i256.loHi().low,
+            i256.loHi().high,
+            i256.hiLo().low,
+            i256.hiLo().high,
+            i256.hiHi().low,
+            i256.hiHi().high,
+          ).toBigInt(),
+        ).toBe(-sentinel);
+
+        expect(
+          new Uint256(
+            u256.loLo().low,
+            u256.loLo().high,
+            u256.loHi().low,
+            u256.loHi().high,
+            u256.hiLo().low,
+            u256.hiLo().high,
+            u256.hiHi().low,
+            u256.hiHi().high,
+          ).toBigInt(),
+        ).toBe(BigInt.asUintN(256, -sentinel));
+      });
+    });
+
+    describe("conversion to/from ScVals", () => {
+      const v = 80000085n;
+      const i = new ScInt(v);
+
+      (
+        [
+          [i.toI64(), "i64"],
+          [i.toU64(), "u64"],
+          [i.toI128(), "i128"],
+          [i.toU128(), "u128"],
+          [i.toI256(), "i256"],
+          [i.toU256(), "u256"],
+        ] as const
+      ).forEach(([scv, scvType]) => {
+        it(`works for ${scvType}`, () => {
+          expect(scv.switch().name).toBe(`scv${scvType.toUpperCase()}`);
+          expect(typeof scv.toXDR("base64")).toBe("string");
+
+          const bigi = scValToBigInt(scv);
+          expect(bigi).toBe(v);
+          expect(new ScInt(bigi, { type: scvType }).toJSON()).toEqual({
+            ...i.toJSON(),
+            type: scvType,
+          });
+        });
+      });
+
+      it("works for 32-bit", () => {
+        const i32 = xdr.ScVal.scvI32(Number(v));
+        const u32 = xdr.ScVal.scvU32(Number(v));
+
+        expect(scValToBigInt(i32)).toBe(v);
+        expect(scValToBigInt(u32)).toBe(v);
+      });
+
+      it("throws for non-integers", () => {
+        expect(() => scValToBigInt(xdr.ScVal.scvString("hello"))).toThrow(
+          /integer/i,
+        );
+      });
+    });
+
+    describe("error handling", () => {
+      ["u64", "u128", "u256"].forEach((type) => {
+        it(`throws when signed parts and {type: '${type}'}`, () => {
+          expect(() => new ScInt(-2, { type })).toThrow(/negative/i);
+        });
+      });
+
+      it("throws when too big", () => {
+        expect(() => new ScInt(1n << 400n)).toThrow(/expected/i);
+      });
+
+      it("throws when big interpreted as small", () => {
+        let big: ScInt;
+
+        big = new ScInt(1n << 64n);
+        expect(() => big.toNumber()).toThrow(/not in range/i);
+
+        big = new ScInt(Number.MAX_SAFE_INTEGER + 1);
+        expect(() => big.toNumber()).toThrow(/not in range/i);
+
+        big = new ScInt(1, { type: "i128" });
+        expect(() => big.toU64()).toThrow(/too large/i);
+        expect(() => big.toI64()).toThrow(/too large/i);
+
+        big = new ScInt(1, { type: "i256" });
+        expect(() => big.toU64()).toThrow(/too large/i);
+        expect(() => big.toI64()).toThrow(/too large/i);
+        expect(() => big.toI128()).toThrow(/too large/i);
+        expect(() => big.toU128()).toThrow(/too large/i);
+      });
+    });
+  });
+
+  describe("creating raw large XDR integers - from scint_test.js", () => {
+    describe("array inputs", () => {
+      (
+        [
+          ["i64", 2],
+          ["i128", 4],
+          ["i256", 8],
+        ] as const
+      ).forEach(([type, count]) => {
+        it(`works for ${type}`, () => {
+          const input: bigint[] = Array.from({ length: count }, () => 1n);
+          const xdrI = new XdrLargeInt(type, input);
+
+          const expected = input.reduce((accum, v) => {
+            return (accum << 32n) | v;
+          }, 0n);
+
+          expect(xdrI.toBigInt()).toBe(expected);
+        });
+      });
     });
   });
 });
