@@ -4,15 +4,15 @@ import base32 from "base32.js";
 import { verifyChecksum } from "./util/checksum.js";
 
 type VersionByteName =
+  | "claimableBalance"
+  | "contract"
   | "ed25519PublicKey"
   | "ed25519SecretSeed"
+  | "liquidityPool"
   | "med25519PublicKey"
   | "preAuthTx"
   | "sha256Hash"
-  | "signedPayload"
-  | "contract"
-  | "liquidityPool"
-  | "claimableBalance";
+  | "signedPayload";
 
 const versionBytes: Record<VersionByteName, number> = {
   ed25519PublicKey: 6 << 3, // G (when encoded in base32)

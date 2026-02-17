@@ -88,7 +88,7 @@ export class SignerKey {
         break;
 
       default:
-        throw new Error(`invalid SignerKey (type: ${signerKey.switch()})`);
+        throw new Error(`invalid SignerKey (type: ${signerKey.switch().name})`);
     }
 
     return encodeCheck(strkeyType, raw);
