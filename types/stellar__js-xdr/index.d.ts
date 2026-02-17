@@ -6,7 +6,9 @@
 
 declare module "@stellar/js-xdr" {
   export abstract class LargeInt {
-    constructor(values: Array<bigint | number | string>);
+    constructor(
+      values: Array<bigint | number | string> | bigint | number | string,
+    );
     static defineIntBoundaries(): void;
     static MIN_VALUE: LargeInt;
     static MAX_VALUE: LargeInt;
@@ -20,7 +22,9 @@ declare module "@stellar/js-xdr" {
   }
 
   export class Hyper extends LargeInt {
-    constructor(values: Array<bigint | number | string>);
+    constructor(
+      values: Array<bigint | number | string> | bigint | number | string,
+    );
     static defineIntBoundaries(): void;
     static MIN_VALUE: Hyper;
     static MAX_VALUE: Hyper;
@@ -29,7 +33,9 @@ declare module "@stellar/js-xdr" {
   }
 
   export class UnsignedHyper extends LargeInt {
-    constructor(values: Array<bigint | number | string>);
+    constructor(
+      values: Array<bigint | number | string> | bigint | number | string,
+    );
     static defineIntBoundaries(): void;
     static MIN_VALUE: UnsignedHyper;
     static MAX_VALUE: UnsignedHyper;
