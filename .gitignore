@@ -9,3 +9,6 @@
 /jsdoc/
 .DS_Store
 .vscode/settings.json
+.copilot/
+.claude/
+.idea/
