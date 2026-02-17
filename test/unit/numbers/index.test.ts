@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
 
+// TODO: clean up (keep only relevant tests in this file)
+
 import { describe, it, expect } from "vitest";
 import {
   scValToBigInt,
