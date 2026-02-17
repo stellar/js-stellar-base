@@ -4,6 +4,7 @@ type BigIntLike = {
     toBigInt(): bigint;
 };
 type XdrLargeIntValues = Array<BigIntLike | bigint | number | string> | BigIntLike | bigint | number | string;
+export type ScIntType = 'duration' | 'i64' | 'i128' | 'i256' | 'timepoint' | 'u64' | 'u128' | 'u256';
 /**
  * A wrapper class to represent large XDR-encodable integers.
  *
@@ -16,11 +17,11 @@ export declare class XdrLargeInt {
     type: string;
     /**
      * @param type - specifies a data type to use to represent the integer, one
-     *    of: 'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (see
-     *    {@link XdrLargeInt.isType})
+     *    of: 'i64', 'u64', 'i128', 'u128', 'i256', 'u256', 'timepoint', and 'duration'
+     *    (see {@link XdrLargeInt.isType})
      * @param values - a list of integer-like values interpreted in big-endian order
      */
-    constructor(type: string, values: XdrLargeIntValues);
+    constructor(type: ScIntType, values: XdrLargeIntValues);
     /**
      * @throws {RangeError} if the value can't fit into a Number
      */

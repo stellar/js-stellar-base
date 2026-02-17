@@ -1,5 +1,5 @@
 import xdr from "../xdr.js";
-import { XdrLargeInt } from "./xdr_large_int.js";
+import { XdrLargeInt, type ScIntType } from "./xdr_large_int.js";
 
 export { Uint128 } from "./uint128.js";
 export { Uint256 } from "./uint256.js";
@@ -7,6 +7,7 @@ export { Int128 } from "./int128.js";
 export { Int256 } from "./int256.js";
 export { ScInt } from "./sc_int.js";
 export { XdrLargeInt };
+export type { ScIntType };
 
 /**
  * Transforms an opaque {@link xdr.ScVal} into a native bigint, if possible.
@@ -42,14 +43,14 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
     case "scvTimepoint":
     case "scvDuration":
       return new XdrLargeInt(
-        scIntType,
+        scIntType as ScIntType,
         value as xdr.Int64 | xdr.Uint64,
       ).toBigInt();
 
     case "scvU128":
     case "scvI128": {
       const int128Value = value as xdr.Int128Parts | xdr.UInt128Parts;
-      return new XdrLargeInt(scIntType, [
+      return new XdrLargeInt(scIntType as ScIntType, [
         int128Value.lo(),
         int128Value.hi(),
       ]).toBigInt();
@@ -58,7 +59,7 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
     case "scvU256":
     case "scvI256": {
       const int256Value = value as xdr.Int256Parts | xdr.UInt256Parts;
-      return new XdrLargeInt(scIntType, [
+      return new XdrLargeInt(scIntType as ScIntType, [
         int256Value.loLo(),
         int256Value.loHi(),
         int256Value.hiLo(),

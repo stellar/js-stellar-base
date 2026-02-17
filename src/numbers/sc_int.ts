@@ -1,4 +1,4 @@
-import { XdrLargeInt } from "./xdr_large_int.js";
+import { XdrLargeInt, type ScIntType } from "./xdr_large_int.js";
 
 /**
  * Provides an easier way to manipulate large numbers for Stellar operations.
@@ -74,7 +74,7 @@ import { XdrLargeInt } from "./xdr_large_int.js";
 export class ScInt extends XdrLargeInt {
   constructor(
     value: bigint | number | string,
-    opts?: { type?: string; [key: string]: unknown },
+    opts?: { type?: ScIntType; [key: string]: unknown },
   ) {
     const bigValue = typeof value === "bigint" ? value : BigInt(value);
     const signed = bigValue < 0;
@@ -103,7 +103,7 @@ export class ScInt extends XdrLargeInt {
       }
     }
 
-    super(type, value);
+    super(type as ScIntType, value);
   }
 }
 

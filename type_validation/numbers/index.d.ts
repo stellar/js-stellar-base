@@ -1,11 +1,12 @@
 import xdr from "../xdr.js";
-import { XdrLargeInt } from "./xdr_large_int.js";
+import { XdrLargeInt, type ScIntType } from "./xdr_large_int.js";
 export { Uint128 } from "./uint128.js";
 export { Uint256 } from "./uint256.js";
 export { Int128 } from "./int128.js";
 export { Int256 } from "./int256.js";
 export { ScInt } from "./sc_int.js";
 export { XdrLargeInt };
+export type { ScIntType };
 /**
  * Transforms an opaque {@link xdr.ScVal} into a native bigint, if possible.
  *

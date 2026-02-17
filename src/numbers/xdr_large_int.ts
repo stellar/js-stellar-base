@@ -15,6 +15,16 @@ type XdrLargeIntValues =
   | number
   | string;
 
+export type ScIntType =
+  | 'duration'
+  | 'i64'
+  | 'i128'
+  | 'i256'
+  | 'timepoint'
+  | 'u64'
+  | 'u128'
+  | 'u256';
+
 /**
  * A wrapper class to represent large XDR-encodable integers.
  *
@@ -28,11 +38,11 @@ export class XdrLargeInt {
 
   /**
    * @param type - specifies a data type to use to represent the integer, one
-   *    of: 'i64', 'u64', 'i128', 'u128', 'i256', and 'u256' (see
-   *    {@link XdrLargeInt.isType})
+   *    of: 'i64', 'u64', 'i128', 'u128', 'i256', 'u256', 'timepoint', and 'duration'
+   *    (see {@link XdrLargeInt.isType})
    * @param values - a list of integer-like values interpreted in big-endian order
    */
-  constructor(type: string, values: XdrLargeIntValues) {
+  constructor(type: ScIntType, values: XdrLargeIntValues) {
     if (!(values instanceof Array)) {
       values = [values];
     }
@@ -79,7 +89,7 @@ export class XdrLargeInt {
         this.int = new Uint256(...normalizedValues);
         break;
       default:
-        throw TypeError(`invalid type: ${type}`);
+        throw TypeError(`invalid type: ${type as string}`);
     }
 
     this.type = type;
