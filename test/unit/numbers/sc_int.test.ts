@@ -4,7 +4,11 @@ import { Int128 } from "../../../src/numbers/int128.js";
 import { Uint128 } from "../../../src/numbers/uint128.js";
 import { Int256 } from "../../../src/numbers/int256.js";
 import { Uint256 } from "../../../src/numbers/uint256.js";
-import { scValToBigInt, XdrLargeInt } from "../../../src/numbers/index.js";
+import {
+  ScIntType,
+  scValToBigInt,
+  XdrLargeInt,
+} from "../../../src/numbers/index.js";
 import xdr from "../../../src/xdr.js";
 
 describe("ScInt", () => {
@@ -621,7 +625,9 @@ describe("ScInt", () => {
     describe("error handling", () => {
       ["u64", "u128", "u256"].forEach((type) => {
         it(`throws when signed parts and {type: '${type}'}`, () => {
-          expect(() => new ScInt(-2, { type })).toThrow(/negative/i);
+          expect(() => new ScInt(-2, { type: type as ScIntType })).toThrow(
+            /negative/i,
+          );
         });
       });
 
