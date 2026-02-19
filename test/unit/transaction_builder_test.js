@@ -176,7 +176,7 @@ describe('TransactionBuilder', function () {
         )
         .setSorobanData(sorobanTransactionData)
         .setTimeout(StellarBase.TimeoutInfinite)
-        .build(); // Building includes resource fee in the total fee 
+        .build(); // Building includes resource fee in the total fee
 
       expect(
         transaction.toEnvelope().v1().tx().ext().sorobanData().toXDR('base64')
