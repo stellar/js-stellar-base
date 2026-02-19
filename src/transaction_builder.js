@@ -1,4 +1,4 @@
-import { UnsignedHyper } from '@stellar/js-xdr';
+import { UnsignedHyper, Hyper } from '@stellar/js-xdr';
 import BigNumber from './util/bignumber';
 
 import xdr from './xdr';
@@ -14,6 +14,11 @@ import { SorobanDataBuilder } from './sorobandata_builder';
 import { StrKey } from './strkey';
 import { SignerKey } from './signerkey';
 import { Memo } from './memo';
+import { Asset } from './asset';
+import { nativeToScVal } from './scval';
+import { Operation } from './operation';
+import { Address } from './address';
+import { Keypair } from './keypair';
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -33,6 +38,14 @@ export const BASE_FEE = '100'; // Stroops
  * @see [Timeout](https://developers.stellar.org/api/resources/transactions/post/)
  */
 export const TimeoutInfinite = 0;
+
+/**
+ * @typedef {object} SorobanFees
+ * @property {number} instructions - the number of instructions executed by the transaction
+ * @property {number} readBytes - the number of bytes read from the ledger by the transaction
+ * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
+ * @property {number} resourceFee - the fee to be paid for the transaction, in stroops (int64)
+ */
 
 /**
  * <p>Transaction builder helps constructs a new `{@link Transaction}` using the
@@ -574,6 +587,173 @@ export class TransactionBuilder {
   setSorobanData(sorobanData) {
     this.sorobanData = new SorobanDataBuilder(sorobanData).build();
     return this;
+  }
+
+  /**
+   * Creates and adds an invoke host function operation for transferring SAC tokens.
+   * This method removes the need for simulation by handling the creation of the
+   * appropriate authorization entries and ledger footprint for the transfer operation.
+   *
+   * @param {string} destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
+   * @param {Asset} asset - the SAC asset to be transferred
+   * @param  {string | BigInt} amount - the amount of tokens to be transferred in stroops IE. 1 token with 7 decimals of precision would be represented as "1_0000000"
+   * @param {SorobanFees} [sorobanFees] - optional Soroban fees for the transaction
+   *
+   * @returns {TransactionBuilder}
+   */
+  addSacTransferOperation(destination, asset, amount, sorobanFees) {
+    if (BigInt(amount) <= 0n) {
+      throw new Error('Amount must be a positive integer in stroops');
+    } else if (BigInt(amount) > Hyper.MAX_VALUE) {
+      // The largest supported value for SAC is i64 however the contract interface uses i128 which is why we convert it to i128
+      throw new Error('Amount exceeds maximum value for i64');
+    }
+    const contractId = asset.contractId(this.networkPassphrase);
+    const functionName = 'transfer';
+    const source = this.source.accountId();
+    const args = [
+      nativeToScVal(source, { type: 'address' }),
+      nativeToScVal(destination, { type: 'address' }),
+      nativeToScVal(amount, { type: 'i128' })
+    ];
+    const isDestinationContract = StrKey.isValidContract(destination);
+    const isAssetNative = asset.isNative();
+
+    if (!isDestinationContract) {
+      if (
+        !StrKey.isValidEd25519PublicKey(destination) &&
+        !StrKey.isValidMed25519PublicKey(destination)
+      ) {
+        throw new Error(
+          'Invalid destination address. Must be a valid Stellar address or contract ID.'
+        );
+      }
+    }
+
+    const auths = new xdr.SorobanAuthorizationEntry({
+      credentials: xdr.SorobanCredentials.sorobanCredentialsSourceAccount(),
+      rootInvocation: new xdr.SorobanAuthorizedInvocation({
+        function:
+          xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
+            new xdr.InvokeContractArgs({
+              contractAddress: Address.fromString(contractId).toScAddress(),
+              functionName,
+              args
+            })
+          ),
+        subInvocations: []
+      })
+    });
+
+    const footprint = new xdr.LedgerFootprint({
+      readOnly: [
+        xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: Address.fromString(contractId).toScAddress(),
+            key: xdr.ScVal.scvLedgerKeyContractInstance(),
+            durability: xdr.ContractDataDurability.persistent()
+          })
+        )
+      ],
+      readWrite: []
+    });
+
+    // Ledger entries for the destination account
+    if (isDestinationContract) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: Address.fromString(contractId).toScAddress(),
+            key: xdr.ScVal.scvVec([
+              nativeToScVal('Balance', { type: 'symbol' }),
+              nativeToScVal(destination, { type: 'address' })
+            ]),
+            durability: xdr.ContractDataDurability.persistent()
+          })
+        )
+      );
+
+      if (!isAssetNative) {
+        footprint.readOnly().push(
+          xdr.LedgerKey.account(
+            new xdr.LedgerKeyAccount({
+              accountId: Keypair.fromPublicKey(asset.getIssuer()).xdrPublicKey()
+            })
+          )
+        );
+      }
+    } else if (isAssetNative) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.account(
+          new xdr.LedgerKeyAccount({
+            accountId: Keypair.fromPublicKey(destination).xdrPublicKey()
+          })
+        )
+      );
+    } else if (asset.getIssuer() !== destination) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.trustline(
+          new xdr.LedgerKeyTrustLine({
+            accountId: Keypair.fromPublicKey(destination).xdrPublicKey(),
+            asset: asset.toTrustLineXDRObject()
+          })
+        )
+      );
+    }
+
+    // Ledger entries for the source account
+    if (asset.isNative()) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.account(
+          new xdr.LedgerKeyAccount({
+            accountId: Keypair.fromPublicKey(source).xdrPublicKey()
+          })
+        )
+      );
+    } else if (asset.getIssuer() !== source) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.trustline(
+          new xdr.LedgerKeyTrustLine({
+            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+            asset: asset.toTrustLineXDRObject()
+          })
+        )
+      );
+    }
+
+    const defaultPaymentFees = {
+      instructions: 400_000,
+      readBytes: 1_000,
+      writeBytes: 1_000,
+      resourceFee: 5_000_000
+    };
+    
+    const sorobanData = new xdr.SorobanTransactionData({
+      resources: new xdr.SorobanResources({
+        footprint,
+        instructions: sorobanFees
+          ? sorobanFees.instructions
+          : defaultPaymentFees.instructions,
+        diskReadBytes: sorobanFees
+          ? sorobanFees.readBytes
+          : defaultPaymentFees.readBytes,
+        writeBytes: sorobanFees
+          ? sorobanFees.writeBytes
+          : defaultPaymentFees.writeBytes
+      }),
+      ext: new xdr.SorobanTransactionDataExt(0),
+      resourceFee: new xdr.Int64(
+        sorobanFees ? sorobanFees.resourceFee : defaultPaymentFees.resourceFee
+      )
+    });
+    const operation = Operation.invokeContractFunction({
+      contract: contractId,
+      function: functionName,
+      args,
+      auth: [auths]
+    });
+    this.setSorobanData(sorobanData);
+    return this.addOperation(operation);
   }
 
   /**

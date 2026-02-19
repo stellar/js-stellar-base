@@ -226,6 +226,332 @@ describe('TransactionBuilder', function () {
     });
   });
 
+  describe('addSacTransferOperation footprint', function () {
+    const { xdr } = StellarBase;
+    const networkPassphrase = StellarBase.Networks.TESTNET;
+
+    const SOURCE_ACCOUNT =
+      'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+    const DESTINATION_ACCOUNT =
+      'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+    const DESTINATION_CONTRACT =
+      'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
+    const ISSUER_ACCOUNT =
+      'GC6ACGSA2NJGD6YWUNX2BYBL3VM4MZRSEU2RLIUZZL35NLV5IAHAX2E2';
+
+    let source;
+
+    beforeEach(function () {
+      source = new StellarBase.Account(SOURCE_ACCOUNT, '0');
+    });
+
+    function buildSacTx(destination, asset) {
+      return new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase
+      })
+        .addSacTransferOperation(destination, asset, '10')
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+    }
+
+    function contractAddressFromId(contractId) {
+      return StellarBase.Address.fromString(contractId).toScAddress();
+    }
+
+    function ledgerKeyContractInstance(contractId) {
+      return new xdr.LedgerKey.contractData(
+        new xdr.LedgerKeyContractData({
+          contract: contractAddressFromId(contractId),
+          key: xdr.ScVal.scvLedgerKeyContractInstance(),
+          durability: xdr.ContractDataDurability.persistent()
+        })
+      );
+    }
+
+    function ledgerKeyAccount(accountId) {
+      return new xdr.LedgerKey.account(
+        new xdr.LedgerKeyAccount({
+          accountId: StellarBase.Keypair.fromPublicKey(accountId).xdrPublicKey()
+        })
+      );
+    }
+
+    function ledgerKeyTrustline(accountId, asset) {
+      return new xdr.LedgerKey.trustline(
+        new xdr.LedgerKeyTrustLine({
+          accountId:
+            StellarBase.Keypair.fromPublicKey(accountId).xdrPublicKey(),
+          asset: asset.toTrustLineXDRObject()
+        })
+      );
+    }
+
+    it('creates a source-account-credentialed authorization for the transfer', function () {
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(DESTINATION_ACCOUNT, asset);
+
+      expect(tx.operations).to.have.length(1);
+
+      // auth is on the decoded operation
+      const auths = tx.operations[0].auth;
+      expect(auths).to.have.length(1);
+
+      const auth = auths[0];
+
+      // credentials: must be source-account (no explicit signature required)
+      expect(auth.credentials().switch()).to.eql(
+        xdr.SorobanCredentialsType.sorobanCredentialsSourceAccount()
+      );
+
+      const rootInvoc = auth.rootInvocation();
+
+      // function type: contract function
+      expect(rootInvoc.function().switch()).to.eql(
+        xdr.SorobanAuthorizedFunctionType.sorobanAuthorizedFunctionTypeContractFn()
+      );
+
+      // contract address matches the asset's SAC contract
+      const contractId = asset.contractId(networkPassphrase);
+      const contractFn = rootInvoc.function().contractFn();
+      expect(contractFn.contractAddress().toXDR('base64')).to.equal(
+        StellarBase.Address.fromString(contractId).toScAddress().toXDR('base64')
+      );
+
+      // function name is 'transfer'
+      expect(Buffer.from(contractFn.functionName()).toString('utf8')).to.equal(
+        'transfer'
+      );
+
+      // args: [source address, destination address, amount as i128]
+      const args = contractFn.args();
+      expect(args).to.have.length(3);
+      expect(args[0].toXDR('base64')).to.equal(
+        StellarBase.nativeToScVal(SOURCE_ACCOUNT, { type: 'address' }).toXDR(
+          'base64'
+        )
+      );
+      expect(args[1].toXDR('base64')).to.equal(
+        StellarBase.nativeToScVal(DESTINATION_ACCOUNT, {
+          type: 'address'
+        }).toXDR('base64')
+      );
+      expect(args[2].toXDR('base64')).to.equal(
+        StellarBase.nativeToScVal('10', { type: 'i128' }).toXDR('base64')
+      );
+
+      // no sub-invocations
+      expect(rootInvoc.subInvocations()).to.have.length(0);
+    });
+
+    it('native asset + destination contract: writes balance contractData and source account', function () {
+      const asset = StellarBase.Asset.native();
+      const tx = buildSacTx(DESTINATION_CONTRACT, asset);
+
+      expect(tx.toEnvelope().v1().tx().ext().switch()).to.equal(1);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [
+        new xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: contractAddressFromId(contractId),
+            key: xdr.ScVal.scvVec([
+              StellarBase.nativeToScVal('Balance', { type: 'symbol' }),
+              StellarBase.nativeToScVal(DESTINATION_CONTRACT, {
+                type: 'address'
+              })
+            ]),
+            durability: xdr.ContractDataDurability.persistent()
+          })
+        ),
+        ledgerKeyAccount(SOURCE_ACCOUNT)
+      ];
+
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('native asset + destination account: writes destination and source accounts', function () {
+      const asset = StellarBase.Asset.native();
+      const tx = buildSacTx(DESTINATION_ACCOUNT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [
+        ledgerKeyAccount(DESTINATION_ACCOUNT),
+        ledgerKeyAccount(SOURCE_ACCOUNT)
+      ];
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('credit asset + destination account: writes destination and source trustlines', function () {
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(DESTINATION_ACCOUNT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [
+        ledgerKeyTrustline(DESTINATION_ACCOUNT, asset),
+        ledgerKeyTrustline(SOURCE_ACCOUNT, asset)
+      ];
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('credit asset + destination contract: reads issuer account and writes source trustline', function () {
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(DESTINATION_CONTRACT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [
+        ledgerKeyContractInstance(contractId),
+        ledgerKeyAccount(ISSUER_ACCOUNT)
+      ];
+      const expectedReadWrite = [
+        new xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: contractAddressFromId(contractId),
+            key: xdr.ScVal.scvVec([
+              StellarBase.nativeToScVal('Balance', { type: 'symbol' }),
+              StellarBase.nativeToScVal(DESTINATION_CONTRACT, {
+                type: 'address'
+              })
+            ]),
+            durability: xdr.ContractDataDurability.persistent()
+          })
+        ),
+        ledgerKeyTrustline(SOURCE_ACCOUNT, asset)
+      ];
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('credit asset + destination is issuer: omits destination trustline', function () {
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(ISSUER_ACCOUNT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [ledgerKeyTrustline(SOURCE_ACCOUNT, asset)];
+
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('credit asset + source is issuer: omits source trustline', function () {
+      source = new StellarBase.Account(ISSUER_ACCOUNT, '0');
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(DESTINATION_ACCOUNT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [
+        ledgerKeyTrustline(DESTINATION_ACCOUNT, asset)
+      ];
+
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('credit asset + source and destination are issuer: omits both trustlines', function () {
+      source = new StellarBase.Account(ISSUER_ACCOUNT, '0');
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(ISSUER_ACCOUNT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [];
+
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite
+      );
+    });
+
+    it('rejects amount greater than i64 max', function () {
+      const asset = StellarBase.Asset.native();
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          fee: 100,
+          networkPassphrase
+        })
+          .addSacTransferOperation(
+            DESTINATION_ACCOUNT,
+            asset,
+            '9223372036854775808'
+          )
+          .setTimeout(StellarBase.TimeoutInfinite)
+          .build();
+      }).to.throw(/Amount exceeds maximum value for i64/);
+    });
+
+    it('accepts amount equal to i64 max', function () {
+      const asset = StellarBase.Asset.native();
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          fee: 100,
+          networkPassphrase
+        })
+          .addSacTransferOperation(
+            DESTINATION_ACCOUNT,
+            asset,
+            '9223372036854775807'
+          )
+          .setTimeout(StellarBase.TimeoutInfinite)
+          .build();
+      }).to.not.throw();
+    });
+  });
+
   describe('constructs a native payment transaction with two operations', function () {
     var source;
     var destination1;
