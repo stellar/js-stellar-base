@@ -727,7 +727,7 @@ export class TransactionBuilder {
       writeBytes: 1_000,
       resourceFee: 5_000_000
     };
-    
+
     const sorobanData = new xdr.SorobanTransactionData({
       resources: new xdr.SorobanResources({
         footprint,
@@ -842,6 +842,10 @@ export class TransactionBuilder {
     if (this.sorobanData) {
       // @ts-ignore
       attrs.ext = new xdr.TransactionExt(1, this.sorobanData);
+      // Soroban transactions pay the resource fee in addition to the regular fee, so we need to add it here.
+      attrs.fee = new BigNumber(attrs.fee)
+        .plus(this.sorobanData.resourceFee())
+        .toNumber();
     } else {
       // @ts-ignore
       attrs.ext = new xdr.TransactionExt(0, xdr.Void);
@@ -903,7 +907,6 @@ export class TransactionBuilder {
     const innerOps = innerTx.operations.length;
 
     const minBaseFee = new BigNumber(BASE_FEE);
-    let innerInclusionFee = new BigNumber(innerTx.fee).div(innerOps);
     let resourceFee = new BigNumber(0);
 
     // Do we need to do special Soroban fee handling? We only want the fee-bump
@@ -913,16 +916,15 @@ export class TransactionBuilder {
       case xdr.EnvelopeType.envelopeTypeTx().value: {
         const sorobanData = env.v1().tx().ext().value();
         resourceFee = new BigNumber(sorobanData?.resourceFee() ?? 0);
-        innerInclusionFee = BigNumber.max(
-          minBaseFee,
-          innerInclusionFee.minus(resourceFee)
-        );
+
         break;
       }
       default:
         break;
     }
-
+    const innerInclusionFee = new BigNumber(innerTx.fee)
+      .minus(resourceFee)
+      .div(innerOps);
     const base = new BigNumber(baseFee);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction

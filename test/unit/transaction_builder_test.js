@@ -159,7 +159,7 @@ describe('TransactionBuilder', function () {
         .build();
 
       let transaction = new StellarBase.TransactionBuilder(source, {
-        fee: 620 /* assume BASE_FEE*2 + 420 resource fee */,
+        fee: 200 /* assume BASE_FEE*2 */,
         networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
@@ -176,7 +176,7 @@ describe('TransactionBuilder', function () {
         )
         .setSorobanData(sorobanTransactionData)
         .setTimeout(StellarBase.TimeoutInfinite)
-        .build();
+        .build(); // Building includes resource fee in the total fee 
 
       expect(
         transaction.toEnvelope().v1().tx().ext().sorobanData().toXDR('base64')
