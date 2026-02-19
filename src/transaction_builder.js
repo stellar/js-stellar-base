@@ -14,6 +14,7 @@ import { SorobanDataBuilder } from './sorobandata_builder';
 import { StrKey } from './strkey';
 import { SignerKey } from './signerkey';
 import { Memo } from './memo';
+// eslint-disable-next-line no-unused-vars
 import { Asset } from './asset';
 import { nativeToScVal } from './scval';
 import { Operation } from './operation';
