@@ -497,8 +497,29 @@ describe('TransactionBuilder', function () {
       );
     });
 
-    it('credit asset + source and destination are issuer: omits both trustlines', function () {
+    it('credit asset + source is issuer: omits source trustline', function () {
       source = new StellarBase.Account(ISSUER_ACCOUNT, '0');
+      const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
+      const tx = buildSacTx(DESTINATION_ACCOUNT, asset);
+
+      const sorobanData = tx.toEnvelope().v1().tx().ext().sorobanData();
+      const footprint = sorobanData.resources().footprint();
+
+      const contractId = asset.contractId(networkPassphrase);
+      const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
+      const expectedReadWrite = [
+        ledgerKeyTrustline(DESTINATION_ACCOUNT, asset)
+      ];
+
+      expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadOnly.map((k) => k.toXDR('base64'))
+      );
+      expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
+        expectedReadWrite.map((k) => k.toXDR('base64'))
+      );
+    });
+
+    it('credit asset + destination is issuer: omits destination trustline', function () {
       const asset = new StellarBase.Asset('TEST', ISSUER_ACCOUNT);
       const tx = buildSacTx(ISSUER_ACCOUNT, asset);
 
@@ -507,13 +528,13 @@ describe('TransactionBuilder', function () {
 
       const contractId = asset.contractId(networkPassphrase);
       const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
-      const expectedReadWrite = [];
+      const expectedReadWrite = [ledgerKeyTrustline(SOURCE_ACCOUNT, asset)];
 
       expect(footprint.readOnly().map((k) => k.toXDR('base64'))).to.eql(
         expectedReadOnly.map((k) => k.toXDR('base64'))
       );
       expect(footprint.readWrite().map((k) => k.toXDR('base64'))).to.eql(
-        expectedReadWrite
+        expectedReadWrite.map((k) => k.toXDR('base64'))
       );
     });
 
@@ -549,6 +570,45 @@ describe('TransactionBuilder', function () {
           .setTimeout(StellarBase.TimeoutInfinite)
           .build();
       }).to.not.throw();
+    });
+
+    it('rejects amount of zero', function () {
+      const asset = StellarBase.Asset.native();
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          fee: 100,
+          networkPassphrase
+        })
+          .addSacTransferOperation(DESTINATION_ACCOUNT, asset, '0')
+          .setTimeout(StellarBase.TimeoutInfinite)
+          .build();
+      }).to.throw(/Amount must be a positive integer/);
+    });
+
+    it('rejects negative amount', function () {
+      const asset = StellarBase.Asset.native();
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          fee: 100,
+          networkPassphrase
+        })
+          .addSacTransferOperation(DESTINATION_ACCOUNT, asset, '-1')
+          .setTimeout(StellarBase.TimeoutInfinite)
+          .build();
+      }).to.throw(/Amount must be a positive integer/);
+    });
+
+    it('rejects destination equal to source account', function () {
+      const asset = StellarBase.Asset.native();
+      expect(() => {
+        new StellarBase.TransactionBuilder(source, {
+          fee: 100,
+          networkPassphrase
+        })
+          .addSacTransferOperation(SOURCE_ACCOUNT, asset, '10')
+          .setTimeout(StellarBase.TimeoutInfinite)
+          .build();
+      }).to.throw(/Destination cannot be the same as the source account/);
     });
   });
 

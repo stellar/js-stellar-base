@@ -1066,7 +1066,7 @@ export interface SorobanFees {
   instructions: number;
   readBytes: number;
   writeBytes: number;
-  resourceFee: BigInt;
+  resourceFee: bigint;
 }
 
 export class TransactionBuilder {
@@ -1089,12 +1089,12 @@ export class TransactionBuilder {
   setSorobanData(sorobanData: string | xdr.SorobanTransactionData): this;
   /**
    * Creates and adds an invoke host function operation for transferring SAC tokens.
-   * This method removes the need for simulation by handling the creation of the 
+   * This method removes the need for simulation by handling the creation of the
    * appropriate authorization entries and ledger footprint for the transfer operation.
-   * 
+   *
    * @param destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
    * @param asset - the SAC asset to be transferred
-   * @param amount - the amount of tokens to be transferred in stroops IE. 1 token with 7 decimals of precision would be represented as "1_0000000"
+   * @param amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
    * @param sorobanFees - optional Soroban fees for the transaction
    *
    * @returns the TransactionBuilder instance with the SAC transfer operation added

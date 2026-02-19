@@ -597,29 +597,20 @@ export class TransactionBuilder {
    *
    * @param {string} destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
    * @param {Asset} asset - the SAC asset to be transferred
-   * @param  {string | BigInt} amount - the amount of tokens to be transferred in stroops IE. 1 token with 7 decimals of precision would be represented as "1_0000000"
+   * @param  {BigInt} amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
    * @param {SorobanFees} [sorobanFees] - optional Soroban fees for the transaction
    *
    * @returns {TransactionBuilder}
    */
   addSacTransferOperation(destination, asset, amount, sorobanFees) {
     if (BigInt(amount) <= 0n) {
-      throw new Error('Amount must be a positive integer in stroops');
+      throw new Error('Amount must be a positive integer');
     } else if (BigInt(amount) > Hyper.MAX_VALUE) {
       // The largest supported value for SAC is i64 however the contract interface uses i128 which is why we convert it to i128
       throw new Error('Amount exceeds maximum value for i64');
     }
-    const contractId = asset.contractId(this.networkPassphrase);
-    const functionName = 'transfer';
-    const source = this.source.accountId();
-    const args = [
-      nativeToScVal(source, { type: 'address' }),
-      nativeToScVal(destination, { type: 'address' }),
-      nativeToScVal(amount, { type: 'i128' })
-    ];
-    const isDestinationContract = StrKey.isValidContract(destination);
-    const isAssetNative = asset.isNative();
 
+    const isDestinationContract = StrKey.isValidContract(destination);
     if (!isDestinationContract) {
       if (
         !StrKey.isValidEd25519PublicKey(destination) &&
@@ -630,6 +621,20 @@ export class TransactionBuilder {
         );
       }
     }
+
+    if (destination === this.source.accountId()) {
+      throw new Error('Destination cannot be the same as the source account.');
+    }
+
+    const contractId = asset.contractId(this.networkPassphrase);
+    const functionName = 'transfer';
+    const source = this.source.accountId();
+    const args = [
+      nativeToScVal(source, { type: 'address' }),
+      nativeToScVal(destination, { type: 'address' }),
+      nativeToScVal(amount, { type: 'i128' })
+    ];
+    const isAssetNative = asset.isNative();
 
     const auths = new xdr.SorobanAuthorizationEntry({
       credentials: xdr.SorobanCredentials.sorobanCredentialsSourceAccount(),
