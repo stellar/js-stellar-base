@@ -1065,13 +1065,9 @@ export const TimeoutInfinite = 0;
 /**
  * Represents the fees associated with a Soroban transaction, including the number of instructions executed,
  * the number of bytes read and written to the ledger, and the total resource fee in stroops.
- * @property {number} instructions - the number of instructions executed by the transaction
- * @property {number} readBytes - the number of bytes read from the ledger by the transaction
- * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
- * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops
  */
 export interface SorobanFees {
-  instructions: number;
+  instructions: number; 
   readBytes: number;
   writeBytes: number;
   resourceFee: bigint;
