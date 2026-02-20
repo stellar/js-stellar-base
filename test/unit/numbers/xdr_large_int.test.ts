@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { XdrLargeInt } from "../../../src/numbers/xdr_large_int.js";
+import { ScIntType, XdrLargeInt } from "../../../src/numbers/xdr_large_int.js";
 import { Int128 } from "../../../src/numbers/int128.js";
 import { Uint128 } from "../../../src/numbers/uint128.js";
 
@@ -98,10 +98,10 @@ describe("XdrLargeInt", () => {
 
       it("throws TypeError for invalid type", () => {
         expect(
-          () => new XdrLargeInt("invalid" as unknown as string, 100),
+          () => new XdrLargeInt("invalid" as unknown as ScIntType, 100),
         ).toThrow(TypeError);
         expect(
-          () => new XdrLargeInt("invalid" as unknown as string, 100),
+          () => new XdrLargeInt("invalid" as unknown as ScIntType, 100),
         ).toThrow(/invalid type/);
       });
     });
@@ -152,7 +152,7 @@ describe("XdrLargeInt", () => {
     });
 
     it("type predicate narrows type correctly", () => {
-      const maybeType: string = "i128";
+      const maybeType: ScIntType = "i128";
       if (XdrLargeInt.isType(maybeType)) {
         // TypeScript should know maybeType is XdrLargeIntType here
         const xdrInt = new XdrLargeInt(maybeType, 100);
@@ -687,10 +687,10 @@ describe("XdrLargeInt", () => {
 
   describe("error handling", () => {
     it("throws TypeError for invalid type in constructor", () => {
-      expect(() => new XdrLargeInt("invalid" as unknown as string, 42)).toThrow(
-        TypeError,
-      );
-      expect(() => new XdrLargeInt("i32" as unknown as string, 42)).toThrow(
+      expect(
+        () => new XdrLargeInt("invalid" as unknown as ScIntType, 42),
+      ).toThrow(TypeError);
+      expect(() => new XdrLargeInt("i32" as unknown as ScIntType, 42)).toThrow(
         TypeError,
       );
     });

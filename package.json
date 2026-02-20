@@ -86,6 +86,7 @@
     "@eslint/js": "^9.39.2",
     "@istanbuljs/nyc-config-babel": "3.0.0",
     "@types/node": "^20.14.11",
+    "@types/sha.js": "^2.4.4",
     "@typescript-eslint/parser": "^8.54.0",
     "babel-loader": "^9.2.1",
     "babel-plugin-istanbul": "^6.1.1",

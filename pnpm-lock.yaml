@@ -63,6 +63,9 @@ importers:
       '@types/node':
         specifier: ^20.14.11
         version: 20.19.32
+      '@types/sha.js':
+        specifier: ^2.4.4
+        version: 2.4.4
       '@typescript-eslint/parser':
         specifier: ^8.54.0
         version: 8.54.0(eslint@9.39.2)(typescript@5.9.3)
@@ -1277,6 +1280,9 @@ packages:
 
   '@types/semver@7.7.1':
     resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
+
+  '@types/sha.js@2.4.4':
+    resolution: {integrity: sha512-Qukd+D6S2Hm0wLVt2Vh+/eWBIoUt+wF8jWjBsG4F8EFQRwKtYvtXCPcNl2OEUQ1R+eTr3xuSaBYUyM3WD1x/Qw==}
 
   '@typescript-eslint/eslint-plugin@5.62.0':
     resolution: {integrity: sha512-TiZzBSJja/LbhNPvk6yc0JrX9XqhQ0hdh6M2svYfsHGejaKFIAGd9MQ+ERIMzLGlN/kZoYIgdxFV0PuljTKXag==}
@@ -5849,6 +5855,10 @@ snapshots:
   '@types/parsimmon@1.10.9': {}
 
   '@types/semver@7.7.1': {}
+
+  '@types/sha.js@2.4.4':
+    dependencies:
+      '@types/node': 20.19.32
 
   '@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:

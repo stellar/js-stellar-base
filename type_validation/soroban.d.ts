@@ -1,0 +1,41 @@
+export declare class Soroban {
+    /**
+     * Given a whole number smart contract amount of a token and an amount of
+     * decimal places (if the token has any), it returns a "display" value.
+     *
+     * All arithmetic inside the contract is performed on integers to avoid
+     * potential precision and consistency issues of floating-point.
+     *
+     * @param amount   the token amount you want to display
+     * @param decimals specify how many decimal places a token has
+     *
+     * @returns the display value
+     * @throws {TypeError} if the given amount has a decimal point already
+     * @example
+     * formatTokenAmount("123000", 4) === "12.3";
+     * formatTokenAmount("123000", 3) === "123.0";
+     * formatTokenAmount("123", 3) === "0.123";
+     */
+    static formatTokenAmount(amount: string, decimals: number): string;
+    /**
+     * Parse a token amount to use it on smart contract
+     *
+     * This function takes the display value and its decimals (if the token has
+     * any) and returns a string that'll be used within the smart contract.
+     *
+     * @param value      the token amount you want to use it on smart
+     *    contract which you've been displaying in a UI
+     * @param decimals   the number of decimal places expected in the
+     *    display value (different than the "actual" number, because suffix zeroes
+     *    might not be present)
+     *
+     * @returns the whole number token amount represented by the display
+     *    value with the decimal places shifted over
+     *
+     * @example
+     * const displayValueAmount = "123.4560"
+     * const parsedAmtForSmartContract = parseTokenAmount(displayValueAmount, 5);
+     * parsedAmtForSmartContract === "12345600"
+     */
+    static parseTokenAmount(value: string, decimals: number): string;
+}

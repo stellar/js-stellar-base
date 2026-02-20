@@ -7,17 +7,17 @@ export class Soroban {
    * All arithmetic inside the contract is performed on integers to avoid
    * potential precision and consistency issues of floating-point.
    *
-   * @param {string} amount   the token amount you want to display
-   * @param {number} decimals specify how many decimal places a token has
+   * @param amount   the token amount you want to display
+   * @param decimals specify how many decimal places a token has
    *
-   * @returns {string} the display value
+   * @returns the display value
    * @throws {TypeError} if the given amount has a decimal point already
    * @example
    * formatTokenAmount("123000", 4) === "12.3";
    * formatTokenAmount("123000", 3) === "123.0";
    * formatTokenAmount("123", 3) === "0.123";
    */
-  static formatTokenAmount(amount, decimals) {
+  static formatTokenAmount(amount: string, decimals: number): string {
     if (amount.includes(".")) {
       throw new TypeError("No decimals are allowed");
     }
@@ -26,12 +26,12 @@ export class Soroban {
     if (decimals > 0) {
       if (decimals > formatted.length) {
         formatted = ["0", formatted.toString().padStart(decimals, "0")].join(
-          "."
+          ".",
         );
       } else {
         formatted = [
           formatted.slice(0, -decimals),
-          formatted.slice(-decimals)
+          formatted.slice(-decimals),
         ].join(".");
       }
     }
@@ -48,13 +48,13 @@ export class Soroban {
    * This function takes the display value and its decimals (if the token has
    * any) and returns a string that'll be used within the smart contract.
    *
-   * @param {string} value      the token amount you want to use it on smart
+   * @param value      the token amount you want to use it on smart
    *    contract which you've been displaying in a UI
-   * @param {number} decimals   the number of decimal places expected in the
+   * @param decimals   the number of decimal places expected in the
    *    display value (different than the "actual" number, because suffix zeroes
    *    might not be present)
    *
-   * @returns {string}  the whole number token amount represented by the display
+   * @returns the whole number token amount represented by the display
    *    value with the decimal places shifted over
    *
    * @example
@@ -62,7 +62,7 @@ export class Soroban {
    * const parsedAmtForSmartContract = parseTokenAmount(displayValueAmount, 5);
    * parsedAmtForSmartContract === "12345600"
    */
-  static parseTokenAmount(value, decimals) {
+  static parseTokenAmount(value: string, decimals: number): string {
     const [whole, fraction, ...rest] = value.split(".").slice();
 
     if (rest.length) {
@@ -70,7 +70,7 @@ export class Soroban {
     }
 
     const shifted = BigInt(
-      whole + (fraction?.padEnd(decimals, "0") ?? "0".repeat(decimals))
+      whole + (fraction?.padEnd(decimals, "0") ?? "0".repeat(decimals)),
     );
 
     return shifted.toString();
