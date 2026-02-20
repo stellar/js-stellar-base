@@ -1062,6 +1062,14 @@ export class Transaction<
 export const BASE_FEE = '100';
 export const TimeoutInfinite = 0;
 
+/**
+ * Represents the fees associated with a Soroban transaction, including the number of instructions executed,
+ * the number of bytes read and written to the ledger, and the total resource fee in stroops.
+ * @property {number} instructions - the number of instructions executed by the transaction
+ * @property {number} readBytes - the number of bytes read from the ledger by the transaction
+ * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
+ * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops
+ */
 export interface SorobanFees {
   instructions: number;
   readBytes: number;
@@ -1095,7 +1103,7 @@ export class TransactionBuilder {
    * @param destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
    * @param asset - the SAC asset to be transferred
    * @param amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
-   * @param sorobanFees - optional Soroban fees for the transaction
+   * @param sorobanFees - optional Soroban fees for the transaction to override the default fees used
    *
    * @returns the TransactionBuilder instance with the SAC transfer operation added
    */

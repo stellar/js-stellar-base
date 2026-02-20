@@ -516,14 +516,11 @@ describe('TransactionBuilder', function () {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          })
-            .addSacTransferOperation(
-              DESTINATION_ACCOUNT,
-              asset,
-              '9223372036854775808'
-            )
-            .setTimeout(StellarBase.TimeoutInfinite)
-            .build();
+          }).addSacTransferOperation(
+            DESTINATION_ACCOUNT,
+            asset,
+            '9223372036854775808'
+          );
         }).to.throw(/Amount exceeds maximum value for i64/);
       });
 
@@ -533,14 +530,11 @@ describe('TransactionBuilder', function () {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          })
-            .addSacTransferOperation(
-              DESTINATION_ACCOUNT,
-              asset,
-              '9223372036854775807'
-            )
-            .setTimeout(StellarBase.TimeoutInfinite)
-            .build();
+          }).addSacTransferOperation(
+            DESTINATION_ACCOUNT,
+            asset,
+            '9223372036854775807'
+          );
         }).to.not.throw();
       });
 
@@ -563,10 +557,7 @@ describe('TransactionBuilder', function () {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          })
-            .addSacTransferOperation(DESTINATION_ACCOUNT, asset, '-1')
-            .setTimeout(StellarBase.TimeoutInfinite)
-            .build();
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '-1');
         }).to.throw(/Amount must be a positive integer/);
       });
 
@@ -576,11 +567,122 @@ describe('TransactionBuilder', function () {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
+          }).addSacTransferOperation(SOURCE_ACCOUNT, asset, '10');
+        }).to.throw(/Destination cannot be the same as the source account/);
+      });
+
+      it('validates sorobanFees are greater than zero', function () {
+        const asset = StellarBase.Asset.native();
+        const U32_MAX = 4294967295;
+        const validFees = { instructions: 1, readBytes: 2, writeBytes: 3, resourceFee: BigInt(4) };
+
+        // each u32 field rejects 0
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, instructions: 0 });
+        }).to.throw(/instructions must be greater than 0/);
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, readBytes: 0 });
+        }).to.throw(/readBytes must be greater than 0/);
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, writeBytes: 0 });
+        }).to.throw(/writeBytes must be greater than 0/);
+
+        // resourceFee rejects 0
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, resourceFee: BigInt(0) });
+        }).to.throw(/resourceFee must be greater than 0/);
+      });
+
+      it('rejects u32 fields exceeding u32 max', function () {
+        const asset = StellarBase.Asset.native();
+        const U32_MAX = 4294967295;
+        const validFees = { instructions: 1, readBytes: 2, writeBytes: 3, resourceFee: BigInt(4) };
+
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, instructions: U32_MAX + 1 });
+        }).to.throw(/instructions must be greater than 0/);
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, readBytes: U32_MAX + 1 });
+        }).to.throw(/readBytes must be greater than 0/);
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, writeBytes: U32_MAX + 1 });
+        }).to.throw(/writeBytes must be greater than 0/);
+      });
+
+      it('accepts u32 fields at u32 max', function () {
+        const asset = StellarBase.Asset.native();
+        const U32_MAX = 4294967295;
+
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
           })
-            .addSacTransferOperation(SOURCE_ACCOUNT, asset, '10')
+            .addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+              instructions: U32_MAX,
+              readBytes: U32_MAX,
+              writeBytes: U32_MAX,
+              resourceFee: BigInt(1)
+            })
             .setTimeout(StellarBase.TimeoutInfinite)
             .build();
-        }).to.throw(/Destination cannot be the same as the source account/);
+        }).to.not.throw();
+      });
+
+      it('rejects resourceFee exceeding i64 max', function () {
+        const asset = StellarBase.Asset.native();
+
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            instructions: 1,
+            readBytes: 1,
+            writeBytes: 1,
+            resourceFee: BigInt('9223372036854775808')
+          });
+        }).to.throw(/resourceFee must be greater than 0/);
+      });
+
+      it('accepts resourceFee at i64 max', function () {
+        const asset = StellarBase.Asset.native();
+
+        expect(() => {
+          new StellarBase.TransactionBuilder(source, {
+            fee: 100,
+            networkPassphrase
+          })
+            .addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+              instructions: 1,
+              readBytes: 1,
+              writeBytes: 1,
+              resourceFee: BigInt('9223372036854775807')
+            })
+            .setTimeout(StellarBase.TimeoutInfinite)
+            .build();
+        }).to.not.throw();
       });
     });
   });

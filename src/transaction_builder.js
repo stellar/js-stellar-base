@@ -45,7 +45,7 @@ export const TimeoutInfinite = 0;
  * @property {number} instructions - the number of instructions executed by the transaction
  * @property {number} readBytes - the number of bytes read from the ledger by the transaction
  * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
- * @property {number} resourceFee - the fee to be paid for the transaction, in stroops (int64)
+ * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops 
  */
 
 /**
@@ -598,7 +598,7 @@ export class TransactionBuilder {
    * @param {string} destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
    * @param {Asset} asset - the SAC asset to be transferred
    * @param  {BigInt} amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
-   * @param {SorobanFees} [sorobanFees] - optional Soroban fees for the transaction
+   * @param {SorobanFees} [sorobanFees] - optional Soroban fees for the transaction to override the default fees used
    *
    * @returns {TransactionBuilder}
    */
@@ -608,6 +608,32 @@ export class TransactionBuilder {
     } else if (BigInt(amount) > Hyper.MAX_VALUE) {
       // The largest supported value for SAC is i64 however the contract interface uses i128 which is why we convert it to i128
       throw new Error('Amount exceeds maximum value for i64');
+    }
+
+    if (sorobanFees) {
+      const { instructions, readBytes, writeBytes, resourceFee } = sorobanFees;
+      const U32_MAX = 4294967295;
+
+      if (instructions <= 0 || instructions > U32_MAX) {
+        throw new Error(
+          `instructions must be greater than 0 and at most ${U32_MAX}`
+        );
+      }
+      if (readBytes <= 0 || readBytes > U32_MAX) {
+        throw new Error(
+          `readBytes must be greater than 0 and at most ${U32_MAX}`
+        );
+      }
+      if (writeBytes <= 0 || writeBytes > U32_MAX) {
+        throw new Error(
+          `writeBytes must be greater than 0 and at most ${U32_MAX}`
+        );
+      }
+      if (resourceFee <= 0n || resourceFee > Hyper.MAX_VALUE) {
+        throw new Error(
+          'resourceFee must be greater than 0 and at most i64 max'
+        );
+      }
     }
 
     const isDestinationContract = StrKey.isValidContract(destination);
@@ -731,7 +757,7 @@ export class TransactionBuilder {
       instructions: 400_000,
       readBytes: 1_000,
       writeBytes: 1_000,
-      resourceFee: 5_000_000
+      resourceFee: BigInt(5_000_000)
     };
 
     const sorobanData = new xdr.SorobanTransactionData({
