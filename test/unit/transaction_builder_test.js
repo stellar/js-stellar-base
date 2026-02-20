@@ -574,26 +574,40 @@ describe('TransactionBuilder', function () {
       it('validates sorobanFees are greater than zero', function () {
         const asset = StellarBase.Asset.native();
         const U32_MAX = 4294967295;
-        const validFees = { instructions: 1, readBytes: 2, writeBytes: 3, resourceFee: BigInt(4) };
+        const validFees = {
+          instructions: 1,
+          readBytes: 2,
+          writeBytes: 3,
+          resourceFee: BigInt(4)
+        };
 
         // each u32 field rejects 0
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, instructions: 0 });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            instructions: 0
+          });
         }).to.throw(/instructions must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, readBytes: 0 });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            readBytes: 0
+          });
         }).to.throw(/readBytes must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, writeBytes: 0 });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            writeBytes: 0
+          });
         }).to.throw(/writeBytes must be greater than 0/);
 
         // resourceFee rejects 0
@@ -601,32 +615,49 @@ describe('TransactionBuilder', function () {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, resourceFee: BigInt(0) });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            resourceFee: BigInt(0)
+          });
         }).to.throw(/resourceFee must be greater than 0/);
       });
 
       it('rejects u32 fields exceeding u32 max', function () {
         const asset = StellarBase.Asset.native();
         const U32_MAX = 4294967295;
-        const validFees = { instructions: 1, readBytes: 2, writeBytes: 3, resourceFee: BigInt(4) };
+        const validFees = {
+          instructions: 1,
+          readBytes: 2,
+          writeBytes: 3,
+          resourceFee: BigInt(4)
+        };
 
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, instructions: U32_MAX + 1 });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            instructions: U32_MAX + 1
+          });
         }).to.throw(/instructions must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, readBytes: U32_MAX + 1 });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            readBytes: U32_MAX + 1
+          });
         }).to.throw(/readBytes must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
             networkPassphrase
-          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', { ...validFees, writeBytes: U32_MAX + 1 });
+          }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, '10', {
+            ...validFees,
+            writeBytes: U32_MAX + 1
+          });
         }).to.throw(/writeBytes must be greater than 0/);
       });
 

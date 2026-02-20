@@ -45,7 +45,7 @@ export const TimeoutInfinite = 0;
  * @property {number} instructions - the number of instructions executed by the transaction
  * @property {number} readBytes - the number of bytes read from the ledger by the transaction
  * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
- * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops 
+ * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops
  */
 
 /**
