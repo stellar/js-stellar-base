@@ -1,5 +1,11 @@
-import xdr from "./xdr";
-import { StrKey, encodeCheck, decodeCheck } from "./strkey";
+import xdr from "./xdr.js";
+import { StrKey, encodeCheck, decodeCheck } from "./strkey.js";
+
+type SignerStrKeyType =
+  | "ed25519PublicKey"
+  | "preAuthTx"
+  | "sha256Hash"
+  | "signedPayload";
 
 /**
  * A container class with helpers to convert between signer keys
@@ -20,35 +26,33 @@ export class SignerKey {
    * @param   {string} address  a StrKey-encoded signer address
    * @returns {xdr.SignerKey}
    */
-  static decodeAddress(address) {
-    const signerKeyMap = {
-      ed25519PublicKey: xdr.SignerKey.signerKeyTypeEd25519,
-      preAuthTx: xdr.SignerKey.signerKeyTypePreAuthTx,
-      sha256Hash: xdr.SignerKey.signerKeyTypeHashX,
-      signedPayload: xdr.SignerKey.signerKeyTypeEd25519SignedPayload
-    };
-
+  static decodeAddress(address: string): xdr.SignerKey {
     const vb = StrKey.getVersionByteForPrefix(address);
-    const encoder = signerKeyMap[vb];
-    if (!encoder) {
+    if (vb === undefined) {
       throw new Error(`invalid signer key type (${vb})`);
     }
 
     const raw = decodeCheck(vb, address);
     switch (vb) {
       case "signedPayload":
-        return encoder(
+        return xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
           new xdr.SignerKeyEd25519SignedPayload({
             ed25519: raw.slice(0, 32),
-            payload: raw.slice(32 + 4)
-          })
+            payload: raw.slice(32 + 4),
+          }),
         );
 
-      case "ed25519PublicKey": // falls through
-      case "preAuthTx": // falls through
-      case "sha256Hash": // falls through
+      case "ed25519PublicKey":
+        return xdr.SignerKey.signerKeyTypeEd25519(raw);
+
+      case "preAuthTx":
+        return xdr.SignerKey.signerKeyTypePreAuthTx(raw);
+
+      case "sha256Hash":
+        return xdr.SignerKey.signerKeyTypeHashX(raw);
+
       default:
-        return encoder(raw);
+        throw new Error(`invalid signer key type (${vb})`);
     }
   }
 
@@ -58,24 +62,24 @@ export class SignerKey {
    * @param   {xdr.SignerKey} signerKey   the signer
    * @returns {string} the StrKey representation of the signer
    */
-  static encodeSignerKey(signerKey) {
-    let strkeyType;
-    let raw;
+  static encodeSignerKey(signerKey: xdr.SignerKey): string {
+    let strkeyType: SignerStrKeyType;
+    let raw: Buffer;
 
     switch (signerKey.switch()) {
       case xdr.SignerKeyType.signerKeyTypeEd25519():
         strkeyType = "ed25519PublicKey";
-        raw = signerKey.value();
+        raw = signerKey.value() as Buffer;
         break;
 
       case xdr.SignerKeyType.signerKeyTypePreAuthTx():
         strkeyType = "preAuthTx";
-        raw = signerKey.value();
+        raw = signerKey.value() as Buffer;
         break;
 
       case xdr.SignerKeyType.signerKeyTypeHashX():
         strkeyType = "sha256Hash";
-        raw = signerKey.value();
+        raw = signerKey.value() as Buffer;
         break;
 
       case xdr.SignerKeyType.signerKeyTypeEd25519SignedPayload():
@@ -84,7 +88,7 @@ export class SignerKey {
         break;
 
       default:
-        throw new Error(`invalid SignerKey (type: ${signerKey.switch()})`);
+        throw new Error(`invalid SignerKey (type: ${signerKey.switch().name})`);
     }
 
     return encodeCheck(strkeyType, raw);
