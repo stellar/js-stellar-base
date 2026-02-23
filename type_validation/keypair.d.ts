@@ -63,7 +63,7 @@ export declare class Keypair {
      * @param [id] - stringified integer indicating the underlying muxed
      *     ID of the new account object
      */
-    xdrMuxedAccount(id: string): xdr.MuxedAccount;
+    xdrMuxedAccount(id?: string): xdr.MuxedAccount;
     /**
      * Returns raw public key bytes
      */
