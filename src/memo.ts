@@ -170,6 +170,8 @@ export class Memo<T extends MemoType = MemoType> {
         throw new Error("Expects string, array or buffer, max 28 bytes");
       }
     } else {
+      // TODO: look into fixing generated type definitions so that this case is possible to represent.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
       if (!(xdr.Memo as any).armTypeForArm("text").isValid(value)) {
         throw new Error("Expects string, array or buffer, max 28 bytes");
       }
