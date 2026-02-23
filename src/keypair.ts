@@ -1,11 +1,10 @@
-/* eslint no-bitwise: ["error", {"allow": ["^"]}] */
-
 import { ed25519 } from "@noble/curves/ed25519";
-import { sign, verify, generate } from "./signing";
-import { StrKey } from "./strkey";
-import { hash } from "./hashing";
 
-import xdr from "./xdr";
+import { sign, verify, generate } from "./signing.js";
+import { StrKey } from "./strkey.js";
+import { hash } from "./hashing.js";
+
+import xdr from "./xdr.js";
 
 /**
  * `Keypair` represents public (and secret) keys of the account.
@@ -19,13 +18,18 @@ import xdr from "./xdr";
  * * `{@link Keypair.random}`
  *
  * @constructor
- * @param {object} keys At least one of keys must be provided.
- * @param {string} keys.type Public-key signature system name. (currently only `ed25519` keys are supported)
- * @param {Buffer} [keys.publicKey] Raw public key
- * @param {Buffer} [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
+ * @param keys At least one of keys must be provided.
+ * @param keys.type Public-key signature system name. (currently only `ed25519` keys are supported)
+ * @param [keys.publicKey] Raw public key
+ * @param [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
  */
 export class Keypair {
-  constructor(keys) {
+  readonly type: string;
+  private _publicKey: Buffer;
+  private _secretSeed?: Buffer;
+  private _secretKey?: Buffer;
+
+  constructor(keys: { type: string; publicKey?: Buffer; secretKey?: Buffer }) {
     if (keys.type !== "ed25519") {
       throw new Error("Invalid keys type");
     }
@@ -49,22 +53,25 @@ export class Keypair {
       ) {
         throw new Error("secretKey does not match publicKey");
       }
-    } else {
+    } else if (keys.publicKey) {
       this._publicKey = Buffer.from(keys.publicKey);
 
       if (this._publicKey.length !== 32) {
         throw new Error("publicKey length is invalid");
       }
+    } else {
+      throw new Error(
+        "At least one of publicKey or secretKey must be provided",
+      );
     }
   }
 
   /**
    * Creates a new `Keypair` instance from secret. This can either be secret key or secret seed depending
    * on underlying public-key signature system. Currently `Keypair` only supports ed25519.
-   * @param {string} secret secret key (ex. `SDAK....`)
-   * @returns {Keypair}
+   * @param secret secret key (ex. `SDAK....`)
    */
-  static fromSecret(secret) {
+  static fromSecret(secret: string): Keypair {
     const rawSecret = StrKey.decodeEd25519SecretSeed(secret);
     return this.fromRawEd25519Seed(rawSecret);
   }
@@ -72,22 +79,20 @@ export class Keypair {
   /**
    * Creates a new `Keypair` object from ed25519 secret key seed raw bytes.
    *
-   * @param {Buffer} rawSeed Raw 32-byte ed25519 secret key seed
-   * @returns {Keypair}
+   * @param rawSeed Raw 32-byte ed25519 secret key seed
    */
-  static fromRawEd25519Seed(rawSeed) {
+  static fromRawEd25519Seed(rawSeed: Buffer): Keypair {
     return new this({ type: "ed25519", secretKey: rawSeed });
   }
 
   /**
    * Returns `Keypair` object representing network master key.
-   * @param {string} networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
-   * @returns {Keypair}
+   * @param networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    */
-  static master(networkPassphrase) {
+  static master(networkPassphrase: string): Keypair {
     if (!networkPassphrase) {
       throw new Error(
-        "No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`."
+        "No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.",
       );
     }
 
@@ -96,32 +101,31 @@ export class Keypair {
 
   /**
    * Creates a new `Keypair` object from public key.
-   * @param {string} publicKey public key (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
-   * @returns {Keypair}
+   * @param publicKey public key (ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`)
    */
-  static fromPublicKey(publicKey) {
-    publicKey = StrKey.decodeEd25519PublicKey(publicKey);
-    if (publicKey.length !== 32) {
+  static fromPublicKey(publicKey: string): Keypair {
+    const publicKeyBuffer = StrKey.decodeEd25519PublicKey(publicKey);
+    if (publicKeyBuffer.length !== 32) {
       throw new Error("Invalid Stellar public key");
     }
-    return new this({ type: "ed25519", publicKey });
+
+    return new this({ type: "ed25519", publicKey: publicKeyBuffer });
   }
 
   /**
    * Create a random `Keypair` object.
-   * @returns {Keypair}
    */
-  static random() {
-    const secret = ed25519.utils.randomPrivateKey();
-    return this.fromRawEd25519Seed(secret);
+  static random(): Keypair {
+    const { secretKey } = ed25519.keygen();
+    return this.fromRawEd25519Seed(Buffer.from(secretKey));
   }
 
-  xdrAccountId() {
-    return new xdr.AccountId.publicKeyTypeEd25519(this._publicKey);
+  xdrAccountId(): xdr.AccountId {
+    return xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
   }
 
-  xdrPublicKey() {
-    return new xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
+  xdrPublicKey(): xdr.PublicKey {
+    return xdr.PublicKey.publicKeyTypeEd25519(this._publicKey);
   }
 
   /**
@@ -130,12 +134,10 @@ export class Keypair {
    * You will get a different type of muxed account depending on whether or not
    * you pass an ID.
    *
-   * @param  {string} [id] - stringified integer indicating the underlying muxed
+   * @param [id] - stringified integer indicating the underlying muxed
    *     ID of the new account object
-   *
-   * @return {xdr.MuxedAccount}
    */
-  xdrMuxedAccount(id) {
+  xdrMuxedAccount(id: string): xdr.MuxedAccount {
     if (typeof id !== "undefined") {
       if (typeof id !== "string") {
         throw new TypeError(`expected string for ID, got ${typeof id}`);
@@ -144,41 +146,44 @@ export class Keypair {
       return xdr.MuxedAccount.keyTypeMuxedEd25519(
         new xdr.MuxedAccountMed25519({
           id: xdr.Uint64.fromString(id),
-          ed25519: this._publicKey
-        })
+          ed25519: this._publicKey,
+        }),
       );
     }
 
-    return new xdr.MuxedAccount.keyTypeEd25519(this._publicKey);
+    return xdr.MuxedAccount.keyTypeEd25519(this._publicKey);
   }
 
   /**
-   * Returns raw public key
-   * @returns {Buffer}
+   * Returns raw public key bytes
    */
-  rawPublicKey() {
+  rawPublicKey(): Buffer {
     return this._publicKey;
   }
 
-  signatureHint() {
+  /**
+   * Returns the signature hint for this keypair.
+   * The hint is the last 4 bytes of the account ID XDR representation.
+   */
+  signatureHint(): Buffer {
     const a = this.xdrAccountId().toXDR();
 
-    return a.slice(a.length - 4);
+    return a.subarray(a.length - 4);
   }
 
   /**
    * Returns public key associated with this `Keypair` object.
-   * @returns {string}
    */
-  publicKey() {
+  publicKey(): string {
     return StrKey.encodeEd25519PublicKey(this._publicKey);
   }
 
   /**
    * Returns secret key associated with this `Keypair` object
-   * @returns {string}
+   * @returns Secret key encoded in Stellar format (e.g., `SDAK....`)
+   * @throws {Error} Throws if no secret key is available
    */
-  secret() {
+  secret(): string {
     if (!this._secretSeed) {
       throw new Error("no secret key available");
     }
@@ -191,28 +196,30 @@ export class Keypair {
   }
 
   /**
-   * Returns raw secret key.
-   * @returns {Buffer}
+   * Returns raw secret key bytes.
+   * @throws {Error} Throws if no secret seed is available
    */
-  rawSecretKey() {
+  rawSecretKey(): Buffer {
+    if (!this._secretSeed) {
+      throw new Error("no secret seed available");
+    }
     return this._secretSeed;
   }
 
   /**
    * Returns `true` if this `Keypair` object contains secret key and can sign.
-   * @returns {boolean}
    */
-  canSign() {
+  canSign(): boolean {
     return !!this._secretKey;
   }
 
   /**
    * Signs data.
-   * @param {Buffer} data Data to sign
-   * @returns {Buffer}
+   * @param data Data to sign
+   * @throws {Error} Throws if no secret key is available
    */
-  sign(data) {
-    if (!this.canSign()) {
+  sign(data: Buffer): Buffer {
+    if (!this._secretKey) {
       throw new Error("cannot sign: no secret key available");
     }
 
@@ -221,24 +228,22 @@ export class Keypair {
 
   /**
    * Verifies if `signature` for `data` is valid.
-   * @param {Buffer} data Signed data
-   * @param {Buffer} signature Signature
-   * @returns {boolean}
+   * @param data Signed data
+   * @param signature Signature
    */
-  verify(data, signature) {
+  verify(data: Buffer, signature: Buffer): boolean {
     return verify(data, signature, this._publicKey);
   }
 
   /**
    * Returns the decorated signature (hint+sig) for arbitrary data.
    *
-   * @param  {Buffer} data  arbitrary data to sign
-   * @return {xdr.DecoratedSignature}   the raw signature structure which can be
-   *     added directly to a transaction envelope
+   * @param  data  arbitrary data to sign
+   * @return the raw signature structure which can be added directly to a transaction envelope
    *
    * @see TransactionBase.addDecoratedSignature
    */
-  signDecorated(data) {
+  signDecorated(data: Buffer): xdr.DecoratedSignature {
     const signature = this.sign(data);
     const hint = this.signatureHint();
 
@@ -251,25 +256,32 @@ export class Keypair {
    *  The hint is defined as the last 4 bytes of the signer key XORed with last
    *  4 bytes of the payload (zero-left-padded if necessary).
    *
-   * @param  {Buffer} data    data to both sign and treat as the payload
-   * @return {xdr.DecoratedSignature}
+   * @param data data to both sign and treat as the payload
    *
    * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0040.md#signature-hint
    * @see TransactionBase.addDecoratedSignature
    */
-  signPayloadDecorated(data) {
-    const signature = this.sign(data);
+  signPayloadDecorated(data: Buffer): xdr.DecoratedSignature {
+    // Ensure data is a Buffer to support array-like inputs
+    const dataBuffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+
+    const signature = this.sign(dataBuffer);
     const keyHint = this.signatureHint();
 
-    let hint = Buffer.from(data.slice(-4));
+    let hint = Buffer.from(dataBuffer.subarray(-4));
     if (hint.length < 4) {
       // append zeroes as needed
-      hint = Buffer.concat([hint, Buffer.alloc(4 - data.length, 0)]);
+      hint = Buffer.concat([hint, Buffer.alloc(4 - dataBuffer.length, 0)]);
+    }
+
+    // XOR each byte of hint with corresponding byte of keyHint
+    for (let i = 0; i < hint.length; i++) {
+      hint[i] = (hint[i] as number) ^ (keyHint[i] as number);
     }
 
     return new xdr.DecoratedSignature({
-      hint: hint.map((byte, i) => byte ^ keyHint[i]),
-      signature
+      hint,
+      signature,
     });
   }
 }
