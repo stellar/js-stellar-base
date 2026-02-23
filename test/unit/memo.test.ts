@@ -193,7 +193,7 @@ describe("Memo", () => {
 
       const xdrMemo = memo.toXDRObject();
       expect(xdrMemo.switch().name).toBe("memoReturn");
-      expect((xdrMemo as any).arm()).toBe("return");
+      expect((xdrMemo as any).arm()).toBe("retHash");
       expect(xdrMemo.retHash().length).toBe(32);
       expect(xdrMemo.retHash().toString("hex")).toBe(buffer.toString("hex"));
 
