@@ -4,7 +4,7 @@ import { StrKey } from "../../src/strkey.js";
 import { Networks } from "../../src/network.js";
 import xdr from "../../src/xdr.js";
 
-describe("Keypair.contructor", () => {
+describe("Keypair.constructor", () => {
   it("fails when passes secret key does not match public key", () => {
     const secret = "SD7X7LEHBNMUIKQGKPARG5TDJNBHKC346OUARHGZL5ITC6IJPXHILY36";
     const kp = Keypair.fromSecret(secret);
@@ -212,8 +212,7 @@ describe("Keypair.sign*Decorated", () => {
 describe("Keypair.constructor additional errors", () => {
   it("fails when type is not ed25519", () => {
     expect(
-      () =>
-        new Keypair({ type: "rsa", publicKey: Buffer.alloc(32) }),
+      () => new Keypair({ type: "rsa", publicKey: Buffer.alloc(32) }),
     ).toThrow(/Invalid keys type/);
   });
 
@@ -232,9 +231,7 @@ describe("Keypair.master", () => {
   });
 
   it("throws when no passphrase is provided", () => {
-    expect(() => Keypair.master("" as string)).toThrow(
-      /No network selected/,
-    );
+    expect(() => Keypair.master("" as string)).toThrow(/No network selected/);
   });
 });
 
@@ -290,7 +287,13 @@ describe("Keypair.verify", () => {
     );
     const data = Buffer.from("hello");
     const signature = kp.sign(data);
-    signature[0] ^= 0xff; // corrupt the signature
+    const firstByte = signature[0];
+
+    if (firstByte === undefined) {
+      throw new Error("signature is empty");
+    }
+
+    signature[0] = firstByte ^ 0xff; // corrupt the signature
     expect(kp.verify(data, signature)).toBe(false);
   });
 
@@ -312,9 +315,7 @@ describe("Keypair.xdrMuxedAccount with id", () => {
     );
     const muxed = kp.xdrMuxedAccount("12345");
     expect(muxed).toBeInstanceOf(xdr.MuxedAccount);
-    expect(muxed.switch()).toEqual(
-      xdr.CryptoKeyType.keyTypeMuxedEd25519(),
-    );
+    expect(muxed.switch()).toEqual(xdr.CryptoKeyType.keyTypeMuxedEd25519());
   });
 });
 
@@ -338,9 +339,7 @@ describe("Keypair.xdrPublicKey", () => {
     );
     const pubKey = kp.xdrPublicKey();
     expect(pubKey).toBeInstanceOf(xdr.PublicKey);
-    expect(pubKey.switch()).toEqual(
-      xdr.PublicKeyType.publicKeyTypeEd25519(),
-    );
+    expect(pubKey.switch()).toEqual(xdr.PublicKeyType.publicKeyTypeEd25519());
   });
 });
 
