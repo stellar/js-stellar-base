@@ -1,5 +1,5 @@
-import { AssetType } from "../types/index.js";
 import xdr from "./xdr.js";
+import type { AssetType } from "../types/index.js";
 
 /**
  * LiquidityPoolId class represents the asset referenced by a trustline to a
