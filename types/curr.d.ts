@@ -98,7 +98,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | (string | bigint | number)[],
+      values: string | bigint | number | Array<string | bigint | number>,
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -142,7 +142,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | (string | bigint | number)[],
+      values: string | bigint | number | Array<string | bigint | number>,
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -10054,7 +10054,7 @@ export namespace xdr {
       doc: string | Buffer;
       lib: string | Buffer;
       name: string | Buffer;
-      prefixTopics: (string | Buffer)[];
+      prefixTopics: Array<string | Buffer>;
       params: ScSpecEventParamV0[];
       dataFormat: ScSpecEventDataFormat;
     });
