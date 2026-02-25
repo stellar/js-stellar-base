@@ -3,10 +3,12 @@
 ## Unreleased
 
 ### Added
-* Implemented `TransactionBuilder.addSacTransferOperation` to remove the need for simulation for SAC (Stellar Asset Contracts) transfers by creating the appropriate auth entries and footprint ([#861](https://github.com/stellar/js-stellar-base/pull/861)).
+* Implemented `TransactionBuilder.addSacTransferOperation` to remove the need for simulation for SAC (Stellar Asset Contract) transfers by creating the appropriate auth entries and footprint ([#861](https://github.com/stellar/js-stellar-base/pull/861)).
+
 
 ### Fixed
 * `TransactionBuilder.build` now adds `this.sorobanData.resourceFee()` to `baseFee` when provided ([#861](https://github.com/stellar/js-stellar-base/pull/861)).
+* The generated XDR type declarations for unions with integer discriminants now use constructors instead of named static methods ([stellar/dts-xdr#9](https://github.com/stellar/dts-xdr/pull/9)) ([#874](https://github.com/stellar/js-stellar-base/pull/874)).
 
 ## [`v14.0.4`](https://github.com/stellar/js-stellar-base/compare/v14.0.3...v14.0.4):
 

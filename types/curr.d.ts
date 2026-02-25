@@ -90,7 +90,6 @@ export namespace xdr {
     validateXDR(input: Buffer, format?: 'raw'): boolean;
     validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
-
   class Hyper {
     low: number;
 
@@ -99,7 +98,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | Array<string | bigint | number>,
+      values: string | bigint | number | (string | bigint | number)[],
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -143,7 +142,7 @@ export namespace xdr {
     unsigned: boolean;
 
     constructor(
-      values: string | bigint | number | Array<string | bigint | number>,
+      values: string | bigint | number | (string | bigint | number)[],
     );
 
     toXDR(format?: 'raw'): Buffer;
@@ -10055,7 +10054,7 @@ export namespace xdr {
       doc: string | Buffer;
       lib: string | Buffer;
       name: string | Buffer;
-      prefixTopics: Array<string | Buffer>;
+      prefixTopics: (string | Buffer)[];
       params: ScSpecEventParamV0[];
       dataFormat: ScSpecEventDataFormat;
     });
@@ -10702,7 +10701,7 @@ export namespace xdr {
 
     static assetTypeCreditAlphanum12(value: Buffer): AssetCode;
 
-    value(): Buffer | Buffer;
+    value(): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -10762,13 +10761,13 @@ export namespace xdr {
   }
 
   class AccountEntryExtensionV2Ext {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 3, value: AccountEntryExtensionV3);
+
     switch(): number;
 
     v3(value?: AccountEntryExtensionV3): AccountEntryExtensionV3;
-
-    static 0(): AccountEntryExtensionV2Ext;
-
-    static 3(value: AccountEntryExtensionV3): AccountEntryExtensionV2Ext;
 
     value(): AccountEntryExtensionV3 | void;
 
@@ -10797,13 +10796,13 @@ export namespace xdr {
   }
 
   class AccountEntryExtensionV1Ext {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 2, value: AccountEntryExtensionV2);
+
     switch(): number;
 
     v2(value?: AccountEntryExtensionV2): AccountEntryExtensionV2;
-
-    static 0(): AccountEntryExtensionV1Ext;
-
-    static 2(value: AccountEntryExtensionV2): AccountEntryExtensionV1Ext;
 
     value(): AccountEntryExtensionV2 | void;
 
@@ -10832,13 +10831,13 @@ export namespace xdr {
   }
 
   class AccountEntryExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: AccountEntryExtensionV1);
+
     switch(): number;
 
     v1(value?: AccountEntryExtensionV1): AccountEntryExtensionV1;
-
-    static 0(): AccountEntryExt;
-
-    static 1(value: AccountEntryExtensionV1): AccountEntryExt;
 
     value(): AccountEntryExtensionV1 | void;
 
@@ -10904,9 +10903,9 @@ export namespace xdr {
   }
 
   class TrustLineEntryExtensionV2Ext {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): TrustLineEntryExtensionV2Ext;
+    switch(): number;
 
     value(): void;
 
@@ -10935,13 +10934,13 @@ export namespace xdr {
   }
 
   class TrustLineEntryV1Ext {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 2, value: TrustLineEntryExtensionV2);
+
     switch(): number;
 
     v2(value?: TrustLineEntryExtensionV2): TrustLineEntryExtensionV2;
-
-    static 0(): TrustLineEntryV1Ext;
-
-    static 2(value: TrustLineEntryExtensionV2): TrustLineEntryV1Ext;
 
     value(): TrustLineEntryExtensionV2 | void;
 
@@ -10970,13 +10969,13 @@ export namespace xdr {
   }
 
   class TrustLineEntryExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: TrustLineEntryV1);
+
     switch(): number;
 
     v1(value?: TrustLineEntryV1): TrustLineEntryV1;
-
-    static 0(): TrustLineEntryExt;
-
-    static 1(value: TrustLineEntryV1): TrustLineEntryExt;
 
     value(): TrustLineEntryV1 | void;
 
@@ -11002,9 +11001,9 @@ export namespace xdr {
   }
 
   class OfferEntryExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): OfferEntryExt;
+    switch(): number;
 
     value(): void;
 
@@ -11030,9 +11029,9 @@ export namespace xdr {
   }
 
   class DataEntryExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): DataEntryExt;
+    switch(): number;
 
     value(): void;
 
@@ -11082,14 +11081,7 @@ export namespace xdr {
 
     static claimPredicateBeforeRelativeTime(value: Int64): ClaimPredicate;
 
-    value():
-      | ClaimPredicate[]
-      | ClaimPredicate[]
-      | null
-      | ClaimPredicate
-      | Int64
-      | Int64
-      | void;
+    value(): ClaimPredicate[] | null | ClaimPredicate | Int64 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -11143,9 +11135,9 @@ export namespace xdr {
   }
 
   class ClaimableBalanceEntryExtensionV1Ext {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): ClaimableBalanceEntryExtensionV1Ext;
+    switch(): number;
 
     value(): void;
 
@@ -11177,15 +11169,15 @@ export namespace xdr {
   }
 
   class ClaimableBalanceEntryExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: ClaimableBalanceEntryExtensionV1);
+
     switch(): number;
 
     v1(
       value?: ClaimableBalanceEntryExtensionV1,
     ): ClaimableBalanceEntryExtensionV1;
-
-    static 0(): ClaimableBalanceEntryExt;
-
-    static 1(value: ClaimableBalanceEntryExtensionV1): ClaimableBalanceEntryExt;
 
     value(): ClaimableBalanceEntryExtensionV1 | void;
 
@@ -11251,13 +11243,13 @@ export namespace xdr {
   }
 
   class ContractCodeEntryExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: ContractCodeEntryV1);
+
     switch(): number;
 
     v1(value?: ContractCodeEntryV1): ContractCodeEntryV1;
-
-    static 0(): ContractCodeEntryExt;
-
-    static 1(value: ContractCodeEntryV1): ContractCodeEntryExt;
 
     value(): ContractCodeEntryV1 | void;
 
@@ -11286,9 +11278,9 @@ export namespace xdr {
   }
 
   class LedgerEntryExtensionV1Ext {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): LedgerEntryExtensionV1Ext;
+    switch(): number;
 
     value(): void;
 
@@ -11393,13 +11385,13 @@ export namespace xdr {
   }
 
   class LedgerEntryExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: LedgerEntryExtensionV1);
+
     switch(): number;
 
     v1(value?: LedgerEntryExtensionV1): LedgerEntryExtensionV1;
-
-    static 0(): LedgerEntryExt;
-
-    static 1(value: LedgerEntryExtensionV1): LedgerEntryExt;
 
     value(): LedgerEntryExtensionV1 | void;
 
@@ -11503,13 +11495,13 @@ export namespace xdr {
   }
 
   class BucketMetadataExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: BucketListType);
+
     switch(): number;
 
     bucketListType(value?: BucketListType): BucketListType;
-
-    static 0(): BucketMetadataExt;
-
-    static 1(value: BucketListType): BucketMetadataExt;
 
     value(): BucketListType | void;
 
@@ -11652,9 +11644,9 @@ export namespace xdr {
   }
 
   class LedgerHeaderExtensionV1Ext {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): LedgerHeaderExtensionV1Ext;
+    switch(): number;
 
     value(): void;
 
@@ -11683,13 +11675,13 @@ export namespace xdr {
   }
 
   class LedgerHeaderExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: LedgerHeaderExtensionV1);
+
     switch(): number;
 
     v1(value?: LedgerHeaderExtensionV1): LedgerHeaderExtensionV1;
-
-    static 0(): LedgerHeaderExt;
-
-    static 1(value: LedgerHeaderExtensionV1): LedgerHeaderExt;
 
     value(): LedgerHeaderExtensionV1 | void;
 
@@ -11745,14 +11737,7 @@ export namespace xdr {
 
     static ledgerUpgradeMaxSorobanTxSetSize(value: number): LedgerUpgrade;
 
-    value():
-      | number
-      | number
-      | number
-      | number
-      | number
-      | ConfigUpgradeSetKey
-      | number;
+    value(): number | ConfigUpgradeSetKey;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -11810,15 +11795,15 @@ export namespace xdr {
   }
 
   class TransactionPhase {
+    constructor(switchValue: 0, value: TxSetComponent[]);
+
+    constructor(switchValue: 1, value: ParallelTxsComponent);
+
     switch(): number;
 
     v0Components(value?: TxSetComponent[]): TxSetComponent[];
 
     parallelTxsComponent(value?: ParallelTxsComponent): ParallelTxsComponent;
-
-    static 0(value: TxSetComponent[]): TransactionPhase;
-
-    static 1(value: ParallelTxsComponent): TransactionPhase;
 
     value(): TxSetComponent[] | ParallelTxsComponent;
 
@@ -11844,11 +11829,11 @@ export namespace xdr {
   }
 
   class GeneralizedTransactionSet {
+    constructor(switchValue: 1, value: TransactionSetV1);
+
     switch(): number;
 
     v1TxSet(value?: TransactionSetV1): TransactionSetV1;
-
-    static 1(value: TransactionSetV1): GeneralizedTransactionSet;
 
     value(): TransactionSetV1;
 
@@ -11877,15 +11862,15 @@ export namespace xdr {
   }
 
   class TransactionHistoryEntryExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: GeneralizedTransactionSet);
+
     switch(): number;
 
     generalizedTxSet(
       value?: GeneralizedTransactionSet,
     ): GeneralizedTransactionSet;
-
-    static 0(): TransactionHistoryEntryExt;
-
-    static 1(value: GeneralizedTransactionSet): TransactionHistoryEntryExt;
 
     value(): GeneralizedTransactionSet | void;
 
@@ -11914,9 +11899,9 @@ export namespace xdr {
   }
 
   class TransactionHistoryResultEntryExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): TransactionHistoryResultEntryExt;
+    switch(): number;
 
     value(): void;
 
@@ -11948,9 +11933,9 @@ export namespace xdr {
   }
 
   class LedgerHeaderHistoryEntryExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): LedgerHeaderHistoryEntryExt;
+    switch(): number;
 
     value(): void;
 
@@ -11979,11 +11964,11 @@ export namespace xdr {
   }
 
   class ScpHistoryEntry {
+    constructor(switchValue: 0, value: ScpHistoryEntryV0);
+
     switch(): number;
 
     v0(value?: ScpHistoryEntryV0): ScpHistoryEntryV0;
-
-    static 0(value: ScpHistoryEntryV0): ScpHistoryEntry;
 
     value(): ScpHistoryEntryV0;
 
@@ -12031,7 +12016,7 @@ export namespace xdr {
 
     static ledgerEntryRestored(value: LedgerEntry): LedgerEntryChange;
 
-    value(): LedgerEntry | LedgerEntry | LedgerKey | LedgerEntry | LedgerEntry;
+    value(): LedgerEntry | LedgerKey;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -12055,11 +12040,11 @@ export namespace xdr {
   }
 
   class ContractEventBody {
+    constructor(switchValue: 0, value: ContractEventV0);
+
     switch(): number;
 
     v0(value?: ContractEventV0): ContractEventV0;
-
-    static 0(value: ContractEventV0): ContractEventBody;
 
     value(): ContractEventV0;
 
@@ -12085,13 +12070,13 @@ export namespace xdr {
   }
 
   class SorobanTransactionMetaExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: SorobanTransactionMetaExtV1);
+
     switch(): number;
 
     v1(value?: SorobanTransactionMetaExtV1): SorobanTransactionMetaExtV1;
-
-    static 0(): SorobanTransactionMetaExt;
-
-    static 1(value: SorobanTransactionMetaExtV1): SorobanTransactionMetaExt;
 
     value(): SorobanTransactionMetaExtV1 | void;
 
@@ -12120,6 +12105,16 @@ export namespace xdr {
   }
 
   class TransactionMeta {
+    constructor(switchValue: 0, value: OperationMeta[]);
+
+    constructor(switchValue: 1, value: TransactionMetaV1);
+
+    constructor(switchValue: 2, value: TransactionMetaV2);
+
+    constructor(switchValue: 3, value: TransactionMetaV3);
+
+    constructor(switchValue: 4, value: TransactionMetaV4);
+
     switch(): number;
 
     operations(value?: OperationMeta[]): OperationMeta[];
@@ -12131,16 +12126,6 @@ export namespace xdr {
     v3(value?: TransactionMetaV3): TransactionMetaV3;
 
     v4(value?: TransactionMetaV4): TransactionMetaV4;
-
-    static 0(value: OperationMeta[]): TransactionMeta;
-
-    static 1(value: TransactionMetaV1): TransactionMeta;
-
-    static 2(value: TransactionMetaV2): TransactionMeta;
-
-    static 3(value: TransactionMetaV3): TransactionMeta;
-
-    static 4(value: TransactionMetaV4): TransactionMeta;
 
     value():
       | OperationMeta[]
@@ -12171,13 +12156,13 @@ export namespace xdr {
   }
 
   class LedgerCloseMetaExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: LedgerCloseMetaExtV1);
+
     switch(): number;
 
     v1(value?: LedgerCloseMetaExtV1): LedgerCloseMetaExtV1;
-
-    static 0(): LedgerCloseMetaExt;
-
-    static 1(value: LedgerCloseMetaExtV1): LedgerCloseMetaExt;
 
     value(): LedgerCloseMetaExtV1 | void;
 
@@ -12203,6 +12188,12 @@ export namespace xdr {
   }
 
   class LedgerCloseMeta {
+    constructor(switchValue: 0, value: LedgerCloseMetaV0);
+
+    constructor(switchValue: 1, value: LedgerCloseMetaV1);
+
+    constructor(switchValue: 2, value: LedgerCloseMetaV2);
+
     switch(): number;
 
     v0(value?: LedgerCloseMetaV0): LedgerCloseMetaV0;
@@ -12210,12 +12201,6 @@ export namespace xdr {
     v1(value?: LedgerCloseMetaV1): LedgerCloseMetaV1;
 
     v2(value?: LedgerCloseMetaV2): LedgerCloseMetaV2;
-
-    static 0(value: LedgerCloseMetaV0): LedgerCloseMeta;
-
-    static 1(value: LedgerCloseMetaV1): LedgerCloseMeta;
-
-    static 2(value: LedgerCloseMetaV2): LedgerCloseMeta;
 
     value(): LedgerCloseMetaV0 | LedgerCloseMetaV1 | LedgerCloseMetaV2;
 
@@ -12251,7 +12236,7 @@ export namespace xdr {
 
     static iPv6(value: Buffer): PeerAddressIp;
 
-    value(): Buffer | Buffer;
+    value(): Buffer;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -12427,7 +12412,6 @@ export namespace xdr {
       | SignedTimeSlicedSurveyResponseMessage
       | SignedTimeSlicedSurveyStartCollectingMessage
       | SignedTimeSlicedSurveyStopCollectingMessage
-      | Buffer
       | ScpQuorumSet
       | ScpEnvelope
       | number
@@ -12458,11 +12442,11 @@ export namespace xdr {
   }
 
   class AuthenticatedMessage {
+    constructor(switchValue: 0, value: AuthenticatedMessageV0);
+
     switch(): number;
 
     v0(value?: AuthenticatedMessageV0): AuthenticatedMessageV0;
-
-    static 0(value: AuthenticatedMessageV0): AuthenticatedMessage;
 
     value(): AuthenticatedMessageV0;
 
@@ -13070,7 +13054,7 @@ export namespace xdr {
 
     static memoReturn(value: Buffer): Memo;
 
-    value(): string | Buffer | Uint64 | Buffer | Buffer | void;
+    value(): string | Buffer | Uint64 | void;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -13130,13 +13114,13 @@ export namespace xdr {
   }
 
   class SorobanTransactionDataExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: SorobanResourcesExtV0);
+
     switch(): number;
 
     resourceExt(value?: SorobanResourcesExtV0): SorobanResourcesExtV0;
-
-    static 0(): SorobanTransactionDataExt;
-
-    static 1(value: SorobanResourcesExtV0): SorobanTransactionDataExt;
 
     value(): SorobanResourcesExtV0 | void;
 
@@ -13165,9 +13149,9 @@ export namespace xdr {
   }
 
   class TransactionV0Ext {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): TransactionV0Ext;
+    switch(): number;
 
     value(): void;
 
@@ -13193,13 +13177,13 @@ export namespace xdr {
   }
 
   class TransactionExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: SorobanTransactionData);
+
     switch(): number;
 
     sorobanData(value?: SorobanTransactionData): SorobanTransactionData;
-
-    static 0(): TransactionExt;
-
-    static 1(value: SorobanTransactionData): TransactionExt;
 
     value(): SorobanTransactionData | void;
 
@@ -13260,9 +13244,9 @@ export namespace xdr {
   }
 
   class FeeBumpTransactionExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): FeeBumpTransactionExt;
+    switch(): number;
 
     value(): void;
 
@@ -14766,7 +14750,6 @@ export namespace xdr {
       | PaymentResult
       | PathPaymentStrictReceiveResult
       | ManageSellOfferResult
-      | ManageSellOfferResult
       | SetOptionsResult
       | ChangeTrustResult
       | AllowTrustResult
@@ -14919,9 +14902,9 @@ export namespace xdr {
   }
 
   class InnerTransactionResultExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): InnerTransactionResultExt;
+    switch(): number;
 
     value(): void;
 
@@ -15027,9 +15010,9 @@ export namespace xdr {
   }
 
   class TransactionResultExt {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): TransactionResultExt;
+    switch(): number;
 
     value(): void;
 
@@ -15058,9 +15041,9 @@ export namespace xdr {
   }
 
   class ExtensionPoint {
-    switch(): number;
+    constructor(switchValue: 0);
 
-    static 0(): ExtensionPoint;
+    switch(): number;
 
     value(): void;
 
@@ -15138,7 +15121,7 @@ export namespace xdr {
       value: SignerKeyEd25519SignedPayload,
     ): SignerKey;
 
-    value(): Buffer | Buffer | Buffer | SignerKeyEd25519SignedPayload;
+    value(): Buffer | SignerKeyEd25519SignedPayload;
 
     toXDR(format?: 'raw'): Buffer;
 
@@ -15415,7 +15398,6 @@ export namespace xdr {
       | boolean
       | ScError
       | number
-      | number
       | Uint64
       | Int64
       | TimePoint
@@ -15426,12 +15408,8 @@ export namespace xdr {
       | Int256Parts
       | Buffer
       | string
-      | Buffer
-      | string
-      | Buffer
       | null
       | ScVal[]
-      | null
       | ScMapEntry[]
       | ScAddress
       | ScContractInstance
@@ -15851,9 +15829,6 @@ export namespace xdr {
       | ConfigSettingContractEventsV0
       | ConfigSettingContractBandwidthV0
       | ContractCostParamEntry[]
-      | ContractCostParamEntry[]
-      | number
-      | number
       | StateArchivalSettings
       | ConfigSettingContractExecutionLanesV0
       | Uint64[]
