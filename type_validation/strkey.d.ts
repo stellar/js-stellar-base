@@ -1,4 +1,4 @@
-type VersionByteName = "ed25519PublicKey" | "ed25519SecretSeed" | "med25519PublicKey" | "preAuthTx" | "sha256Hash" | "signedPayload" | "contract" | "liquidityPool" | "claimableBalance";
+type VersionByteName = "claimableBalance" | "contract" | "ed25519PublicKey" | "ed25519SecretSeed" | "liquidityPool" | "med25519PublicKey" | "preAuthTx" | "sha256Hash" | "signedPayload";
 /**
  * StrKey is a helper class that allows encoding and decoding Stellar keys
  * to/from strings, i.e. between their binary (Buffer, xdr.PublicKey, etc.) and
