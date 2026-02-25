@@ -17,14 +17,17 @@ import xdr from "./xdr.js";
  * @param [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
  */
 export declare class Keypair {
-    readonly type: string;
+    readonly type: "ed25519";
     private _publicKey;
     private _secretSeed?;
     private _secretKey?;
     constructor(keys: {
-        type: string;
-        publicKey?: Buffer;
-        secretKey?: Buffer;
+        type: "ed25519";
+        secretKey: Buffer | string;
+        publicKey?: Buffer | string;
+    } | {
+        type: "ed25519";
+        publicKey: Buffer | string;
     });
     /**
      * Creates a new `Keypair` instance from secret. This can either be secret key or secret seed depending

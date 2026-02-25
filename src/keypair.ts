@@ -24,19 +24,27 @@ import xdr from "./xdr.js";
  * @param [keys.secretKey] Raw secret key (32-byte secret seed in ed25519`)
  */
 export class Keypair {
-  readonly type: string;
+  readonly type: "ed25519";
   private _publicKey: Buffer;
   private _secretSeed?: Buffer;
   private _secretKey?: Buffer;
 
-  constructor(keys: { type: string; publicKey?: Buffer; secretKey?: Buffer }) {
+  constructor(
+    keys:
+      | {
+          type: "ed25519";
+          secretKey: Buffer | string;
+          publicKey?: Buffer | string;
+        }
+      | { type: "ed25519"; publicKey: Buffer | string },
+  ) {
     if (keys.type !== "ed25519") {
       throw new Error("Invalid keys type");
     }
 
     this.type = keys.type;
 
-    if (keys.secretKey) {
+    if ("secretKey" in keys) {
       keys.secretKey = Buffer.from(keys.secretKey);
 
       if (keys.secretKey.length !== 32) {
@@ -53,7 +61,7 @@ export class Keypair {
       ) {
         throw new Error("secretKey does not match publicKey");
       }
-    } else if (keys.publicKey) {
+    } else if ("publicKey" in keys) {
       this._publicKey = Buffer.from(keys.publicKey);
 
       if (this._publicKey.length !== 32) {

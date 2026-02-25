@@ -212,12 +212,12 @@ describe("Keypair.sign*Decorated", () => {
 describe("Keypair.constructor additional errors", () => {
   it("fails when type is not ed25519", () => {
     expect(
-      () => new Keypair({ type: "rsa", publicKey: Buffer.alloc(32) }),
+      () => new Keypair({ type: "rsa", publicKey: Buffer.alloc(32) } as any),
     ).toThrow(/Invalid keys type/);
   });
 
   it("fails when neither publicKey nor secretKey is provided", () => {
-    expect(() => new Keypair({ type: "ed25519" })).toThrow(
+    expect(() => new Keypair({ type: "ed25519" } as any)).toThrow(
       /At least one of publicKey or secretKey must be provided/,
     );
   });
