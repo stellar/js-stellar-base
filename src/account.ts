@@ -1,6 +1,6 @@
-import BigNumber from "./util/bignumber";
+import BigNumber from "./util/bignumber.js";
 
-import { StrKey } from "./strkey";
+import { StrKey } from "./strkey.js";
 
 /**
  * Create a new Account object.
@@ -13,14 +13,17 @@ import { StrKey } from "./strkey";
  *
  * @constructor
  *
- * @param {string} accountId - ID of the account (ex.
+ * @param accountId - ID of the account (ex.
  *     `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`). If you
  *     provide a muxed account address, this will throw; use {@link
  *     MuxedAccount} instead.
- * @param {string} sequence  - current sequence number of the account
+ * @param sequence  - current sequence number of the account
  */
 export class Account {
-  constructor(accountId, sequence) {
+  private _accountId: string;
+  private sequence: BigNumber;
+
+  constructor(accountId: string, sequence: string) {
     if (StrKey.isValidMed25519PublicKey(accountId)) {
       throw new Error("accountId is an M-address; use MuxedAccount instead");
     }
@@ -39,24 +42,22 @@ export class Account {
   /**
    * Returns Stellar account ID, ex.
    * `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`.
-   * @returns {string}
    */
-  accountId() {
+  accountId(): string {
     return this._accountId;
   }
 
   /**
-   * @returns {string}  sequence number for the account as a string
+   * @returns sequence number for the account as a string
    */
-  sequenceNumber() {
+  sequenceNumber(): string {
     return this.sequence.toString();
   }
 
   /**
    * Increments sequence number in this object by one.
-   * @returns {void}
    */
-  incrementSequenceNumber() {
+  incrementSequenceNumber(): void {
     this.sequence = this.sequence.plus(1);
   }
 }
