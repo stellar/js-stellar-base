@@ -65,8 +65,8 @@ export class SorobanDataBuilder {
 
   /**
    * Decodes and builds a {@link xdr.SorobanTransactionData} instance.
-   * @param {Uint8Array|Buffer|string} data   raw input to decode
-   * @returns {xdr.SorobanTransactionData}
+   * @param data raw input to decode
+   * @returns the decoded instance as an XDR object
    */
   static fromXDR(
     data: Buffer | Uint8Array | string
@@ -80,8 +80,8 @@ export class SorobanDataBuilder {
 
   /**
    * Sets the resource fee portion of the Soroban data.
-   * @param {number | bigint | string} fee  the resource fee to set (int64)
-   * @returns {SorobanDataBuilder}
+   * @param fee the resource fee to set (int64)
+   * @returns the builder instance, for chaining
    */
   setResourceFee(fee: IntLike): SorobanDataBuilder {
     this._data.resourceFee(new xdr.Int64(fee));
@@ -94,11 +94,11 @@ export class SorobanDataBuilder {
    * You should almost NEVER need this, as its often generated / provided to you
    * by transaction simulation/preflight from a Soroban RPC server.
    *
-   * @param {number} cpuInstrs      number of CPU instructions
-   * @param {number} diskReadBytes  number of bytes being read from disk
-   * @param {number} writeBytes     number of bytes being written to disk/memory
+   * @param cpuInstrs      number of CPU instructions
+   * @param diskReadBytes  number of bytes being read from disk
+   * @param writeBytes     number of bytes being written to disk/memory
    *
-   * @returns {SorobanDataBuilder}
+   * @returns the builder instance, for chaining
    */
   setResources(
     cpuInstrs: number,
@@ -114,9 +114,9 @@ export class SorobanDataBuilder {
 
   /**
    * Appends the given ledger keys to the existing storage access footprint.
-   * @param {xdr.LedgerKey[]} readOnly   read-only keys to add
-   * @param {xdr.LedgerKey[]} readWrite  read-write keys to add
-   * @returns {SorobanDataBuilder} this builder instance
+   * @param readOnly   read-only keys to add
+   * @param readWrite  read-write keys to add
+   * @returns the builder instance, for chaining
    */
   appendFootprint(
     readOnly: xdr.LedgerKey[],
@@ -139,13 +139,9 @@ export class SorobanDataBuilder {
    * Passing `null|undefined` to either parameter will IGNORE the existing
    * values. If you want to clear them, pass `[]`, instead.
    *
-   * @param {xdr.LedgerKey[]|null} [readOnly]   the set of ledger keys to set in
-   *    the read-only portion of the transaction's `sorobanData`, or `null |
-   *    undefined` to keep the existing keys
-   * @param {xdr.LedgerKey[]|null} [readWrite]  the set of ledger keys to set in
-   *    the read-write portion of the transaction's `sorobanData`, or `null |
-   *    undefined` to keep the existing keys
-   * @returns {SorobanDataBuilder} this builder instance
+   * @param readOnly   the set of ledger keys to set in the read-only portion of the transaction's `sorobanData`, or `null | undefined` to keep the existing keys
+   * @param readWrite  the set of ledger keys to set in the read-write portion of the transaction's `sorobanData`, or `null | undefined` to keep the existing keys
+   * @returns the builder instance, for chaining
    */
   setFootprint(
     readOnly?: xdr.LedgerKey[] | null,
@@ -162,8 +158,8 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * @param {xdr.LedgerKey[]} readOnly  read-only keys in the access footprint
-   * @returns {SorobanDataBuilder}
+   * @param readOnly  read-only keys in the access footprint
+   * @returns the builder instance, for chaining
    */
   setReadOnly(readOnly?: xdr.LedgerKey[]): SorobanDataBuilder {
     this._data
@@ -174,8 +170,8 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * @param {xdr.LedgerKey[]} readWrite  read-write keys in the access footprint
-   * @returns {SorobanDataBuilder}
+   * @param readWrite  read-write keys in the access footprint
+   * @returns the builder instance, for chaining
    */
   setReadWrite(readWrite?: xdr.LedgerKey[]): SorobanDataBuilder {
     this._data
@@ -196,17 +192,17 @@ export class SorobanDataBuilder {
   // getters follow
   //
 
-  /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
+  /** @returns the read-only storage access pattern */
   getReadOnly(): xdr.LedgerKey[] {
     return this.getFootprint().readOnly();
   }
 
-  /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
+  /** @returns the read-write storage access pattern */
   getReadWrite(): xdr.LedgerKey[] {
     return this.getFootprint().readWrite();
   }
 
-  /** @returns {xdr.LedgerFootprint} the storage access pattern */
+  /** @returns the storage access pattern */
   getFootprint(): xdr.LedgerFootprint {
     return this._data.resources().footprint();
   }
