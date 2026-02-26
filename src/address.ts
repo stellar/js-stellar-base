@@ -1,5 +1,5 @@
-import { StrKey } from "./strkey";
-import xdr from "./xdr";
+import { StrKey } from "./strkey.js";
+import xdr from "./xdr.js";
 
 /**
  * Create a new Address object.
@@ -12,10 +12,13 @@ import xdr from "./xdr";
  *
  * @constructor
  *
- * @param {string} address - a {@link StrKey} of the address value
+ * @param address - a {@link StrKey} of the address value
  */
 export class Address {
-  constructor(address) {
+  private _type: string;
+  private _key: Buffer;
+
+  constructor(address: string) {
     if (StrKey.isValidEd25519PublicKey(address)) {
       this._type = "account";
       this._key = StrKey.decodeEd25519PublicKey(address);
@@ -39,100 +42,94 @@ export class Address {
   /**
    * Parses a string and returns an Address object.
    *
-   * @param {string} address - The address to parse. ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`
-   * @returns {Address}
+   * @param address - The address to parse. ex. `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`
    */
-  static fromString(address) {
+  static fromString(address: string): Address {
     return new Address(address);
   }
 
   /**
    * Creates a new account Address object from a buffer of raw bytes.
    *
-   * @param {Buffer} buffer - The bytes of an address to parse.
-   * @returns {Address}
+   * @param buffer - The bytes of an address to parse.
    */
-  static account(buffer) {
+  static account(buffer: Buffer): Address {
     return new Address(StrKey.encodeEd25519PublicKey(buffer));
   }
 
   /**
    * Creates a new contract Address object from a buffer of raw bytes.
    *
-   * @param {Buffer} buffer - The bytes of an address to parse.
-   * @returns {Address}
+   * @param buffer - The bytes of an address to parse.
    */
-  static contract(buffer) {
+  static contract(buffer: Buffer): Address {
     return new Address(StrKey.encodeContract(buffer));
   }
 
   /**
    * Creates a new claimable balance Address object from a buffer of raw bytes.
    *
-   * @param {Buffer} buffer - The bytes of a claimable balance ID to parse.
-   * @returns {Address}
+   * @param buffer - The bytes of a claimable balance ID to parse.
    */
-  static claimableBalance(buffer) {
+  static claimableBalance(buffer: Buffer): Address {
     return new Address(StrKey.encodeClaimableBalance(buffer));
   }
 
   /**
    * Creates a new liquidity pool Address object from a buffer of raw bytes.
    *
-   * @param {Buffer} buffer - The bytes of an LP ID to parse.
-   * @returns {Address}
+   * @param buffer - The bytes of an LP ID to parse.
    */
-  static liquidityPool(buffer) {
+  static liquidityPool(buffer: Buffer): Address {
     return new Address(StrKey.encodeLiquidityPool(buffer));
   }
 
   /**
    * Creates a new muxed account Address object from a buffer of raw bytes.
    *
-   * @param {Buffer} buffer - The bytes of an address to parse.
-   * @returns {Address}
+   * @param buffer - The bytes of an address to parse.
    */
-  static muxedAccount(buffer) {
+  static muxedAccount(buffer: Buffer): Address {
     return new Address(StrKey.encodeMed25519PublicKey(buffer));
   }
 
   /**
    * Convert this from an xdr.ScVal type.
    *
-   * @param {xdr.ScVal} scVal - The xdr.ScVal type to parse
-   * @returns {Address}
+   * @param scVal - The xdr.ScVal type to parse
    */
-  static fromScVal(scVal) {
+  static fromScVal(scVal: xdr.ScVal): Address {
     return Address.fromScAddress(scVal.address());
   }
 
   /**
    * Convert this from an xdr.ScAddress type
    *
-   * @param {xdr.ScAddress} scAddress - The xdr.ScAddress type to parse
-   * @returns {Address}
+   * @param scAddress - The xdr.ScAddress type to parse
    */
-  static fromScAddress(scAddress) {
+  static fromScAddress(scAddress: xdr.ScAddress): Address {
     switch (scAddress.switch().value) {
       case xdr.ScAddressType.scAddressTypeAccount().value:
         return Address.account(scAddress.accountId().ed25519());
       case xdr.ScAddressType.scAddressTypeContract().value:
-        return Address.contract(scAddress.contractId());
+        return Address.contract(scAddress.contractId() as unknown as Buffer);
       case xdr.ScAddressType.scAddressTypeMuxedAccount().value: {
         const raw = Buffer.concat([
           scAddress.muxedAccount().ed25519(),
-          scAddress.muxedAccount().id().toXDR("raw")
+          scAddress.muxedAccount().id().toXDR("raw"),
         ]);
         return Address.muxedAccount(raw);
       }
       case xdr.ScAddressType.scAddressTypeClaimableBalance().value: {
         const cbi = scAddress.claimableBalanceId();
         return Address.claimableBalance(
-          Buffer.concat([Buffer.from([cbi.switch().value]), cbi.v0()])
+          Buffer.concat([Buffer.from([cbi.switch().value]), cbi.v0()]),
         );
       }
       case xdr.ScAddressType.scAddressTypeLiquidityPool().value:
-        return Address.liquidityPool(scAddress.liquidityPoolId());
+        return Address.liquidityPool(
+          scAddress.liquidityPoolId() as unknown as Buffer,
+        );
       default:
         throw new Error(`Unsupported address type: ${scAddress.switch().name}`);
     }
@@ -140,10 +137,8 @@ export class Address {
 
   /**
    * Serialize an address to string.
-   *
-   * @returns {string}
    */
-  toString() {
+  toString(): string {
     switch (this._type) {
       case "account":
         return StrKey.encodeEd25519PublicKey(this._key);
@@ -162,43 +157,42 @@ export class Address {
 
   /**
    * Convert this Address to an xdr.ScVal type.
-   *
-   * @returns {xdr.ScVal}
    */
-  toScVal() {
+  toScVal(): xdr.ScVal {
     return xdr.ScVal.scvAddress(this.toScAddress());
   }
 
   /**
    * Convert this Address to an xdr.ScAddress type.
-   *
-   * @returns {xdr.ScAddress}
    */
-  toScAddress() {
+  toScAddress(): xdr.ScAddress {
     switch (this._type) {
       case "account":
         return xdr.ScAddress.scAddressTypeAccount(
-          xdr.PublicKey.publicKeyTypeEd25519(this._key)
+          xdr.PublicKey.publicKeyTypeEd25519(this._key),
         );
       case "contract":
-        return xdr.ScAddress.scAddressTypeContract(this._key);
+        return xdr.ScAddress.scAddressTypeContract(
+          this._key as unknown as xdr.Hash,
+        );
       case "liquidityPool":
-        return xdr.ScAddress.scAddressTypeLiquidityPool(this._key);
+        return xdr.ScAddress.scAddressTypeLiquidityPool(
+          this._key as unknown as xdr.Hash,
+        );
 
       case "claimableBalance":
         return xdr.ScAddress.scAddressTypeClaimableBalance(
-          new xdr.ClaimableBalanceId(
-            `claimableBalanceIdTypeV${this._key.at(0)}`, // future-proof for cb v1
-            this._key.subarray(1)
-          )
+          xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(
+            this._key.subarray(1),
+          ),
         );
 
       case "muxedAccount":
         return xdr.ScAddress.scAddressTypeMuxedAccount(
           new xdr.MuxedEd25519Account({
             ed25519: this._key.subarray(0, 32),
-            id: xdr.Uint64.fromXDR(this._key.subarray(32, 40), "raw")
-          })
+            id: xdr.Uint64.fromXDR(this._key.subarray(32, 40), "raw"),
+          }),
         );
 
       default:
@@ -208,10 +202,8 @@ export class Address {
 
   /**
    * Return the raw public key bytes for this address.
-   *
-   * @returns {Buffer}
    */
-  toBuffer() {
+  toBuffer(): Buffer {
     return this._key;
   }
 }
