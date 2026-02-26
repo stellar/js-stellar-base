@@ -97,6 +97,7 @@ export class Keypair {
    * Returns `Keypair` object representing network master key.
    * @param networkPassphrase passphrase of the target stellar network (e.g. "Public Global Stellar Network ; September 2015").
    */
+  // Testing pre-commit hook
   static master(networkPassphrase: string): Keypair {
     if (!networkPassphrase) {
       throw new Error(
