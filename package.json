@@ -32,7 +32,7 @@
     "lint": "eslint -c ./config/eslint.config.cjs src/ && dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "pnpm run clean && pnpm run fmt && pnpm run lint && pnpm run build:prod && pnpm run test",
     "fmt": "prettier --config ./config/prettier.config.cjs --ignore-path ./config/.prettierignore --write './**/*.js'",
-    "prepare": "pnpm run build:prod",
+    "prepare": "pnpm run build:prod && husky install",
     "clean": "rm -rf lib/ dist/ coverage/ .nyc_output/",
     "_nyc": "nyc --nycrc-path ./config/.nycrc"
   },
@@ -49,11 +49,6 @@
     "/lib/**/*.js",
     "/types/*.d.ts"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "**/*.{js,json}": [
       "pnpm run fmt",
