@@ -1,6 +1,6 @@
 {
   "name": "@stellar/stellar-base",
-  "version": "14.0.4",
+  "version": "14.1.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
