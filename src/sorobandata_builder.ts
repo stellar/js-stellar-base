@@ -1,4 +1,6 @@
-import xdr from "./xdr";
+import xdr from "./xdr.js";
+
+type IntLike = bigint | number | string;
 
 /**
  * Supports building {@link xdr.SorobanTransactionData} structures with various
@@ -31,10 +33,12 @@ import xdr from "./xdr";
  *   .build();
  */
 export class SorobanDataBuilder {
-  _data;
+  private _data: xdr.SorobanTransactionData;
 
-  constructor(sorobanData) {
-    let data;
+  constructor(
+    sorobanData?: Buffer | Uint8Array | xdr.SorobanTransactionData | string
+  ) {
+    let data: xdr.SorobanTransactionData;
 
     if (!sorobanData) {
       data = new xdr.SorobanTransactionData({
@@ -51,7 +55,7 @@ export class SorobanDataBuilder {
       typeof sorobanData === "string" ||
       ArrayBuffer.isView(sorobanData)
     ) {
-      data = SorobanDataBuilder.fromXDR(sorobanData);
+      data = SorobanDataBuilder.fromXDR(sorobanData as Uint8Array | string);
     } else {
       data = SorobanDataBuilder.fromXDR(sorobanData.toXDR()); // copy
     }
@@ -64,11 +68,14 @@ export class SorobanDataBuilder {
    * @param {Uint8Array|Buffer|string} data   raw input to decode
    * @returns {xdr.SorobanTransactionData}
    */
-  static fromXDR(data) {
-    return xdr.SorobanTransactionData.fromXDR(
-      data,
-      typeof data === "string" ? "base64" : "raw"
-    );
+  static fromXDR(
+    data: Buffer | Uint8Array | string
+  ): xdr.SorobanTransactionData {
+    if (typeof data === "string") {
+      return xdr.SorobanTransactionData.fromXDR(data, "base64");
+    } else {
+      return xdr.SorobanTransactionData.fromXDR(Buffer.from(data), "raw");
+    }
   }
 
   /**
@@ -76,7 +83,7 @@ export class SorobanDataBuilder {
    * @param {number | bigint | string} fee  the resource fee to set (int64)
    * @returns {SorobanDataBuilder}
    */
-  setResourceFee(fee) {
+  setResourceFee(fee: IntLike): SorobanDataBuilder {
     this._data.resourceFee(new xdr.Int64(fee));
     return this;
   }
@@ -93,7 +100,11 @@ export class SorobanDataBuilder {
    *
    * @returns {SorobanDataBuilder}
    */
-  setResources(cpuInstrs, diskReadBytes, writeBytes) {
+  setResources(
+    cpuInstrs: number,
+    diskReadBytes: number,
+    writeBytes: number
+  ): SorobanDataBuilder {
     this._data.resources().instructions(cpuInstrs);
     this._data.resources().diskReadBytes(diskReadBytes);
     this._data.resources().writeBytes(writeBytes);
@@ -107,7 +118,10 @@ export class SorobanDataBuilder {
    * @param {xdr.LedgerKey[]} readWrite  read-write keys to add
    * @returns {SorobanDataBuilder} this builder instance
    */
-  appendFootprint(readOnly, readWrite) {
+  appendFootprint(
+    readOnly: xdr.LedgerKey[],
+    readWrite: xdr.LedgerKey[]
+  ): SorobanDataBuilder {
     return this.setFootprint(
       this.getReadOnly().concat(readOnly),
       this.getReadWrite().concat(readWrite)
@@ -133,7 +147,10 @@ export class SorobanDataBuilder {
    *    undefined` to keep the existing keys
    * @returns {SorobanDataBuilder} this builder instance
    */
-  setFootprint(readOnly, readWrite) {
+  setFootprint(
+    readOnly?: xdr.LedgerKey[] | null,
+    readWrite?: xdr.LedgerKey[] | null
+  ): SorobanDataBuilder {
     if (readOnly !== null) {
       // null means "leave me alone"
       this.setReadOnly(readOnly);
@@ -148,7 +165,7 @@ export class SorobanDataBuilder {
    * @param {xdr.LedgerKey[]} readOnly  read-only keys in the access footprint
    * @returns {SorobanDataBuilder}
    */
-  setReadOnly(readOnly) {
+  setReadOnly(readOnly?: xdr.LedgerKey[]): SorobanDataBuilder {
     this._data
       .resources()
       .footprint()
@@ -160,7 +177,7 @@ export class SorobanDataBuilder {
    * @param {xdr.LedgerKey[]} readWrite  read-write keys in the access footprint
    * @returns {SorobanDataBuilder}
    */
-  setReadWrite(readWrite) {
+  setReadWrite(readWrite?: xdr.LedgerKey[]): SorobanDataBuilder {
     this._data
       .resources()
       .footprint()
@@ -171,7 +188,7 @@ export class SorobanDataBuilder {
   /**
    * @returns {xdr.SorobanTransactionData} a copy of the final data structure
    */
-  build() {
+  build(): xdr.SorobanTransactionData {
     return xdr.SorobanTransactionData.fromXDR(this._data.toXDR()); // clone
   }
 
@@ -180,17 +197,17 @@ export class SorobanDataBuilder {
   //
 
   /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
-  getReadOnly() {
+  getReadOnly(): xdr.LedgerKey[] {
     return this.getFootprint().readOnly();
   }
 
   /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
-  getReadWrite() {
+  getReadWrite(): xdr.LedgerKey[] {
     return this.getFootprint().readWrite();
   }
 
   /** @returns {xdr.LedgerFootprint} the storage access pattern */
-  getFootprint() {
+  getFootprint(): xdr.LedgerFootprint {
     return this._data.resources().footprint();
   }
 }
