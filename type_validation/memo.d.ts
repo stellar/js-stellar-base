@@ -19,16 +19,21 @@ export declare const MemoHash = "hash";
  * Type of {@link Memo}.
  */
 export declare const MemoReturn = "return";
-export declare namespace MemoType {
-    type None = typeof MemoNone;
-    type ID = typeof MemoID;
-    type Text = typeof MemoText;
-    type Hash = typeof MemoHash;
-    type Return = typeof MemoReturn;
-}
-export type MemoType = MemoType.Hash | MemoType.ID | MemoType.None | MemoType.Return | MemoType.Text;
+export type MemoTypeNone = typeof MemoNone;
+export type MemoTypeID = typeof MemoID;
+export type MemoTypeText = typeof MemoText;
+export type MemoTypeHash = typeof MemoHash;
+export type MemoTypeReturn = typeof MemoReturn;
+export type MemoType = MemoTypeNone | MemoTypeID | MemoTypeText | MemoTypeHash | MemoTypeReturn;
 export type MemoValue = Buffer | string | null;
-type MemoTypeToValue<T extends MemoType> = T extends MemoType.None ? null : T extends MemoType.ID ? string : T extends MemoType.Text ? Buffer | string : T extends MemoType.Hash ? Buffer : T extends MemoType.Return ? Buffer : MemoValue;
+type MemoValueMap = {
+    [MemoNone]: null;
+    [MemoID]: string;
+    [MemoText]: Buffer | string;
+    [MemoHash]: Buffer;
+    [MemoReturn]: Buffer;
+};
+type MemoTypeToValue<T extends MemoType> = MemoValueMap[T];
 /**
  * `Memo` represents memos attached to transactions.
  *
@@ -40,9 +45,9 @@ type MemoTypeToValue<T extends MemoType> = T extends MemoType.None ? null : T ex
 export declare class Memo<T extends MemoType = MemoType> {
     private _type;
     private _value;
-    constructor(type: MemoType.None, value?: null);
-    constructor(type: MemoType.Hash | MemoType.Return, value: Buffer);
-    constructor(type: MemoType.Hash | MemoType.ID | MemoType.Return | MemoType.Text, value: string);
+    constructor(type: MemoTypeNone, value?: null);
+    constructor(type: MemoTypeHash | MemoTypeReturn, value: Buffer);
+    constructor(type: MemoTypeHash | MemoTypeID | MemoTypeReturn | MemoTypeText, value: string);
     constructor(type: T, value: MemoValue);
     /**
      * Contains memo type: `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
@@ -65,31 +70,31 @@ export declare class Memo<T extends MemoType = MemoType> {
      * Returns an empty memo (`MemoNone`).
      * @returns {Memo}
      */
-    static none(): Memo<MemoType.None>;
+    static none(): Memo<MemoTypeNone>;
     /**
      * Creates and returns a `MemoText` memo.
      * @param {string} text - memo text
      * @returns {Memo}
      */
-    static text(text: string): Memo<MemoType.Text>;
+    static text(text: string): Memo<MemoTypeText>;
     /**
      * Creates and returns a `MemoID` memo.
      * @param {string} id - 64-bit number represented as a string
      * @returns {Memo}
      */
-    static id(id: string): Memo<MemoType.ID>;
+    static id(id: string): Memo<MemoTypeID>;
     /**
      * Creates and returns a `MemoHash` memo.
      * @param {Buffer | string} hash - 32 byte hash or hex encoded string
      * @returns {Memo}
      */
-    static hash(hash: Buffer | string): Memo<MemoType.Hash>;
+    static hash(hash: Buffer | string): Memo<MemoTypeHash>;
     /**
      * Creates and returns a `MemoReturn` memo.
      * @param {Buffer | string} hash - 32 byte hash or hex encoded string
      * @returns {Memo}
      */
-    static return(hash: Buffer | string): Memo<MemoType.Return>;
+    static return(hash: Buffer | string): Memo<MemoTypeReturn>;
     /**
      * Returns XDR memo object.
      * @returns {xdr.Memo}

@@ -30,11 +30,11 @@ export type MemoTypeHash = typeof MemoHash;
 export type MemoTypeReturn = typeof MemoReturn;
 
 export type MemoType =
-  | MemoTypeNone
-  | MemoTypeID
-  | MemoTypeText
   | MemoTypeHash
-  | MemoTypeReturn;
+  | MemoTypeID
+  | MemoTypeNone
+  | MemoTypeReturn
+  | MemoTypeText;
 
 export type MemoValue = Buffer | string | null;
 
