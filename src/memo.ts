@@ -23,36 +23,30 @@ export const MemoHash = "hash";
  */
 export const MemoReturn = "return";
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace MemoType {
-  export type None = typeof MemoNone;
-  export type ID = typeof MemoID;
-  export type Text = typeof MemoText;
-  export type Hash = typeof MemoHash;
-  export type Return = typeof MemoReturn;
-}
+export type MemoTypeNone = typeof MemoNone;
+export type MemoTypeID = typeof MemoID;
+export type MemoTypeText = typeof MemoText;
+export type MemoTypeHash = typeof MemoHash;
+export type MemoTypeReturn = typeof MemoReturn;
 
 export type MemoType =
-  | MemoType.Hash
-  | MemoType.ID
-  | MemoType.None
-  | MemoType.Return
-  | MemoType.Text;
+  | MemoTypeNone
+  | MemoTypeID
+  | MemoTypeText
+  | MemoTypeHash
+  | MemoTypeReturn;
 
 export type MemoValue = Buffer | string | null;
 
-type MemoTypeToValue<T extends MemoType> = T extends MemoType.None
-  ? null
-  : T extends MemoType.ID
-    ? string
-    : T extends MemoType.Text
-      ? Buffer | string
-      : T extends MemoType.Hash
-        ? Buffer
-        : T extends MemoType.Return
-          ? Buffer
-          : MemoValue;
+type MemoValueMap = {
+  [MemoNone]: null;
+  [MemoID]: string;
+  [MemoText]: Buffer | string;
+  [MemoHash]: Buffer;
+  [MemoReturn]: Buffer;
+};
 
+type MemoTypeToValue<T extends MemoType> = MemoValueMap[T];
 /**
  * `Memo` represents memos attached to transactions.
  *
@@ -65,10 +59,10 @@ export class Memo<T extends MemoType = MemoType> {
   private _type: T;
   private _value: MemoValue;
 
-  constructor(type: MemoType.None, value?: null);
-  constructor(type: MemoType.Hash | MemoType.Return, value: Buffer);
+  constructor(type: MemoTypeNone, value?: null);
+  constructor(type: MemoTypeHash | MemoTypeReturn, value: Buffer);
   constructor(
-    type: MemoType.Hash | MemoType.ID | MemoType.Return | MemoType.Text,
+    type: MemoTypeHash | MemoTypeID | MemoTypeReturn | MemoTypeText,
     value: string
   );
   constructor(type: T, value: MemoValue);
@@ -208,7 +202,7 @@ export class Memo<T extends MemoType = MemoType> {
    * Returns an empty memo (`MemoNone`).
    * @returns {Memo}
    */
-  static none(): Memo<MemoType.None> {
+  static none(): Memo<MemoTypeNone> {
     return new Memo(MemoNone);
   }
 
@@ -217,7 +211,7 @@ export class Memo<T extends MemoType = MemoType> {
    * @param {string} text - memo text
    * @returns {Memo}
    */
-  static text(text: string): Memo<MemoType.Text> {
+  static text(text: string): Memo<MemoTypeText> {
     return new Memo(MemoText, text);
   }
 
@@ -226,7 +220,7 @@ export class Memo<T extends MemoType = MemoType> {
    * @param {string} id - 64-bit number represented as a string
    * @returns {Memo}
    */
-  static id(id: string): Memo<MemoType.ID> {
+  static id(id: string): Memo<MemoTypeID> {
     return new Memo(MemoID, id);
   }
 
@@ -235,7 +229,7 @@ export class Memo<T extends MemoType = MemoType> {
    * @param {Buffer | string} hash - 32 byte hash or hex encoded string
    * @returns {Memo}
    */
-  static hash(hash: Buffer | string): Memo<MemoType.Hash> {
+  static hash(hash: Buffer | string): Memo<MemoTypeHash> {
     return new Memo(MemoHash, hash);
   }
 
@@ -244,7 +238,7 @@ export class Memo<T extends MemoType = MemoType> {
    * @param {Buffer | string} hash - 32 byte hash or hex encoded string
    * @returns {Memo}
    */
-  static return(hash: Buffer | string): Memo<MemoType.Return> {
+  static return(hash: Buffer | string): Memo<MemoTypeReturn> {
     return new Memo(MemoReturn, hash);
   }
 
