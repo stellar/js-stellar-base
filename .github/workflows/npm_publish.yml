@@ -20,6 +20,9 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@11.5.1
+
       - name: Install Depencencies
         run: yarn install
 
