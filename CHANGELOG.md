@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
+
 ### Added
 * Implemented `TransactionBuilder.addSacTransferOperation` to remove the need for simulation for SAC (Stellar Asset Contract) transfers by creating the appropriate auth entries and footprint ([#861](https://github.com/stellar/js-stellar-base/pull/861)).
 
