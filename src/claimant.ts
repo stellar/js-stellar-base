@@ -16,7 +16,7 @@ export class Claimant {
   private _predicate: xdr.ClaimPredicate;
 
   constructor(destination: string, predicate?: xdr.ClaimPredicate) {
-    if (destination && !StrKey.isValidEd25519PublicKey(destination)) {
+    if (!StrKey.isValidEd25519PublicKey(destination)) {
       throw new Error("Destination is invalid");
     }
     this._destination = destination;
