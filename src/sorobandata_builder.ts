@@ -1,4 +1,6 @@
-import xdr from "./xdr";
+import xdr from "./xdr.js";
+
+type IntLike = bigint | number | string;
 
 /**
  * Supports building {@link xdr.SorobanTransactionData} structures with various
@@ -31,10 +33,12 @@ import xdr from "./xdr";
  *   .build();
  */
 export class SorobanDataBuilder {
-  _data;
+  private _data: xdr.SorobanTransactionData;
 
-  constructor(sorobanData) {
-    let data;
+  constructor(
+    sorobanData?: Buffer | Uint8Array | xdr.SorobanTransactionData | string
+  ) {
+    let data: xdr.SorobanTransactionData;
 
     if (!sorobanData) {
       data = new xdr.SorobanTransactionData({
@@ -51,7 +55,7 @@ export class SorobanDataBuilder {
       typeof sorobanData === "string" ||
       ArrayBuffer.isView(sorobanData)
     ) {
-      data = SorobanDataBuilder.fromXDR(sorobanData);
+      data = SorobanDataBuilder.fromXDR(sorobanData as Uint8Array | string);
     } else {
       data = SorobanDataBuilder.fromXDR(sorobanData.toXDR()); // copy
     }
@@ -61,22 +65,25 @@ export class SorobanDataBuilder {
 
   /**
    * Decodes and builds a {@link xdr.SorobanTransactionData} instance.
-   * @param {Uint8Array|Buffer|string} data   raw input to decode
-   * @returns {xdr.SorobanTransactionData}
+   * @param data raw input to decode
+   * @returns the decoded instance as an XDR object
    */
-  static fromXDR(data) {
-    return xdr.SorobanTransactionData.fromXDR(
-      data,
-      typeof data === "string" ? "base64" : "raw"
-    );
+  static fromXDR(
+    data: Buffer | Uint8Array | string
+  ): xdr.SorobanTransactionData {
+    if (typeof data === "string") {
+      return xdr.SorobanTransactionData.fromXDR(data, "base64");
+    } else {
+      return xdr.SorobanTransactionData.fromXDR(Buffer.from(data), "raw");
+    }
   }
 
   /**
    * Sets the resource fee portion of the Soroban data.
-   * @param {number | bigint | string} fee  the resource fee to set (int64)
-   * @returns {SorobanDataBuilder}
+   * @param fee the resource fee to set (int64)
+   * @returns the builder instance, for chaining
    */
-  setResourceFee(fee) {
+  setResourceFee(fee: IntLike): SorobanDataBuilder {
     this._data.resourceFee(new xdr.Int64(fee));
     return this;
   }
@@ -87,13 +94,17 @@ export class SorobanDataBuilder {
    * You should almost NEVER need this, as its often generated / provided to you
    * by transaction simulation/preflight from a Soroban RPC server.
    *
-   * @param {number} cpuInstrs      number of CPU instructions
-   * @param {number} diskReadBytes  number of bytes being read from disk
-   * @param {number} writeBytes     number of bytes being written to disk/memory
+   * @param cpuInstrs      number of CPU instructions
+   * @param diskReadBytes  number of bytes being read from disk
+   * @param writeBytes     number of bytes being written to disk/memory
    *
-   * @returns {SorobanDataBuilder}
+   * @returns the builder instance, for chaining
    */
-  setResources(cpuInstrs, diskReadBytes, writeBytes) {
+  setResources(
+    cpuInstrs: number,
+    diskReadBytes: number,
+    writeBytes: number
+  ): SorobanDataBuilder {
     this._data.resources().instructions(cpuInstrs);
     this._data.resources().diskReadBytes(diskReadBytes);
     this._data.resources().writeBytes(writeBytes);
@@ -103,11 +114,14 @@ export class SorobanDataBuilder {
 
   /**
    * Appends the given ledger keys to the existing storage access footprint.
-   * @param {xdr.LedgerKey[]} readOnly   read-only keys to add
-   * @param {xdr.LedgerKey[]} readWrite  read-write keys to add
-   * @returns {SorobanDataBuilder} this builder instance
+   * @param readOnly   read-only keys to add
+   * @param readWrite  read-write keys to add
+   * @returns the builder instance, for chaining
    */
-  appendFootprint(readOnly, readWrite) {
+  appendFootprint(
+    readOnly: xdr.LedgerKey[],
+    readWrite: xdr.LedgerKey[]
+  ): SorobanDataBuilder {
     return this.setFootprint(
       this.getReadOnly().concat(readOnly),
       this.getReadWrite().concat(readWrite)
@@ -125,15 +139,14 @@ export class SorobanDataBuilder {
    * Passing `null|undefined` to either parameter will IGNORE the existing
    * values. If you want to clear them, pass `[]`, instead.
    *
-   * @param {xdr.LedgerKey[]|null} [readOnly]   the set of ledger keys to set in
-   *    the read-only portion of the transaction's `sorobanData`, or `null |
-   *    undefined` to keep the existing keys
-   * @param {xdr.LedgerKey[]|null} [readWrite]  the set of ledger keys to set in
-   *    the read-write portion of the transaction's `sorobanData`, or `null |
-   *    undefined` to keep the existing keys
-   * @returns {SorobanDataBuilder} this builder instance
+   * @param readOnly   the set of ledger keys to set in the read-only portion of the transaction's `sorobanData`, or `null | undefined` to keep the existing keys
+   * @param readWrite  the set of ledger keys to set in the read-write portion of the transaction's `sorobanData`, or `null | undefined` to keep the existing keys
+   * @returns the builder instance, for chaining
    */
-  setFootprint(readOnly, readWrite) {
+  setFootprint(
+    readOnly?: xdr.LedgerKey[] | null,
+    readWrite?: xdr.LedgerKey[] | null
+  ): SorobanDataBuilder {
     if (readOnly !== null) {
       // null means "leave me alone"
       this.setReadOnly(readOnly);
@@ -145,10 +158,10 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * @param {xdr.LedgerKey[]} readOnly  read-only keys in the access footprint
-   * @returns {SorobanDataBuilder}
+   * @param readOnly  read-only keys in the access footprint
+   * @returns the builder instance, for chaining
    */
-  setReadOnly(readOnly) {
+  setReadOnly(readOnly?: xdr.LedgerKey[]): SorobanDataBuilder {
     this._data
       .resources()
       .footprint()
@@ -157,10 +170,10 @@ export class SorobanDataBuilder {
   }
 
   /**
-   * @param {xdr.LedgerKey[]} readWrite  read-write keys in the access footprint
-   * @returns {SorobanDataBuilder}
+   * @param readWrite  read-write keys in the access footprint
+   * @returns the builder instance, for chaining
    */
-  setReadWrite(readWrite) {
+  setReadWrite(readWrite?: xdr.LedgerKey[]): SorobanDataBuilder {
     this._data
       .resources()
       .footprint()
@@ -171,7 +184,7 @@ export class SorobanDataBuilder {
   /**
    * @returns {xdr.SorobanTransactionData} a copy of the final data structure
    */
-  build() {
+  build(): xdr.SorobanTransactionData {
     return xdr.SorobanTransactionData.fromXDR(this._data.toXDR()); // clone
   }
 
@@ -179,18 +192,18 @@ export class SorobanDataBuilder {
   // getters follow
   //
 
-  /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
-  getReadOnly() {
+  /** @returns the read-only storage access pattern */
+  getReadOnly(): xdr.LedgerKey[] {
     return this.getFootprint().readOnly();
   }
 
-  /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
-  getReadWrite() {
+  /** @returns the read-write storage access pattern */
+  getReadWrite(): xdr.LedgerKey[] {
     return this.getFootprint().readWrite();
   }
 
-  /** @returns {xdr.LedgerFootprint} the storage access pattern */
-  getFootprint() {
+  /** @returns the storage access pattern */
+  getFootprint(): xdr.LedgerFootprint {
     return this._data.resources().footprint();
   }
 }

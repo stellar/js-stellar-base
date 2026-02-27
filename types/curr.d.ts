@@ -13130,6 +13130,10 @@ export namespace xdr {
   }
 
   class SorobanTransactionDataExt {
+    constructor(switchValue: 0);
+
+    constructor(switchValue: 1, value: SorobanResourcesExtV0);
+
     switch(): number;
 
     resourceExt(value?: SorobanResourcesExtV0): SorobanResourcesExtV0;
