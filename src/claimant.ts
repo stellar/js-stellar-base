@@ -81,7 +81,7 @@ export class Claimant {
    */
   static predicateNot(predicate: xdr.ClaimPredicate): xdr.ClaimPredicate {
     if (!(predicate instanceof xdr.ClaimPredicate)) {
-      throw new Error("right Predicate should be an xdr.ClaimPredicate");
+      throw new Error("Predicate should be an xdr.ClaimPredicate");
     }
 
     return xdr.ClaimPredicate.claimPredicateNot(predicate);

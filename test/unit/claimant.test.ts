@@ -226,7 +226,7 @@ describe("Claimant", () => {
   describe("predicateNot() validation", () => {
     it("throws when predicate is not an xdr.ClaimPredicate", () => {
       expect(() => Claimant.predicateNot("bad" as any)).toThrow(
-        /right Predicate should be an xdr.ClaimPredicate/,
+        /Predicate should be an xdr.ClaimPredicate/,
       );
     });
   });
