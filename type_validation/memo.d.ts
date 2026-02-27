@@ -24,7 +24,7 @@ export type MemoTypeID = typeof MemoID;
 export type MemoTypeText = typeof MemoText;
 export type MemoTypeHash = typeof MemoHash;
 export type MemoTypeReturn = typeof MemoReturn;
-export type MemoType = MemoTypeNone | MemoTypeID | MemoTypeText | MemoTypeHash | MemoTypeReturn;
+export type MemoType = MemoTypeHash | MemoTypeID | MemoTypeNone | MemoTypeReturn | MemoTypeText;
 export type MemoValue = Buffer | string | null;
 type MemoValueMap = {
     [MemoNone]: null;
