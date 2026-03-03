@@ -935,7 +935,7 @@ describe('TransactionBuilder', function () {
       );
       let timebounds = {
         minTime: new Date(1528145519500), // 500ms sub-second
-        maxTime: new Date(1528231982999)  // 999ms sub-second
+        maxTime: new Date(1528231982999) // 999ms sub-second
       };
 
       let transaction;
@@ -1611,5 +1611,49 @@ describe('TransactionBuilder', function () {
       expect(newTx.operations[1].source).to.equal(source.accountId());
       expect(parseInt(newTx.operations[1].amount)).to.equal(2);
     });
+  });
+});
+
+describe('TransactionBuilder.cloneFrom', function () {
+  const networkPassphrase = StellarBase.Networks.TESTNET;
+  const source = new StellarBase.Account(
+    'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+    '0'
+  );
+  const destination =
+    'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2';
+  const op = StellarBase.Operation.payment({
+    destination,
+    asset: StellarBase.Asset.native(),
+    amount: '100'
+  });
+
+  it('handles a total fee not evenly divisible by the operation count', function () {
+    // TransactionBuilder always produces total fees divisible by op count,
+    // but arbitrary network transactions can have any fee. Simulate one by
+    // patching the XDR fee field directly to 1000 across 3 ops.
+    // Previously: 1000/3 = 333.333..., scaled back up to 999.999... which
+    // crashed with "XDR Write Error: invalid u32 value".
+    const builtTx = new StellarBase.TransactionBuilder(source, {
+      fee: '100',
+      timebounds: { minTime: 0, maxTime: 0 },
+      networkPassphrase
+    })
+      .addOperation(op)
+      .addOperation(op)
+      .addOperation(op)
+      .build();
+
+    const envelope = builtTx.toEnvelope();
+    envelope.v1().tx().fee(1000); // 1000 is not divisible by 3
+    const tx = new StellarBase.Transaction(envelope, networkPassphrase);
+
+    let cloneTx;
+    expect(() => {
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx).build();
+    }).not.to.throw();
+
+    // Math.floor(1000/3) = 333 per-op → 333 * 3 = 999
+    expect(cloneTx.fee).to.equal('999');
   });
 });

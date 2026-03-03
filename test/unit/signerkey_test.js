@@ -41,13 +41,18 @@ describe('SignerKey', function () {
         const payload = Buffer.alloc(len, 0xab);
         const signerKey =
           StellarBase.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
-            new StellarBase.xdr.SignerKeyEd25519SignedPayload({ ed25519, payload })
+            new StellarBase.xdr.SignerKeyEd25519SignedPayload({
+              ed25519,
+              payload
+            })
           );
         const address = StellarBase.SignerKey.encodeSignerKey(signerKey);
         const decoded = StellarBase.SignerKey.decodeAddress(address);
 
         expect(decoded.ed25519SignedPayload().payload()).to.have.lengthOf(len);
-        expect(StellarBase.SignerKey.encodeSignerKey(decoded)).to.equal(address);
+        expect(StellarBase.SignerKey.encodeSignerKey(decoded)).to.equal(
+          address
+        );
       });
     });
   });
