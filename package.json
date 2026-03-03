@@ -50,9 +50,12 @@
     "/types/*.d.ts"
   ],
   "lint-staged": {
-    "**/*.{js,json}": [
+    "src/**/*.{js,ts}": [
       "pnpm run fmt",
-      "pnpm run lint"
+      "pnpm run lint --"
+    ],
+    "**/*.json": [
+      "pnpm run fmt"
     ]
   },
   "repository": {
