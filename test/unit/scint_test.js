@@ -9,7 +9,11 @@ describe('creating large integers', function () {
     Object.entries({
       u64: [1, '1', 0xdeadbeef, (1n << 64n) - 1n],
       u128: [1n << 64n, (1n << 128n) - 1n, '18446744073709551616'],
-      u256: [1n << 128n, (1n << 256n) - 1n, '340282366920938463463374607431768211456']
+      u256: [
+        1n << 128n,
+        (1n << 256n) - 1n,
+        '340282366920938463463374607431768211456'
+      ]
     }).forEach(([type, values]) => {
       values.forEach((value) => {
         it(`picks ${type} for ${value}`, function () {

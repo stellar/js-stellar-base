@@ -114,7 +114,9 @@ describe('building authorization entries', function () {
     function stubRawBytes(first8) {
       const raw = new Uint8Array(32);
       raw.set(first8);
-      sandbox.stub(StellarBase.Keypair, 'random').returns({ rawPublicKey: () => raw });
+      sandbox
+        .stub(StellarBase.Keypair, 'random')
+        .returns({ rawPublicKey: () => raw });
     }
 
     // Regression: the old `<<` (Int32 shift) implementation discarded the upper 4
@@ -128,7 +130,9 @@ describe('building authorization entries', function () {
         10,
         authEntry.rootInvocation()
       );
-      expect(entry.credentials().address().nonce()).to.eql(new xdr.Int64(4294967296n)); // 2^32
+      expect(entry.credentials().address().nonce()).to.eql(
+        new xdr.Int64(4294967296n)
+      ); // 2^32
     });
 
     it('all-0xFF bytes produce nonce -1 (signed Int64 all-bits-set)', async function () {
@@ -148,7 +152,9 @@ describe('building authorization entries', function () {
         10,
         authEntry.rootInvocation()
       );
-      expect(entry.credentials().address().nonce()).to.eql(new xdr.Int64(-9223372036854775808n)); // -(2^63), Int64 minimum
+      expect(entry.credentials().address().nonce()).to.eql(
+        new xdr.Int64(-9223372036854775808n)
+      ); // -(2^63), Int64 minimum
     });
 
     it('all-zero bytes produce nonce 0', async function () {
