@@ -74,9 +74,8 @@ export class Asset {
         issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
         code = trimEnd(anum.assetCode().toString(), "\0") as string;
         return new this(code, issuer);
-      /* falls through */
       case xdr.AssetType.assetTypeCreditAlphanum12():
-        anum = anum || assetXdr.alphaNum12();
+        anum = assetXdr.alphaNum12();
         issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
         code = trimEnd(anum.assetCode().toString(), "\0") as string;
         return new this(code, issuer);
@@ -145,6 +144,11 @@ export class Asset {
       return xdrAsset.assetTypeNative();
     }
 
+    // This should never happen because the constructor should throw an error if the issuer is null for a non-native asset, but we check here just to be safe.
+    if (!this.issuer) {
+      throw new Error("Issuer cannot be null for non-native asset");
+    }
+
     let xdrType;
     let xdrTypeString: string;
     if (this.code.length <= 4) {
@@ -161,7 +165,7 @@ export class Asset {
 
     const assetType = new xdrType({
       assetCode: paddedCode,
-      issuer: Keypair.fromPublicKey(this.issuer!).xdrAccountId()
+      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
     });
 
     return new xdrAsset(xdrTypeString, assetType);
