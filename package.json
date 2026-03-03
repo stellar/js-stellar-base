@@ -52,7 +52,7 @@
   "lint-staged": {
     "src/**/*.{js,ts}": [
       "pnpm run fmt",
-      "pnpm run lint --"
+      "eslint -c ./config/eslint.config.cjs src/"
     ],
     "**/*.json": [
       "pnpm run fmt"

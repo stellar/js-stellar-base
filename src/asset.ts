@@ -170,10 +170,7 @@ export class Asset {
   /**
    * @returns Asset code
    */
-  getCode(): string | undefined {
-    if (this.code === undefined) {
-      return undefined;
-    }
+  getCode(): string {
     return String(this.code);
   }
 
@@ -258,7 +255,7 @@ export class Asset {
    * @param assetB - the second asset
    * @returns `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
    */
-  static compare(assetA: Asset, assetB: Asset): number {
+  static compare(assetA: Asset, assetB: Asset): -1 | 0 | 1 {
     if (!assetA || !(assetA instanceof Asset)) {
       throw new Error("assetA is invalid");
     }
@@ -278,7 +275,7 @@ export class Asset {
     }
 
     // Compare asset codes.
-    const result = asciiCompare(assetA.getCode()!, assetB.getCode()!);
+    const result = asciiCompare(assetA.getCode(), assetB.getCode());
     if (result !== 0) {
       return result;
     }
@@ -298,6 +295,6 @@ export class Asset {
  *
  * @warning No type-checks are done on the parameters
  */
-function asciiCompare(a: string, b: string): number {
+function asciiCompare(a: string, b: string): -1 | 0 | 1 {
   return Buffer.compare(Buffer.from(a, "ascii"), Buffer.from(b, "ascii"));
 }
