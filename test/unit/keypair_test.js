@@ -196,3 +196,27 @@ describe('Keypair.sign*Decorated', function () {
     });
   });
 });
+
+describe('Keypair.verify', function () {
+  const kp = StellarBase.Keypair.random();
+  const data = Buffer.from('hello');
+  const validSig = kp.sign(data);
+
+  it('returns true for a valid signature', function () {
+    expect(kp.verify(data, validSig)).to.be.true;
+  });
+
+  it('returns false for a wrong-length signature (32 bytes instead of 64)', function () {
+    const shortSig = Buffer.alloc(32, 0xab);
+    expect(kp.verify(data, shortSig)).to.be.false;
+  });
+
+  it('returns false for an empty signature', function () {
+    expect(kp.verify(data, Buffer.alloc(0))).to.be.false;
+  });
+
+  it('returns false for a correctly-sized but invalid signature', function () {
+    const badSig = Buffer.alloc(64, 0xab);
+    expect(kp.verify(data, badSig)).to.be.false;
+  });
+});
