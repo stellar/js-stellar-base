@@ -1656,4 +1656,26 @@ describe('TransactionBuilder.cloneFrom', function () {
     // Math.floor(1000/3) = 333 per-op → 333 * 3 = 999
     expect(cloneTx.fee).to.equal('999');
   });
+
+  it('preserves extraSigners', function () {
+    const extraSigner =
+      'GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ';
+    const tx = new StellarBase.TransactionBuilder(source, {
+      fee: '100',
+      timebounds: { minTime: 0, maxTime: 0 },
+      networkPassphrase
+    })
+      .addOperation(op)
+      .setExtraSigners([extraSigner])
+      .build();
+
+    let cloneTx;
+    expect(() => {
+      cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx).build();
+    }).not.to.throw();
+
+    expect(
+      cloneTx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)
+    ).to.eql([extraSigner]);
+  });
 });

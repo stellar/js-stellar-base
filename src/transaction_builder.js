@@ -220,7 +220,7 @@ export class TransactionBuilder {
       minAccountSequence: tx.minAccountSequence,
       minAccountSequenceAge: tx.minAccountSequenceAge,
       minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
-      extraSigners: tx.extraSigners,
+      extraSigners: tx.extraSigners?.map(SignerKey.encodeSignerKey),
       ...opts
     });
 
