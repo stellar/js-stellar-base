@@ -4,7 +4,12 @@ import { Keypair } from "./keypair.js";
 import { StrKey } from "./strkey.js";
 import { hash } from "./hashing.js";
 
-export type AssetType = "native" | "credit_alphanum4" | "credit_alphanum12";
+export type AssetType = "credit_alphanum4" | "credit_alphanum12" | "native";
+
+interface XdrAssetConstructor<T> {
+  assetTypeNative(): T;
+  new (type: string, value: xdr.AlphaNum4 | xdr.AlphaNum12): T;
+}
 
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
@@ -135,8 +140,7 @@ export class Asset {
    * @param xdrAsset - The xdr asset constructor.
    * @returns XDR Asset object
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _toXDRObject(xdrAsset: any = xdr.Asset): any {
+  private _toXDRObject<T>(xdrAsset: XdrAssetConstructor<T>): T {
     if (this.isNative()) {
       return xdrAsset.assetTypeNative();
     }
