@@ -8,8 +8,8 @@ describe('creating large integers', function () {
   describe('picks the right types', function () {
     Object.entries({
       u64: [1, '1', 0xdeadbeef, (1n << 64n) - 1n],
-      u128: [1n << 64n, (1n << 128n) - 1n],
-      u256: [1n << 128n, (1n << 256n) - 1n]
+      u128: [1n << 64n, (1n << 128n) - 1n, '18446744073709551616'],
+      u256: [1n << 128n, (1n << 256n) - 1n, '340282366920938463463374607431768211456']
     }).forEach(([type, values]) => {
       values.forEach((value) => {
         it(`picks ${type} for ${value}`, function () {
@@ -274,6 +274,12 @@ describe('creating large integers', function () {
       it(`throws when signed parts and {type: '${type}'}`, function () {
         expect(() => new StellarBase.ScInt(-2, { type })).to.throw(/negative/i);
       });
+    });
+
+    it('correctly sizes 2^64 passed as a string', function () {
+      const i = new StellarBase.ScInt('18446744073709551616');
+      expect(i.type).to.equal('u128');
+      expect(i.toBigInt()).to.equal(18446744073709551616n);
     });
 
     it('throws when too big', function () {
