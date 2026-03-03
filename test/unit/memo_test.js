@@ -110,6 +110,8 @@ describe('Memo.id()', function () {
   it('returns a value for a correct argument', function () {
     expect(() => StellarBase.Memo.id('1000')).to.not.throw();
     expect(() => StellarBase.Memo.id('0')).to.not.throw();
+    // max uint64
+    expect(() => StellarBase.Memo.id('18446744073709551615')).to.not.throw();
   });
 
   it('converts to/from xdr object', function () {
@@ -128,6 +130,14 @@ describe('Memo.id()', function () {
     expect(() => StellarBase.Memo.id(Infinity)).to.throw(/Expects a int64/);
     expect(() => StellarBase.Memo.id(NaN)).to.throw(/Expects a int64/);
     expect(() => StellarBase.Memo.id('test')).to.throw(/Expects a int64/);
+    // negative
+    expect(() => StellarBase.Memo.id('-1')).to.throw(/Expects a int64/);
+    // decimal
+    expect(() => StellarBase.Memo.id('1.5')).to.throw(/Expects a int64/);
+    // overflow: 2^64 silently became 0 before this fix
+    expect(() => StellarBase.Memo.id('18446744073709551616')).to.throw(
+      /Expects a int64/
+    );
   });
 });
 

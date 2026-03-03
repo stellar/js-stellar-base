@@ -118,6 +118,21 @@ export class Memo {
     if (number.isNaN()) {
       throw error;
     }
+
+    // Negative
+    if (number.isNegative()) {
+      throw error;
+    }
+
+    // Decimal
+    if (!number.isInteger()) {
+      throw error;
+    }
+
+    // Exceeds uint64 max (2^64 - 1)
+    if (number.isGreaterThan('18446744073709551615')) {
+      throw error;
+    }
   }
 
   static _validateTextValue(value) {
