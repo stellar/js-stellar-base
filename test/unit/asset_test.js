@@ -37,7 +37,7 @@ describe("Asset", function () {
 
   describe("getCode()", function () {
     it("returns a code for a native asset object", function () {
-      var asset = new Asset.native();
+      var asset = Asset.native();
       expect(asset.getCode()).to.be.equal("XLM");
     });
 
@@ -52,7 +52,7 @@ describe("Asset", function () {
 
   describe("getIssuer()", function () {
     it("returns a code for a native asset object", function () {
-      var asset = new Asset.native();
+      var asset = Asset.native();
       expect(asset.getIssuer()).to.be.undefined;
     });
 
@@ -92,7 +92,7 @@ describe("Asset", function () {
 
   describe("toXDRObject(), toChangeTrustXDRObject(), toTrustLineXDRObject", function () {
     it("parses a native asset object", function () {
-      const asset = new Asset.native();
+      const asset = Asset.native();
 
       let xdr = asset.toXDRObject();
       expect(xdr).to.be.instanceof(StellarBase.xdr.Asset);
@@ -295,14 +295,14 @@ describe("Asset", function () {
     });
 
     it("returns false if assets are equal", function () {
-      const XLM = new Asset.native();
+      const XLM = Asset.native();
       expect(Asset.compare(XLM, XLM)).to.eq(0);
       expect(Asset.compare(assetA, assetA)).to.eq(0);
       expect(Asset.compare(assetB, assetB)).to.eq(0);
     });
 
     it("test if asset types are being validated as native < anum4 < anum12", function () {
-      const XLM = new Asset.native();
+      const XLM = Asset.native();
       const anum4 = new Asset(
         "ARST",
         "GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO"
