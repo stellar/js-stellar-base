@@ -745,6 +745,32 @@ describe('Transaction', function () {
       expect(signers[0]).to.eql(StellarBase.SignerKey.decodeAddress(address));
     });
   });
+  describe('immutability', function () {
+    it('throws when setting networkPassphrase', function () {
+      const source = new StellarBase.Account(
+        'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+        '0'
+      );
+      const tx = new StellarBase.TransactionBuilder(source, {
+        fee: 100,
+        networkPassphrase: StellarBase.Networks.TESTNET
+      })
+        .addOperation(
+          StellarBase.Operation.payment({
+            destination:
+              'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
+            asset: StellarBase.Asset.native(),
+            amount: '100'
+          })
+        )
+        .setTimeout(StellarBase.TimeoutInfinite)
+        .build();
+
+      expect(() => {
+        tx.networkPassphrase = 'other';
+      }).to.throw(/immutable/i);
+    });
+  });
 });
 
 function expectBuffersToBeEqual(left, right) {
