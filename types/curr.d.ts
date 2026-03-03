@@ -3035,9 +3035,9 @@ export namespace xdr {
   }
 
   class AlphaNum4 {
-    constructor(attributes: { assetCode: Buffer; issuer: AccountId });
+    constructor(attributes: { assetCode: Buffer | string; issuer: AccountId });
 
-    assetCode(value?: Buffer): Buffer;
+    assetCode(value?: Buffer | string): Buffer | string;
 
     issuer(value?: AccountId): AccountId;
 
@@ -3063,9 +3063,9 @@ export namespace xdr {
   }
 
   class AlphaNum12 {
-    constructor(attributes: { assetCode: Buffer; issuer: AccountId });
+    constructor(attributes: { assetCode: Buffer | string; issuer: AccountId });
 
-    assetCode(value?: Buffer): Buffer;
+    assetCode(value?: Buffer | string): Buffer | string;
 
     issuer(value?: AccountId): AccountId;
 
