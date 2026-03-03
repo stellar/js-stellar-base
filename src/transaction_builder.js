@@ -815,10 +815,10 @@ export class TransactionBuilder {
     }
 
     if (isValidDate(this.timebounds.minTime)) {
-      this.timebounds.minTime = this.timebounds.minTime.getTime() / 1000;
+      this.timebounds.minTime = Math.floor(this.timebounds.minTime.getTime() / 1000);
     }
     if (isValidDate(this.timebounds.maxTime)) {
-      this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
+      this.timebounds.maxTime = Math.floor(this.timebounds.maxTime.getTime() / 1000);
     }
 
     this.timebounds.minTime = UnsignedHyper.fromString(

@@ -927,6 +927,38 @@ describe('TransactionBuilder', function () {
       );
       done();
     });
+
+    it('floors sub-second precision Date timebounds', function () {
+      let source = new StellarBase.Account(
+        'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        '0'
+      );
+      let timebounds = {
+        minTime: new Date(1528145519500), // 500ms sub-second
+        maxTime: new Date(1528231982999)  // 999ms sub-second
+      };
+
+      let transaction;
+      expect(() => {
+        transaction = new StellarBase.TransactionBuilder(source, {
+          timebounds,
+          fee: 100,
+          networkPassphrase: StellarBase.Networks.TESTNET
+        })
+          .addOperation(
+            StellarBase.Operation.payment({
+              destination:
+                'GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2',
+              asset: StellarBase.Asset.native(),
+              amount: '1000'
+            })
+          )
+          .build();
+      }).not.to.throw();
+
+      expect(transaction.timeBounds.minTime).to.equal('1528145519');
+      expect(transaction.timeBounds.maxTime).to.equal('1528231982');
+    });
   });
 
   describe('timebounds', function () {
