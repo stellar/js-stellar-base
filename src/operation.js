@@ -525,7 +525,7 @@ export class Operation {
    */
   static _toXDRPrice(price) {
     let xdrObject;
-    if (price.n && price.d) {
+    if (price.n !== undefined && price.d !== undefined) {
       xdrObject = new xdr.Price(price);
     } else {
       const approx = best_r(price);
