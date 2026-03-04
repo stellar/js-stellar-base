@@ -96,7 +96,7 @@ export class Memo {
   }
 
   static _validateIdValue(value) {
-    const error = new Error(`Expects a int64 as a string. Got ${value}`);
+    const error = new Error(`Expects a uint64 as a string. Got ${value}`);
 
     if (typeof value !== 'string') {
       throw error;
