@@ -33,6 +33,28 @@ describe('SignerKey', function () {
         expect(address).to.equal(testCase.strkey);
       });
     });
+
+    it('roundtrip is identity for signed payloads with non-multiple-of-4 lengths', function () {
+      const ed25519 = Buffer.alloc(32, 0x01);
+      // 29 % 4 = 1 (3 padding bytes), 30 % 4 = 2 (2 bytes), 31 % 4 = 3 (1 byte)
+      [29, 30, 31].forEach((len) => {
+        const payload = Buffer.alloc(len, 0xab);
+        const signerKey =
+          StellarBase.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
+            new StellarBase.xdr.SignerKeyEd25519SignedPayload({
+              ed25519,
+              payload
+            })
+          );
+        const address = StellarBase.SignerKey.encodeSignerKey(signerKey);
+        const decoded = StellarBase.SignerKey.decodeAddress(address);
+
+        expect(decoded.ed25519SignedPayload().payload()).to.have.lengthOf(len);
+        expect(StellarBase.SignerKey.encodeSignerKey(decoded)).to.equal(
+          address
+        );
+      });
+    });
   });
 
   describe('error cases', function () {

@@ -972,6 +972,27 @@ describe('Operation', function () {
       );
     });
 
+    it('creates a manageSellOfferOp (price fraction with zero numerator)', function () {
+      var opts = {};
+      opts.selling = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      opts.buying = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      opts.amount = '3.123456';
+      opts.price = { n: 0, d: 1 };
+      opts.offerId = '1';
+      const op = StellarBase.Operation.manageSellOffer(opts);
+      const xdr = op.toXDR('hex');
+      const obj = StellarBase.Operation.fromXDRObject(
+        StellarBase.xdr.Operation.fromXDR(Buffer.from(xdr, 'hex'))
+      );
+      expect(obj.price).to.equal('0');
+    });
+
     it('creates an invalid manageSellOfferOp (price fraction)', function () {
       var opts = {};
       opts.selling = new StellarBase.Asset(
