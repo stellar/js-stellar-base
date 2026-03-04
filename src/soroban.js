@@ -69,6 +69,12 @@ export class Soroban {
       throw new Error(`Invalid decimal value: ${value}`);
     }
 
+    if (fraction?.length > decimals) {
+      throw new Error(
+        `Too many decimal places in "${value}": expected at most ${decimals}, got ${fraction.length}`
+      );
+    }
+
     const shifted = BigInt(
       whole + (fraction?.padEnd(decimals, '0') ?? '0'.repeat(decimals))
     );

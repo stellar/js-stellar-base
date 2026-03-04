@@ -60,7 +60,7 @@ export class TransactionBase {
   }
 
   set networkPassphrase(networkPassphrase) {
-    this._networkPassphrase = networkPassphrase;
+    throw new Error('Transaction is immutable');
   }
 
   /**

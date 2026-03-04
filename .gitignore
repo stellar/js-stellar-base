@@ -8,3 +8,8 @@
 /coverage/
 /jsdoc/
 .DS_Store
+.claude/
+.idea/
+.vscode/
+.copilot/
+tsconfig.tsbuildinfo

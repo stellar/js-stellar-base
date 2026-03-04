@@ -64,6 +64,11 @@ describe('Soroban', function () {
         amount: '1000000.001.1',
         decimals: 7,
         expected: /Invalid decimal value/i
+      },
+      {
+        amount: '1.999999',
+        decimals: 2,
+        expected: /Too many decimal places/i
       }
     ];
 
