@@ -1,7 +1,7 @@
-import xdr from "../xdr";
+import xdr from "../xdr.js";
 export interface OperationAttributes {
     body: xdr.OperationBody;
-    sourceAccount?: xdr.MuxedAccount | null;
+    sourceAccount: xdr.MuxedAccount | null;
 }
 export interface OperationClass {
     setSourceAccount(opAttributes: OperationAttributes, opts: {

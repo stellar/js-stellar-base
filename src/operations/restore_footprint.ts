@@ -36,6 +36,7 @@ export function restoreFootprint(
     ext: new xdr.ExtensionPoint(0)
   });
   const opAttributes: OperationAttributes = {
+    sourceAccount: null,
     body: xdr.OperationBody.restoreFootprint(op)
   };
   this.setSourceAccount(opAttributes, opts);
