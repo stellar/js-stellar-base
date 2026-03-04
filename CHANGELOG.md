@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### Breaking Changes
+
+* `TransactionBase.networkPassphrase` setter now throws an error to enforce immutability ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
+
+### Fixed
+
+* `Keypair.verify` now returns `false` instead of throwing when the signature is invalid ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `Memo.id` now correctly rejects negative values, decimal values, and values exceeding the uint64 maximum (`2^64 - 1`); the error message now correctly says `uint64` ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `Operation._toXDRPrice` now accepts price objects with `n: 0` (a zero numerator was previously treated as falsy and fell through to float approximation) ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `SignerKey.decodeSignerKey` now reads the exact payload length from the 4-byte length prefix when decoding `signedPayload` signer keys, preventing data truncation or over-read ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `TransactionBuilder.cloneFrom` now correctly re-encodes `extraSigners` as StrKey strings (they were previously passed as raw XDR objects) ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `TransactionBuilder.cloneFrom` now uses `Math.floor` when computing `unscaledFee` to prevent fractional fee values ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `TransactionBuilder` now floors `Date` timebounds to integer UNIX timestamps ([#892](https://github.com/stellar/js-stellar-base/pull/892)).
+* `Auth.bytesToInt64` now correctly handles bytes with upper-32-bit values set by processing each 32-bit half independently ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
+* `ScInt` constructor now correctly handles string input ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
+* `Soroban.parseTokenAmount` now throws when the input value has more decimal places than the specified `decimals` argument ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
+
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 
 ### Added
