@@ -16,7 +16,7 @@ describe("Asset", () => {
     it("throws an error when code is invalid", () => {
       expect(() => new Asset("", ISSUER)).toThrow(/Asset code is invalid/);
       expect(() => new Asset("1234567890123", ISSUER)).toThrow(
-        /Asset code is invalid/
+        /Asset code is invalid/,
       );
       expect(() => new Asset("ab_", ISSUER)).toThrow(/Asset code is invalid/);
     });
@@ -143,7 +143,7 @@ describe("Asset", () => {
       expect(() => changeTrustXdr.toXDR("hex")).not.toThrow();
       expect(changeTrustXdr.switch().name).toBe("assetTypeCreditAlphanum12");
       expect(changeTrustXdr.alphaNum12().assetCode()).toBe(
-        "12345\0\0\0\0\0\0\0"
+        "12345\0\0\0\0\0\0\0",
       );
 
       let trustLineXdr = asset.toTrustLineXDRObject();
@@ -189,7 +189,7 @@ describe("Asset", () => {
       const assetCode = "KHL";
       const assetType = new xdr.AlphaNum4({
         assetCode: assetCode + "\0",
-        issuer: Keypair.fromPublicKey(ISSUER).xdrAccountId()
+        issuer: Keypair.fromPublicKey(ISSUER).xdrAccountId(),
       });
       const assetXdr = xdr.Asset.assetTypeCreditAlphanum4(assetType);
 
@@ -204,7 +204,7 @@ describe("Asset", () => {
       const assetCode = "KHLTOKEN";
       const assetType = new xdr.AlphaNum12({
         assetCode: assetCode + "\0\0\0\0",
-        issuer: Keypair.fromPublicKey(ISSUER).xdrAccountId()
+        issuer: Keypair.fromPublicKey(ISSUER).xdrAccountId(),
       });
       const assetXdr = xdr.Asset.assetTypeCreditAlphanum12(assetType);
 
@@ -234,10 +234,10 @@ describe("Asset", () => {
 
     it("throws an error if the input assets are invalid", () => {
       expect(() => Asset.compare(undefined as any, assetB)).toThrow(
-        /assetA is invalid/
+        /assetA is invalid/,
       );
       expect(() => Asset.compare(assetA, undefined as any)).toThrow(
-        /assetB is invalid/
+        /assetB is invalid/,
       );
       expect(() => Asset.compare(assetA, assetB)).not.toThrow();
     });
@@ -308,15 +308,15 @@ describe("Asset", () => {
       const cases: [Asset, string][] = [
         [
           Asset.native(),
-          "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT"
+          "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT",
         ],
         [
           new Asset(
             "USD",
-            "GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP"
+            "GCP2QKBFLLEEWYVKAIXIJIJNCZ6XEBIE4PCDB6BF3GUB6FGE2RQ3HDVP",
           ),
-          "CCWNZPARJG7KQ6N4BGZ5OBWKSSK4AVQ5URLDRXB4ZJXKGEJQTIIRPAHN"
-        ]
+          "CCWNZPARJG7KQ6N4BGZ5OBWKSSK4AVQ5URLDRXB4ZJXKGEJQTIIRPAHN",
+        ],
       ];
 
       cases.forEach(([asset, contractId]) => {
@@ -380,19 +380,19 @@ describe("Asset", () => {
   describe("getRawAssetType()", () => {
     it("returns assetTypeNative for native", () => {
       expect(Asset.native().getRawAssetType()).toEqual(
-        xdr.AssetType.assetTypeNative()
+        xdr.AssetType.assetTypeNative(),
       );
     });
 
     it("returns assetTypeCreditAlphanum4 for short codes", () => {
       expect(new Asset("USD", ISSUER).getRawAssetType()).toEqual(
-        xdr.AssetType.assetTypeCreditAlphanum4()
+        xdr.AssetType.assetTypeCreditAlphanum4(),
       );
     });
 
     it("returns assetTypeCreditAlphanum12 for long codes", () => {
       expect(new Asset("LONGASSET", ISSUER).getRawAssetType()).toEqual(
-        xdr.AssetType.assetTypeCreditAlphanum12()
+        xdr.AssetType.assetTypeCreditAlphanum12(),
       );
     });
   });
@@ -420,13 +420,13 @@ describe("Asset", () => {
   describe("compare() edge cases", () => {
     it("throws when assetA is a non-Asset object", () => {
       expect(() => Asset.compare({} as any, Asset.native())).toThrow(
-        /assetA is invalid/
+        /assetA is invalid/,
       );
     });
 
     it("throws when assetB is a non-Asset object", () => {
       expect(() => Asset.compare(Asset.native(), {} as any)).toThrow(
-        /assetB is invalid/
+        /assetB is invalid/,
       );
     });
   });

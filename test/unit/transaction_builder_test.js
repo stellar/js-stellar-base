@@ -937,7 +937,7 @@ describe("TransactionBuilder", function () {
         networkPassphrase: networkPassphrase
       });
 
-      const muxed = new StellarBase.MuxedAccount.fromAddress(destination, "0");
+      const muxed = StellarBase.MuxedAccount.fromAddress(destination, "0");
       const gAddress = muxed.baseAccount().accountId();
       builder.addOperation(
         StellarBase.Operation.payment({

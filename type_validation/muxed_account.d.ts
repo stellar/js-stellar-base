@@ -1,0 +1,98 @@
+import xdr from "./xdr.js";
+import { Account } from "./account.js";
+/**
+ * Represents a muxed account for transactions and operations.
+ *
+ * A muxed (or *multiplexed*) account (defined rigorously in
+ * [CAP-27](https://stellar.org/protocol/cap-27) and briefly in
+ * [SEP-23](https://stellar.org/protocol/sep-23)) is one that resolves a single
+ * Stellar `G...`` account to many different underlying IDs.
+ *
+ * For example, you may have a single Stellar address for accounting purposes:
+ *   GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ
+ *
+ * Yet would like to use it for 4 different family members:
+ *   1: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAGZFQ
+ *   2: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAALIWQ
+ *   3: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAPYHQ
+ *   4: MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAQLQQ
+ *
+ * This object makes it easy to create muxed accounts from regular accounts,
+ * duplicate them, get/set the underlying IDs, etc. without mucking around with
+ * the raw XDR.
+ *
+ * Because muxed accounts are purely an off-chain convention, they all share the
+ * sequence number tied to their underlying G... account. Thus, this object
+ * *requires* an {@link Account} instance to be passed in, so that muxed
+ * instances of an account can collectively modify the sequence number whenever
+ * a muxed account is used as the source of a @{link Transaction} with {@link
+ * TransactionBuilder}.
+ *
+ * @constructor
+ *
+ * @param baseAccount - the @{link Account} instance representing the
+ *                              underlying G... address
+ * @param id      - a stringified uint64 value that represents the
+ *                              ID of the muxed account
+ *
+ * @link https://developers.stellar.org/docs/glossary/muxed-accounts/
+ */
+export declare class MuxedAccount {
+    private account;
+    private _muxedXdr;
+    private _mAddress;
+    private _id;
+    constructor(baseAccount: Account, id: string);
+    /**
+     * Parses an M-address into a MuxedAccount object.
+     *
+     * @param  mAddress    - an M-address to transform
+     * @param  sequenceNum - the sequence number of the underlying {@link
+     *     Account}, to use for the underlying base account (@link
+     *     MuxedAccount.baseAccount). If you're using the SDK, you can use
+     *     `server.loadAccount` to fetch this if you don't know it.
+     * @return a MuxedAccount instance corresponding to the given M-address
+     */
+    static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount;
+    /**
+     * @return the underlying account object shared among all muxed
+     *     accounts with this Stellar address
+     */
+    baseAccount(): Account;
+    /**
+     * @return the M-address representing this account's (G-address, ID)
+     */
+    accountId(): string;
+    /**
+     * @return the uint64 ID of this muxed account as a string
+     */
+    id(): string;
+    /**
+     * Updates the muxed account's ID, regenerating the M-address accordingly.
+     *
+     * @param  id - a stringified uint64 value to set as the new muxed account ID
+     * @return this MuxedAccount instance, for chaining
+     */
+    setId(id: string): MuxedAccount;
+    /**
+     * Accesses the underlying account's sequence number.
+     * @return stringified sequence number for the underlying account
+     */
+    sequenceNumber(): string;
+    /**
+     * Increments the underlying account's sequence number by one.
+     */
+    incrementSequenceNumber(): void;
+    /**
+     * @return the XDR object representing this muxed account's
+     *     G-address and uint64 ID
+     */
+    toXDRObject(): xdr.MuxedAccount;
+    /**
+     * Checks whether two muxed accounts are equal by comparing their M-addresses.
+     *
+     * @param  otherMuxedAccount - the MuxedAccount to compare against
+     * @return `true` if both accounts have the same G-address and ID
+     */
+    equals(otherMuxedAccount: MuxedAccount): boolean;
+}
