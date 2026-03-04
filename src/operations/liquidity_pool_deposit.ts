@@ -1,4 +1,9 @@
-import xdr from "../xdr";
+import xdr from "../xdr.js";
+import {
+  LiquidityPoolDepositOpts,
+  OperationAttributes,
+  OperationClass
+} from "./types.js";
 
 /**
  * Creates a liquidity pool deposit operation.
@@ -21,40 +26,51 @@ import xdr from "../xdr";
  *
  * @returns {xdr.Operation} The resulting operation (xdr.LiquidityPoolDepositOp).
  */
-export function liquidityPoolDeposit(opts = {}) {
-  const { liquidityPoolId, maxAmountA, maxAmountB, minPrice, maxPrice } = opts;
-  const attributes = {};
-
-  if (!liquidityPoolId) {
+export function liquidityPoolDeposit(
+  this: OperationClass,
+  opts: LiquidityPoolDepositOpts
+): xdr.Operation {
+  if (!opts.liquidityPoolId) {
     throw new TypeError("liquidityPoolId argument is required");
   }
-  attributes.liquidityPoolId = xdr.PoolId.fromXDR(liquidityPoolId, "hex");
 
-  if (!this.isValidAmount(maxAmountA, true)) {
+  if (!this.isValidAmount(opts.maxAmountA, true)) {
     throw new TypeError(this.constructAmountRequirementsError("maxAmountA"));
   }
-  attributes.maxAmountA = this._toXDRAmount(maxAmountA);
 
-  if (!this.isValidAmount(maxAmountB, true)) {
+  if (!this.isValidAmount(opts.maxAmountB, true)) {
     throw new TypeError(this.constructAmountRequirementsError("maxAmountB"));
   }
-  attributes.maxAmountB = this._toXDRAmount(maxAmountB);
 
-  if (minPrice === undefined) {
+  if (opts.minPrice === undefined) {
     throw new TypeError("minPrice argument is required");
   }
-  attributes.minPrice = this._toXDRPrice(minPrice);
 
-  if (maxPrice === undefined) {
+  if (opts.maxPrice === undefined) {
     throw new TypeError("maxPrice argument is required");
   }
-  attributes.maxPrice = this._toXDRPrice(maxPrice);
 
-  const liquidityPoolDepositOp = new xdr.LiquidityPoolDepositOp(attributes);
-  const opAttributes = {
+  const liquidityPoolDepositOp = new xdr.LiquidityPoolDepositOp({
+    liquidityPoolId: xdr.Hash.fromXDR(
+      opts.liquidityPoolId,
+      "hex"
+    ) as unknown as xdr.PoolId,
+    maxAmountA: this._toXDRAmount(opts.maxAmountA),
+    maxAmountB: this._toXDRAmount(opts.maxAmountB),
+    minPrice: this._toXDRPrice(opts.minPrice),
+    maxPrice: this._toXDRPrice(opts.maxPrice)
+  });
+
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
     body: xdr.OperationBody.liquidityPoolDeposit(liquidityPoolDepositOp)
   };
   this.setSourceAccount(opAttributes, opts);
 
-  return new xdr.Operation(opAttributes);
+  return new xdr.Operation(
+    opAttributes as {
+      sourceAccount: xdr.MuxedAccount | null;
+      body: xdr.OperationBody;
+    }
+  );
 }

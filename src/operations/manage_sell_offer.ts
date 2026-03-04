@@ -1,5 +1,11 @@
 import { Hyper } from "@stellar/js-xdr";
-import xdr from "../xdr";
+import xdr from "../xdr.js";
+import {
+  ManageSellOfferOpts,
+  OperationAttributes,
+  OperationClass
+} from "./types.js";
+
 /**
  * Returns a XDR ManageSellOfferOp. A "manage sell offer" operation creates, updates, or
  * deletes an offer.
@@ -17,31 +23,38 @@ import xdr from "../xdr";
  * @throws {Error} Throws `Error` when the best rational approximation of `price` cannot be found.
  * @returns {xdr.ManageSellOfferOp} Manage Sell Offer operation
  */
-export function manageSellOffer(opts) {
-  const attributes = {};
-  attributes.selling = opts.selling.toXDRObject();
-  attributes.buying = opts.buying.toXDRObject();
+export function manageSellOffer(
+  this: OperationClass,
+  opts: ManageSellOfferOpts
+): xdr.Operation {
   if (!this.isValidAmount(opts.amount, true)) {
     throw new TypeError(this.constructAmountRequirementsError("amount"));
   }
-  attributes.amount = this._toXDRAmount(opts.amount);
+
   if (opts.price === undefined) {
     throw new TypeError("price argument is required");
   }
-  attributes.price = this._toXDRPrice(opts.price);
 
-  if (opts.offerId !== undefined) {
-    opts.offerId = opts.offerId.toString();
-  } else {
-    opts.offerId = "0";
-  }
+  const offerId = opts.offerId !== undefined ? opts.offerId.toString() : "0";
 
-  attributes.offerId = Hyper.fromString(opts.offerId);
-  const manageSellOfferOp = new xdr.ManageSellOfferOp(attributes);
+  const manageSellOfferOp = new xdr.ManageSellOfferOp({
+    selling: opts.selling.toXDRObject(),
+    buying: opts.buying.toXDRObject(),
+    amount: this._toXDRAmount(opts.amount),
+    price: this._toXDRPrice(opts.price),
+    offerId: Hyper.fromString(offerId) as unknown as xdr.Int64
+  });
 
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.manageSellOffer(manageSellOfferOp);
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
+    body: xdr.OperationBody.manageSellOffer(manageSellOfferOp)
+  };
   this.setSourceAccount(opAttributes, opts);
 
-  return new xdr.Operation(opAttributes);
+  return new xdr.Operation(
+    opAttributes as {
+      sourceAccount: xdr.MuxedAccount | null;
+      body: xdr.OperationBody;
+    }
+  );
 }

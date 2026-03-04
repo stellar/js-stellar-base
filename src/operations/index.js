@@ -1,8 +1,8 @@
-export { manageSellOffer } from "./manage_sell_offer";
-export { createPassiveSellOffer } from "./create_passive_sell_offer";
+export { manageSellOffer } from "./manage_sell_offer.js";
+export { createPassiveSellOffer } from "./create_passive_sell_offer.js";
 export { accountMerge } from "./account_merge";
 export { allowTrust } from "./allow_trust";
-export { bumpSequence } from "./bump_sequence";
+export { bumpSequence } from "./bump_sequence.js";
 export { changeTrust } from "./change_trust";
 export { createAccount } from "./create_account";
 export { createClaimableBalance } from "./create_claimable_balance";
@@ -10,7 +10,7 @@ export { claimClaimableBalance } from "./claim_claimable_balance";
 export { clawbackClaimableBalance } from "./clawback_claimable_balance";
 export { inflation } from "./inflation.js";
 export { manageData } from "./manage_data.js";
-export { manageBuyOffer } from "./manage_buy_offer";
+export { manageBuyOffer } from "./manage_buy_offer.js";
 export { pathPaymentStrictReceive } from "./path_payment_strict_receive";
 export { pathPaymentStrictSend } from "./path_payment_strict_send";
 export { payment } from "./payment";
@@ -28,7 +28,7 @@ export {
 } from "./revoke_sponsorship";
 export { clawback } from "./clawback";
 export { setTrustLineFlags } from "./set_trustline_flags";
-export { liquidityPoolDeposit } from "./liquidity_pool_deposit";
+export { liquidityPoolDeposit } from "./liquidity_pool_deposit.js";
 export { liquidityPoolWithdraw } from "./liquidity_pool_withdraw";
 export {
   invokeHostFunction,
