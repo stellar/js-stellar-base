@@ -1,4 +1,9 @@
-import xdr from "../xdr";
+import xdr from "../xdr.js";
+import {
+  OperationClass,
+  ManageDataOpts,
+  OperationAttributes
+} from "./types.js";
 
 /**
  * This operation adds data entry to the ledger.
@@ -10,13 +15,13 @@ import xdr from "../xdr";
  * @param {string} [opts.source] - The optional source account.
  * @returns {xdr.ManageDataOp} Manage Data operation
  */
-export function manageData(opts) {
-  const attributes = {};
-
+export function manageData(
+  this: OperationClass,
+  opts: ManageDataOpts
+): xdr.Operation {
   if (!(typeof opts.name === "string" && opts.name.length <= 64)) {
     throw new Error("name must be a string, up to 64 characters");
   }
-  attributes.dataName = opts.name;
 
   if (
     typeof opts.value !== "string" &&
@@ -26,21 +31,32 @@ export function manageData(opts) {
     throw new Error("value must be a string, Buffer or null");
   }
 
+  let dataValue: Buffer | null;
   if (typeof opts.value === "string") {
-    attributes.dataValue = Buffer.from(opts.value);
+    dataValue = Buffer.from(opts.value);
   } else {
-    attributes.dataValue = opts.value;
+    dataValue = opts.value;
   }
 
-  if (attributes.dataValue !== null && attributes.dataValue.length > 64) {
+  if (dataValue !== null && dataValue.length > 64) {
     throw new Error("value cannot be longer that 64 bytes");
   }
 
-  const manageDataOp = new xdr.ManageDataOp(attributes);
+  const manageDataOp = new xdr.ManageDataOp({
+    dataName: opts.name,
+    dataValue
+  });
 
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.manageData(manageDataOp);
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
+    body: xdr.OperationBody.manageData(manageDataOp)
+  };
   this.setSourceAccount(opAttributes, opts);
 
-  return new xdr.Operation(opAttributes);
+  return new xdr.Operation(
+    opAttributes as {
+      sourceAccount: xdr.MuxedAccount | null;
+      body: xdr.OperationBody;
+    }
+  );
 }
