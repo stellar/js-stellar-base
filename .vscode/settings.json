@@ -1,0 +1,3 @@
+{
+  "prettier.configPath": "./config/prettier.config.cjs"
+}
