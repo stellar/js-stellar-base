@@ -1,5 +1,5 @@
-import xdr from "./xdr";
-type IntLike = string | number | bigint;
+import xdr from "./xdr.js";
+type IntLike = bigint | number | string;
 /**
  * Supports building {@link xdr.SorobanTransactionData} structures with various
  * items set to specific values.
@@ -32,17 +32,17 @@ type IntLike = string | number | bigint;
  */
 export declare class SorobanDataBuilder {
     private _data;
-    constructor(sorobanData?: string | Uint8Array | Buffer | xdr.SorobanTransactionData);
+    constructor(sorobanData?: Buffer | Uint8Array | xdr.SorobanTransactionData | string);
     /**
      * Decodes and builds a {@link xdr.SorobanTransactionData} instance.
-     * @param {Uint8Array|Buffer|string} data   raw input to decode
-     * @returns {xdr.SorobanTransactionData}
+     * @param data raw input to decode
+     * @returns the decoded instance as an XDR object
      */
-    static fromXDR(data: Uint8Array | Buffer | string): xdr.SorobanTransactionData;
+    static fromXDR(data: Buffer | Uint8Array | string): xdr.SorobanTransactionData;
     /**
      * Sets the resource fee portion of the Soroban data.
-     * @param {number | bigint | string} fee  the resource fee to set (int64)
-     * @returns {SorobanDataBuilder}
+     * @param fee the resource fee to set (int64)
+     * @returns the builder instance, for chaining
      */
     setResourceFee(fee: IntLike): SorobanDataBuilder;
     /**
@@ -51,18 +51,18 @@ export declare class SorobanDataBuilder {
      * You should almost NEVER need this, as its often generated / provided to you
      * by transaction simulation/preflight from a Soroban RPC server.
      *
-     * @param {number} cpuInstrs      number of CPU instructions
-     * @param {number} diskReadBytes  number of bytes being read from disk
-     * @param {number} writeBytes     number of bytes being written to disk/memory
+     * @param cpuInstrs      number of CPU instructions
+     * @param diskReadBytes  number of bytes being read from disk
+     * @param writeBytes     number of bytes being written to disk/memory
      *
-     * @returns {SorobanDataBuilder}
+     * @returns the builder instance, for chaining
      */
     setResources(cpuInstrs: number, diskReadBytes: number, writeBytes: number): SorobanDataBuilder;
     /**
      * Appends the given ledger keys to the existing storage access footprint.
-     * @param {xdr.LedgerKey[]} readOnly   read-only keys to add
-     * @param {xdr.LedgerKey[]} readWrite  read-write keys to add
-     * @returns {SorobanDataBuilder} this builder instance
+     * @param readOnly   read-only keys to add
+     * @param readWrite  read-write keys to add
+     * @returns the builder instance, for chaining
      */
     appendFootprint(readOnly: xdr.LedgerKey[], readWrite: xdr.LedgerKey[]): SorobanDataBuilder;
     /**
@@ -76,34 +76,30 @@ export declare class SorobanDataBuilder {
      * Passing `null|undefined` to either parameter will IGNORE the existing
      * values. If you want to clear them, pass `[]`, instead.
      *
-     * @param {xdr.LedgerKey[]|null} [readOnly]   the set of ledger keys to set in
-     *    the read-only portion of the transaction's `sorobanData`, or `null |
-     *    undefined` to keep the existing keys
-     * @param {xdr.LedgerKey[]|null} [readWrite]  the set of ledger keys to set in
-     *    the read-write portion of the transaction's `sorobanData`, or `null |
-     *    undefined` to keep the existing keys
-     * @returns {SorobanDataBuilder} this builder instance
+     * @param readOnly   the set of ledger keys to set in the read-only portion of the transaction's `sorobanData`, or `null | undefined` to keep the existing keys
+     * @param readWrite  the set of ledger keys to set in the read-write portion of the transaction's `sorobanData`, or `null | undefined` to keep the existing keys
+     * @returns the builder instance, for chaining
      */
     setFootprint(readOnly?: xdr.LedgerKey[] | null, readWrite?: xdr.LedgerKey[] | null): SorobanDataBuilder;
     /**
-     * @param {xdr.LedgerKey[]} readOnly  read-only keys in the access footprint
-     * @returns {SorobanDataBuilder}
+     * @param readOnly  read-only keys in the access footprint
+     * @returns the builder instance, for chaining
      */
     setReadOnly(readOnly?: xdr.LedgerKey[]): SorobanDataBuilder;
     /**
-     * @param {xdr.LedgerKey[]} readWrite  read-write keys in the access footprint
-     * @returns {SorobanDataBuilder}
+     * @param readWrite  read-write keys in the access footprint
+     * @returns the builder instance, for chaining
      */
     setReadWrite(readWrite?: xdr.LedgerKey[]): SorobanDataBuilder;
     /**
      * @returns {xdr.SorobanTransactionData} a copy of the final data structure
      */
     build(): xdr.SorobanTransactionData;
-    /** @returns {xdr.LedgerKey[]} the read-only storage access pattern */
+    /** @returns the read-only storage access pattern */
     getReadOnly(): xdr.LedgerKey[];
-    /** @returns {xdr.LedgerKey[]} the read-write storage access pattern */
+    /** @returns the read-write storage access pattern */
     getReadWrite(): xdr.LedgerKey[];
-    /** @returns {xdr.LedgerFootprint} the storage access pattern */
+    /** @returns the storage access pattern */
     getFootprint(): xdr.LedgerFootprint;
 }
 export {};

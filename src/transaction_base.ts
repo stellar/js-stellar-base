@@ -1,15 +1,25 @@
-import xdr from "./xdr";
-import { hash } from "./hashing";
-import { Keypair } from "./keypair";
+import xdr from "./xdr.js";
+import { hash } from "./hashing.js";
+import { Keypair } from "./keypair.js";
 
 /**
  * @ignore
  */
 export class TransactionBase {
-  constructor(tx, signatures, fee, networkPassphrase) {
+  _tx: xdr.Transaction;
+  _signatures: xdr.DecoratedSignature[];
+  _fee: string;
+  _networkPassphrase: string;
+
+  constructor(
+    tx: xdr.Transaction,
+    signatures: xdr.DecoratedSignature[],
+    fee: string,
+    networkPassphrase: string,
+  ) {
     if (typeof networkPassphrase !== "string") {
       throw new Error(
-        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
+        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`,
       );
     }
 
@@ -20,56 +30,53 @@ export class TransactionBase {
   }
 
   /**
-   * @type {Array.<xdr.DecoratedSignature>}
    * @readonly
    */
-  get signatures() {
+  get signatures(): xdr.DecoratedSignature[] {
     return this._signatures;
   }
 
-  set signatures(value) {
+  set signatures(_value: xdr.DecoratedSignature[]) {
     throw new Error("Transaction is immutable");
   }
 
-  get tx() {
+  get tx(): xdr.Transaction {
     return this._tx;
   }
 
-  set tx(value) {
+  set tx(_value: xdr.Transaction) {
     throw new Error("Transaction is immutable");
   }
 
   /**
-   * @type {string}
    * @readonly
    */
-  get fee() {
+  get fee(): string {
     return this._fee;
   }
 
-  set fee(value) {
+  set fee(_value: string) {
     throw new Error("Transaction is immutable");
   }
 
   /**
-   * @type {string}
    * @readonly
    */
-  get networkPassphrase() {
+  get networkPassphrase(): string {
     return this._networkPassphrase;
   }
 
-  set networkPassphrase(networkPassphrase) {
+  set networkPassphrase(networkPassphrase: string) {
     this._networkPassphrase = networkPassphrase;
   }
 
   /**
    * Signs the transaction with the given {@link Keypair}.
-   * @param {...Keypair} keypairs Keypairs of signers
-   * @returns {void}
+   * @param keypairs Keypairs of signers
    */
-  sign(...keypairs) {
+  sign(...keypairs: Keypair[]): void {
     const txHash = this.hash();
+
     keypairs.forEach((kp) => {
       const sig = kp.signDecorated(txHash);
       this.signatures.push(sig);
@@ -95,10 +102,10 @@ export class TransactionBase {
    * return transaction.getKeypairSignature(keypair);
    * ```
    *
-   * @param {Keypair} keypair Keypair of signer
-   * @returns {string} Signature string
+   * @param keypair Keypair of signer
+   * @returns Signature string
    */
-  getKeypairSignature(keypair) {
+  getKeypairSignature(keypair: Keypair): string {
     return keypair.sign(this.hash()).toString("base64");
   }
 
@@ -122,11 +129,10 @@ export class TransactionBase {
    * from [getKeypairSignature](#getKeypairSignature), both of which you pass to
    * this function.
    *
-   * @param {string} publicKey The public key of the signer
-   * @param {string} signature The base64 value of the signature XDR
-   * @returns {void}
+   * @param publicKey The public key of the signer
+   * @param signature The base64 value of the signature XDR
    */
-  addSignature(publicKey = "", signature = "") {
+  addSignature(publicKey = "", signature = ""): void {
     if (!signature || typeof signature !== "string") {
       throw new Error("Invalid signature");
     }
@@ -153,30 +159,28 @@ export class TransactionBase {
     this.signatures.push(
       new xdr.DecoratedSignature({
         hint,
-        signature: signatureBuffer
-      })
+        signature: signatureBuffer,
+      }),
     );
   }
 
   /**
    * Add a decorated signature directly to the transaction envelope.
    *
-   * @param {xdr.DecoratedSignature} signature    raw signature to add
-   * @returns {void}
+   * @param signature    raw signature to add
    *
    * @see Keypair.signDecorated
    * @see Keypair.signPayloadDecorated
    */
-  addDecoratedSignature(signature) {
+  addDecoratedSignature(signature: xdr.DecoratedSignature): void {
     this.signatures.push(signature);
   }
 
   /**
    * Add `hashX` signer preimage as signature.
-   * @param {Buffer|String} preimage Preimage of hash used as signer
-   * @returns {void}
+   * @param preimage Preimage of hash used as signer
    */
-  signHashX(preimage) {
+  signHashX(preimage: Buffer | string): void {
     if (typeof preimage === "string") {
       preimage = Buffer.from(preimage, "hex");
     }
@@ -187,31 +191,30 @@ export class TransactionBase {
 
     const signature = preimage;
     const hashX = hash(preimage);
-    const hint = hashX.slice(hashX.length - 4);
+    const hint = hashX.subarray(hashX.length - 4);
     this.signatures.push(new xdr.DecoratedSignature({ hint, signature }));
   }
 
   /**
    * Returns a hash for this transaction, suitable for signing.
-   * @returns {Buffer}
    */
-  hash() {
+  hash(): Buffer {
     return hash(this.signatureBase());
   }
 
-  signatureBase() {
+  signatureBase(): Buffer {
     throw new Error("Implement in subclass");
   }
 
-  toEnvelope() {
+  toEnvelope(): xdr.TransactionEnvelope {
     throw new Error("Implement in subclass");
   }
 
   /**
    * Get the transaction envelope as a base64-encoded string
-   * @returns {string} XDR string
+   * @returns XDR string
    */
-  toXDR() {
+  toXDR(): string {
     return this.toEnvelope().toXDR().toString("base64");
   }
 }
