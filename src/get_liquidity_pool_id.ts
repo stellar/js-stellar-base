@@ -44,7 +44,8 @@ export function getLiquidityPoolId(
     throw new Error("liquidityPoolType is invalid");
   }
 
-  const { assetA, assetB, fee } = liquidityPoolParameters;
+  const { assetA, assetB, fee } =
+    liquidityPoolParameters ?? ({} as LiquidityPoolParameters);
 
   if (!assetA || !(assetA instanceof Asset)) {
     throw new Error("assetA is invalid");
