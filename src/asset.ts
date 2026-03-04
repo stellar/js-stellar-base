@@ -1,8 +1,15 @@
-import { trimEnd } from "./util/util";
-import xdr from "./xdr";
-import { Keypair } from "./keypair";
-import { StrKey } from "./strkey";
-import { hash } from "./hashing";
+import { trimEnd } from "./util/util.js";
+import xdr from "./xdr.js";
+import { Keypair } from "./keypair.js";
+import { StrKey } from "./strkey.js";
+import { hash } from "./hashing.js";
+
+export type AssetType = "credit_alphanum4" | "credit_alphanum12" | "native";
+
+interface XdrAssetConstructor<T> {
+  assetTypeNative(): T;
+  new (type: string, value: xdr.AlphaNum4 | xdr.AlphaNum12): T;
+}
 
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
@@ -12,11 +19,14 @@ import { hash } from "./hashing";
  * asset XLM, the issuer will be null.
  *
  * @constructor
- * @param {string} code - The asset code.
- * @param {string} issuer - The account ID of the issuer.
+ * @param code - The asset code.
+ * @param issuer - The account ID of the issuer.
  */
 export class Asset {
-  constructor(code, issuer) {
+  readonly code: string;
+  readonly issuer: string | undefined;
+
+  constructor(code: string, issuer?: string) {
     if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(
         "Asset code is invalid (maximum alphanumeric, 12 characters at max)"
@@ -41,31 +51,33 @@ export class Asset {
 
   /**
    * Returns an asset object for the native asset.
-   * @Return {Asset}
+   * @returns {Asset}
    */
-  static native() {
+  static native(): Asset {
     return new Asset("XLM");
   }
 
   /**
    * Returns an asset object from its XDR object representation.
-   * @param {xdr.Asset} assetXdr - The asset xdr object.
+   * @param assetXdr - The asset xdr object.
    * @returns {Asset}
    */
-  static fromOperation(assetXdr) {
+  static fromOperation(assetXdr: xdr.Asset): Asset {
     let anum;
-    let code;
-    let issuer;
+    let code: string;
+    let issuer: string;
     switch (assetXdr.switch()) {
       case xdr.AssetType.assetTypeNative():
         return this.native();
       case xdr.AssetType.assetTypeCreditAlphanum4():
         anum = assetXdr.alphaNum4();
-      /* falls through */
-      case xdr.AssetType.assetTypeCreditAlphanum12():
-        anum = anum || assetXdr.alphaNum12();
         issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
-        code = trimEnd(anum.assetCode(), "\0");
+        code = trimEnd(anum.assetCode().toString(), "\0") as string;
+        return new this(code, issuer);
+      case xdr.AssetType.assetTypeCreditAlphanum12():
+        anum = assetXdr.alphaNum12();
+        issuer = StrKey.encodeEd25519PublicKey(anum.issuer().ed25519());
+        code = trimEnd(anum.assetCode().toString(), "\0") as string;
         return new this(code, issuer);
       default:
         throw new Error(`Invalid asset type: ${assetXdr.switch().name}`);
@@ -76,7 +88,7 @@ export class Asset {
    * Returns the xdr.Asset object for this asset.
    * @returns {xdr.Asset} XDR asset object
    */
-  toXDRObject() {
+  toXDRObject(): xdr.Asset {
     return this._toXDRObject(xdr.Asset);
   }
 
@@ -84,7 +96,7 @@ export class Asset {
    * Returns the xdr.ChangeTrustAsset object for this asset.
    * @returns {xdr.ChangeTrustAsset} XDR asset object
    */
-  toChangeTrustXDRObject() {
+  toChangeTrustXDRObject(): xdr.ChangeTrustAsset {
     return this._toXDRObject(xdr.ChangeTrustAsset);
   }
 
@@ -92,7 +104,7 @@ export class Asset {
    * Returns the xdr.TrustLineAsset object for this asset.
    * @returns {xdr.TrustLineAsset} XDR asset object
    */
-  toTrustLineXDRObject() {
+  toTrustLineXDRObject(): xdr.TrustLineAsset {
     return this._toXDRObject(xdr.TrustLineAsset);
   }
 
@@ -100,15 +112,15 @@ export class Asset {
    * Returns the would-be contract ID (`C...` format) for this asset on a given
    * network.
    *
-   * @param {string}    networkPassphrase   indicates which network the contract
+   * @param networkPassphrase - indicates which network the contract
    *    ID should refer to, since every network will have a unique ID for the
    *    same contract (see {@link Networks} for options)
    *
-   * @returns {string}  the strkey-encoded (`C...`) contract ID for this asset
+   * @returns the strkey-encoded (`C...`) contract ID for this asset
    *
    * @warning This makes no guarantee that this contract actually *exists*.
    */
-  contractId(networkPassphrase) {
+  contractId(networkPassphrase: string): string {
     const networkId = hash(Buffer.from(networkPassphrase));
     const preimage = xdr.HashIdPreimage.envelopeTypeContractId(
       new xdr.HashIdPreimageContractId({
@@ -124,16 +136,21 @@ export class Asset {
 
   /**
    * Returns the xdr object for this asset.
-   * @param {xdr.Asset | xdr.ChangeTrustAsset} xdrAsset - The asset xdr object.
-   * @returns {xdr.Asset | xdr.ChangeTrustAsset | xdr.TrustLineAsset} XDR Asset object
+   * @param xdrAsset - The xdr asset constructor.
+   * @returns XDR Asset object
    */
-  _toXDRObject(xdrAsset = xdr.Asset) {
+  private _toXDRObject<T>(xdrAsset: XdrAssetConstructor<T>): T {
     if (this.isNative()) {
       return xdrAsset.assetTypeNative();
     }
 
+    // This should never happen because the constructor should throw an error if the issuer is null for a non-native asset, but we check here just to be safe.
+    if (!this.issuer) {
+      throw new Error("Issuer cannot be null for non-native asset");
+    }
+
     let xdrType;
-    let xdrTypeString;
+    let xdrTypeString: string;
     if (this.code.length <= 4) {
       xdrType = xdr.AlphaNum4;
       xdrTypeString = "assetTypeCreditAlphanum4";
@@ -155,19 +172,16 @@ export class Asset {
   }
 
   /**
-   * @returns {string} Asset code
+   * @returns Asset code
    */
-  getCode() {
-    if (this.code === undefined) {
-      return undefined;
-    }
+  getCode(): string {
     return String(this.code);
   }
 
   /**
-   * @returns {string} Asset issuer
+   * @returns Asset issuer
    */
-  getIssuer() {
+  getIssuer(): string | undefined {
     if (this.issuer === undefined) {
       return undefined;
     }
@@ -176,14 +190,14 @@ export class Asset {
 
   /**
    * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
-   * @returns {string} Asset type. Can be one of following types:
+   * @returns Asset type. Can be one of following types:
    *
    *  - `native`,
    *  - `credit_alphanum4`,
    *  - `credit_alphanum12`, or
    *  - `unknown` as the error case (which should never occur)
    */
-  getAssetType() {
+  getAssetType(): AssetType | "unknown" {
     switch (this.getRawAssetType().value) {
       case xdr.AssetType.assetTypeNative().value:
         return "native";
@@ -197,9 +211,9 @@ export class Asset {
   }
 
   /**
-   * @returns {xdr.AssetType}  the raw XDR representation of the asset type
+   * @returns the raw XDR representation of the asset type
    */
-  getRawAssetType() {
+  getRawAssetType(): xdr.AssetType {
     if (this.isNative()) {
       return xdr.AssetType.assetTypeNative();
     }
@@ -212,21 +226,21 @@ export class Asset {
   }
 
   /**
-   * @returns {boolean}  true if this asset object is the native asset.
+   * @returns true if this asset object is the native asset.
    */
-  isNative() {
+  isNative(): boolean {
     return !this.issuer;
   }
 
   /**
-   * @param {Asset} asset Asset to compare
-   * @returns {boolean} true if this asset equals the given asset.
+   * @param asset - Asset to compare
+   * @returns true if this asset equals the given asset.
    */
-  equals(asset) {
+  equals(asset: Asset): boolean {
     return this.code === asset.getCode() && this.issuer === asset.getIssuer();
   }
 
-  toString() {
+  toString(): string {
     if (this.isNative()) {
       return "native";
     }
@@ -241,14 +255,11 @@ export class Asset {
    *  2. If the types are equal, compare the assets codes.
    *  3. If the asset codes are equal, compare the issuers.
    *
-   * @param   {Asset} assetA - the first asset
-   * @param   {Asset} assetB - the second asset
-   * @returns {number} `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
-   *
-   * @static
-   * @memberof Asset
+   * @param assetA - the first asset
+   * @param assetB - the second asset
+   * @returns `-1` if assetA < assetB, `0` if assetA == assetB, `1` if assetA > assetB.
    */
-  static compare(assetA, assetB) {
+  static compare(assetA: Asset, assetB: Asset): -1 | 0 | 1 {
     if (!assetA || !(assetA instanceof Asset)) {
       throw new Error("assetA is invalid");
     }
@@ -274,20 +285,20 @@ export class Asset {
     }
 
     // Compare asset issuers.
-    return asciiCompare(assetA.getIssuer(), assetB.getIssuer());
+    return asciiCompare(assetA.getIssuer()!, assetB.getIssuer()!);
   }
 }
 
 /**
  * Compares two ASCII strings in lexographic order with uppercase precedence.
  *
- * @param   {string} a - the first string to compare
- * @param   {string} b - the second
- * @returns {number} like all `compare()`s:
+ * @param a - the first string to compare
+ * @param b - the second
+ * @returns like all `compare()`s:
  *     -1 if `a < b`, 0 if `a == b`, and 1 if `a > b`
  *
  * @warning No type-checks are done on the parameters
  */
-function asciiCompare(a, b) {
+function asciiCompare(a: string, b: string): -1 | 0 | 1 {
   return Buffer.compare(Buffer.from(a, "ascii"), Buffer.from(b, "ascii"));
 }

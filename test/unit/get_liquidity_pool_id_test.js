@@ -97,7 +97,7 @@ describe("StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
 
   it("returns poolId correctly for native and alphaNum4 (short and full length)", function () {
     let poolId = StellarBase.getLiquidityPoolId("constant_product", {
-      assetA: new StellarBase.Asset.native(),
+      assetA: StellarBase.Asset.native(),
       assetB: new StellarBase.Asset("AbC", issuer1),
       fee
     });
@@ -106,7 +106,7 @@ describe("StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
     );
 
     poolId = StellarBase.getLiquidityPoolId("constant_product", {
-      assetA: new StellarBase.Asset.native(),
+      assetA: StellarBase.Asset.native(),
       assetB: new StellarBase.Asset("AbCd", issuer1),
       fee
     });
@@ -117,7 +117,7 @@ describe("StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
 
   it("returns poolId correctly for native and alphaNum12 (short and full length)", function () {
     let poolId = StellarBase.getLiquidityPoolId("constant_product", {
-      assetA: new StellarBase.Asset.native(),
+      assetA: StellarBase.Asset.native(),
       assetB: new StellarBase.Asset("AbCdEfGhIjK", issuer1),
       fee
     });
@@ -125,7 +125,7 @@ describe("StellarBase#getLiquidityPoolId() mirror stellar-core getPoolID() tests
       "d2306c6e8532f99418e9d38520865e1c1059cddb6793da3cc634224f2ffb5bd4"
     );
     poolId = StellarBase.getLiquidityPoolId("constant_product", {
-      assetA: new StellarBase.Asset.native(),
+      assetA: StellarBase.Asset.native(),
       assetB: new StellarBase.Asset("AbCdEfGhIjKl", issuer1),
       fee
     });
