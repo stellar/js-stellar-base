@@ -1,12 +1,12 @@
-import xdr from "./xdr";
-import { Account } from "./account";
-import { StrKey } from "./strkey";
+import xdr from "./xdr.js";
+import { Account } from "./account.js";
+import { StrKey } from "./strkey.js";
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
   encodeMuxedAccount,
   extractBaseAddress
-} from "./util/decode_encode_muxed_account";
+} from "./util/decode_encode_muxed_account.js";
 
 /**
  * Represents a muxed account for transactions and operations.
@@ -38,16 +38,22 @@ import {
  *
  * @constructor
  *
- * @param {Account}   account - the @{link Account} instance representing the
+ * @param baseAccount - the @{link Account} instance representing the
  *                              underlying G... address
- * @param {string}    id      - a stringified uint64 value that represents the
+ * @param id      - a stringified uint64 value that represents the
  *                              ID of the muxed account
  *
  * @link https://developers.stellar.org/docs/glossary/muxed-accounts/
  */
 export class MuxedAccount {
-  constructor(baseAccount, id) {
+  private account: Account;
+  private _muxedXdr: xdr.MuxedAccount;
+  private _mAddress: string;
+  private _id: string;
+
+  constructor(baseAccount: Account, id: string) {
     const accountId = baseAccount.accountId();
+
     if (!StrKey.isValidEd25519PublicKey(accountId)) {
       throw new Error("accountId is invalid");
     }
@@ -61,15 +67,14 @@ export class MuxedAccount {
   /**
    * Parses an M-address into a MuxedAccount object.
    *
-   * @param  {string} mAddress    - an M-address to transform
-   * @param  {string} sequenceNum - the sequence number of the underlying {@link
+   * @param  mAddress    - an M-address to transform
+   * @param  sequenceNum - the sequence number of the underlying {@link
    *     Account}, to use for the underlying base account (@link
    *     MuxedAccount.baseAccount). If you're using the SDK, you can use
    *     `server.loadAccount` to fetch this if you don't know it.
-   *
-   * @return {MuxedAccount}
+   * @return a MuxedAccount instance corresponding to the given M-address
    */
-  static fromAddress(mAddress, sequenceNum) {
+  static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount {
     const muxedAccount = decodeAddressToMuxedAccount(mAddress);
     const gAddress = extractBaseAddress(mAddress);
     const id = muxedAccount.med25519().id().toString();
@@ -78,25 +83,34 @@ export class MuxedAccount {
   }
 
   /**
-   * @return {Account} the underlying account object shared among all muxed
+   * @return the underlying account object shared among all muxed
    *     accounts with this Stellar address
    */
-  baseAccount() {
+  baseAccount(): Account {
     return this.account;
   }
 
   /**
-   * @return {string} the M-address representing this account's (G-address, ID)
+   * @return the M-address representing this account's (G-address, ID)
    */
-  accountId() {
+  accountId(): string {
     return this._mAddress;
   }
 
-  id() {
+  /**
+   * @return the uint64 ID of this muxed account as a string
+   */
+  id(): string {
     return this._id;
   }
 
-  setId(id) {
+  /**
+   * Updates the muxed account's ID, regenerating the M-address accordingly.
+   *
+   * @param  id - a stringified uint64 value to set as the new muxed account ID
+   * @return this MuxedAccount instance, for chaining
+   */
+  setId(id: string): MuxedAccount {
     if (typeof id !== "string") {
       throw new Error("id should be a string representing a number (uint64)");
     }
@@ -109,29 +123,34 @@ export class MuxedAccount {
 
   /**
    * Accesses the underlying account's sequence number.
-   * @return {string}  strigified sequence number for the underlying account
+   * @return stringified sequence number for the underlying account
    */
-  sequenceNumber() {
+  sequenceNumber(): string {
     return this.account.sequenceNumber();
   }
 
   /**
    * Increments the underlying account's sequence number by one.
-   * @return {void}
    */
-  incrementSequenceNumber() {
-    return this.account.incrementSequenceNumber();
+  incrementSequenceNumber(): void {
+    this.account.incrementSequenceNumber();
   }
 
   /**
-   * @return {xdr.MuxedAccount} the XDR object representing this muxed account's
+   * @return the XDR object representing this muxed account's
    *     G-address and uint64 ID
    */
-  toXDRObject() {
+  toXDRObject(): xdr.MuxedAccount {
     return this._muxedXdr;
   }
 
-  equals(otherMuxedAccount) {
+  /**
+   * Checks whether two muxed accounts are equal by comparing their M-addresses.
+   *
+   * @param  otherMuxedAccount - the MuxedAccount to compare against
+   * @return `true` if both accounts have the same G-address and ID
+   */
+  equals(otherMuxedAccount: MuxedAccount): boolean {
     return this.accountId() === otherMuxedAccount.accountId();
   }
 }
