@@ -1,6 +1,23 @@
-import xdr from "./xdr";
-import { Asset } from "./asset";
-import { hash } from "./hashing";
+import xdr from "./xdr.js";
+import { Asset } from "./asset.js";
+import { hash } from "./hashing.js";
+
+// Using namespace to keep the current structure of the code, but it can be easily refactored to use a more modern approach with union types and interfaces if needed.
+/* eslint-disable @typescript-eslint/no-namespace */
+export namespace LiquidityPoolType {
+  export type constantProduct = "constant_product";
+}
+export type LiquidityPoolType = LiquidityPoolType.constantProduct;
+
+export namespace LiquidityPoolParameters {
+  export interface ConstantProduct {
+    assetA: Asset;
+    assetB: Asset;
+    fee: number;
+  }
+}
+export type LiquidityPoolParameters = LiquidityPoolParameters.ConstantProduct;
+/* eslint-enable @typescript-eslint/no-namespace */
 
 // LiquidityPoolFeeV18 is the default liquidity pool fee in protocol v18. It defaults to 30 base points (0.3%).
 export const LiquidityPoolFeeV18 = 30;
@@ -20,20 +37,23 @@ export const LiquidityPoolFeeV18 = 30;
  * @return {Buffer} the raw Pool ID buffer, which can be stringfied with `toString('hex')`
  */
 export function getLiquidityPoolId(
-  liquidityPoolType,
-  liquidityPoolParameters = {}
+  liquidityPoolType: LiquidityPoolType,
+  liquidityPoolParameters: LiquidityPoolParameters
 ) {
   if (liquidityPoolType !== "constant_product") {
     throw new Error("liquidityPoolType is invalid");
   }
 
   const { assetA, assetB, fee } = liquidityPoolParameters;
+
   if (!assetA || !(assetA instanceof Asset)) {
     throw new Error("assetA is invalid");
   }
+
   if (!assetB || !(assetB instanceof Asset)) {
     throw new Error("assetB is invalid");
   }
+
   if (!fee || fee !== LiquidityPoolFeeV18) {
     throw new Error("fee is invalid");
   }
@@ -42,13 +62,13 @@ export function getLiquidityPoolId(
     throw new Error("Assets are not in lexicographic order");
   }
 
-  const lpTypeData =
-    xdr.LiquidityPoolType.liquidityPoolConstantProduct().toXDR();
-  const lpParamsData = new xdr.LiquidityPoolConstantProductParameters({
-    assetA: assetA.toXDRObject(),
-    assetB: assetB.toXDRObject(),
-    fee
-  }).toXDR();
-  const payload = Buffer.concat([lpTypeData, lpParamsData]);
+  const payload = xdr.LiquidityPoolParameters.liquidityPoolConstantProduct(
+    new xdr.LiquidityPoolConstantProductParameters({
+      assetA: assetA.toXDRObject(),
+      assetB: assetB.toXDRObject(),
+      fee
+    })
+  ).toXDR();
+
   return hash(payload);
 }
