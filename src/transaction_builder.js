@@ -1,4 +1,4 @@
-import { UnsignedHyper } from "@stellar/js-xdr";
+import { UnsignedHyper, Hyper } from "@stellar/js-xdr";
 import BigNumber from "./util/bignumber";
 
 import xdr from "./xdr";
@@ -14,6 +14,12 @@ import { SorobanDataBuilder } from "./sorobandata_builder";
 import { StrKey } from "./strkey";
 import { SignerKey } from "./signerkey";
 import { Memo } from "./memo";
+// eslint-disable-next-line no-unused-vars
+import { Asset } from "./asset";
+import { nativeToScVal } from "./scval";
+import { Operation } from "./operation";
+import { Address } from "./address";
+import { Keypair } from "./keypair";
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -35,10 +41,18 @@ export const BASE_FEE = "100"; // Stroops
 export const TimeoutInfinite = 0;
 
 /**
+ * @typedef {object} SorobanFees
+ * @property {number} instructions - the number of instructions executed by the transaction
+ * @property {number} readBytes - the number of bytes read from the ledger by the transaction
+ * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
+ * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops
+ */
+
+/**
  * <p>Transaction builder helps constructs a new `{@link Transaction}` using the
- * given {@link Account} as the transaction's "source account". The transaction
+ * given {@link Account} as the transaction"s "source account". The transaction
  * will use the current sequence number of the given account as its sequence
- * number and increment the given account's sequence number by one. The given
+ * number and increment the given account"s sequence number by one. The given
  * source account must include a private key for signing the transaction or an
  * error will be thrown.</p>
  *
@@ -51,17 +65,17 @@ export const TimeoutInfinite = 0;
  * source account.</p>
  *
  * <p><strong>Be careful about unsubmitted transactions!</strong> When you build
- * a transaction, `stellar-sdk` automatically increments the source account's
+ * a transaction, `stellar-sdk` automatically increments the source account"s
  * sequence number. If you end up not submitting this transaction and submitting
- * another one instead, it'll fail due to the sequence number being wrong. So if
+ * another one instead, it"ll fail due to the sequence number being wrong. So if
  * you decide not to use a built transaction, make sure to update the source
- * account's sequence number with
+ * account"s sequence number with
  * [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount)
  * before creating another transaction.</p>
  *
  * <p>The following code example creates a new transaction with {@link
  * Operation.createAccount} and {@link Operation.payment} operations. The
- * Transaction's source account first funds `destinationA`, then sends a payment
+ * Transaction"s source account first funds `destinationA`, then sends a payment
  * to `destinationB`. The built transaction is then signed by
  * `sourceKeypair`.</p>
  *
@@ -86,7 +100,7 @@ export const TimeoutInfinite = 0;
  *
  * @param {Account} sourceAccount - source account for this transaction
  * @param {object}  opts          - Options object
- * @param {string}  opts.fee      - max fee you're willing to pay per
+ * @param {string}  opts.fee      - max fee you"re willing to pay per
  *     operation in this transaction (**in stroops**)
  *
  * @param {object}              [opts.timebounds] - timebounds for the
@@ -163,13 +177,13 @@ export class TransactionBuilder {
    *
    * @param {Transaction} tx  a "template" transaction to clone exactly
    * @param {object} [opts]   additional options to override the clone, e.g.
-   *    {fee: '1000'} will override the existing base fee derived from `tx` (see
+   *    {fee: "1000"} will override the existing base fee derived from `tx` (see
    *    the {@link TransactionBuilder} constructor for detailed options)
    *
    * @returns {TransactionBuilder} a "prepared" builder instance with the same
    *    configuration and operations as the given transaction
    *
-   * @warning This does not clone the transaction's
+   * @warning This does not clone the transaction"s
    *    {@link xdr.SorobanTransactionData} (if applicable), use
    *    {@link SorobanDataBuilder} and {@link TransactionBuilder.setSorobanData}
    *    as needed, instead..
@@ -178,7 +192,7 @@ export class TransactionBuilder {
    */
   static cloneFrom(tx, opts = {}) {
     if (!(tx instanceof Transaction)) {
-      throw new TypeError(`expected a 'Transaction', got: ${tx}`);
+      throw new TypeError(`expected a "Transaction", got: ${tx}`);
     }
 
     const sequenceNum = (BigInt(tx.sequence) - 1n).toString();
@@ -280,11 +294,11 @@ export class TransactionBuilder {
    *  if the network is highly congested. If you want to be sure to receive the
    *  status of the transaction within a given period you should set the {@link
    *  TimeBounds} with `maxTime` on the transaction (this is what `setTimeout`
-   *  does internally; if there's `minTime` set but no `maxTime` it will be
+   *  does internally; if there"s `minTime` set but no `maxTime` it will be
    *  added).
    *
    *  A call to `TransactionBuilder.setTimeout` is **required** if Transaction
-   *  does not have `max_time` set. If you don't want to set timeout, use
+   *  does not have `max_time` set. If you don"t want to set timeout, use
    *  `{@link TimeoutInfinite}`. In general you should set `{@link
    *  TimeoutInfinite}` only in smart contracts.
    *
@@ -295,7 +309,7 @@ export class TransactionBuilder {
    *  correctly.
    *
    * @param {number} timeoutSeconds   Number of seconds the transaction is good.
-   *     Can't be negative. If the value is {@link TimeoutInfinite}, the
+   *     Can"t be negative. If the value is {@link TimeoutInfinite}, the
    *     transaction is good indefinitely.
    *
    * @returns {TransactionBuilder}
@@ -342,11 +356,11 @@ export class TransactionBuilder {
    *
    * @param {Date|number} minEpochOrDate  Either a JS Date object, or a number
    *     of UNIX epoch seconds. The transaction is valid after this timestamp.
-   *     Can't be negative. If the value is `0`, the transaction is valid
+   *     Can"t be negative. If the value is `0`, the transaction is valid
    *     immediately.
    * @param {Date|number} maxEpochOrDate  Either a JS Date object, or a number
    *     of UNIX epoch seconds. The transaction is valid until this timestamp.
-   *     Can't be negative. If the value is `0`, the transaction is valid
+   *     Can"t be negative. If the value is `0`, the transaction is valid
    *     indefinitely.
    *
    * @returns {TransactionBuilder}
@@ -427,13 +441,13 @@ export class TransactionBuilder {
    *
    *     minAccountSequence <= sourceAccountSequence < tx.seqNum
    *
-   * Note that after execution the account's sequence number is always raised to
+   * Note that after execution the account"s sequence number is always raised to
    * `tx.seqNum`. Internally this will set the `minAccountSequence`
    * precondition.
    *
    * @param {string} minAccountSequence   The minimum source account sequence
    *     number this transaction is valid for. If the value is `0` (the
-   *     default), the transaction is valid when `sourceAccount's sequence
+   *     default), the transaction is valid when `sourceAccount"s sequence
    *     number == tx.seqNum- 1`.
    *
    * @returns {TransactionBuilder}
@@ -452,7 +466,7 @@ export class TransactionBuilder {
 
   /**
    * For the transaction to be valid, the current ledger time must be at least
-   * `minAccountSequenceAge` greater than sourceAccount's `sequenceTime`.
+   * `minAccountSequenceAge` greater than sourceAccount"s `sequenceTime`.
    * Internally this will set the `minAccountSequenceAge` precondition.
    *
    * @param {number} durationInSeconds  The minimum amount of time between
@@ -483,7 +497,7 @@ export class TransactionBuilder {
 
   /**
    * For the transaction to be valid, the current ledger number must be at least
-   * `minAccountSequenceLedgerGap` greater than sourceAccount's ledger sequence.
+   * `minAccountSequenceLedgerGap` greater than sourceAccount"s ledger sequence.
    * Internally this will set the `minAccountSequenceLedgerGap` precondition.
    *
    * @param {number} gap  The minimum number of ledgers between source account
@@ -553,7 +567,7 @@ export class TransactionBuilder {
   }
 
   /**
-   * Sets the transaction's internal Soroban transaction data (resources,
+   * Sets the transaction"s internal Soroban transaction data (resources,
    * footprint, etc.).
    *
    * For non-contract(non-Soroban) transactions, this setting has no effect. In
@@ -577,8 +591,206 @@ export class TransactionBuilder {
   }
 
   /**
+   * Creates and adds an invoke host function operation for transferring SAC tokens.
+   * This method removes the need for simulation by handling the creation of the
+   * appropriate authorization entries and ledger footprint for the transfer operation.
+   *
+   * @param {string} destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
+   * @param {Asset} asset - the SAC asset to be transferred
+   * @param  {BigInt} amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
+   * @param {SorobanFees} [sorobanFees] - optional Soroban fees for the transaction to override the default fees used
+   *
+   * @returns {TransactionBuilder}
+   */
+  addSacTransferOperation(destination, asset, amount, sorobanFees) {
+    if (BigInt(amount) <= 0n) {
+      throw new Error("Amount must be a positive integer");
+    } else if (BigInt(amount) > Hyper.MAX_VALUE) {
+      // The largest supported value for SAC is i64 however the contract interface uses i128 which is why we convert it to i128
+      throw new Error("Amount exceeds maximum value for i64");
+    }
+
+    if (sorobanFees) {
+      const { instructions, readBytes, writeBytes, resourceFee } = sorobanFees;
+      const U32_MAX = 4294967295;
+
+      if (instructions <= 0 || instructions > U32_MAX) {
+        throw new Error(
+          `instructions must be greater than 0 and at most ${U32_MAX}`
+        );
+      }
+      if (readBytes <= 0 || readBytes > U32_MAX) {
+        throw new Error(
+          `readBytes must be greater than 0 and at most ${U32_MAX}`
+        );
+      }
+      if (writeBytes <= 0 || writeBytes > U32_MAX) {
+        throw new Error(
+          `writeBytes must be greater than 0 and at most ${U32_MAX}`
+        );
+      }
+      if (resourceFee <= 0n || resourceFee > Hyper.MAX_VALUE) {
+        throw new Error(
+          "resourceFee must be greater than 0 and at most i64 max"
+        );
+      }
+    }
+
+    const isDestinationContract = StrKey.isValidContract(destination);
+    if (!isDestinationContract) {
+      if (
+        !StrKey.isValidEd25519PublicKey(destination) &&
+        !StrKey.isValidMed25519PublicKey(destination)
+      ) {
+        throw new Error(
+          "Invalid destination address. Must be a valid Stellar address or contract ID."
+        );
+      }
+    }
+
+    if (destination === this.source.accountId()) {
+      throw new Error("Destination cannot be the same as the source account.");
+    }
+
+    const contractId = asset.contractId(this.networkPassphrase);
+    const functionName = "transfer";
+    const source = this.source.accountId();
+    const args = [
+      nativeToScVal(source, { type: "address" }),
+      nativeToScVal(destination, { type: "address" }),
+      nativeToScVal(amount, { type: "i128" })
+    ];
+    const isAssetNative = asset.isNative();
+
+    const auths = new xdr.SorobanAuthorizationEntry({
+      credentials: xdr.SorobanCredentials.sorobanCredentialsSourceAccount(),
+      rootInvocation: new xdr.SorobanAuthorizedInvocation({
+        function:
+          xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
+            new xdr.InvokeContractArgs({
+              contractAddress: Address.fromString(contractId).toScAddress(),
+              functionName,
+              args
+            })
+          ),
+        subInvocations: []
+      })
+    });
+
+    const footprint = new xdr.LedgerFootprint({
+      readOnly: [
+        xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: Address.fromString(contractId).toScAddress(),
+            key: xdr.ScVal.scvLedgerKeyContractInstance(),
+            durability: xdr.ContractDataDurability.persistent()
+          })
+        )
+      ],
+      readWrite: []
+    });
+
+    // Ledger entries for the destination account
+    if (isDestinationContract) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.contractData(
+          new xdr.LedgerKeyContractData({
+            contract: Address.fromString(contractId).toScAddress(),
+            key: xdr.ScVal.scvVec([
+              nativeToScVal("Balance", { type: "symbol" }),
+              nativeToScVal(destination, { type: "address" })
+            ]),
+            durability: xdr.ContractDataDurability.persistent()
+          })
+        )
+      );
+
+      if (!isAssetNative) {
+        footprint.readOnly().push(
+          xdr.LedgerKey.account(
+            new xdr.LedgerKeyAccount({
+              accountId: Keypair.fromPublicKey(asset.getIssuer()).xdrPublicKey()
+            })
+          )
+        );
+      }
+    } else if (isAssetNative) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.account(
+          new xdr.LedgerKeyAccount({
+            accountId: Keypair.fromPublicKey(destination).xdrPublicKey()
+          })
+        )
+      );
+    } else if (asset.getIssuer() !== destination) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.trustline(
+          new xdr.LedgerKeyTrustLine({
+            accountId: Keypair.fromPublicKey(destination).xdrPublicKey(),
+            asset: asset.toTrustLineXDRObject()
+          })
+        )
+      );
+    }
+
+    // Ledger entries for the source account
+    if (asset.isNative()) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.account(
+          new xdr.LedgerKeyAccount({
+            accountId: Keypair.fromPublicKey(source).xdrPublicKey()
+          })
+        )
+      );
+    } else if (asset.getIssuer() !== source) {
+      footprint.readWrite().push(
+        xdr.LedgerKey.trustline(
+          new xdr.LedgerKeyTrustLine({
+            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+            asset: asset.toTrustLineXDRObject()
+          })
+        )
+      );
+    }
+
+    const defaultPaymentFees = {
+      instructions: 400_000,
+      readBytes: 1_000,
+      writeBytes: 1_000,
+      resourceFee: BigInt(5_000_000)
+    };
+
+    const sorobanData = new xdr.SorobanTransactionData({
+      resources: new xdr.SorobanResources({
+        footprint,
+        instructions: sorobanFees
+          ? sorobanFees.instructions
+          : defaultPaymentFees.instructions,
+        diskReadBytes: sorobanFees
+          ? sorobanFees.readBytes
+          : defaultPaymentFees.readBytes,
+        writeBytes: sorobanFees
+          ? sorobanFees.writeBytes
+          : defaultPaymentFees.writeBytes
+      }),
+      ext: new xdr.SorobanTransactionDataExt(0),
+      resourceFee: new xdr.Int64(
+        sorobanFees ? sorobanFees.resourceFee : defaultPaymentFees.resourceFee
+      )
+    });
+    const operation = Operation.invokeContractFunction({
+      contract: contractId,
+      function: functionName,
+      args,
+      auth: [auths]
+    });
+    this.setSorobanData(sorobanData);
+    return this.addOperation(operation);
+  }
+
+  /**
    * This will build the transaction.
-   * It will also increment the source account's sequence number by 1.
+   * It will also increment the source account"s sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
   build() {
@@ -662,6 +874,10 @@ export class TransactionBuilder {
     if (this.sorobanData) {
       // @ts-ignore
       attrs.ext = new xdr.TransactionExt(1, this.sorobanData);
+      // Soroban transactions pay the resource fee in addition to the regular fee, so we need to add it here.
+      attrs.fee = new BigNumber(attrs.fee)
+        .plus(this.sorobanData.resourceFee())
+        .toNumber();
     } else {
       // @ts-ignore
       attrs.ext = new xdr.TransactionExt(0, xdr.Void);
@@ -723,7 +939,6 @@ export class TransactionBuilder {
     const innerOps = innerTx.operations.length;
 
     const minBaseFee = new BigNumber(BASE_FEE);
-    let innerInclusionFee = new BigNumber(innerTx.fee).div(innerOps);
     let resourceFee = new BigNumber(0);
 
     // Do we need to do special Soroban fee handling? We only want the fee-bump
@@ -733,16 +948,15 @@ export class TransactionBuilder {
       case xdr.EnvelopeType.envelopeTypeTx().value: {
         const sorobanData = env.v1().tx().ext().value();
         resourceFee = new BigNumber(sorobanData?.resourceFee() ?? 0);
-        innerInclusionFee = BigNumber.max(
-          minBaseFee,
-          innerInclusionFee.minus(resourceFee)
-        );
+
         break;
       }
       default:
         break;
     }
-
+    const innerInclusionFee = new BigNumber(innerTx.fee)
+      .minus(resourceFee)
+      .div(innerOps);
     const base = new BigNumber(baseFee);
 
     // The fee rate for fee bump is at least the fee rate of the inner transaction
