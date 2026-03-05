@@ -62,11 +62,15 @@ export function setTrustLineFlags(
     }
 
     const flagValue = opts.flags[flagName as keyof TrustLineFlagMap];
-    const bit = mapping[flagName]!.value;
+    const bit = mapping[flagName];
+    if (!bit) {
+      throw new Error(`Invalid flag name: ${flagName}`);
+    }
+
     if (flagValue === true) {
-      setFlag |= bit;
+      setFlag |= bit.value;
     } else if (flagValue === false) {
-      clearFlag |= bit;
+      clearFlag |= bit.value;
     }
   });
 
