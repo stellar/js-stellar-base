@@ -45,7 +45,11 @@ export interface ManageBuyOfferOpts {
     selling: Asset;
     buying: Asset;
     buyAmount: string;
-    price: number | string | object;
+    price: number | object | string;
     offerId?: number | string;
+    source?: string;
+}
+export interface BumpSequenceOpts {
+    bumpTo: string;
     source?: string;
 }

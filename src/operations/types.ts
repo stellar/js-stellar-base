@@ -61,3 +61,8 @@ export interface ManageBuyOfferOpts {
   offerId?: number | string;
   source?: string;
 }
+
+export interface BumpSequenceOpts {
+  bumpTo: string;
+  source?: string;
+}
