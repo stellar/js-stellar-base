@@ -1,5 +1,11 @@
-import xdr from "../xdr";
-import { Keypair } from "../keypair";
+import xdr from "../xdr.js";
+import { Keypair } from "../keypair.js";
+import {
+  OperationClass,
+  SetTrustLineFlagsOpts,
+  TrustLineFlagMap,
+  OperationAttributes
+} from "./types.js";
 
 /**
  * Creates a trustline flag configuring operation.
@@ -11,41 +17,35 @@ import { Keypair } from "../keypair";
  * account-wide via operations.SetOptions (setting
  * xdr.AccountFlags.clawbackEnabled).
  *
- * @function
  * @alias Operation.setTrustLineFlags
  *
- * @param {object} opts - Options object
- * @param {string} opts.trustor     - the account whose trustline this is
- * @param {Asset}  opts.asset       - the asset on the trustline
- * @param {object} opts.flags       - the set of flags to modify
- *
- * @param {bool}   [opts.flags.authorized]  - authorize account to perform
+ * @param opts - Options object
+ * @param opts.trustor - the account whose trustline this is
+ * @param opts.asset - the asset on the trustline
+ * @param opts.flags - the set of flags to modify
+ * @param opts.flags.authorized - authorize account to perform
  *     transactions with its credit
- * @param {bool}   [opts.flags.authorizedToMaintainLiabilities] - authorize
+ * @param opts.flags.authorizedToMaintainLiabilities - authorize
  *     account to maintain and reduce liabilities for its credit
- * @param {bool}   [opts.flags.clawbackEnabled] - stop claimable balances on
+ * @param opts.flags.clawbackEnabled - stop claimable balances on
  *     this trustlines from having clawbacks enabled (this flag can only be set
  *     to false!)
- * @param {string} [opts.source] - The source account for the operation.
+ * @param opts.source - The source account for the operation.
  *                                 Defaults to the transaction's source account.
  *
- * @note You must include at least one flag.
- *
- * @return {xdr.SetTrustLineFlagsOp}
- *
- * @link xdr.AccountFlags
- * @link xdr.TrustLineFlags
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#set-trustline-flags-operation
  * @see https://developers.stellar.org/docs/start/list-of-operations/#set-options
+ * @returns A set trust line flags operation.
  */
-export function setTrustLineFlags(opts = {}) {
-  const attributes = {};
-
+export function setTrustLineFlags(
+  this: OperationClass,
+  opts: SetTrustLineFlagsOpts
+): xdr.Operation {
   if (typeof opts.flags !== "object" || Object.keys(opts.flags).length === 0) {
     throw new Error("opts.flags must be a map of boolean flags to modify");
   }
 
-  const mapping = {
+  const mapping: Record<string, { value: number }> = {
     authorized: xdr.TrustLineFlags.authorizedFlag(),
     authorizedToMaintainLiabilities:
       xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
@@ -61,8 +61,8 @@ export function setTrustLineFlags(opts = {}) {
       throw new Error(`unsupported flag name specified: ${flagName}`);
     }
 
-    const flagValue = opts.flags[flagName];
-    const bit = mapping[flagName].value;
+    const flagValue = opts.flags[flagName as keyof TrustLineFlagMap];
+    const bit = mapping[flagName]!.value;
     if (flagValue === true) {
       setFlag |= bit;
     } else if (flagValue === false) {
@@ -70,14 +70,18 @@ export function setTrustLineFlags(opts = {}) {
     }
   });
 
-  attributes.trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
-  attributes.asset = opts.asset.toXDRObject();
-  attributes.clearFlags = clearFlag;
-  attributes.setFlags = setFlag;
+  const trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
+  const asset = opts.asset.toXDRObject();
 
-  const opAttributes = {
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
     body: xdr.OperationBody.setTrustLineFlags(
-      new xdr.SetTrustLineFlagsOp(attributes)
+      new xdr.SetTrustLineFlagsOp({
+        trustor,
+        asset,
+        clearFlags: clearFlag,
+        setFlags: setFlag
+      })
     )
   };
   this.setSourceAccount(opAttributes, opts);

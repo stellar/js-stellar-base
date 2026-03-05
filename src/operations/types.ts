@@ -1,4 +1,5 @@
 import xdr from "../xdr.js";
+import { Asset } from "../asset.js";
 
 export interface OperationAttributes {
   body: xdr.OperationBody;
@@ -60,6 +61,19 @@ export interface AllowTrustOpts {
 
 export interface BeginSponsoringFutureReservesOpts {
   sponsoredId: string;
+  source?: string;
+}
+
+export interface TrustLineFlagMap {
+  authorized?: boolean;
+  authorizedToMaintainLiabilities?: boolean;
+  clawbackEnabled?: boolean;
+}
+
+export interface SetTrustLineFlagsOpts {
+  trustor: string;
+  asset: Asset;
+  flags: TrustLineFlagMap;
   source?: string;
 }
 

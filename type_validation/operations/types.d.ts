@@ -1,37 +1,42 @@
 import xdr from "../xdr.js";
+import { Asset } from "../asset.js";
 export interface OperationAttributes {
-    body: xdr.OperationBody;
-    sourceAccount: xdr.MuxedAccount | null;
+  body: xdr.OperationBody;
+  sourceAccount: xdr.MuxedAccount | null;
 }
 export interface OperationClass {
-    setSourceAccount(opAttributes: OperationAttributes, opts: {
-        source?: string;
+  setSourceAccount(
+    opAttributes: OperationAttributes,
+    opts: {
+      source?: string;
+    }
+  ): void;
   isValidAmount(value: string, allowZero?: boolean): boolean;
   _toXDRAmount(value: string): unknown;
   constructAmountRequirementsError(arg: string): string;
-_checkUnsignedIntValue(
+  _checkUnsignedIntValue(
     name: string,
     value: number | string | undefined,
     isValidFunction?: ((value: number, name: string) => boolean) | null
   ): number | undefined;
 }
 export interface RestoreFootprintOpts {
-    source?: string;
+  source?: string;
 }
 export interface ManageDataOpts {
-    name: string;
-    value: Buffer | string | null;
-    source?: string;
+  name: string;
+  value: Buffer | string | null;
+  source?: string;
 }
 export interface InflationOpts {
-    source?: string;
+  source?: string;
 }
 export interface ExtendFootprintTtlOpts {
-    extendTo: number;
-    source?: string;
+  extendTo: number;
+  source?: string;
 }
 export interface EndSponsoringFutureReservesOpts {
-    source?: string;
+  source?: string;
 }
 export interface LiquidityPoolWithdrawOpts {
   liquidityPoolId: string;
@@ -41,10 +46,21 @@ export interface LiquidityPoolWithdrawOpts {
   source?: string;
 }
 export interface AllowTrustOpts {
-    trustor: string;
-    assetCode: string;
-    authorize?: boolean | number;
-    source?: string;
+  trustor: string;
+  assetCode: string;
+  authorize?: boolean | number;
+  source?: string;
+}
+export interface TrustLineFlagMap {
+  authorized?: boolean;
+  authorizedToMaintainLiabilities?: boolean;
+  clawbackEnabled?: boolean;
+}
+export interface SetTrustLineFlagsOpts {
+  trustor: string;
+  asset: Asset;
+  flags: TrustLineFlagMap;
+  source?: string;
 }
 export interface SignerOpts {
   ed25519PublicKey?: string;
