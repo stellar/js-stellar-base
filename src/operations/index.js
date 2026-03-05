@@ -14,7 +14,7 @@ export { manageBuyOffer } from "./manage_buy_offer";
 export { pathPaymentStrictReceive } from "./path_payment_strict_receive";
 export { pathPaymentStrictSend } from "./path_payment_strict_send";
 export { payment } from "./payment";
-export { setOptions } from "./set_options";
+export { setOptions } from "./set_options.js";
 export { beginSponsoringFutureReserves } from "./begin_sponsoring_future_reserves.js";
 export { endSponsoringFutureReserves } from "./end_sponsoring_future_reserves.js";
 export {
