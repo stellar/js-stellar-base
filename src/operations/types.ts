@@ -1,3 +1,4 @@
+import { Asset } from "../asset.js";
 import xdr from "../xdr.js";
 import { Asset } from "../asset.js";
 
@@ -8,6 +9,10 @@ export interface OperationAttributes {
 
 // This can be removed once the Operation class in src/operation.ts is converted to a TypeScript class and the setSourceAccount method is defined on it.
 export interface OperationClass {
+  isValidAmount(value: string, allowZero?: boolean): boolean;
+  constructAmountRequirementsError(arg: string): string;
+  _toXDRAmount(value: string): xdr.Int64;
+  _toXDRPrice(price: number | object | string): xdr.Price;
   setSourceAccount(
     opAttributes: OperationAttributes,
     opts: { source?: string }
@@ -95,5 +100,40 @@ export interface SetOptionsOpts {
   highThreshold?: number | string;
   signer?: SignerOpts;
   homeDomain?: string;
+  source?: string;
+}
+
+export interface CreatePassiveSellOfferOpts {
+  selling: Asset;
+  buying: Asset;
+  amount: string;
+  price: number | object | string;
+  source?: string;
+}
+
+export interface ManageSellOfferOpts extends CreatePassiveSellOfferOpts {
+  offerId?: number | string;
+}
+
+export interface ManageBuyOfferOpts {
+  selling: Asset;
+  buying: Asset;
+  buyAmount: string;
+  price: number | object | string;
+  offerId?: number | string;
+  source?: string;
+}
+
+export interface BumpSequenceOpts {
+  bumpTo: string;
+  source?: string;
+}
+
+export interface LiquidityPoolDepositOpts {
+  liquidityPoolId: string;
+  maxAmountA: string;
+  maxAmountB: string;
+  minPrice: number | object | string;
+  maxPrice: number | object | string;
   source?: string;
 }

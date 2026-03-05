@@ -34,17 +34,17 @@ export function liquidityPoolWithdraw(
   if (!this.isValidAmount(opts.amount)) {
     throw new TypeError(this.constructAmountRequirementsError("amount"));
   }
-  const amount = this._toXDRAmount(opts.amount) as xdr.Int64;
+  const amount = this._toXDRAmount(opts.amount);
 
   if (!this.isValidAmount(opts.minAmountA, true)) {
     throw new TypeError(this.constructAmountRequirementsError("minAmountA"));
   }
-  const minAmountA = this._toXDRAmount(opts.minAmountA) as xdr.Int64;
+  const minAmountA = this._toXDRAmount(opts.minAmountA);
 
   if (!this.isValidAmount(opts.minAmountB, true)) {
     throw new TypeError(this.constructAmountRequirementsError("minAmountB"));
   }
-  const minAmountB = this._toXDRAmount(opts.minAmountB) as xdr.Int64;
+  const minAmountB = this._toXDRAmount(opts.minAmountB);
 
   const liquidityPoolWithdrawOp = new xdr.LiquidityPoolWithdrawOp({
     liquidityPoolId,
