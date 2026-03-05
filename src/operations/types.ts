@@ -41,3 +41,8 @@ export interface AllowTrustOpts {
   authorize?: boolean | number;
   source?: string;
 }
+
+export interface BeginSponsoringFutureReservesOpts {
+  sponsoredId: string;
+  source?: string;
+}
