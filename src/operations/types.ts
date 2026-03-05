@@ -35,3 +35,9 @@ export interface ExtendFootprintTtlOpts {
 export interface EndSponsoringFutureReservesOpts {
   source?: string;
 }
+export interface AllowTrustOpts {
+  trustor: string;
+  assetCode: string;
+  authorize?: boolean | number;
+  source?: string;
+}
