@@ -1,4 +1,5 @@
 import { Asset } from "../asset.js";
+import { Claimant } from "../claimant.js";
 import xdr from "../xdr.js";
 export interface OperationAttributes {
     body: xdr.OperationBody;
@@ -56,6 +57,12 @@ export interface PathPaymentStrictSendOpts {
     destAsset: Asset;
     destMin: string;
     path?: Asset[];
+    source?: string;
+}
+export interface CreateClaimableBalanceOpts {
+    asset: Asset;
+    amount: string;
+    claimants: Claimant[];
     source?: string;
 }
 export interface ClaimClaimableBalanceOpts {
