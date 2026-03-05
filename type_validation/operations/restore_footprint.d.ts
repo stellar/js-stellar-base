@@ -14,13 +14,12 @@ import { OperationClass, RestoreFootprintOpts } from "./types.js";
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
  * usage as part of {@link xdr.SorobanTransactionData}.
  *
- * @function
  * @alias Operation.restoreFootprint
  *
- * @param {object} [opts] - an optional set of parameters
- * @param {string} [opts.source] - an optional source account
+ * @param opts an optional set of parameters
+ * @param opts.source an optional source account
  *
- * @returns {xdr.Operation} a Bump Footprint Expiration operation
+ * @returns {xdr.Operation} a Restore Footprint operation
  *    (xdr.RestoreFootprintOp)
  */
 export declare function restoreFootprint(this: OperationClass, opts?: RestoreFootprintOpts): xdr.Operation;
