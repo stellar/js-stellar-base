@@ -276,10 +276,10 @@ export function revokeLiquidityPoolSponsorship(
  * @alias Operation.revokeSignerSponsorship
  * @param opts - Options object
  * @param opts.account - The account ID where the signer sponsorship is being removed from.
- * @param opts.signer - The signer whose sponsorship is being removed.
- * @param opts.signer.ed25519PublicKey - The ed25519 public key of the signer.
- * @param opts.signer.sha256Hash - sha256 hash (Buffer or hex string).
- * @param opts.signer.preAuthTx - Hash (Buffer or hex string) of transaction.
+ * @param opts.signer - The signer whose sponsorship is being removed. Exactly one of the following must be set:
+ * @param opts.signer.ed25519PublicKey - (optional) The ed25519 public key of the signer.
+ * @param opts.signer.sha256Hash - (optional) sha256 hash (Buffer or hex string).
+ * @param opts.signer.preAuthTx - (optional) Hash (Buffer or hex string) of transaction.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
  *
  * @example
