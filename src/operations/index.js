@@ -29,7 +29,7 @@ export {
 export { clawback } from "./clawback";
 export { setTrustLineFlags } from "./set_trustline_flags";
 export { liquidityPoolDeposit } from "./liquidity_pool_deposit";
-export { liquidityPoolWithdraw } from "./liquidity_pool_withdraw";
+export { liquidityPoolWithdraw } from "./liquidity_pool_withdraw.js";
 export {
   invokeHostFunction,
   invokeContractFunction,

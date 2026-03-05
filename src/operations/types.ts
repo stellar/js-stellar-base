@@ -11,6 +11,9 @@ export interface OperationClass {
     opAttributes: OperationAttributes,
     opts: { source?: string }
   ): void;
+  isValidAmount(value: string, allowZero?: boolean): boolean;
+  _toXDRAmount(value: string): unknown;
+  constructAmountRequirementsError(arg: string): string;
 }
 
 export interface RestoreFootprintOpts {
@@ -35,6 +38,14 @@ export interface ExtendFootprintTtlOpts {
 export interface EndSponsoringFutureReservesOpts {
   source?: string;
 }
+export interface LiquidityPoolWithdrawOpts {
+  liquidityPoolId: string;
+  amount: string;
+  minAmountA: string;
+  minAmountB: string;
+  source?: string;
+}
+
 export interface AllowTrustOpts {
   trustor: string;
   assetCode: string;
