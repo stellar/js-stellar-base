@@ -62,6 +62,16 @@ export interface ManageBuyOfferOpts {
   source?: string;
 }
 
+export interface PathPaymentStrictSendOpts {
+  sendAsset: Asset;
+  sendAmount: string;
+  destination: string;
+  destAsset: Asset;
+  destMin: string;
+  path?: Asset[];
+  source?: string;
+}
+
 export interface BumpSequenceOpts {
   bumpTo: string;
   source?: string;
