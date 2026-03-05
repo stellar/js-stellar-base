@@ -1,4 +1,9 @@
-import xdr from "../xdr";
+import xdr from "../xdr.js";
+import {
+  ExtendFootprintTtlOpts,
+  OperationAttributes,
+  OperationClass
+} from "./types.js";
 
 /**
  * Builds an operation to bump the time-to-live (TTL) of the ledger keys. The
@@ -22,15 +27,18 @@ import xdr from "../xdr";
  * @function
  * @alias Operation.extendFootprintTtl
  *
- * @param {object} opts - object holding operation parameters
- * @param {number} opts.extendTo - the minimum TTL that all the entries in
+ * @param opts object holding operation parameters
+ * @param  opts.extendTo the minimum TTL that all the entries in
  *    the read-only footprint will have
- * @param {string} [opts.source] - an optional source account
+ * @param opts.source an optional source account
  *
- * @returns {xdr.Operation} an Extend Footprint TTL operation
+ * @returns An Extend Footprint TTL operation
  *    (xdr.ExtendFootprintTTLOp)
  */
-export function extendFootprintTtl(opts) {
+export function extendFootprintTtl(
+  this: OperationClass,
+  opts: ExtendFootprintTtlOpts
+): xdr.Operation {
   if ((opts.extendTo ?? -1) <= 0) {
     throw new RangeError("extendTo has to be positive");
   }
@@ -40,10 +48,16 @@ export function extendFootprintTtl(opts) {
     extendTo: opts.extendTo
   });
 
-  const opAttributes = {
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
     body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp)
   };
   this.setSourceAccount(opAttributes, opts);
 
-  return new xdr.Operation(opAttributes);
+  return new xdr.Operation(
+    opAttributes as {
+      sourceAccount: xdr.MuxedAccount | null;
+      body: xdr.OperationBody;
+    }
+  );
 }

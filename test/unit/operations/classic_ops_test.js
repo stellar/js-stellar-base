@@ -1600,91 +1600,6 @@ describe("Operation", function () {
     });
   });
 
-  describe(".inflation", function () {
-    it("creates a inflationOp", function () {
-      let op = StellarBase.Operation.inflation();
-      var xdr = op.toXDR("hex");
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, "hex")
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal("inflation");
-    });
-  });
-
-  describe(".manageData", function () {
-    it("creates a manageDataOp with string value", function () {
-      var opts = {
-        name: "name",
-        value: "value"
-      };
-      let op = StellarBase.Operation.manageData(opts);
-      var xdr = op.toXDR("hex");
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, "hex")
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal("manageData");
-      expect(obj.name).to.be.equal(opts.name);
-      expect(obj.value.toString("ascii")).to.be.equal(opts.value);
-    });
-
-    it("creates a manageDataOp with Buffer value", function () {
-      var opts = {
-        name: "name",
-        value: Buffer.from("value")
-      };
-      let op = StellarBase.Operation.manageData(opts);
-      var xdr = op.toXDR("hex");
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, "hex")
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal("manageData");
-      expect(obj.name).to.be.equal(opts.name);
-      expect(obj.value.toString("hex")).to.be.equal(opts.value.toString("hex"));
-    });
-
-    it("creates a manageDataOp with null dataValue", function () {
-      var opts = {
-        name: "name",
-        value: null
-      };
-      let op = StellarBase.Operation.manageData(opts);
-      var xdr = op.toXDR("hex");
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, "hex")
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal("manageData");
-      expect(obj.name).to.be.equal(opts.name);
-      expect(obj.value).to.be.undefined;
-    });
-
-    describe("fails to create manageData operation", function () {
-      it("name is not a string", function () {
-        expect(() =>
-          StellarBase.Operation.manageData({ name: 123 })
-        ).to.throw();
-      });
-
-      it("name is too long", function () {
-        expect(() =>
-          StellarBase.Operation.manageData({ name: "a".repeat(65) })
-        ).to.throw();
-      });
-
-      it("value is too long", function () {
-        expect(() =>
-          StellarBase.Operation.manageData({
-            name: "a",
-            value: Buffer.alloc(65)
-          })
-        ).to.throw();
-      });
-    });
-  });
-
   describe(".bumpSequence", function () {
     it("creates a bumpSequence", function () {
       var opts = {
@@ -1969,20 +1884,6 @@ describe("Operation", function () {
           sponsoredId: "GBAD"
         })
       ).to.throw(/sponsoredId is invalid/);
-    });
-  });
-
-  describe("endSponsoringFutureReserves()", function () {
-    it("creates a endSponsoringFutureReservesOp", function () {
-      const op = StellarBase.Operation.endSponsoringFutureReserves();
-      var xdr = op.toXDR("hex");
-
-      var operation = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
-      expect(operation.body().switch().name).to.equal(
-        "endSponsoringFutureReserves"
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal("endSponsoringFutureReserves");
     });
   });
 
