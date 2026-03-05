@@ -66,3 +66,12 @@ export interface BumpSequenceOpts {
   bumpTo: string;
   source?: string;
 }
+
+export interface LiquidityPoolDepositOpts {
+  liquidityPoolId: string;
+  maxAmountA: string;
+  maxAmountB: string;
+  minPrice: number | object | string;
+  maxPrice: number | object | string;
+  source?: string;
+}
