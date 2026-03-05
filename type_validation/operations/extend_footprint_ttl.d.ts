@@ -22,12 +22,12 @@ import { ExtendFootprintTtlOpts, OperationClass } from "./types.js";
  * @function
  * @alias Operation.extendFootprintTtl
  *
- * @param {object} opts - object holding operation parameters
- * @param {number} opts.extendTo - the minimum TTL that all the entries in
+ * @param opts object holding operation parameters
+ * @param  opts.extendTo the minimum TTL that all the entries in
  *    the read-only footprint will have
- * @param {string} [opts.source] - an optional source account
+ * @param opts.source an optional source account
  *
- * @returns {xdr.Operation} an Extend Footprint TTL operation
+ * @returns An Extend Footprint TTL operation
  *    (xdr.ExtendFootprintTTLOp)
  */
 export declare function extendFootprintTtl(this: OperationClass, opts: ExtendFootprintTtlOpts): xdr.Operation;
