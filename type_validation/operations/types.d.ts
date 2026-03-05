@@ -62,6 +62,10 @@ export interface ClaimClaimableBalanceOpts {
     balanceId: string;
     source?: string;
 }
+export interface ClawbackClaimableBalanceOpts {
+    balanceId: string;
+    source?: string;
+}
 export interface BumpSequenceOpts {
     bumpTo: string;
     source?: string;
