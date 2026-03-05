@@ -72,6 +72,11 @@ export interface PathPaymentStrictSendOpts {
   source?: string;
 }
 
+export interface ClaimClaimableBalanceOpts {
+  balanceId: string;
+  source?: string;
+}
+
 export interface BumpSequenceOpts {
   bumpTo: string;
   source?: string;

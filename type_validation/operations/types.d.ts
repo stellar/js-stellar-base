@@ -58,6 +58,10 @@ export interface PathPaymentStrictSendOpts {
     path?: Asset[];
     source?: string;
 }
+export interface ClaimClaimableBalanceOpts {
+    balanceId: string;
+    source?: string;
+}
 export interface BumpSequenceOpts {
     bumpTo: string;
     source?: string;
