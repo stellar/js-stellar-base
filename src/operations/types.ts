@@ -1,6 +1,5 @@
 import { Asset } from "../asset.js";
 import xdr from "../xdr.js";
-import { Asset } from "../asset.js";
 
 export interface OperationAttributes {
   body: xdr.OperationBody;
