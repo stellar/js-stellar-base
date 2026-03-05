@@ -1,5 +1,5 @@
-import xdr from "../xdr";
-
+import xdr from "../xdr.js";
+import { OperationClass, EndSponsoringFutureReservesOpts } from "./types.js";
 /**
  * Create an "end sponsoring future reserves" operation.
  * @function
@@ -12,10 +12,4 @@ import xdr from "../xdr";
  * const op = Operation.endSponsoringFutureReserves();
  *
  */
-export function endSponsoringFutureReserves(opts = {}) {
-  const opAttributes = {};
-  opAttributes.body = xdr.OperationBody.endSponsoringFutureReserves();
-  this.setSourceAccount(opAttributes, opts);
-
-  return new xdr.Operation(opAttributes);
-}
+export declare function endSponsoringFutureReserves(this: OperationClass, opts?: EndSponsoringFutureReservesOpts): xdr.Operation;

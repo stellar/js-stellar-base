@@ -1,5 +1,5 @@
-import xdr from "../xdr";
-
+import xdr from "../xdr.js";
+import { OperationClass, RestoreFootprintOpts } from "./types.js";
 /**
  * Builds an operation to restore the archived ledger entries specified
  * by the ledger keys.
@@ -23,11 +23,4 @@ import xdr from "../xdr";
  * @returns {xdr.Operation} a Bump Footprint Expiration operation
  *    (xdr.RestoreFootprintOp)
  */
-export function restoreFootprint(opts = {}) {
-  const op = new xdr.RestoreFootprintOp({ ext: new xdr.ExtensionPoint(0) });
-  const opAttributes = {
-    body: xdr.OperationBody.restoreFootprint(op)
-  };
-  this.setSourceAccount(opAttributes, opts ?? {});
-  return new xdr.Operation(opAttributes);
-}
+export declare function restoreFootprint(this: OperationClass, opts?: RestoreFootprintOpts): xdr.Operation;
