@@ -7,13 +7,12 @@ import {
 
 /**
  * This operation adds data entry to the ledger.
- * @function
  * @alias Operation.manageData
- * @param {object} opts Options object
- * @param {string} opts.name - The name of the data entry.
- * @param {string|Buffer} opts.value - The value of the data entry.
- * @param {string} [opts.source] - The optional source account.
- * @returns {xdr.ManageDataOp} Manage Data operation
+ * @param opts Options object
+ * @param opts.name - The name of the data entry.
+ * @param opts.value - The value of the data entry.
+ * @param opts.source - The optional source account.
+ * @returns A Manage Data operation
  */
 export function manageData(
   this: OperationClass,

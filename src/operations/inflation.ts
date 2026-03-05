@@ -3,11 +3,10 @@ import { OperationClass, InflationOpts, OperationAttributes } from "./types.js";
 
 /**
  * This operation generates the inflation.
- * @function
  * @alias Operation.inflation
- * @param {object} [opts] Options object
- * @param {string} [opts.source] - The optional source account.
- * @returns {xdr.Operation} Inflation operation
+ * @param opts Options object
+ * @param opts.source - The optional source account.
+ * @returns An inflation operation.
  */
 export function inflation(
   this: OperationClass,

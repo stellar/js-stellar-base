@@ -19,13 +19,12 @@ import {
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
  * usage as part of {@link xdr.SorobanTransactionData}.
  *
- * @function
  * @alias Operation.restoreFootprint
  *
- * @param {object} [opts] - an optional set of parameters
- * @param {string} [opts.source] - an optional source account
+ * @param opts an optional set of parameters
+ * @param opts.source an optional source account
  *
- * @returns {xdr.Operation} a Bump Footprint Expiration operation
+ * @returns {xdr.Operation} a Restore Footprint operation
  *    (xdr.RestoreFootprintOp)
  */
 export function restoreFootprint(
@@ -40,10 +39,5 @@ export function restoreFootprint(
     body: xdr.OperationBody.restoreFootprint(op)
   };
   this.setSourceAccount(opAttributes, opts);
-  return new xdr.Operation(
-    opAttributes as {
-      sourceAccount: xdr.MuxedAccount | null;
-      body: xdr.OperationBody;
-    }
-  );
+  return new xdr.Operation(opAttributes);
 }
