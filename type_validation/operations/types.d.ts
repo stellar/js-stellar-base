@@ -38,3 +38,6 @@ export interface CreatePassiveSellOfferOpts {
     price: number | object | string;
     source?: string;
 }
+export interface ManageSellOfferOpts extends CreatePassiveSellOfferOpts {
+    offerId?: number | string;
+}
