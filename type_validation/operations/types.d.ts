@@ -41,3 +41,11 @@ export interface CreatePassiveSellOfferOpts {
 export interface ManageSellOfferOpts extends CreatePassiveSellOfferOpts {
     offerId?: number | string;
 }
+export interface ManageBuyOfferOpts {
+    selling: Asset;
+    buying: Asset;
+    buyAmount: string;
+    price: number | string | object;
+    offerId?: number | string;
+    source?: string;
+}
