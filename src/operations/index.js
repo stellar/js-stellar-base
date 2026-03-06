@@ -4,7 +4,7 @@ export { accountMerge } from "./account_merge";
 export { allowTrust } from "./allow_trust.js";
 export { bumpSequence } from "./bump_sequence";
 export { changeTrust } from "./change_trust";
-export { createAccount } from "./create_account";
+export { createAccount } from "./create_account.js";
 export { createClaimableBalance } from "./create_claimable_balance";
 export { claimClaimableBalance } from "./claim_claimable_balance";
 export { clawbackClaimableBalance } from "./clawback_claimable_balance";
