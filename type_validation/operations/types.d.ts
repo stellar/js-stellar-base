@@ -14,9 +14,6 @@ export interface OperationClass {
     setSourceAccount(opAttributes: OperationAttributes, opts: {
         source?: string;
     }): void;
-    isValidAmount(value: string, allowZero?: boolean): boolean;
-    _toXDRAmount(value: string): unknown;
-    constructAmountRequirementsError(arg: string): string;
     _checkUnsignedIntValue(name: string, value: number | string | undefined, isValidFunction?: ((value: number, name: string) => boolean) | null): number | undefined;
 }
 export interface RestoreFootprintOpts {
@@ -173,5 +170,35 @@ export interface LiquidityPoolDepositOpts {
     maxAmountB: string;
     minPrice: number | object | string;
     maxPrice: number | object | string;
+    source?: string;
+}
+export interface CreateAccountOpts {
+    destination: string;
+    startingBalance: string;
+    source?: string;
+}
+export interface AccountMergeOpts {
+    destination: string;
+    source?: string;
+}
+export interface PaymentOpts {
+    destination: string;
+    asset: Asset;
+    amount: string;
+    source?: string;
+}
+export interface ClawbackOpts {
+    asset: Asset;
+    amount: string;
+    from: string;
+    source?: string;
+}
+export interface PathPaymentStrictReceiveOpts {
+    sendAsset: Asset;
+    sendMax: string;
+    destination: string;
+    destAsset: Asset;
+    destAmount: string;
+    path?: Asset[];
     source?: string;
 }
