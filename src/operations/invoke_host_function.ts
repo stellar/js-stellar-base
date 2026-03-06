@@ -154,7 +154,7 @@ export function createCustomContract(
 
   if (salt.length !== 32) {
     throw new TypeError(
-      `expected 32-byte salt in 'opts.salt', got ${String(opts.wasmHash)}`
+      `expected 32-byte salt in 'opts.salt', got ${String(opts.salt)}`
     );
   }
 
