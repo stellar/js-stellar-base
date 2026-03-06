@@ -1,19 +1,19 @@
 export { manageSellOffer } from "./manage_sell_offer";
 export { createPassiveSellOffer } from "./create_passive_sell_offer.js";
-export { accountMerge } from "./account_merge";
+export { accountMerge } from "./account_merge.js";
 export { allowTrust } from "./allow_trust.js";
 export { bumpSequence } from "./bump_sequence";
 export { changeTrust } from "./change_trust";
-export { createAccount } from "./create_account";
+export { createAccount } from "./create_account.js";
 export { createClaimableBalance } from "./create_claimable_balance";
 export { claimClaimableBalance } from "./claim_claimable_balance";
 export { clawbackClaimableBalance } from "./clawback_claimable_balance";
 export { inflation } from "./inflation.js";
 export { manageData } from "./manage_data.js";
 export { manageBuyOffer } from "./manage_buy_offer";
-export { pathPaymentStrictReceive } from "./path_payment_strict_receive";
+export { pathPaymentStrictReceive } from "./path_payment_strict_receive.js";
 export { pathPaymentStrictSend } from "./path_payment_strict_send";
-export { payment } from "./payment";
+export { payment } from "./payment.js";
 export { setOptions } from "./set_options.js";
 export { beginSponsoringFutureReserves } from "./begin_sponsoring_future_reserves.js";
 export { endSponsoringFutureReserves } from "./end_sponsoring_future_reserves.js";
@@ -26,7 +26,7 @@ export {
   revokeLiquidityPoolSponsorship,
   revokeSignerSponsorship
 } from "./revoke_sponsorship";
-export { clawback } from "./clawback";
+export { clawback } from "./clawback.js";
 export { setTrustLineFlags } from "./set_trustline_flags.js";
 export { liquidityPoolDeposit } from "./liquidity_pool_deposit";
 export { liquidityPoolWithdraw } from "./liquidity_pool_withdraw.js";
