@@ -12,6 +12,13 @@ export class Account {
   incrementSequenceNumber(): void;
 }
 
+export type AddressType =
+  | "account"
+  | "claimableBalance"
+  | "contract"
+  | "liquidityPool"
+  | "muxedAccount";
+
 export class Address {
   constructor(address: string);
   static fromString(address: string): Address;
@@ -23,6 +30,7 @@ export class Address {
   toScVal(): xdr.ScVal;
   toScAddress(): xdr.ScAddress;
   toBuffer(): Buffer;
+  get type(): AddressType;
 }
 
 export class Contract {

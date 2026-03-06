@@ -1,4 +1,5 @@
 import { Asset } from "../asset.js";
+import { Address } from "../address.js";
 import { Claimant } from "../claimant.js";
 import { LiquidityPoolAsset } from "../liquidity_pool_asset.js";
 import { LiquidityPoolId } from "../liquidity_pool_id.js";
@@ -8,6 +9,7 @@ export interface OperationAttributes {
     sourceAccount: xdr.MuxedAccount | null;
 }
 export interface OperationClass {
+    invokeHostFunction(opts: InvokeHostFunctionOpts): xdr.Operation;
     isValidAmount(value: string, allowZero?: boolean): boolean;
     constructAmountRequirementsError(arg: string): string;
     _toXDRAmount(value: string): xdr.Int64;
@@ -176,6 +178,34 @@ export interface LiquidityPoolDepositOpts {
     maxAmountB: string;
     minPrice: number | object | string;
     maxPrice: number | object | string;
+    source?: string;
+}
+export interface InvokeHostFunctionOpts {
+    func: xdr.HostFunction;
+    auth?: xdr.SorobanAuthorizationEntry[];
+    source?: string;
+}
+export interface InvokeContractFunctionOpts {
+    contract: string;
+    function: string;
+    args: xdr.ScVal[];
+    auth?: xdr.SorobanAuthorizationEntry[];
+    source?: string;
+}
+export interface CreateCustomContractOpts {
+    address: Address;
+    wasmHash: Buffer | Uint8Array;
+    constructorArgs?: xdr.ScVal[];
+    salt?: Buffer | Uint8Array;
+    auth?: xdr.SorobanAuthorizationEntry[];
+    source?: string;
+}
+export interface CreateStellarAssetContractOpts {
+    asset: Asset | string;
+    source?: string;
+}
+export interface UploadContractWasmOpts {
+    wasm: Buffer | Uint8Array;
     source?: string;
 }
 export interface CreateAccountOpts {

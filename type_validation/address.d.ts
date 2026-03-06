@@ -12,6 +12,7 @@ import xdr from "./xdr.js";
  *
  * @param address - a {@link StrKey} of the address value
  */
+export type AddressType = "account" | "claimableBalance" | "contract" | "liquidityPool" | "muxedAccount";
 export declare class Address {
     private _type;
     private _key;
@@ -80,4 +81,8 @@ export declare class Address {
      * Return the raw public key bytes for this address.
      */
     toBuffer(): Buffer;
+    /**
+     * Return the type of this address.
+     */
+    get type(): AddressType;
 }
