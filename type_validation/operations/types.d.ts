@@ -1,6 +1,7 @@
 import { Asset } from "../asset.js";
 import { Address } from "../address.js";
 import { Claimant } from "../claimant.js";
+import { LiquidityPoolAsset } from "../liquidity_pool_asset.js";
 import { LiquidityPoolId } from "../liquidity_pool_id.js";
 import xdr from "../xdr.js";
 export interface OperationAttributes {
@@ -16,10 +17,12 @@ export interface OperationClass {
     setSourceAccount(opAttributes: OperationAttributes, opts: {
         source?: string;
     }): void;
-    isValidAmount(value: string, allowZero?: boolean): boolean;
-    _toXDRAmount(value: string): unknown;
-    constructAmountRequirementsError(arg: string): string;
     _checkUnsignedIntValue(name: string, value: number | string | undefined, isValidFunction?: ((value: number, name: string) => boolean) | null): number | undefined;
+}
+export interface ChangeTrustOpts {
+    asset: Asset | LiquidityPoolAsset;
+    limit?: string;
+    source?: string;
 }
 export interface RestoreFootprintOpts {
     source?: string;
@@ -203,5 +206,35 @@ export interface CreateStellarAssetContractOpts {
 }
 export interface UploadContractWasmOpts {
     wasm: Buffer | Uint8Array;
+    source?: string;
+}
+export interface CreateAccountOpts {
+    destination: string;
+    startingBalance: string;
+    source?: string;
+}
+export interface AccountMergeOpts {
+    destination: string;
+    source?: string;
+}
+export interface PaymentOpts {
+    destination: string;
+    asset: Asset;
+    amount: string;
+    source?: string;
+}
+export interface ClawbackOpts {
+    asset: Asset;
+    amount: string;
+    from: string;
+    source?: string;
+}
+export interface PathPaymentStrictReceiveOpts {
+    sendAsset: Asset;
+    sendMax: string;
+    destination: string;
+    destAsset: Asset;
+    destAmount: string;
+    path?: Asset[];
     source?: string;
 }
