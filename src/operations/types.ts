@@ -1,4 +1,5 @@
 import { Asset } from "../asset.js";
+import { Address } from "../address.js";
 import xdr from "../xdr.js";
 
 export interface OperationAttributes {
@@ -8,6 +9,7 @@ export interface OperationAttributes {
 
 // This can be removed once the Operation class in src/operation.ts is converted to a TypeScript class and the setSourceAccount method is defined on it.
 export interface OperationClass {
+  invokeHostFunction(opts: InvokeHostFunctionOpts): xdr.Operation;
   isValidAmount(value: string, allowZero?: boolean): boolean;
   constructAmountRequirementsError(arg: string): string;
   _toXDRAmount(value: string): xdr.Int64;
@@ -134,5 +136,38 @@ export interface LiquidityPoolDepositOpts {
   maxAmountB: string;
   minPrice: number | object | string;
   maxPrice: number | object | string;
+  source?: string;
+}
+
+export interface InvokeHostFunctionOpts {
+  func: xdr.HostFunction;
+  auth?: xdr.SorobanAuthorizationEntry[];
+  source?: string;
+}
+
+export interface InvokeContractFunctionOpts {
+  contract: string;
+  function: string;
+  args: xdr.ScVal[];
+  auth?: xdr.SorobanAuthorizationEntry[];
+  source?: string;
+}
+
+export interface CreateCustomContractOpts {
+  address: Address;
+  wasmHash: Buffer | Uint8Array;
+  constructorArgs?: xdr.ScVal[];
+  salt?: Buffer | Uint8Array;
+  auth?: xdr.SorobanAuthorizationEntry[];
+  source?: string;
+}
+
+export interface CreateStellarAssetContractOpts {
+  asset: Asset | string;
+  source?: string;
+}
+
+export interface UploadContractWasmOpts {
+  wasm: Buffer | Uint8Array;
   source?: string;
 }
