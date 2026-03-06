@@ -26,7 +26,7 @@ export {
   revokeLiquidityPoolSponsorship,
   revokeSignerSponsorship
 } from "./revoke_sponsorship";
-export { clawback } from "./clawback";
+export { clawback } from "./clawback.js";
 export { setTrustLineFlags } from "./set_trustline_flags.js";
 export { liquidityPoolDeposit } from "./liquidity_pool_deposit";
 export { liquidityPoolWithdraw } from "./liquidity_pool_withdraw.js";

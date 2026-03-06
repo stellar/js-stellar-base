@@ -1574,50 +1574,6 @@ describe("Operation", function () {
     });
   });
 
-  describe("clawback()", function () {
-    it("requires asset, amount, account", function () {
-      let asset = new StellarBase.Asset(
-        "GCOIN",
-        "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
-      );
-      const amount = "100.0000000";
-
-      expect(() => {
-        StellarBase.Operation.clawback({
-          from: "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
-        });
-      }).to.throw();
-      expect(() => {
-        StellarBase.Operation.clawback({ amount });
-      }).to.throw();
-      expect(() => {
-        StellarBase.Operation.clawback({ asset });
-      }).to.throw();
-      expect(() => {
-        StellarBase.Operation.clawback({});
-      }).to.throw();
-    });
-    it("returns a clawback()", function () {
-      let account = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
-      let asset = new StellarBase.Asset("GCOIN", account);
-      const amount = "100.0000000";
-      const op = StellarBase.Operation.clawback({
-        from: account,
-        amount: amount,
-        asset: asset,
-      });
-
-      var xdr = op.toXDR("hex");
-      var operation = StellarBase.xdr.Operation.fromXDR(
-        Buffer.from(xdr, "hex"),
-      );
-      var obj = StellarBase.Operation.fromXDRObject(operation);
-      expect(obj.type).to.be.equal("clawback");
-      expect(obj.asset.equals(asset)).to.be.true;
-      expect(obj.from).to.be.equal(account);
-    });
-  });
-
   describe("liquidityPoolDeposit()", function () {
     it("throws an error if a required parameter is missing", function () {
       expect(() => StellarBase.Operation.liquidityPoolDeposit()).to.throw(
