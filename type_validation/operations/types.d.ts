@@ -1,4 +1,6 @@
 import { Asset } from "../asset.js";
+import { Claimant } from "../claimant.js";
+import { LiquidityPoolId } from "../liquidity_pool_id.js";
 import xdr from "../xdr.js";
 export interface OperationAttributes {
     body: xdr.OperationBody;
@@ -100,8 +102,69 @@ export interface ManageBuyOfferOpts {
     offerId?: number | string;
     source?: string;
 }
+export interface PathPaymentStrictSendOpts {
+    sendAsset: Asset;
+    sendAmount: string;
+    destination: string;
+    destAsset: Asset;
+    destMin: string;
+    path?: Asset[];
+    source?: string;
+}
+export interface CreateClaimableBalanceOpts {
+    asset: Asset;
+    amount: string;
+    claimants: Claimant[];
+    source?: string;
+}
+export interface ClaimClaimableBalanceOpts {
+    balanceId: string;
+    source?: string;
+}
+export interface ClawbackClaimableBalanceOpts {
+    balanceId: string;
+    source?: string;
+}
 export interface BumpSequenceOpts {
     bumpTo: string;
+    source?: string;
+}
+export interface SignerKeyOptions {
+    ed25519PublicKey?: string;
+    sha256Hash?: Buffer | string;
+    preAuthTx?: Buffer | string;
+    ed25519SignedPayload?: string;
+}
+export interface RevokeAccountSponsorshipOpts {
+    account: string;
+    source?: string;
+}
+export interface RevokeTrustlineSponsorshipOpts {
+    account: string;
+    asset: Asset | LiquidityPoolId;
+    source?: string;
+}
+export interface RevokeOfferSponsorshipOpts {
+    seller: string;
+    offerId: string;
+    source?: string;
+}
+export interface RevokeDataSponsorshipOpts {
+    account: string;
+    name: string;
+    source?: string;
+}
+export interface RevokeClaimableBalanceSponsorshipOpts {
+    balanceId: string;
+    source?: string;
+}
+export interface RevokeLiquidityPoolSponsorshipOpts {
+    liquidityPoolId: string;
+    source?: string;
+}
+export interface RevokeSignerSponsorshipOpts {
+    account: string;
+    signer: SignerKeyOptions;
     source?: string;
 }
 export interface LiquidityPoolDepositOpts {
