@@ -1,0 +1,70 @@
+import xdr from "../xdr.js";
+import { Keypair } from "../keypair.js";
+import { StrKey } from "../strkey.js";
+import {
+  OperationClass,
+  AllowTrustOpts,
+  OperationAttributes
+} from "./types.js";
+
+/**
+ * @deprecated since v5.0
+ *
+ * Returns an XDR AllowTrustOp. An "allow trust" operation authorizes another
+ * account to hold your account's credit for a given asset.
+ *
+ * @alias Operation.allowTrust
+ *
+ * @param opts - Options object
+ * @param opts.trustor - The trusting account (the one being authorized)
+ * @param opts.assetCode - The asset code being authorized.
+ * @param opts.authorize - `1` to authorize, `2` to authorize to maintain liabilities, and `0` to deauthorize.
+ * @param opts.source - The source account (defaults to transaction source).
+ * @returns Allow Trust operation
+ */
+export function allowTrust(
+  this: OperationClass,
+  opts: AllowTrustOpts
+): xdr.Operation {
+  if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
+    throw new Error("trustor is invalid");
+  }
+
+  const trustor = Keypair.fromPublicKey(opts.trustor).xdrAccountId();
+
+  let asset: xdr.AssetCode;
+  if (opts.assetCode.length <= 4) {
+    const code = Buffer.from(opts.assetCode.padEnd(4, "\0"));
+    asset = xdr.AssetCode.assetTypeCreditAlphanum4(code);
+  } else if (opts.assetCode.length <= 12) {
+    const code = Buffer.from(opts.assetCode.padEnd(12, "\0"));
+    asset = xdr.AssetCode.assetTypeCreditAlphanum12(code);
+  } else {
+    throw new Error("Asset code must be 12 characters at max.");
+  }
+
+  let authorize: number;
+  if (typeof opts.authorize === "boolean") {
+    if (opts.authorize) {
+      authorize = xdr.TrustLineFlags.authorizedFlag().value;
+    } else {
+      authorize = 0;
+    }
+  } else {
+    authorize = opts.authorize as number;
+  }
+
+  const allowTrustOp = new xdr.AllowTrustOp({
+    trustor,
+    asset,
+    authorize
+  });
+
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
+    body: xdr.OperationBody.allowTrust(allowTrustOp)
+  };
+  this.setSourceAccount(opAttributes, opts);
+
+  return new xdr.Operation(opAttributes);
+}
