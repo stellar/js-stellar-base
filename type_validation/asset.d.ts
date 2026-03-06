@@ -1,5 +1,5 @@
 import xdr from "./xdr.js";
-export type AssetType = "credit_alphanum4" | "credit_alphanum12" | "native";
+export type AssetType = "credit_alphanum4" | "credit_alphanum12" | "liquidity_pool_shares" | "native";
 /**
  * Asset class represents an asset, either the native asset (`XLM`)
  * or an asset code / issuer account ID pair.

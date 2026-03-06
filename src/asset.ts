@@ -4,7 +4,11 @@ import { Keypair } from "./keypair.js";
 import { StrKey } from "./strkey.js";
 import { hash } from "./hashing.js";
 
-export type AssetType = "credit_alphanum4" | "credit_alphanum12" | "native";
+export type AssetType =
+  | "credit_alphanum4"
+  | "credit_alphanum12"
+  | "liquidity_pool_shares"
+  | "native";
 
 interface XdrAssetConstructor<T> {
   assetTypeNative(): T;
