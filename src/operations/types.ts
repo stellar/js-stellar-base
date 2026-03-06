@@ -16,9 +16,6 @@ export interface OperationClass {
     opAttributes: OperationAttributes,
     opts: { source?: string }
   ): void;
-  isValidAmount(value: string, allowZero?: boolean): boolean;
-  _toXDRAmount(value: string): unknown;
-  constructAmountRequirementsError(arg: string): string;
   _checkUnsignedIntValue(
     name: string,
     value: number | string | undefined,
