@@ -11,7 +11,7 @@ export { clawbackClaimableBalance } from "./clawback_claimable_balance";
 export { inflation } from "./inflation.js";
 export { manageData } from "./manage_data.js";
 export { manageBuyOffer } from "./manage_buy_offer";
-export { pathPaymentStrictReceive } from "./path_payment_strict_receive";
+export { pathPaymentStrictReceive } from "./path_payment_strict_receive.js";
 export { pathPaymentStrictSend } from "./path_payment_strict_send";
 export { payment } from "./payment.js";
 export { setOptions } from "./set_options.js";
