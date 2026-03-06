@@ -31,7 +31,7 @@ export function clawback(
   let from: xdr.MuxedAccount;
   try {
     from = decodeAddressToMuxedAccount(opts.from);
-  } catch (e) {
+  } catch {
     throw new Error("from address is invalid");
   }
 

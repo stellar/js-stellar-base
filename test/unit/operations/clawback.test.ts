@@ -65,18 +65,22 @@ describe("Operation.clawback()", () => {
   });
 
   it("fails when only from is provided (no asset/amount)", () => {
+    // @ts-expect-error: intentionally incomplete opts to test runtime validation
     expect(() => Operation.clawback({ from: account })).toThrow();
   });
 
   it("fails when only amount is provided", () => {
+    // @ts-expect-error: intentionally incomplete opts to test runtime validation
     expect(() => Operation.clawback({ amount })).toThrow();
   });
 
   it("fails when only asset is provided", () => {
+    // @ts-expect-error: intentionally incomplete opts to test runtime validation
     expect(() => Operation.clawback({ asset })).toThrow();
   });
 
   it("fails with empty opts", () => {
+    // @ts-expect-error: intentionally incomplete opts to test runtime validation
     expect(() => Operation.clawback({})).toThrow();
   });
 

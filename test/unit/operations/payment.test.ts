@@ -95,6 +95,7 @@ describe("Operation.payment()", () => {
   });
 
   it("fails when no asset is provided", () => {
+    // @ts-expect-error: intentionally incomplete opts to test runtime validation
     expect(() => Operation.payment({ destination, amount: "20" })).toThrow(
       /Must provide an asset for a payment operation/,
     );
@@ -115,6 +116,7 @@ describe("Operation.payment()", () => {
       Operation.payment({
         destination,
         asset: Asset.native(),
+        // @ts-expect-error: intentionally passing non-string to test runtime validation
         amount: 20,
       }),
     ).toThrow(/amount argument must be of type String/);

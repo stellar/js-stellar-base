@@ -1,7 +1,7 @@
 import xdr from "../xdr.js";
 import { CreateAccountOpts, OperationClass } from "./types.js";
 /**
- * Create and fund a non existent account.
+ * Create and fund a non-existent account.
  *
  * @function
  * @alias Operation.createAccount

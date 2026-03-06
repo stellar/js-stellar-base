@@ -32,7 +32,7 @@ export function payment(
   let destination: xdr.MuxedAccount;
   try {
     destination = decodeAddressToMuxedAccount(opts.destination);
-  } catch (e) {
+  } catch {
     throw new Error("destination is invalid");
   }
 

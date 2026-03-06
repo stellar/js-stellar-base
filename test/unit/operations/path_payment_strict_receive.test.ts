@@ -126,6 +126,7 @@ describe("Operation.pathPaymentStrictReceive()", () => {
     expect(() =>
       Operation.pathPaymentStrictReceive({
         sendAsset,
+        // @ts-expect-error: intentionally passing non-string to test runtime validation
         sendMax: 20,
         destination,
         destAsset,
@@ -141,6 +142,7 @@ describe("Operation.pathPaymentStrictReceive()", () => {
         sendMax: "20",
         destination,
         destAsset,
+        // @ts-expect-error: intentionally passing non-string to test runtime validation
         destAmount: 50,
       }),
     ).toThrow(/destAmount argument must be of type String/);
@@ -148,6 +150,7 @@ describe("Operation.pathPaymentStrictReceive()", () => {
 
   it("fails with no sendAsset", () => {
     expect(() =>
+      // @ts-expect-error: intentionally incomplete opts to test runtime validation
       Operation.pathPaymentStrictReceive({
         sendMax: "3.0070000",
         destination,
@@ -159,6 +162,7 @@ describe("Operation.pathPaymentStrictReceive()", () => {
 
   it("fails with no destAsset", () => {
     expect(() =>
+      // @ts-expect-error: intentionally incomplete opts to test runtime validation
       Operation.pathPaymentStrictReceive({
         sendAsset,
         sendMax: "3.0070000",

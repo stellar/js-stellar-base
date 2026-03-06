@@ -23,17 +23,19 @@ export function accountMerge(
   this: OperationClass,
   opts: AccountMergeOpts
 ): xdr.Operation {
-  const opAttributes: OperationAttributes = {
-    sourceAccount: null,
-    body: null as unknown as xdr.OperationBody
-  };
+  let body: xdr.OperationBody;
   try {
-    opAttributes.body = xdr.OperationBody.accountMerge(
+    body = xdr.OperationBody.accountMerge(
       decodeAddressToMuxedAccount(opts.destination)
     );
-  } catch (e) {
+  } catch {
     throw new Error("destination is invalid");
   }
+
+  const opAttributes: OperationAttributes = {
+    sourceAccount: null,
+    body
+  };
   this.setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
