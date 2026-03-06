@@ -5,7 +5,6 @@ import {
   getLiquidityPoolId,
   LiquidityPoolParameters
 } from "./get_liquidity_pool_id.js";
-import type { AssetType } from "../types/index.js";
 
 /**
  * LiquidityPoolAsset class represents a liquidity pool trustline change.
@@ -102,7 +101,7 @@ export class LiquidityPoolAsset {
   /**
    * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
    */
-  getAssetType(): AssetType.liquidityPoolShares {
+  getAssetType(): "liquidity_pool_shares" {
     return "liquidity_pool_shares";
   }
 
