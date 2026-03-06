@@ -104,6 +104,7 @@ export function invokeContractFunction(
   opts: InvokeContractFunctionOpts
 ): xdr.Operation {
   const c = new Address(opts.contract);
+
   if (c.type !== "contract") {
     throw new TypeError(
       `expected contract strkey instance, got ${c.toString()}`
@@ -150,6 +151,7 @@ export function createCustomContract(
       `expected hash(contract WASM) in 'opts.wasmHash', got ${String(opts.wasmHash)}`
     );
   }
+
   if (salt.length !== 32) {
     throw new TypeError(
       `expected 32-byte salt in 'opts.salt', got ${String(opts.wasmHash)}`
@@ -196,6 +198,7 @@ export function createStellarAssetContract(
   opts: CreateStellarAssetContractOpts
 ): xdr.Operation {
   let asset = opts.asset;
+
   if (typeof asset === "string") {
     const parts = asset.split(":");
     const code = parts[0];
