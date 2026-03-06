@@ -1,5 +1,6 @@
 import { Asset } from "../asset.js";
 import { Claimant } from "../claimant.js";
+import { LiquidityPoolAsset } from "../liquidity_pool_asset.js";
 import { LiquidityPoolId } from "../liquidity_pool_id.js";
 import xdr from "../xdr.js";
 
@@ -26,6 +27,12 @@ export interface OperationClass {
     value: number | string | undefined,
     isValidFunction?: ((value: number, name: string) => boolean) | null
   ): number | undefined;
+}
+
+export interface ChangeTrustOpts {
+  asset: Asset | LiquidityPoolAsset;
+  limit?: string;
+  source?: string;
 }
 
 export interface RestoreFootprintOpts {
