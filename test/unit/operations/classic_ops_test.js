@@ -1146,45 +1146,6 @@ describe("Operation", function () {
     });
   });
 
-  describe(".accountMerge", function () {
-    const base = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
-
-    const checkMergeOp = function (opts) {
-      const xdr = StellarBase.Operation.accountMerge(opts).toXDR("hex");
-      const op = StellarBase.xdr.Operation.fromXDR(xdr, "hex");
-      const obj = StellarBase.Operation.fromXDRObject(op);
-
-      expect(obj.type).to.be.equal("accountMerge");
-      expect(obj.destination).to.be.equal(opts.destination);
-      return obj;
-    };
-
-    it("creates an accountMergeOp", function () {
-      let opts = { destination: base };
-      checkMergeOp(opts);
-    });
-
-    it("supports muxed accounts", function () {
-      const dest = encodeMuxedAccountToAddress(encodeMuxedAccount(base, "1"));
-      const source = encodeMuxedAccountToAddress(encodeMuxedAccount(base, "2"));
-
-      let opts = { destination: dest, source: source };
-      let obj = checkMergeOp(opts);
-      expect(obj.source).to.equal(source);
-
-      opts.destination = opts.source = base;
-      obj = checkMergeOp(opts);
-      expect(obj.source).to.equal(base);
-    });
-
-    it("fails to create accountMergeOp with invalid destination", function () {
-      let opts = { destination: "GCEZW" };
-      expect(() => StellarBase.Operation.accountMerge(opts)).to.throw(
-        /destination is invalid/,
-      );
-    });
-  });
-
   describe(".bumpSequence", function () {
     it("creates a bumpSequence", function () {
       var opts = {

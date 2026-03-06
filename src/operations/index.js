@@ -1,6 +1,6 @@
 export { manageSellOffer } from "./manage_sell_offer";
 export { createPassiveSellOffer } from "./create_passive_sell_offer.js";
-export { accountMerge } from "./account_merge";
+export { accountMerge } from "./account_merge.js";
 export { allowTrust } from "./allow_trust.js";
 export { bumpSequence } from "./bump_sequence";
 export { changeTrust } from "./change_trust";
