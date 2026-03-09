@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { Asset } from "../asset.js";
 import { Address } from "../address.js";
 import { Claimant } from "../claimant.js";
@@ -285,3 +286,354 @@ export interface PathPaymentStrictReceiveOpts {
   path?: Asset[];
   source?: string;
 }
+
+// ─── Operation Result Types ───────────────────────────────────────────────────
+// These are the shapes returned by Operation.fromXDRObject, mirroring the
+// namespace Operation interfaces in types/index.d.ts.
+
+export namespace OperationType {
+  export type CreateAccount = "createAccount";
+  export type Payment = "payment";
+  export type PathPaymentStrictReceive = "pathPaymentStrictReceive";
+  export type PathPaymentStrictSend = "pathPaymentStrictSend";
+  export type CreatePassiveSellOffer = "createPassiveSellOffer";
+  export type ManageSellOffer = "manageSellOffer";
+  export type ManageBuyOffer = "manageBuyOffer";
+  export type SetOptions = "setOptions";
+  export type ChangeTrust = "changeTrust";
+  export type AllowTrust = "allowTrust";
+  export type AccountMerge = "accountMerge";
+  export type Inflation = "inflation";
+  export type ManageData = "manageData";
+  export type BumpSequence = "bumpSequence";
+  export type CreateClaimableBalance = "createClaimableBalance";
+  export type ClaimClaimableBalance = "claimClaimableBalance";
+  export type BeginSponsoringFutureReserves = "beginSponsoringFutureReserves";
+  export type EndSponsoringFutureReserves = "endSponsoringFutureReserves";
+  export type RevokeSponsorship = "revokeSponsorship";
+  export type Clawback = "clawback";
+  export type ClawbackClaimableBalance = "clawbackClaimableBalance";
+  export type SetTrustLineFlags = "setTrustLineFlags";
+  export type LiquidityPoolDeposit = "liquidityPoolDeposit";
+  export type LiquidityPoolWithdraw = "liquidityPoolWithdraw";
+  export type InvokeHostFunction = "invokeHostFunction";
+  export type ExtendFootprintTTL = "extendFootprintTtl";
+  export type RestoreFootprint = "restoreFootprint";
+}
+
+export type OperationType =
+  | OperationType.AccountMerge
+  | OperationType.AllowTrust
+  | OperationType.BeginSponsoringFutureReserves
+  | OperationType.BumpSequence
+  | OperationType.ChangeTrust
+  | OperationType.ClaimClaimableBalance
+  | OperationType.Clawback
+  | OperationType.ClawbackClaimableBalance
+  | OperationType.CreateAccount
+  | OperationType.CreateClaimableBalance
+  | OperationType.CreatePassiveSellOffer
+  | OperationType.EndSponsoringFutureReserves
+  | OperationType.ExtendFootprintTTL
+  | OperationType.Inflation
+  | OperationType.InvokeHostFunction
+  | OperationType.LiquidityPoolDeposit
+  | OperationType.LiquidityPoolWithdraw
+  | OperationType.ManageBuyOffer
+  | OperationType.ManageData
+  | OperationType.ManageSellOffer
+  | OperationType.PathPaymentStrictReceive
+  | OperationType.PathPaymentStrictSend
+  | OperationType.Payment
+  | OperationType.RestoreFootprint
+  | OperationType.RevokeSponsorship
+  | OperationType.SetOptions
+  | OperationType.SetTrustLineFlags;
+
+// Literal types matching the AuthRequiredFlag/AuthRevocableFlag/AuthImmutableFlag/AuthClawbackEnabledFlag
+// constants exported from src/operation.ts.
+// TODO: Once src/index.js is migrated to src/index.ts, replace these literals with
+// `typeof AuthRequiredFlag` etc. to avoid duplication with the runtime constants.
+export namespace AuthFlag {
+  export type required = 1;
+  export type revocable = 2;
+  export type immutable = 4;
+  export type clawbackEnabled = 8;
+}
+export type AuthFlag =
+  | AuthFlag.clawbackEnabled
+  | AuthFlag.immutable
+  | AuthFlag.required
+  | AuthFlag.revocable;
+
+export namespace TrustLineFlag {
+  export type deauthorize = 0;
+  export type authorize = 1;
+  export type authorizeToMaintainLiabilities = 2;
+}
+export type TrustLineFlag =
+  | TrustLineFlag.authorize
+  | TrustLineFlag.authorizeToMaintainLiabilities
+  | TrustLineFlag.deauthorize;
+
+// Signer result types used in the SetOptions result interface (weight included).
+export namespace Signer {
+  export interface Ed25519PublicKey {
+    ed25519PublicKey: string;
+    weight?: number | string;
+  }
+  export interface Sha256Hash {
+    sha256Hash: Buffer | string;
+    weight?: number | string;
+  }
+  export interface PreAuthTx {
+    preAuthTx: Buffer | string;
+    weight?: number | string;
+  }
+  export interface Ed25519SignedPayload {
+    ed25519SignedPayload: string;
+    weight?: number | string;
+  }
+}
+
+export interface BaseOperation<T extends OperationType = OperationType> {
+  type: T;
+  source?: string;
+}
+
+export interface CreateAccountResult extends BaseOperation<OperationType.CreateAccount> {
+  destination: string;
+  startingBalance: string;
+}
+
+export interface PaymentResult extends BaseOperation<OperationType.Payment> {
+  destination: string;
+  asset: Asset;
+  amount: string;
+}
+
+export interface PathPaymentStrictReceiveResult extends BaseOperation<OperationType.PathPaymentStrictReceive> {
+  sendAsset: Asset;
+  sendMax: string;
+  destination: string;
+  destAsset: Asset;
+  destAmount: string;
+  path: Asset[];
+}
+
+export interface PathPaymentStrictSendResult extends BaseOperation<OperationType.PathPaymentStrictSend> {
+  sendAsset: Asset;
+  sendAmount: string;
+  destination: string;
+  destAsset: Asset;
+  destMin: string;
+  path: Asset[];
+}
+
+export interface CreatePassiveSellOfferResult extends BaseOperation<OperationType.CreatePassiveSellOffer> {
+  selling: Asset;
+  buying: Asset;
+  amount: string;
+  price: string;
+}
+
+export interface ManageSellOfferResult extends BaseOperation<OperationType.ManageSellOffer> {
+  selling: Asset;
+  buying: Asset;
+  amount: string;
+  price: string;
+  offerId: string;
+}
+
+export interface ManageBuyOfferResult extends BaseOperation<OperationType.ManageBuyOffer> {
+  selling: Asset;
+  buying: Asset;
+  buyAmount: string;
+  price: string;
+  offerId: string;
+}
+
+// TODO: types/index.d.ts uses a conditional generic `SetOptions<T extends SignerOptions>`
+// where the `signer` field type is narrowed based on T. Restore the generic once the full
+// operation type system is in place and Operation.setOptions is wired up end-to-end.
+export interface SetOptionsResult extends BaseOperation<OperationType.SetOptions> {
+  inflationDest?: string;
+  clearFlags?: AuthFlag;
+  setFlags?: AuthFlag;
+  masterWeight?: number;
+  lowThreshold?: number;
+  medThreshold?: number;
+  highThreshold?: number;
+  homeDomain?: string;
+  signer?:
+    | Signer.Ed25519PublicKey
+    | Signer.Ed25519SignedPayload
+    | Signer.PreAuthTx
+    | Signer.Sha256Hash;
+}
+
+export interface ChangeTrustResult extends BaseOperation<OperationType.ChangeTrust> {
+  line: Asset | LiquidityPoolAsset;
+  limit: string;
+}
+
+export interface AllowTrustResult extends BaseOperation<OperationType.AllowTrust> {
+  trustor: string;
+  assetCode: string;
+  authorize: TrustLineFlag | boolean | undefined;
+}
+
+export interface AccountMergeResult extends BaseOperation<OperationType.AccountMerge> {
+  destination: string;
+}
+
+export type InflationResult = BaseOperation<OperationType.Inflation>;
+
+export interface ManageDataResult extends BaseOperation<OperationType.ManageData> {
+  name: string;
+  value?: Buffer;
+}
+
+export interface BumpSequenceResult extends BaseOperation<OperationType.BumpSequence> {
+  bumpTo: string;
+}
+
+export interface CreateClaimableBalanceResult extends BaseOperation<OperationType.CreateClaimableBalance> {
+  asset: Asset;
+  amount: string;
+  claimants: Claimant[];
+}
+
+export interface ClaimClaimableBalanceResult extends BaseOperation<OperationType.ClaimClaimableBalance> {
+  balanceId: string;
+}
+
+export interface BeginSponsoringFutureReservesResult extends BaseOperation<OperationType.BeginSponsoringFutureReserves> {
+  sponsoredId: string;
+}
+
+export type EndSponsoringFutureReservesResult =
+  BaseOperation<OperationType.EndSponsoringFutureReserves>;
+
+export interface RevokeAccountSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  account: string;
+}
+
+export interface RevokeTrustlineSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  account: string;
+  asset: Asset | LiquidityPoolId;
+}
+
+export interface RevokeOfferSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  seller: string;
+  offerId: string;
+}
+
+export interface RevokeDataSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  account: string;
+  name: string;
+}
+
+export interface RevokeClaimableBalanceSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  balanceId: string;
+}
+
+export interface RevokeLiquidityPoolSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  liquidityPoolId: string;
+}
+
+export interface RevokeSignerSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+  account: string;
+  signer: SignerKeyOptions;
+}
+
+export interface ClawbackResult extends BaseOperation<OperationType.Clawback> {
+  asset: Asset;
+  amount: string;
+  from: string;
+}
+
+export interface ClawbackClaimableBalanceResult extends BaseOperation<OperationType.ClawbackClaimableBalance> {
+  balanceId: string;
+}
+
+export interface SetTrustLineFlagsResult extends BaseOperation<OperationType.SetTrustLineFlags> {
+  trustor: string;
+  asset: Asset;
+  flags: {
+    authorized?: boolean;
+    authorizedToMaintainLiabilities?: boolean;
+    clawbackEnabled?: boolean;
+  };
+}
+
+export interface LiquidityPoolDepositResult extends BaseOperation<OperationType.LiquidityPoolDeposit> {
+  liquidityPoolId: string;
+  maxAmountA: string;
+  maxAmountB: string;
+  minPrice: string;
+  maxPrice: string;
+}
+
+export interface LiquidityPoolWithdrawResult extends BaseOperation<OperationType.LiquidityPoolWithdraw> {
+  liquidityPoolId: string;
+  amount: string;
+  minAmountA: string;
+  minAmountB: string;
+}
+
+export interface InvokeHostFunctionResult extends BaseOperation<OperationType.InvokeHostFunction> {
+  func: xdr.HostFunction;
+  auth?: xdr.SorobanAuthorizationEntry[];
+}
+
+export interface ExtendFootprintTTLResult extends BaseOperation<OperationType.ExtendFootprintTTL> {
+  extendTo: number;
+}
+
+export type RestoreFootprintResult =
+  BaseOperation<OperationType.RestoreFootprint>;
+
+/**
+ * Union of all possible operation result objects returned by Operation.fromXDRObject.
+ *
+ * TODO: Once src/index.js is migrated to src/index.ts, re-export this as the `Operation`
+ * type alongside the Operation class:
+ *   export type { OperationRecord as Operation } from "./operations/types.js"
+ * This preserves the public `export type Operation` from types/index.d.ts without
+ * conflicting with the class name in the same module.
+ */
+export type OperationRecord =
+  | AccountMergeResult
+  | AllowTrustResult
+  | BeginSponsoringFutureReservesResult
+  | BumpSequenceResult
+  | ChangeTrustResult
+  | ClaimClaimableBalanceResult
+  | ClawbackClaimableBalanceResult
+  | ClawbackResult
+  | CreateAccountResult
+  | CreateClaimableBalanceResult
+  | CreatePassiveSellOfferResult
+  | EndSponsoringFutureReservesResult
+  | ExtendFootprintTTLResult
+  | InflationResult
+  | InvokeHostFunctionResult
+  | LiquidityPoolDepositResult
+  | LiquidityPoolWithdrawResult
+  | ManageBuyOfferResult
+  | ManageDataResult
+  | ManageSellOfferResult
+  | PathPaymentStrictReceiveResult
+  | PathPaymentStrictSendResult
+  | PaymentResult
+  | RestoreFootprintResult
+  | RevokeAccountSponsorshipResult
+  | RevokeClaimableBalanceSponsorshipResult
+  | RevokeDataSponsorshipResult
+  | RevokeLiquidityPoolSponsorshipResult
+  | RevokeOfferSponsorshipResult
+  | RevokeSignerSponsorshipResult
+  | RevokeTrustlineSponsorshipResult
+  | SetOptionsResult
+  | SetTrustLineFlagsResult;
