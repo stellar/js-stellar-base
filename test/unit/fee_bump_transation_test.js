@@ -145,7 +145,7 @@ describe("FeeBumpTransaction", function () {
     let preimage = randomBytes(2 * 64);
     let tx = this.transaction;
     expect(() => tx.signHashX(preimage)).to.throw(
-      /preimage cannnot be longer than 64 bytes/
+      /preimage cannot be longer than 64 bytes/
     );
   });
 

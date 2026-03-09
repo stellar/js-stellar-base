@@ -15,11 +15,11 @@ export class TransactionBase {
     tx: xdr.Transaction,
     signatures: xdr.DecoratedSignature[],
     fee: string,
-    networkPassphrase: string,
+    networkPassphrase: string
   ) {
     if (typeof networkPassphrase !== "string") {
       throw new Error(
-        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`,
+        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
       );
     }
 
@@ -66,8 +66,8 @@ export class TransactionBase {
     return this._networkPassphrase;
   }
 
-  set networkPassphrase(networkPassphrase: string) {
-    this._networkPassphrase = networkPassphrase;
+  set networkPassphrase(_networkPassphrase: string) {
+    throw new Error("Transaction is immutable");
   }
 
   /**
@@ -159,8 +159,8 @@ export class TransactionBase {
     this.signatures.push(
       new xdr.DecoratedSignature({
         hint,
-        signature: signatureBuffer,
-      }),
+        signature: signatureBuffer
+      })
     );
   }
 
@@ -186,7 +186,7 @@ export class TransactionBase {
     }
 
     if (preimage.length > 64) {
-      throw new Error("preimage cannnot be longer than 64 bytes");
+      throw new Error("preimage cannot be longer than 64 bytes");
     }
 
     const signature = preimage;
