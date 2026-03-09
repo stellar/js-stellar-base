@@ -13,7 +13,7 @@ describe("TransactionBuilder", function () {
     beforeEach(function () {
       source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       destination = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
       amount = "1000";
@@ -22,14 +22,14 @@ describe("TransactionBuilder", function () {
 
       transaction = new StellarBase.TransactionBuilder(source, {
         fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination,
             asset: asset,
-            amount: amount,
-          }),
+            amount: amount
+          })
         )
         .addMemo(memo)
         .setTimeout(StellarBase.TimeoutInfinite)
@@ -70,7 +70,7 @@ describe("TransactionBuilder", function () {
     beforeEach(function () {
       source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       sorobanTransactionData = new StellarBase.SorobanDataBuilder()
         .setResources(0, 5, 0)
@@ -91,18 +91,18 @@ describe("TransactionBuilder", function () {
               new StellarBase.xdr.InvokeContractArgs({
                 contractAddress: c.address().toScAddress(),
                 functionName: "hello",
-                args: [StellarBase.nativeToScVal("world")],
-              }),
+                args: [StellarBase.nativeToScVal("world")]
+              })
             ),
-            auth: [],
-          }),
+            auth: []
+          })
         )
         .setSorobanData(sorobanTransactionData)
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
 
       expect(
-        transaction.toEnvelope().v1().tx().ext().sorobanData(),
+        transaction.toEnvelope().v1().tx().ext().sorobanData()
       ).to.deep.equal(sorobanTransactionData);
       done();
     });
@@ -115,18 +115,18 @@ describe("TransactionBuilder", function () {
               new StellarBase.xdr.InvokeContractArgs({
                 contractAddress: c.address().toScAddress(),
                 functionName: "hello",
-                args: [StellarBase.nativeToScVal("world")],
-              }),
+                args: [StellarBase.nativeToScVal("world")]
+              })
             ),
-            auth: [],
-          }),
+            auth: []
+          })
         )
         .setSorobanData(sorobanTransactionData.toXDR("base64"))
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
 
       expect(
-        transaction.toEnvelope().v1().tx().ext().sorobanData(),
+        transaction.toEnvelope().v1().tx().ext().sorobanData()
       ).to.deep.equal(sorobanTransactionData);
       done();
     });
@@ -140,11 +140,11 @@ describe("TransactionBuilder", function () {
               new StellarBase.xdr.InvokeContractArgs({
                 contractAddress: c.address().toScAddress(),
                 functionName: "hello",
-                args: [StellarBase.nativeToScVal("world")],
-              }),
+                args: [StellarBase.nativeToScVal("world")]
+              })
             ),
-            auth: [],
-          }),
+            auth: []
+          })
         )
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
@@ -160,7 +160,7 @@ describe("TransactionBuilder", function () {
 
       let transaction = new StellarBase.TransactionBuilder(source, {
         fee: 200 /* assume BASE_FEE*2 */,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
@@ -168,25 +168,25 @@ describe("TransactionBuilder", function () {
               new StellarBase.xdr.InvokeContractArgs({
                 contractAddress: c.address().toScAddress(),
                 functionName: "test",
-                args: [],
-              }),
+                args: []
+              })
             ),
-            auth: [],
-          }),
+            auth: []
+          })
         )
         .setSorobanData(sorobanTransactionData)
         .setTimeout(StellarBase.TimeoutInfinite)
         .build(); // Building includes resource fee in the total fee
 
       expect(
-        transaction.toEnvelope().v1().tx().ext().sorobanData().toXDR("base64"),
+        transaction.toEnvelope().v1().tx().ext().sorobanData().toXDR("base64")
       ).to.deep.equal(sorobanTransactionData.toXDR("base64"));
 
       let feeBump = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         StellarBase.Keypair.random(),
         "200", // omit resource fee
         transaction,
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
 
       expect(feeBump.fee).to.equal("820"); // fee bump is an "op" so double the base
@@ -196,7 +196,7 @@ describe("TransactionBuilder", function () {
         .build();
       transaction = new StellarBase.TransactionBuilder(source, {
         fee: StellarBase.BASE_FEE, // P23+: fee doesn't need to include resources
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.invokeHostFunction({
@@ -204,11 +204,11 @@ describe("TransactionBuilder", function () {
               new StellarBase.xdr.InvokeContractArgs({
                 contractAddress: c.address().toScAddress(),
                 functionName: "test",
-                args: [],
-              }),
+                args: []
+              })
             ),
-            auth: [],
-          }),
+            auth: []
+          })
         )
         .setSorobanData(sorobanTransactionData)
         .setTimeout(StellarBase.TimeoutInfinite)
@@ -218,7 +218,7 @@ describe("TransactionBuilder", function () {
         StellarBase.Keypair.random(),
         "100", // omit resource fee
         transaction,
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
 
       expect(feeBump.fee).to.equal("1200"); // fee bump is an "op" so double the base
@@ -248,7 +248,7 @@ describe("TransactionBuilder", function () {
     function buildSacTx(destination, asset) {
       return new StellarBase.TransactionBuilder(source, {
         fee: 100,
-        networkPassphrase,
+        networkPassphrase
       })
         .addSacTransferOperation(destination, asset, "10")
         .setTimeout(StellarBase.TimeoutInfinite)
@@ -264,17 +264,16 @@ describe("TransactionBuilder", function () {
         new xdr.LedgerKeyContractData({
           contract: contractAddressFromId(contractId),
           key: xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: xdr.ContractDataDurability.persistent(),
-        }),
+          durability: xdr.ContractDataDurability.persistent()
+        })
       );
     }
 
     function ledgerKeyAccount(accountId) {
       return new xdr.LedgerKey.account(
         new xdr.LedgerKeyAccount({
-          accountId:
-            StellarBase.Keypair.fromPublicKey(accountId).xdrPublicKey(),
-        }),
+          accountId: StellarBase.Keypair.fromPublicKey(accountId).xdrPublicKey()
+        })
       );
     }
 
@@ -283,8 +282,8 @@ describe("TransactionBuilder", function () {
         new xdr.LedgerKeyTrustLine({
           accountId:
             StellarBase.Keypair.fromPublicKey(accountId).xdrPublicKey(),
-          asset: asset.toTrustLineXDRObject(),
-        }),
+          asset: asset.toTrustLineXDRObject()
+        })
       );
     }
 
@@ -303,14 +302,14 @@ describe("TransactionBuilder", function () {
 
         // credentials: must be source-account (no explicit signature required)
         expect(auth.credentials().switch()).to.eql(
-          xdr.SorobanCredentialsType.sorobanCredentialsSourceAccount(),
+          xdr.SorobanCredentialsType.sorobanCredentialsSourceAccount()
         );
 
         const rootInvoc = auth.rootInvocation();
 
         // function type: contract function
         expect(rootInvoc.function().switch()).to.eql(
-          xdr.SorobanAuthorizedFunctionType.sorobanAuthorizedFunctionTypeContractFn(),
+          xdr.SorobanAuthorizedFunctionType.sorobanAuthorizedFunctionTypeContractFn()
         );
 
         // contract address matches the asset's SAC contract
@@ -319,12 +318,12 @@ describe("TransactionBuilder", function () {
         expect(contractFn.contractAddress().toXDR("base64")).to.equal(
           StellarBase.Address.fromString(contractId)
             .toScAddress()
-            .toXDR("base64"),
+            .toXDR("base64")
         );
 
         // function name is 'transfer'
         expect(
-          Buffer.from(contractFn.functionName()).toString("utf8"),
+          Buffer.from(contractFn.functionName()).toString("utf8")
         ).to.equal("transfer");
 
         // args: [source address, destination address, amount as i128]
@@ -332,16 +331,16 @@ describe("TransactionBuilder", function () {
         expect(args).to.have.length(3);
         expect(args[0].toXDR("base64")).to.equal(
           StellarBase.nativeToScVal(SOURCE_ACCOUNT, { type: "address" }).toXDR(
-            "base64",
-          ),
+            "base64"
+          )
         );
         expect(args[1].toXDR("base64")).to.equal(
           StellarBase.nativeToScVal(DESTINATION_ACCOUNT, {
-            type: "address",
-          }).toXDR("base64"),
+            type: "address"
+          }).toXDR("base64")
         );
         expect(args[2].toXDR("base64")).to.equal(
-          StellarBase.nativeToScVal("10", { type: "i128" }).toXDR("base64"),
+          StellarBase.nativeToScVal("10", { type: "i128" }).toXDR("base64")
         );
 
         // no sub-invocations
@@ -374,20 +373,20 @@ describe("TransactionBuilder", function () {
               key: xdr.ScVal.scvVec([
                 StellarBase.nativeToScVal("Balance", { type: "symbol" }),
                 StellarBase.nativeToScVal(DESTINATION_CONTRACT, {
-                  type: "address",
-                }),
+                  type: "address"
+                })
               ]),
-              durability: xdr.ContractDataDurability.persistent(),
-            }),
+              durability: xdr.ContractDataDurability.persistent()
+            })
           ),
-          ledgerKeyAccount(SOURCE_ACCOUNT),
+          ledgerKeyAccount(SOURCE_ACCOUNT)
         ];
 
         expect(footprint.readOnly().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadOnly.map((k) => k.toXDR("base64")),
+          expectedReadOnly.map((k) => k.toXDR("base64"))
         );
         expect(footprint.readWrite().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadWrite.map((k) => k.toXDR("base64")),
+          expectedReadWrite.map((k) => k.toXDR("base64"))
         );
       });
 
@@ -400,13 +399,13 @@ describe("TransactionBuilder", function () {
         const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
         const expectedReadWrite = [
           ledgerKeyAccount(DESTINATION_ACCOUNT),
-          ledgerKeyAccount(SOURCE_ACCOUNT),
+          ledgerKeyAccount(SOURCE_ACCOUNT)
         ];
         expect(footprint.readOnly().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadOnly.map((k) => k.toXDR("base64")),
+          expectedReadOnly.map((k) => k.toXDR("base64"))
         );
         expect(footprint.readWrite().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadWrite.map((k) => k.toXDR("base64")),
+          expectedReadWrite.map((k) => k.toXDR("base64"))
         );
       });
     });
@@ -429,13 +428,13 @@ describe("TransactionBuilder", function () {
         const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
         const expectedReadWrite = [
           ledgerKeyTrustline(DESTINATION_ACCOUNT, asset),
-          ledgerKeyTrustline(SOURCE_ACCOUNT, asset),
+          ledgerKeyTrustline(SOURCE_ACCOUNT, asset)
         ];
         expect(footprint.readOnly().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadOnly.map((k) => k.toXDR("base64")),
+          expectedReadOnly.map((k) => k.toXDR("base64"))
         );
         expect(footprint.readWrite().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadWrite.map((k) => k.toXDR("base64")),
+          expectedReadWrite.map((k) => k.toXDR("base64"))
         );
       });
 
@@ -447,7 +446,7 @@ describe("TransactionBuilder", function () {
 
         const expectedReadOnly = [
           ledgerKeyContractInstance(contractId),
-          ledgerKeyAccount(ISSUER_ACCOUNT),
+          ledgerKeyAccount(ISSUER_ACCOUNT)
         ];
         const expectedReadWrite = [
           new xdr.LedgerKey.contractData(
@@ -456,19 +455,19 @@ describe("TransactionBuilder", function () {
               key: xdr.ScVal.scvVec([
                 StellarBase.nativeToScVal("Balance", { type: "symbol" }),
                 StellarBase.nativeToScVal(DESTINATION_CONTRACT, {
-                  type: "address",
-                }),
+                  type: "address"
+                })
               ]),
-              durability: xdr.ContractDataDurability.persistent(),
-            }),
+              durability: xdr.ContractDataDurability.persistent()
+            })
           ),
-          ledgerKeyTrustline(SOURCE_ACCOUNT, asset),
+          ledgerKeyTrustline(SOURCE_ACCOUNT, asset)
         ];
         expect(footprint.readOnly().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadOnly.map((k) => k.toXDR("base64")),
+          expectedReadOnly.map((k) => k.toXDR("base64"))
         );
         expect(footprint.readWrite().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadWrite.map((k) => k.toXDR("base64")),
+          expectedReadWrite.map((k) => k.toXDR("base64"))
         );
       });
 
@@ -482,10 +481,10 @@ describe("TransactionBuilder", function () {
         const expectedReadWrite = [ledgerKeyTrustline(SOURCE_ACCOUNT, asset)];
 
         expect(footprint.readOnly().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadOnly.map((k) => k.toXDR("base64")),
+          expectedReadOnly.map((k) => k.toXDR("base64"))
         );
         expect(footprint.readWrite().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadWrite.map((k) => k.toXDR("base64")),
+          expectedReadWrite.map((k) => k.toXDR("base64"))
         );
       });
 
@@ -498,14 +497,14 @@ describe("TransactionBuilder", function () {
 
         const expectedReadOnly = [ledgerKeyContractInstance(contractId)];
         const expectedReadWrite = [
-          ledgerKeyTrustline(DESTINATION_ACCOUNT, asset),
+          ledgerKeyTrustline(DESTINATION_ACCOUNT, asset)
         ];
 
         expect(footprint.readOnly().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadOnly.map((k) => k.toXDR("base64")),
+          expectedReadOnly.map((k) => k.toXDR("base64"))
         );
         expect(footprint.readWrite().map((k) => k.toXDR("base64"))).to.eql(
-          expectedReadWrite.map((k) => k.toXDR("base64")),
+          expectedReadWrite.map((k) => k.toXDR("base64"))
         );
       });
     });
@@ -516,11 +515,11 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(
             DESTINATION_ACCOUNT,
             asset,
-            "9223372036854775808",
+            "9223372036854775808"
           );
         }).to.throw(/Amount exceeds maximum value for i64/);
       });
@@ -530,11 +529,11 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(
             DESTINATION_ACCOUNT,
             asset,
-            "9223372036854775807",
+            "9223372036854775807"
           );
         }).to.not.throw();
       });
@@ -544,7 +543,7 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           })
             .addSacTransferOperation(DESTINATION_ACCOUNT, asset, "0")
             .setTimeout(StellarBase.TimeoutInfinite)
@@ -557,7 +556,7 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "-1");
         }).to.throw(/Amount must be a positive integer/);
       });
@@ -567,7 +566,7 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(SOURCE_ACCOUNT, asset, "10");
         }).to.throw(/Destination cannot be the same as the source account/);
       });
@@ -579,35 +578,35 @@ describe("TransactionBuilder", function () {
           instructions: 1,
           readBytes: 2,
           writeBytes: 3,
-          resourceFee: BigInt(4),
+          resourceFee: BigInt(4)
         };
 
         // each u32 field rejects 0
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            instructions: 0,
+            instructions: 0
           });
         }).to.throw(/instructions must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            readBytes: 0,
+            readBytes: 0
           });
         }).to.throw(/readBytes must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            writeBytes: 0,
+            writeBytes: 0
           });
         }).to.throw(/writeBytes must be greater than 0/);
 
@@ -615,10 +614,10 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            resourceFee: BigInt(0),
+            resourceFee: BigInt(0)
           });
         }).to.throw(/resourceFee must be greater than 0/);
       });
@@ -630,34 +629,34 @@ describe("TransactionBuilder", function () {
           instructions: 1,
           readBytes: 2,
           writeBytes: 3,
-          resourceFee: BigInt(4),
+          resourceFee: BigInt(4)
         };
 
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            instructions: U32_MAX + 1,
+            instructions: U32_MAX + 1
           });
         }).to.throw(/instructions must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            readBytes: U32_MAX + 1,
+            readBytes: U32_MAX + 1
           });
         }).to.throw(/readBytes must be greater than 0/);
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             ...validFees,
-            writeBytes: U32_MAX + 1,
+            writeBytes: U32_MAX + 1
           });
         }).to.throw(/writeBytes must be greater than 0/);
       });
@@ -669,13 +668,13 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           })
             .addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
               instructions: U32_MAX,
               readBytes: U32_MAX,
               writeBytes: U32_MAX,
-              resourceFee: BigInt(1),
+              resourceFee: BigInt(1)
             })
             .setTimeout(StellarBase.TimeoutInfinite)
             .build();
@@ -688,12 +687,12 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           }).addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
             instructions: 1,
             readBytes: 1,
             writeBytes: 1,
-            resourceFee: BigInt("9223372036854775808"),
+            resourceFee: BigInt("9223372036854775808")
           });
         }).to.throw(/resourceFee must be greater than 0/);
       });
@@ -704,13 +703,13 @@ describe("TransactionBuilder", function () {
         expect(() => {
           new StellarBase.TransactionBuilder(source, {
             fee: 100,
-            networkPassphrase,
+            networkPassphrase
           })
             .addSacTransferOperation(DESTINATION_ACCOUNT, asset, "10", {
               instructions: 1,
               readBytes: 1,
               writeBytes: 1,
-              resourceFee: BigInt("9223372036854775807"),
+              resourceFee: BigInt("9223372036854775807")
             })
             .setTimeout(StellarBase.TimeoutInfinite)
             .build();
@@ -731,7 +730,7 @@ describe("TransactionBuilder", function () {
       asset = StellarBase.Asset.native();
       source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
 
       destination1 = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
@@ -741,21 +740,21 @@ describe("TransactionBuilder", function () {
 
       transaction = new StellarBase.TransactionBuilder(source, {
         fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
             asset: asset,
-            amount: amount1,
-          }),
+            amount: amount1
+          })
         )
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination2,
             asset: asset,
-            amount: amount2,
-          }),
+            amount: amount2
+          })
         )
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
@@ -801,7 +800,7 @@ describe("TransactionBuilder", function () {
       asset = StellarBase.Asset.native();
       source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
 
       destination1 = "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
@@ -811,21 +810,21 @@ describe("TransactionBuilder", function () {
 
       transaction = new StellarBase.TransactionBuilder(source, {
         fee: 1000,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination1,
             asset: asset,
-            amount: amount1,
-          }),
+            amount: amount1
+          })
         )
         .addOperation(
           StellarBase.Operation.payment({
             destination: destination2,
             asset: asset,
-            amount: amount2,
-          }),
+            amount: amount2
+          })
         )
         .setTimeout(StellarBase.TimeoutInfinite)
         .build();
@@ -841,24 +840,24 @@ describe("TransactionBuilder", function () {
     it("should have have timebounds", function (done) {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let timebounds = {
         minTime: "1455287522",
-        maxTime: "1455297545",
+        maxTime: "1455297545"
       };
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
         fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
               "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
             asset: StellarBase.Asset.native(),
-            amount: "1000",
-          }),
+            amount: "1000"
+          })
         )
         .build();
 
@@ -895,25 +894,25 @@ describe("TransactionBuilder", function () {
     it("should have expected timebounds", function (done) {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let timebounds = {
         minTime: new Date(1528145519000),
-        maxTime: new Date(1528231982000),
+        maxTime: new Date(1528231982000)
       };
 
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
         fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
               "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
             asset: StellarBase.Asset.native(),
-            amount: "1000",
-          }),
+            amount: "1000"
+          })
         )
         .build();
 
@@ -921,10 +920,10 @@ describe("TransactionBuilder", function () {
       let expectedMinTime = timebounds.minTime.getTime() / 1000;
       let expectedMaxTime = timebounds.maxTime.getTime() / 1000;
       expect(transaction.timeBounds.minTime).to.be.equal(
-        expectedMinTime.toString(),
+        expectedMinTime.toString()
       );
       expect(transaction.timeBounds.maxTime).to.be.equal(
-        expectedMaxTime.toString(),
+        expectedMaxTime.toString()
       );
       done();
     });
@@ -932,11 +931,11 @@ describe("TransactionBuilder", function () {
     it("floors sub-second precision Date timebounds", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let timebounds = {
         minTime: new Date(1528145519500), // 500ms sub-second
-        maxTime: new Date(1528231982999), // 999ms sub-second
+        maxTime: new Date(1528231982999) // 999ms sub-second
       };
 
       let transaction;
@@ -944,15 +943,15 @@ describe("TransactionBuilder", function () {
         transaction = new StellarBase.TransactionBuilder(source, {
           timebounds,
           fee: 100,
-          networkPassphrase: StellarBase.Networks.TESTNET,
+          networkPassphrase: StellarBase.Networks.TESTNET
         })
           .addOperation(
             StellarBase.Operation.payment({
               destination:
                 "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
               asset: StellarBase.Asset.native(),
-              amount: "1000",
-            }),
+              amount: "1000"
+            })
           )
           .build();
       }).not.to.throw();
@@ -966,63 +965,63 @@ describe("TransactionBuilder", function () {
     it("requires maxTime", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
           timebounds: {
-            minTime: "0",
+            minTime: "0"
           },
-          fee: 100,
+          fee: 100
         }).build();
       }).to.throw(
-        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).",
+        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite)."
       );
     });
     it("requires minTime", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
           timebounds: {
-            maxTime: "10",
+            maxTime: "10"
           },
-          fee: 100,
+          fee: 100
         }).build();
       }).to.throw(
-        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).",
+        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite)."
       );
     });
     it("works with timebounds defined", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
           timebounds: {
             minTime: "1",
-            maxTime: "10",
+            maxTime: "10"
           },
           fee: 100,
-          networkPassphrase: StellarBase.Networks.TESTNET,
+          networkPassphrase: StellarBase.Networks.TESTNET
         }).build();
       }).to.not.throw();
     });
     it("fails with empty timebounds", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
           timebounds: {},
-          fee: 100,
+          fee: 100
         }).build();
       }).to.throw(
-        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).",
+        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite)."
       );
     });
   });
@@ -1031,21 +1030,21 @@ describe("TransactionBuilder", function () {
     it("not called", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let transactionBuilder = new StellarBase.TransactionBuilder(source, {
-        fee: 100,
+        fee: 100
       }).addOperation(
         StellarBase.Operation.payment({
           destination:
             "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
           asset: StellarBase.Asset.native(),
-          amount: "1000",
-        }),
+          amount: "1000"
+        })
       );
 
       expect(() => transactionBuilder.build()).to.throw(
-        /TimeBounds has to be set/,
+        /TimeBounds has to be set/
       );
       expect(source.sequenceNumber()).to.be.equal("0");
     });
@@ -1053,21 +1052,21 @@ describe("TransactionBuilder", function () {
     it("timeout negative", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let transactionBuilder = new StellarBase.TransactionBuilder(source, {
-        fee: 100,
+        fee: 100
       }).addOperation(
         StellarBase.Operation.payment({
           destination:
             "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
           asset: StellarBase.Asset.native(),
-          amount: "1000",
-        }),
+          amount: "1000"
+        })
       );
 
       expect(() => transactionBuilder.setTimeout(-1)).to.throw(
-        /timeout cannot be negative/,
+        /timeout cannot be negative/
       );
       expect(source.sequenceNumber()).to.be.equal("0");
     });
@@ -1075,94 +1074,94 @@ describe("TransactionBuilder", function () {
     it("sets timebounds", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let transaction = new StellarBase.TransactionBuilder(source, {
         fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
               "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
             asset: StellarBase.Asset.native(),
-            amount: "1000",
-          }),
+            amount: "1000"
+          })
         )
         .setTimeout(10)
         .build();
 
       let timeoutTimestamp = Math.floor(Date.now() / 1000) + 10;
       expect(transaction.timeBounds.maxTime).to.be.equal(
-        timeoutTimestamp.toString(),
+        timeoutTimestamp.toString()
       );
     });
 
     it("fails when maxTime already set", function () {
       let timebounds = {
         minTime: "1455287522",
-        maxTime: "1455297545",
+        maxTime: "1455297545"
       };
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let transactionBuilder = new StellarBase.TransactionBuilder(source, {
         timebounds,
-        fee: 100,
+        fee: 100
       }).addOperation(
         StellarBase.Operation.payment({
           destination:
             "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
           asset: StellarBase.Asset.native(),
-          amount: "1000",
-        }),
+          amount: "1000"
+        })
       );
 
       expect(() => transactionBuilder.setTimeout(10)).to.throw(
-        /TimeBounds.max_time has been already set/,
+        /TimeBounds.max_time has been already set/
       );
     });
 
     it("sets timebounds.maxTime when minTime already set", function () {
       let timebounds = {
         minTime: "1455287522",
-        maxTime: "0",
+        maxTime: "0"
       };
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       let transaction = new StellarBase.TransactionBuilder(source, {
         timebounds,
         fee: 100,
-        networkPassphrase: StellarBase.Networks.TESTNET,
+        networkPassphrase: StellarBase.Networks.TESTNET
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination:
               "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
             asset: StellarBase.Asset.native(),
-            amount: "1000",
-          }),
+            amount: "1000"
+          })
         )
         .setTimeout(10)
         .build();
 
       let timeoutTimestamp = Math.floor(Date.now() / 1000) + 10;
       expect(transaction.timeBounds.maxTime).to.be.equal(
-        timeoutTimestamp.toString(),
+        timeoutTimestamp.toString()
       );
     });
     it("works with TimeoutInfinite", function () {
       let source = new StellarBase.Account(
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-        "0",
+        "0"
       );
       expect(() => {
         new StellarBase.TransactionBuilder(source, {
           fee: 100,
-          networkPassphrase: StellarBase.Networks.TESTNET,
+          networkPassphrase: StellarBase.Networks.TESTNET
         })
           .setTimeout(0)
           .build();
@@ -1176,7 +1175,7 @@ describe("TransactionBuilder", function () {
       const innerSource = StellarBase.Keypair.master(networkPassphrase);
       const innerAccount = new StellarBase.Account(
         innerSource.publicKey(),
-        "7",
+        "7"
       );
       const destination =
         "GDQERENWDDSQZS7R7WKHZI3BSOYMV3FSWR7TFUYFTKQ447PIX6NREOJM";
@@ -1188,26 +1187,26 @@ describe("TransactionBuilder", function () {
         networkPassphrase: networkPassphrase,
         timebounds: {
           minTime: 0,
-          maxTime: 0,
-        },
+          maxTime: 0
+        }
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination,
             asset,
-            amount,
-          }),
+            amount
+          })
         )
         .build();
 
       let feeSource = StellarBase.Keypair.fromSecret(
-        "SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V",
+        "SB7ZMPZB3YMMK5CUWENXVLZWBK4KYX4YU5JBXQNZSK2DP2Q7V3LVTO5V"
       );
       let transaction = StellarBase.TransactionBuilder.buildFeeBumpTransaction(
         feeSource,
         "200",
         innerTx,
-        networkPassphrase,
+        networkPassphrase
       );
 
       expect(transaction).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
@@ -1218,7 +1217,7 @@ describe("TransactionBuilder", function () {
           feeSource,
           "100",
           innerTx,
-          networkPassphrase,
+          networkPassphrase
         );
       }).to.throw(/Invalid baseFee, it should be at least 200 stroops./);
 
@@ -1227,15 +1226,15 @@ describe("TransactionBuilder", function () {
         networkPassphrase: networkPassphrase,
         timebounds: {
           minTime: 0,
-          maxTime: 0,
-        },
+          maxTime: 0
+        }
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination,
             asset,
-            amount,
-          }),
+            amount
+          })
         )
         .addMemo(StellarBase.Memo.text("Happy birthday!"))
         .build();
@@ -1246,7 +1245,7 @@ describe("TransactionBuilder", function () {
           feeSource,
           "90",
           innerTx,
-          networkPassphrase,
+          networkPassphrase
         );
       }).to.throw(/Invalid baseFee, it should be at least 100 stroops./);
 
@@ -1255,15 +1254,15 @@ describe("TransactionBuilder", function () {
         networkPassphrase: networkPassphrase,
         timebounds: {
           minTime: 0,
-          maxTime: 0,
-        },
+          maxTime: 0
+        }
       })
         .addOperation(
           StellarBase.Operation.payment({
             destination,
             asset,
-            amount,
-          }),
+            amount
+          })
         )
         .build();
 
@@ -1274,7 +1273,7 @@ describe("TransactionBuilder", function () {
         feeSource,
         "200",
         innerTx,
-        networkPassphrase,
+        networkPassphrase
       );
 
       const innerTxEnvelope = innerTx.toEnvelope();
@@ -1284,8 +1283,8 @@ describe("TransactionBuilder", function () {
       const v1Tx = innerTxEnvelope.v1().tx();
       const sourceAccountEd25519 = StellarBase.Keypair.fromPublicKey(
         StellarBase.StrKey.encodeEd25519PublicKey(
-          v1Tx.sourceAccount().ed25519(),
-        ),
+          v1Tx.sourceAccount().ed25519()
+        )
       )
         .xdrAccountId()
         .value();
@@ -1296,14 +1295,14 @@ describe("TransactionBuilder", function () {
         timeBounds: v1Tx.cond().timeBounds(),
         memo: v1Tx.memo(),
         operations: v1Tx.operations(),
-        ext: new StellarBase.xdr.TransactionV0Ext(0),
+        ext: new StellarBase.xdr.TransactionV0Ext(0)
       });
       const innerV0TxEnvelope =
         new StellarBase.xdr.TransactionEnvelope.envelopeTypeTxV0(
           new StellarBase.xdr.TransactionV0Envelope({
             tx: v0Tx,
-            signatures: innerTxEnvelope.v1().signatures(),
-          }),
+            signatures: innerTxEnvelope.v1().signatures()
+          })
         );
       expect(innerV0TxEnvelope.v0().signatures()).to.have.length(1);
 
@@ -1312,7 +1311,7 @@ describe("TransactionBuilder", function () {
           feeSource,
           "200",
           new StellarBase.Transaction(innerV0TxEnvelope, networkPassphrase),
-          networkPassphrase,
+          networkPassphrase
         );
 
       expect(feeBumpTx.toXDR()).to.equal(feeBumpV0Tx.toXDR());
@@ -1327,14 +1326,14 @@ describe("TransactionBuilder", function () {
         "AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==";
       let tx = StellarBase.TransactionBuilder.fromXDR(
         xdr,
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
       expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
       expect(tx.toXDR()).to.equal(xdr);
 
       tx = StellarBase.TransactionBuilder.fromXDR(
         tx.toEnvelope(), // xdr object
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
       expect(tx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
       expect(tx.toXDR()).to.equal(xdr);
@@ -1344,14 +1343,14 @@ describe("TransactionBuilder", function () {
         "AAAAAAW8Dk9idFR5Le+xi0/h/tU47bgC1YWjtPH1vIVO3BklAAAAZACoKlYAAAABAAAAAAAAAAEAAAALdmlhIGtleWJhc2UAAAAAAQAAAAAAAAAIAAAAAN7aGcXNPO36J1I8MR8S4QFhO79T5JGG2ZeS5Ka1m4mJAAAAAAAAAAFO3BklAAAAQP0ccCoeHdm3S7bOhMjXRMn3EbmETJ9glxpKUZjPSPIxpqZ7EkyTgl3FruieqpZd9LYOzdJrNik1GNBLhgTh/AU=";
       let tx = StellarBase.TransactionBuilder.fromXDR(
         xdr,
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
       expect(tx).to.be.an.instanceof(StellarBase.Transaction);
       expect(tx.toXDR()).to.equal(xdr);
 
       tx = StellarBase.TransactionBuilder.fromXDR(
         tx.toEnvelope(), // xdr object
-        StellarBase.Networks.TESTNET,
+        StellarBase.Networks.TESTNET
       );
       expect(tx).to.be.an.instanceof(StellarBase.Transaction);
       expect(tx.toXDR()).to.equal(xdr);
@@ -1366,13 +1365,13 @@ describe("TransactionBuilder", function () {
 
     const base = new StellarBase.Account(
       "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
-      "1234",
+      "1234"
     );
     const source = new StellarBase.MuxedAccount(base, "2");
     const destination = new StellarBase.MuxedAccount(base, "3").accountId();
 
     const PUBKEY_SRC = StellarBase.StrKey.decodeEd25519PublicKey(
-      source.baseAccount().accountId(),
+      source.baseAccount().accountId()
     );
     const MUXED_SRC_ID = StellarBase.xdr.Uint64.fromString(source.id());
     const networkPassphrase = "Standalone Network ; February 2017";
@@ -1384,14 +1383,14 @@ describe("TransactionBuilder", function () {
           source: source.accountId(),
           destination: destination,
           amount: amount,
-          asset: asset,
+          asset: asset
         }),
         StellarBase.Operation.clawback({
           source: source.baseAccount().accountId(),
           from: destination,
           amount: amount,
-          asset: asset,
-        }),
+          asset: asset
+        })
       ];
 
       let builder = new StellarBase.TransactionBuilder(source, {
@@ -1399,9 +1398,9 @@ describe("TransactionBuilder", function () {
         timebounds: { minTime: 0, maxTime: 0 },
         memo: new StellarBase.Memo(
           StellarBase.MemoText,
-          "Testing muxed accounts",
+          "Testing muxed accounts"
         ),
-        networkPassphrase: networkPassphrase,
+        networkPassphrase: networkPassphrase
       });
 
       operations.forEach((op) => builder.addOperation(op));
@@ -1415,13 +1414,13 @@ describe("TransactionBuilder", function () {
       const rawMuxedSourceAccount = xdrTx.sourceAccount();
 
       expect(rawMuxedSourceAccount.switch()).to.equal(
-        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519(),
+        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
       );
 
       const innerMux = rawMuxedSourceAccount.med25519();
       expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
       expect(encodeMuxedAccountToAddress(rawMuxedSourceAccount)).to.equal(
-        source.accountId(),
+        source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
 
@@ -1431,7 +1430,7 @@ describe("TransactionBuilder", function () {
       // it should decode muxed properties by default
       let decodedTx = StellarBase.TransactionBuilder.fromXDR(
         tx.toXDR("base64"),
-        networkPassphrase,
+        networkPassphrase
       );
       expect(decodedTx.source).to.equal(source.accountId());
 
@@ -1449,7 +1448,7 @@ describe("TransactionBuilder", function () {
       expect(() => {
         StellarBase.TransactionBuilder.fromXDR(
           "AAAAAgAAAABg/GhKJU5ut52ih6Klx0ymGvsac1FPJig1CHYqyesIHQAAJxACBmMCAAAADgAAAAAAAAABAAAAATMAAAAAAAABAAAAAQAAAABg/GhKJU5ut52ih6Klx0ymGvsac1FPJig1CHYqyesIHQAAAAAAAAAAqdkSiA5dzNXstOtkPkHd6dAMPMA+MSXwK8OlrAGCKasAAAAAAcnDgAAAAAAAAAAByesIHQAAAEAuLrTfW6D+HYlUD9y+JolF1qrb40hIRATzsQaQjchKJuhOZJjLO0d7oaTD3JZ4UL4vVKtV7TvV17rQgCQnuz8F",
-          "Public Global Stellar Network ; September 2015",
+          "Public Global Stellar Network ; September 2015"
         );
       }).to.not.throw();
     });
@@ -1459,7 +1458,7 @@ describe("TransactionBuilder", function () {
       let builder = new StellarBase.TransactionBuilder(source.baseAccount(), {
         fee: "100",
         timebounds: { minTime: 0, maxTime: 0 },
-        networkPassphrase: networkPassphrase,
+        networkPassphrase: networkPassphrase
       });
 
       const muxed = StellarBase.MuxedAccount.fromAddress(destination, "0");
@@ -1469,8 +1468,8 @@ describe("TransactionBuilder", function () {
           source: source.baseAccount().accountId(),
           destination: gAddress,
           amount: amount,
-          asset: asset,
-        }),
+          asset: asset
+        })
       );
 
       let tx = builder.build();
@@ -1480,7 +1479,7 @@ describe("TransactionBuilder", function () {
         source.accountId(),
         "1000",
         tx,
-        networkPassphrase,
+        networkPassphrase
       );
 
       expect(feeTx).to.be.an.instanceof(StellarBase.FeeBumpTransaction);
@@ -1490,23 +1489,23 @@ describe("TransactionBuilder", function () {
       const rawFeeSource = xdrTx.feeSource();
 
       expect(rawFeeSource.switch()).to.equal(
-        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519(),
+        StellarBase.xdr.CryptoKeyType.keyTypeMuxedEd25519()
       );
 
       const innerMux = rawFeeSource.med25519();
       expect(innerMux.ed25519()).to.eql(PUBKEY_SRC);
       expect(encodeMuxedAccountToAddress(rawFeeSource)).to.equal(
-        source.accountId(),
+        source.accountId()
       );
       expect(innerMux.id()).to.eql(MUXED_SRC_ID);
 
       const decodedTx = StellarBase.TransactionBuilder.fromXDR(
         feeTx.toXDR("base64"),
-        networkPassphrase,
+        networkPassphrase
       );
       expect(decodedTx.feeSource).to.equal(source.accountId());
       expect(decodedTx.innerTransaction.operations[0].source).to.equal(
-        source.baseAccount().accountId(),
+        source.baseAccount().accountId()
       );
     });
 
@@ -1516,21 +1515,21 @@ describe("TransactionBuilder", function () {
           source: source.accountId(),
           destination: destination,
           amount: amount,
-          asset: asset,
+          asset: asset
         }),
         StellarBase.Operation.clawback({
           source: source.baseAccount().accountId(),
           from: destination,
           amount: amount,
-          asset: asset,
-        }),
+          asset: asset
+        })
       ];
 
       let builder = new StellarBase.TransactionBuilder(source, {
         fee: "100",
         timebounds: { minTime: 0, maxTime: 0 },
         memo: new StellarBase.Memo(StellarBase.MemoText, "Testing cloning"),
-        networkPassphrase,
+        networkPassphrase
       })
         .addOperation(operations[0])
         .addOperation(operations[1]);
@@ -1542,11 +1541,11 @@ describe("TransactionBuilder", function () {
         tx,
         `txs differ:` +
           `\n(src) ${JSON.stringify(tx, null, 2)}` +
-          `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`,
+          `\n(dst) ${JSON.stringify(cloneTx, null, 2)}`
       );
 
       cloneTx = StellarBase.TransactionBuilder.cloneFrom(tx, {
-        fee: "10000",
+        fee: "10000"
       }).build();
       expect(cloneTx.fee).to.equal("20000"); // double because two ops
 
@@ -1562,9 +1561,9 @@ describe("TransactionBuilder", function () {
         timebounds: { minTime: 0, maxTime: 0 },
         memo: new StellarBase.Memo(
           StellarBase.MemoText,
-          "Testing adding op at index",
+          "Testing adding op at index"
         ),
-        networkPassphrase,
+        networkPassphrase
       });
 
       builder.addOperationAt(
@@ -1572,9 +1571,9 @@ describe("TransactionBuilder", function () {
           source: source.accountId(),
           destination: destination,
           amount: "1",
-          asset: asset,
+          asset: asset
         }),
-        0,
+        0
       );
 
       builder.addOperationAt(
@@ -1582,9 +1581,9 @@ describe("TransactionBuilder", function () {
           source: source.accountId(),
           destination: destination,
           amount: "2",
-          asset: asset,
+          asset: asset
         }),
-        1,
+        1
       );
 
       const tx = builder.build();
@@ -1601,7 +1600,7 @@ describe("TransactionBuilder", function () {
         source: source.accountId(),
         destination: destination,
         amount: "3",
-        asset: asset,
+        asset: asset
       });
       clonedTx.addOperationAt(newOperation, 0);
       const newTx = clonedTx.build();
@@ -1619,14 +1618,14 @@ describe("TransactionBuilder.cloneFrom", function () {
   const networkPassphrase = StellarBase.Networks.TESTNET;
   const source = new StellarBase.Account(
     "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-    "0",
+    "0"
   );
   const destination =
     "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2";
   const op = StellarBase.Operation.payment({
     destination,
     asset: StellarBase.Asset.native(),
-    amount: "100",
+    amount: "100"
   });
 
   it("handles a total fee not evenly divisible by the operation count", function () {
@@ -1638,7 +1637,7 @@ describe("TransactionBuilder.cloneFrom", function () {
     const builtTx = new StellarBase.TransactionBuilder(source, {
       fee: "100",
       timebounds: { minTime: 0, maxTime: 0 },
-      networkPassphrase,
+      networkPassphrase
     })
       .addOperation(op)
       .addOperation(op)
@@ -1664,7 +1663,7 @@ describe("TransactionBuilder.cloneFrom", function () {
     const tx = new StellarBase.TransactionBuilder(source, {
       fee: "100",
       timebounds: { minTime: 0, maxTime: 0 },
-      networkPassphrase,
+      networkPassphrase
     })
       .addOperation(op)
       .setExtraSigners([extraSigner])
@@ -1676,7 +1675,7 @@ describe("TransactionBuilder.cloneFrom", function () {
     }).not.to.throw();
 
     expect(
-      cloneTx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey),
+      cloneTx.extraSigners.map(StellarBase.SignerKey.encodeSignerKey)
     ).to.eql([extraSigner]);
   });
 });
