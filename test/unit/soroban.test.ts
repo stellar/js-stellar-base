@@ -63,6 +63,11 @@ describe("Soroban", () => {
         decimals: 7,
         expected: /Invalid decimal value/i,
       },
+      {
+        amount: "1.123",
+        decimals: 2,
+        expected: /Too many decimal places/i,
+      },
     ];
 
     SUCCESS_TEST_CASES.forEach((testCase) => {
