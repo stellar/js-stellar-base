@@ -74,10 +74,11 @@ import { XdrLargeInt, type ScIntType } from "./xdr_large_int.js";
 export class ScInt extends XdrLargeInt {
   constructor(
     value: bigint | number | string,
-    opts?: { type?: ScIntType; [key: string]: unknown },
+    opts?: { type?: ScIntType; [key: string]: unknown }
   ) {
-    const bigValue = typeof value === "bigint" ? value : BigInt(value);
-    const signed = bigValue < 0;
+    const bigValue = BigInt(value);
+    const signed = bigValue < 0n;
+
     let type = opts?.type ?? "";
     if (type.startsWith("u") && signed) {
       throw TypeError(`specified type ${opts?.type} yet negative (${value})`);
@@ -87,7 +88,7 @@ export class ScInt extends XdrLargeInt {
     // of the value, treating 64 as a minimum and 256 as a maximum.
     if (type === "") {
       type = signed ? "i" : "u";
-      const bitlen = nearestBigIntSize(value);
+      const bitlen = nearestBigIntSize(bigValue);
 
       switch (bitlen) {
         case 64:
@@ -98,16 +99,16 @@ export class ScInt extends XdrLargeInt {
 
         default:
           throw RangeError(
-            `expected 64/128/256 bits for input (${value}), got ${bitlen}`,
+            `expected 64/128/256 bits for input (${value}), got ${bitlen}`
           );
       }
     }
 
-    super(type as ScIntType, value);
+    super(type as ScIntType, bigValue);
   }
 }
 
-function nearestBigIntSize(bigI: bigint | number | string): number {
+function nearestBigIntSize(bigI: bigint): number {
   // Note: Even though BigInt.toString(2) includes the negative sign for
   // negative values (???), the following is still accurate, because the
   // negative sign would be represented by a sign bit.
