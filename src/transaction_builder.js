@@ -50,9 +50,9 @@ export const TimeoutInfinite = 0;
 
 /**
  * <p>Transaction builder helps constructs a new `{@link Transaction}` using the
- * given {@link Account} as the transaction"s "source account". The transaction
+ * given {@link Account} as the transaction's "source account". The transaction
  * will use the current sequence number of the given account as its sequence
- * number and increment the given account"s sequence number by one. The given
+ * number and increment the given account's sequence number by one. The given
  * source account must include a private key for signing the transaction or an
  * error will be thrown.</p>
  *
@@ -65,17 +65,17 @@ export const TimeoutInfinite = 0;
  * source account.</p>
  *
  * <p><strong>Be careful about unsubmitted transactions!</strong> When you build
- * a transaction, `stellar-sdk` automatically increments the source account"s
+ * a transaction, `stellar-sdk` automatically increments the source account's
  * sequence number. If you end up not submitting this transaction and submitting
- * another one instead, it"ll fail due to the sequence number being wrong. So if
+ * another one instead, it'll fail due to the sequence number being wrong. So if
  * you decide not to use a built transaction, make sure to update the source
- * account"s sequence number with
+ * account's sequence number with
  * [Server.loadAccount](https://stellar.github.io/js-stellar-sdk/Server.html#loadAccount)
  * before creating another transaction.</p>
  *
  * <p>The following code example creates a new transaction with {@link
  * Operation.createAccount} and {@link Operation.payment} operations. The
- * Transaction"s source account first funds `destinationA`, then sends a payment
+ * Transaction's source account first funds `destinationA`, then sends a payment
  * to `destinationB`. The built transaction is then signed by
  * `sourceKeypair`.</p>
  *
@@ -100,7 +100,7 @@ export const TimeoutInfinite = 0;
  *
  * @param {Account} sourceAccount - source account for this transaction
  * @param {object}  opts          - Options object
- * @param {string}  opts.fee      - max fee you"re willing to pay per
+ * @param {string}  opts.fee      - max fee you're willing to pay per
  *     operation in this transaction (**in stroops**)
  *
  * @param {object}              [opts.timebounds] - timebounds for the
@@ -177,13 +177,13 @@ export class TransactionBuilder {
    *
    * @param {Transaction} tx  a "template" transaction to clone exactly
    * @param {object} [opts]   additional options to override the clone, e.g.
-   *    {fee: "1000"} will override the existing base fee derived from `tx` (see
+   *    {fee: '1000'} will override the existing base fee derived from `tx` (see
    *    the {@link TransactionBuilder} constructor for detailed options)
    *
    * @returns {TransactionBuilder} a "prepared" builder instance with the same
    *    configuration and operations as the given transaction
    *
-   * @warning This does not clone the transaction"s
+   * @warning This does not clone the transaction's
    *    {@link xdr.SorobanTransactionData} (if applicable), use
    *    {@link SorobanDataBuilder} and {@link TransactionBuilder.setSorobanData}
    *    as needed, instead..
@@ -192,7 +192,7 @@ export class TransactionBuilder {
    */
   static cloneFrom(tx, opts = {}) {
     if (!(tx instanceof Transaction)) {
-      throw new TypeError(`expected a "Transaction", got: ${tx}`);
+      throw new TypeError(`expected a 'Transaction', got: ${tx}`);
     }
 
     const sequenceNum = (BigInt(tx.sequence) - 1n).toString();
@@ -209,7 +209,7 @@ export class TransactionBuilder {
 
     // the initial fee passed to the builder gets scaled up based on the number
     // of operations at the end, so we have to down-scale first
-    const unscaledFee = parseInt(tx.fee, 10) / tx.operations.length;
+    const unscaledFee = Math.floor(parseInt(tx.fee, 10) / tx.operations.length);
 
     const builder = new TransactionBuilder(source, {
       fee: (unscaledFee || BASE_FEE).toString(),
@@ -220,7 +220,7 @@ export class TransactionBuilder {
       minAccountSequence: tx.minAccountSequence,
       minAccountSequenceAge: tx.minAccountSequenceAge,
       minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
-      extraSigners: tx.extraSigners,
+      extraSigners: tx.extraSigners?.map(SignerKey.encodeSignerKey),
       ...opts
     });
 
@@ -294,11 +294,11 @@ export class TransactionBuilder {
    *  if the network is highly congested. If you want to be sure to receive the
    *  status of the transaction within a given period you should set the {@link
    *  TimeBounds} with `maxTime` on the transaction (this is what `setTimeout`
-   *  does internally; if there"s `minTime` set but no `maxTime` it will be
+   *  does internally; if there's `minTime` set but no `maxTime` it will be
    *  added).
    *
    *  A call to `TransactionBuilder.setTimeout` is **required** if Transaction
-   *  does not have `max_time` set. If you don"t want to set timeout, use
+   *  does not have `max_time` set. If you don't want to set timeout, use
    *  `{@link TimeoutInfinite}`. In general you should set `{@link
    *  TimeoutInfinite}` only in smart contracts.
    *
@@ -309,7 +309,7 @@ export class TransactionBuilder {
    *  correctly.
    *
    * @param {number} timeoutSeconds   Number of seconds the transaction is good.
-   *     Can"t be negative. If the value is {@link TimeoutInfinite}, the
+   *     Can't be negative. If the value is {@link TimeoutInfinite}, the
    *     transaction is good indefinitely.
    *
    * @returns {TransactionBuilder}
@@ -356,11 +356,11 @@ export class TransactionBuilder {
    *
    * @param {Date|number} minEpochOrDate  Either a JS Date object, or a number
    *     of UNIX epoch seconds. The transaction is valid after this timestamp.
-   *     Can"t be negative. If the value is `0`, the transaction is valid
+   *     Can't be negative. If the value is `0`, the transaction is valid
    *     immediately.
    * @param {Date|number} maxEpochOrDate  Either a JS Date object, or a number
    *     of UNIX epoch seconds. The transaction is valid until this timestamp.
-   *     Can"t be negative. If the value is `0`, the transaction is valid
+   *     Can't be negative. If the value is `0`, the transaction is valid
    *     indefinitely.
    *
    * @returns {TransactionBuilder}
@@ -441,13 +441,13 @@ export class TransactionBuilder {
    *
    *     minAccountSequence <= sourceAccountSequence < tx.seqNum
    *
-   * Note that after execution the account"s sequence number is always raised to
+   * Note that after execution the account's sequence number is always raised to
    * `tx.seqNum`. Internally this will set the `minAccountSequence`
    * precondition.
    *
    * @param {string} minAccountSequence   The minimum source account sequence
    *     number this transaction is valid for. If the value is `0` (the
-   *     default), the transaction is valid when `sourceAccount"s sequence
+   *     default), the transaction is valid when `sourceAccount's sequence
    *     number == tx.seqNum- 1`.
    *
    * @returns {TransactionBuilder}
@@ -466,7 +466,7 @@ export class TransactionBuilder {
 
   /**
    * For the transaction to be valid, the current ledger time must be at least
-   * `minAccountSequenceAge` greater than sourceAccount"s `sequenceTime`.
+   * `minAccountSequenceAge` greater than sourceAccount's `sequenceTime`.
    * Internally this will set the `minAccountSequenceAge` precondition.
    *
    * @param {number} durationInSeconds  The minimum amount of time between
@@ -497,7 +497,7 @@ export class TransactionBuilder {
 
   /**
    * For the transaction to be valid, the current ledger number must be at least
-   * `minAccountSequenceLedgerGap` greater than sourceAccount"s ledger sequence.
+   * `minAccountSequenceLedgerGap` greater than sourceAccount's ledger sequence.
    * Internally this will set the `minAccountSequenceLedgerGap` precondition.
    *
    * @param {number} gap  The minimum number of ledgers between source account
@@ -567,7 +567,7 @@ export class TransactionBuilder {
   }
 
   /**
-   * Sets the transaction"s internal Soroban transaction data (resources,
+   * Sets the transaction's internal Soroban transaction data (resources,
    * footprint, etc.).
    *
    * For non-contract(non-Soroban) transactions, this setting has no effect. In
@@ -790,7 +790,7 @@ export class TransactionBuilder {
 
   /**
    * This will build the transaction.
-   * It will also increment the source account"s sequence number by 1.
+   * It will also increment the source account's sequence number by 1.
    * @returns {Transaction} This method will return the built {@link Transaction}.
    */
   build() {
@@ -815,10 +815,14 @@ export class TransactionBuilder {
     }
 
     if (isValidDate(this.timebounds.minTime)) {
-      this.timebounds.minTime = this.timebounds.minTime.getTime() / 1000;
+      this.timebounds.minTime = Math.floor(
+        this.timebounds.minTime.getTime() / 1000
+      );
     }
     if (isValidDate(this.timebounds.maxTime)) {
-      this.timebounds.maxTime = this.timebounds.maxTime.getTime() / 1000;
+      this.timebounds.maxTime = Math.floor(
+        this.timebounds.maxTime.getTime() / 1000
+      );
     }
 
     this.timebounds.minTime = UnsignedHyper.fromString(
@@ -1058,5 +1062,6 @@ export class TransactionBuilder {
  */
 export function isValidDate(d) {
   // isnan is okay here because it correctly checks for invalid date objects
+  // eslint-disable-next-line no-restricted-globals
   return d instanceof Date && !isNaN(d);
 }
