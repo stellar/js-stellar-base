@@ -67,7 +67,7 @@ describe("Operation.revokeTrustlineSponsorship()", () => {
     ).toThrow(/account is invalid/);
 
     expect(() =>
-      // @ts-expect-error: intentionally passing invalid account to test runtime validation
+      // @ts-expect-error: intentionally omitting required asset field to test that account validation runs first
       Operation.revokeTrustlineSponsorship({ account: "GBAD" }),
     ).toThrow(/account is invalid/);
   });

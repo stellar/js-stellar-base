@@ -53,24 +53,17 @@ describe("Operation.changeTrust()", () => {
     const op = Operation.changeTrust({ asset: lpAsset });
     expect(op).toBeInstanceOf(xdr.Operation);
 
-    const operation = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
-    );
+    const xdrOp = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
+    const obj = Operation.fromXDRObject(xdrOp);
 
-    expect(operation.type).toBe("changeTrust");
-    if (operation.type !== "changeTrust") throw new Error("unexpected type");
+    expect(obj.type).toBe("changeTrust");
+    if (obj.type !== "changeTrust") throw new Error("unexpected type");
 
-    expect(operation.line).toEqual(lpAsset);
+    expect(obj.line).toEqual(lpAsset);
     expect(
-      (
-        xdr.Operation.fromXDR(op.toXDR("hex"), "hex")
-          .body()
-          .value() as xdr.ChangeTrustOp
-      )
-        .limit()
-        .toString(),
+      (xdrOp.body().value() as xdr.ChangeTrustOp).limit().toString(),
     ).toBe("9223372036854775807");
-    expect(operation.limit).toBe("922337203685.4775807");
+    expect(obj.limit).toBe("922337203685.4775807");
   });
 
   it("deletes an Asset trustline by setting limit to 0", () => {
