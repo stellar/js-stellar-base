@@ -107,6 +107,7 @@ describe("Operation.liquidityPoolDeposit()", () => {
     const obj = Operation.fromXDRObject(xdrOp);
     expect(obj.type).toBe("liquidityPoolDeposit");
     if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
+
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
     expect(obj.maxAmountB).toBe(maxAmountB);
@@ -126,8 +127,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("liquidityPoolDeposit");
     if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
+
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
     expect(obj.maxAmountB).toBe(maxAmountB);
@@ -147,8 +150,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("liquidityPoolDeposit");
     if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
+
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
     expect(obj.maxAmountB).toBe(maxAmountB);
@@ -168,8 +173,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("liquidityPoolDeposit");
     if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
+
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
     expect(obj.maxAmountB).toBe(maxAmountB);
@@ -190,6 +197,7 @@ describe("Operation.liquidityPoolDeposit()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });

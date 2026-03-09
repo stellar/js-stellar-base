@@ -17,12 +17,20 @@ const amount = "11.2782700";
 describe("Operation.createPassiveSellOffer()", () => {
   it("creates a createPassiveSellOfferOp with string price", () => {
     const price = "3.07";
-    const op = Operation.createPassiveSellOffer({ selling, buying, amount, price });
+    const op = Operation.createPassiveSellOffer({
+      selling,
+      buying,
+      amount,
+      price,
+    });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     const obj = Operation.fromXDRObject(operation);
+
     expect(obj.type).toBe("createPassiveSellOffer");
-    if (obj.type !== "createPassiveSellOffer") throw new Error("unexpected type");
+    if (obj.type !== "createPassiveSellOffer")
+      throw new Error("unexpected type");
+
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
     expect(
@@ -36,12 +44,20 @@ describe("Operation.createPassiveSellOffer()", () => {
 
   it("creates a createPassiveSellOfferOp with number price", () => {
     const price = 3.07;
-    const op = Operation.createPassiveSellOffer({ selling, buying, amount, price });
+    const op = Operation.createPassiveSellOffer({
+      selling,
+      buying,
+      amount,
+      price,
+    });
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("createPassiveSellOffer");
-    if (obj.type !== "createPassiveSellOffer") throw new Error("unexpected type");
+    if (obj.type !== "createPassiveSellOffer")
+      throw new Error("unexpected type");
+
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
     expect(obj.amount).toBe(amount);
@@ -50,12 +66,20 @@ describe("Operation.createPassiveSellOffer()", () => {
 
   it("creates a createPassiveSellOfferOp with BigNumber price", () => {
     const price = new BigNumber(5).dividedBy(4);
-    const op = Operation.createPassiveSellOffer({ selling, buying, amount, price });
+    const op = Operation.createPassiveSellOffer({
+      selling,
+      buying,
+      amount,
+      price,
+    });
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("createPassiveSellOffer");
-    if (obj.type !== "createPassiveSellOffer") throw new Error("unexpected type");
+    if (obj.type !== "createPassiveSellOffer")
+      throw new Error("unexpected type");
+
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
     expect(obj.amount).toBe(amount);
@@ -98,8 +122,7 @@ describe("Operation.createPassiveSellOffer()", () => {
   });
 
   it("preserves an optional source account", () => {
-    const source =
-      "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+    const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.createPassiveSellOffer({
       selling,
       buying,
@@ -110,7 +133,9 @@ describe("Operation.createPassiveSellOffer()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
-    if (obj.type !== "createPassiveSellOffer") throw new Error("unexpected type");
+
+    if (obj.type !== "createPassiveSellOffer")
+      throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 });
