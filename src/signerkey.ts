@@ -11,7 +11,7 @@ type SignerStrKeyType =
  * A container class with helpers to convert between signer keys
  * (`xdr.SignerKey`) and {@link StrKey}s.
  *
- * It's primarly used for manipulating the `extraSigners` precondition on a
+ * It's primarily used for manipulating the `extraSigners` precondition on a
  * {@link Transaction}.
  *
  * @see {@link TransactionBuilder.setExtraSigners}
@@ -37,9 +37,9 @@ export class SignerKey {
       case "signedPayload":
         return xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
           new xdr.SignerKeyEd25519SignedPayload({
-            ed25519: raw.slice(0, 32),
-            payload: raw.slice(32 + 4),
-          }),
+            ed25519: raw.subarray(0, 32),
+            payload: raw.subarray(36, 36 + raw.readUInt32BE(32))
+          })
         );
 
       case "ed25519PublicKey":
