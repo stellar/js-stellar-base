@@ -11,19 +11,19 @@ describe("building authorization entries", function () {
           new xdr.InvokeContractArgs({
             contractAddress: new Address(contractId).toScAddress(),
             functionName: "hello",
-            args: [xdr.ScVal.scvU64(1234n)],
-          }),
+            args: [xdr.ScVal.scvU64(1234n)]
+          })
         ),
-      subInvocations: [],
+      subInvocations: []
     }),
     credentials: xdr.SorobanCredentials.sorobanCredentialsAddress(
       new xdr.SorobanAddressCredentials({
         address: new Address(kp.publicKey()).toScAddress(),
         nonce: new xdr.Int64(123456789101112n),
         signatureExpirationLedger: 0,
-        signature: xdr.ScVal.scvVec([]),
-      }),
-    ),
+        signature: xdr.ScVal.scvVec([])
+      })
+    )
   });
 
   // handle bigints when serializing to JSON
@@ -40,11 +40,11 @@ describe("building authorization entries", function () {
       (preimage) => {
         return {
           signature: kp.sign(StellarBase.hash(preimage.toXDR())),
-          publicKey: kp.publicKey(),
+          publicKey: kp.publicKey()
         };
       },
-      "callback w/ obj",
-    ],
+      "callback w/ obj"
+    ]
   ].forEach(([signer, methodName]) => {
     it(`signs the entry correctly (${methodName})`, function (done) {
       StellarBase.authorizeEntry(authEntry, signer, 10)
@@ -52,7 +52,7 @@ describe("building authorization entries", function () {
           expect(signedEntry.rootInvocation().toXDR()).to.eql(
             authEntry.rootInvocation().toXDR(),
             `invocation tree changed! before: ${authEntry.rootInvocation()},` +
-              `after: ${JSON.stringify(signedEntry)}`,
+              `after: ${JSON.stringify(signedEntry)}`
           );
 
           const signedAddr = signedEntry.credentials().address();
@@ -68,7 +68,7 @@ describe("building authorization entries", function () {
           expect(sig).to.have.property("public_key");
           expect(sig).to.have.property("signature");
           expect(StrKey.encodeEd25519PublicKey(sig.public_key)).to.eql(
-            kp.publicKey(),
+            kp.publicKey()
           );
 
           done();
@@ -80,7 +80,7 @@ describe("building authorization entries", function () {
   it("throws with a random signer", function () {
     const randomKp = StellarBase.Keypair.random();
     expect(
-      StellarBase.authorizeEntry(authEntry, randomKp, 10),
+      StellarBase.authorizeEntry(authEntry, randomKp, 10)
     ).to.eventually.be.rejectedWith(/identity doesn't match/i);
   });
 
@@ -89,8 +89,8 @@ describe("building authorization entries", function () {
       StellarBase.authorizeEntry(
         authEntry,
         (_) => accountId.sign(Buffer.from("bs")),
-        10,
-      ),
+        10
+      )
     ).to.eventually.be.rejectedWith(/signature doesn't match/i);
   });
 
@@ -128,10 +128,10 @@ describe("building authorization entries", function () {
       const entry = await StellarBase.authorizeInvocation(
         kp,
         10,
-        authEntry.rootInvocation(),
+        authEntry.rootInvocation()
       );
       expect(entry.credentials().address().nonce()).to.eql(
-        new xdr.Int64(4294967296n),
+        new xdr.Int64(4294967296n)
       ); // 2^32
     });
 
@@ -140,7 +140,7 @@ describe("building authorization entries", function () {
       const entry = await StellarBase.authorizeInvocation(
         kp,
         10,
-        authEntry.rootInvocation(),
+        authEntry.rootInvocation()
       );
       expect(entry.credentials().address().nonce()).to.eql(new xdr.Int64(-1n));
     });
@@ -150,10 +150,10 @@ describe("building authorization entries", function () {
       const entry = await StellarBase.authorizeInvocation(
         kp,
         10,
-        authEntry.rootInvocation(),
+        authEntry.rootInvocation()
       );
       expect(entry.credentials().address().nonce()).to.eql(
-        new xdr.Int64(-9223372036854775808n),
+        new xdr.Int64(-9223372036854775808n)
       ); // -(2^63), Int64 minimum
     });
 
@@ -162,7 +162,7 @@ describe("building authorization entries", function () {
       const entry = await StellarBase.authorizeInvocation(
         kp,
         10,
-        authEntry.rootInvocation(),
+        authEntry.rootInvocation()
       );
       expect(entry.credentials().address().nonce()).to.eql(new xdr.Int64(0n));
     });

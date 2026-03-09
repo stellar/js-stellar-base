@@ -150,14 +150,26 @@ describe("Memo", () => {
 
     it("throws an error when invalid argument was passed", () => {
       // @ts-expect-error testing missing arg
-      expect(() => Memo.id()).toThrow(/Expects a int64/);
+      expect(() => Memo.id()).toThrow(/Expects a uint64/);
       // @ts-expect-error testing invalid input
-      expect(() => Memo.id({})).toThrow(/Expects a int64/);
+      expect(() => Memo.id({})).toThrow(/Expects a uint64/);
       // @ts-expect-error testing invalid input
-      expect(() => Memo.id(Infinity)).toThrow(/Expects a int64/);
+      expect(() => Memo.id(Infinity)).toThrow(/Expects a uint64/);
       // @ts-expect-error testing invalid input
-      expect(() => Memo.id(NaN)).toThrow(/Expects a int64/);
-      expect(() => Memo.id("test")).toThrow(/Expects a int64/);
+      expect(() => Memo.id(NaN)).toThrow(/Expects a uint64/);
+      expect(() => Memo.id("test")).toThrow(/Expects a uint64/);
+    });
+
+    it("throws an error for a negative value", () => {
+      expect(() => Memo.id("-1")).toThrow(/Expects a uint64/);
+    });
+
+    it("throws an error for a decimal value", () => {
+      expect(() => Memo.id("1.5")).toThrow(/Expects a uint64/);
+    });
+
+    it("throws an error when value exceeds uint64 max", () => {
+      expect(() => Memo.id("18446744073709551616")).toThrow(/Expects a uint64/);
     });
   });
 
