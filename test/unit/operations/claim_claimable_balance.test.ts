@@ -11,8 +11,11 @@ describe("Operation.claimClaimableBalance()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     const obj = Operation.fromXDRObject(operation);
+
     expect(obj.type).toBe("claimClaimableBalance");
-    if (obj.type !== "claimClaimableBalance") throw new Error("unexpected type");
+    if (obj.type !== "claimClaimableBalance")
+      throw new Error("unexpected type");
+
     expect(obj.balanceId).toBe(balanceId);
   });
 
@@ -30,13 +33,14 @@ describe("Operation.claimClaimableBalance()", () => {
   });
 
   it("preserves an optional source account", () => {
-    const source =
-      "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+    const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.claimClaimableBalance({ balanceId, source });
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
-    if (obj.type !== "claimClaimableBalance") throw new Error("unexpected type");
+
+    if (obj.type !== "claimClaimableBalance")
+      throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 });

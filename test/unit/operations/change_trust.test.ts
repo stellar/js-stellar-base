@@ -22,8 +22,10 @@ describe("Operation.changeTrust()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     const obj = Operation.fromXDRObject(operation);
+
     expect(obj.type).toBe("changeTrust");
     if (obj.type !== "changeTrust") throw new Error("unexpected type");
+
     expect(obj.line).toEqual(usd);
     expect(
       (operation.body().value() as xdr.ChangeTrustOp).limit().toString(),
@@ -36,8 +38,10 @@ describe("Operation.changeTrust()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     const obj = Operation.fromXDRObject(operation);
+
     expect(obj.type).toBe("changeTrust");
     if (obj.type !== "changeTrust") throw new Error("unexpected type");
+
     expect(obj.line).toEqual(usd);
     expect(
       (operation.body().value() as xdr.ChangeTrustOp).limit().toString(),
@@ -48,11 +52,14 @@ describe("Operation.changeTrust()", () => {
   it("creates a changeTrustOp with LiquidityPoolAsset using default limit (MAX_INT64)", () => {
     const op = Operation.changeTrust({ asset: lpAsset });
     expect(op).toBeInstanceOf(xdr.Operation);
+
     const operation = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(operation.type).toBe("changeTrust");
     if (operation.type !== "changeTrust") throw new Error("unexpected type");
+
     expect(operation.line).toEqual(lpAsset);
     expect(
       (
@@ -71,8 +78,10 @@ describe("Operation.changeTrust()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("changeTrust");
     if (obj.type !== "changeTrust") throw new Error("unexpected type");
+
     expect(obj.line).toEqual(usd);
     expect(obj.limit).toBe("0.0000000");
   });
@@ -82,8 +91,10 @@ describe("Operation.changeTrust()", () => {
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     expect(obj.type).toBe("changeTrust");
     if (obj.type !== "changeTrust") throw new Error("unexpected type");
+
     expect(obj.line).toEqual(lpAsset);
     expect(obj.limit).toBe("0.0000000");
   });
@@ -103,12 +114,12 @@ describe("Operation.changeTrust()", () => {
   });
 
   it("preserves an optional source account", () => {
-    const source =
-      "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+    const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.changeTrust({ asset: usd, source });
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     if (obj.type !== "changeTrust") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });

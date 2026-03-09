@@ -11,9 +11,11 @@ describe("Operation.clawbackClaimableBalance()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     const obj = Operation.fromXDRObject(operation);
+
     expect(obj.type).toBe("clawbackClaimableBalance");
     if (obj.type !== "clawbackClaimableBalance")
       throw new Error("unexpected type");
+
     expect(obj.balanceId).toBe(balanceId);
   });
 
@@ -31,12 +33,12 @@ describe("Operation.clawbackClaimableBalance()", () => {
   });
 
   it("preserves an optional source account", () => {
-    const source =
-      "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+    const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.clawbackClaimableBalance({ balanceId, source });
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     if (obj.type !== "clawbackClaimableBalance")
       throw new Error("unexpected type");
     expect(obj.source).toBe(source);

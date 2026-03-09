@@ -9,8 +9,10 @@ describe("Operation.bumpSequence()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     const obj = Operation.fromXDRObject(operation);
+
     expect(obj.type).toBe("bumpSequence");
     if (obj.type !== "bumpSequence") throw new Error("unexpected type");
+
     expect(obj.bumpTo).toBe(opts.bumpTo);
   });
 
@@ -22,18 +24,18 @@ describe("Operation.bumpSequence()", () => {
   });
 
   it("fails when bumpTo is not a stringified number", () => {
-    expect(() =>
-      Operation.bumpSequence({ bumpTo: "not-a-number" }),
-    ).toThrow(/bumpTo must be a stringified number/);
+    expect(() => Operation.bumpSequence({ bumpTo: "not-a-number" })).toThrow(
+      /bumpTo must be a stringified number/,
+    );
   });
 
   it("preserves an optional source account", () => {
-    const source =
-      "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+    const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.bumpSequence({ bumpTo: "100", source });
     const obj = Operation.fromXDRObject(
       xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
     );
+
     if (obj.type !== "bumpSequence") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
