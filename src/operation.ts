@@ -1,18 +1,58 @@
-import { Hyper } from "@stellar/js-xdr";
-import BigNumber from "./util/bignumber";
-import { trimEnd } from "./util/util";
-import { best_r } from "./util/continued_fraction";
-import { Asset } from "./asset";
-import { LiquidityPoolAsset } from "./liquidity_pool_asset";
-import { Claimant } from "./claimant";
-import { StrKey } from "./strkey";
-import { LiquidityPoolId } from "./liquidity_pool_id";
-import xdr from "./xdr";
-import * as ops from "./operations";
+import { Asset } from "./asset.js";
+import { LiquidityPoolAsset } from "./liquidity_pool_asset.js";
+import { Claimant } from "./claimant.js";
+import { StrKey } from "./strkey.js";
+import { LiquidityPoolId } from "./liquidity_pool_id.js";
+import xdr from "./xdr.js";
+
+import BigNumber from "./util/bignumber.js";
+import { trimEnd } from "./util/util.js";
+import { best_r } from "./util/continued_fraction.js";
 import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress
-} from "./util/decode_encode_muxed_account";
+} from "./util/decode_encode_muxed_account.js";
+
+import * as ops from "./operations/index.js";
+import type {
+  OperationAttributes,
+  OperationRecord,
+  OperationType as _OperationType,
+  BaseOperation as _BaseOperation,
+  CreateAccountResult,
+  PaymentResult,
+  PathPaymentStrictReceiveResult,
+  PathPaymentStrictSendResult,
+  CreatePassiveSellOfferResult,
+  ManageSellOfferResult,
+  ManageBuyOfferResult,
+  SetOptionsResult,
+  ChangeTrustResult,
+  AllowTrustResult,
+  AccountMergeResult,
+  InflationResult,
+  ManageDataResult,
+  BumpSequenceResult,
+  CreateClaimableBalanceResult,
+  ClaimClaimableBalanceResult,
+  BeginSponsoringFutureReservesResult,
+  EndSponsoringFutureReservesResult,
+  RevokeAccountSponsorshipResult,
+  RevokeTrustlineSponsorshipResult,
+  RevokeOfferSponsorshipResult,
+  RevokeDataSponsorshipResult,
+  RevokeClaimableBalanceSponsorshipResult,
+  RevokeLiquidityPoolSponsorshipResult,
+  RevokeSignerSponsorshipResult,
+  ClawbackResult,
+  ClawbackClaimableBalanceResult,
+  SetTrustLineFlagsResult,
+  LiquidityPoolDepositResult,
+  LiquidityPoolWithdrawResult,
+  InvokeHostFunctionResult,
+  ExtendFootprintTTLResult,
+  RestoreFootprintResult
+} from "./operations/types.js";
 
 const ONE = 10000000;
 const MAX_INT64 = "9223372036854775807";
@@ -101,7 +141,10 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * @class Operation
  */
 export class Operation {
-  static setSourceAccount(opAttributes, opts) {
+  static setSourceAccount(
+    opAttributes: OperationAttributes,
+    opts: { source?: string }
+  ) {
     if (opts.source) {
       try {
         opAttributes.sourceAccount = decodeAddressToMuxedAccount(opts.source);
@@ -115,17 +158,22 @@ export class Operation {
    * Deconstructs the raw XDR operation object into the structured object that
    * was used to create the operation (i.e. the `opts` parameter to most ops).
    *
-   * @param {xdr.Operation}   operation - An XDR Operation.
-   * @return {Operation}
+   * @param operation - An XDR Operation.
    */
-  static fromXDRObject(operation) {
-    const result = {};
-    if (operation.sourceAccount()) {
-      result.source = encodeMuxedAccountToAddress(operation.sourceAccount());
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
+  static fromXDRObject<T extends OperationRecord = OperationRecord>(
+    operation: xdr.Operation
+  ): T {
+    const result: Record<string, unknown> = {};
+    const sourceAccount = operation.sourceAccount();
+
+    if (sourceAccount) {
+      result.source = encodeMuxedAccountToAddress(sourceAccount);
     }
 
-    const attrs = operation.body().value();
-    const operationName = operation.body().switch().name;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const attrs: any = operation.body().value();
+    const operationName: string = operation.body().switch().name;
 
     switch (operationName) {
       case "createAccount": {
@@ -152,9 +200,8 @@ export class Operation {
 
         const path = attrs.path();
 
-        // note that Object.values isn't supported by node 6!
         Object.keys(path).forEach((pathKey) => {
-          result.path.push(Asset.fromOperation(path[pathKey]));
+          (result.path as Asset[]).push(Asset.fromOperation(path[pathKey]));
         });
         break;
       }
@@ -169,14 +216,14 @@ export class Operation {
 
         const path = attrs.path();
 
-        // note that Object.values isn't supported by node 6!
         Object.keys(path).forEach((pathKey) => {
-          result.path.push(Asset.fromOperation(path[pathKey]));
+          (result.path as Asset[]).push(Asset.fromOperation(path[pathKey]));
         });
         break;
       }
       case "changeTrust": {
         result.type = "changeTrust";
+
         switch (attrs.line().switch()) {
           case xdr.AssetType.assetTypePoolShare():
             result.line = LiquidityPoolAsset.fromOperation(attrs.line());
@@ -185,6 +232,7 @@ export class Operation {
             result.line = Asset.fromOperation(attrs.line());
             break;
         }
+
         result.limit = this._fromXDRAmount(attrs.limit());
         break;
       }
@@ -192,12 +240,13 @@ export class Operation {
         result.type = "allowTrust";
         result.trustor = accountIdtoAddress(attrs.trustor());
         result.assetCode = attrs.asset().value().toString();
-        result.assetCode = trimEnd(result.assetCode, "\0");
+        result.assetCode = trimEnd(result.assetCode as string, "\0");
         result.authorize = attrs.authorize();
         break;
       }
       case "setOptions": {
         result.type = "setOptions";
+
         if (attrs.inflationDest()) {
           result.inflationDest = accountIdtoAddress(attrs.inflationDest());
         }
@@ -215,8 +264,9 @@ export class Operation {
             : undefined;
 
         if (attrs.signer()) {
-          const signer = {};
+          const signer: Record<string, unknown> = {};
           const arm = attrs.signer().key().arm();
+
           if (arm === "ed25519") {
             signer.ed25519PublicKey = accountIdtoAddress(attrs.signer().key());
           } else if (arm === "preAuthTx") {
@@ -291,8 +341,9 @@ export class Operation {
         result.asset = Asset.fromOperation(attrs.asset());
         result.amount = this._fromXDRAmount(attrs.amount());
         result.claimants = [];
-        attrs.claimants().forEach((claimant) => {
-          result.claimants.push(Claimant.fromXDR(claimant));
+
+        attrs.claimants().forEach((claimant: xdr.Claimant) => {
+          (result.claimants as Claimant[]).push(Claimant.fromXDR(claimant));
         });
         break;
       }
@@ -336,28 +387,34 @@ export class Operation {
         const clears = attrs.clearFlags();
         const sets = attrs.setFlags();
 
-        const mapping = {
+        const mapping: Record<string, xdr.TrustLineFlags> = {
           authorized: xdr.TrustLineFlags.authorizedFlag(),
           authorizedToMaintainLiabilities:
             xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
           clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
         };
 
-        const getFlagValue = (key) => {
-          const bit = mapping[key].value;
+        const getFlagValue = (key: string) => {
+          const bit = mapping[key]?.value ?? 0;
+
           if (sets & bit) {
             return true;
           }
+
           if (clears & bit) {
             return false;
           }
+
           return undefined;
         };
 
-        result.flags = {};
+        const flags: Record<string, boolean | undefined> = {};
+
         Object.keys(mapping).forEach((flagName) => {
-          result.flags[flagName] = getFlagValue(flagName);
+          flags[flagName] = getFlagValue(flagName);
         });
+
+        result.flags = flags;
 
         break;
       }
@@ -397,8 +454,10 @@ export class Operation {
         throw new Error(`Unknown operation: ${operationName}`);
       }
     }
-    return result;
+
+    return result as unknown as T;
   }
+  /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
 
   /**
    * Validates that a given amount is possible for a Stellar asset.
@@ -410,17 +469,16 @@ export class Operation {
    * Note that while smart contracts allow larger amounts, this is oriented
    * towards validating the standard Stellar operations.
    *
-   * @param {string}  value       the amount to validate
-   * @param {boolean} allowZero   optionally, whether or not zero is valid (default: no)
-   *
-   * @returns {boolean}
+   * @param value       the amount to validate
+   * @param allowZero   optionally, whether or not zero is valid (default: no)
    */
-  static isValidAmount(value, allowZero = false) {
+  static isValidAmount(value: unknown, allowZero = false): boolean {
     if (typeof value !== "string") {
       return false;
     }
 
     let amount;
+
     try {
       amount = new BigNumber(value);
     } catch (e) {
@@ -435,7 +493,7 @@ export class Operation {
       // > Max value
       amount.times(ONE).gt(new BigNumber(MAX_INT64).toString()) ||
       // Decimal places (max 7)
-      amount.decimalPlaces() > 7 ||
+      (amount.decimalPlaces() ?? 0) > 7 ||
       // NaN or Infinity
       amount.isNaN() ||
       !amount.isFinite()
@@ -446,7 +504,7 @@ export class Operation {
     return true;
   }
 
-  static constructAmountRequirementsError(arg) {
+  static constructAmountRequirementsError(arg: string): string {
     return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
   }
 
@@ -455,81 +513,89 @@ export class Operation {
    * If `value` is not `Number`, `String` or `Undefined` then throws an error.
    * Used in {@link Operation.setOptions}.
    * @private
-   * @param {string} name Name of the property (used in error message only)
-   * @param {*} value Value to check
-   * @param {function(value, name)} isValidFunction Function to check other constraints (the argument will be a `Number`)
-   * @returns {undefined|Number}
+   * @param name Name of the property (used in error message only)
+   * @param value Value to check
+   * @param isValidFunction Function to check other constraints (the argument will be a `Number`)
    */
-  static _checkUnsignedIntValue(name, value, isValidFunction = null) {
+  static _checkUnsignedIntValue(
+    name: string,
+    value: number | string | undefined,
+    isValidFunction: ((value: number, name: string) => boolean) | null = null
+  ): number | undefined {
     if (typeof value === "undefined") {
       return undefined;
     }
 
-    if (typeof value === "string") {
-      value = parseFloat(value);
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+
+    if (
+      typeof numValue !== "number" ||
+      !Number.isFinite(numValue) ||
+      numValue % 1 !== 0
+    ) {
+      throw new Error(`${name} value is invalid`);
     }
 
-    switch (true) {
-      case typeof value !== "number" ||
-        !Number.isFinite(value) ||
-        value % 1 !== 0:
-        throw new Error(`${name} value is invalid`);
-      case value < 0:
-        throw new Error(`${name} value must be unsigned`);
-      case !isValidFunction ||
-        (isValidFunction && isValidFunction(value, name)):
-        return value;
-      default:
-        throw new Error(`${name} value is invalid`);
+    if (numValue < 0) {
+      throw new Error(`${name} value must be unsigned`);
     }
+
+    if (!isValidFunction || isValidFunction(numValue, name)) {
+      return numValue;
+    }
+
+    throw new Error(`${name} value is invalid`);
   }
   /**
    * @private
-   * @param {string|BigNumber} value Value
-   * @returns {Hyper} XDR amount
+   * @param value Value
+   * @returns XDR amount
    */
-  static _toXDRAmount(value) {
+  static _toXDRAmount(value: string): xdr.Int64 {
     const amount = new BigNumber(value).times(ONE);
-    return Hyper.fromString(amount.toString());
+    return xdr.Int64.fromString(amount.toString());
   }
 
   /**
    * @private
-   * @param {string|BigNumber} value XDR amount
-   * @returns {BigNumber} Number
+   * @param value XDR amount
+   * @returns Number
    */
-  static _fromXDRAmount(value) {
-    return new BigNumber(value).div(ONE).toFixed(7);
+  static _fromXDRAmount(value: xdr.Int64): string {
+    return new BigNumber(value.toString()).div(ONE).toFixed(7);
   }
 
   /**
    * @private
-   * @param {object} price Price object
-   * @param {function} price.n numerator function that returns a value
-   * @param {function} price.d denominator function that returns a value
-   * @returns {BigNumber} Big string
+   * @param price Price object
+   * @param price.n numerator function that returns a value
+   * @param price.d denominator function that returns a value
+   * @returns Big string
    */
-  static _fromXDRPrice(price) {
+  static _fromXDRPrice(price: xdr.Price): string {
     const n = new BigNumber(price.n());
     return n.div(new BigNumber(price.d())).toString();
   }
 
   /**
    * @private
-   * @param {object} price Price object
-   * @param {function} price.n numerator function that returns a value
-   * @param {function} price.d denominator function that returns a value
-   * @returns {object} XDR price object
+   * @param price Price object
+   * @param price.n numerator function that returns a value
+   * @param price.d denominator function that returns a value
+   * @returns XDR price object
    */
-  static _toXDRPrice(price) {
-    let xdrObject;
-    if (price.n && price.d) {
+  static _toXDRPrice(
+    price: number | string | { n: number; d: number }
+  ): xdr.Price {
+    let xdrObject: xdr.Price;
+
+    if (typeof price === "object" && "n" in price && "d" in price) {
       xdrObject = new xdr.Price(price);
     } else {
       const approx = best_r(price);
       xdrObject = new xdr.Price({
-        n: parseInt(approx[0], 10),
-        d: parseInt(approx[1], 10)
+        n: parseInt(String(approx[0]), 10),
+        d: parseInt(String(approx[1]), 10)
       });
     }
 
@@ -539,12 +605,60 @@ export class Operation {
 
     return xdrObject;
   }
+
+  // Attach all imported operations as static methods on the Operation class
+  static accountMerge = ops.accountMerge;
+  static allowTrust = ops.allowTrust;
+  static bumpSequence = ops.bumpSequence;
+  static changeTrust = ops.changeTrust;
+  static createAccount = ops.createAccount;
+  static createClaimableBalance = ops.createClaimableBalance;
+  static claimClaimableBalance = ops.claimClaimableBalance;
+  static clawbackClaimableBalance = ops.clawbackClaimableBalance;
+  static createPassiveSellOffer = ops.createPassiveSellOffer;
+  static inflation = ops.inflation;
+  static manageData = ops.manageData;
+  static manageSellOffer = ops.manageSellOffer;
+  static manageBuyOffer = ops.manageBuyOffer;
+  static pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
+  static pathPaymentStrictSend = ops.pathPaymentStrictSend;
+  static payment = ops.payment;
+  static setOptions = ops.setOptions;
+  static beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
+  static endSponsoringFutureReserves = ops.endSponsoringFutureReserves;
+  static revokeAccountSponsorship = ops.revokeAccountSponsorship;
+  static revokeTrustlineSponsorship = ops.revokeTrustlineSponsorship;
+  static revokeOfferSponsorship = ops.revokeOfferSponsorship;
+  static revokeDataSponsorship = ops.revokeDataSponsorship;
+  static revokeClaimableBalanceSponsorship =
+    ops.revokeClaimableBalanceSponsorship;
+  static revokeLiquidityPoolSponsorship = ops.revokeLiquidityPoolSponsorship;
+  static revokeSignerSponsorship = ops.revokeSignerSponsorship;
+  static clawback = ops.clawback;
+  static setTrustLineFlags = ops.setTrustLineFlags;
+  static liquidityPoolDeposit = ops.liquidityPoolDeposit;
+  static liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
+  static invokeHostFunction = ops.invokeHostFunction;
+  static extendFootprintTtl = ops.extendFootprintTtl;
+  static restoreFootprint = ops.restoreFootprint;
+
+  // These are not `xdr.Operation`s directly, but proxies for common
+  // versions of `Operation.invokeHostFunction`
+  static createStellarAssetContract = ops.createStellarAssetContract;
+  static invokeContractFunction = ops.invokeContractFunction;
+  static createCustomContract = ops.createCustomContract;
+  static uploadContractWasm = ops.uploadContractWasm;
 }
 
-function extractRevokeSponshipDetails(attrs, result) {
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
+function extractRevokeSponshipDetails(
+  attrs: any,
+  result: Record<string, unknown>
+) {
   switch (attrs.switch().name) {
     case "revokeSponsorshipLedgerEntry": {
       const ledgerKey = attrs.ledgerKey();
+
       switch (ledgerKey.switch().name) {
         case xdr.LedgerEntryType.account().name: {
           result.type = "revokeAccountSponsorship";
@@ -613,8 +727,11 @@ function extractRevokeSponshipDetails(attrs, result) {
   }
 }
 
-function convertXDRSignerKeyToObject(signerKey) {
-  const attrs = {};
+function convertXDRSignerKeyToObject(
+  signerKey: xdr.SignerKey
+): Record<string, unknown> {
+  const attrs: Record<string, unknown> = {};
+
   switch (signerKey.switch().name) {
     case xdr.SignerKeyType.signerKeyTypeEd25519().name: {
       attrs.ed25519PublicKey = StrKey.encodeEd25519PublicKey(
@@ -637,50 +754,58 @@ function convertXDRSignerKeyToObject(signerKey) {
 
   return attrs;
 }
+/* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
 
-function accountIdtoAddress(accountId) {
+function accountIdtoAddress(accountId: xdr.AccountId): string {
   return StrKey.encodeEd25519PublicKey(accountId.ed25519());
 }
 
-// Attach all imported operations as static methods on the Operation class
-Operation.accountMerge = ops.accountMerge;
-Operation.allowTrust = ops.allowTrust;
-Operation.bumpSequence = ops.bumpSequence;
-Operation.changeTrust = ops.changeTrust;
-Operation.createAccount = ops.createAccount;
-Operation.createClaimableBalance = ops.createClaimableBalance;
-Operation.claimClaimableBalance = ops.claimClaimableBalance;
-Operation.clawbackClaimableBalance = ops.clawbackClaimableBalance;
-Operation.createPassiveSellOffer = ops.createPassiveSellOffer;
-Operation.inflation = ops.inflation;
-Operation.manageData = ops.manageData;
-Operation.manageSellOffer = ops.manageSellOffer;
-Operation.manageBuyOffer = ops.manageBuyOffer;
-Operation.pathPaymentStrictReceive = ops.pathPaymentStrictReceive;
-Operation.pathPaymentStrictSend = ops.pathPaymentStrictSend;
-Operation.payment = ops.payment;
-Operation.setOptions = ops.setOptions;
-Operation.beginSponsoringFutureReserves = ops.beginSponsoringFutureReserves;
-Operation.endSponsoringFutureReserves = ops.endSponsoringFutureReserves;
-Operation.revokeAccountSponsorship = ops.revokeAccountSponsorship;
-Operation.revokeTrustlineSponsorship = ops.revokeTrustlineSponsorship;
-Operation.revokeOfferSponsorship = ops.revokeOfferSponsorship;
-Operation.revokeDataSponsorship = ops.revokeDataSponsorship;
-Operation.revokeClaimableBalanceSponsorship =
-  ops.revokeClaimableBalanceSponsorship;
-Operation.revokeLiquidityPoolSponsorship = ops.revokeLiquidityPoolSponsorship;
-Operation.revokeSignerSponsorship = ops.revokeSignerSponsorship;
-Operation.clawback = ops.clawback;
-Operation.setTrustLineFlags = ops.setTrustLineFlags;
-Operation.liquidityPoolDeposit = ops.liquidityPoolDeposit;
-Operation.liquidityPoolWithdraw = ops.liquidityPoolWithdraw;
-Operation.invokeHostFunction = ops.invokeHostFunction;
-Operation.extendFootprintTtl = ops.extendFootprintTtl;
-Operation.restoreFootprint = ops.restoreFootprint;
-
-// these are not `xdr.Operation`s directly, but are proxies for complex but
-// common versions of `Operation.invokeHostFunction`
-Operation.createStellarAssetContract = ops.createStellarAssetContract;
-Operation.invokeContractFunction = ops.invokeContractFunction;
-Operation.createCustomContract = ops.createCustomContract;
-Operation.uploadContractWasm = ops.uploadContractWasm;
+// Namespace merged with the Operation class to expose operation result types as
+// `Operation.CreateAccount`, `Operation.Payment`, etc. — matching the public API
+// declared in types/index.d.ts.
+// The static methods (e.g. Operation.createAccount) are defined on the class above.
+//
+// TODO: Once src/index.js is migrated to src/index.ts, also add:
+//   export type { OperationRecord as Operation } from "./operations/types.js"
+// so that the top-level `export type Operation` union from types/index.d.ts is preserved.
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Operation {
+  export type BaseOperation<T extends _OperationType = _OperationType> =
+    _BaseOperation<T>;
+  export type CreateAccount = CreateAccountResult;
+  export type Payment = PaymentResult;
+  export type PathPaymentStrictReceive = PathPaymentStrictReceiveResult;
+  export type PathPaymentStrictSend = PathPaymentStrictSendResult;
+  export type CreatePassiveSellOffer = CreatePassiveSellOfferResult;
+  export type ManageSellOffer = ManageSellOfferResult;
+  export type ManageBuyOffer = ManageBuyOfferResult;
+  export type SetOptions = SetOptionsResult;
+  export type ChangeTrust = ChangeTrustResult;
+  export type AllowTrust = AllowTrustResult;
+  export type AccountMerge = AccountMergeResult;
+  export type Inflation = InflationResult;
+  export type ManageData = ManageDataResult;
+  export type BumpSequence = BumpSequenceResult;
+  export type CreateClaimableBalance = CreateClaimableBalanceResult;
+  export type ClaimClaimableBalance = ClaimClaimableBalanceResult;
+  export type BeginSponsoringFutureReserves =
+    BeginSponsoringFutureReservesResult;
+  export type EndSponsoringFutureReserves = EndSponsoringFutureReservesResult;
+  export type RevokeAccountSponsorship = RevokeAccountSponsorshipResult;
+  export type RevokeTrustlineSponsorship = RevokeTrustlineSponsorshipResult;
+  export type RevokeOfferSponsorship = RevokeOfferSponsorshipResult;
+  export type RevokeDataSponsorship = RevokeDataSponsorshipResult;
+  export type RevokeClaimableBalanceSponsorship =
+    RevokeClaimableBalanceSponsorshipResult;
+  export type RevokeLiquidityPoolSponsorship =
+    RevokeLiquidityPoolSponsorshipResult;
+  export type RevokeSignerSponsorship = RevokeSignerSponsorshipResult;
+  export type Clawback = ClawbackResult;
+  export type ClawbackClaimableBalance = ClawbackClaimableBalanceResult;
+  export type SetTrustLineFlags = SetTrustLineFlagsResult;
+  export type LiquidityPoolDeposit = LiquidityPoolDepositResult;
+  export type LiquidityPoolWithdraw = LiquidityPoolWithdrawResult;
+  export type InvokeHostFunction = InvokeHostFunctionResult;
+  export type ExtendFootprintTTL = ExtendFootprintTTLResult;
+  export type RestoreFootprint = RestoreFootprintResult;
+}
