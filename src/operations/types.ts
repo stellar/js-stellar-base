@@ -11,7 +11,12 @@ export interface OperationAttributes {
   sourceAccount: xdr.MuxedAccount | null;
 }
 
-// This can be removed once the Operation class in src/operation.ts is converted to a TypeScript class and the setSourceAccount method is defined on it.
+// TODO: Remove this interface and replace `this: OperationClass` in all operation functions
+// with plain imported helpers. The `this:` parameter is a TypeScript migration artifact —
+// modern TS prefers explicit dependencies over implicit `this` context. To do this without
+// introducing a circular dependency (operations/*.ts → operation.ts → operations/index.ts →
+// operations/*.ts), extract the shared utilities (setSourceAccount, _toXDRAmount, etc.) into
+// a new src/operations/helpers.ts module that both operation.ts and operations/*.ts can import.
 export interface OperationClass {
   invokeHostFunction(opts: InvokeHostFunctionOpts): xdr.Operation;
   isValidAmount(value: string, allowZero?: boolean): boolean;
