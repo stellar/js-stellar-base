@@ -257,7 +257,15 @@ export declare namespace OperationType {
     type ClaimClaimableBalance = "claimClaimableBalance";
     type BeginSponsoringFutureReserves = "beginSponsoringFutureReserves";
     type EndSponsoringFutureReserves = "endSponsoringFutureReserves";
+    /** @deprecated Never emitted by fromXDRObject — use the specific Revoke* types instead. */
     type RevokeSponsorship = "revokeSponsorship";
+    type RevokeAccountSponsorship = "revokeAccountSponsorship";
+    type RevokeTrustlineSponsorship = "revokeTrustlineSponsorship";
+    type RevokeOfferSponsorship = "revokeOfferSponsorship";
+    type RevokeDataSponsorship = "revokeDataSponsorship";
+    type RevokeClaimableBalanceSponsorship = "revokeClaimableBalanceSponsorship";
+    type RevokeLiquidityPoolSponsorship = "revokeLiquidityPoolSponsorship";
+    type RevokeSignerSponsorship = "revokeSignerSponsorship";
     type Clawback = "clawback";
     type ClawbackClaimableBalance = "clawbackClaimableBalance";
     type SetTrustLineFlags = "setTrustLineFlags";
@@ -267,7 +275,7 @@ export declare namespace OperationType {
     type ExtendFootprintTTL = "extendFootprintTtl";
     type RestoreFootprint = "restoreFootprint";
 }
-export type OperationType = OperationType.AccountMerge | OperationType.AllowTrust | OperationType.BeginSponsoringFutureReserves | OperationType.BumpSequence | OperationType.ChangeTrust | OperationType.ClaimClaimableBalance | OperationType.Clawback | OperationType.ClawbackClaimableBalance | OperationType.CreateAccount | OperationType.CreateClaimableBalance | OperationType.CreatePassiveSellOffer | OperationType.EndSponsoringFutureReserves | OperationType.ExtendFootprintTTL | OperationType.Inflation | OperationType.InvokeHostFunction | OperationType.LiquidityPoolDeposit | OperationType.LiquidityPoolWithdraw | OperationType.ManageBuyOffer | OperationType.ManageData | OperationType.ManageSellOffer | OperationType.PathPaymentStrictReceive | OperationType.PathPaymentStrictSend | OperationType.Payment | OperationType.RestoreFootprint | OperationType.RevokeSponsorship | OperationType.SetOptions | OperationType.SetTrustLineFlags;
+export type OperationType = OperationType.AccountMerge | OperationType.AllowTrust | OperationType.BeginSponsoringFutureReserves | OperationType.BumpSequence | OperationType.ChangeTrust | OperationType.ClaimClaimableBalance | OperationType.Clawback | OperationType.ClawbackClaimableBalance | OperationType.CreateAccount | OperationType.CreateClaimableBalance | OperationType.CreatePassiveSellOffer | OperationType.EndSponsoringFutureReserves | OperationType.ExtendFootprintTTL | OperationType.Inflation | OperationType.InvokeHostFunction | OperationType.LiquidityPoolDeposit | OperationType.LiquidityPoolWithdraw | OperationType.ManageBuyOffer | OperationType.ManageData | OperationType.ManageSellOffer | OperationType.PathPaymentStrictReceive | OperationType.PathPaymentStrictSend | OperationType.Payment | OperationType.RestoreFootprint | OperationType.RevokeAccountSponsorship | OperationType.RevokeClaimableBalanceSponsorship | OperationType.RevokeDataSponsorship | OperationType.RevokeLiquidityPoolSponsorship | OperationType.RevokeOfferSponsorship | OperationType.RevokeSignerSponsorship | OperationType.RevokeTrustlineSponsorship | OperationType.SetOptions | OperationType.SetTrustLineFlags;
 export declare namespace AuthFlag {
     type required = 1;
     type revocable = 2;
@@ -391,28 +399,28 @@ export interface BeginSponsoringFutureReservesResult extends BaseOperation<Opera
     sponsoredId: string;
 }
 export type EndSponsoringFutureReservesResult = BaseOperation<OperationType.EndSponsoringFutureReserves>;
-export interface RevokeAccountSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeAccountSponsorshipResult extends BaseOperation<OperationType.RevokeAccountSponsorship> {
     account: string;
 }
-export interface RevokeTrustlineSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeTrustlineSponsorshipResult extends BaseOperation<OperationType.RevokeTrustlineSponsorship> {
     account: string;
     asset: Asset | LiquidityPoolId;
 }
-export interface RevokeOfferSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeOfferSponsorshipResult extends BaseOperation<OperationType.RevokeOfferSponsorship> {
     seller: string;
     offerId: string;
 }
-export interface RevokeDataSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeDataSponsorshipResult extends BaseOperation<OperationType.RevokeDataSponsorship> {
     account: string;
     name: string;
 }
-export interface RevokeClaimableBalanceSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeClaimableBalanceSponsorshipResult extends BaseOperation<OperationType.RevokeClaimableBalanceSponsorship> {
     balanceId: string;
 }
-export interface RevokeLiquidityPoolSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeLiquidityPoolSponsorshipResult extends BaseOperation<OperationType.RevokeLiquidityPoolSponsorship> {
     liquidityPoolId: string;
 }
-export interface RevokeSignerSponsorshipResult extends BaseOperation<OperationType.RevokeSponsorship> {
+export interface RevokeSignerSponsorshipResult extends BaseOperation<OperationType.RevokeSignerSponsorship> {
     account: string;
     signer: SignerKeyOptions;
 }
