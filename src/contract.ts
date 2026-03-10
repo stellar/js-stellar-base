@@ -1,7 +1,7 @@
-import { Address } from "./address";
-import { Operation } from "./operation";
-import xdr from "./xdr";
-import { StrKey } from "./strkey";
+import { Address } from "./address.js";
+import { Operation } from "./operation.js";
+import xdr from "./xdr.js";
+import { StrKey } from "./strkey.js";
 
 /**
  * Create a new Contract object.
@@ -17,7 +17,8 @@ import { StrKey } from "./strkey";
  *     `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`).
  */
 export class Contract {
-  constructor(contractId) {
+  private _id: Buffer;
+  constructor(contractId: string) {
     try {
       // First, try it as a strkey
       this._id = StrKey.decodeContract(contractId);
@@ -29,18 +30,18 @@ export class Contract {
   /**
    * Returns Stellar contract ID as a strkey, ex.
    * `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`.
-   * @returns {string}
+   * @returns the contract ID as a strkey (C...)
    */
   contractId() {
     return StrKey.encodeContract(this._id);
   }
 
-  /** @returns {string} the ID as a strkey (C...) */
+  /** @returns the ID as a strkey (C...) */
   toString() {
     return this.contractId();
   }
 
-  /** @returns {Address} the wrapped address of this contract */
+  /** @returns the wrapped address of this contract */
   address() {
     return Address.contract(this._id);
   }
@@ -48,10 +49,10 @@ export class Contract {
   /**
    * Returns an operation that will invoke this contract call.
    *
-   * @param {string}        method   name of the method to call
-   * @param {...xdr.ScVal}  params   arguments to pass to the function call
+   * @param method name of the method to call
+   * @param params arguments to pass to the method, as an array of xdr.ScVal
    *
-   * @returns {xdr.Operation}   an InvokeHostFunctionOp operation to call the
+   * @returns an InvokeHostFunctionOp operation to call the
    *    contract with the given method and parameters
    *
    * @see Operation.invokeHostFunction
@@ -60,7 +61,10 @@ export class Contract {
    * @see Operation.createStellarAssetContract
    * @see Operation.uploadContractWasm
    */
-  call(method, ...params) {
+  call(
+    method: string,
+    ...params: xdr.ScVal[]
+  ): xdr.Operation<Operation.InvokeHostFunction> {
     return Operation.invokeContractFunction({
       contract: this.address().toString(),
       function: method,
@@ -73,7 +77,7 @@ export class Contract {
    * this contract, for convenience when manually adding it to your
    * transaction's overall footprint or doing bump/restore operations.
    *
-   * @returns {xdr.LedgerKey} the ledger key for the deployed contract instance
+   * @returns the ledger key for the deployed contract instance
    */
   getFootprint() {
     return xdr.LedgerKey.contractData(
