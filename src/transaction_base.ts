@@ -5,14 +5,16 @@ import { Keypair } from "./keypair.js";
 /**
  * @ignore
  */
-export class TransactionBase {
-  _tx: xdr.Transaction;
+export class TransactionBase<
+  TTx extends xdr.FeeBumpTransaction | xdr.Transaction | xdr.TransactionV0
+> {
+  _tx: TTx;
   _signatures: xdr.DecoratedSignature[];
   _fee: string;
   _networkPassphrase: string;
 
   constructor(
-    tx: xdr.Transaction,
+    tx: TTx,
     signatures: xdr.DecoratedSignature[],
     fee: string,
     networkPassphrase: string
@@ -40,11 +42,11 @@ export class TransactionBase {
     throw new Error("Transaction is immutable");
   }
 
-  get tx(): xdr.Transaction {
+  get tx(): TTx {
     return this._tx;
   }
 
-  set tx(_value: xdr.Transaction) {
+  set tx(_value: TTx) {
     throw new Error("Transaction is immutable");
   }
 

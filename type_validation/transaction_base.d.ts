@@ -3,19 +3,19 @@ import { Keypair } from "./keypair.js";
 /**
  * @ignore
  */
-export declare class TransactionBase {
-    _tx: xdr.Transaction;
+export declare class TransactionBase<TTx extends xdr.FeeBumpTransaction | xdr.Transaction | xdr.TransactionV0> {
+    _tx: TTx;
     _signatures: xdr.DecoratedSignature[];
     _fee: string;
     _networkPassphrase: string;
-    constructor(tx: xdr.Transaction, signatures: xdr.DecoratedSignature[], fee: string, networkPassphrase: string);
+    constructor(tx: TTx, signatures: xdr.DecoratedSignature[], fee: string, networkPassphrase: string);
     /**
      * @readonly
      */
     get signatures(): xdr.DecoratedSignature[];
     set signatures(_value: xdr.DecoratedSignature[]);
-    get tx(): xdr.Transaction;
-    set tx(_value: xdr.Transaction);
+    get tx(): TTx;
+    set tx(_value: TTx);
     /**
      * @readonly
      */

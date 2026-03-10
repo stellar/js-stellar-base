@@ -1062,6 +1062,5 @@ export class TransactionBuilder {
  */
 export function isValidDate(d) {
   // isnan is okay here because it correctly checks for invalid date objects
-  // eslint-disable-next-line no-restricted-globals
   return d instanceof Date && !isNaN(d);
 }
