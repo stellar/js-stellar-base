@@ -130,7 +130,7 @@ export class Memo<T extends MemoType = MemoType> {
   }
 
   private static _validateIdValue(value: string): void {
-    const error = new Error(`Expects a int64 as a string. Got ${value}`);
+    const error = new Error(`Expects a uint64 as a string. Got ${value}`);
 
     if (typeof value !== "string") {
       throw error;
@@ -150,6 +150,21 @@ export class Memo<T extends MemoType = MemoType> {
 
     // NaN
     if (number.isNaN()) {
+      throw error;
+    }
+
+    // Negative
+    if (number.isNegative()) {
+      throw error;
+    }
+
+    // Decimal
+    if (!number.isInteger()) {
+      throw error;
+    }
+
+    // Exceeds uint64 max (2^64 - 1)
+    if (number.isGreaterThan("18446744073709551615")) {
       throw error;
     }
   }

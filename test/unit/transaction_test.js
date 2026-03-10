@@ -81,6 +81,12 @@ describe("Transaction", function () {
 
       expect(transaction.tx.fee().toString()).to.equal("100");
     });
+    it("throws when setting networkPassphrase", function () {
+      const transaction = this.transaction;
+      expect(() => {
+        transaction.networkPassphrase = "Test Network";
+      }).to.throw(/Transaction is immutable/);
+    });
   });
 
   it("throws when a garbage Network is selected", () => {
@@ -249,7 +255,7 @@ describe("Transaction", function () {
       .build();
 
     expect(() => tx.signHashX(preimage)).to.throw(
-      /preimage cannnot be longer than 64 bytes/
+      /preimage cannot be longer than 64 bytes/
     );
   });
 

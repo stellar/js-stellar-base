@@ -3,7 +3,7 @@ import xdr from "./xdr.js";
  * A container class with helpers to convert between signer keys
  * (`xdr.SignerKey`) and {@link StrKey}s.
  *
- * It's primarly used for manipulating the `extraSigners` precondition on a
+ * It's primarily used for manipulating the `extraSigners` precondition on a
  * {@link Transaction}.
  *
  * @see {@link TransactionBuilder.setExtraSigners}

@@ -255,5 +255,15 @@ export function authorizeInvocation(
 }
 
 function bytesToInt64(bytes) {
-  return bytes.subarray(0, 8).reduce((accum, b) => (accum << 8) | b, 0);
+  const buf = bytes.subarray(0, 8);
+  // Process each 32-bit half separately: `<<` coerces to signed Int32, so
+  // working with 4 bytes at a time avoids truncating the upper 32 bits.
+  const hi = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
+  const lo = (buf[4] << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7];
+  // `>>> 0` reinterprets the signed Int32 as an unsigned 32-bit value before
+  // converting to BigInt, preventing sign-extension from corrupting the result.
+  const value = BigInt(hi >>> 0) * BigInt(2 ** 32) + BigInt(lo >>> 0);
+  // Reinterpret the unsigned 64-bit result as a signed Int64, matching the
+  // xdr.Int64 type (which expects values in the range [-2^63, 2^63-1]).
+  return BigInt.asIntN(64, value);
 }

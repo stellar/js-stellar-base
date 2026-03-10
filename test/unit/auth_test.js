@@ -99,4 +99,72 @@ describe("building authorization entries", function () {
       .then((signedEntry) => done())
       .catch((err) => done(err));
   });
+
+  describe("nonce generation uses all 8 bytes", function () {
+    let sandbox;
+
+    beforeEach(function () {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(function () {
+      sandbox.restore();
+    });
+
+    function stubRawBytes(first8) {
+      const raw = new Uint8Array(32);
+      raw.set(first8);
+      sandbox
+        .stub(StellarBase.Keypair, "random")
+        .returns({ rawPublicKey: () => raw });
+    }
+
+    // Regression: the old `<<` (Int32 shift) implementation discarded the upper 4
+    // bytes. bytes [0,0,0,1, 0,0,0,0] — after consuming bytes 0-3 the accumulator
+    // reaches 1, then four more left-shifts overflow Int32 back to 0. The nonce was
+    // 0 instead of the correct 2^32.
+    it("upper 4 bytes contribute to the nonce", async function () {
+      stubRawBytes([0, 0, 0, 1, 0, 0, 0, 0]);
+      const entry = await StellarBase.authorizeInvocation(
+        kp,
+        10,
+        authEntry.rootInvocation()
+      );
+      expect(entry.credentials().address().nonce()).to.eql(
+        new xdr.Int64(4294967296n)
+      ); // 2^32
+    });
+
+    it("all-0xFF bytes produce nonce -1 (signed Int64 all-bits-set)", async function () {
+      stubRawBytes([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
+      const entry = await StellarBase.authorizeInvocation(
+        kp,
+        10,
+        authEntry.rootInvocation()
+      );
+      expect(entry.credentials().address().nonce()).to.eql(new xdr.Int64(-1n));
+    });
+
+    it("high bit set produces Int64 minimum value", async function () {
+      stubRawBytes([0x80, 0, 0, 0, 0, 0, 0, 0]);
+      const entry = await StellarBase.authorizeInvocation(
+        kp,
+        10,
+        authEntry.rootInvocation()
+      );
+      expect(entry.credentials().address().nonce()).to.eql(
+        new xdr.Int64(-9223372036854775808n)
+      ); // -(2^63), Int64 minimum
+    });
+
+    it("all-zero bytes produce nonce 0", async function () {
+      stubRawBytes([0, 0, 0, 0, 0, 0, 0, 0]);
+      const entry = await StellarBase.authorizeInvocation(
+        kp,
+        10,
+        authEntry.rootInvocation()
+      );
+      expect(entry.credentials().address().nonce()).to.eql(new xdr.Int64(0n));
+    });
+  });
 });

@@ -25,7 +25,7 @@ export declare class TransactionBase {
      * @readonly
      */
     get networkPassphrase(): string;
-    set networkPassphrase(networkPassphrase: string);
+    set networkPassphrase(_networkPassphrase: string);
     /**
      * Signs the transaction with the given {@link Keypair}.
      * @param keypairs Keypairs of signers
