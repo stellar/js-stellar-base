@@ -257,20 +257,32 @@ export function nativeToScVal(
     }
 
     case "number":
-    case "bigint":
+    case "bigint": {
+      const bigintVal = BigInt(val);
       switch (opts?.type) {
         case "u32":
-          return xdr.ScVal.scvU32(val as number);
-
+          if (
+            bigintVal < BigInt(xdr.Uint32.MIN_VALUE) ||
+            bigintVal > BigInt(xdr.Uint32.MAX_VALUE)
+          ) {
+            throw new TypeError(`invalid value (${val}) for type u32`);
+          }
+          return xdr.ScVal.scvU32(Number(val));
         case "i32":
-          return xdr.ScVal.scvI32(val as number);
+          if (
+            bigintVal < -BigInt(xdr.Int32.MIN_VALUE) ||
+            bigintVal > BigInt(xdr.Int32.MAX_VALUE)
+          ) {
+            throw new TypeError(`invalid value (${val}) for type i32`);
+          }
+          return xdr.ScVal.scvI32(Number(val));
 
         default:
           break;
       }
 
       return new ScInt(val, { type: opts?.type as ScIntType }).toScVal();
-
+    }
     case "string": {
       const optType = (opts?.type as string) ?? "string";
       switch (optType) {

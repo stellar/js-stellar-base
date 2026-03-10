@@ -415,13 +415,13 @@ describe("nativeToScVal", () => {
   it("converts bigint to u32 (truncates to Number)", () => {
     const scv = nativeToScVal(100n, { type: "u32" });
     expect(scv.switch().name).toBe("scvU32");
-    expect(scv.value()).toBe(100n);
+    expect(scv.value()).toBe(100);
   });
 
   it("converts bigint to i32 (truncates to Number)", () => {
     const scv = nativeToScVal(-50n, { type: "i32" });
     expect(scv.switch().name).toBe("scvI32");
-    expect(scv.value()).toBe(-50n);
+    expect(scv.value()).toBe(-50);
   });
 
   it("converts bigint without type hint", () => {
