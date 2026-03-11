@@ -1,24 +1,25 @@
-const [nativeToScVal, scValToNative, ScInt, humanizeEvents, xdr] = [
-  StellarBase.nativeToScVal,
-  StellarBase.scValToNative,
-  StellarBase.ScInt,
-  StellarBase.humanizeEvents,
-  StellarBase.xdr
-]; // shorthand
+import { describe, it, expect } from "vitest";
+import { humanizeEvents } from "../../src/events.js";
+import { nativeToScVal, scValToNative } from "../../src/scval.js";
+import { StrKey } from "../../src/strkey.js";
+import xdr from "../../src/xdr.js";
 
-describe("humanizing raw events", function () {
+describe("humanizing raw events", () => {
   const contractId = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
-  const topics1 = nativeToScVal([1, 2, 3]).value();
+  const topics1 = nativeToScVal([1, 2, 3]).value() as xdr.ScVal[];
   const data1 = nativeToScVal({ hello: "world" });
 
-  // workaround for xdr.ContractEventBody.0(...) being invalid lol
-  const cloneAndSet = (newBody) => {
+  // workaround for xdr.ContractEventBody.0(...) being invalid
+  const cloneAndSet = (newBody: {
+    topics: xdr.ScVal[];
+    data: xdr.ScVal;
+  }): xdr.ContractEventBody => {
     const clone = new xdr.ContractEventBody(
       0,
       new xdr.ContractEventV0({
         topics: [],
-        data: xdr.ScVal.scvVoid()
-      })
+        data: xdr.ScVal.scvVoid(),
+      }),
     );
     clone.v0().topics(newBody.topics);
     clone.v0().data(newBody.data);
@@ -30,46 +31,47 @@ describe("humanizing raw events", function () {
       inSuccessfulContractCall: true,
       event: new xdr.ContractEvent({
         ext: new xdr.ExtensionPoint(0),
-        contractId: StellarBase.StrKey.decodeContract(contractId),
+        contractId: StrKey.decodeContract(contractId) as unknown as xdr.Hash,
         type: xdr.ContractEventType.contract(),
         body: cloneAndSet({
           topics: topics1,
-          data: data1
-        })
-      })
+          data: data1,
+        }),
+      }),
     }),
     new xdr.DiagnosticEvent({
       inSuccessfulContractCall: true,
       event: new xdr.ContractEvent({
         ext: new xdr.ExtensionPoint(0),
+        contractId: null,
         type: xdr.ContractEventType.contract(),
         body: cloneAndSet({
           topics: topics1,
-          data: data1
-        })
-      })
-    })
+          data: data1,
+        }),
+      }),
+    }),
   ];
 
-  it("built valid events for testing", function () {
+  it("built valid events for testing", () => {
     // sanity check: valid xdr
     events.map((e) => e.toXDR());
   });
 
-  it("makes diagnostic events human-readable", function () {
-    const readable = StellarBase.humanizeEvents(events);
+  it("makes diagnostic events human-readable", () => {
+    const readable = humanizeEvents(events);
 
-    expect(readable.length).to.equal(events.length, `${events} != ${readable}`);
-    expect(readable[0]).to.eql({
+    expect(readable.length).toBe(events.length);
+    expect(readable[0]).toEqual({
       type: "contract",
       contractId: contractId,
       topics: topics1.map(scValToNative),
-      data: scValToNative(data1)
+      data: scValToNative(data1),
     });
-    expect(readable[1]).to.eql({
+    expect(readable[1]).toEqual({
       type: "contract",
       topics: topics1.map(scValToNative),
-      data: scValToNative(data1)
+      data: scValToNative(data1),
     });
   });
 });
