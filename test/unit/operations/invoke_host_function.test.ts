@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import { Contract } from "../../../src/contract.js";
+import { Address } from "../../../src/address.js";
 import { Asset } from "../../../src/asset.js";
 import { hash } from "../../../src/hashing.js";
 import { nativeToScVal } from "../../../src/scval.js";
@@ -208,7 +209,7 @@ describe("Operation", () => {
         expect(decodedStr?.toString()).toBe(originalStr);
       });
 
-      it("prevents invocation with claimable balances", () => {
+      it("prevents invocation with liquidity pool args", () => {
         expect(() =>
           Operation.invokeContractFunction({
             contract:
@@ -221,7 +222,19 @@ describe("Operation", () => {
               ),
             ],
           }),
-        ).toThrow(/liquidity pool/);
+        ).toThrow(/claimable balances and liquidity pools/);
+      });
+
+      it("prevents invocation with claimable balance args", () => {
+        const cbAddress = Address.claimableBalance(Buffer.alloc(33));
+        expect(() =>
+          Operation.invokeContractFunction({
+            contract:
+              "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE",
+            function: "increment",
+            args: [nativeToScVal(cbAddress.toString(), { type: "address" })],
+          }),
+        ).toThrow(/claimable balances and liquidity pools/);
       });
     });
 
