@@ -1,44 +1,78 @@
-import { Asset } from "./asset";
-import { Address } from "./address";
-import { scValToNative } from "./scval";
+import xdr from "./xdr.js";
+import { Asset } from "./asset.js";
+import { Address } from "./address.js";
+import { scValToNative } from "./scval.js";
+
+export interface WasmCreateDetails {
+  hash: string;
+  address: string;
+  salt: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructorArgs?: any[];
+}
 
 /**
- * @typedef CreateInvocation
+ * Details about a contract creation invocation.
  *
- * @prop {'wasm'|'sac'} type  a type indicating if this creation was a custom
- *    contract or a wrapping of an existing Stellar asset
- * @prop {string} [token] when `type=='sac'`, the canonical {@link Asset} that
+ * @prop type - a type indicating if this creation was a custom
+ *    contract (`'wasm'`) or a wrapping of an existing Stellar asset (`'sac'`)
+ * @prop asset - when `type=='sac'`, the canonical {@link Asset} that
  *    is being wrapped by this Stellar Asset Contract
- * @prop {object} [wasm]  when `type=='wasm'`, add'l creation parameters
- *
- * @prop {string} wasm.hash     hex hash of WASM bytecode backing this contract
- * @prop {string} wasm.address  contract address of this deployment
- * @prop {string} wasm.salt     hex salt that the user consumed when creating
- *    this contract (encoded in the resulting address)
- * @prop {any[]}  [wasm.constructorArgs] a list of natively-represented values
- *    (see {@link scValToNative}) that are passed to the constructor when
- *    creating this contract
+ * @prop wasm - when `type=='wasm'`, additional creation parameters
  */
+export interface CreateInvocation {
+  type: "sac" | "wasm";
+  asset?: string;
+  wasm?: WasmCreateDetails;
+}
 
 /**
- * @typedef ExecuteInvocation
+ * Details about a contract function execution invocation.
  *
- * @prop {string} source    the strkey of the contract (C...) being invoked
- * @prop {string} function  the name of the function being invoked
- * @prop {any[]}  args      the natively-represented parameters to the function
+ * @prop source - the strkey of the contract (C...) being invoked
+ * @prop function - the name of the function being invoked
+ * @prop args - the natively-represented parameters to the function
  *    invocation (see {@link scValToNative} for rules on how they're
- *    represented a JS types)
+ *    represented as JS types)
  */
+export interface ExecuteInvocation {
+  source: string;
+  function: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args: any[];
+}
 
 /**
- * @typedef InvocationTree
- * @prop {'execute' | 'create'} type  the type of invocation occurring, either
+ * A node in the invocation tree.
+ *
+ * @prop type - the type of invocation occurring, either
  *    contract creation or host function execution
- * @prop {CreateInvocation | ExecuteInvocation} args  the parameters to the
- *    invocation, depending on the type
- * @prop {InvocationTree[]} invocations   any sub-invocations that (may) occur
+ * @prop args - the parameters to the invocation, depending on the type
+ * @prop invocations - any sub-invocations that (may) occur
  *    as a result of this invocation (i.e. a tree of call stacks)
  */
+export interface InvocationTree {
+  type: "create" | "execute";
+  args: CreateInvocation | ExecuteInvocation;
+  invocations: InvocationTree[];
+}
+
+/**
+ * A callback used when walking an invocation tree.
+ *
+ * @param node - the currently explored node
+ * @param depth - the depth of the tree this node is occurring at (the
+ *    root starts at a depth of 1)
+ * @param parent - this node's parent node, if any (i.e. this doesn't
+ *    exist at the root)
+ * @returns returning exactly `false` is a hint to stop exploring,
+ *    other values are ignored
+ */
+export type InvocationWalker = (
+  node: xdr.SorobanAuthorizedInvocation,
+  depth: number,
+  parent?: xdr.SorobanAuthorizedInvocation
+) => boolean | null | void;
 
 /**
  * Turns a raw invocation tree into a human-readable format.
@@ -48,13 +82,13 @@ import { scValToNative } from "./scval";
  * make informed decisions about whether or not a particular invocation will
  * result in what you expect it to.
  *
- * @param {xdr.SorobanAuthorizedInvocation} root  the raw XDR of the invocation,
+ * @param root - the raw XDR of the invocation,
  *    likely acquired from transaction simulation. this is either from the
  *    {@link Operation.invokeHostFunction} itself (the `func` field), or from
  *    the authorization entries ({@link xdr.SorobanAuthorizationEntry}, the
  *    `rootInvocation` field)
  *
- * @returns {InvocationTree}  a human-readable version of the invocation tree
+ * @returns a human-readable version of the invocation tree
  *
  * @example
  * Here, we show a browser modal after simulating an arbitrary transaction,
@@ -82,33 +116,37 @@ import { scValToNative } from "./scval";
  * );
  * ```
  */
-export function buildInvocationTree(root) {
+export function buildInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation
+): InvocationTree {
   const fn = root.function();
 
-  /** @type {InvocationTree} */
-  const output = {};
-
-  /** @type {xdr.CreateContractArgs|xdr.CreateContractArgsV2|xdr.InvokeContractArgs} */
+  const output: Partial<InvocationTree> = {};
   const inner = fn.value();
 
   switch (fn.switch().value) {
     // sorobanAuthorizedFunctionTypeContractFn
-    case 0:
+    case 0: {
+      const invokeArgs = fn.contractFn();
       output.type = "execute";
       output.args = {
-        source: Address.fromScAddress(inner.contractAddress()).toString(),
-        function: inner.functionName(),
-        args: inner.args().map((arg) => scValToNative(arg))
+        source: Address.fromScAddress(invokeArgs.contractAddress()).toString(),
+        function: invokeArgs.functionName().toString(),
+        args: invokeArgs.args().map((arg) => scValToNative(arg))
       };
       break;
+    }
 
     // sorobanAuthorizedFunctionTypeCreateContractHostFn
     // sorobanAuthorizedFunctionTypeCreateContractV2HostFn
     case 1: // fallthrough: just no ctor args in V1
     case 2: {
+      const createArgs = inner as
+        | xdr.CreateContractArgs
+        | xdr.CreateContractArgsV2;
       const createV2 = fn.switch().value === 2;
       output.type = "create";
-      output.args = {};
+      const createInvocation: Partial<CreateInvocation> = {};
 
       // If the executable is a WASM, the preimage MUST be an address. If it's a
       // token, the preimage MUST be an asset. This is a cheeky way to check
@@ -117,7 +155,10 @@ export function buildInvocationTree(root) {
       //
       // The first part may not be true in V2, but we'd need to update this code
       // anyway so it can still be an error.
-      const [exec, preimage] = [inner.executable(), inner.contractIdPreimage()];
+      const [exec, preimage] = [
+        createArgs.executable(),
+        createArgs.contractIdPreimage()
+      ];
       if (!!exec.switch().value !== !!preimage.switch().value) {
         throw new Error(
           `creation function appears invalid: ${JSON.stringify(
@@ -129,17 +170,16 @@ export function buildInvocationTree(root) {
       switch (exec.switch().value) {
         // contractExecutableWasm
         case 0: {
-          /** @type {xdr.ContractIdPreimageFromAddress} */
           const details = preimage.fromAddress();
 
-          output.args.type = "wasm";
-          output.args.wasm = {
-            salt: details.salt().toString("hex"),
+          createInvocation.type = "wasm";
+          createInvocation.wasm = {
+            salt: Buffer.from(details.salt()).toString("hex"),
             hash: exec.wasmHash().toString("hex"),
             address: Address.fromScAddress(details.address()).toString(),
             // only apply constructor args for WASM+CreateV2 scenario
             ...(createV2 && {
-              constructorArgs: inner
+              constructorArgs: (inner as xdr.CreateContractArgsV2)
                 .constructorArgs()
                 .map((arg) => scValToNative(arg))
             }) // empty indicates V2 and no ctor, undefined indicates V1
@@ -149,8 +189,8 @@ export function buildInvocationTree(root) {
 
         // contractExecutableStellarAsset
         case 1:
-          output.args.type = "sac";
-          output.args.asset = Asset.fromOperation(
+          createInvocation.type = "sac";
+          createInvocation.asset = Asset.fromOperation(
             preimage.fromAsset()
           ).toString();
           break;
@@ -159,31 +199,19 @@ export function buildInvocationTree(root) {
           throw new Error(`unknown creation type: ${JSON.stringify(exec)}`);
       }
 
+      output.args = createInvocation as CreateInvocation;
       break;
     }
 
     default:
       throw new Error(
-        `unknown invocation type (${fn.switch()}): ${JSON.stringify(fn)}`
+        `unknown invocation type (${fn.switch().value}): ${JSON.stringify(fn)}`
       );
   }
 
   output.invocations = root.subInvocations().map((i) => buildInvocationTree(i));
-  return output;
+  return output as InvocationTree;
 }
-
-/**
- * @callback InvocationWalker
- *
- * @param {xdr.SorobanAuthorizedInvocation} node  the currently explored node
- * @param {number} depth  the depth of the tree this node is occurring at (the
- *    root starts at a depth of 1)
- * @param {xdr.SorobanAuthorizedInvocation} [parent]  this `node`s parent node,
- *    if any (i.e. this doesn't exist at the root)
- *
- * @returns {boolean|null|void}   returning exactly `false` is a hint to stop
- *    exploring, other values are ignored
- */
 
 /**
  * Executes a callback function on each node in the tree until stopped.
@@ -192,15 +220,22 @@ export function buildInvocationTree(root) {
  * stops further depth exploration at that node, but it does not stop the walk
  * in a "global" view.
  *
- * @param {xdr.SorobanAuthorizedInvocation} root  the tree to explore
- * @param {InvocationWalker} callback  the callback to execute for each node
- * @returns {void}
+ * @param root - the tree to explore
+ * @param callback - the callback to execute for each node
  */
-export function walkInvocationTree(root, callback) {
+export function walkInvocationTree(
+  root: xdr.SorobanAuthorizedInvocation,
+  callback: InvocationWalker
+): void {
   walkHelper(root, 1, callback);
 }
 
-function walkHelper(node, depth, callback, parent) {
+function walkHelper(
+  node: xdr.SorobanAuthorizedInvocation,
+  depth: number,
+  callback: InvocationWalker,
+  parent?: xdr.SorobanAuthorizedInvocation
+): void {
   if (callback(node, depth, parent) === false /* allow void rv */) {
     return;
   }

@@ -15,6 +15,11 @@
   Native assets have no issuer, so this corrects the type to reflect runtime
   behavior. Consumers may need to add `undefined` checks.
 
+- `CreateInvocation.token` has been renamed to `CreateInvocation.asset` in
+  the type declarations to match the actual runtime property set by
+  `buildInvocationTree`. TypeScript callers referencing `.token` should
+  switch to `.asset`.
+
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 
 ### Added
@@ -162,7 +167,7 @@
 
 ```typescript
 export type SigningCallback = (
-  preimage: xdr.HashIdPreimage
+  preimage: xdr.HashIdPreimage,
 ) => Promise<BufferLike | { signature: BufferLike; publicKey: string }>;
 ```
 
@@ -783,11 +788,11 @@ namespace StrKey {
 
 function decodeAddressToMuxedAccount(
   address: string,
-  supportMuxing: boolean
+  supportMuxing: boolean,
 ): xdr.MuxedAccount;
 function encodeMuxedAccountToAddress(
   account: xdr.MuxedAccount,
-  supportMuxing: boolean
+  supportMuxing: boolean,
 ): string;
 function encodeMuxedAccount(gAddress: string, id: string): xdr.MuxedAccount;
 ```
@@ -951,7 +956,7 @@ console.log(mux1.accountId(), mux1.id());
 const mux2 = ACC.createSubaccount("2000");
 console.log(
   "Parent relationship preserved:",
-  mux2.baseAccount().accountId() === mux1.baseAccount().accountId()
+  mux2.baseAccount().accountId() === mux1.baseAccount().accountId(),
 );
 console.log(mux2.accountId(), mux2.id());
 // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAH2B4RU 2000
@@ -959,7 +964,7 @@ console.log(mux2.accountId(), mux2.id());
 mux1.setID("3000");
 console.log(
   "Underlying account unchanged:",
-  ACC.accountId() === mux1.baseAccount().accountId()
+  ACC.accountId() === mux1.baseAccount().accountId(),
 );
 console.log(mux1.accountId(), mux1.id());
 // MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAALXC5LE 3000
@@ -1081,20 +1086,20 @@ const claimant = new StellarBase.Claimant(
 ```js
 const asset = new Asset(
   "USD",
-  "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+  "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
 );
 const amount = "100.0000000";
 const claimants = [
   new Claimant(
     "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
-    Claimant.predicateBeforeAbsoluteTime("4102444800000")
-  )
+    Claimant.predicateBeforeAbsoluteTime("4102444800000"),
+  ),
 ];
 
 const op = Operation.createClaimableBalance({
   asset,
   amount,
-  claimants
+  claimants,
 });
 ```
 
@@ -1107,7 +1112,7 @@ const op = Operation.createClaimableBalance({
 ```js
 const op = Operation.createClaimableBalance({
   balanceId:
-    "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be"
+    "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
 });
 ```
 
@@ -1308,7 +1313,7 @@ protocol 12.
   Operation.allowTrust({
     trustor: trustor.publicKey(),
     assetCode: "COP",
-    authorize: 1
+    authorize: 1,
   });
   ```
 
@@ -1580,24 +1585,24 @@ and
   ```js
   var sendAsset = new StellarBase.Asset(
     "USD",
-    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
   );
   var sendAmount = "10";
   var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
   var destAsset = new StellarBase.Asset(
     "USD",
-    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
   );
   var destMin = "9.2";
   var path = [
     new StellarBase.Asset(
       "USD",
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB"
+      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
     ),
     new StellarBase.Asset(
       "EUR",
-      "GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL"
-    )
+      "GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL",
+    ),
   ];
   let op = StellarBase.Operation.pathPaymentStrictSend({
     sendAsset,
@@ -1605,7 +1610,7 @@ and
     destination,
     destAsset,
     destMin,
-    path
+    path,
   });
   ```
 
@@ -1619,24 +1624,24 @@ and
   ```js
   var sendAsset = new StellarBase.Asset(
     "USD",
-    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
   );
   var sendMax = "10";
   var destination = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
   var destAsset = new StellarBase.Asset(
     "USD",
-    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7"
+    "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
   );
   var destAmount = "9.2";
   var path = [
     new StellarBase.Asset(
       "USD",
-      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB"
+      "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
     ),
     new StellarBase.Asset(
       "EUR",
-      "GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL"
-    )
+      "GDTNXRLOJD2YEBPKK7KCMR7J33AAG5VZXHAJTHIG736D6LVEFLLLKPDL",
+    ),
   ];
   let op = StellarBase.Operation.pathPaymentStrictReceive({
     sendAsset,
@@ -1644,7 +1649,7 @@ and
     destination,
     destAsset,
     destAmount,
-    path
+    path,
   });
   ```
 
@@ -1716,7 +1721,7 @@ new Transaction(xenv, Networks.TESTNET);
 ```js
 const transaction = new StellarSdk.TransactionBuilder(account, {
   fee: StellarSdk.BASE_FEE,
-  networkPassphrase: Networks.TESTNET
+  networkPassphrase: Networks.TESTNET,
 });
 ```
 
