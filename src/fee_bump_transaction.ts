@@ -1,9 +1,9 @@
-import xdr from "./xdr";
-import { hash } from "./hashing";
+import xdr from "./xdr.js";
+import { hash } from "./hashing.js";
 
-import { Transaction } from "./transaction";
-import { TransactionBase } from "./transaction_base";
-import { encodeMuxedAccountToAddress } from "./util/decode_encode_muxed_account";
+import { Transaction } from "./transaction.js";
+import { TransactionBase } from "./transaction_base.js";
+import { encodeMuxedAccountToAddress } from "./util/decode_encode_muxed_account.js";
 
 /**
  * Use {@link TransactionBuilder.buildFeeBumpTransaction} to build a
@@ -14,28 +14,35 @@ import { encodeMuxedAccountToAddress } from "./util/decode_encode_muxed_account"
  * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
  * submitting to the network or forwarding on to additional signers.
  *
- * @param {string|xdr.TransactionEnvelope} envelope - transaction envelope
+ * @param envelope - transaction envelope
  *     object or base64 encoded string.
- * @param {string} networkPassphrase - passphrase of the target Stellar network
+ * @param networkPassphrase - passphrase of the target Stellar network
  *     (e.g. "Public Global Stellar Network ; September 2015").
  *
  * @extends TransactionBase
  */
-export class FeeBumpTransaction extends TransactionBase {
-  constructor(envelope, networkPassphrase) {
+export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> {
+  _feeSource: string;
+  _innerTransaction: Transaction;
+
+  constructor(
+    envelope: xdr.TransactionEnvelope | string,
+    networkPassphrase: string
+  ) {
     if (typeof envelope === "string") {
       const buffer = Buffer.from(envelope, "base64");
       envelope = xdr.TransactionEnvelope.fromXDR(buffer);
     }
 
     const envelopeType = envelope.switch();
+
     if (envelopeType !== xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
       throw new Error(
         `Invalid TransactionEnvelope: expected an envelopeTypeTxFeeBump but received an ${envelopeType.name}.`
       );
     }
 
-    const txEnvelope = envelope.value();
+    const txEnvelope = envelope.value() as xdr.FeeBumpTransactionEnvelope;
     const tx = txEnvelope.tx();
     const fee = tx.fee().toString();
     // clone signatures
@@ -84,11 +91,10 @@ export class FeeBumpTransaction extends TransactionBase {
    *
    * It is composed of a 4 prefix bytes followed by the xdr-encoded form
    * of this transaction.
-   * @returns {Buffer}
    */
-  signatureBase() {
+  override signatureBase(): Buffer {
     const taggedTransaction =
-      new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
+      xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
         this.tx
       );
 
@@ -102,14 +108,13 @@ export class FeeBumpTransaction extends TransactionBase {
 
   /**
    * To envelope returns a xdr.TransactionEnvelope which can be submitted to the network.
-   * @returns {xdr.TransactionEnvelope}
    */
-  toEnvelope() {
+  override toEnvelope(): xdr.TransactionEnvelope {
     const envelope = new xdr.FeeBumpTransactionEnvelope({
       tx: xdr.FeeBumpTransaction.fromXDR(this.tx.toXDR()), // make a copy of the tx
       signatures: this.signatures.slice() // make a copy of the signatures
     });
 
-    return new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(envelope);
+    return xdr.TransactionEnvelope.envelopeTypeTxFeeBump(envelope);
   }
 }
