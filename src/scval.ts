@@ -221,13 +221,10 @@ export function nativeToScVal(
         );
       }
 
-      if (
-        ((val as { constructor?: { name?: string } }).constructor?.name ??
-          "") !== "Object"
-      ) {
+      if (val.constructor?.name !== "Object") {
         throw new TypeError(
           `cannot interpret ${
-            (val as { constructor?: { name?: string } }).constructor?.name
+            val.constructor?.name
           } value as ScVal (${JSON.stringify(val)})`
         );
       }
