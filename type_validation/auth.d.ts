@@ -1,5 +1,6 @@
 import xdr from "./xdr.js";
 import { Keypair } from "./keypair.js";
+type BufferLike = ArrayBuffer | Buffer | Uint8Array;
 /**
  * A callback for signing an XDR structure representing all of the details
  * necessary to authorize an invocation tree.
@@ -14,13 +15,12 @@ import { Keypair } from "./keypair.js";
  *    {@link authorizeEntry} (decipherable from its
  *    `credentials().address().address()`), or alongside an explicit `publicKey`.
  */
-type BufferLike = ArrayBuffer | Buffer | Uint8Array;
 export type SigningCallback = (preimage: xdr.HashIdPreimage) => Promise<BufferLike | {
     signature: BufferLike;
     publicKey: string;
 }>;
 /**
- * Actually authorizes an existing authorization entry using the given the
+ * Actually authorizes an existing authorization entry using the given
  * credentials and expiration details, returning a signed copy.
  *
  * This "fills out" the authorization entry with a signature, indicating to the
@@ -32,7 +32,7 @@ export type SigningCallback = (preimage: xdr.HashIdPreimage) => Promise<BufferLi
  *     {@link Networks})
  *   - until a particular ledger sequence is reached.
  *
- * This one lets you pass a either a {@link Keypair} (or, more accurately,
+ * This one lets you pass either a {@link Keypair} (or, more accurately,
  * anything with a `sign(Buffer): Buffer` method) or a callback function (see
  * {@link SigningCallback}) to handle signing the envelope hash.
  *
