@@ -1,32 +1,42 @@
-import xdr from "./xdr";
+import xdr from "./xdr.js";
 
-import { Keypair } from "./keypair";
-import { StrKey } from "./strkey";
-import { Networks } from "./network";
-import { hash } from "./hashing";
+import { Keypair } from "./keypair.js";
+import { StrKey } from "./strkey.js";
+import { Networks } from "./network.js";
+import { hash } from "./hashing.js";
 
-import { Address } from "./address";
-import { nativeToScVal } from "./scval";
+import { Address } from "./address.js";
+import { nativeToScVal } from "./scval.js";
+
+type BufferLike = ArrayBuffer | Buffer | Uint8Array;
+
+function toBuffer(value: BufferLike): Buffer {
+  if (value instanceof ArrayBuffer) {
+    return Buffer.from(new Uint8Array(value));
+  }
+  return Buffer.from(value);
+}
 
 /**
- * @async
- * @callback SigningCallback A callback for signing an XDR structure
- * representing all of the details necessary to authorize an invocation tree.
+ * A callback for signing an XDR structure representing all of the details
+ * necessary to authorize an invocation tree.
  *
- * @param {xdr.HashIdPreimage} preimage   the entire authorization envelope
- *    whose hash you should sign, so that you can inspect the entire structure
- *    if necessary (rather than blindly signing a hash)
+ * @param preimage - the entire authorization envelope whose hash you should
+ *    sign, so that you can inspect the entire structure if necessary (rather
+ *    than blindly signing a hash)
  *
- * @returns {Promise<Uint8Array | {signature: Uint8Array, publicKey: string}>}
- *    the signature of the raw payload (which is the sha256 hash of the preimage
- *    bytes, so `hash(preimage.toXDR())`) either naked, implying it is signed
- *    by the key corresponding to the public key in the entry you pass to
+ * @returns the signature of the raw payload (which is the sha256 hash of the
+ *    preimage bytes, so `hash(preimage.toXDR())`) either naked, implying it is
+ *    signed by the key corresponding to the public key in the entry you pass to
  *    {@link authorizeEntry} (decipherable from its
  *    `credentials().address().address()`), or alongside an explicit `publicKey`.
  */
+export type SigningCallback = (
+  preimage: xdr.HashIdPreimage
+) => Promise<BufferLike | { signature: BufferLike; publicKey: string }>;
 
 /**
- * Actually authorizes an existing authorization entry using the given the
+ * Actually authorizes an existing authorization entry using the given
  * credentials and expiration details, returning a signed copy.
  *
  * This "fills out" the authorization entry with a signature, indicating to the
@@ -38,31 +48,30 @@ import { nativeToScVal } from "./scval";
  *     {@link Networks})
  *   - until a particular ledger sequence is reached.
  *
- * This one lets you pass a either a {@link Keypair} (or, more accurately,
+ * This one lets you pass either a {@link Keypair} (or, more accurately,
  * anything with a `sign(Buffer): Buffer` method) or a callback function (see
  * {@link SigningCallback}) to handle signing the envelope hash.
  *
- * @param {xdr.SorobanAuthorizationEntry} entry   an unsigned authorization entr
- * @param {Keypair | SigningCallback} signer  either a {@link Keypair} instance
- *    or a function which takes a {@link xdr.HashIdPreimageSorobanAuthorization}
- *    input payload and returns EITHER
+ * @param entry - an unsigned authorization entry
+ * @param signer - either a {@link Keypair} instance or a function which takes a
+ *    {@link xdr.HashIdPreimageSorobanAuthorization} input payload and returns
+ *    EITHER
  *
- *      (a) an object containing a `signature` of the hash of the raw payload bytes
- *          as a Buffer-like and a `publicKey` string representing who just
+ *      (a) an object containing a `signature` of the hash of the raw payload
+ *          bytes as a Buffer-like and a `publicKey` string representing who just
  *          created this signature, or
  *      (b) just the naked signature of the hash of the raw payload bytes (where
  *          the signing key is implied to be the address in the `entry`).
  *
  *    The latter option (b) is JUST for backwards compatibility and will be
  *    removed in the future.
- * @param {number} validUntilLedgerSeq   the (exclusive) future ledger sequence
- *    number until which this authorization entry should be valid (if
- *    `currentLedgerSeq==validUntil`, this is expired))
- * @param {string} [networkPassphrase]  the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options)
+ * @param validUntilLedgerSeq - the (exclusive) future ledger sequence number
+ *    until which this authorization entry should be valid (if
+ *    `currentLedgerSeq==validUntil`, this is expired)
+ * @param networkPassphrase - the network passphrase is incorporated into the
+ *    signature (see {@link Networks} for options)
  *
- * @returns {Promise<xdr.SorobanAuthorizationEntry>} a promise for an
- *    authorization entry that you can pass along to
+ * @returns a promise for an authorization entry that you can pass along to
  *    {@link Operation.invokeHostFunction}
  *
  * @note If using the `SigningCallback` variation, the signer is assumed to be
@@ -71,6 +80,7 @@ import { nativeToScVal } from "./scval";
  *
  * @see authorizeInvocation
  * @example
+ * ```ts
  * import {
  *   SorobanRpc,
  *   Transaction,
@@ -84,7 +94,7 @@ import { nativeToScVal } from "./scval";
  * // transaction to a third-party service for signing, or just do simple
  * // signing via Keypair like it does here:
  * function signPayloadCallback(payload) {
- *    return signer.sign(hash(payload.toXDR());
+ *    return signer.sign(hash(payload.toXDR()));
  * }
  *
  * function multiPartyAuth(
@@ -100,8 +110,8 @@ import { nativeToScVal } from "./scval";
  *              entry,
  *              signPayloadCallback,
  *              currentLedger + 1000,
- *              Networks.TESTNET);
- *          ));
+ *              Networks.TESTNET)
+ *          );
  *
  *          return server.prepareTransaction(tx, simResult);
  *      })
@@ -110,13 +120,14 @@ import { nativeToScVal } from "./scval";
  *        return server.sendTransaction(preppedTx);
  *      });
  * }
+ * ```
  */
 export async function authorizeEntry(
-  entry,
-  signer,
-  validUntilLedgerSeq,
-  networkPassphrase = Networks.FUTURENET
-) {
+  entry: xdr.SorobanAuthorizationEntry,
+  signer: Keypair | SigningCallback,
+  validUntilLedgerSeq: number,
+  networkPassphrase: string = Networks.FUTURENET
+): Promise<xdr.SorobanAuthorizationEntry> {
   // no-op if it's source account auth
   if (
     entry.credentials().switch().value !==
@@ -127,8 +138,7 @@ export async function authorizeEntry(
 
   const clone = xdr.SorobanAuthorizationEntry.fromXDR(entry.toXDR());
 
-  /** @type {xdr.SorobanAddressCredentials} */
-  const addrAuth = clone.credentials().address();
+  const addrAuth: xdr.SorobanAddressCredentials = clone.credentials().address();
   addrAuth.signatureExpirationLedger(validUntilLedgerSeq);
 
   const networkId = hash(Buffer.from(networkPassphrase));
@@ -142,20 +152,24 @@ export async function authorizeEntry(
   );
   const payload = hash(preimage.toXDR());
 
-  let signature;
-  let publicKey;
+  let signature: Buffer;
+  let publicKey: string;
   if (typeof signer === "function") {
     const sigResult = await signer(preimage);
-    if (sigResult?.signature) {
-      signature = Buffer.from(sigResult.signature);
+    if (
+      sigResult !== null &&
+      typeof sigResult === "object" &&
+      "signature" in sigResult
+    ) {
+      signature = toBuffer(sigResult.signature);
       publicKey = sigResult.publicKey;
     } else {
       // if using the deprecated form, assume it's for the entry
-      signature = Buffer.from(sigResult);
+      signature = toBuffer(sigResult);
       publicKey = Address.fromScAddress(addrAuth.address()).toString();
     }
   } else {
-    signature = Buffer.from(signer.sign(payload));
+    signature = toBuffer(signer.sign(payload));
     publicKey = signer.publicKey();
   }
 
@@ -197,44 +211,43 @@ export async function authorizeEntry(
  *
  * This is in contrast to {@link authorizeEntry}, which signs an existing entry.
  *
- * @param {Keypair | SigningCallback} signer  either a {@link Keypair} instance
- *    (or anything with a `.sign(buf): Buffer-like` method) or a function which
- *    takes a payload (a {@link xdr.HashIdPreimageSorobanAuthorization}
- *    instance) input and returns the signature of the hash of the raw payload
- *    bytes (where the signing key should correspond to the address in the
- *    `entry`)
- * @param {number}  validUntilLedgerSeq  the (exclusive) future ledger sequence
- *    number until which this authorization entry should be valid (if
- *    `currentLedgerSeq==validUntilLedgerSeq`, this is expired))
- * @param {xdr.SorobanAuthorizedInvocation} invocation the invocation tree that
- *    we're authorizing (likely, this comes from transaction simulation)
- * @param {string}  [publicKey]   the public identity of the signer (when
- *    providing a {@link Keypair} to `signer`, this can be omitted, as it just
- *    uses {@link Keypair.publicKey})
- * @param {string}  [networkPassphrase]   the network passphrase is incorprated
- *    into the signature (see {@link Networks} for options, default:
+ * @param signer - either a {@link Keypair} instance (or anything with a
+ *    `.sign(buf): Buffer-like` method) or a function which takes a payload (a
+ *    {@link xdr.HashIdPreimageSorobanAuthorization} instance) input and returns
+ *    the signature of the hash of the raw payload bytes (where the signing key
+ *    should correspond to the address in the `entry`)
+ * @param validUntilLedgerSeq - the (exclusive) future ledger sequence number
+ *    until which this authorization entry should be valid (if
+ *    `currentLedgerSeq==validUntilLedgerSeq`, this is expired)
+ * @param invocation - the invocation tree that we're authorizing (likely, this
+ *    comes from transaction simulation)
+ * @param publicKey - the public identity of the signer (when providing a
+ *    {@link Keypair} to `signer`, this can be omitted, as it just uses
+ *    {@link Keypair.publicKey})
+ * @param networkPassphrase - the network passphrase is incorporated into the
+ *    signature (see {@link Networks} for options, default:
  *    {@link Networks.FUTURENET})
  *
- * @returns {Promise<xdr.SorobanAuthorizationEntry>} a promise for an
- *    authorization entry that you can pass along to
+ * @returns a promise for an authorization entry that you can pass along to
  *    {@link Operation.invokeHostFunction}
  *
  * @see authorizeEntry
  */
 export function authorizeInvocation(
-  signer,
-  validUntilLedgerSeq,
-  invocation,
-  publicKey = "",
-  networkPassphrase = Networks.FUTURENET
-) {
+  signer: Keypair | SigningCallback,
+  validUntilLedgerSeq: number,
+  invocation: xdr.SorobanAuthorizedInvocation,
+  publicKey: string = "",
+  networkPassphrase: string = Networks.FUTURENET
+): Promise<xdr.SorobanAuthorizationEntry> {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and
   // unique, not cryptographically secure, so it's fine.
   const kp = Keypair.random().rawPublicKey();
   const nonce = new xdr.Int64(bytesToInt64(kp));
 
-  const pk = publicKey || signer.publicKey();
+  const pk =
+    publicKey || (signer instanceof Keypair ? signer.publicKey() : null);
   if (!pk) {
     throw new Error(`authorizeInvocation requires publicKey parameter`);
   }
@@ -254,16 +267,15 @@ export function authorizeInvocation(
   return authorizeEntry(entry, signer, validUntilLedgerSeq, networkPassphrase);
 }
 
-function bytesToInt64(bytes) {
+function bytesToInt64(bytes: Uint8Array): bigint {
   const buf = bytes.subarray(0, 8);
-  // Process each 32-bit half separately: `<<` coerces to signed Int32, so
-  // working with 4 bytes at a time avoids truncating the upper 32 bits.
-  const hi = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
-  const lo = (buf[4] << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7];
-  // `>>> 0` reinterprets the signed Int32 as an unsigned 32-bit value before
-  // converting to BigInt, preventing sign-extension from corrupting the result.
-  const value = BigInt(hi >>> 0) * BigInt(2 ** 32) + BigInt(lo >>> 0);
-  // Reinterpret the unsigned 64-bit result as a signed Int64, matching the
-  // xdr.Int64 type (which expects values in the range [-2^63, 2^63-1]).
-  return BigInt.asIntN(64, value);
+  if (buf.length < 8) {
+    throw new Error(
+      `need at least 8 bytes to convert to Int64, got ${bytes.length}`
+    );
+  }
+  const view = new DataView(buf.buffer, buf.byteOffset, 8);
+  const value = view.getBigInt64(0, false);
+
+  return value;
 }
