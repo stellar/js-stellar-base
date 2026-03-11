@@ -219,11 +219,11 @@ describe("building authorization entries", () => {
       const callback: SigningCallback = async (preimage) =>
         kp.sign(hash(preimage.toXDR()));
 
-      // A SigningCallback doesn't have a publicKey() method, so calling
-      // (signer as Keypair).publicKey() throws a TypeError.
+      // When called with a non-Keypair signer and no explicit publicKey, the
+      // implementation throws Error("authorizeInvocation requires publicKey parameter").
       expect(() =>
         authorizeInvocation(callback, 10, authEntry.rootInvocation()),
-      ).toThrow();
+      ).toThrow("authorizeInvocation requires publicKey parameter");
     });
   });
 
