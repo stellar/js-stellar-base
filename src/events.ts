@@ -1,6 +1,6 @@
 import { StrKey } from "./strkey.js";
 import { scValToNative } from "./scval.js";
-import { xdr } from "./index.js";
+import type { xdr } from "./index.js";
 
 interface SorobanEvent {
   type: "contract" | "diagnostic" | "system";
@@ -20,7 +20,7 @@ interface SorobanEvent {
  *
  * @returns a list of human-readable event structures, where
  *    each element has the following properties:
- *  - type: a string of one of 'system', 'contract', 'diagnostic
+ *  - type: a string of one of 'system', 'contract', 'diagnostic'
  *  - contractId?: optionally, a `C...` encoded strkey
  *  - topics: a list of {@link scValToNative} invocations on the topics
  *  - data: similarly, a {@link scValToNative} invocation on the raw event data
