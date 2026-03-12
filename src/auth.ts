@@ -126,7 +126,7 @@ export async function authorizeEntry(
   entry: xdr.SorobanAuthorizationEntry,
   signer: Keypair | SigningCallback,
   validUntilLedgerSeq: number,
-  networkPassphrase: string = Networks.FUTURENET
+  networkPassphrase: string = Networks.TESTNET
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // no-op if it's source account auth
   if (
@@ -238,7 +238,7 @@ export function authorizeInvocation(
   validUntilLedgerSeq: number,
   invocation: xdr.SorobanAuthorizedInvocation,
   publicKey: string = "",
-  networkPassphrase: string = Networks.FUTURENET
+  networkPassphrase: string = Networks.TESTNET
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and
