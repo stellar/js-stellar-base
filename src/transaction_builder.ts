@@ -1,25 +1,26 @@
-import { UnsignedHyper, Hyper } from "@stellar/js-xdr";
-import BigNumber from "./util/bignumber";
+import { Hyper } from "@stellar/js-xdr";
+import BigNumber from "./util/bignumber.js";
 
-import xdr from "./xdr";
+import xdr from "./xdr.js";
 
-import { Account } from "./account";
-import { MuxedAccount } from "./muxed_account";
-import { decodeAddressToMuxedAccount } from "./util/decode_encode_muxed_account";
+import { Account } from "./account.js";
+import { MuxedAccount } from "./muxed_account.js";
+import { decodeAddressToMuxedAccount } from "./util/decode_encode_muxed_account.js";
 
-import { Transaction } from "./transaction";
-import { FeeBumpTransaction } from "./fee_bump_transaction";
-import { SorobanDataBuilder } from "./sorobandata_builder";
+import { Transaction } from "./transaction.js";
+import { FeeBumpTransaction } from "./fee_bump_transaction.js";
+import { SorobanDataBuilder } from "./sorobandata_builder.js";
 
-import { StrKey } from "./strkey";
-import { SignerKey } from "./signerkey";
-import { Memo } from "./memo";
-// eslint-disable-next-line no-unused-vars
-import { Asset } from "./asset";
-import { nativeToScVal } from "./scval";
-import { Operation } from "./operation";
-import { Address } from "./address";
-import { Keypair } from "./keypair";
+import { StrKey } from "./strkey.js";
+import { SignerKey } from "./signerkey.js";
+import { Memo } from "./memo.js";
+import { Asset } from "./asset.js";
+import { nativeToScVal } from "./scval.js";
+import { Operation } from "./operation.js";
+import { Address } from "./address.js";
+import { Keypair } from "./keypair.js";
+
+const HYPER_MAX_VALUE = Hyper.MAX_VALUE as unknown as bigint;
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -41,12 +42,61 @@ export const BASE_FEE = "100"; // Stroops
 export const TimeoutInfinite = 0;
 
 /**
- * @typedef {object} SorobanFees
- * @property {number} instructions - the number of instructions executed by the transaction
- * @property {number} readBytes - the number of bytes read from the ledger by the transaction
- * @property {number} writeBytes - the number of bytes written to the ledger by the transaction
- * @property {bigint} resourceFee - the fee to be paid for the transaction, in stroops
+ * Soroban fee parameters for resource-limited transactions.
  */
+export interface SorobanFees {
+  /** The number of instructions executed by the transaction. */
+  instructions: number;
+  /** The number of bytes read from the ledger by the transaction. */
+  readBytes: number;
+  /** The number of bytes written to the ledger by the transaction. */
+  writeBytes: number;
+  /** The fee to be paid for the transaction, in stroops. */
+  resourceFee: bigint;
+}
+
+/**
+ * Options for constructing a {@link TransactionBuilder}.
+ */
+export interface TransactionBuilderOptions {
+  /** Max fee you're willing to pay per operation in this transaction (**in stroops**). */
+  fee: string;
+  /** Memo for the transaction. */
+  memo?: Memo;
+  /**
+   * Passphrase of the target Stellar network (e.g. "Public Global Stellar
+   * Network ; September 2015" for the pubnet).
+   */
+  networkPassphrase?: string;
+  /** Timebounds for the validity of this transaction. */
+  timebounds?: {
+    /** 64-bit UNIX timestamp or Date object. */
+    minTime?: Date | number | string;
+    /** 64-bit UNIX timestamp or Date object. */
+    maxTime?: Date | number | string;
+  };
+  /** Ledger bounds for the validity of this transaction. */
+  ledgerbounds?: {
+    /** Number of the minimum ledger sequence. */
+    minLedger?: number;
+    /** Number of the maximum ledger sequence. */
+    maxLedger?: number;
+  };
+  /** Minimum source account sequence number this transaction is valid for. */
+  minAccountSequence?: string;
+  /** Minimum seconds between source account sequence time and ledger time. */
+  minAccountSequenceAge?: number;
+  /** Minimum ledgers between source account sequence and current ledger. */
+  minAccountSequenceLedgerGap?: number;
+  /** List of extra signers required for this transaction. */
+  extraSigners?: string[];
+  /**
+   * An instance of {@link xdr.SorobanTransactionData} or a base64 string.
+   * Provides resource estimations for Soroban transactions. Has no effect on
+   * non-contract transactions.
+   */
+  sorobanData?: xdr.SorobanTransactionData | string;
+}
 
 /**
  * <p>Transaction builder helps constructs a new `{@link Transaction}` using the
@@ -96,49 +146,30 @@ export const TimeoutInfinite = 0;
  * transaction.sign(sourceKeypair);
  * ```
  *
- * @constructor
- *
- * @param {Account} sourceAccount - source account for this transaction
- * @param {object}  opts          - Options object
- * @param {string}  opts.fee      - max fee you're willing to pay per
- *     operation in this transaction (**in stroops**)
- *
- * @param {object}              [opts.timebounds] - timebounds for the
- *     validity of this transaction
- * @param {number|string|Date}  [opts.timebounds.minTime] - 64-bit UNIX
- *     timestamp or Date object
- * @param {number|string|Date}  [opts.timebounds.maxTime] - 64-bit UNIX
- *     timestamp or Date object
- * @param {object}              [opts.ledgerbounds] - ledger bounds for the
- *     validity of this transaction
- * @param {number}              [opts.ledgerbounds.minLedger] - number of the minimum
- *     ledger sequence
- * @param {number}              [opts.ledgerbounds.maxLedger] - number of the maximum
- *     ledger sequence
- * @param {string}              [opts.minAccountSequence] - number for
- *     the minimum account sequence
- * @param {number}              [opts.minAccountSequenceAge] - number of
- *     seconds for the minimum account sequence age
- * @param {number}              [opts.minAccountSequenceLedgerGap] - number of
- *     ledgers for the minimum account sequence ledger gap
- * @param {string[]}            [opts.extraSigners] - list of the extra signers
- *     required for this transaction
- * @param {Memo}                [opts.memo] - memo for the transaction
- * @param {string}              [opts.networkPassphrase] passphrase of the
- *     target Stellar network (e.g. "Public Global Stellar Network ; September
- *     2015" for the pubnet)
- * @param {xdr.SorobanTransactionData | string}  [opts.sorobanData] - an
- *     optional instance of {@link xdr.SorobanTransactionData} to be set as the
- *     internal `Transaction.Ext.SorobanData` field (either the xdr object or a
- *     base64 string). In the case of Soroban transactions, this can be obtained
- *     from a prior simulation of the transaction with a contract invocation and
- *     provides necessary resource estimations. You can also use
- *     {@link SorobanDataBuilder} to construct complicated combinations of
- *     parameters without mucking with XDR directly. **Note:** For
- *     non-contract(non-Soroban) transactions, this has no effect.
+ * @param sourceAccount - source account for this transaction
+ * @param opts - Options object
  */
 export class TransactionBuilder {
-  constructor(sourceAccount, opts = {}) {
+  source: Account | MuxedAccount;
+  operations: xdr.Operation[];
+  baseFee: string;
+  timebounds: {
+    minTime?: Date | number | string;
+    maxTime?: Date | number | string;
+  } | null;
+  ledgerbounds: { minLedger?: number; maxLedger?: number } | null;
+  minAccountSequence: string | null;
+  minAccountSequenceAge: number | null;
+  minAccountSequenceLedgerGap: number | null;
+  extraSigners: string[] | null;
+  memo: Memo;
+  networkPassphrase: string | null;
+  sorobanData: xdr.SorobanTransactionData | null;
+
+  constructor(
+    sourceAccount: Account | MuxedAccount,
+    opts: TransactionBuilderOptions = {} as TransactionBuilderOptions
+  ) {
     if (!sourceAccount) {
       throw new Error("must specify source account for the transaction");
     }
@@ -175,12 +206,12 @@ export class TransactionBuilder {
    * adjustments as you go (for example, when filling out Soroban resource
    * information).
    *
-   * @param {Transaction} tx  a "template" transaction to clone exactly
-   * @param {object} [opts]   additional options to override the clone, e.g.
+   * @param tx - a "template" transaction to clone exactly
+   * @param opts - additional options to override the clone, e.g.
    *    {fee: '1000'} will override the existing base fee derived from `tx` (see
    *    the {@link TransactionBuilder} constructor for detailed options)
    *
-   * @returns {TransactionBuilder} a "prepared" builder instance with the same
+   * @returns a "prepared" builder instance with the same
    *    configuration and operations as the given transaction
    *
    * @warning This does not clone the transaction's
@@ -190,14 +221,18 @@ export class TransactionBuilder {
    *
    * @todo This cannot clone {@link FeeBumpTransaction}s, yet.
    */
-  static cloneFrom(tx, opts = {}) {
+  static cloneFrom(
+    tx: Transaction,
+    opts: Partial<TransactionBuilderOptions> = {}
+  ): TransactionBuilder {
     if (!(tx instanceof Transaction)) {
-      throw new TypeError(`expected a 'Transaction', got: ${tx}`);
+      throw new TypeError(`expected a 'Transaction', got: ${String(tx)}`);
     }
 
     const sequenceNum = (BigInt(tx.sequence) - 1n).toString();
 
     let source;
+
     // rebuild the source account based on the strkey
     if (StrKey.isValidMed25519PublicKey(tx.source)) {
       source = MuxedAccount.fromAddress(tx.source, sequenceNum);
@@ -211,18 +246,37 @@ export class TransactionBuilder {
     // of operations at the end, so we have to down-scale first
     const unscaledFee = Math.floor(parseInt(tx.fee, 10) / tx.operations.length);
 
-    const builder = new TransactionBuilder(source, {
+    const builderOpts: TransactionBuilderOptions = {
       fee: (unscaledFee || BASE_FEE).toString(),
       memo: tx.memo,
-      networkPassphrase: tx.networkPassphrase,
-      timebounds: tx.timeBounds,
-      ledgerbounds: tx.ledgerBounds,
-      minAccountSequence: tx.minAccountSequence,
-      minAccountSequenceAge: tx.minAccountSequenceAge,
-      minAccountSequenceLedgerGap: tx.minAccountSequenceLedgerGap,
-      extraSigners: tx.extraSigners?.map(SignerKey.encodeSignerKey),
-      ...opts
-    });
+      networkPassphrase: tx.networkPassphrase
+    };
+
+    if (tx.timeBounds) {
+      builderOpts.timebounds = tx.timeBounds;
+    }
+    if (tx.ledgerBounds) {
+      builderOpts.ledgerbounds = tx.ledgerBounds;
+    }
+    if (tx.minAccountSequence) {
+      builderOpts.minAccountSequence = tx.minAccountSequence;
+    }
+    if (tx.minAccountSequenceAge) {
+      builderOpts.minAccountSequenceAge = Number(tx.minAccountSequenceAge);
+    }
+    if (tx.minAccountSequenceLedgerGap) {
+      builderOpts.minAccountSequenceLedgerGap = tx.minAccountSequenceLedgerGap;
+    }
+    if (tx.extraSigners) {
+      builderOpts.extraSigners = tx.extraSigners.map((s) =>
+        SignerKey.encodeSignerKey(s)
+      );
+    }
+
+    // User-provided opts override transaction defaults
+    Object.assign(builderOpts, opts);
+
+    const builder = new TransactionBuilder(source, builderOpts);
 
     tx._tx.operations().forEach((op) => builder.addOperation(op));
 
@@ -232,12 +286,10 @@ export class TransactionBuilder {
   /**
    * Adds an operation to the transaction.
    *
-   * @param {xdr.Operation} operation   The xdr operation object, use {@link
+   * @param operation - The xdr operation object, use {@link
    *     Operation} static methods.
-   *
-   * @returns {TransactionBuilder}
    */
-  addOperation(operation) {
+  addOperation(operation: xdr.Operation): TransactionBuilder {
     this.operations.push(operation);
     return this;
   }
@@ -245,21 +297,21 @@ export class TransactionBuilder {
   /**
    * Adds an operation to the transaction at a specific index.
    *
-   * @param {xdr.Operation} operation - The xdr operation object to add, use {@link Operation} static methods.
-   * @param {number} index - The index at which to insert the operation.
+   * @param operation - The xdr operation object to add, use {@link Operation} static methods.
+   * @param index - The index at which to insert the operation.
    *
-   * @returns {TransactionBuilder} - The TransactionBuilder instance for method chaining.
+   * @returns The TransactionBuilder instance for method chaining.
    */
-  addOperationAt(operation, index) {
+  addOperationAt(operation: xdr.Operation, index: number): TransactionBuilder {
     this.operations.splice(index, 0, operation);
     return this;
   }
 
   /**
    * Removes the operations from the builder (useful when cloning).
-   * @returns {TransactionBuilder} this builder instance
+   * @returns this builder instance
    */
-  clearOperations() {
+  clearOperations(): TransactionBuilder {
     this.operations = [];
     return this;
   }
@@ -267,21 +319,20 @@ export class TransactionBuilder {
   /**
    * Removes the operation at the specified index from the transaction.
    *
-   * @param {number} index - The index of the operation to remove.
+   * @param index - The index of the operation to remove.
    *
-   * @returns {TransactionBuilder} The TransactionBuilder instance for method chaining.
+   * @returns The TransactionBuilder instance for method chaining.
    */
-  clearOperationAt(index) {
+  clearOperationAt(index: number): TransactionBuilder {
     this.operations.splice(index, 1);
     return this;
   }
 
   /**
    * Adds a memo to the transaction.
-   * @param {Memo} memo {@link Memo} object
-   * @returns {TransactionBuilder}
+   * @param memo - {@link Memo} object
    */
-  addMemo(memo) {
+  addMemo(memo: Memo): TransactionBuilder {
     this.memo = memo;
     return this;
   }
@@ -308,17 +359,15 @@ export class TransactionBuilder {
    *  method is using the machine system time (UTC), make sure it is set
    *  correctly.
    *
-   * @param {number} timeoutSeconds   Number of seconds the transaction is good.
+   * @param timeoutSeconds - Number of seconds the transaction is good.
    *     Can't be negative. If the value is {@link TimeoutInfinite}, the
    *     transaction is good indefinitely.
-   *
-   * @returns {TransactionBuilder}
    *
    * @see {@link TimeoutInfinite}
    * @see https://developers.stellar.org/docs/tutorials/handling-errors/
    */
-  setTimeout(timeoutSeconds) {
-    if (this.timebounds !== null && this.timebounds.maxTime > 0) {
+  setTimeout(timeoutSeconds: number): TransactionBuilder {
+    if (this.timebounds !== null && Number(this.timebounds.maxTime) > 0) {
       throw new Error(
         "TimeBounds.max_time has been already set - setting timeout would overwrite it."
       );
@@ -330,11 +379,12 @@ export class TransactionBuilder {
 
     if (timeoutSeconds > 0) {
       const timeoutTimestamp = Math.floor(Date.now() / 1000) + timeoutSeconds;
+
       if (this.timebounds === null) {
         this.timebounds = { minTime: 0, maxTime: timeoutTimestamp };
       } else {
         this.timebounds = {
-          minTime: this.timebounds.minTime,
+          minTime: this.timebounds.minTime ?? 0,
           maxTime: timeoutTimestamp
         };
       }
@@ -354,18 +404,19 @@ export class TransactionBuilder {
    * precondition. Internally this will set the `minTime`, and `maxTime`
    * preconditions. Conflicts with `setTimeout`, so use one or the other.
    *
-   * @param {Date|number} minEpochOrDate  Either a JS Date object, or a number
+   * @param minEpochOrDate - Either a JS Date object, or a number
    *     of UNIX epoch seconds. The transaction is valid after this timestamp.
    *     Can't be negative. If the value is `0`, the transaction is valid
    *     immediately.
-   * @param {Date|number} maxEpochOrDate  Either a JS Date object, or a number
+   * @param maxEpochOrDate - Either a JS Date object, or a number
    *     of UNIX epoch seconds. The transaction is valid until this timestamp.
    *     Can't be negative. If the value is `0`, the transaction is valid
    *     indefinitely.
-   *
-   * @returns {TransactionBuilder}
    */
-  setTimebounds(minEpochOrDate, maxEpochOrDate) {
+  setTimebounds(
+    minEpochOrDate: Date | number,
+    maxEpochOrDate: Date | number
+  ): TransactionBuilder {
     // Force it to a date type
     if (typeof minEpochOrDate === "number") {
       minEpochOrDate = new Date(minEpochOrDate * 1000);
@@ -403,17 +454,15 @@ export class TransactionBuilder {
    * range of ledgers, you can set a ledgerbounds precondition.
    * Internally this will set the `minLedger` and `maxLedger` preconditions.
    *
-   * @param {number} minLedger  The minimum ledger this transaction is valid at
+   * @param minLedger - The minimum ledger this transaction is valid at
    *     or after. Cannot be negative. If the value is `0` (the default), the
    *     transaction is valid immediately.
    *
-   * @param {number} maxLedger  The maximum ledger this transaction is valid
+   * @param maxLedger - The maximum ledger this transaction is valid
    *     before. Cannot be negative. If the value is `0`, the transaction is
    *     valid indefinitely.
-   *
-   * @returns {TransactionBuilder}
    */
-  setLedgerbounds(minLedger, maxLedger) {
+  setLedgerbounds(minLedger: number, maxLedger: number): TransactionBuilder {
     if (this.ledgerbounds !== null) {
       throw new Error(
         "LedgerBounds has been already set - setting ledgerbounds would overwrite it."
@@ -445,14 +494,12 @@ export class TransactionBuilder {
    * `tx.seqNum`. Internally this will set the `minAccountSequence`
    * precondition.
    *
-   * @param {string} minAccountSequence   The minimum source account sequence
+   * @param minAccountSequence - The minimum source account sequence
    *     number this transaction is valid for. If the value is `0` (the
    *     default), the transaction is valid when `sourceAccount's sequence
    *     number == tx.seqNum- 1`.
-   *
-   * @returns {TransactionBuilder}
    */
-  setMinAccountSequence(minAccountSequence) {
+  setMinAccountSequence(minAccountSequence: string): TransactionBuilder {
     if (this.minAccountSequence !== null) {
       throw new Error(
         "min_account_sequence has been already set - setting min_account_sequence would overwrite it."
@@ -469,14 +516,12 @@ export class TransactionBuilder {
    * `minAccountSequenceAge` greater than sourceAccount's `sequenceTime`.
    * Internally this will set the `minAccountSequenceAge` precondition.
    *
-   * @param {number} durationInSeconds  The minimum amount of time between
+   * @param durationInSeconds - The minimum amount of time between
    *     source account sequence time and the ledger time when this transaction
    *     will become valid. If the value is `0`, the transaction is unrestricted
    *     by the account sequence age. Cannot be negative.
-   *
-   * @returns {TransactionBuilder}
    */
-  setMinAccountSequenceAge(durationInSeconds) {
+  setMinAccountSequenceAge(durationInSeconds: number): TransactionBuilder {
     if (typeof durationInSeconds !== "number") {
       throw new Error("min_account_sequence_age must be a number");
     }
@@ -500,14 +545,12 @@ export class TransactionBuilder {
    * `minAccountSequenceLedgerGap` greater than sourceAccount's ledger sequence.
    * Internally this will set the `minAccountSequenceLedgerGap` precondition.
    *
-   * @param {number} gap  The minimum number of ledgers between source account
+   * @param gap - The minimum number of ledgers between source account
    *     sequence and the ledger number when this transaction will become valid.
    *     If the value is `0`, the transaction is unrestricted by the account
    *     sequence ledger. Cannot be negative.
-   *
-   * @returns {TransactionBuilder}
    */
-  setMinAccountSequenceLedgerGap(gap) {
+  setMinAccountSequenceLedgerGap(gap: number): TransactionBuilder {
     if (this.minAccountSequenceLedgerGap !== null) {
       throw new Error(
         "min_account_sequence_ledger_gap has been already set - setting min_account_sequence_ledger_gap would overwrite it."
@@ -529,11 +572,9 @@ export class TransactionBuilder {
    * by the sourceAccount or operations. Internally this will set the
    * `extraSigners` precondition.
    *
-   * @param {string[]} extraSigners   required extra signers (as {@link StrKey}s)
-   *
-   * @returns {TransactionBuilder}
+   * @param extraSigners - required extra signers (as {@link StrKey}s)
    */
-  setExtraSigners(extraSigners) {
+  setExtraSigners(extraSigners: string[]): TransactionBuilder {
     if (!Array.isArray(extraSigners)) {
       throw new Error("extra_signers must be an array of strings.");
     }
@@ -554,14 +595,12 @@ export class TransactionBuilder {
   }
 
   /**
-   * Set network nassphrase for the Transaction that will be built.
+   * Set network passphrase for the Transaction that will be built.
    *
-   * @param {string} networkPassphrase    passphrase of the target Stellar
+   * @param networkPassphrase - passphrase of the target Stellar
    *     network (e.g. "Public Global Stellar Network ; September 2015").
-   *
-   * @returns {TransactionBuilder}
    */
-  setNetworkPassphrase(networkPassphrase) {
+  setNetworkPassphrase(networkPassphrase: string): TransactionBuilder {
     this.networkPassphrase = networkPassphrase;
     return this;
   }
@@ -578,14 +617,14 @@ export class TransactionBuilder {
    * {@link Operation.invokeHostFunction}, providing necessary resource
    * and storage footprint estimations for contract invocation.
    *
-   * @param {xdr.SorobanTransactionData | string} sorobanData    the
-   *    {@link xdr.SorobanTransactionData} as a raw xdr object or a base64
-   *    string to be decoded
+   * @param sorobanData - the {@link xdr.SorobanTransactionData} as a raw xdr
+   *    object or a base64 string to be decoded
    *
-   * @returns {TransactionBuilder}
    * @see {SorobanDataBuilder}
    */
-  setSorobanData(sorobanData) {
+  setSorobanData(
+    sorobanData: xdr.SorobanTransactionData | string
+  ): TransactionBuilder {
     this.sorobanData = new SorobanDataBuilder(sorobanData).build();
     return this;
   }
@@ -595,17 +634,20 @@ export class TransactionBuilder {
    * This method removes the need for simulation by handling the creation of the
    * appropriate authorization entries and ledger footprint for the transfer operation.
    *
-   * @param {string} destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
-   * @param {Asset} asset - the SAC asset to be transferred
-   * @param  {BigInt} amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
-   * @param {SorobanFees} [sorobanFees] - optional Soroban fees for the transaction to override the default fees used
-   *
-   * @returns {TransactionBuilder}
+   * @param destination - the address of the recipient of the SAC transfer (should be a valid Stellar address or contract ID)
+   * @param asset - the SAC asset to be transferred
+   * @param amount - the amount of tokens to be transferred in 7 decimals. IE 1 token with 7 decimals of precision would be represented as "1_0000000"
+   * @param sorobanFees - optional Soroban fees for the transaction to override the default fees used
    */
-  addSacTransferOperation(destination, asset, amount, sorobanFees) {
+  addSacTransferOperation(
+    destination: string,
+    asset: Asset,
+    amount: bigint | string,
+    sorobanFees?: SorobanFees
+  ): TransactionBuilder {
     if (BigInt(amount) <= 0n) {
       throw new Error("Amount must be a positive integer");
-    } else if (BigInt(amount) > Hyper.MAX_VALUE) {
+    } else if (BigInt(amount) > HYPER_MAX_VALUE) {
       // The largest supported value for SAC is i64 however the contract interface uses i128 which is why we convert it to i128
       throw new Error("Amount exceeds maximum value for i64");
     }
@@ -629,7 +671,7 @@ export class TransactionBuilder {
           `writeBytes must be greater than 0 and at most ${U32_MAX}`
         );
       }
-      if (resourceFee <= 0n || resourceFee > Hyper.MAX_VALUE) {
+      if (resourceFee <= 0n || resourceFee > HYPER_MAX_VALUE) {
         throw new Error(
           "resourceFee must be greater than 0 and at most i64 max"
         );
@@ -650,6 +692,12 @@ export class TransactionBuilder {
 
     if (destination === this.source.accountId()) {
       throw new Error("Destination cannot be the same as the source account.");
+    }
+
+    if (this.networkPassphrase === null) {
+      throw new Error(
+        "networkPassphrase must be set to add a SAC transfer operation"
+      );
     }
 
     const contractId = asset.contractId(this.networkPassphrase);
@@ -706,10 +754,16 @@ export class TransactionBuilder {
       );
 
       if (!isAssetNative) {
+        const assetIssuer = asset.getIssuer();
+
+        if (!assetIssuer) {
+          throw new Error("Asset issuer must be set for non-native assets.");
+        }
+
         footprint.readOnly().push(
           xdr.LedgerKey.account(
             new xdr.LedgerKeyAccount({
-              accountId: Keypair.fromPublicKey(asset.getIssuer()).xdrPublicKey()
+              accountId: Keypair.fromPublicKey(assetIssuer).xdrPublicKey()
             })
           )
         );
@@ -791,16 +845,23 @@ export class TransactionBuilder {
   /**
    * This will build the transaction.
    * It will also increment the source account's sequence number by 1.
-   * @returns {Transaction} This method will return the built {@link Transaction}.
+   * @returns This method will return the built {@link Transaction}.
    */
-  build() {
+  build(): Transaction {
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).plus(1);
     const fee = new BigNumber(this.baseFee)
       .times(this.operations.length)
       .toNumber();
-    const attrs = {
+    const attrs: {
+      fee: number;
+      seqNum: xdr.SequenceNumber;
+      memo: xdr.Memo | null;
+      cond?: xdr.Preconditions;
+      sourceAccount?: xdr.MuxedAccount;
+      ext?: xdr.TransactionExt;
+    } = {
       fee,
-      seqNum: xdr.SequenceNumber.fromString(sequenceNumber.toString()),
+      seqNum: xdr.Int64.fromString(sequenceNumber.toString()),
       memo: this.memo ? this.memo.toXDRObject() : null
     };
 
@@ -819,31 +880,33 @@ export class TransactionBuilder {
         this.timebounds.minTime.getTime() / 1000
       );
     }
+
     if (isValidDate(this.timebounds.maxTime)) {
       this.timebounds.maxTime = Math.floor(
         this.timebounds.maxTime.getTime() / 1000
       );
     }
 
-    this.timebounds.minTime = UnsignedHyper.fromString(
-      this.timebounds.minTime.toString()
-    );
-    this.timebounds.maxTime = UnsignedHyper.fromString(
-      this.timebounds.maxTime.toString()
-    );
+    const minTime = xdr.Uint64.fromString(this.timebounds.minTime.toString());
+    const maxTime = xdr.Uint64.fromString(this.timebounds.maxTime.toString());
 
-    const timeBounds = new xdr.TimeBounds(this.timebounds);
+    const timeBounds = new xdr.TimeBounds({ minTime, maxTime });
 
     if (this.hasV2Preconditions()) {
       let ledgerBounds = null;
+
       if (this.ledgerbounds !== null) {
-        ledgerBounds = new xdr.LedgerBounds(this.ledgerbounds);
+        ledgerBounds = new xdr.LedgerBounds({
+          minLedger: this.ledgerbounds.minLedger ?? 0,
+          maxLedger: this.ledgerbounds.maxLedger ?? 0
+        });
       }
 
-      let minSeqNum = this.minAccountSequence || "0";
-      minSeqNum = xdr.SequenceNumber.fromString(minSeqNum);
+      const minSeqNum = this.minAccountSequence
+        ? xdr.Int64.fromString(this.minAccountSequence)
+        : null;
 
-      const minSeqAge = UnsignedHyper.fromString(
+      const minSeqAge = xdr.Uint64.fromString(
         this.minAccountSequenceAge !== null
           ? this.minAccountSequenceAge.toString()
           : "0"
@@ -853,7 +916,7 @@ export class TransactionBuilder {
 
       const extraSigners =
         this.extraSigners !== null
-          ? this.extraSigners.map(SignerKey.decodeAddress)
+          ? this.extraSigners.map((s) => SignerKey.decodeAddress(s))
           : [];
 
       attrs.cond = xdr.Preconditions.precondV2(
@@ -872,26 +935,31 @@ export class TransactionBuilder {
 
     attrs.sourceAccount = decodeAddressToMuxedAccount(this.source.accountId());
 
-    // TODO - remove this workaround for TransactionExt ts constructor
-    //       and use the typescript generated static factory method once fixed
-    //       https://github.com/stellar/dts-xdr/issues/5
+    // Previously used @ts-ignore and passed xdr.Void as second arg to TransactionExt(0)
+    // due to broken TransactionExt types in dts-xdr.
+    // Fixed upstream: https://github.com/stellar/dts-xdr/issues/5
     if (this.sorobanData) {
-      // @ts-ignore
       attrs.ext = new xdr.TransactionExt(1, this.sorobanData);
       // Soroban transactions pay the resource fee in addition to the regular fee, so we need to add it here.
       attrs.fee = new BigNumber(attrs.fee)
-        .plus(this.sorobanData.resourceFee())
+        .plus(this.sorobanData.resourceFee().toString())
         .toNumber();
     } else {
-      // @ts-ignore
-      attrs.ext = new xdr.TransactionExt(0, xdr.Void);
+      attrs.ext = new xdr.TransactionExt(0);
     }
 
-    const xtx = new xdr.Transaction(attrs);
-    xtx.operations(this.operations);
-    const txEnvelope = new xdr.TransactionEnvelope.envelopeTypeTx(
-      new xdr.TransactionV1Envelope({ tx: xtx })
+    const xtx = new xdr.Transaction(
+      attrs as ConstructorParameters<typeof xdr.Transaction>[0]
     );
+    xtx.operations(this.operations);
+
+    const txEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
+      new xdr.TransactionV1Envelope({ tx: xtx, signatures: [] })
+    );
+
+    if (this.networkPassphrase === null) {
+      throw new Error("networkPassphrase must be set to build a transaction");
+    }
 
     const tx = new Transaction(txEnvelope, this.networkPassphrase);
 
@@ -900,6 +968,9 @@ export class TransactionBuilder {
     return tx;
   }
 
+  /**
+   * Checks whether any v2 preconditions have been set on this builder.
+   */
   hasV2Preconditions() {
     return (
       this.ledgerbounds !== null ||
@@ -914,14 +985,14 @@ export class TransactionBuilder {
    * Builds a {@link FeeBumpTransaction}, enabling you to resubmit an existing
    * transaction with a higher fee.
    *
-   * @param {Keypair|string}  feeSource - account paying for the transaction,
+   * @param feeSource - account paying for the transaction,
    *     in the form of either a Keypair (only the public key is used) or
    *     an account ID (in G... or M... form, but refer to `withMuxing`)
-   * @param {string}          baseFee   - max fee willing to pay per operation
+   * @param baseFee - max fee willing to pay per operation
    *     in inner transaction (**in stroops**)
-   * @param {Transaction}     innerTx   - {@link Transaction} to be bumped by
+   * @param innerTx - {@link Transaction} to be bumped by
    *     the fee bump transaction
-   * @param {string}          networkPassphrase - passphrase of the target
+   * @param networkPassphrase - passphrase of the target
    *     Stellar network (e.g. "Public Global Stellar Network ; September 2015",
    *     see {@link Networks})
    *
@@ -931,15 +1002,13 @@ export class TransactionBuilder {
    *
    * @note Your fee-bump amount should be >= 10x the original fee.
    * @see  https://developers.stellar.org/docs/glossary/fee-bumps/#replace-by-fee
-   *
-   * @returns {FeeBumpTransaction}
    */
   static buildFeeBumpTransaction(
-    feeSource,
-    baseFee,
-    innerTx,
-    networkPassphrase
-  ) {
+    feeSource: Keypair | string,
+    baseFee: string,
+    innerTx: Transaction,
+    networkPassphrase: string
+  ): FeeBumpTransaction {
     const innerOps = innerTx.operations.length;
 
     const minBaseFee = new BigNumber(BASE_FEE);
@@ -951,7 +1020,7 @@ export class TransactionBuilder {
     switch (env.switch().value) {
       case xdr.EnvelopeType.envelopeTypeTx().value: {
         const sorobanData = env.v1().tx().ext().value();
-        resourceFee = new BigNumber(sorobanData?.resourceFee() ?? 0);
+        resourceFee = new BigNumber(sorobanData?.resourceFee().toString() ?? 0);
 
         break;
       }
@@ -966,32 +1035,38 @@ export class TransactionBuilder {
     // The fee rate for fee bump is at least the fee rate of the inner transaction
     if (base.lt(innerInclusionFee)) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${innerInclusionFee} stroops.`
+        `Invalid baseFee, it should be at least ${innerInclusionFee.toString()} stroops.`
       );
     }
 
     // The fee rate is at least the minimum fee
     if (base.lt(minBaseFee)) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${minBaseFee} stroops.`
+        `Invalid baseFee, it should be at least ${minBaseFee.toString()} stroops.`
       );
     }
 
     let innerTxEnvelope = innerTx.toEnvelope();
     if (innerTxEnvelope.switch() === xdr.EnvelopeType.envelopeTypeTxV0()) {
       const v0Tx = innerTxEnvelope.v0().tx();
+      const v0TimeBounds = v0Tx.timeBounds();
+
+      if (v0TimeBounds === null) {
+        throw new Error("Inner transaction must have time bounds");
+      }
+
       const v1Tx = new xdr.Transaction({
-        sourceAccount: new xdr.MuxedAccount.keyTypeEd25519(
+        sourceAccount: xdr.MuxedAccount.keyTypeEd25519(
           v0Tx.sourceAccountEd25519()
         ),
         fee: v0Tx.fee(),
         seqNum: v0Tx.seqNum(),
-        cond: xdr.Preconditions.precondTime(v0Tx.timeBounds()),
+        cond: xdr.Preconditions.precondTime(v0TimeBounds),
         memo: v0Tx.memo(),
         operations: v0Tx.operations(),
         ext: new xdr.TransactionExt(0)
       });
-      innerTxEnvelope = new xdr.TransactionEnvelope.envelopeTypeTx(
+      innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
         new xdr.TransactionV1Envelope({
           tx: v1Tx,
           signatures: innerTxEnvelope.v0().signatures()
@@ -1023,9 +1098,8 @@ export class TransactionBuilder {
       tx,
       signatures: []
     });
-    const envelope = new xdr.TransactionEnvelope.envelopeTypeTxFeeBump(
-      feeBumpTxEnvelope
-    );
+    const envelope =
+      xdr.TransactionEnvelope.envelopeTypeTxFeeBump(feeBumpTxEnvelope);
 
     return new FeeBumpTransaction(envelope, networkPassphrase);
   }
@@ -1034,15 +1108,16 @@ export class TransactionBuilder {
    * Build a {@link Transaction} or {@link FeeBumpTransaction} from an
    * xdr.TransactionEnvelope.
    *
-   * @param {string|xdr.TransactionEnvelope} envelope - The transaction envelope
+   * @param envelope - The transaction envelope
    *     object or base64 encoded string.
-   * @param {string} networkPassphrase - The network passphrase of the target
+   * @param networkPassphrase - The network passphrase of the target
    *     Stellar network (e.g. "Public Global Stellar Network ; September
    *     2015"), see {@link Networks}.
-   *
-   * @returns {Transaction|FeeBumpTransaction}
    */
-  static fromXDR(envelope, networkPassphrase) {
+  static fromXDR(
+    envelope: xdr.TransactionEnvelope | string,
+    networkPassphrase: string
+  ): FeeBumpTransaction | Transaction {
     if (typeof envelope === "string") {
       envelope = xdr.TransactionEnvelope.fromXDR(envelope, "base64");
     }
@@ -1057,10 +1132,8 @@ export class TransactionBuilder {
 
 /**
  * Checks whether a provided object is a valid Date.
- * @argument {Date} d date object
- * @returns {boolean}
+ * @param d - date object
  */
-export function isValidDate(d) {
-  // isnan is okay here because it correctly checks for invalid date objects
-  return d instanceof Date && !isNaN(d);
+export function isValidDate(d: Date | number | string): d is Date {
+  return d instanceof Date && !Number.isNaN(d.getTime());
 }
