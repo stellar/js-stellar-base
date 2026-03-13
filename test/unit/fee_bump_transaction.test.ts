@@ -1,4 +1,4 @@
-import randomBytes from "randombytes";
+import { randomBytes } from "crypto";
 import { describe, it, expect, beforeEach } from "vitest";
 import { FeeBumpTransaction } from "../../src/fee_bump_transaction.js";
 import { Transaction } from "../../src/transaction.js";
@@ -14,8 +14,8 @@ import { encodeMuxedAccountToAddress } from "../../src/util/decode_encode_muxed_
 import xdr from "../../src/xdr.js";
 
 function expectBuffersToBeEqual(
-  left: { toString(encoding: string): string },
-  right: { toString(encoding: string): string },
+  left: { toString(encoding: BufferEncoding): string },
+  right: { toString(encoding: BufferEncoding): string },
 ): void {
   const leftHex = left.toString("hex");
   const rightHex = right.toString("hex");
@@ -175,7 +175,7 @@ describe("FeeBumpTransaction", () => {
     expectBuffersToBeEqual(env.signatures()[0].signature(), preimage);
     expectBuffersToBeEqual(
       env.signatures()[0].hint(),
-      preimageHash.slice(preimageHash.length - 4),
+      preimageHash.subarray(preimageHash.length - 4),
     );
   });
 

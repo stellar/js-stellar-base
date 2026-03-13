@@ -110,7 +110,6 @@
     "node-polyfill-webpack-plugin": "^3.0.0",
     "nyc": "^15.1.0",
     "prettier": "^3.8.1",
-    "randombytes": "^2.1.0",
     "sinon": "^16.1.0",
     "sinon-chai": "^3.7.0",
     "taffydb": "^2.7.3",
