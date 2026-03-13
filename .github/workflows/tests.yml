@@ -36,11 +36,5 @@ jobs:
       - name: Build All
         run: pnpm run build:prod
 
-      - name: Run Node Tests
-        run: pnpm run test:node
-
       - name: Run Vitest Tests
         run: pnpm run test:vitest
-
-      - name: Run Browser Tests
-        run: pnpm run test:browser

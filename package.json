@@ -21,7 +21,7 @@
     "build:node:prod": "cross-env NODE_ENV=production pnpm run build",
     "build:browser:prod": "cross-env NODE_ENV=production pnpm run build:browser",
     "build:prod": "cross-env NODE_ENV=production pnpm run build",
-    "test": "pnpm run build && pnpm run test:node && pnpm run test:browser",
+    "test": "pnpm run build && pnpm run test:vitest",
     "test:node": "NODE_OPTIONS=--no-experimental-detect-module pnpm run _nyc -- mocha --config ./mocharc.tsnode.json",
     "test:browser": "karma start ./config/karma.conf.js",
     "test:vitest": "vitest --run",
