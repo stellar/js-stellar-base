@@ -141,9 +141,6 @@ importers:
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
-      randombytes:
-        specifier: ^2.1.0
-        version: 2.1.0
       sinon:
         specifier: ^16.1.0
         version: 16.1.3
