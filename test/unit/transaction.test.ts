@@ -155,9 +155,7 @@ describe("Transaction", () => {
       const envelope = transaction
         .toEnvelope()
         .value() as xdr.TransactionV1Envelope;
-      envelope
-        .tx()
-        .fee(xdr.Int64.fromString("300") as unknown as number & xdr.Int64);
+      envelope.tx().fee(300);
 
       expect(transaction.tx.fee().toString()).toEqual("100");
     });

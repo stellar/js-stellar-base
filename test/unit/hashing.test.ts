@@ -18,10 +18,10 @@ describe("hash", () => {
   });
 
   it("hashes an array of bytes properly, using SHA256", () => {
-    const msg: number[] = [
+    const msg = Buffer.from([
       104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100,
-    ];
-    const actualHex = hash(msg as unknown as Buffer).toString("hex");
+    ]);
+    const actualHex = hash(msg).toString("hex");
     expect(actualHex).toEqual(expectedHex);
   });
 

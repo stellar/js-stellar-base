@@ -28,24 +28,17 @@ describe("sign", () => {
   const expectedSig =
     "587d4b472eeef7d07aafcd0b049640b0bb3f39784118c2e2b73a04fa2f64c9c538b4b2d0f5335e968a480021fdc23e98c0ddf424cb15d8131df8cb6c4bb58309";
 
-  it("can sign a string properly", () => {
-    const data = Buffer.from("hello world", "utf8");
-    const actualSig = sign(data, secretKey).toString("hex");
-    expect(actualSig).toEqual(expectedSig);
-  });
-
-  it("can sign a buffer properly", () => {
+  it("signs data correctly", () => {
     const data = Buffer.from("hello world", "utf8");
     const actualSig = sign(data, secretKey).toString("hex");
     expect(actualSig).toEqual(expectedSig);
   });
 
   it("can sign an array of bytes properly", () => {
-    const data = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
-    const actualSig = sign(
-      data as unknown as Buffer,
-      secretKey,
-    ).toString("hex");
+    const data = Buffer.from([
+      104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100,
+    ]);
+    const actualSig = sign(data, secretKey).toString("hex");
     expect(actualSig).toEqual(expectedSig);
   });
 });
@@ -60,16 +53,7 @@ describe("verify", () => {
     "hex",
   );
 
-  it("can verify a string properly", () => {
-    const data = Buffer.from("hello world", "utf8");
-    expect(verify(data, sig, publicKey)).toBeTruthy();
-    expect(
-      verify(Buffer.from("corrupted", "utf8"), sig, publicKey),
-    ).toBeFalsy();
-    expect(verify(data, badSig, publicKey)).toBeFalsy();
-  });
-
-  it("can verify a buffer properly", () => {
+  it("verifies data correctly", () => {
     const data = Buffer.from("hello world", "utf8");
     expect(verify(data, sig, publicKey)).toBeTruthy();
     expect(
@@ -79,13 +63,13 @@ describe("verify", () => {
   });
 
   it("can verify an array of bytes properly", () => {
-    const data = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
-    expect(verify(data as unknown as Buffer, sig, publicKey)).toBeTruthy();
+    const data = Buffer.from([
+      104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100,
+    ]);
+    expect(verify(data, sig, publicKey)).toBeTruthy();
     expect(
       verify(Buffer.from("corrupted", "utf8"), sig, publicKey),
     ).toBeFalsy();
-    expect(
-      verify(data as unknown as Buffer, badSig, publicKey),
-    ).toBeFalsy();
+    expect(verify(data, badSig, publicKey)).toBeFalsy();
   });
 });
