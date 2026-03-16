@@ -199,8 +199,7 @@ pnpm run test
 To run a specific set of tests:
 
 ```shell
-pnpm run test:node
-pnpm run test:browser
+pnpm run test:vitest
 ```
 
 Tests are also run automatically in Github Actions for every master commit and
