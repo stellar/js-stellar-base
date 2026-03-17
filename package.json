@@ -3,14 +3,14 @@
   "version": "14.1.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
+  "module": "./lib/esm/index.mjs",
   "types": "./lib/types/index.d.ts",
   "packageManager": "pnpm@9.15.3",
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./lib/types/index.d.ts",
-      "import": "./lib/esm/index.js",
+      "import": "./lib/esm/index.mjs",
       "require": "./lib/cjs/index.js",
       "default": "./lib/cjs/index.js"
     }

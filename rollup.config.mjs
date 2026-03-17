@@ -74,7 +74,7 @@ function createOutput(dir, format) {
     preserveModules: true,
     preserveModulesRoot: "src",
     sourcemap: true,
-    entryFileNames: "[name].js",
+    entryFileNames: format === "esm" ? "[name].mjs" : "[name].js",
   };
 }
 
@@ -146,7 +146,7 @@ const distConfig = {
       ],
     },
     {
-      file: "dist/stellar-base.esm.js",
+      file: "dist/stellar-base.esm.mjs",
       format: "esm",
       exports: "named",
       sourcemap: true,

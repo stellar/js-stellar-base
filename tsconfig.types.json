@@ -6,6 +6,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "incremental": false,
-    "declarationDir": "./lib/types"
+    "declarationDir": "./lib/types",
+    "rootDir": "./src"
   }
 }
