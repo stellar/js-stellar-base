@@ -62,11 +62,11 @@ export class Transaction extends TransactionBase {
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
         this._source = StrKey.encodeEd25519PublicKey(
-          this.tx.sourceAccountEd25519()
+          this._tx.sourceAccountEd25519()
         );
         break;
       default:
-        this._source = encodeMuxedAccountToAddress(this.tx.sourceAccount());
+        this._source = encodeMuxedAccountToAddress(this._tx.sourceAccount());
         break;
     }
 
@@ -256,7 +256,7 @@ export class Transaction extends TransactionBase {
    * @returns {Buffer}
    */
   signatureBase() {
-    let tx = this.tx;
+    let tx = this._tx;
 
     // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
     // we need a Transaction to generate the signature base
@@ -288,7 +288,7 @@ export class Transaction extends TransactionBase {
    * @returns {xdr.TransactionEnvelope}
    */
   toEnvelope() {
-    const rawTx = this.tx.toXDR();
+    const rawTx = this._tx.toXDR();
     const signatures = this.signatures.slice(); // make a copy of the signatures
 
     let envelope;

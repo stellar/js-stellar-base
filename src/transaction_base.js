@@ -32,7 +32,11 @@ export class TransactionBase {
   }
 
   get tx() {
-    return this._tx;
+    // Return a defensive copy to prevent mutation of the internal XDR object
+    // after construction. Signing and serialization use this._tx directly,
+    // so exposing the live reference could let callers alter signed bytes
+    // without changing the cached display fields (fee, source, memo, etc.).
+    return this._tx.constructor.fromXDR(this._tx.toXDR());
   }
 
   set tx(value) {
