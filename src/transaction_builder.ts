@@ -29,13 +29,11 @@ const HYPER_MAX_VALUE = Hyper.MAX_VALUE as unknown as bigint;
  * Server#fetchBaseFee} to get an accurate value of minimum transaction
  * fee on the network.
  *
- * @constant
  * @see [Fees](https://developers.stellar.org/docs/glossary/fees/)
  */
 export const BASE_FEE = "100"; // Stroops
 
 /**
- * @constant
  * @see {@link TransactionBuilder#setTimeout}
  * @see [Timeout](https://developers.stellar.org/api/resources/transactions/post/)
  */
@@ -146,8 +144,6 @@ export interface TransactionBuilderOptions {
  * transaction.sign(sourceKeypair);
  * ```
  *
- * @param sourceAccount - source account for this transaction
- * @param opts - Options object
  */
 export class TransactionBuilder {
   source: Account | MuxedAccount;
@@ -166,6 +162,10 @@ export class TransactionBuilder {
   networkPassphrase: string | null;
   sorobanData: xdr.SorobanTransactionData | null;
 
+  /**
+   * @param sourceAccount - source account for this transaction
+   * @param opts - options object (see {@link TransactionBuilderOptions})
+   */
   constructor(
     sourceAccount: Account | MuxedAccount,
     opts: TransactionBuilderOptions = {} as TransactionBuilderOptions
@@ -210,9 +210,6 @@ export class TransactionBuilder {
    * @param opts - additional options to override the clone, e.g.
    *    {fee: '1000'} will override the existing base fee derived from `tx` (see
    *    the {@link TransactionBuilder} constructor for detailed options)
-   *
-   * @returns a "prepared" builder instance with the same
-   *    configuration and operations as the given transaction
    *
    * @warning This does not clone the transaction's
    *    {@link xdr.SorobanTransactionData} (if applicable), use
@@ -299,8 +296,6 @@ export class TransactionBuilder {
    *
    * @param operation - The xdr operation object to add, use {@link Operation} static methods.
    * @param index - The index at which to insert the operation.
-   *
-   * @returns The TransactionBuilder instance for method chaining.
    */
   addOperationAt(operation: xdr.Operation, index: number): TransactionBuilder {
     this.operations.splice(index, 0, operation);
@@ -309,7 +304,6 @@ export class TransactionBuilder {
 
   /**
    * Removes the operations from the builder (useful when cloning).
-   * @returns this builder instance
    */
   clearOperations(): TransactionBuilder {
     this.operations = [];
@@ -320,8 +314,6 @@ export class TransactionBuilder {
    * Removes the operation at the specified index from the transaction.
    *
    * @param index - The index of the operation to remove.
-   *
-   * @returns The TransactionBuilder instance for method chaining.
    */
   clearOperationAt(index: number): TransactionBuilder {
     this.operations.splice(index, 1);
@@ -843,9 +835,8 @@ export class TransactionBuilder {
   }
 
   /**
-   * This will build the transaction.
-   * It will also increment the source account's sequence number by 1.
-   * @returns This method will return the built {@link Transaction}.
+   * Builds the transaction and increments the source account's sequence
+   * number by 1.
    */
   build(): Transaction {
     const sequenceNumber = new BigNumber(this.source.sequenceNumber()).plus(1);

@@ -13,12 +13,10 @@ import { Keypair } from "./keypair.js";
  * Server#fetchBaseFee} to get an accurate value of minimum transaction
  * fee on the network.
  *
- * @constant
  * @see [Fees](https://developers.stellar.org/docs/glossary/fees/)
  */
 export declare const BASE_FEE = "100";
 /**
- * @constant
  * @see {@link TransactionBuilder#setTimeout}
  * @see [Timeout](https://developers.stellar.org/api/resources/transactions/post/)
  */
@@ -126,8 +124,6 @@ export interface TransactionBuilderOptions {
  * transaction.sign(sourceKeypair);
  * ```
  *
- * @param sourceAccount - source account for this transaction
- * @param opts - Options object
  */
 export declare class TransactionBuilder {
     source: Account | MuxedAccount;
@@ -148,6 +144,10 @@ export declare class TransactionBuilder {
     memo: Memo;
     networkPassphrase: string | null;
     sorobanData: xdr.SorobanTransactionData | null;
+    /**
+     * @param sourceAccount - source account for this transaction
+     * @param opts - options object (see {@link TransactionBuilderOptions})
+     */
     constructor(sourceAccount: Account | MuxedAccount, opts?: TransactionBuilderOptions);
     /**
      * Creates a builder instance using an existing {@link Transaction} as a
@@ -163,9 +163,6 @@ export declare class TransactionBuilder {
      * @param opts - additional options to override the clone, e.g.
      *    {fee: '1000'} will override the existing base fee derived from `tx` (see
      *    the {@link TransactionBuilder} constructor for detailed options)
-     *
-     * @returns a "prepared" builder instance with the same
-     *    configuration and operations as the given transaction
      *
      * @warning This does not clone the transaction's
      *    {@link xdr.SorobanTransactionData} (if applicable), use
@@ -187,21 +184,16 @@ export declare class TransactionBuilder {
      *
      * @param operation - The xdr operation object to add, use {@link Operation} static methods.
      * @param index - The index at which to insert the operation.
-     *
-     * @returns The TransactionBuilder instance for method chaining.
      */
     addOperationAt(operation: xdr.Operation, index: number): TransactionBuilder;
     /**
      * Removes the operations from the builder (useful when cloning).
-     * @returns this builder instance
      */
     clearOperations(): TransactionBuilder;
     /**
      * Removes the operation at the specified index from the transaction.
      *
      * @param index - The index of the operation to remove.
-     *
-     * @returns The TransactionBuilder instance for method chaining.
      */
     clearOperationAt(index: number): TransactionBuilder;
     /**
@@ -353,9 +345,8 @@ export declare class TransactionBuilder {
      */
     addSacTransferOperation(destination: string, asset: Asset, amount: bigint | string, sorobanFees?: SorobanFees): TransactionBuilder;
     /**
-     * This will build the transaction.
-     * It will also increment the source account's sequence number by 1.
-     * @returns This method will return the built {@link Transaction}.
+     * Builds the transaction and increments the source account's sequence
+     * number by 1.
      */
     build(): Transaction;
     /**
