@@ -134,7 +134,7 @@ export declare function authorizeEntry(entry: xdr.SorobanAuthorizationEntry, sig
  *    {@link Keypair.publicKey})
  * @param networkPassphrase - the network passphrase is incorporated into the
  *    signature (see {@link Networks} for options, default:
- *    {@link Networks.FUTURENET})
+ *    {@link Networks.TESTNET})
  *
  * @returns a promise for an authorization entry that you can pass along to
  *    {@link Operation.invokeHostFunction}
