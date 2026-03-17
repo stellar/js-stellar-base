@@ -4,7 +4,7 @@ type BigIntLike = {
     toBigInt(): bigint;
 };
 type XdrLargeIntValues = Array<BigIntLike | bigint | number | string> | BigIntLike | bigint | number | string;
-export type ScIntType = 'duration' | 'i64' | 'i128' | 'i256' | 'timepoint' | 'u64' | 'u128' | 'u256';
+export type ScIntType = "duration" | "i64" | "i128" | "i256" | "timepoint" | "u64" | "u128" | "u256";
 /**
  * A wrapper class to represent large XDR-encodable integers.
  *
