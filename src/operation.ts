@@ -62,7 +62,6 @@ const MAX_INT64 = "9223372036854775807";
  * account to give other accounts permission before they can hold the issuing
  * account’s credit.
  *
- * @constant
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthRequiredFlag = 1 << 0;
@@ -70,7 +69,6 @@ export const AuthRequiredFlag = 1 << 0;
  * When set using `{@link Operation.setOptions}` option, allows the issuing
  * account to revoke its credit held by other accounts.
  *
- * @constant
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthRevocableFlag = 1 << 1;
@@ -78,7 +76,6 @@ export const AuthRevocableFlag = 1 << 1;
  * When set using `{@link Operation.setOptions}` option, then none of the
  * authorization flags can be set and the account can never be deleted.
  *
- * @constant
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthImmutableFlag = 1 << 2;
@@ -88,7 +85,6 @@ export const AuthImmutableFlag = 1 << 2;
  * created by this account can have a ClawbackOp operation submitted for the
  * corresponding asset.
  *
- * @constant
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export const AuthClawbackEnabledFlag = 1 << 3;
@@ -138,9 +134,9 @@ export const AuthClawbackEnabledFlag = 1 << 3;
  * * `{@link Operation.extendFootprintTtlOp}`
  * * `{@link Operation.restoreFootprint}`
  *
- * @class Operation
  */
 export class Operation {
+  /** Sets the source account on the operation attributes from the opts. */
   static setSourceAccount(
     opAttributes: OperationAttributes,
     opts: { source?: string }
@@ -469,8 +465,8 @@ export class Operation {
    * Note that while smart contracts allow larger amounts, this is oriented
    * towards validating the standard Stellar operations.
    *
-   * @param value       the amount to validate
-   * @param allowZero   optionally, whether or not zero is valid (default: no)
+   * @param value - the amount to validate
+   * @param allowZero - optionally, whether or not zero is valid (default: no)
    */
   static isValidAmount(value: unknown, allowZero = false): boolean {
     if (typeof value !== "string") {
@@ -504,6 +500,7 @@ export class Operation {
     return true;
   }
 
+  /** Returns a standard error message for invalid amount arguments. */
   static constructAmountRequirementsError(arg: string): string {
     return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
   }
@@ -512,10 +509,10 @@ export class Operation {
    * Returns value converted to uint32 value or undefined.
    * If `value` is not `Number`, `String` or `Undefined` then throws an error.
    * Used in {@link Operation.setOptions}.
-   * @private
-   * @param name Name of the property (used in error message only)
-   * @param value Value to check
-   * @param isValidFunction Function to check other constraints (the argument will be a `Number`)
+   *
+   * @param name - name of the property (used in error message only)
+   * @param value - value to check
+   * @param isValidFunction - function to check other constraints (the argument will be a `Number`)
    */
   static _checkUnsignedIntValue(
     name: string,
@@ -526,7 +523,12 @@ export class Operation {
       return undefined;
     }
 
-    const numValue = typeof value === "string" ? parseFloat(value) : value;
+    const numValue =
+      typeof value === "string"
+        ? value.trim() === ""
+          ? NaN
+          : Number(value)
+        : value;
 
     if (
       typeof numValue !== "number" ||
@@ -547,9 +549,9 @@ export class Operation {
     throw new Error(`${name} value is invalid`);
   }
   /**
-   * @private
-   * @param value Value
-   * @returns XDR amount
+   * Converts a string amount to an XDR Int64 value (scaled by 10^7).
+   *
+   * @param value - the amount as a string
    */
   static _toXDRAmount(value: string): xdr.Int64 {
     const amount = new BigNumber(value).times(ONE);
@@ -557,20 +559,18 @@ export class Operation {
   }
 
   /**
-   * @private
-   * @param value XDR amount
-   * @returns Number
+   * Converts an XDR Int64 amount to a decimal string (divided by 10^7).
+   *
+   * @param value - the XDR amount
    */
   static _fromXDRAmount(value: xdr.Int64): string {
     return new BigNumber(value.toString()).div(ONE).toFixed(7);
   }
 
   /**
-   * @private
-   * @param price Price object
-   * @param price.n numerator function that returns a value
-   * @param price.d denominator function that returns a value
-   * @returns Big string
+   * Converts an XDR Price (n/d) to a decimal string.
+   *
+   * @param price - the XDR price object
    */
   static _fromXDRPrice(price: xdr.Price): string {
     const n = new BigNumber(price.n());
@@ -578,11 +578,9 @@ export class Operation {
   }
 
   /**
-   * @private
-   * @param price Price object
-   * @param price.n numerator function that returns a value
-   * @param price.d denominator function that returns a value
-   * @returns XDR price object
+   * Converts a number, string, or `{n, d}` object to an XDR Price.
+   *
+   * @param price - the price as a number, string, or `{n, d}` fraction
    */
   static _toXDRPrice(
     price: number | string | { n: number; d: number }
@@ -599,7 +597,7 @@ export class Operation {
       });
     }
 
-    if (xdrObject.n() < 0 || xdrObject.d() < 0) {
+    if (xdrObject.n() < 0 || xdrObject.d() <= 0) {
       throw new Error("price must be positive");
     }
 
