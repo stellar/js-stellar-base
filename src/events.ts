@@ -15,15 +15,14 @@ interface SorobanEvent {
  * Converts raw diagnostic or contract events into something with a flatter,
  * human-readable, and understandable structure.
  *
- * @param events  either contract
- *    events or diagnostic events to parse into a friendly format
+ * Each element in the returned list has the following properties:
+ *  - `type`: one of `'system'`, `'contract'`, `'diagnostic'`
+ *  - `contractId`: optionally, a `C...` encoded strkey
+ *  - `topics`: a list of {@link scValToNative} invocations on the topics
+ *  - `data`: a {@link scValToNative} invocation on the raw event data
  *
- * @returns a list of human-readable event structures, where
- *    each element has the following properties:
- *  - type: a string of one of 'system', 'contract', 'diagnostic'
- *  - contractId?: optionally, a `C...` encoded strkey
- *  - topics: a list of {@link scValToNative} invocations on the topics
- *  - data: similarly, a {@link scValToNative} invocation on the raw event data
+ * @param events - either contract events or diagnostic events to parse into a
+ *    friendly format
  */
 export function humanizeEvents(
   events: xdr.ContractEvent[] | xdr.DiagnosticEvent[]
