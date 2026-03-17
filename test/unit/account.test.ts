@@ -14,7 +14,21 @@ describe("Account.constructor", () => {
     expect(() => new Account(ACCOUNT, 100 as any)).toThrow(
       /sequence must be of type string/,
     );
-    expect(() => new Account(ACCOUNT, "not a number")).toThrow(/not a number/);
+    expect(() => new Account(ACCOUNT, "not a number")).toThrow(
+      /sequence is not a valid number/,
+    );
+  });
+
+  it("fails to create Account object from an empty string sequence", () => {
+    expect(() => new Account(ACCOUNT, "")).toThrow(
+      /sequence is not a valid number/,
+    );
+  });
+
+  it("fails to create Account object from a negative sequence number", () => {
+    expect(() => new Account(ACCOUNT, "-1")).toThrow(
+      /sequence must be a non-negative number/,
+    );
   });
 
   it("creates an Account object", () => {

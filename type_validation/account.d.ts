@@ -7,8 +7,6 @@
  * [Accounts](https://developers.stellar.org/docs/glossary/accounts/) for
  * more information about how accounts work in Stellar.
  *
- * @constructor
- *
  * @param accountId - ID of the account (ex.
  *     `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`). If you
  *     provide a muxed account address, this will throw; use {@link
@@ -25,7 +23,7 @@ export declare class Account {
      */
     accountId(): string;
     /**
-     * @returns sequence number for the account as a string
+     * Returns sequence number for the account as a string
      */
     sequenceNumber(): string;
     /**
