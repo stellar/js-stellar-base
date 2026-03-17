@@ -12,14 +12,6 @@ import { OperationRecord } from "./operations/types.js";
  * to a Transaction object before submitting to the network or forwarding on to
  * additional signers.
  *
- * @constructor
- *
- * @param envelope - transaction envelope
- *     object or base64 encoded string
- * @param networkPassphrase - passphrase of the target stellar
- *     network (e.g. "Public Global Stellar Network ; September 2015")
- *
- * @extends TransactionBase
  */
 export declare class Transaction extends TransactionBase<xdr.Transaction | xdr.TransactionV0> {
     _envelopeType: xdr.EnvelopeType;
@@ -39,12 +31,15 @@ export declare class Transaction extends TransactionBase<xdr.Transaction | xdr.T
     _minAccountSequenceAge?: xdr.Uint64;
     _minAccountSequenceLedgerGap?: number;
     _extraSigners?: xdr.SignerKey[];
+    /**
+     * @param envelope - transaction envelope object or base64 encoded string
+     * @param networkPassphrase - passphrase of the target stellar network
+     *     (e.g. "Public Global Stellar Network ; September 2015")
+     */
     constructor(envelope: xdr.TransactionEnvelope | string, networkPassphrase: string);
     /**
-     * @type {object}
-     * @property {string} 64 bit unix timestamp
-     * @property {string} 64 bit unix timestamp
-     * @readonly
+     * The time bounds for this transaction, with `minTime` and `maxTime` as
+     * 64-bit unix timestamps (strings).
      */
     get timeBounds(): {
         minTime: string;
@@ -55,10 +50,8 @@ export declare class Transaction extends TransactionBase<xdr.Transaction | xdr.T
         maxTime: string;
     } | undefined);
     /**
-     * @type {object}
-     * @property {number} minLedger - smallest ledger bound (uint32)
-     * @property {number} maxLedger - largest ledger bound (or 0 for inf)
-     * @readonly
+     * The ledger bounds for this transaction, with `minLedger` (uint32) and
+     * `maxLedger` (uint32, or 0 for no upper bound).
      */
     get ledgerBounds(): {
         minLedger: number;
@@ -68,57 +61,31 @@ export declare class Transaction extends TransactionBase<xdr.Transaction | xdr.T
         minLedger: number;
         maxLedger: number;
     } | undefined);
-    /**
-     * 64 bit account sequence
-     * @readonly
-     * @type {string}
-     */
+    /** The minimum account sequence (64-bit, as a string). */
     get minAccountSequence(): string | undefined;
     set minAccountSequence(_value: string | undefined);
-    /**
-     * 64 bit number of seconds
-     * @type {number}
-     * @readonly
-     */
+    /** The minimum account sequence age (64-bit number of seconds). */
     get minAccountSequenceAge(): xdr.Uint64 | undefined;
     set minAccountSequenceAge(_value: xdr.Uint64 | undefined);
-    /**
-     * 32 bit number of ledgers
-     * @type {number}
-     * @readonly
-     */
+    /** The minimum account sequence ledger gap (32-bit number of ledgers). */
     get minAccountSequenceLedgerGap(): number | undefined;
     set minAccountSequenceLedgerGap(_value: number | undefined);
     /**
-     * array of extra signers as XDR objects; use {@link SignerKey.encodeSignerKey}
-     * to convert to StrKey strings
-     * @type {xdr.SignerKey[]}
-     * @readonly
+     * Array of extra signers as XDR objects; use {@link SignerKey.encodeSignerKey}
+     * to convert to StrKey strings.
      */
     get extraSigners(): xdr.SignerKey[] | undefined;
     set extraSigners(_value: xdr.SignerKey[] | undefined);
-    /**
-     * @type {string}
-     * @readonly
-     */
+    /** The sequence number for this transaction. */
     get sequence(): string;
     set sequence(_value: string);
-    /**
-     * @type {string}
-     * @readonly
-     */
+    /** The source account for this transaction. */
     get source(): string;
     set source(_value: string);
-    /**
-     * @type {Array.<xdr.Operation>}
-     * @readonly
-     */
+    /** The list of operations in this transaction. */
     get operations(): OperationRecord[];
     set operations(_value: OperationRecord[]);
-    /**
-     * @type {string}
-     * @readonly
-     */
+    /** The memo attached to this transaction. */
     get memo(): Memo<import("./memo.js").MemoType>;
     set memo(_value: Memo<import("./memo.js").MemoType>);
     /**
@@ -137,12 +104,10 @@ export declare class Transaction extends TransactionBase<xdr.Transaction | xdr.T
     /**
      * Calculate the claimable balance ID for an operation within the transaction.
      *
-     * @param opIndex   the index of the CreateClaimableBalance op
-     * @returns a hex string representing the claimable balance ID
+     * @param opIndex - the index of the CreateClaimableBalance op
      *
-     * @throws {RangeError}   for invalid `opIndex` value
-     * @throws {TypeError}    if op at `opIndex` is not `CreateClaimableBalance`
-     * @throws for general XDR un/marshalling failures
+     * @throws for invalid `opIndex` value, if op at `opIndex` is not
+     *    `CreateClaimableBalance`, or for general XDR un/marshalling failures
      *
      * @see https://github.com/stellar/go/blob/d712346e61e288d450b0c08038c158f8848cc3e4/txnbuild/transaction.go#L392-L435
      *

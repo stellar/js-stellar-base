@@ -21,14 +21,6 @@ import { OperationRecord } from "./operations/types.js";
  * to a Transaction object before submitting to the network or forwarding on to
  * additional signers.
  *
- * @constructor
- *
- * @param envelope - transaction envelope
- *     object or base64 encoded string
- * @param networkPassphrase - passphrase of the target stellar
- *     network (e.g. "Public Global Stellar Network ; September 2015")
- *
- * @extends TransactionBase
  */
 export class Transaction extends TransactionBase<
   xdr.Transaction | xdr.TransactionV0
@@ -48,6 +40,11 @@ export class Transaction extends TransactionBase<
   _minAccountSequenceLedgerGap?: number;
   _extraSigners?: xdr.SignerKey[];
 
+  /**
+   * @param envelope - transaction envelope object or base64 encoded string
+   * @param networkPassphrase - passphrase of the target stellar network
+   *     (e.g. "Public Global Stellar Network ; September 2015")
+   */
   constructor(
     envelope: xdr.TransactionEnvelope | string,
     networkPassphrase: string
@@ -153,10 +150,8 @@ export class Transaction extends TransactionBase<
   }
 
   /**
-   * @type {object}
-   * @property {string} 64 bit unix timestamp
-   * @property {string} 64 bit unix timestamp
-   * @readonly
+   * The time bounds for this transaction, with `minTime` and `maxTime` as
+   * 64-bit unix timestamps (strings).
    */
   get timeBounds() {
     return this._timeBounds;
@@ -166,10 +161,8 @@ export class Transaction extends TransactionBase<
   }
 
   /**
-   * @type {object}
-   * @property {number} minLedger - smallest ledger bound (uint32)
-   * @property {number} maxLedger - largest ledger bound (or 0 for inf)
-   * @readonly
+   * The ledger bounds for this transaction, with `minLedger` (uint32) and
+   * `maxLedger` (uint32, or 0 for no upper bound).
    */
   get ledgerBounds() {
     return this._ledgerBounds;
@@ -178,11 +171,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * 64 bit account sequence
-   * @readonly
-   * @type {string}
-   */
+  /** The minimum account sequence (64-bit, as a string). */
   get minAccountSequence() {
     return this._minAccountSequence;
   }
@@ -190,11 +179,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * 64 bit number of seconds
-   * @type {number}
-   * @readonly
-   */
+  /** The minimum account sequence age (64-bit number of seconds). */
   get minAccountSequenceAge() {
     return this._minAccountSequenceAge;
   }
@@ -202,11 +187,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * 32 bit number of ledgers
-   * @type {number}
-   * @readonly
-   */
+  /** The minimum account sequence ledger gap (32-bit number of ledgers). */
   get minAccountSequenceLedgerGap() {
     return this._minAccountSequenceLedgerGap;
   }
@@ -215,10 +196,8 @@ export class Transaction extends TransactionBase<
   }
 
   /**
-   * array of extra signers as XDR objects; use {@link SignerKey.encodeSignerKey}
-   * to convert to StrKey strings
-   * @type {xdr.SignerKey[]}
-   * @readonly
+   * Array of extra signers as XDR objects; use {@link SignerKey.encodeSignerKey}
+   * to convert to StrKey strings.
    */
   get extraSigners() {
     return this._extraSigners;
@@ -227,10 +206,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * @type {string}
-   * @readonly
-   */
+  /** The sequence number for this transaction. */
   get sequence() {
     return this._sequence;
   }
@@ -238,10 +214,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * @type {string}
-   * @readonly
-   */
+  /** The source account for this transaction. */
   get source() {
     return this._source;
   }
@@ -249,10 +222,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * @type {Array.<xdr.Operation>}
-   * @readonly
-   */
+  /** The list of operations in this transaction. */
   get operations() {
     return this._operations;
   }
@@ -260,10 +230,7 @@ export class Transaction extends TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * @type {string}
-   * @readonly
-   */
+  /** The memo attached to this transaction. */
   get memo() {
     return Memo.fromXDRObject(this._memo);
   }
@@ -346,12 +313,10 @@ export class Transaction extends TransactionBase<
   /**
    * Calculate the claimable balance ID for an operation within the transaction.
    *
-   * @param opIndex   the index of the CreateClaimableBalance op
-   * @returns a hex string representing the claimable balance ID
+   * @param opIndex - the index of the CreateClaimableBalance op
    *
-   * @throws {RangeError}   for invalid `opIndex` value
-   * @throws {TypeError}    if op at `opIndex` is not `CreateClaimableBalance`
-   * @throws for general XDR un/marshalling failures
+   * @throws for invalid `opIndex` value, if op at `opIndex` is not
+   *    `CreateClaimableBalance`, or for general XDR un/marshalling failures
    *
    * @see https://github.com/stellar/go/blob/d712346e61e288d450b0c08038c158f8848cc3e4/txnbuild/transaction.go#L392-L435
    *
