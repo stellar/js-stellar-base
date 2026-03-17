@@ -8,8 +8,6 @@ import xdr from "./xdr.js";
  * (the latter two can only be present as the *output* of Core in the form
  * of an event, never an input to a smart contract).
  *
- * @constructor
- *
  * @param address - a {@link StrKey} of the address value
  */
 export type AddressType = "account" | "claimableBalance" | "contract" | "liquidityPool" | "muxedAccount";
