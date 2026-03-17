@@ -20,6 +20,8 @@ export type { ScIntType };
  * new ScInt(bigi);               // if you don't care about types, and
  * new XdrLargeInt('i128', bigi); // if you do
  *
- * @throws {TypeError} if the `scv` input value doesn't represent an integer
+ * @param scv - the XDR smart contract value to convert
+ *
+ * @throws if the `scv` input value doesn't represent an integer
  */
 export declare function scValToBigInt(scv: xdr.ScVal): bigint;

@@ -32,6 +32,11 @@ describe("best_r", () => {
     }
   });
 
+  it("handles negative input values", () => {
+    expect(best_r("-0.5").toString()).toBe("-1,2");
+    expect(best_r("-1.73").toString()).toBe("-173,100");
+  });
+
   it("throws an error when best rational approximation cannot be found", () => {
     expect(() => best_r("0.0000000003")).toThrowError(
       /Couldn't find approximation/

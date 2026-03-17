@@ -1,8 +1,8 @@
 /**
- * Calculates and returns the best rational approximation of the given real number.
- * @private
- * @param rawNumber - Real number
- * @throws Error Throws `Error` when the best rational approximation cannot be found.
- * @returns first element is n (numerator), second element is d (denominator)
+ * Calculates and returns the best rational approximation of the given real
+ * number as `[n, d]` where `n` is the numerator and `d` is the denominator.
+ *
+ * @param rawNumber - real number to approximate
+ * @throws when the best rational approximation cannot be found
  */
 export declare function best_r(rawNumber: BigNumber | number | string): [number, number];

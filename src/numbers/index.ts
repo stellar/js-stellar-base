@@ -22,7 +22,9 @@ export type { ScIntType };
  * new ScInt(bigi);               // if you don't care about types, and
  * new XdrLargeInt('i128', bigi); // if you do
  *
- * @throws {TypeError} if the `scv` input value doesn't represent an integer
+ * @param scv - the XDR smart contract value to convert
+ *
+ * @throws if the `scv` input value doesn't represent an integer
  */
 export function scValToBigInt(scv: xdr.ScVal): bigint {
   const switchName = scv.switch().name;
@@ -44,7 +46,7 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
     case "scvDuration":
       return new XdrLargeInt(
         scIntType as ScIntType,
-        value as xdr.Int64 | xdr.Uint64,
+        value as xdr.Int64 | xdr.Uint64
       ).toBigInt();
 
     case "scvU128":
@@ -52,7 +54,7 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
       const int128Value = value as xdr.Int128Parts | xdr.UInt128Parts;
       return new XdrLargeInt(scIntType as ScIntType, [
         int128Value.lo(),
-        int128Value.hi(),
+        int128Value.hi()
       ]).toBigInt();
     }
 
@@ -63,7 +65,7 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
         int256Value.loLo(),
         int256Value.loHi(),
         int256Value.hiLo(),
-        int256Value.hiHi(),
+        int256Value.hiHi()
       ]).toBigInt();
     }
 
