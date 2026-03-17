@@ -48,6 +48,10 @@ describe("Soroban", () => {
         ).toThrow(testCase.expected);
       });
     });
+
+    it("handles negative amounts", () => {
+      expect(Soroban.formatTokenAmount("-1000", 3)).toBe("-1.0");
+    });
   });
 
   describe("parseTokenAmount", () => {
@@ -84,6 +88,18 @@ describe("Soroban", () => {
           Soroban.parseTokenAmount(testCase.amount, testCase.decimals),
         ).toThrow(testCase.expected);
       });
+    });
+
+    it("handles decimals === 0", () => {
+      expect(Soroban.parseTokenAmount("100", 0)).toBe("100");
+    });
+
+    it("handles trailing dot", () => {
+      expect(Soroban.parseTokenAmount("100.", 3)).toBe("100000");
+    });
+
+    it("handles negative amounts", () => {
+      expect(Soroban.parseTokenAmount("-100", 2)).toBe("-10000");
     });
   });
 });
