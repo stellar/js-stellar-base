@@ -1940,4 +1940,34 @@ describe("edge cases and stress tests", () => {
     const neg = nativeToScVal(-1);
     expect(scValToBigInt(neg)).toBe(-1n);
   });
+
+  it("auto-invokes function values and converts the result", () => {
+    const scv = nativeToScVal(() => 42);
+    expect(scv.switch().name).toBe("scvU64");
+    expect(scValToNative(scv)).toBe(42n);
+  });
+
+  it("throws when u32 value exceeds max", () => {
+    expect(() => nativeToScVal(4294967296, { type: "u32" })).toThrow(
+      /invalid value.*for type u32/,
+    );
+  });
+
+  it("throws when u32 value is negative", () => {
+    expect(() => nativeToScVal(-1, { type: "u32" })).toThrow(
+      /invalid value.*for type u32/,
+    );
+  });
+
+  it("throws when i32 value exceeds max", () => {
+    expect(() => nativeToScVal(2147483648, { type: "i32" })).toThrow(
+      /invalid value.*for type i32/,
+    );
+  });
+
+  it("throws when i32 value is below min", () => {
+    expect(() => nativeToScVal(-2147483649, { type: "i32" })).toThrow(
+      /invalid value.*for type i32/,
+    );
+  });
 });
