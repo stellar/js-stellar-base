@@ -9,10 +9,6 @@ import xdr from "./xdr.js";
  * account, muxed account, contract, claimable balance, or a liquidity pool
  * (the latter two can only be present as the *output* of Core in the form
  * of an event, never an input to a smart contract).
- *
- * @constructor
- *
- * @param address - a {@link StrKey} of the address value
  */
 export type AddressType =
   | "account"
@@ -25,6 +21,9 @@ export class Address {
   private _type: AddressType;
   private _key: Buffer;
 
+  /**
+   * @param address - a {@link StrKey} of the address value
+   */
   constructor(address: string) {
     if (StrKey.isValidEd25519PublicKey(address)) {
       this._type = "account";

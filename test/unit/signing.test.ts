@@ -73,3 +73,14 @@ describe("verify", () => {
     expect(verify(data, badSig, publicKey)).toBeFalsy();
   });
 });
+
+describe("round-trip: generate -> sign -> verify", () => {
+  it("generates a key, signs data, and verifies the signature", () => {
+    const pk = generate(secretKey);
+    const data = Buffer.from("round trip test", "utf8");
+    const signature = sign(data, secretKey);
+
+    expect(verify(data, signature, pk)).toBe(true);
+    expect(verify(Buffer.from("tampered", "utf8"), signature, pk)).toBe(false);
+  });
+});

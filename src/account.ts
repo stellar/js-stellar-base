@@ -10,19 +10,18 @@ import { StrKey } from "./strkey.js";
  * TransactionBuilder}. See
  * [Accounts](https://developers.stellar.org/docs/glossary/accounts/) for
  * more information about how accounts work in Stellar.
- *
- * @constructor
- *
- * @param accountId - ID of the account (ex.
- *     `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`). If you
- *     provide a muxed account address, this will throw; use {@link
- *     MuxedAccount} instead.
- * @param sequence  - current sequence number of the account
  */
 export class Account {
   private _accountId: string;
   private sequence: BigNumber;
 
+  /**
+   * @param accountId - ID of the account (ex.
+   *     `GB3KJPLFUYN5VL6R3GU3EGCGVCKFDSD7BEDX42HWG5BWFKB3KQGJJRMA`). If you
+   *     provide a muxed account address, this will throw; use {@link
+   *     MuxedAccount} instead.
+   * @param sequence - current sequence number of the account
+   */
   constructor(accountId: string, sequence: string) {
     if (StrKey.isValidMed25519PublicKey(accountId)) {
       throw new Error("accountId is an M-address; use MuxedAccount instead");
@@ -35,8 +34,23 @@ export class Account {
       throw new Error("sequence must be of type string");
     }
 
+    let parsed: BigNumber;
+    try {
+      parsed = new BigNumber(sequence);
+    } catch {
+      throw new Error("sequence is not a valid number");
+    }
+
+    if (parsed.isNaN()) {
+      throw new Error("sequence is not a valid number");
+    }
+
+    if (parsed.isNegative()) {
+      throw new Error("sequence must be a non-negative number");
+    }
+
     this._accountId = accountId;
-    this.sequence = new BigNumber(sequence);
+    this.sequence = parsed;
   }
 
   /**
@@ -48,7 +62,7 @@ export class Account {
   }
 
   /**
-   * @returns sequence number for the account as a string
+   * Returns sequence number for the account as a string
    */
   sequenceNumber(): string {
     return this.sequence.toString();

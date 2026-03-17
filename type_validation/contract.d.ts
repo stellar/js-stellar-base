@@ -8,33 +8,28 @@ import xdr from "./xdr.js";
  * interface of the contract. See
  * [Contracts](https://soroban.stellar.org/docs/learn/interacting-with-contracts)
  * for more information about how contracts work in Stellar.
- *
- * @constructor
- *
- * @param {string} contractId - ID of the contract (ex.
- *     `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`).
  */
 export declare class Contract {
     private _id;
+    /**
+     * @param contractId - ID of the contract (ex.
+     *     `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`).
+     */
     constructor(contractId: string);
     /**
      * Returns Stellar contract ID as a strkey, ex.
      * `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`.
-     * @returns the contract ID as a strkey (C...)
      */
     contractId(): string;
-    /** @returns the ID as a strkey (C...) */
+    /** Returns the ID as a strkey (C...). */
     toString(): string;
-    /** @returns the wrapped address of this contract */
+    /** Returns the wrapped address of this contract. */
     address(): Address;
     /**
      * Returns an operation that will invoke this contract call.
      *
-     * @param method name of the method to call
-     * @param params arguments to pass to the method, as an array of xdr.ScVal
-     *
-     * @returns an InvokeHostFunctionOp operation to call the
-     *    contract with the given method and parameters
+     * @param method - name of the method to call
+     * @param params - arguments to pass to the method, as an array of xdr.ScVal
      *
      * @see Operation.invokeHostFunction
      * @see Operation.invokeContractFunction
@@ -47,8 +42,6 @@ export declare class Contract {
      * Returns the read-only footprint entries necessary for any invocations to
      * this contract, for convenience when manually adding it to your
      * transaction's overall footprint or doing bump/restore operations.
-     *
-     * @returns the ledger key for the deployed contract instance
      */
     getFootprint(): xdr.LedgerKey;
 }

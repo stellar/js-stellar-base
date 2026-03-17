@@ -55,9 +55,6 @@ export type SigningCallback = (preimage: xdr.HashIdPreimage) => Promise<BufferLi
  * @param networkPassphrase - the network passphrase is incorporated into the
  *    signature (see {@link Networks} for options)
  *
- * @returns a promise for an authorization entry that you can pass along to
- *    {@link Operation.invokeHostFunction}
- *
  * @note If using the `SigningCallback` variation, the signer is assumed to be
  *    the entry's credential address unless you use the variant that returns
  *    the object.
@@ -134,10 +131,7 @@ export declare function authorizeEntry(entry: xdr.SorobanAuthorizationEntry, sig
  *    {@link Keypair.publicKey})
  * @param networkPassphrase - the network passphrase is incorporated into the
  *    signature (see {@link Networks} for options, default:
- *    {@link Networks.FUTURENET})
- *
- * @returns a promise for an authorization entry that you can pass along to
- *    {@link Operation.invokeHostFunction}
+ *    {@link Networks.TESTNET})
  *
  * @see authorizeEntry
  */
