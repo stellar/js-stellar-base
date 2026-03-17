@@ -50,10 +50,7 @@ type MemoTypeToValue<T extends MemoType> = MemoValueMap[T];
 /**
  * `Memo` represents memos attached to transactions.
  *
- * @param {string} type - `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
- * @param {*} value - `string` for `MemoID`, `MemoText`, buffer of hex string for `MemoHash` or `MemoReturn`
  * @see [Transactions concept](https://developers.stellar.org/docs/glossary/transactions/)
- * @class Memo
  */
 export class Memo<T extends MemoType = MemoType> {
   private _type: T;
@@ -66,6 +63,10 @@ export class Memo<T extends MemoType = MemoType> {
     value: string
   );
   constructor(type: T, value: MemoValue);
+  /**
+   * @param type - `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
+   * @param value - `string` for `MemoID`, `MemoText`, buffer or hex string for `MemoHash` or `MemoReturn`
+   */
   constructor(type: T, value: MemoValue = null) {
     this._type = type;
     this._value = value;
@@ -215,7 +216,6 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Returns an empty memo (`MemoNone`).
-   * @returns {Memo}
    */
   static none(): Memo<MemoTypeNone> {
     return new Memo(MemoNone);
@@ -223,8 +223,8 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Creates and returns a `MemoText` memo.
-   * @param {string} text - memo text
-   * @returns {Memo}
+   *
+   * @param text - memo text
    */
   static text(text: string): Memo<MemoTypeText> {
     return new Memo(MemoText, text);
@@ -232,8 +232,8 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Creates and returns a `MemoID` memo.
-   * @param {string} id - 64-bit number represented as a string
-   * @returns {Memo}
+   *
+   * @param id - 64-bit number represented as a string
    */
   static id(id: string): Memo<MemoTypeID> {
     return new Memo(MemoID, id);
@@ -241,8 +241,8 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Creates and returns a `MemoHash` memo.
-   * @param {Buffer | string} hash - 32 byte hash or hex encoded string
-   * @returns {Memo}
+   *
+   * @param hash - 32 byte hash or hex encoded string
    */
   static hash(hash: Buffer | string): Memo<MemoTypeHash> {
     return new Memo(MemoHash, hash);
@@ -250,8 +250,8 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Creates and returns a `MemoReturn` memo.
-   * @param {Buffer | string} hash - 32 byte hash or hex encoded string
-   * @returns {Memo}
+   *
+   * @param hash - 32 byte hash or hex encoded string
    */
   static return(hash: Buffer | string): Memo<MemoTypeReturn> {
     return new Memo(MemoReturn, hash);
@@ -259,7 +259,6 @@ export class Memo<T extends MemoType = MemoType> {
 
   /**
    * Returns XDR memo object.
-   * @returns {xdr.Memo}
    */
   toXDRObject(): xdr.Memo {
     switch (this._type) {
@@ -278,14 +277,14 @@ export class Memo<T extends MemoType = MemoType> {
       case MemoReturn:
         return xdr.Memo.memoReturn(this._value as Buffer);
       default:
-        return null as unknown as xdr.Memo;
+        throw new Error("Invalid memo type");
     }
   }
 
   /**
    * Returns {@link Memo} from XDR memo object.
-   * @param {xdr.Memo} object XDR memo object
-   * @returns {Memo}
+   *
+   * @param object - XDR memo object
    */
   static fromXDRObject(object: xdr.Memo): Memo {
     switch (object.switch()) {
