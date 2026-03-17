@@ -71,8 +71,7 @@ export interface NativeToScValOpts {
  *    return an `scvSymbol`, whereas without the type it would have been an
  *    `scvString`.
  *
- * @returns a wrapped, smart, XDR version of the input value
- * @throws {TypeError} if...
+ * @throws if...
  *  - there are arrays with more than one type in them
  *  - there are values that do not have a sensible conversion (e.g. random XDR
  *    types, custom classes)
@@ -168,14 +167,13 @@ export declare function nativeToScVal(val: unknown, opts?: NativeToScValOpts): x
  *
  * @param scv - the input smart contract value
  *
- * @returns the native representation
  * @see nativeToScVal
  */
 export declare function scValToNative(scv: xdr.ScVal): unknown;
 /**
- * Build a sorted ScVal map from unsorted entries.
+ * Build a sorted ScVal map from unsorted entries, sorted by key.
+ *
  * @param items - the unsorted map entries
- * @returns an ScVal map with the same entries, but sorted by key
  */
 export declare function scvSortedMap(items: xdr.ScMapEntry[]): xdr.ScVal;
 export {};

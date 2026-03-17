@@ -9,26 +9,21 @@ export declare class TransactionBase<TTx extends xdr.FeeBumpTransaction | xdr.Tr
     _fee: string;
     _networkPassphrase: string;
     constructor(tx: TTx, signatures: xdr.DecoratedSignature[], fee: string, networkPassphrase: string);
-    /**
-     * @readonly
-     */
+    /** The list of signatures for this transaction. */
     get signatures(): xdr.DecoratedSignature[];
     set signatures(_value: xdr.DecoratedSignature[]);
+    /** The underlying XDR transaction object. */
     get tx(): TTx;
     set tx(_value: TTx);
-    /**
-     * @readonly
-     */
+    /** The total fee for this transaction, in stroops. */
     get fee(): string;
     set fee(_value: string);
-    /**
-     * @readonly
-     */
+    /** The network passphrase for this transaction. */
     get networkPassphrase(): string;
     set networkPassphrase(_networkPassphrase: string);
     /**
      * Signs the transaction with the given {@link Keypair}.
-     * @param keypairs Keypairs of signers
+     * @param keypairs - Keypairs of signers
      */
     sign(...keypairs: Keypair[]): void;
     /**
@@ -50,8 +45,9 @@ export declare class TransactionBase<TTx extends xdr.FeeBumpTransaction | xdr.Tr
      * return transaction.getKeypairSignature(keypair);
      * ```
      *
-     * @param keypair Keypair of signer
-     * @returns Signature string
+     * Returns the base64-encoded signature string for the given keypair.
+     *
+     * @param keypair - Keypair of signer
      */
     getKeypairSignature(keypair: Keypair): string;
     /**
@@ -74,14 +70,14 @@ export declare class TransactionBase<TTx extends xdr.FeeBumpTransaction | xdr.Tr
      * from [getKeypairSignature](#getKeypairSignature), both of which you pass to
      * this function.
      *
-     * @param publicKey The public key of the signer
-     * @param signature The base64 value of the signature XDR
+     * @param publicKey - the public key of the signer
+     * @param signature - the base64 value of the signature XDR
      */
     addSignature(publicKey?: string, signature?: string): void;
     /**
      * Add a decorated signature directly to the transaction envelope.
      *
-     * @param signature    raw signature to add
+     * @param signature - raw signature to add
      *
      * @see Keypair.signDecorated
      * @see Keypair.signPayloadDecorated
@@ -89,18 +85,19 @@ export declare class TransactionBase<TTx extends xdr.FeeBumpTransaction | xdr.Tr
     addDecoratedSignature(signature: xdr.DecoratedSignature): void;
     /**
      * Add `hashX` signer preimage as signature.
-     * @param preimage Preimage of hash used as signer
+     * @param preimage - preimage of hash used as signer
      */
     signHashX(preimage: Buffer | string): void;
     /**
      * Returns a hash for this transaction, suitable for signing.
      */
     hash(): Buffer;
+    /** Returns the signature base for this transaction, to be overridden by subclasses. */
     signatureBase(): Buffer;
+    /** Returns the XDR transaction envelope, to be overridden by subclasses. */
     toEnvelope(): xdr.TransactionEnvelope;
     /**
-     * Get the transaction envelope as a base64-encoded string
-     * @returns XDR string
+     * Returns the transaction envelope as a base64-encoded XDR string.
      */
     toXDR(): string;
 }

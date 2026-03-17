@@ -31,9 +31,7 @@ export class TransactionBase<
     this._fee = fee;
   }
 
-  /**
-   * @readonly
-   */
+  /** The list of signatures for this transaction. */
   get signatures(): xdr.DecoratedSignature[] {
     return this._signatures;
   }
@@ -42,6 +40,7 @@ export class TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
+  /** The underlying XDR transaction object. */
   get tx(): TTx {
     return this._tx;
   }
@@ -50,9 +49,7 @@ export class TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * @readonly
-   */
+  /** The total fee for this transaction, in stroops. */
   get fee(): string {
     return this._fee;
   }
@@ -61,9 +58,7 @@ export class TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /**
-   * @readonly
-   */
+  /** The network passphrase for this transaction. */
   get networkPassphrase(): string {
     return this._networkPassphrase;
   }
@@ -74,7 +69,7 @@ export class TransactionBase<
 
   /**
    * Signs the transaction with the given {@link Keypair}.
-   * @param keypairs Keypairs of signers
+   * @param keypairs - Keypairs of signers
    */
   sign(...keypairs: Keypair[]): void {
     const txHash = this.hash();
@@ -104,8 +99,9 @@ export class TransactionBase<
    * return transaction.getKeypairSignature(keypair);
    * ```
    *
-   * @param keypair Keypair of signer
-   * @returns Signature string
+   * Returns the base64-encoded signature string for the given keypair.
+   *
+   * @param keypair - Keypair of signer
    */
   getKeypairSignature(keypair: Keypair): string {
     return keypair.sign(this.hash()).toString("base64");
@@ -131,8 +127,8 @@ export class TransactionBase<
    * from [getKeypairSignature](#getKeypairSignature), both of which you pass to
    * this function.
    *
-   * @param publicKey The public key of the signer
-   * @param signature The base64 value of the signature XDR
+   * @param publicKey - the public key of the signer
+   * @param signature - the base64 value of the signature XDR
    */
   addSignature(publicKey = "", signature = ""): void {
     if (!signature || typeof signature !== "string") {
@@ -169,7 +165,7 @@ export class TransactionBase<
   /**
    * Add a decorated signature directly to the transaction envelope.
    *
-   * @param signature    raw signature to add
+   * @param signature - raw signature to add
    *
    * @see Keypair.signDecorated
    * @see Keypair.signPayloadDecorated
@@ -180,7 +176,7 @@ export class TransactionBase<
 
   /**
    * Add `hashX` signer preimage as signature.
-   * @param preimage Preimage of hash used as signer
+   * @param preimage - preimage of hash used as signer
    */
   signHashX(preimage: Buffer | string): void {
     if (typeof preimage === "string") {
@@ -204,17 +200,18 @@ export class TransactionBase<
     return hash(this.signatureBase());
   }
 
+  /** Returns the signature base for this transaction, to be overridden by subclasses. */
   signatureBase(): Buffer {
     throw new Error("Implement in subclass");
   }
 
+  /** Returns the XDR transaction envelope, to be overridden by subclasses. */
   toEnvelope(): xdr.TransactionEnvelope {
     throw new Error("Implement in subclass");
   }
 
   /**
-   * Get the transaction envelope as a base64-encoded string
-   * @returns XDR string
+   * Returns the transaction envelope as a base64-encoded XDR string.
    */
   toXDR(): string {
     return this.toEnvelope().toXDR().toString("base64");

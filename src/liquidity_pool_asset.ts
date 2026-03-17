@@ -8,16 +8,17 @@ import {
 
 /**
  * LiquidityPoolAsset class represents a liquidity pool trustline change.
- *
- * @param assetA – The first asset in the Pool, it must respect the rule assetA < assetB. See {@link Asset.compare} for more details on how assets are sorted.
- * @param assetB – The second asset in the Pool, it must respect the rule assetA < assetB. See {@link Asset.compare} for more details on how assets are sorted.
- * @param fee – The liquidity pool fee. For now the only fee supported is `30`.
  */
 export class LiquidityPoolAsset {
   assetA: Asset;
   assetB: Asset;
   fee: number;
 
+  /**
+   * @param assetA - The first asset in the Pool, it must respect the rule assetA < assetB. See {@link Asset.compare} for more details on how assets are sorted.
+   * @param assetB - The second asset in the Pool, it must respect the rule assetA < assetB. See {@link Asset.compare} for more details on how assets are sorted.
+   * @param fee - The liquidity pool fee. For now the only fee supported is `30`.
+   */
   constructor(assetA: Asset, assetB: Asset, fee: number) {
     if (!assetA || !(assetA instanceof Asset)) {
       throw new Error("assetA is invalid");
@@ -99,6 +100,8 @@ export class LiquidityPoolAsset {
   }
 
   /**
+   * Returns the asset type, always `"liquidity_pool_shares"`.
+   *
    * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
    */
   getAssetType(): "liquidity_pool_shares" {
@@ -106,6 +109,8 @@ export class LiquidityPoolAsset {
   }
 
   /**
+   * Returns true if this liquidity pool asset equals the given one.
+   *
    * @param other - the LiquidityPoolAsset to compare
    */
   equals(other: LiquidityPoolAsset): boolean {
@@ -116,6 +121,7 @@ export class LiquidityPoolAsset {
     );
   }
 
+  /** Returns a string representation in `liquidity_pool:<hex pool id>` format. */
   toString(): string {
     const poolId = getLiquidityPoolId(
       "constant_product",

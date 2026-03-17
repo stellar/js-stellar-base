@@ -165,6 +165,52 @@ describe("Transaction", () => {
           "Test Network";
       }).toThrow(/Transaction is immutable/);
     });
+
+    it("throws when setting timeBounds", () => {
+      expect(() => {
+        (transaction as any).timeBounds = { minTime: "0", maxTime: "0" };
+      }).toThrow(/Transaction is immutable/);
+    });
+
+    it("throws when setting ledgerBounds", () => {
+      expect(() => {
+        (transaction as any).ledgerBounds = { minLedger: 0, maxLedger: 0 };
+      }).toThrow(/Transaction is immutable/);
+    });
+
+    it("throws when setting memo", () => {
+      expect(() => {
+        (transaction as any).memo = Memo.none();
+      }).toThrow(/Transaction is immutable/);
+    });
+
+    it("throws when setting sequence", () => {
+      expect(() => {
+        (transaction as any).sequence = "999";
+      }).toThrow(/Transaction is immutable/);
+    });
+
+    it("throws when setting source", () => {
+      expect(() => {
+        (transaction as any).source = "GBBB";
+      }).toThrow(/Transaction is immutable/);
+    });
+
+    it("throws when setting operations", () => {
+      expect(() => {
+        (transaction as any).operations = [];
+      }).toThrow(/Transaction is immutable/);
+    });
+
+    it("addDecoratedSignature appends a signature", () => {
+      const kp = Keypair.random();
+      const sig = kp.signDecorated(transaction.hash());
+
+      expect(transaction.signatures.length).toBe(0);
+      transaction.addDecoratedSignature(sig);
+      expect(transaction.signatures.length).toBe(1);
+      expect(transaction.signatures[0]).toBe(sig);
+    });
   });
 
   it("throws when a garbage Network is selected", () => {

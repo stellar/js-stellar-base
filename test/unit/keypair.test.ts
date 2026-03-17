@@ -317,6 +317,15 @@ describe("Keypair.xdrMuxedAccount with id", () => {
     expect(muxed).toBeInstanceOf(xdr.MuxedAccount);
     expect(muxed.switch()).toEqual(xdr.CryptoKeyType.keyTypeMuxedEd25519());
   });
+
+  it("throws TypeError when id is not a string", () => {
+    const kp = Keypair.fromPublicKey(
+      "GAXDYNIBA5E4DXR5TJN522RRYESFQ5UNUXHIPTFGVLLD5O5K552DF5ZH",
+    );
+    expect(() => kp.xdrMuxedAccount(12345 as unknown as string)).toThrow(
+      /expected string for ID/,
+    );
+  });
 });
 
 describe("Keypair.xdrAccountId", () => {

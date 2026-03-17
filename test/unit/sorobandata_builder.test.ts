@@ -161,4 +161,12 @@ describe("SorobanTransactionData can be built", () => {
     expect(footprint.readOnly()).toEqual([key]);
     expect(footprint.readWrite()).toEqual([key]);
   });
+
+  it("throws when constructor receives an invalid base64 string", () => {
+    expect(() => new SorobanDataBuilder("not-valid-base64")).toThrow();
+  });
+
+  it("throws when fromXDR receives malformed input", () => {
+    expect(() => SorobanDataBuilder.fromXDR("not-valid")).toThrow();
+  });
 });

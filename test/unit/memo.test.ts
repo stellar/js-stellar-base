@@ -230,6 +230,13 @@ describe("Memo", () => {
       }
     });
 
+    it("return accepts a Buffer directly", () => {
+      const buffer = Buffer.alloc(32, 10);
+      const memo = Memo.return(buffer);
+      expect(memo.type).toBe(MemoReturn);
+      expect(memo.value).toEqual(buffer);
+    });
+
     it("throws an error when invalid argument was passed", () => {
       const methods = [Memo.hash, Memo.return] as const;
       for (const method of methods) {
@@ -260,6 +267,44 @@ describe("Memo", () => {
           )
         ).toThrow(/Expects a 32 byte hash value/);
       }
+    });
+  });
+
+  describe("immutability", () => {
+    it("throws when setting type", () => {
+      const memo = Memo.text("test");
+      expect(() => {
+        (memo as any).type = MemoNone;
+      }).toThrow(/Memo is immutable/);
+    });
+
+    it("throws when setting value", () => {
+      const memo = Memo.text("test");
+      expect(() => {
+        (memo as any).value = "other";
+      }).toThrow(/Memo is immutable/);
+    });
+  });
+
+  describe("value getter defensive copy", () => {
+    it("returns a copy for MemoHash so mutations do not affect the original", () => {
+      const buffer = Buffer.alloc(32, 10);
+      const memo = Memo.hash(buffer);
+
+      const value = memo.value as Buffer;
+      value[0] = 0xff;
+
+      expect((memo.value as Buffer)[0]).toBe(10);
+    });
+
+    it("returns a copy for MemoReturn so mutations do not affect the original", () => {
+      const buffer = Buffer.alloc(32, 20);
+      const memo = Memo.return(buffer);
+
+      const value = memo.value as Buffer;
+      value[0] = 0xff;
+
+      expect((memo.value as Buffer)[0]).toBe(20);
     });
   });
 });

@@ -37,10 +37,7 @@ type MemoTypeToValue<T extends MemoType> = MemoValueMap[T];
 /**
  * `Memo` represents memos attached to transactions.
  *
- * @param {string} type - `MemoNone`, `MemoID`, `MemoText`, `MemoHash` or `MemoReturn`
- * @param {*} value - `string` for `MemoID`, `MemoText`, buffer of hex string for `MemoHash` or `MemoReturn`
  * @see [Transactions concept](https://developers.stellar.org/docs/glossary/transactions/)
- * @class Memo
  */
 export declare class Memo<T extends MemoType = MemoType> {
     private _type;
@@ -68,42 +65,40 @@ export declare class Memo<T extends MemoType = MemoType> {
     private static _validateHashValue;
     /**
      * Returns an empty memo (`MemoNone`).
-     * @returns {Memo}
      */
     static none(): Memo<MemoTypeNone>;
     /**
      * Creates and returns a `MemoText` memo.
-     * @param {string} text - memo text
-     * @returns {Memo}
+     *
+     * @param text - memo text
      */
     static text(text: string): Memo<MemoTypeText>;
     /**
      * Creates and returns a `MemoID` memo.
-     * @param {string} id - 64-bit number represented as a string
-     * @returns {Memo}
+     *
+     * @param id - 64-bit number represented as a string
      */
     static id(id: string): Memo<MemoTypeID>;
     /**
      * Creates and returns a `MemoHash` memo.
-     * @param {Buffer | string} hash - 32 byte hash or hex encoded string
-     * @returns {Memo}
+     *
+     * @param hash - 32 byte hash or hex encoded string
      */
     static hash(hash: Buffer | string): Memo<MemoTypeHash>;
     /**
      * Creates and returns a `MemoReturn` memo.
-     * @param {Buffer | string} hash - 32 byte hash or hex encoded string
-     * @returns {Memo}
+     *
+     * @param hash - 32 byte hash or hex encoded string
      */
     static return(hash: Buffer | string): Memo<MemoTypeReturn>;
     /**
      * Returns XDR memo object.
-     * @returns {xdr.Memo}
      */
     toXDRObject(): xdr.Memo;
     /**
      * Returns {@link Memo} from XDR memo object.
-     * @param {xdr.Memo} object XDR memo object
-     * @returns {Memo}
+     *
+     * @param object - XDR memo object
      */
     static fromXDRObject(object: xdr.Memo): Memo;
 }
