@@ -81,6 +81,13 @@ describe('Transaction', function () {
 
       expect(transaction.tx.fee().toString()).to.equal('100');
     });
+    it('tx getter returns a defensive copy that does not affect internal XDR', function () {
+      const transaction = this.transaction;
+      const t = transaction.tx;
+      t.fee(StellarBase.xdr.Int64.fromString('999'));
+
+      expect(transaction.tx.fee().toString()).to.equal('100');
+    });
   });
 
   it('throws when a garbage Network is selected', () => {
