@@ -3,12 +3,12 @@ import type { AssetType } from "../types/index.js";
 /**
  * LiquidityPoolId class represents the asset referenced by a trustline to a
  * liquidity pool.
- *
- * @constructor
- * @param liquidityPoolId - The ID of the liquidity pool in string 'hex'.
  */
 export declare class LiquidityPoolId {
     liquidityPoolId: string;
+    /**
+     * @param liquidityPoolId - The ID of the liquidity pool in string 'hex'.
+     */
     constructor(liquidityPoolId: string);
     /**
      * Returns a liquidity pool ID object from its xdr.TrustLineAsset representation.
@@ -28,11 +28,15 @@ export declare class LiquidityPoolId {
      */
     getLiquidityPoolId(): string;
     /**
+     * Returns the asset type, always `"liquidity_pool_shares"`.
+     *
      * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
      */
     getAssetType(): AssetType.liquidityPoolShares;
     /**
-     * @param asset LiquidityPoolId to compare.
+     * Returns true if this liquidity pool ID equals the given one.
+     *
+     * @param asset - LiquidityPoolId to compare.
      */
     equals(asset: LiquidityPoolId): boolean;
     /**

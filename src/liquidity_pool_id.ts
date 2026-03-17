@@ -4,13 +4,13 @@ import type { AssetType } from "../types/index.js";
 /**
  * LiquidityPoolId class represents the asset referenced by a trustline to a
  * liquidity pool.
- *
- * @constructor
- * @param liquidityPoolId - The ID of the liquidity pool in string 'hex'.
  */
 export class LiquidityPoolId {
   liquidityPoolId: string;
 
+  /**
+   * @param liquidityPoolId - The ID of the liquidity pool in string 'hex'.
+   */
   constructor(liquidityPoolId: string) {
     if (!liquidityPoolId) {
       throw new Error("liquidityPoolId cannot be empty");
@@ -52,7 +52,7 @@ export class LiquidityPoolId {
     // Buffer.from produces the correct runtime value; cast to xdr.PoolId to satisfy the type checker.
     const xdrPoolId = Buffer.from(
       this.liquidityPoolId,
-      "hex",
+      "hex"
     ) as unknown as xdr.PoolId;
     return xdr.TrustLineAsset.assetTypePoolShare(xdrPoolId);
   }
@@ -65,6 +65,8 @@ export class LiquidityPoolId {
   }
 
   /**
+   * Returns the asset type, always `"liquidity_pool_shares"`.
+   *
    * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
    */
   getAssetType(): AssetType.liquidityPoolShares {
@@ -72,7 +74,9 @@ export class LiquidityPoolId {
   }
 
   /**
-   * @param asset LiquidityPoolId to compare.
+   * Returns true if this liquidity pool ID equals the given one.
+   *
+   * @param asset - LiquidityPoolId to compare.
    */
   equals(asset: LiquidityPoolId): boolean {
     return this.liquidityPoolId === asset.getLiquidityPoolId();
