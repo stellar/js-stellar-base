@@ -23,7 +23,7 @@ const versionBytes: Record<VersionByteName, number> = {
   signedPayload: 15 << 3, // P
   contract: 2 << 3, // C
   liquidityPool: 11 << 3, // L
-  claimableBalance: 1 << 3, // B
+  claimableBalance: 1 << 3 // B
 };
 
 const strkeyTypes: Record<string, VersionByteName> = {
@@ -35,13 +35,13 @@ const strkeyTypes: Record<string, VersionByteName> = {
   P: "signedPayload",
   C: "contract",
   L: "liquidityPool",
-  B: "claimableBalance",
+  B: "claimableBalance"
 };
 
 type StrKeyPrefix = keyof typeof strkeyTypes;
 
 function hasVersionByteName(
-  versionByteName: string,
+  versionByteName: string
 ): versionByteName is VersionByteName {
   return Object.prototype.hasOwnProperty.call(versionBytes, versionByteName);
 }
@@ -57,8 +57,7 @@ export class StrKey {
   /**
    * Encodes `data` to strkey ed25519 public key.
    *
-   * @param   {Buffer} data   raw data to encode
-   * @returns {string}        "G..." representation of the key
+   * @param data - raw data to encode
    */
   static encodeEd25519PublicKey(data: Buffer): string {
     return encodeCheck("ed25519PublicKey", data);
@@ -70,8 +69,7 @@ export class StrKey {
    * If the parameter is a muxed account key ("M..."), this will only encode it
    * as a basic Ed25519 key (as if in "G..." format).
    *
-   * @param   {string} data   "G..." (or "M...") key representation to decode
-   * @returns {Buffer}        raw key
+   * @param data - "G..." (or "M...") key representation to decode
    */
   static decodeEd25519PublicKey(data: string): Buffer {
     return decodeCheck("ed25519PublicKey", data);
@@ -79,8 +77,8 @@ export class StrKey {
 
   /**
    * Returns true if the given Stellar public key is a valid ed25519 public key.
-   * @param {string} publicKey public key to check
-   * @returns {boolean}
+   *
+   * @param publicKey - public key to check
    */
   static isValidEd25519PublicKey(publicKey: string): boolean {
     return isValid("ed25519PublicKey", publicKey);
@@ -88,8 +86,8 @@ export class StrKey {
 
   /**
    * Encodes data to strkey ed25519 seed.
-   * @param {Buffer} data data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeEd25519SecretSeed(data: Buffer): string {
     return encodeCheck("ed25519SecretSeed", data);
@@ -97,8 +95,8 @@ export class StrKey {
 
   /**
    * Decodes strkey ed25519 seed to raw data.
-   * @param {string} address data to decode
-   * @returns {Buffer}
+   *
+   * @param address - data to decode
    */
   static decodeEd25519SecretSeed(address: string): Buffer {
     return decodeCheck("ed25519SecretSeed", address);
@@ -106,8 +104,8 @@ export class StrKey {
 
   /**
    * Returns true if the given Stellar secret key is a valid ed25519 secret seed.
-   * @param {string} seed seed to check
-   * @returns {boolean}
+   *
+   * @param seed - seed to check
    */
   static isValidEd25519SecretSeed(seed: string): boolean {
     return isValid("ed25519SecretSeed", seed);
@@ -115,8 +113,8 @@ export class StrKey {
 
   /**
    * Encodes data to strkey med25519 public key.
-   * @param {Buffer} data data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeMed25519PublicKey(data: Buffer): string {
     return encodeCheck("med25519PublicKey", data);
@@ -124,8 +122,8 @@ export class StrKey {
 
   /**
    * Decodes strkey med25519 public key to raw data.
-   * @param {string} address data to decode
-   * @returns {Buffer}
+   *
+   * @param address - data to decode
    */
   static decodeMed25519PublicKey(address: string): Buffer {
     return decodeCheck("med25519PublicKey", address);
@@ -133,8 +131,8 @@ export class StrKey {
 
   /**
    * Returns true if the given Stellar public key is a valid med25519 public key.
-   * @param {string} publicKey public key to check
-   * @returns {boolean}
+   *
+   * @param publicKey - public key to check
    */
   static isValidMed25519PublicKey(publicKey: string): boolean {
     return isValid("med25519PublicKey", publicKey);
@@ -142,8 +140,8 @@ export class StrKey {
 
   /**
    * Encodes data to strkey preAuthTx.
-   * @param {Buffer} data data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodePreAuthTx(data: Buffer): string {
     return encodeCheck("preAuthTx", data);
@@ -151,8 +149,8 @@ export class StrKey {
 
   /**
    * Decodes strkey PreAuthTx to raw data.
-   * @param {string} address data to decode
-   * @returns {Buffer}
+   *
+   * @param address - data to decode
    */
   static decodePreAuthTx(address: string): Buffer {
     return decodeCheck("preAuthTx", address);
@@ -160,8 +158,8 @@ export class StrKey {
 
   /**
    * Encodes data to strkey sha256 hash.
-   * @param {Buffer} data data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeSha256Hash(data: Buffer): string {
     return encodeCheck("sha256Hash", data);
@@ -169,8 +167,8 @@ export class StrKey {
 
   /**
    * Decodes strkey sha256 hash to raw data.
-   * @param {string} address data to decode
-   * @returns {Buffer}
+   *
+   * @param address - data to decode
    */
   static decodeSha256Hash(address: string): Buffer {
     return decodeCheck("sha256Hash", address);
@@ -178,8 +176,8 @@ export class StrKey {
 
   /**
    * Encodes raw data to strkey signed payload (P...).
-   * @param   {Buffer} data  data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeSignedPayload(data: Buffer): string {
     return encodeCheck("signedPayload", data);
@@ -187,8 +185,8 @@ export class StrKey {
 
   /**
    * Decodes strkey signed payload (P...) to raw data.
-   * @param   {string} address  address to decode
-   * @returns {Buffer}
+   *
+   * @param address - address to decode
    */
   static decodeSignedPayload(address: string): Buffer {
     return decodeCheck("signedPayload", address);
@@ -196,8 +194,8 @@ export class StrKey {
 
   /**
    * Checks validity of alleged signed payload (P...) strkey address.
-   * @param   {string} address  signer key to check
-   * @returns {boolean}
+   *
+   * @param address - signer key to check
    */
   static isValidSignedPayload(address: string): boolean {
     return isValid("signedPayload", address);
@@ -205,8 +203,8 @@ export class StrKey {
 
   /**
    * Encodes raw data to strkey contract (C...).
-   * @param   {Buffer} data  data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeContract(data: Buffer): string {
     return encodeCheck("contract", data);
@@ -214,8 +212,8 @@ export class StrKey {
 
   /**
    * Decodes strkey contract (C...) to raw data.
-   * @param   {string} address  address to decode
-   * @returns {Buffer}
+   *
+   * @param address - address to decode
    */
   static decodeContract(address: string): Buffer {
     return decodeCheck("contract", address);
@@ -223,8 +221,8 @@ export class StrKey {
 
   /**
    * Checks validity of alleged contract (C...) strkey address.
-   * @param   {string} address  signer key to check
-   * @returns {boolean}
+   *
+   * @param address - signer key to check
    */
   static isValidContract(address: string): boolean {
     return isValid("contract", address);
@@ -232,17 +230,17 @@ export class StrKey {
 
   /**
    * Encodes raw data to strkey claimable balance (B...).
-   * @param   {Buffer} data  data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeClaimableBalance(data: Buffer): string {
     return encodeCheck("claimableBalance", data);
   }
 
   /**
-   * Decodes strkey contract (B...) to raw data.
-   * @param   {string} address  balance to decode
-   * @returns {Buffer}
+   * Decodes strkey claimable balance (B...) to raw data.
+   *
+   * @param address - balance to decode
    */
   static decodeClaimableBalance(address: string): Buffer {
     return decodeCheck("claimableBalance", address);
@@ -250,8 +248,8 @@ export class StrKey {
 
   /**
    * Checks validity of alleged claimable balance (B...) strkey address.
-   * @param   {string} address  balance to check
-   * @returns {boolean}
+   *
+   * @param address - balance to check
    */
   static isValidClaimableBalance(address: string): boolean {
     return isValid("claimableBalance", address);
@@ -259,8 +257,8 @@ export class StrKey {
 
   /**
    * Encodes raw data to strkey liquidity pool (L...).
-   * @param   {Buffer} data  data to encode
-   * @returns {string}
+   *
+   * @param data - data to encode
    */
   static encodeLiquidityPool(data: Buffer): string {
     return encodeCheck("liquidityPool", data);
@@ -268,8 +266,8 @@ export class StrKey {
 
   /**
    * Decodes strkey liquidity pool (L...) to raw data.
-   * @param   {string} address  address to decode
-   * @returns {Buffer}
+   *
+   * @param address - address to decode
    */
   static decodeLiquidityPool(address: string): Buffer {
     return decodeCheck("liquidityPool", address);
@@ -277,17 +275,18 @@ export class StrKey {
 
   /**
    * Checks validity of alleged liquidity pool (L...) strkey address.
-   * @param   {string} address  pool to check
-   * @returns {boolean}
+   *
+   * @param address - pool to check
    */
   static isValidLiquidityPool(address: string): boolean {
     return isValid("liquidityPool", address);
   }
 
   /**
-   * Returns the strkey type based on the prefix of the given strkey address.
-   * @param address The strkey address to check
-   * @returns The strkey type or undefined if the prefix is invalid
+   * Returns the strkey type based on the prefix of the given strkey address,
+   * or undefined if the prefix is invalid.
+   *
+   * @param address - the strkey address to check
    */
   static getVersionByteForPrefix(address: string): VersionByteName | undefined {
     if (address.length < 1) {
@@ -302,15 +301,12 @@ export class StrKey {
 /**
  * Sanity-checks whether or not a strkey *appears* valid.
  *
- * @param  {string}  versionByteName the type of strkey to expect in `encoded`
- * @param  {string}  encoded         the strkey to validate
+ * This isn't a *definitive* check of validity, but rather a best-effort
+ * check based on (a) input length, (b) whether or not it can be decoded,
+ * and (c) output length.
  *
- * @return {Boolean} whether or not the `encoded` strkey appears valid for the
- *     `versionByteName` strkey type (see `versionBytes`, above).
- *
- * @note This isn't a *definitive* check of validity, but rather a best-effort
- *     check based on (a) input length, (b) whether or not it can be decoded,
- *     and (c) output length.
+ * @param versionByteName - the type of strkey to expect in `encoded`
+ * @param encoded - the strkey to validate
  */
 function isValid(versionByteName: string, encoded: unknown): boolean {
   if (typeof encoded !== "string") {
@@ -387,6 +383,13 @@ function isValid(versionByteName: string, encoded: unknown): boolean {
   }
 }
 
+/**
+ * Decodes and validates a strkey-encoded string, verifying the version byte
+ * and checksum.
+ *
+ * @param versionByteName - the expected strkey type
+ * @param encoded - the strkey-encoded string to decode
+ */
 export function decodeCheck(versionByteName: string, encoded: string): Buffer {
   if (typeof encoded !== "string") {
     throw new TypeError("encoded argument must be of type String");
@@ -405,14 +408,14 @@ export function decodeCheck(versionByteName: string, encoded: string): Buffer {
   if (!hasVersionByteName(versionByteName)) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
-        `Expected one of ${Object.keys(versionBytes).join(", ")}`,
+        `Expected one of ${Object.keys(versionBytes).join(", ")}`
     );
   }
   const expectedVersion = versionBytes[versionByteName];
 
   if (versionByte !== expectedVersion) {
     throw new Error(
-      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`,
+      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`
     );
   }
 
@@ -425,6 +428,13 @@ export function decodeCheck(versionByteName: string, encoded: string): Buffer {
   return Buffer.from(data);
 }
 
+/**
+ * Encodes raw data into a strkey-encoded string with a version byte and
+ * CRC16 checksum.
+ *
+ * @param versionByteName - the strkey type to encode as
+ * @param data - the raw data to encode
+ */
 export function encodeCheck(versionByteName: string, data: Buffer): string {
   if (data === null || data === undefined) {
     throw new Error("cannot encode null data");
@@ -433,7 +443,7 @@ export function encodeCheck(versionByteName: string, data: Buffer): string {
   if (!hasVersionByteName(versionByteName)) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
-        `Expected one of ${Object.keys(versionBytes).join(", ")}`,
+        `Expected one of ${Object.keys(versionBytes).join(", ")}`
     );
   }
   const versionByte = versionBytes[versionByteName];
@@ -478,7 +488,7 @@ function calculateChecksum(payload: Uint8Array): Uint8Array {
     0xed0f, 0xdd6c, 0xcd4d, 0xbdaa, 0xad8b, 0x9de8, 0x8dc9, 0x7c26, 0x6c07,
     0x5c64, 0x4c45, 0x3ca2, 0x2c83, 0x1ce0, 0x0cc1, 0xef1f, 0xff3e, 0xcf5d,
     0xdf7c, 0xaf9b, 0xbfba, 0x8fd9, 0x9ff8, 0x6e17, 0x7e36, 0x4e55, 0x5e74,
-    0x2e93, 0x3eb2, 0x0ed1, 0x1ef0,
+    0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
   ];
 
   let crc16 = 0x0;

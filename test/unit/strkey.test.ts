@@ -422,6 +422,16 @@ describe("StrKey", () => {
         strkey
       );
     });
+
+    it("rejects invalid liquidity pool addresses", () => {
+      expect(StrKey.isValidLiquidityPool("")).toBe(false);
+      expect(StrKey.isValidLiquidityPool("LINVALID")).toBe(false);
+      expect(
+        StrKey.isValidLiquidityPool(
+          "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+        ),
+      ).toBe(false);
+    });
   });
 
   describe("#claimableBalances", () => {
@@ -436,6 +446,56 @@ describe("StrKey", () => {
       expect(StrKey.encodeClaimableBalance(Buffer.from(asHex, "hex"))).toBe(
         strkey
       );
+    });
+
+    it("rejects invalid claimable balance addresses", () => {
+      expect(StrKey.isValidClaimableBalance("")).toBe(false);
+      expect(StrKey.isValidClaimableBalance("BINVALID")).toBe(false);
+      expect(
+        StrKey.isValidClaimableBalance(
+          "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+        ),
+      ).toBe(false);
+    });
+  });
+
+  describe("#isValidMed25519PublicKey", () => {
+    it("returns true for a valid M-address", () => {
+      expect(
+        StrKey.isValidMed25519PublicKey(
+          "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK",
+        ),
+      ).toBe(true);
+    });
+
+    it("rejects invalid M-addresses", () => {
+      expect(StrKey.isValidMed25519PublicKey("")).toBe(false);
+      expect(StrKey.isValidMed25519PublicKey("MINVALID")).toBe(false);
+      expect(
+        StrKey.isValidMed25519PublicKey(
+          "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+        ),
+      ).toBe(false);
+    });
+  });
+
+  describe("#getVersionByteForPrefix", () => {
+    it("returns the correct type for each prefix", () => {
+      expect(StrKey.getVersionByteForPrefix("G...")).toBe("ed25519PublicKey");
+      expect(StrKey.getVersionByteForPrefix("S...")).toBe("ed25519SecretSeed");
+      expect(StrKey.getVersionByteForPrefix("M...")).toBe("med25519PublicKey");
+      expect(StrKey.getVersionByteForPrefix("T...")).toBe("preAuthTx");
+      expect(StrKey.getVersionByteForPrefix("X...")).toBe("sha256Hash");
+      expect(StrKey.getVersionByteForPrefix("P...")).toBe("signedPayload");
+      expect(StrKey.getVersionByteForPrefix("C...")).toBe("contract");
+      expect(StrKey.getVersionByteForPrefix("L...")).toBe("liquidityPool");
+      expect(StrKey.getVersionByteForPrefix("B...")).toBe("claimableBalance");
+    });
+
+    it("returns undefined for invalid prefixes", () => {
+      expect(StrKey.getVersionByteForPrefix("")).toBeUndefined();
+      expect(StrKey.getVersionByteForPrefix("Z...")).toBeUndefined();
+      expect(StrKey.getVersionByteForPrefix("1...")).toBeUndefined();
     });
   });
 
