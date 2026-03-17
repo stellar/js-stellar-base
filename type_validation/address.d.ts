@@ -7,13 +7,14 @@ import xdr from "./xdr.js";
  * account, muxed account, contract, claimable balance, or a liquidity pool
  * (the latter two can only be present as the *output* of Core in the form
  * of an event, never an input to a smart contract).
- *
- * @param address - a {@link StrKey} of the address value
  */
 export type AddressType = "account" | "claimableBalance" | "contract" | "liquidityPool" | "muxedAccount";
 export declare class Address {
     private _type;
     private _key;
+    /**
+     * @param address - a {@link StrKey} of the address value
+     */
     constructor(address: string);
     /**
      * Parses a string and returns an Address object.
