@@ -14,11 +14,11 @@ export interface WasmCreateDetails {
 /**
  * Details about a contract creation invocation.
  *
- * @prop type - a type indicating if this creation was a custom
- *    contract (`'wasm'`) or a wrapping of an existing Stellar asset (`'sac'`)
- * @prop asset - when `type=='sac'`, the canonical {@link Asset} that
- *    is being wrapped by this Stellar Asset Contract
- * @prop wasm - when `type=='wasm'`, additional creation parameters
+ * - `type` indicates if this creation was a custom contract (`'wasm'`) or a
+ *   wrapping of an existing Stellar asset (`'sac'`)
+ * - `asset` is set when `type=='sac'`, containing the canonical {@link Asset}
+ *   being wrapped by this Stellar Asset Contract
+ * - `wasm` is set when `type=='wasm'`, containing additional creation parameters
  */
 export interface CreateInvocation {
   type: "sac" | "wasm";
@@ -29,11 +29,10 @@ export interface CreateInvocation {
 /**
  * Details about a contract function execution invocation.
  *
- * @prop source - the strkey of the contract (C...) being invoked
- * @prop function - the name of the function being invoked
- * @prop args - the natively-represented parameters to the function
- *    invocation (see {@link scValToNative} for rules on how they're
- *    represented as JS types)
+ * - `source` is the strkey of the contract (`C...`) being invoked
+ * - `function` is the name of the function being invoked
+ * - `args` are the natively-represented parameters to the function invocation
+ *   (see {@link scValToNative} for rules on how they're represented as JS types)
  */
 export interface ExecuteInvocation {
   source: string;
@@ -45,11 +44,11 @@ export interface ExecuteInvocation {
 /**
  * A node in the invocation tree.
  *
- * @prop type - the type of invocation occurring, either
- *    contract creation or host function execution
- * @prop args - the parameters to the invocation, depending on the type
- * @prop invocations - any sub-invocations that (may) occur
- *    as a result of this invocation (i.e. a tree of call stacks)
+ * - `type` is the type of invocation occurring, either contract creation or
+ *   host function execution
+ * - `args` are the parameters to the invocation, depending on the type
+ * - `invocations` are any sub-invocations that may occur as a result of this
+ *   invocation (i.e. a tree of call stacks)
  */
 export interface InvocationTree {
   type: "create" | "execute";
@@ -60,13 +59,14 @@ export interface InvocationTree {
 /**
  * A callback used when walking an invocation tree.
  *
+ * Returning exactly `false` is a hint to stop exploring deeper from this node;
+ * other return values are ignored.
+ *
  * @param node - the currently explored node
  * @param depth - the depth of the tree this node is occurring at (the
  *    root starts at a depth of 1)
  * @param parent - this node's parent node, if any (i.e. this doesn't
  *    exist at the root)
- * @returns returning exactly `false` is a hint to stop exploring,
- *    other values are ignored
  */
 export type InvocationWalker = (
   node: xdr.SorobanAuthorizedInvocation,
@@ -88,8 +88,6 @@ export type InvocationWalker = (
  *    the authorization entries ({@link xdr.SorobanAuthorizationEntry}, the
  *    `rootInvocation` field)
  *
- * @returns a human-readable version of the invocation tree
- *
  * @example
  * Here, we show a browser modal after simulating an arbitrary transaction,
  * `tx`, which we assume has an `Operation.invokeHostFunction` inside of it:
@@ -101,16 +99,19 @@ export type InvocationWalker = (
  *
  * s.simulateTransaction(tx).then(
  *  (resp: SorobanRpc.SimulateTransactionResponse) => {
- *    if (SorobanRpc.isSuccessfulSim(resp) && ) {
+ *    if (SorobanRpc.isSuccessfulSim(resp) && resp.result) {
  *      // bold assumption: there's a valid result with an auth entry
- *      alert(
- *        "You are authorizing the following invocation:\n" +
- *        JSON.stringify(
- *          buildInvocationTree(resp.result!.auth[0].rootInvocation()),
- *          null,
- *          2
- *        )
- *      );
+ *      const auth = resp.result.auth;
+ *      if (auth && auth.length > 0) {
+ *        alert(
+ *          "You are authorizing the following invocation:\n" +
+ *          JSON.stringify(
+ *            buildInvocationTree(auth[0].rootInvocation()),
+ *            null,
+ *            2
+ *          )
+ *        );
+ *      }
  *    }
  *  }
  * );
