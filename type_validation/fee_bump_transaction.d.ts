@@ -9,31 +9,26 @@ import { TransactionBase } from "./transaction_base.js";
  * Once a {@link FeeBumpTransaction} has been created, its attributes and operations
  * should not be changed. You should only add signatures (using {@link FeeBumpTransaction#sign}) before
  * submitting to the network or forwarding on to additional signers.
- *
- * @param envelope - transaction envelope
- *     object or base64 encoded string.
- * @param networkPassphrase - passphrase of the target Stellar network
- *     (e.g. "Public Global Stellar Network ; September 2015").
- *
- * @extends TransactionBase
  */
 export declare class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> {
     _feeSource: string;
     _innerTransaction: Transaction;
+    /**
+     * @param envelope - transaction envelope object or base64 encoded string.
+     * @param networkPassphrase - passphrase of the target Stellar network
+     *     (e.g. "Public Global Stellar Network ; September 2015").
+     */
     constructor(envelope: xdr.TransactionEnvelope | string, networkPassphrase: string);
     /**
-     * @type {Transaction}
-     * @readonly
+     * The inner transaction that this fee bump wraps.
      */
     get innerTransaction(): Transaction;
     /**
-     * @type {Operation[]}
-     * @readonly
+     * The operations from the inner transaction.
      */
     get operations(): import("./operations/types.js").OperationRecord[];
     /**
-     * @type {string}
-     * @readonly
+     * The account paying the fee for this transaction.
      */
     get feeSource(): string;
     /**

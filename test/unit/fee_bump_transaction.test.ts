@@ -157,6 +157,14 @@ describe("FeeBumpTransaction", () => {
     }).toThrow(/expected a string/);
   });
 
+  it("throws when a non-fee-bump envelope is passed", () => {
+    const regularEnvelope = innerTx.toEnvelope();
+
+    expect(() => {
+      new FeeBumpTransaction(regularEnvelope, networkPassphrase);
+    }).toThrow(/expected an envelopeTypeTxFeeBump/);
+  });
+
   it("signs correctly", () => {
     transaction.sign(feeSource);
     const rawSig = transaction
