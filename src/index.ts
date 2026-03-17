@@ -64,5 +64,3 @@ export * from "./auth.js";
 export * from "./invocation.js";
 
 export * from "./numbers/index.js";
-
-export default module.exports;

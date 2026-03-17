@@ -3,23 +3,22 @@
   "version": "14.1.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/cjs/index.js",
-  "browser": "./dist/stellar-base.min.js",
-  "types": "./types/index.d.ts",
+  "module": "./lib/esm/index.mjs",
+  "types": "./lib/types/index.d.ts",
   "packageManager": "pnpm@9.15.3",
+  "sideEffects": false,
   "exports": {
     ".": {
-      "browser": "./dist/stellar-base.min.js",
+      "types": "./lib/types/index.d.ts",
+      "import": "./lib/esm/index.mjs",
       "require": "./lib/cjs/index.js",
       "default": "./lib/cjs/index.js"
     }
   },
   "scripts": {
-    "build": "pnpm run build:cjs && pnpm run build:browser",
-    "build:cjs": "tsc -p tsconfig.cjs.json",
-    "build:node": "babel --out-dir ./lib/ ./src/",
-    "build:browser": "webpack -c ./config/webpack.config.browser.js",
+    "build": "pnpm run build:types && rollup -c",
+    "build:types": "tsc -p tsconfig.types.json && mkdir -p lib/types/generated && cp src/generated/*.d.ts lib/types/generated/ && cp types/curr.d.ts types/next.d.ts lib/types/",
     "build:node:prod": "cross-env NODE_ENV=production pnpm run build",
-    "build:browser:prod": "cross-env NODE_ENV=production pnpm run build:browser",
     "build:prod": "cross-env NODE_ENV=production pnpm run build",
     "test": "pnpm run build && pnpm run test:vitest",
     "test:node": "NODE_OPTIONS=--no-experimental-detect-module pnpm run _nyc -- mocha --config ./mocharc.tsnode.json",
@@ -39,15 +38,10 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "nyc": {
-    "sourceMap": false,
-    "instrument": false,
-    "reporter": "text-summary"
-  },
   "files": [
     "/dist/*.js",
     "/lib/**/*.js",
-    "/types/*.d.ts"
+    "/lib/types/**/*.d.ts"
   ],
   "lint-staged": {
     "src/**/*.{js,ts}": [
@@ -72,28 +66,22 @@
   },
   "homepage": "https://github.com/stellar/js-stellar-base",
   "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/core": "^7.28.5",
-    "@babel/eslint-parser": "^7.28.5",
-    "@babel/eslint-plugin": "^7.27.1",
-    "@babel/preset-env": "^7.28.5",
-    "@babel/preset-typescript": "^7.28.3",
-    "@babel/register": "^7.28.3",
     "@definitelytyped/dtslint": "^0.0.182",
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^9.39.2",
     "@istanbuljs/nyc-config-babel": "3.0.0",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-inject": "^5.0.5",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^1.0.0",
     "@types/node": "^20.14.11",
     "@types/sha.js": "^2.4.4",
     "@typescript-eslint/parser": "^8.54.0",
-    "babel-loader": "^9.2.1",
-    "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^9.39.2",
     "eslint-plugin-import-x": "^4.16.1",
-    "ghooks": "^2.0.4",
     "globals": "^17.3.0",
     "husky": "^8.0.3",
     "jsdoc": "^4.0.5",
@@ -105,21 +93,17 @@
     "karma-sinon-chai": "^2.0.2",
     "karma-webpack": "^5.0.1",
     "lint-staged": "^15.5.0",
-    "minami": "^1.1.1",
     "mocha": "^10.8.2",
-    "node-polyfill-webpack-plugin": "^3.0.0",
     "nyc": "^15.1.0",
     "prettier": "^3.8.1",
+    "rollup": "^4.44.1",
+    "rollup-plugin-esbuild": "^6.2.1",
     "sinon": "^16.1.0",
     "sinon-chai": "^3.7.0",
-    "taffydb": "^2.7.3",
-    "terser-webpack-plugin": "^5.3.16",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.54.0",
-    "vitest": "^4.0.18",
-    "webpack": "^5.104.1",
-    "webpack-cli": "^5.1.1"
+    "vitest": "^4.1.0"
   },
   "dependencies": {
     "@noble/curves": "^1.9.6",

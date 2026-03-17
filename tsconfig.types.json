@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": ["src"],
+  "exclude": ["test", "src/generated"],
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "incremental": false,
+    "declarationDir": "./lib/types",
+    "rootDir": "./src"
+  }
+}
