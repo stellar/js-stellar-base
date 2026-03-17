@@ -15,15 +15,13 @@ export declare class SignerKey {
      * Only ED25519 public keys (G...), pre-auth transactions (T...), hashes
      * (H...), and signed payloads (P...) can be signer keys.
      *
-     * @param   {string} address  a StrKey-encoded signer address
-     * @returns {xdr.SignerKey}
+     * @param address - a StrKey-encoded signer address
      */
     static decodeAddress(address: string): xdr.SignerKey;
     /**
      * Encodes a signer key into its StrKey equivalent.
      *
-     * @param   {xdr.SignerKey} signerKey   the signer
-     * @returns {string} the StrKey representation of the signer
+     * @param signerKey - the signer
      */
     static encodeSignerKey(signerKey: xdr.SignerKey): string;
 }
