@@ -46,7 +46,7 @@ export class FeeBumpTransaction extends TransactionBase {
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
       tx.innerTx().v1()
     );
-    this._feeSource = encodeMuxedAccountToAddress(this.tx.feeSource());
+    this._feeSource = encodeMuxedAccountToAddress(this._tx.feeSource());
     this._innerTransaction = new Transaction(
       innerTxEnvelope,
       networkPassphrase
@@ -89,7 +89,7 @@ export class FeeBumpTransaction extends TransactionBase {
   signatureBase() {
     const taggedTransaction =
       new xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
-        this.tx
+        this._tx
       );
 
     const txSignature = new xdr.TransactionSignaturePayload({
@@ -106,7 +106,7 @@ export class FeeBumpTransaction extends TransactionBase {
    */
   toEnvelope() {
     const envelope = new xdr.FeeBumpTransactionEnvelope({
-      tx: xdr.FeeBumpTransaction.fromXDR(this.tx.toXDR()), // make a copy of the tx
+      tx: xdr.FeeBumpTransaction.fromXDR(this._tx.toXDR()), // make a copy of the tx
       signatures: this.signatures.slice() // make a copy of the signatures
     });
 
