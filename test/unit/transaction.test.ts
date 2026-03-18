@@ -1,4 +1,3 @@
-import { randomBytes } from "crypto";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Transaction } from "../../src/transaction.js";
 import {
@@ -27,6 +26,15 @@ function expectBuffersToBeEqual(
   const leftHex = left.toString("hex");
   const rightHex = right.toString("hex");
   expect(leftHex).toEqual(rightHex);
+}
+
+function createTestBytes(length: number): Buffer {
+  const bytes = new Uint8Array(length);
+  for (let index = 0; index < length; index += 1) {
+    bytes[index] = index % 256;
+  }
+
+  return Buffer.from(bytes);
 }
 
 describe("Transaction", () => {
@@ -331,7 +339,7 @@ describe("Transaction", () => {
     const asset = Asset.native();
     const amount = "2000";
 
-    const preimage = randomBytes(64);
+    const preimage = createTestBytes(64);
     const preimageHash = hash(preimage);
 
     const tx = new TransactionBuilder(source, {
@@ -365,7 +373,7 @@ describe("Transaction", () => {
     const asset = Asset.native();
     const amount = "2000";
 
-    const preimage = randomBytes(2 * 64);
+    const preimage = createTestBytes(2 * 64);
 
     const tx = new TransactionBuilder(source, {
       fee: "100",

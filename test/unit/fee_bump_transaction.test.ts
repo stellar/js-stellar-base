@@ -1,4 +1,3 @@
-import { randomBytes } from "crypto";
 import { describe, it, expect, beforeEach } from "vitest";
 import { FeeBumpTransaction } from "../../src/fee_bump_transaction.js";
 import { Transaction } from "../../src/transaction.js";
@@ -20,6 +19,15 @@ function expectBuffersToBeEqual(
   const leftHex = left.toString("hex");
   const rightHex = right.toString("hex");
   expect(leftHex).toEqual(rightHex);
+}
+
+function createTestBytes(length: number): Buffer {
+  const bytes = new Uint8Array(length);
+  for (let index = 0; index < length; index += 1) {
+    bytes[index] = index % 256;
+  }
+
+  return Buffer.from(bytes);
 }
 
 describe("FeeBumpTransaction", () => {
@@ -86,7 +94,7 @@ describe("FeeBumpTransaction", () => {
     expect(
       (innerTransaction.memo.value as Buffer).toString("ascii"),
     ).toBe("Happy birthday!");
-    const operation = innerTransaction.operations[0];
+    const operation = innerTransaction.operations[0]!;
     expect(operation.type).toBe("payment");
     expect((operation as Operation.Payment).destination).toBe(destination);
     expect((operation as Operation.Payment).amount).toBe(amount);
@@ -128,20 +136,20 @@ describe("FeeBumpTransaction", () => {
 
     expect(innerTransaction.signatures.length).toEqual(1);
     expect(
-      innerTransaction.signatures[0].toXDR().toString("base64"),
+      innerTransaction.signatures[0]!.toXDR().toString("base64"),
     ).toEqual(
       expectedTxEnvelope
         .tx()
         .innerTx()
         .value()
-        .signatures()[0]
+        .signatures()[0]!
         .toXDR()
         .toString("base64"),
     );
 
     expect(transaction.signatures.length).toEqual(1);
-    expect(transaction.signatures[0].toXDR().toString("base64")).toEqual(
-      expectedTxEnvelope.signatures()[0].toXDR().toString("base64"),
+    expect(transaction.signatures[0]!.toXDR().toString("base64")).toEqual(
+      expectedTxEnvelope.signatures()[0]!.toXDR().toString("base64"),
     );
   });
 
@@ -170,25 +178,25 @@ describe("FeeBumpTransaction", () => {
     const rawSig = transaction
       .toEnvelope()
       .feeBump()
-      .signatures()[0]
+      .signatures()[0]!
       .signature();
     expect(feeSource.verify(transaction.hash(), rawSig)).toBe(true);
   });
 
   it("signs using hash preimage", () => {
-    const preimage = randomBytes(64);
+    const preimage = createTestBytes(64);
     const preimageHash = hash(preimage);
     transaction.signHashX(preimage);
     const env = transaction.toEnvelope().feeBump();
-    expectBuffersToBeEqual(env.signatures()[0].signature(), preimage);
+    expectBuffersToBeEqual(env.signatures()[0]!.signature(), preimage);
     expectBuffersToBeEqual(
-      env.signatures()[0].hint(),
+      env.signatures()[0]!.hint(),
       preimageHash.subarray(preimageHash.length - 4),
     );
   });
 
   it("returns error when signing using hash preimage that is too long", () => {
-    const preimage = randomBytes(2 * 64);
+    const preimage = createTestBytes(2 * 64);
     expect(() => transaction.signHashX(preimage)).toThrow(
       /preimage cannot be longer than 64 bytes/,
     );
@@ -232,7 +240,7 @@ describe("FeeBumpTransaction", () => {
     expect(
       feeSource.verify(
         addedSignatureTx.hash(),
-        envelopeAddedSignature.signatures()[0].signature(),
+        envelopeAddedSignature.signatures()[0]!.signature(),
       ),
     ).toBe(true);
 
@@ -240,13 +248,13 @@ describe("FeeBumpTransaction", () => {
     const envelopeSigned = transaction.toEnvelope().feeBump();
 
     expectBuffersToBeEqual(
-      envelopeSigned.signatures()[0].signature(),
-      envelopeAddedSignature.signatures()[0].signature(),
+      envelopeSigned.signatures()[0]!.signature(),
+      envelopeAddedSignature.signatures()[0]!.signature(),
     );
 
     expectBuffersToBeEqual(
-      envelopeSigned.signatures()[0].hint(),
-      envelopeAddedSignature.signatures()[0].hint(),
+      envelopeSigned.signatures()[0]!.hint(),
+      envelopeAddedSignature.signatures()[0]!.hint(),
     );
 
     expectBuffersToBeEqual(addedSignatureTx.hash(), transaction.hash());
@@ -279,7 +287,7 @@ describe("FeeBumpTransaction", () => {
     expect(
       feeSource.verify(
         transaction.hash(),
-        envelopeAddedSignature.signatures()[0].signature(),
+        envelopeAddedSignature.signatures()[0]!.signature(),
       ),
     ).toBe(true);
 
@@ -288,13 +296,13 @@ describe("FeeBumpTransaction", () => {
     const envelopeSigned = transaction.toEnvelope().feeBump();
 
     expectBuffersToBeEqual(
-      envelopeSigned.signatures()[0].signature(),
-      envelopeAddedSignature.signatures()[0].signature(),
+      envelopeSigned.signatures()[0]!.signature(),
+      envelopeAddedSignature.signatures()[0]!.signature(),
     );
 
     expectBuffersToBeEqual(
-      envelopeSigned.signatures()[0].hint(),
-      envelopeAddedSignature.signatures()[0].hint(),
+      envelopeSigned.signatures()[0]!.hint(),
+      envelopeAddedSignature.signatures()[0]!.hint(),
     );
 
     expectBuffersToBeEqual(addedSignatureTx.hash(), transaction.hash());
