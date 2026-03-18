@@ -27,6 +27,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Check local TS version
         run: pnpm tsc --version
+      - name: Build Library
+        run: pnpm run build
       - name: Run Linter Checks
         run: |
           pnpm run fmt && pnpm run lint && (git diff-index --quiet HEAD -- src/ test/; git diff -- src/ test/)

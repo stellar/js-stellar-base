@@ -10,7 +10,8 @@
     "types": [],
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
-    "paths": { "stellar-base": ["../"] }
+    "skipLibCheck": true,
+    "paths": { "stellar-base": ["../lib/types"] }
   },
   "files": ["index.d.ts", "test.ts"]
 }
