@@ -1,6 +1,9 @@
 /// <reference types="node" />
 import * as StellarSdk from 'stellar-base';
 
+// This file is used for testing type definitions. It should not be run directly, 
+// but instead should be picked up by the test runner in the root of the project (e.g. `pnpm lint`).
+
 const masterKey = StellarSdk.Keypair.master(StellarSdk.Networks.TESTNET); // $ExpectType Keypair
 const sourceKey = StellarSdk.Keypair.random(); // $ExpectType Keypair
 const destKey = StellarSdk.Keypair.random();
@@ -207,7 +210,7 @@ if (noSigner.type === 'setOptions') {
 const newSignerXDR1 = StellarSdk.Operation.setOptions({
   signer: { ed25519PublicKey: sourceKey.publicKey(), weight: '1' }
 });
-const newSigner1 =StellarSdk.Operation.fromXDRObject(newSignerXDR1); // $ExpectType OperationRecord
+const newSigner1 = StellarSdk.Operation.fromXDRObject(newSignerXDR1); // $ExpectType OperationRecord
 if (newSigner1.type === 'setOptions') {
   newSigner1.signer; // $ExpectType Ed25519PublicKey | Ed25519SignedPayload | PreAuthTx | Sha256Hash | undefined
 }
