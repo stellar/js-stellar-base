@@ -18,6 +18,7 @@ import { Address } from "../../src/address.js";
 import { Transaction } from "../../src/transaction.js";
 import { FeeBumpTransaction } from "../../src/fee_bump_transaction.js";
 import { SorobanDataBuilder } from "../../src/sorobandata_builder.js";
+import { expectDefined } from "../support/expect_defined.js";
 import { nativeToScVal } from "../../src/scval.js";
 import { SignerKey } from "../../src/signerkey.js";
 import { encodeMuxedAccountToAddress } from "../../src/util/decode_encode_muxed_account.js";
@@ -1684,7 +1685,8 @@ describe("TransactionBuilder.cloneFrom", () => {
     }).not.toThrow();
 
     // Math.floor(1000/3) = 333 per-op -> 333 * 3 = 999
-    expect(cloneTx!.fee).toBe("999");
+    expect(cloneTx).toBeDefined();
+    expect(expectDefined(cloneTx).fee).toBe("999");
   });
 
   it("preserves extraSigners", () => {

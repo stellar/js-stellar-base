@@ -11,6 +11,7 @@ import {
 import { Contract } from "../../src/contract.js";
 import xdr from "../../src/xdr.js";
 import { nativeToScVal, scValToNative, scvSortedMap } from "../../src/scval.js";
+import { expectDefined } from "../support/expect_defined.js";
 
 // Migrated existing tests
 describe("parsing and building ScVals - from scval_test.js", () => {
@@ -1476,13 +1477,15 @@ describe("scvSortedMap", () => {
     ];
     const copy = [...entries];
     scvSortedMap(entries);
+    const firstEntry = expectDefined(entries[0]);
+    const firstCopy = expectDefined(copy[0]);
+    const secondEntry = expectDefined(entries[1]);
+    const secondCopy = expectDefined(copy[1]);
 
     // Original array should be unchanged
-    expect(scValToNative(entries[0]!.key())).toBe(
-      scValToNative(copy[0]!.key()),
-    );
-    expect(scValToNative(entries[1]!.key())).toBe(
-      scValToNative(copy[1]!.key()),
+    expect(scValToNative(firstEntry.key())).toBe(scValToNative(firstCopy.key()));
+    expect(scValToNative(secondEntry.key())).toBe(
+      scValToNative(secondCopy.key()),
     );
   });
 

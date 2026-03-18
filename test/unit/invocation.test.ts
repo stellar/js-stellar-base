@@ -12,6 +12,7 @@ import {
   buildInvocationTree,
   walkInvocationTree,
 } from "../../src/invocation.js";
+import { expectDefined } from "../support/expect_defined.js";
 
 function randomKey(): string {
   return Keypair.random().publicKey();
@@ -363,7 +364,12 @@ describe("walkInvocationTree", () => {
     walkInvocationTree(root, (node, depth) => {
       walkCount++;
       const s = node.toXDR("base64");
-      walkSet[s] = s in walkSet ? walkSet[s]! + 1 : 1;
+      if (s in walkSet) {
+        const count = expectDefined(walkSet[s]);
+        walkSet[s] = count + 1;
+      } else {
+        walkSet[s] = 1;
+      }
       maxDepth = Math.max(maxDepth, depth);
       return true;
     });
@@ -474,7 +480,12 @@ describe("walkInvocationTree", () => {
     walkInvocationTree(rootInvocation, (node, depth) => {
       walkCount++;
       const s = node.toXDR("base64");
-      walkSet[s] = s in walkSet ? walkSet[s]! + 1 : 1;
+      if (s in walkSet) {
+        const count = expectDefined(walkSet[s]);
+        walkSet[s] = count + 1;
+      } else {
+        walkSet[s] = 1;
+      }
       maxDepth = Math.max(maxDepth, depth);
       return true;
     });
@@ -539,7 +550,8 @@ describe("walkInvocationTree", () => {
     // Root has no parent
     expect(parents[0]).toBeUndefined();
     // Child's parent should be the root
-    expect(parents[1]!.toXDR("base64")).toBe(root.toXDR("base64"));
+    const parent = expectDefined(parents[1]);
+    expect(parent.toXDR("base64")).toBe(root.toXDR("base64"));
   });
 
   it("handles void return from callback (continues walking)", () => {

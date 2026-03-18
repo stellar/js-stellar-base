@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Asset } from "../../src/asset.js";
 import { Keypair } from "../../src/keypair.js";
 import { Networks } from "../../src/network.js";
+import { expectDefined } from "../support/expect_defined.js";
 import xdr from "../../src/xdr.js";
 
 const ISSUER = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
@@ -269,7 +270,8 @@ describe("Asset", () => {
 
     it("validates asset codes as assetCodeA < assetCodeB", () => {
       const assetARST = new Asset("ARST", ISSUER_B);
-      const assetUSDX = new Asset("USDA", assetARST.getIssuer()!);
+      const issuer = expectDefined(assetARST.getIssuer());
+      const assetUSDX = new Asset("USDA", issuer);
 
       expect(Asset.compare(assetARST, assetARST)).toBe(0);
       expect(Asset.compare(assetARST, assetUSDX)).toBe(-1);
@@ -278,7 +280,7 @@ describe("Asset", () => {
       expect(Asset.compare(assetUSDX, assetUSDX)).toBe(0);
 
       // uppercase should be smaller
-      const assetLower = new Asset("aRST", assetARST.getIssuer()!);
+      const assetLower = new Asset("aRST", issuer);
       expect(Asset.compare(assetARST, assetLower)).toBe(-1);
       expect(Asset.compare(assetLower, assetA)).toBe(1);
     });
