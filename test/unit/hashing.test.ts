@@ -1,4 +1,3 @@
-import * as crypto from "crypto";
 import { describe, it, expect } from "vitest";
 import { hash } from "../../src/hashing.js";
 
@@ -25,12 +24,11 @@ describe("hash", () => {
     expect(actualHex).toEqual(expectedHex);
   });
 
-  // Verify that our hash() produces the same result as Node's built-in
-  // crypto.createHash("sha256"), ensuring the browser-compatible library
-  // remains consistent with the native implementation.
-  it("produces the same result as Node's crypto module", () => {
+  it("produces the same result as Web Crypto", async () => {
     const input = "I really hope this works";
-    const cryptoHash = crypto.createHash("sha256").update(input).digest();
+    const encoded = new TextEncoder().encode(input);
+    const digest = await globalThis.crypto.subtle.digest("SHA-256", encoded);
+    const cryptoHash = Buffer.from(digest);
     const newHash = hash(input);
     expect(newHash.toString("hex")).toEqual(cryptoHash.toString("hex"));
   });

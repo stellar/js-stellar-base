@@ -202,6 +202,12 @@ To run a specific set of tests:
 pnpm run test:vitest
 ```
 
+To run the browser suite in headless Chromium via Vitest Browser Mode and Playwright:
+
+```shell
+pnpm run test:browser
+```
+
 Tests are also run automatically in Github Actions for every master commit and
 pull request.
 

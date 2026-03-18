@@ -51,11 +51,8 @@ const javascriptConfig = [
     files: ["test/**/*.js"],
     languageOptions: {
       globals: {
-        ...globals.mocha,
-        StellarBase: "readonly",
-        expect: "readonly",
-        chai: "readonly",
-        sinon: "readonly"
+        ...globals.es2020,
+        ...globals["shared-node-browser"]
       }
     }
   }

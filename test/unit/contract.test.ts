@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Contract } from "../../src/contract.js";
 import { Address } from "../../src/address.js";
 import { nativeToScVal } from "../../src/scval.js";
+import { expectDefined } from "../support/expect_defined.js";
 import xdr from "../../src/xdr.js";
 
 const NULL_ADDRESS = "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM";
@@ -185,10 +186,14 @@ describe("Contract", () => {
 
       const callArgs = args.args();
       expect(callArgs).toHaveLength(2);
-      expect(callArgs[0]!.toXDR("hex")).toBe(
+      const firstArg = expectDefined(callArgs[0]);
+      const secondArg = expectDefined(callArgs[1]);
+      expect(firstArg.toXDR("hex")).toBe(
         xdr.ScVal.scvString("arg!").toXDR("hex"),
       );
-      expect(callArgs[1]!.toXDR("hex")).toBe(xdr.ScVal.scvI32(2).toXDR("hex"));
+      expect(secondArg.toXDR("hex")).toBe(
+        xdr.ScVal.scvI32(2).toXDR("hex"),
+      );
     });
 
     it("passes empty args when called with no params", () => {

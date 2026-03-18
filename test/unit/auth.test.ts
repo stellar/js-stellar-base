@@ -9,6 +9,7 @@ import { Address } from "../../src/address.js";
 import { StrKey } from "../../src/strkey.js";
 import { hash } from "../../src/hashing.js";
 import { scValToNative } from "../../src/scval.js";
+import { expectDefined } from "../support/expect_defined.js";
 import xdr from "../../src/xdr.js";
 
 describe("building authorization entries", () => {
@@ -55,10 +56,9 @@ describe("building authorization entries", () => {
       expect(signedAddr.address().toXDR()).toEqual(entryAddr.address().toXDR());
       expect(signedAddr.nonce().toBigInt()).toBe(entryAddr.nonce().toBigInt());
 
-      const sigArgs = signedAddr
-        .signature()
-        .vec()!
-        .map((v) => scValToNative(v));
+      const sigArgs = expectDefined(signedAddr.signature().vec()).map((v) =>
+        scValToNative(v),
+      );
       expect(sigArgs).toHaveLength(1);
 
       const sig = sigArgs[0] as { public_key: Buffer; signature: Buffer };
@@ -78,10 +78,9 @@ describe("building authorization entries", () => {
       const signedAddr = signedEntry.credentials().address();
       expect(signedAddr.signatureExpirationLedger()).toBe(10);
 
-      const sigArgs = signedAddr
-        .signature()
-        .vec()!
-        .map((v) => scValToNative(v));
+      const sigArgs = expectDefined(signedAddr.signature().vec()).map((v) =>
+        scValToNative(v),
+      );
       expect(sigArgs).toHaveLength(1);
 
       const sig = sigArgs[0] as { public_key: Buffer; signature: Buffer };
@@ -101,10 +100,9 @@ describe("building authorization entries", () => {
       const signedAddr = signedEntry.credentials().address();
       expect(signedAddr.signatureExpirationLedger()).toBe(10);
 
-      const sigArgs = signedAddr
-        .signature()
-        .vec()!
-        .map((v) => scValToNative(v));
+      const sigArgs = expectDefined(signedAddr.signature().vec()).map((v) =>
+        scValToNative(v),
+      );
       expect(sigArgs).toHaveLength(1);
 
       const sig = sigArgs[0] as { public_key: Buffer; signature: Buffer };
