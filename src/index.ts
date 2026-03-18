@@ -35,6 +35,7 @@ export {
   AuthImmutableFlag,
   AuthClawbackEnabledFlag
 } from "./operation.js";
+export type { AuthFlag } from "./operations/index.js";
 export * from "./memo.js";
 export { Account } from "./account.js";
 export { MuxedAccount } from "./muxed_account.js";
@@ -62,5 +63,4 @@ export * from "./events.js";
 export * from "./sorobandata_builder.js";
 export * from "./auth.js";
 export * from "./invocation.js";
-
 export * from "./numbers/index.js";

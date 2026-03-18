@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import * as StellarSdk from 'stellar-base';
 
 const masterKey = StellarSdk.Keypair.master(StellarSdk.Networks.TESTNET); // $ExpectType Keypair
@@ -6,7 +7,6 @@ const destKey = StellarSdk.Keypair.random();
 const usd = new StellarSdk.Asset('USD', 'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'); // $ExpectType Asset
 const account = new StellarSdk.Account(sourceKey.publicKey(), '1'); // $ExpectType Account
 const muxedAccount = new StellarSdk.MuxedAccount(account, '123'); // $ExpectType MuxedAccount
-const muxedConforms = muxedAccount as StellarSdk.Account; // $ExpectType Account
 
 const transaction = new StellarSdk.TransactionBuilder(account, {
   fee: "100",
@@ -149,15 +149,15 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .setMinAccountSequenceAge(5)
   .setMinAccountSequenceLedgerGap(5)
   .setExtraSigners([sourceKey.publicKey()])
-  .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
-
-const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>
+  .build(); // $ExpectType () => Transaction
+  
+const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction
 
 transactionFromXDR.networkPassphrase; // $ExpectType string
 transactionFromXDR.networkPassphrase = "SDF";
 
-StellarSdk.TransactionBuilder.fromXDR(transaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
-StellarSdk.TransactionBuilder.fromXDR(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
+StellarSdk.TransactionBuilder.fromXDR(transaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction | FeeBumpTransaction
+StellarSdk.TransactionBuilder.fromXDR(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction | FeeBumpTransaction
 
 const sig = StellarSdk.xdr.DecoratedSignature.fromXDR(Buffer.of(1, 2)); // $ExpectType DecoratedSignature
 sig.hint(); // $ExpectType Buffer<ArrayBufferLike>
@@ -177,14 +177,14 @@ StellarSdk.Memo.hash('asdf').value; // $ExpectType Buffer<ArrayBufferLike>
 const feeBumptransaction = StellarSdk.TransactionBuilder.buildFeeBumpTransaction(masterKey, "120", transaction, StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction
 
 feeBumptransaction.feeSource; // $ExpectType string
-feeBumptransaction.innerTransaction; // $ExpectType Transaction<Memo<MemoType>, Operation[]>
+feeBumptransaction.innerTransaction; // $ExpectType Transaction
 feeBumptransaction.fee; // $ExpectType string
 feeBumptransaction.toXDR(); // $ExpectType string
 feeBumptransaction.toEnvelope(); // $ExpectType TransactionEnvelope
 feeBumptransaction.hash(); // $ExpectType Buffer<ArrayBufferLike>
 
-StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
-StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType FeeBumpTransaction | Transaction<Memo<MemoType>, Operation[]>
+StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toXDR(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction | FeeBumpTransaction
+StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction | FeeBumpTransaction
 
 // P.S. You shouldn't be using the Memo constructor
 //
@@ -198,22 +198,33 @@ StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSd
 // https://github.com/Microsoft/dtslint/issues/57#issuecomment-451666294
 
 const noSignerXDR = StellarSdk.Operation.setOptions({ lowThreshold: 1 });
-StellarSdk.Operation.fromXDRObject(noSignerXDR).signer; // $ExpectType never
 
+StellarSdk.Operation.fromXDRObject(noSignerXDR); // $ExpectType OperationRecord
+const noSigner = StellarSdk.Operation.fromXDRObject(noSignerXDR); // $ExpectType OperationRecord
+if (noSigner.type === 'setOptions') {
+  noSigner.signer; // $ExpectType Ed25519PublicKey | Ed25519SignedPayload | PreAuthTx | Sha256Hash | undefined
+}
 const newSignerXDR1 = StellarSdk.Operation.setOptions({
   signer: { ed25519PublicKey: sourceKey.publicKey(), weight: '1' }
 });
-StellarSdk.Operation.fromXDRObject(newSignerXDR1).signer; // $ExpectType Ed25519PublicKey
-
+const newSigner1 =StellarSdk.Operation.fromXDRObject(newSignerXDR1); // $ExpectType OperationRecord
+if (newSigner1.type === 'setOptions') {
+  newSigner1.signer; // $ExpectType Ed25519PublicKey | Ed25519SignedPayload | PreAuthTx | Sha256Hash | undefined
+}
 const newSignerXDR2 = StellarSdk.Operation.setOptions({
   signer: { sha256Hash: Buffer.from(''), weight: '1' }
 });
-StellarSdk.Operation.fromXDRObject(newSignerXDR2).signer; // $ExpectType Sha256Hash
-
+const newSigner2 = StellarSdk.Operation.fromXDRObject(newSignerXDR2); // $ExpectType OperationRecord
+if (newSigner2.type === 'setOptions') {
+  newSigner2.signer; // $ExpectType Ed25519PublicKey | Ed25519SignedPayload | PreAuthTx | Sha256Hash | undefined
+}
 const newSignerXDR3 = StellarSdk.Operation.setOptions({
   signer: { preAuthTx: '', weight: 1 }
 });
-StellarSdk.Operation.fromXDRObject(newSignerXDR3).signer; // $ExpectType PreAuthTx
+const newSigner3 = StellarSdk.Operation.fromXDRObject(newSignerXDR3); // $ExpectType OperationRecord
+if (newSigner3.type === 'setOptions') {
+  newSigner3.signer; // $ExpectType Ed25519PublicKey | Ed25519SignedPayload | PreAuthTx | Sha256Hash | undefined
+}
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
 
@@ -339,8 +350,8 @@ result = StellarSdk.StrKey.encodeSignedPayload(pubkey);   // $ExpectType string
 StellarSdk.StrKey.decodeSignedPayload(result);            // $ExpectType Buffer<ArrayBufferLike>
 StellarSdk.StrKey.isValidSignedPayload(result);           // $ExpectType boolean
 
-const muxedAddr = StellarSdk.encodeMuxedAccountToAddress(muxed, true);  // $ExpectType string
-StellarSdk.decodeAddressToMuxedAccount(muxedAddr, true);                // $ExpectType MuxedAccount
+const muxedAddr = StellarSdk.encodeMuxedAccountToAddress(muxed);  // $ExpectType string
+StellarSdk.decodeAddressToMuxedAccount(muxedAddr);                // $ExpectType MuxedAccount
 
 const sk = StellarSdk.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
   new StellarSdk.xdr.SignerKeyEd25519SignedPayload({

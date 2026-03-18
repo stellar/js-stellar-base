@@ -1,5 +1,4 @@
 import xdr from "./xdr.js";
-import type { AssetType } from "../types/index.js";
 
 /**
  * LiquidityPoolId class represents the asset referenced by a trustline to a
@@ -69,7 +68,7 @@ export class LiquidityPoolId {
    *
    * @see [Assets concept](https://developers.stellar.org/docs/glossary/assets/)
    */
-  getAssetType(): AssetType.liquidityPoolShares {
+  getAssetType(): "liquidity_pool_shares" {
     return "liquidity_pool_shares";
   }
 
