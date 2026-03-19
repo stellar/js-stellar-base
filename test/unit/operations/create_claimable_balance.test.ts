@@ -88,4 +88,11 @@ describe("Operation.createClaimableBalance()", () => {
 
     expect(obj.source).toBe(source);
   });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.createClaimableBalance({ asset, amount, claimants });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("createClaimableBalance");
+  });
 });

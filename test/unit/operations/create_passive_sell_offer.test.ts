@@ -138,4 +138,16 @@ describe("Operation.createPassiveSellOffer()", () => {
       throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.createPassiveSellOffer({
+      selling,
+      buying,
+      amount,
+      price: "3.07",
+    });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("createPassiveSellOffer");
+  });
 });
