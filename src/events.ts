@@ -52,7 +52,9 @@ function extractEvent(event: xdr.ContractEvent): SorobanEvent {
       .body()
       .value()
       .topics()
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       .map((t: xdr.ScVal) => scValToNative(t)),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     data: scValToNative(event.body().value().data())
   };
 }
