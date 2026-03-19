@@ -25,9 +25,14 @@ export {
   TimeoutInfinite,
   BASE_FEE
 } from "./transaction_builder.js";
+export type { SorobanFees } from "./transaction_builder.js";
 export { Asset, AssetType } from "./asset.js";
 export { LiquidityPoolAsset } from "./liquidity_pool_asset.js";
 export { LiquidityPoolId } from "./liquidity_pool_id.js";
+export type {
+  LiquidityPoolType,
+  LiquidityPoolParameters
+} from "./get_liquidity_pool_id.js";
 export {
   Operation,
   AuthRequiredFlag,
