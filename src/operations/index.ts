@@ -39,4 +39,11 @@ export {
 } from "./invoke_host_function.js";
 export { extendFootprintTtl } from "./extend_footprint_ttl.js";
 export { restoreFootprint } from "./restore_footprint.js";
-export type { AuthFlag } from "./types.js";
+export type {
+  AuthFlag,
+  TrustLineFlag,
+  OperationOptions,
+  OperationType,
+  Signer,
+  OperationRecord
+} from "./types.js";

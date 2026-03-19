@@ -292,6 +292,45 @@ export interface PathPaymentStrictReceiveOpts {
   source?: string;
 }
 
+export type OperationOptions =
+  | AccountMergeOpts
+  | AllowTrustOpts
+  | BeginSponsoringFutureReservesOpts
+  | BumpSequenceOpts
+  | ChangeTrustOpts
+  | ClaimClaimableBalanceOpts
+  | ClawbackClaimableBalanceOpts
+  | ClawbackOpts
+  | CreateAccountOpts
+  | CreateClaimableBalanceOpts
+  | CreateCustomContractOpts
+  | CreatePassiveSellOfferOpts
+  | CreateStellarAssetContractOpts
+  | EndSponsoringFutureReservesOpts
+  | ExtendFootprintTtlOpts
+  | InflationOpts
+  | InvokeContractFunctionOpts
+  | InvokeHostFunctionOpts
+  | LiquidityPoolDepositOpts
+  | LiquidityPoolWithdrawOpts
+  | ManageBuyOfferOpts
+  | ManageDataOpts
+  | ManageSellOfferOpts
+  | PathPaymentStrictReceiveOpts
+  | PathPaymentStrictSendOpts
+  | PaymentOpts
+  | RestoreFootprintOpts
+  | RevokeAccountSponsorshipOpts
+  | RevokeClaimableBalanceSponsorshipOpts
+  | RevokeDataSponsorshipOpts
+  | RevokeLiquidityPoolSponsorshipOpts
+  | RevokeOfferSponsorshipOpts
+  | RevokeSignerSponsorshipOpts
+  | RevokeTrustlineSponsorshipOpts
+  | SetOptionsOpts
+  | SetTrustLineFlagsOpts
+  | UploadContractWasmOpts;
+
 // ─── Operation Result Types ───────────────────────────────────────────────────
 // These are the shapes returned by Operation.fromXDRObject, mirroring the
 // namespace Operation interfaces in types/index.d.ts.
@@ -415,6 +454,11 @@ export namespace Signer {
     weight?: number | string;
   }
 }
+export type Signer =
+  | Signer.Ed25519PublicKey
+  | Signer.Ed25519SignedPayload
+  | Signer.PreAuthTx
+  | Signer.Sha256Hash;
 
 export interface BaseOperation<T extends OperationType = OperationType> {
   type: T;
@@ -473,10 +517,9 @@ export interface ManageBuyOfferResult extends BaseOperation<OperationType.Manage
   offerId: string;
 }
 
-// TODO: types/index.d.ts uses a conditional generic `SetOptions<T extends SignerOptions>`
-// where the `signer` field type is narrowed based on T. Restore the generic once the full
-// operation type system is in place and Operation.setOptions is wired up end-to-end.
-export interface SetOptionsResult extends BaseOperation<OperationType.SetOptions> {
+export interface SetOptionsResult<
+  T extends Signer
+> extends BaseOperation<OperationType.SetOptions> {
   inflationDest?: string;
   // AuthFlag represents individual flag bits (1, 2, 4, 8). At runtime these fields
   // hold raw uint32 bitmasks, so combined values (e.g. AuthRequired | AuthRevocable = 3)
@@ -489,11 +532,7 @@ export interface SetOptionsResult extends BaseOperation<OperationType.SetOptions
   medThreshold?: number;
   highThreshold?: number;
   homeDomain?: string;
-  signer?:
-    | Signer.Ed25519PublicKey
-    | Signer.Ed25519SignedPayload
-    | Signer.PreAuthTx
-    | Signer.Sha256Hash;
+  signer?: T;
 }
 
 export interface ChangeTrustResult extends BaseOperation<OperationType.ChangeTrust> {
@@ -620,12 +659,6 @@ export type RestoreFootprintResult =
 
 /**
  * Union of all possible operation result objects returned by Operation.fromXDRObject.
- *
- * TODO: Once src/index.js is migrated to src/index.ts, re-export this as the `Operation`
- * type alongside the Operation class:
- *   export type { OperationRecord as Operation } from "./operations/types.js"
- * This preserves the public `export type Operation` from types/index.d.ts without
- * conflicting with the class name in the same module.
  */
 export type OperationRecord =
   | AccountMergeResult
@@ -659,5 +692,5 @@ export type OperationRecord =
   | RevokeOfferSponsorshipResult
   | RevokeSignerSponsorshipResult
   | RevokeTrustlineSponsorshipResult
-  | SetOptionsResult
+  | SetOptionsResult<Signer>
   | SetTrustLineFlagsResult;
