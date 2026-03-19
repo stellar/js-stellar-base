@@ -10,8 +10,8 @@ import {
 /**
  * @deprecated since v5.0
  *
- * Returns an XDR AllowTrustOp. An "allow trust" operation authorizes another
- * account to hold your account's credit for a given asset.
+ * An "allow trust" operation authorizes another account to hold your
+ * account's credit for a given asset.
  *
  * @alias Operation.allowTrust
  *
@@ -20,7 +20,6 @@ import {
  * @param opts.assetCode - The asset code being authorized.
  * @param opts.authorize - `1` to authorize, `2` to authorize to maintain liabilities, and `0` to deauthorize.
  * @param opts.source - The source account (defaults to transaction source).
- * @returns Allow Trust operation
  */
 export function allowTrust(
   this: OperationClass,

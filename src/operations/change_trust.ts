@@ -10,8 +10,8 @@ import {
 const MAX_INT64 = "9223372036854775807";
 
 /**
- * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
- * trust line for a given asset from the source account to another.
+ * A "change trust" operation adds, removes, or updates a trust line for a
+ * given asset from the source account to another.
  *
  * @alias Operation.changeTrust
  * @param opts - Options object

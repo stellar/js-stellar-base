@@ -7,11 +7,9 @@ import {
 
 /**
  * Create an "end sponsoring future reserves" operation.
- * @function
  * @alias Operation.endSponsoringFutureReserves
- * @param opts Options object
+ * @param opts - Options object
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
- * @returns An end sponsoring future reserves operation.
  *
  * @example
  * const op = Operation.endSponsoringFutureReserves();

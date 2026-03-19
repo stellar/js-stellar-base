@@ -35,7 +35,6 @@ import {
  *
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#set-trustline-flags-operation
  * @see https://developers.stellar.org/docs/start/list-of-operations/#set-options
- * @returns A set trust line flags operation.
  */
 export function setTrustLineFlags(
   this: OperationClass,

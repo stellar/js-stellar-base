@@ -6,12 +6,12 @@ import {
 } from "./types.js";
 
 /**
- * Returns a XDR CreatePasiveSellOfferOp. A "create passive offer" operation creates an
- * offer that won't consume a counter offer that exactly matches this offer. This is
- * useful for offers just used as 1:1 exchanges for path payments. Use manage offer
- * to manage this offer after using this operation to create it.
+ * A "create passive offer" operation creates an offer that won't consume a
+ * counter offer that exactly matches this offer. This is useful for offers
+ * just used as 1:1 exchanges for path payments. Use manage offer to manage
+ * this offer after using this operation to create it.
  * @alias Operation.createPassiveSellOffer
- * @param opts Options object
+ * @param opts - Options object
  * @param opts.selling - What you're selling.
  * @param opts.buying - What you're buying.
  * @param opts.amount - The total amount you're selling. If 0, deletes the offer.
