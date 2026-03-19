@@ -25,7 +25,7 @@ export {
   TimeoutInfinite,
   BASE_FEE
 } from "./transaction_builder.js";
-export { Asset } from "./asset.js";
+export { Asset, AssetType } from "./asset.js";
 export { LiquidityPoolAsset } from "./liquidity_pool_asset.js";
 export { LiquidityPoolId } from "./liquidity_pool_id.js";
 export {
