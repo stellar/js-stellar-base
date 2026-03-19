@@ -4,12 +4,13 @@ import { Keypair } from "./keypair.js";
 import { StrKey } from "./strkey.js";
 import { hash } from "./hashing.js";
 
-export enum AssetType {
-  native = "native",
-  credit4 = "credit_alphanum4",
-  credit12 = "credit_alphanum12",
-  liquidityPoolShares = "liquidity_pool_shares"
-}
+export const AssetType = {
+  native: "native",
+  credit4: "credit_alphanum4",
+  credit12: "credit_alphanum12",
+  liquidityPoolShares: "liquidity_pool_shares"
+} as const;
+export type AssetType = (typeof AssetType)[keyof typeof AssetType];
 
 interface XdrAssetConstructor<T> {
   assetTypeNative(): T;

@@ -518,7 +518,7 @@ export interface ManageBuyOfferResult extends BaseOperation<OperationType.Manage
 }
 
 export interface SetOptionsResult<
-  T extends Signer
+  T extends Signer = never
 > extends BaseOperation<OperationType.SetOptions> {
   inflationDest?: string;
   // AuthFlag represents individual flag bits (1, 2, 4, 8). At runtime these fields
