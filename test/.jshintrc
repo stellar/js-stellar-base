@@ -1,6 +1,0 @@
-{
-  "esnext": true,
-  "node": true,
-  "expr": true,
-  "-W033": true
-}
