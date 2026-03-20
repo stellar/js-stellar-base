@@ -6,3 +6,4 @@
 ../src/vendor
 ../docs
 ../CHANGELOG.md
+*.d.ts
