@@ -1,6 +1,6 @@
 import xdr from "./xdr.js";
 
-type IntLike = bigint | number | string;
+export type IntLike = bigint | number | string;
 
 /**
  * Supports building {@link xdr.SorobanTransactionData} structures with various

@@ -51,7 +51,8 @@ import type {
   LiquidityPoolWithdrawResult,
   InvokeHostFunctionResult,
   ExtendFootprintTTLResult,
-  RestoreFootprintResult
+  RestoreFootprintResult,
+  Signer
 } from "./operations/types.js";
 
 const ONE = 10000000;
@@ -762,10 +763,7 @@ function accountIdtoAddress(accountId: xdr.AccountId): string {
 // `Operation.CreateAccount`, `Operation.Payment`, etc. — matching the public API
 // declared in types/index.d.ts.
 // The static methods (e.g. Operation.createAccount) are defined on the class above.
-//
-// TODO: Once src/index.js is migrated to src/index.ts, also add:
-//   export type { OperationRecord as Operation } from "./operations/types.js"
-// so that the top-level `export type Operation` union from types/index.d.ts is preserved.
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Operation {
   export type BaseOperation<T extends _OperationType = _OperationType> =
@@ -777,7 +775,7 @@ export namespace Operation {
   export type CreatePassiveSellOffer = CreatePassiveSellOfferResult;
   export type ManageSellOffer = ManageSellOfferResult;
   export type ManageBuyOffer = ManageBuyOfferResult;
-  export type SetOptions = SetOptionsResult;
+  export type SetOptions = SetOptionsResult<Signer>;
   export type ChangeTrust = ChangeTrustResult;
   export type AllowTrust = AllowTrustResult;
   export type AccountMerge = AccountMergeResult;

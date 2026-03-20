@@ -4,11 +4,13 @@ import { Keypair } from "./keypair.js";
 import { StrKey } from "./strkey.js";
 import { hash } from "./hashing.js";
 
-export type AssetType =
-  | "credit_alphanum4"
-  | "credit_alphanum12"
-  | "liquidity_pool_shares"
-  | "native";
+export const AssetType = {
+  native: "native",
+  credit4: "credit_alphanum4",
+  credit12: "credit_alphanum12",
+  liquidityPoolShares: "liquidity_pool_shares"
+} as const;
+export type AssetType = (typeof AssetType)[keyof typeof AssetType];
 
 interface XdrAssetConstructor<T> {
   assetTypeNative(): T;
@@ -196,11 +198,11 @@ export class Asset {
   getAssetType(): AssetType | "unknown" {
     switch (this.getRawAssetType().value) {
       case xdr.AssetType.assetTypeNative().value:
-        return "native";
+        return AssetType.native;
       case xdr.AssetType.assetTypeCreditAlphanum4().value:
-        return "credit_alphanum4";
+        return AssetType.credit4;
       case xdr.AssetType.assetTypeCreditAlphanum12().value:
-        return "credit_alphanum12";
+        return AssetType.credit12;
       default:
         return "unknown";
     }

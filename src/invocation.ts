@@ -133,6 +133,7 @@ export function buildInvocationTree(
       output.args = {
         source: Address.fromScAddress(invokeArgs.contractAddress()).toString(),
         function: invokeArgs.functionName().toString(),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         args: invokeArgs.args().map((arg) => scValToNative(arg))
       };
       break;
@@ -182,6 +183,7 @@ export function buildInvocationTree(
             ...(createV2 && {
               constructorArgs: (inner as xdr.CreateContractArgsV2)
                 .constructorArgs()
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 .map((arg) => scValToNative(arg))
             }) // empty indicates V2 and no ctor, undefined indicates V1
           };
