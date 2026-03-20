@@ -4,9 +4,8 @@ import { OperationClass, InflationOpts, OperationAttributes } from "./types.js";
 /**
  * This operation generates the inflation.
  * @alias Operation.inflation
- * @param opts Options object
+ * @param opts - Options object
  * @param opts.source - The optional source account.
- * @returns An inflation operation.
  */
 export function inflation(
   this: OperationClass,

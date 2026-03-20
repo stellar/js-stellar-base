@@ -177,4 +177,36 @@ describe("Operation.pathPaymentStrictSend()", () => {
       }),
     ).toThrow(/Must provide a destAsset for a payment operation/);
   });
+
+  it("creates a pathPaymentStrictSendOp with no path", () => {
+    const op = Operation.pathPaymentStrictSend({
+      sendAsset,
+      sendAmount,
+      destination,
+      destAsset,
+      destMin,
+    });
+    const xdrHex = op.toXDR("hex");
+    const operation = xdr.Operation.fromXDR(xdrHex, "hex");
+    const obj = Operation.fromXDRObject(operation);
+
+    expect(obj.type).toBe("pathPaymentStrictSend");
+    if (obj.type !== "pathPaymentStrictSend")
+      throw new Error("unexpected type");
+    expect(obj.path).toHaveLength(0);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.pathPaymentStrictSend({
+      sendAsset,
+      sendAmount,
+      destination,
+      destAsset,
+      destMin,
+      path,
+    });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("pathPaymentStrictSend");
+  });
 });

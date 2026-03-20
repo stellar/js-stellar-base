@@ -13,7 +13,6 @@ import {
  * @param opts - Options object
  * @param opts.sponsoredId - The sponsored account id.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
- * @returns A begin sponsoring future reserves operation.
  *
  * @example
  * const op = Operation.beginSponsoringFutureReserves({

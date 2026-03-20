@@ -21,11 +21,8 @@ import {
  *
  * @alias Operation.restoreFootprint
  *
- * @param opts an optional set of parameters
- * @param opts.source an optional source account
- *
- * @returns {xdr.Operation} a Restore Footprint operation
- *    (xdr.RestoreFootprintOp)
+ * @param opts - an optional set of parameters
+ * @param opts.source - an optional source account
  */
 export function restoreFootprint(
   this: OperationClass,

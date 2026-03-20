@@ -5,7 +5,6 @@ import { ClawbackOpts, OperationAttributes, OperationClass } from "./types.js";
 /**
  * Creates a clawback operation.
  *
- * @function
  * @alias Operation.clawback
  *
  * @param opts - Options object
@@ -15,8 +14,6 @@ import { ClawbackOpts, OperationAttributes, OperationClass } from "./types.js";
  *     account to claw back from.
  * @param opts.source - The source account for the operation.
  *     Defaults to the transaction's source account.
- *
- * @returns The clawback operation
  *
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-operation
  */

@@ -44,7 +44,6 @@ function weightCheckFunction(value: number, name: string): boolean {
  * @param opts.signer.weight - The weight of the new signer (0 to delete or 1-255)
  * @param opts.homeDomain - sets the home domain used for reverse federation lookup.
  * @param opts.source - The source account (defaults to transaction source).
- * @returns XDR operation
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export function setOptions(
