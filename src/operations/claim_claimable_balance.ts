@@ -41,6 +41,11 @@ export function claimClaimableBalance(
   return new xdr.Operation(opAttributes);
 }
 
+/**
+ * Validates that a claimable balance ID has the expected format.
+ *
+ * @param balanceId - The claimable balance ID to validate.
+ */
 export function validateClaimableBalanceId(balanceId: unknown): void {
   if (
     typeof balanceId !== "string" ||

@@ -24,16 +24,12 @@ import {
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
  * usage as part of {@link xdr.SorobanResources}.
  *
- * @function
  * @alias Operation.extendFootprintTtl
  *
- * @param opts object holding operation parameters
- * @param  opts.extendTo the minimum TTL that all the entries in
+ * @param opts - object holding operation parameters
+ * @param opts.extendTo - the minimum TTL that all the entries in
  *    the read-only footprint will have
- * @param opts.source an optional source account
- *
- * @returns An Extend Footprint TTL operation
- *    (xdr.ExtendFootprintTTLOp)
+ * @param opts.source - an optional source account
  */
 export function extendFootprintTtl(
   this: OperationClass,

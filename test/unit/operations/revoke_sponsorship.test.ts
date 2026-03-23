@@ -32,6 +32,23 @@ describe("Operation.revokeAccountSponsorship()", () => {
       Operation.revokeAccountSponsorship({ account: "GBAD" }),
     ).toThrow(/account is invalid/);
   });
+
+  it("preserves an optional source account", () => {
+    const op = Operation.revokeAccountSponsorship({ account, source });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeAccountSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.revokeAccountSponsorship({ account });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
+  });
 });
 
 describe("Operation.revokeTrustlineSponsorship()", () => {
@@ -78,6 +95,35 @@ describe("Operation.revokeTrustlineSponsorship()", () => {
       Operation.revokeTrustlineSponsorship({ account }),
     ).toThrow(/asset must be an Asset or LiquidityPoolId/);
   });
+
+  it("preserves an optional source account", () => {
+    const asset = new Asset(
+      "USDUSD",
+      "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+    );
+    const op = Operation.revokeTrustlineSponsorship({
+      account,
+      asset,
+      source,
+    });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeTrustlineSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const asset = new Asset(
+      "USDUSD",
+      "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+    );
+    const op = Operation.revokeTrustlineSponsorship({ account, asset });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
+  });
 });
 
 describe("Operation.revokeOfferSponsorship()", () => {
@@ -113,6 +159,30 @@ describe("Operation.revokeOfferSponsorship()", () => {
       // @ts-expect-error: intentionally omitting required field to test runtime validation
       Operation.revokeOfferSponsorship({ seller: account }),
     ).toThrow(/offerId is invalid/);
+  });
+
+  it("preserves an optional source account", () => {
+    const op = Operation.revokeOfferSponsorship({
+      seller: account,
+      offerId: "1234",
+      source,
+    });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeOfferSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.revokeOfferSponsorship({
+      seller: account,
+      offerId: "1234",
+    });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
   });
 });
 
@@ -155,12 +225,34 @@ describe("Operation.revokeDataSponsorship()", () => {
       Operation.revokeDataSponsorship({ account, name: "a".repeat(65) }),
     ).toThrow(/name must be a string, up to 64 characters/);
   });
+
+  it("preserves an optional source account", () => {
+    const op = Operation.revokeDataSponsorship({
+      account,
+      name: "foo",
+      source,
+    });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeDataSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.revokeDataSponsorship({ account, name: "foo" });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
+  });
 });
 
 describe("Operation.revokeClaimableBalanceSponsorship()", () => {
+  const balanceId =
+    "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be";
+
   it("creates a revokeClaimableBalanceSponsorshipOp", () => {
-    const balanceId =
-      "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be";
     const op = Operation.revokeClaimableBalanceSponsorship({ balanceId });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
     const obj = Operation.fromXDRObject(operation);
@@ -179,12 +271,33 @@ describe("Operation.revokeClaimableBalanceSponsorship()", () => {
       Operation.revokeClaimableBalanceSponsorship({}),
     ).toThrow(/balanceId is invalid/);
   });
+
+  it("preserves an optional source account", () => {
+    const op = Operation.revokeClaimableBalanceSponsorship({
+      balanceId,
+      source,
+    });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeClaimableBalanceSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.revokeClaimableBalanceSponsorship({ balanceId });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
+  });
 });
 
 describe("Operation.revokeLiquidityPoolSponsorship()", () => {
+  const liquidityPoolId =
+    "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7";
+
   it("creates a revokeLiquidityPoolSponsorshipOp", () => {
-    const liquidityPoolId =
-      "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7";
     const op = Operation.revokeLiquidityPoolSponsorship({ liquidityPoolId });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
     const obj = Operation.fromXDRObject(operation);
@@ -202,6 +315,26 @@ describe("Operation.revokeLiquidityPoolSponsorship()", () => {
       // @ts-expect-error: intentionally passing empty opts to test runtime validation
       Operation.revokeLiquidityPoolSponsorship({}),
     ).toThrow(/liquidityPoolId is invalid/);
+  });
+
+  it("preserves an optional source account", () => {
+    const op = Operation.revokeLiquidityPoolSponsorship({
+      liquidityPoolId,
+      source,
+    });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeLiquidityPoolSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.revokeLiquidityPoolSponsorship({ liquidityPoolId });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
   });
 });
 
@@ -277,5 +410,28 @@ describe("Operation.revokeSignerSponsorship()", () => {
         signer: {},
       }),
     ).toThrow(/signer is invalid/);
+  });
+
+  it("preserves an optional source account", () => {
+    const signer = { ed25519PublicKey: account };
+    const op = Operation.revokeSignerSponsorship({
+      account,
+      signer,
+      source,
+    });
+    const obj = Operation.fromXDRObject(
+      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    );
+
+    expect(obj.type).toBe("revokeSignerSponsorship");
+    expect(obj.source).toBe(source);
+  });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const signer = { ed25519PublicKey: account };
+    const op = Operation.revokeSignerSponsorship({ account, signer });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
   });
 });
