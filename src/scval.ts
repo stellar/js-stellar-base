@@ -346,7 +346,8 @@ export function nativeToScVal(
  *
  * @see nativeToScVal
  */
-export function scValToNative(scv: xdr.ScVal): unknown {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function scValToNative(scv: xdr.ScVal): any {
   // we use the verbose xdr.ScValType.<type>.value form here because it's faster
   // than string comparisons and the underlying constants never need to be
   // updated

@@ -201,4 +201,17 @@ describe("Operation.liquidityPoolDeposit()", () => {
     if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.liquidityPoolDeposit({
+      liquidityPoolId,
+      maxAmountA,
+      maxAmountB,
+      minPrice: "0.45",
+      maxPrice: "0.55",
+    });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("liquidityPoolDeposit");
+  });
 });

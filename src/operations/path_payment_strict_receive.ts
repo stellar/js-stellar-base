@@ -15,7 +15,6 @@ import {
  * The transfer optionally occurs through a path. XLM payments create the
  * destination account if it does not exist.
  *
- * @function
  * @alias Operation.pathPaymentStrictReceive
  * @see https://developers.stellar.org/docs/start/list-of-operations/#path-payment-strict-receive
  *
@@ -28,8 +27,6 @@ import {
  * @param opts.path - array of Asset objects to use as the path
  * @param opts.source - The source account for the payment.
  *     Defaults to the transaction's source account.
- *
- * @returns The resulting path payment strict receive op
  */
 export function pathPaymentStrictReceive(
   this: OperationClass,

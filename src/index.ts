@@ -25,9 +25,14 @@ export {
   TimeoutInfinite,
   BASE_FEE
 } from "./transaction_builder.js";
-export { Asset } from "./asset.js";
+export type { SorobanFees } from "./transaction_builder.js";
+export { Asset, AssetType } from "./asset.js";
 export { LiquidityPoolAsset } from "./liquidity_pool_asset.js";
 export { LiquidityPoolId } from "./liquidity_pool_id.js";
+export type {
+  LiquidityPoolType,
+  LiquidityPoolParameters
+} from "./get_liquidity_pool_id.js";
 export {
   Operation,
   AuthRequiredFlag,
@@ -35,7 +40,14 @@ export {
   AuthImmutableFlag,
   AuthClawbackEnabledFlag
 } from "./operation.js";
-export type { AuthFlag } from "./operations/index.js";
+export type {
+  AuthFlag,
+  TrustLineFlag,
+  OperationOptions,
+  OperationType,
+  OperationRecord,
+  Signer
+} from "./operations/index.js";
 export * from "./memo.js";
 export { Account } from "./account.js";
 export { MuxedAccount } from "./muxed_account.js";

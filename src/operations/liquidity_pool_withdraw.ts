@@ -17,7 +17,6 @@ import {
  * @param opts.minAmountA - Minimum amount of first asset to withdraw.
  * @param opts.minAmountB - Minimum amount of second asset to withdraw.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
- * @returns The resulting operation (xdr.LiquidityPoolWithdrawOp).
  */
 export function liquidityPoolWithdraw(
   this: OperationClass,
