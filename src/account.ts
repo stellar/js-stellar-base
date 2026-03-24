@@ -45,10 +45,6 @@ export class Account {
       throw new Error("sequence is not a valid number");
     }
 
-    if (parsed.isNegative()) {
-      throw new Error("sequence must be a non-negative number");
-    }
-
     this._accountId = accountId;
     this.sequence = parsed;
   }
