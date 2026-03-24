@@ -37,8 +37,8 @@ export class SignerKey {
         return xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
           new xdr.SignerKeyEd25519SignedPayload({
             ed25519: raw.subarray(0, 32),
-            payload: raw.subarray(36, 36 + raw.readUInt32BE(32))
-          })
+            payload: raw.subarray(36, 36 + raw.readUInt32BE(32)),
+          }),
         );
 
       case "ed25519PublicKey":

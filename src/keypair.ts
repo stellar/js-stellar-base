@@ -36,7 +36,7 @@ export class Keypair {
           secretKey: Buffer | string;
           publicKey?: Buffer | string;
         }
-      | { type: "ed25519"; publicKey: Buffer | string }
+      | { type: "ed25519"; publicKey: Buffer | string },
   ) {
     if (keys.type !== "ed25519") {
       throw new Error("Invalid keys type");
@@ -69,7 +69,7 @@ export class Keypair {
       }
     } else {
       throw new Error(
-        "At least one of publicKey or secretKey must be provided"
+        "At least one of publicKey or secretKey must be provided",
       );
     }
   }
@@ -100,7 +100,7 @@ export class Keypair {
   static master(networkPassphrase: string): Keypair {
     if (!networkPassphrase) {
       throw new Error(
-        "No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`."
+        "No network selected. Please pass a network argument, e.g. `Keypair.master(Networks.PUBLIC)`.",
       );
     }
 
@@ -156,8 +156,8 @@ export class Keypair {
       return xdr.MuxedAccount.keyTypeMuxedEd25519(
         new xdr.MuxedAccountMed25519({
           id: xdr.Uint64.fromString(id),
-          ed25519: this._publicKey
-        })
+          ed25519: this._publicKey,
+        }),
       );
     }
 
@@ -301,7 +301,7 @@ export class Keypair {
 
     return new xdr.DecoratedSignature({
       hint,
-      signature
+      signature,
     });
   }
 }

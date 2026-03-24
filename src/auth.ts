@@ -32,7 +32,7 @@ function toBuffer(value: BufferLike): Buffer {
  *    `credentials().address().address()`), or alongside an explicit `publicKey`.
  */
 export type SigningCallback = (
-  preimage: xdr.HashIdPreimage
+  preimage: xdr.HashIdPreimage,
 ) => Promise<BufferLike | { signature: BufferLike; publicKey: string }>;
 
 /**
@@ -123,7 +123,7 @@ export async function authorizeEntry(
   entry: xdr.SorobanAuthorizationEntry,
   signer: Keypair | SigningCallback,
   validUntilLedgerSeq: number,
-  networkPassphrase: string = Networks.TESTNET
+  networkPassphrase: string = Networks.TESTNET,
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // no-op if it's source account auth
   if (
@@ -144,8 +144,8 @@ export async function authorizeEntry(
       networkId,
       nonce: addrAuth.nonce(),
       invocation: clone.rootInvocation(),
-      signatureExpirationLedger: addrAuth.signatureExpirationLedger()
-    })
+      signatureExpirationLedger: addrAuth.signatureExpirationLedger(),
+    }),
   );
   const payload = hash(preimage.toXDR());
 
@@ -182,14 +182,14 @@ export async function authorizeEntry(
   const sigScVal = nativeToScVal(
     {
       public_key: StrKey.decodeEd25519PublicKey(publicKey),
-      signature
+      signature,
     },
     {
       type: {
         public_key: ["symbol", null],
-        signature: ["symbol", null]
-      }
-    }
+        signature: ["symbol", null],
+      },
+    },
   );
 
   addrAuth.signature(xdr.ScVal.scvVec([sigScVal]));
@@ -232,7 +232,7 @@ export function authorizeInvocation(
   validUntilLedgerSeq: number,
   invocation: xdr.SorobanAuthorizedInvocation,
   publicKey: string = "",
-  networkPassphrase: string = Networks.TESTNET
+  networkPassphrase: string = Networks.TESTNET,
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and
@@ -253,9 +253,9 @@ export function authorizeInvocation(
         address: new Address(pk).toScAddress(),
         nonce,
         signatureExpirationLedger: 0, // replaced
-        signature: xdr.ScVal.scvVec([]) // replaced
-      })
-    )
+        signature: xdr.ScVal.scvVec([]), // replaced
+      }),
+    ),
   });
 
   return authorizeEntry(entry, signer, validUntilLedgerSeq, networkPassphrase);
@@ -265,7 +265,7 @@ function bytesToInt64(bytes: Uint8Array): bigint {
   const buf = bytes.subarray(0, 8);
   if (buf.length < 8) {
     throw new Error(
-      `need at least 8 bytes to convert to Int64, got ${bytes.length}`
+      `need at least 8 bytes to convert to Int64, got ${bytes.length}`,
     );
   }
   const view = new DataView(buf.buffer, buf.byteOffset, 8);

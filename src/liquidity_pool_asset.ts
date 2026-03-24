@@ -3,7 +3,7 @@ import { Asset } from "./asset.js";
 import {
   LiquidityPoolFeeV18,
   getLiquidityPoolId,
-  LiquidityPoolParameters
+  LiquidityPoolParameters,
 } from "./get_liquidity_pool_id.js";
 
 /**
@@ -58,7 +58,7 @@ export class LiquidityPoolAsset {
       return new this(
         Asset.fromOperation(liquidityPoolParameters.assetA()),
         Asset.fromOperation(liquidityPoolParameters.assetB()),
-        liquidityPoolParameters.fee()
+        liquidityPoolParameters.fee(),
       );
     }
 
@@ -77,11 +77,11 @@ export class LiquidityPoolAsset {
       new xdr.LiquidityPoolConstantProductParameters({
         assetA: this.assetA.toXDRObject(),
         assetB: this.assetB.toXDRObject(),
-        fee: this.fee
+        fee: this.fee,
       });
     const lpParamsXdr =
       xdr.LiquidityPoolParameters.liquidityPoolConstantProduct(
-        lpConstantProductParamsXdr
+        lpConstantProductParamsXdr,
       );
 
     return xdr.ChangeTrustAsset.assetTypePoolShare(lpParamsXdr);
@@ -95,7 +95,7 @@ export class LiquidityPoolAsset {
       ...this,
       assetA: this.assetA,
       assetB: this.assetB,
-      fee: this.fee
+      fee: this.fee,
     };
   }
 
@@ -125,7 +125,7 @@ export class LiquidityPoolAsset {
   toString(): string {
     const poolId = getLiquidityPoolId(
       "constant_product",
-      this.getLiquidityPoolParameters()
+      this.getLiquidityPoolParameters(),
     ).toString("hex");
 
     return `liquidity_pool:${poolId}`;

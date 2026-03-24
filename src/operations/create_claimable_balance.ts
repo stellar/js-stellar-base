@@ -4,7 +4,7 @@ import {
   CreateClaimableBalanceResult,
   CreateClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -39,11 +39,11 @@ import {
  */
 export function createClaimableBalance(
   this: OperationClass,
-  opts: CreateClaimableBalanceOpts
+  opts: CreateClaimableBalanceOpts,
 ): xdr.Operation<CreateClaimableBalanceResult> {
   if (!(opts.asset instanceof Asset)) {
     throw new Error(
-      "must provide an asset for create claimable balance operation"
+      "must provide an asset for create claimable balance operation",
     );
   }
 
@@ -62,12 +62,12 @@ export function createClaimableBalance(
   const createClaimableBalanceOp = new xdr.CreateClaimableBalanceOp({
     asset,
     amount,
-    claimants
+    claimants,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.createClaimableBalance(createClaimableBalanceOp)
+    body: xdr.OperationBody.createClaimableBalance(createClaimableBalanceOp),
   };
 
   this.setSourceAccount(opAttributes, opts);

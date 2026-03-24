@@ -4,13 +4,12 @@ import {
   ClawbackOpts,
   ClawbackResult,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
  * Creates a clawback operation.
  *
- * @function
  * @alias Operation.clawback
  *
  * @param opts - Options object
@@ -21,13 +20,11 @@ import {
  * @param opts.source - The source account for the operation.
  *     Defaults to the transaction's source account.
  *
- * @returns The clawback operation
- *
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-operation
  */
 export function clawback(
   this: OperationClass,
-  opts: ClawbackOpts
+  opts: ClawbackOpts,
 ): xdr.Operation<ClawbackResult> {
   if (!this.isValidAmount(opts.amount)) {
     throw new TypeError(this.constructAmountRequirementsError("amount"));
@@ -43,12 +40,12 @@ export function clawback(
   const clawbackOp = new xdr.ClawbackOp({
     amount: this._toXDRAmount(opts.amount),
     asset: opts.asset.toXDRObject(),
-    from
+    from,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.clawback(clawbackOp)
+    body: xdr.OperationBody.clawback(clawbackOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

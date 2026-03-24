@@ -71,7 +71,7 @@ export interface InvocationTree {
 export type InvocationWalker = (
   node: xdr.SorobanAuthorizedInvocation,
   depth: number,
-  parent?: xdr.SorobanAuthorizedInvocation
+  parent?: xdr.SorobanAuthorizedInvocation,
 ) => boolean | null | void;
 
 /**
@@ -118,7 +118,7 @@ export type InvocationWalker = (
  * ```
  */
 export function buildInvocationTree(
-  root: xdr.SorobanAuthorizedInvocation
+  root: xdr.SorobanAuthorizedInvocation,
 ): InvocationTree {
   const fn = root.function();
 
@@ -134,7 +134,7 @@ export function buildInvocationTree(
         source: Address.fromScAddress(invokeArgs.contractAddress()).toString(),
         function: invokeArgs.functionName().toString(),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        args: invokeArgs.args().map((arg) => scValToNative(arg))
+        args: invokeArgs.args().map((arg) => scValToNative(arg)),
       };
       break;
     }
@@ -159,13 +159,13 @@ export function buildInvocationTree(
       // anyway so it can still be an error.
       const [exec, preimage] = [
         createArgs.executable(),
-        createArgs.contractIdPreimage()
+        createArgs.contractIdPreimage(),
       ];
       if (!!exec.switch().value !== !!preimage.switch().value) {
         throw new Error(
           `creation function appears invalid: ${JSON.stringify(
-            inner
-          )} (should be wasm+address or token+asset)`
+            inner,
+          )} (should be wasm+address or token+asset)`,
         );
       }
 
@@ -184,8 +184,8 @@ export function buildInvocationTree(
               constructorArgs: (inner as xdr.CreateContractArgsV2)
                 .constructorArgs()
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                .map((arg) => scValToNative(arg))
-            }) // empty indicates V2 and no ctor, undefined indicates V1
+                .map((arg) => scValToNative(arg)),
+            }), // empty indicates V2 and no ctor, undefined indicates V1
           };
           break;
         }
@@ -194,7 +194,7 @@ export function buildInvocationTree(
         case 1:
           createInvocation.type = "sac";
           createInvocation.asset = Asset.fromOperation(
-            preimage.fromAsset()
+            preimage.fromAsset(),
           ).toString();
           break;
 
@@ -208,7 +208,7 @@ export function buildInvocationTree(
 
     default:
       throw new Error(
-        `unknown invocation type (${fn.switch().value}): ${JSON.stringify(fn)}`
+        `unknown invocation type (${fn.switch().value}): ${JSON.stringify(fn)}`,
       );
   }
 
@@ -228,7 +228,7 @@ export function buildInvocationTree(
  */
 export function walkInvocationTree(
   root: xdr.SorobanAuthorizedInvocation,
-  callback: InvocationWalker
+  callback: InvocationWalker,
 ): void {
   walkHelper(root, 1, callback);
 }
@@ -237,7 +237,7 @@ function walkHelper(
   node: xdr.SorobanAuthorizedInvocation,
   depth: number,
   callback: InvocationWalker,
-  parent?: xdr.SorobanAuthorizedInvocation
+  parent?: xdr.SorobanAuthorizedInvocation,
 ): void {
   if (callback(node, depth, parent) === false /* allow void rv */) {
     return;

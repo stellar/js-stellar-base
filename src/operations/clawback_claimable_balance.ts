@@ -4,7 +4,7 @@ import {
   ClawbackClaimableBalanceResult,
   ClawbackClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -20,24 +20,24 @@ import {
  *   balanceId: '00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be',
  * });
  *
- * @link https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-claimable-balance-operation
+ * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-claimable-balance-operation
  */
 export function clawbackClaimableBalance(
   this: OperationClass,
-  opts: ClawbackClaimableBalanceOpts = {} as ClawbackClaimableBalanceOpts
+  opts: ClawbackClaimableBalanceOpts = {} as ClawbackClaimableBalanceOpts,
 ): xdr.Operation<ClawbackClaimableBalanceResult> {
   validateClaimableBalanceId(opts.balanceId);
 
   const balanceId: xdr.ClaimableBalanceId = xdr.ClaimableBalanceId.fromXDR(
     opts.balanceId,
-    "hex"
+    "hex",
   );
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
     body: xdr.OperationBody.clawbackClaimableBalance(
-      new xdr.ClawbackClaimableBalanceOp({ balanceId })
-    )
+      new xdr.ClawbackClaimableBalanceOp({ balanceId }),
+    ),
   };
 
   this.setSourceAccount(opAttributes, opts);

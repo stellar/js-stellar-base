@@ -6,7 +6,7 @@ import {
   SetOptionsOpts,
   SetOptionsResult,
   OperationAttributes,
-  SignerOpts
+  SignerOpts,
 } from "./types.js";
 
 function weightCheckFunction(value: number, name: string): boolean {
@@ -46,12 +46,11 @@ function weightCheckFunction(value: number, name: string): boolean {
  * @param opts.signer.weight - The weight of the new signer (0 to delete or 1-255)
  * @param opts.homeDomain - sets the home domain used for reverse federation lookup.
  * @param opts.source - The source account (defaults to transaction source).
- * @returns XDR operation
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export function setOptions<T extends SignerOpts = never>(
   this: OperationClass,
-  opts: SetOptionsOpts<T>
+  opts: SetOptionsOpts<T>,
 ): xdr.Operation<SetOptionsResult<T>> {
   let inflationDest: xdr.AccountId | null = null;
 
@@ -70,25 +69,25 @@ export function setOptions<T extends SignerOpts = never>(
     this._checkUnsignedIntValue(
       "masterWeight",
       opts.masterWeight,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
   const lowThreshold =
     this._checkUnsignedIntValue(
       "lowThreshold",
       opts.lowThreshold,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
   const medThreshold =
     this._checkUnsignedIntValue(
       "medThreshold",
       opts.medThreshold,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
   const highThreshold =
     this._checkUnsignedIntValue(
       "highThreshold",
       opts.highThreshold,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
 
   if (opts.homeDomain !== undefined && typeof opts.homeDomain !== "string") {
@@ -102,7 +101,7 @@ export function setOptions<T extends SignerOpts = never>(
     const weight = this._checkUnsignedIntValue(
       "signer.weight",
       opts.signer.weight,
-      weightCheckFunction
+      weightCheckFunction,
     );
     let key: xdr.SignerKey | undefined;
 
@@ -113,7 +112,7 @@ export function setOptions<T extends SignerOpts = never>(
         throw new Error("signer.ed25519PublicKey is invalid.");
       }
       const rawKey = StrKey.decodeEd25519PublicKey(
-        opts.signer.ed25519PublicKey
+        opts.signer.ed25519PublicKey,
       );
 
       key = xdr.SignerKey.signerKeyTypeEd25519(rawKey);
@@ -157,7 +156,7 @@ export function setOptions<T extends SignerOpts = never>(
         throw new Error("signer.ed25519SignedPayload is invalid.");
       }
       const rawKey = StrKey.decodeSignedPayload(
-        opts.signer.ed25519SignedPayload
+        opts.signer.ed25519SignedPayload,
       );
       const signedPayloadXdr =
         xdr.SignerKeyEd25519SignedPayload.fromXDR(rawKey);
@@ -168,7 +167,7 @@ export function setOptions<T extends SignerOpts = never>(
 
     if (setValues !== 1) {
       throw new Error(
-        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx."
+        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.",
       );
     }
 
@@ -184,12 +183,12 @@ export function setOptions<T extends SignerOpts = never>(
     medThreshold,
     highThreshold,
     homeDomain: homeDomain as string | null,
-    signer
+    signer,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.setOptions(setOptionsOp)
+    body: xdr.OperationBody.setOptions(setOptionsOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

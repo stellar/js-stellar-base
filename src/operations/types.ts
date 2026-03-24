@@ -19,7 +19,7 @@ export interface OperationAttributes {
 // a new src/operations/helpers.ts module that both operation.ts and operations/*.ts can import.
 export interface OperationClass {
   invokeHostFunction(
-    opts: InvokeHostFunctionOpts
+    opts: InvokeHostFunctionOpts,
   ): xdr.Operation<InvokeHostFunctionResult>;
   isValidAmount(value: string, allowZero?: boolean): boolean;
   constructAmountRequirementsError(arg: string): string;
@@ -27,12 +27,12 @@ export interface OperationClass {
   _toXDRPrice(price: number | object | string): xdr.Price;
   setSourceAccount(
     opAttributes: OperationAttributes,
-    opts: { source?: string }
+    opts: { source?: string },
   ): void;
   _checkUnsignedIntValue(
     name: string,
     value: number | string | undefined,
-    isValidFunction?: ((value: number, name: string) => boolean) | null
+    isValidFunction?: ((value: number, name: string) => boolean) | null,
   ): number | undefined;
 }
 
@@ -548,7 +548,7 @@ export interface ManageBuyOfferResult extends BaseOperation<OperationType.Manage
 }
 
 export interface SetOptionsResult<
-  T extends SignerOpts = never
+  T extends SignerOpts = never,
 > extends BaseOperation<OperationType.SetOptions> {
   inflationDest?: string;
   // AuthFlag represents individual flag bits (1, 2, 4, 8). At runtime these fields

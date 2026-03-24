@@ -3,7 +3,7 @@ import {
   ClaimClaimableBalanceResult,
   ClaimClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -20,21 +20,21 @@ import {
  */
 export function claimClaimableBalance(
   this: OperationClass,
-  opts: ClaimClaimableBalanceOpts = {} as ClaimClaimableBalanceOpts
+  opts: ClaimClaimableBalanceOpts = {} as ClaimClaimableBalanceOpts,
 ): xdr.Operation<ClaimClaimableBalanceResult> {
   validateClaimableBalanceId(opts.balanceId);
 
   const balanceId: xdr.ClaimableBalanceId = xdr.ClaimableBalanceId.fromXDR(
     opts.balanceId,
-    "hex"
+    "hex",
   );
   const claimClaimableBalanceOp = new xdr.ClaimClaimableBalanceOp({
-    balanceId
+    balanceId,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.claimClaimableBalance(claimClaimableBalanceOp)
+    body: xdr.OperationBody.claimClaimableBalance(claimClaimableBalanceOp),
   };
 
   this.setSourceAccount(opAttributes, opts);
@@ -42,6 +42,11 @@ export function claimClaimableBalance(
   return new xdr.Operation(opAttributes);
 }
 
+/**
+ * Validates that a claimable balance ID has the expected format.
+ *
+ * @param balanceId - The claimable balance ID to validate.
+ */
 export function validateClaimableBalanceId(balanceId: unknown): void {
   if (
     typeof balanceId !== "string" ||

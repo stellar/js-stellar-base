@@ -4,7 +4,7 @@ import {
   BumpSequenceResult,
   BumpSequenceOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -16,7 +16,7 @@ import {
  */
 export function bumpSequence(
   this: OperationClass,
-  opts: BumpSequenceOpts
+  opts: BumpSequenceOpts,
 ): xdr.Operation<BumpSequenceResult> {
   if (typeof opts.bumpTo !== "string") {
     throw new Error("bumpTo must be a string");
@@ -34,7 +34,7 @@ export function bumpSequence(
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.bumpSequence(bumpSequenceOp)
+    body: xdr.OperationBody.bumpSequence(bumpSequenceOp),
   };
 
   this.setSourceAccount(opAttributes, opts);

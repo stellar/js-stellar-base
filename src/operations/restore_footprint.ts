@@ -3,7 +3,7 @@ import {
   OperationAttributes,
   OperationClass,
   RestoreFootprintResult,
-  RestoreFootprintOpts
+  RestoreFootprintOpts,
 } from "./types.js";
 
 /**
@@ -22,22 +22,19 @@ import {
  *
  * @alias Operation.restoreFootprint
  *
- * @param opts an optional set of parameters
- * @param opts.source an optional source account
- *
- * @returns {xdr.Operation} a Restore Footprint operation
- *    (xdr.RestoreFootprintOp)
+ * @param opts - an optional set of parameters
+ * @param opts.source - an optional source account
  */
 export function restoreFootprint(
   this: OperationClass,
-  opts: RestoreFootprintOpts = {}
+  opts: RestoreFootprintOpts = {},
 ): xdr.Operation<RestoreFootprintResult> {
   const op = new xdr.RestoreFootprintOp({
-    ext: new xdr.ExtensionPoint(0)
+    ext: new xdr.ExtensionPoint(0),
   });
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.restoreFootprint(op)
+    body: xdr.OperationBody.restoreFootprint(op),
   };
   this.setSourceAccount(opAttributes, opts);
   return new xdr.Operation(opAttributes);

@@ -6,7 +6,7 @@ const { includeIgnoreFile } = require("@eslint/compat");
 const path = require("path");
 const importPlugin = require("eslint-plugin-import-x");
 
-const gitignorePath = path.resolve(__dirname, "..", ".gitignore");
+const gitignorePath = path.resolve(__dirname, ".gitignore");
 
 function addTypeScriptLanguageOptions(config) {
   return {
@@ -44,16 +44,6 @@ const javascriptConfig = [
     },
     rules: {
       "no-unused-vars": ["error", { caughtErrors: "none" }]
-    }
-  },
-  {
-    name: "test/globals",
-    files: ["test/**/*.js"],
-    languageOptions: {
-      globals: {
-        ...globals.es2020,
-        ...globals["shared-node-browser"]
-      }
     }
   }
 ];

@@ -218,4 +218,17 @@ describe("Operation.manageSellOffer()", () => {
     if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.manageSellOffer({
+      selling,
+      buying,
+      amount: "3.1234560",
+      price: "8.141592",
+      offerId: "1",
+    });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("manageSellOffer");
+  });
 });

@@ -3,7 +3,7 @@ import {
   ExtendFootprintTTLResult,
   ExtendFootprintTtlOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -25,20 +25,16 @@ import {
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
  * usage as part of {@link xdr.SorobanResources}.
  *
- * @function
  * @alias Operation.extendFootprintTtl
  *
- * @param opts object holding operation parameters
- * @param  opts.extendTo the minimum TTL that all the entries in
+ * @param opts - object holding operation parameters
+ * @param opts.extendTo - the minimum TTL that all the entries in
  *    the read-only footprint will have
- * @param opts.source an optional source account
- *
- * @returns An Extend Footprint TTL operation
- *    (xdr.ExtendFootprintTTLOp)
+ * @param opts.source - an optional source account
  */
 export function extendFootprintTtl(
   this: OperationClass,
-  opts: ExtendFootprintTtlOpts
+  opts: ExtendFootprintTtlOpts,
 ): xdr.Operation<ExtendFootprintTTLResult> {
   if ((opts.extendTo ?? -1) <= 0) {
     throw new RangeError("extendTo has to be positive");
@@ -46,12 +42,12 @@ export function extendFootprintTtl(
 
   const extendFootprintOp = new xdr.ExtendFootprintTtlOp({
     ext: new xdr.ExtensionPoint(0),
-    extendTo: opts.extendTo
+    extendTo: opts.extendTo,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp)
+    body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp),
   };
   this.setSourceAccount(opAttributes, opts);
 
@@ -59,6 +55,6 @@ export function extendFootprintTtl(
     opAttributes as {
       sourceAccount: xdr.MuxedAccount | null;
       body: xdr.OperationBody;
-    }
+    },
   );
 }

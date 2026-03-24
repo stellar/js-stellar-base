@@ -5,7 +5,7 @@ import {
   SetTrustLineFlagsOpts,
   SetTrustLineFlagsResult,
   TrustLineFlagMap,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -36,11 +36,10 @@ import {
  *
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#set-trustline-flags-operation
  * @see https://developers.stellar.org/docs/start/list-of-operations/#set-options
- * @returns A set trust line flags operation.
  */
 export function setTrustLineFlags(
   this: OperationClass,
-  opts: SetTrustLineFlagsOpts
+  opts: SetTrustLineFlagsOpts,
 ): xdr.Operation<SetTrustLineFlagsResult> {
   if (typeof opts.flags !== "object" || Object.keys(opts.flags).length === 0) {
     throw new Error("opts.flags must be a map of boolean flags to modify");
@@ -50,7 +49,7 @@ export function setTrustLineFlags(
     authorized: xdr.TrustLineFlags.authorizedFlag(),
     authorizedToMaintainLiabilities:
       xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
-    clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+    clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag(),
   };
 
   /* eslint no-bitwise: "off" */
@@ -85,9 +84,9 @@ export function setTrustLineFlags(
         trustor,
         asset,
         clearFlags: clearFlag,
-        setFlags: setFlag
-      })
-    )
+        setFlags: setFlag,
+      }),
+    ),
   };
   this.setSourceAccount(opAttributes, opts);
 

@@ -5,14 +5,14 @@ import {
   AllowTrustResult,
   OperationClass,
   AllowTrustOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
  * @deprecated since v5.0
  *
- * Returns an XDR AllowTrustOp. An "allow trust" operation authorizes another
- * account to hold your account's credit for a given asset.
+ * An "allow trust" operation authorizes another account to hold your
+ * account's credit for a given asset.
  *
  * @alias Operation.allowTrust
  *
@@ -21,11 +21,10 @@ import {
  * @param opts.assetCode - The asset code being authorized.
  * @param opts.authorize - `1` to authorize, `2` to authorize to maintain liabilities, and `0` to deauthorize.
  * @param opts.source - The source account (defaults to transaction source).
- * @returns Allow Trust operation
  */
 export function allowTrust(
   this: OperationClass,
-  opts: AllowTrustOpts
+  opts: AllowTrustOpts,
 ): xdr.Operation<AllowTrustResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
     throw new Error("trustor is invalid");
@@ -58,12 +57,12 @@ export function allowTrust(
   const allowTrustOp = new xdr.AllowTrustOp({
     trustor,
     asset,
-    authorize
+    authorize,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.allowTrust(allowTrustOp)
+    body: xdr.OperationBody.allowTrust(allowTrustOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

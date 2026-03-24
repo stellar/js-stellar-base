@@ -3,21 +3,20 @@ import {
   ManageDataResult,
   OperationClass,
   ManageDataOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
  * This operation adds data entry to the ledger.
  * @alias Operation.manageData
- * @param opts Options object
+ * @param opts - Options object
  * @param opts.name - The name of the data entry.
  * @param opts.value - The value of the data entry.
  * @param opts.source - The optional source account.
- * @returns A Manage Data operation
  */
 export function manageData(
   this: OperationClass,
-  opts: ManageDataOpts
+  opts: ManageDataOpts,
 ): xdr.Operation<ManageDataResult> {
   if (!(typeof opts.name === "string" && opts.name.length <= 64)) {
     throw new Error("name must be a string, up to 64 characters");
@@ -44,12 +43,12 @@ export function manageData(
 
   const manageDataOp = new xdr.ManageDataOp({
     dataName: opts.name,
-    dataValue
+    dataValue,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.manageData(manageDataOp)
+    body: xdr.OperationBody.manageData(manageDataOp),
   };
   this.setSourceAccount(opAttributes, opts);
 
@@ -57,6 +56,6 @@ export function manageData(
     opAttributes as {
       sourceAccount: xdr.MuxedAccount | null;
       body: xdr.OperationBody;
-    }
+    },
   );
 }

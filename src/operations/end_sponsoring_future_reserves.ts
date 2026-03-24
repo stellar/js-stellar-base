@@ -3,16 +3,14 @@ import {
   EndSponsoringFutureReservesResult,
   OperationClass,
   EndSponsoringFutureReservesOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
  * Create an "end sponsoring future reserves" operation.
- * @function
  * @alias Operation.endSponsoringFutureReserves
- * @param opts Options object
+ * @param opts - Options object
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
- * @returns An end sponsoring future reserves operation.
  *
  * @example
  * const op = Operation.endSponsoringFutureReserves();
@@ -20,11 +18,11 @@ import {
  */
 export function endSponsoringFutureReserves(
   this: OperationClass,
-  opts: EndSponsoringFutureReservesOpts = {}
+  opts: EndSponsoringFutureReservesOpts = {},
 ): xdr.Operation<EndSponsoringFutureReservesResult> {
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.endSponsoringFutureReserves()
+    body: xdr.OperationBody.endSponsoringFutureReserves(),
   };
   this.setSourceAccount(opAttributes, opts);
 

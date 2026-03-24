@@ -168,7 +168,7 @@ export class TransactionBuilder {
    */
   constructor(
     sourceAccount: Account | MuxedAccount,
-    opts: TransactionBuilderOptions = {} as TransactionBuilderOptions
+    opts: TransactionBuilderOptions = {} as TransactionBuilderOptions,
   ) {
     if (!sourceAccount) {
       throw new Error("must specify source account for the transaction");
@@ -220,7 +220,7 @@ export class TransactionBuilder {
    */
   static cloneFrom(
     tx: Transaction,
-    opts: Partial<TransactionBuilderOptions> = {}
+    opts: Partial<TransactionBuilderOptions> = {},
   ): TransactionBuilder {
     if (!(tx instanceof Transaction)) {
       throw new TypeError(`expected a 'Transaction', got: ${String(tx)}`);
@@ -246,7 +246,7 @@ export class TransactionBuilder {
     const builderOpts: TransactionBuilderOptions = {
       fee: (unscaledFee || BASE_FEE).toString(),
       memo: tx.memo,
-      networkPassphrase: tx.networkPassphrase
+      networkPassphrase: tx.networkPassphrase,
     };
 
     if (tx.timeBounds) {
@@ -266,7 +266,7 @@ export class TransactionBuilder {
     }
     if (tx.extraSigners) {
       builderOpts.extraSigners = tx.extraSigners.map((s) =>
-        SignerKey.encodeSignerKey(s)
+        SignerKey.encodeSignerKey(s),
       );
     }
 
@@ -361,7 +361,7 @@ export class TransactionBuilder {
   setTimeout(timeoutSeconds: number): TransactionBuilder {
     if (this.timebounds !== null && Number(this.timebounds.maxTime) > 0) {
       throw new Error(
-        "TimeBounds.max_time has been already set - setting timeout would overwrite it."
+        "TimeBounds.max_time has been already set - setting timeout would overwrite it.",
       );
     }
 
@@ -377,13 +377,13 @@ export class TransactionBuilder {
       } else {
         this.timebounds = {
           minTime: this.timebounds.minTime ?? 0,
-          maxTime: timeoutTimestamp
+          maxTime: timeoutTimestamp,
         };
       }
     } else {
       this.timebounds = {
         minTime: 0,
-        maxTime: 0
+        maxTime: 0,
       };
     }
 
@@ -407,7 +407,7 @@ export class TransactionBuilder {
    */
   setTimebounds(
     minEpochOrDate: Date | number,
-    maxEpochOrDate: Date | number
+    maxEpochOrDate: Date | number,
   ): TransactionBuilder {
     // Force it to a date type
     if (typeof minEpochOrDate === "number") {
@@ -419,7 +419,7 @@ export class TransactionBuilder {
 
     if (this.timebounds !== null) {
       throw new Error(
-        "TimeBounds has been already set - setting timebounds would overwrite it."
+        "TimeBounds has been already set - setting timebounds would overwrite it.",
       );
     }
 
@@ -457,7 +457,7 @@ export class TransactionBuilder {
   setLedgerbounds(minLedger: number, maxLedger: number): TransactionBuilder {
     if (this.ledgerbounds !== null) {
       throw new Error(
-        "LedgerBounds has been already set - setting ledgerbounds would overwrite it."
+        "LedgerBounds has been already set - setting ledgerbounds would overwrite it.",
       );
     }
 
@@ -494,7 +494,7 @@ export class TransactionBuilder {
   setMinAccountSequence(minAccountSequence: string): TransactionBuilder {
     if (this.minAccountSequence !== null) {
       throw new Error(
-        "min_account_sequence has been already set - setting min_account_sequence would overwrite it."
+        "min_account_sequence has been already set - setting min_account_sequence would overwrite it.",
       );
     }
 
@@ -519,7 +519,7 @@ export class TransactionBuilder {
     }
     if (this.minAccountSequenceAge !== null) {
       throw new Error(
-        "min_account_sequence_age has been already set - setting min_account_sequence_age would overwrite it."
+        "min_account_sequence_age has been already set - setting min_account_sequence_age would overwrite it.",
       );
     }
 
@@ -545,7 +545,7 @@ export class TransactionBuilder {
   setMinAccountSequenceLedgerGap(gap: number): TransactionBuilder {
     if (this.minAccountSequenceLedgerGap !== null) {
       throw new Error(
-        "min_account_sequence_ledger_gap has been already set - setting min_account_sequence_ledger_gap would overwrite it."
+        "min_account_sequence_ledger_gap has been already set - setting min_account_sequence_ledger_gap would overwrite it.",
       );
     }
 
@@ -573,7 +573,7 @@ export class TransactionBuilder {
 
     if (this.extraSigners !== null) {
       throw new Error(
-        "extra_signers has been already set - setting extra_signers would overwrite it."
+        "extra_signers has been already set - setting extra_signers would overwrite it.",
       );
     }
 
@@ -615,7 +615,7 @@ export class TransactionBuilder {
    * @see {SorobanDataBuilder}
    */
   setSorobanData(
-    sorobanData: xdr.SorobanTransactionData | string
+    sorobanData: xdr.SorobanTransactionData | string,
   ): TransactionBuilder {
     this.sorobanData = new SorobanDataBuilder(sorobanData).build();
     return this;
@@ -635,7 +635,7 @@ export class TransactionBuilder {
     destination: string,
     asset: Asset,
     amount: bigint | string,
-    sorobanFees?: SorobanFees
+    sorobanFees?: SorobanFees,
   ): TransactionBuilder {
     if (BigInt(amount) <= 0n) {
       throw new Error("Amount must be a positive integer");
@@ -650,22 +650,22 @@ export class TransactionBuilder {
 
       if (instructions <= 0 || instructions > U32_MAX) {
         throw new Error(
-          `instructions must be greater than 0 and at most ${U32_MAX}`
+          `instructions must be greater than 0 and at most ${U32_MAX}`,
         );
       }
       if (readBytes <= 0 || readBytes > U32_MAX) {
         throw new Error(
-          `readBytes must be greater than 0 and at most ${U32_MAX}`
+          `readBytes must be greater than 0 and at most ${U32_MAX}`,
         );
       }
       if (writeBytes <= 0 || writeBytes > U32_MAX) {
         throw new Error(
-          `writeBytes must be greater than 0 and at most ${U32_MAX}`
+          `writeBytes must be greater than 0 and at most ${U32_MAX}`,
         );
       }
       if (resourceFee <= 0n || resourceFee > HYPER_MAX_VALUE) {
         throw new Error(
-          "resourceFee must be greater than 0 and at most i64 max"
+          "resourceFee must be greater than 0 and at most i64 max",
         );
       }
     }
@@ -677,7 +677,7 @@ export class TransactionBuilder {
         !StrKey.isValidMed25519PublicKey(destination)
       ) {
         throw new Error(
-          "Invalid destination address. Must be a valid Stellar address or contract ID."
+          "Invalid destination address. Must be a valid Stellar address or contract ID.",
         );
       }
     }
@@ -688,7 +688,7 @@ export class TransactionBuilder {
 
     if (this.networkPassphrase === null) {
       throw new Error(
-        "networkPassphrase must be set to add a SAC transfer operation"
+        "networkPassphrase must be set to add a SAC transfer operation",
       );
     }
 
@@ -698,7 +698,7 @@ export class TransactionBuilder {
     const args = [
       nativeToScVal(source, { type: "address" }),
       nativeToScVal(destination, { type: "address" }),
-      nativeToScVal(amount, { type: "i128" })
+      nativeToScVal(amount, { type: "i128" }),
     ];
     const isAssetNative = asset.isNative();
 
@@ -710,11 +710,11 @@ export class TransactionBuilder {
             new xdr.InvokeContractArgs({
               contractAddress: Address.fromString(contractId).toScAddress(),
               functionName,
-              args
-            })
+              args,
+            }),
           ),
-        subInvocations: []
-      })
+        subInvocations: [],
+      }),
     });
 
     const footprint = new xdr.LedgerFootprint({
@@ -723,11 +723,11 @@ export class TransactionBuilder {
           new xdr.LedgerKeyContractData({
             contract: Address.fromString(contractId).toScAddress(),
             key: xdr.ScVal.scvLedgerKeyContractInstance(),
-            durability: xdr.ContractDataDurability.persistent()
-          })
-        )
+            durability: xdr.ContractDataDurability.persistent(),
+          }),
+        ),
       ],
-      readWrite: []
+      readWrite: [],
     });
 
     // Ledger entries for the destination account
@@ -738,11 +738,11 @@ export class TransactionBuilder {
             contract: Address.fromString(contractId).toScAddress(),
             key: xdr.ScVal.scvVec([
               nativeToScVal("Balance", { type: "symbol" }),
-              nativeToScVal(destination, { type: "address" })
+              nativeToScVal(destination, { type: "address" }),
             ]),
-            durability: xdr.ContractDataDurability.persistent()
-          })
-        )
+            durability: xdr.ContractDataDurability.persistent(),
+          }),
+        ),
       );
 
       if (!isAssetNative) {
@@ -755,27 +755,27 @@ export class TransactionBuilder {
         footprint.readOnly().push(
           xdr.LedgerKey.account(
             new xdr.LedgerKeyAccount({
-              accountId: Keypair.fromPublicKey(assetIssuer).xdrPublicKey()
-            })
-          )
+              accountId: Keypair.fromPublicKey(assetIssuer).xdrPublicKey(),
+            }),
+          ),
         );
       }
     } else if (isAssetNative) {
       footprint.readWrite().push(
         xdr.LedgerKey.account(
           new xdr.LedgerKeyAccount({
-            accountId: Keypair.fromPublicKey(destination).xdrPublicKey()
-          })
-        )
+            accountId: Keypair.fromPublicKey(destination).xdrPublicKey(),
+          }),
+        ),
       );
     } else if (asset.getIssuer() !== destination) {
       footprint.readWrite().push(
         xdr.LedgerKey.trustline(
           new xdr.LedgerKeyTrustLine({
             accountId: Keypair.fromPublicKey(destination).xdrPublicKey(),
-            asset: asset.toTrustLineXDRObject()
-          })
-        )
+            asset: asset.toTrustLineXDRObject(),
+          }),
+        ),
       );
     }
 
@@ -784,18 +784,18 @@ export class TransactionBuilder {
       footprint.readWrite().push(
         xdr.LedgerKey.account(
           new xdr.LedgerKeyAccount({
-            accountId: Keypair.fromPublicKey(source).xdrPublicKey()
-          })
-        )
+            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+          }),
+        ),
       );
     } else if (asset.getIssuer() !== source) {
       footprint.readWrite().push(
         xdr.LedgerKey.trustline(
           new xdr.LedgerKeyTrustLine({
             accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
-            asset: asset.toTrustLineXDRObject()
-          })
-        )
+            asset: asset.toTrustLineXDRObject(),
+          }),
+        ),
       );
     }
 
@@ -803,7 +803,7 @@ export class TransactionBuilder {
       instructions: 400_000,
       readBytes: 1_000,
       writeBytes: 1_000,
-      resourceFee: BigInt(5_000_000)
+      resourceFee: BigInt(5_000_000),
     };
 
     const sorobanData = new xdr.SorobanTransactionData({
@@ -817,18 +817,18 @@ export class TransactionBuilder {
           : defaultPaymentFees.readBytes,
         writeBytes: sorobanFees
           ? sorobanFees.writeBytes
-          : defaultPaymentFees.writeBytes
+          : defaultPaymentFees.writeBytes,
       }),
       ext: new xdr.SorobanTransactionDataExt(0),
       resourceFee: new xdr.Int64(
-        sorobanFees ? sorobanFees.resourceFee : defaultPaymentFees.resourceFee
-      )
+        sorobanFees ? sorobanFees.resourceFee : defaultPaymentFees.resourceFee,
+      ),
     });
     const operation = Operation.invokeContractFunction({
       contract: contractId,
       function: functionName,
       args,
-      auth: [auths]
+      auth: [auths],
     });
     this.setSorobanData(sorobanData);
     return this.addOperation(operation);
@@ -853,7 +853,7 @@ export class TransactionBuilder {
     } = {
       fee,
       seqNum: xdr.Int64.fromString(sequenceNumber.toString()),
-      memo: this.memo ? this.memo.toXDRObject() : null
+      memo: this.memo ? this.memo.toXDRObject() : null,
     };
 
     if (
@@ -862,19 +862,19 @@ export class TransactionBuilder {
       typeof this.timebounds.maxTime === "undefined"
     ) {
       throw new Error(
-        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite)."
+        "TimeBounds has to be set or you must call setTimeout(TimeoutInfinite).",
       );
     }
 
     if (isValidDate(this.timebounds.minTime)) {
       this.timebounds.minTime = Math.floor(
-        this.timebounds.minTime.getTime() / 1000
+        this.timebounds.minTime.getTime() / 1000,
       );
     }
 
     if (isValidDate(this.timebounds.maxTime)) {
       this.timebounds.maxTime = Math.floor(
-        this.timebounds.maxTime.getTime() / 1000
+        this.timebounds.maxTime.getTime() / 1000,
       );
     }
 
@@ -889,7 +889,7 @@ export class TransactionBuilder {
       if (this.ledgerbounds !== null) {
         ledgerBounds = new xdr.LedgerBounds({
           minLedger: this.ledgerbounds.minLedger ?? 0,
-          maxLedger: this.ledgerbounds.maxLedger ?? 0
+          maxLedger: this.ledgerbounds.maxLedger ?? 0,
         });
       }
 
@@ -900,7 +900,7 @@ export class TransactionBuilder {
       const minSeqAge = xdr.Uint64.fromString(
         this.minAccountSequenceAge !== null
           ? this.minAccountSequenceAge.toString()
-          : "0"
+          : "0",
       );
 
       const minSeqLedgerGap = this.minAccountSequenceLedgerGap || 0;
@@ -917,8 +917,8 @@ export class TransactionBuilder {
           minSeqNum,
           minSeqAge,
           minSeqLedgerGap,
-          extraSigners
-        })
+          extraSigners,
+        }),
       );
     } else {
       attrs.cond = xdr.Preconditions.precondTime(timeBounds);
@@ -940,12 +940,12 @@ export class TransactionBuilder {
     }
 
     const xtx = new xdr.Transaction(
-      attrs as ConstructorParameters<typeof xdr.Transaction>[0]
+      attrs as ConstructorParameters<typeof xdr.Transaction>[0],
     );
     xtx.operations(this.operations);
 
     const txEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
-      new xdr.TransactionV1Envelope({ tx: xtx, signatures: [] })
+      new xdr.TransactionV1Envelope({ tx: xtx, signatures: [] }),
     );
 
     if (this.networkPassphrase === null) {
@@ -998,7 +998,7 @@ export class TransactionBuilder {
     feeSource: Keypair | string,
     baseFee: string,
     innerTx: Transaction,
-    networkPassphrase: string
+    networkPassphrase: string,
   ): FeeBumpTransaction {
     const innerOps = innerTx.operations.length;
 
@@ -1026,14 +1026,14 @@ export class TransactionBuilder {
     // The fee rate for fee bump is at least the fee rate of the inner transaction
     if (base.lt(innerInclusionFee)) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${innerInclusionFee.toString()} stroops.`
+        `Invalid baseFee, it should be at least ${innerInclusionFee.toString()} stroops.`,
       );
     }
 
     // The fee rate is at least the minimum fee
     if (base.lt(minBaseFee)) {
       throw new Error(
-        `Invalid baseFee, it should be at least ${minBaseFee.toString()} stroops.`
+        `Invalid baseFee, it should be at least ${minBaseFee.toString()} stroops.`,
       );
     }
 
@@ -1048,20 +1048,20 @@ export class TransactionBuilder {
 
       const v1Tx = new xdr.Transaction({
         sourceAccount: xdr.MuxedAccount.keyTypeEd25519(
-          v0Tx.sourceAccountEd25519()
+          v0Tx.sourceAccountEd25519(),
         ),
         fee: v0Tx.fee(),
         seqNum: v0Tx.seqNum(),
         cond: xdr.Preconditions.precondTime(v0TimeBounds),
         memo: v0Tx.memo(),
         operations: v0Tx.operations(),
-        ext: new xdr.TransactionExt(0)
+        ext: new xdr.TransactionExt(0),
       });
       innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
         new xdr.TransactionV1Envelope({
           tx: v1Tx,
-          signatures: innerTxEnvelope.v0().signatures()
-        })
+          signatures: innerTxEnvelope.v0().signatures(),
+        }),
       );
     }
 
@@ -1078,16 +1078,16 @@ export class TransactionBuilder {
         base
           .times(innerOps + 1)
           .plus(resourceFee)
-          .toString()
+          .toString(),
       ),
       innerTx: xdr.FeeBumpTransactionInnerTx.envelopeTypeTx(
-        innerTxEnvelope.v1()
+        innerTxEnvelope.v1(),
       ),
-      ext: new xdr.FeeBumpTransactionExt(0)
+      ext: new xdr.FeeBumpTransactionExt(0),
     });
     const feeBumpTxEnvelope = new xdr.FeeBumpTransactionEnvelope({
       tx,
-      signatures: []
+      signatures: [],
     });
     const envelope =
       xdr.TransactionEnvelope.envelopeTypeTxFeeBump(feeBumpTxEnvelope);
@@ -1107,7 +1107,7 @@ export class TransactionBuilder {
    */
   static fromXDR(
     envelope: xdr.TransactionEnvelope | string,
-    networkPassphrase: string
+    networkPassphrase: string,
   ): FeeBumpTransaction | Transaction {
     if (typeof envelope === "string") {
       envelope = xdr.TransactionEnvelope.fromXDR(envelope, "base64");

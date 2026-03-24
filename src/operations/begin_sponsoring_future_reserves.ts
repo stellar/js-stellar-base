@@ -5,7 +5,7 @@ import {
   BeginSponsoringFutureReservesResult,
   OperationClass,
   BeginSponsoringFutureReservesOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -14,7 +14,6 @@ import {
  * @param opts - Options object
  * @param opts.sponsoredId - The sponsored account id.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
- * @returns A begin sponsoring future reserves operation.
  *
  * @example
  * const op = Operation.beginSponsoringFutureReserves({
@@ -24,18 +23,18 @@ import {
  */
 export function beginSponsoringFutureReserves(
   this: OperationClass,
-  opts: BeginSponsoringFutureReservesOpts
+  opts: BeginSponsoringFutureReservesOpts,
 ): xdr.Operation<BeginSponsoringFutureReservesResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.sponsoredId)) {
     throw new Error("sponsoredId is invalid");
   }
   const op = new xdr.BeginSponsoringFutureReservesOp({
-    sponsoredId: Keypair.fromPublicKey(opts.sponsoredId).xdrAccountId()
+    sponsoredId: Keypair.fromPublicKey(opts.sponsoredId).xdrAccountId(),
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.beginSponsoringFutureReserves(op)
+    body: xdr.OperationBody.beginSponsoringFutureReserves(op),
   };
   this.setSourceAccount(opAttributes, opts);
 

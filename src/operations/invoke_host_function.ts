@@ -11,7 +11,7 @@ import {
   InvokeHostFunctionResult,
   OperationAttributes,
   OperationClass,
-  UploadContractWasmOpts
+  UploadContractWasmOpts,
 } from "./types.js";
 
 /**
@@ -33,11 +33,11 @@ import {
  */
 export function invokeHostFunction(
   this: OperationClass,
-  opts: InvokeHostFunctionOpts
+  opts: InvokeHostFunctionOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   if (!opts.func) {
     throw new TypeError(
-      `host function invocation ('func') required (got ${JSON.stringify(opts)})`
+      `host function invocation ('func') required (got ${JSON.stringify(opts)})`,
     );
   }
 
@@ -63,7 +63,7 @@ export function invokeHostFunction(
           case "claimableBalance":
           case "liquidityPool":
             throw new TypeError(
-              `claimable balances and liquidity pools cannot be arguments to invokeHostFunction`
+              `claimable balances and liquidity pools cannot be arguments to invokeHostFunction`,
             );
           default:
         }
@@ -72,12 +72,12 @@ export function invokeHostFunction(
 
   const invokeHostFunctionOp = new xdr.InvokeHostFunctionOp({
     hostFunction: opts.func,
-    auth: opts.auth || []
+    auth: opts.auth || [],
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp)
+    body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp),
   };
   this.setSourceAccount(opAttributes, opts);
 
@@ -102,13 +102,13 @@ export function invokeHostFunction(
  */
 export function invokeContractFunction(
   this: OperationClass,
-  opts: InvokeContractFunctionOpts
+  opts: InvokeContractFunctionOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   const c = new Address(opts.contract);
 
   if (c.type !== "contract") {
     throw new TypeError(
-      `expected contract strkey instance, got ${c.toString()}`
+      `expected contract strkey instance, got ${c.toString()}`,
     );
   }
 
@@ -117,11 +117,11 @@ export function invokeContractFunction(
       new xdr.InvokeContractArgs({
         contractAddress: c.toScAddress(),
         functionName: opts.function,
-        args: opts.args
-      })
+        args: opts.args,
+      }),
     ),
     ...(opts.source !== undefined && { source: opts.source }),
-    ...(opts.auth !== undefined && { auth: opts.auth })
+    ...(opts.auth !== undefined && { auth: opts.auth }),
   });
 }
 
@@ -143,19 +143,19 @@ export function invokeContractFunction(
  */
 export function createCustomContract(
   this: OperationClass,
-  opts: CreateCustomContractOpts
+  opts: CreateCustomContractOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   const salt = Buffer.from(opts.salt || getSalty());
 
   if (!opts.wasmHash || opts.wasmHash.length !== 32) {
     throw new TypeError(
-      `expected hash(contract WASM) in 'opts.wasmHash', got ${String(opts.wasmHash)}`
+      `expected hash(contract WASM) in 'opts.wasmHash', got ${String(opts.wasmHash)}`,
     );
   }
 
   if (salt.length !== 32) {
     throw new TypeError(
-      `expected 32-byte salt in 'opts.salt', got ${String(opts.salt)}`
+      `expected 32-byte salt in 'opts.salt', got ${String(opts.salt)}`,
     );
   }
 
@@ -163,20 +163,20 @@ export function createCustomContract(
     func: xdr.HostFunction.hostFunctionTypeCreateContractV2(
       new xdr.CreateContractArgsV2({
         executable: xdr.ContractExecutable.contractExecutableWasm(
-          Buffer.from(opts.wasmHash)
+          Buffer.from(opts.wasmHash),
         ),
         contractIdPreimage:
           xdr.ContractIdPreimage.contractIdPreimageFromAddress(
             new xdr.ContractIdPreimageFromAddress({
               address: opts.address.toScAddress(),
-              salt
-            })
+              salt,
+            }),
           ),
-        constructorArgs: opts.constructorArgs ?? []
-      })
+        constructorArgs: opts.constructorArgs ?? [],
+      }),
     ),
     ...(opts.source !== undefined && { source: opts.source }),
-    ...(opts.auth !== undefined && { auth: opts.auth })
+    ...(opts.auth !== undefined && { auth: opts.auth }),
   });
 }
 
@@ -196,7 +196,7 @@ export function createCustomContract(
  */
 export function createStellarAssetContract(
   this: OperationClass,
-  opts: CreateStellarAssetContractOpts
+  opts: CreateStellarAssetContractOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   let asset = opts.asset;
 
@@ -205,7 +205,7 @@ export function createStellarAssetContract(
     const code = parts[0];
     if (code === undefined) {
       throw new TypeError(
-        `expected Asset in 'opts.asset', got ${String(opts.asset)}`
+        `expected Asset in 'opts.asset', got ${String(opts.asset)}`,
       );
     }
     asset = new Asset(code, parts[1]); // handles 'xlm' by default
@@ -213,7 +213,7 @@ export function createStellarAssetContract(
 
   if (!(asset instanceof Asset)) {
     throw new TypeError(
-      `expected Asset in 'opts.asset', got ${String(opts.asset)}`
+      `expected Asset in 'opts.asset', got ${String(opts.asset)}`,
     );
   }
 
@@ -222,11 +222,11 @@ export function createStellarAssetContract(
       new xdr.CreateContractArgs({
         executable: xdr.ContractExecutable.contractExecutableStellarAsset(),
         contractIdPreimage: xdr.ContractIdPreimage.contractIdPreimageFromAsset(
-          asset.toXDRObject()
-        )
-      })
+          asset.toXDRObject(),
+        ),
+      }),
     ),
-    ...(opts.source !== undefined && { source: opts.source })
+    ...(opts.source !== undefined && { source: opts.source }),
   });
 }
 
@@ -243,13 +243,13 @@ export function createStellarAssetContract(
  */
 export function uploadContractWasm(
   this: OperationClass,
-  opts: UploadContractWasmOpts
+  opts: UploadContractWasmOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   return this.invokeHostFunction({
     func: xdr.HostFunction.hostFunctionTypeUploadContractWasm(
-      Buffer.from(opts.wasm) // coalesce so we can drop `Buffer` someday
+      Buffer.from(opts.wasm), // coalesce so we can drop `Buffer` someday
     ),
-    ...(opts.source !== undefined && { source: opts.source })
+    ...(opts.source !== undefined && { source: opts.source }),
   });
 }
 

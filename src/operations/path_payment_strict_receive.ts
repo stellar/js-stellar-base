@@ -4,7 +4,7 @@ import {
   OperationAttributes,
   OperationClass,
   PathPaymentStrictReceiveResult,
-  PathPaymentStrictReceiveOpts
+  PathPaymentStrictReceiveOpts,
 } from "./types.js";
 
 /**
@@ -16,7 +16,6 @@ import {
  * The transfer optionally occurs through a path. XLM payments create the
  * destination account if it does not exist.
  *
- * @function
  * @alias Operation.pathPaymentStrictReceive
  * @see https://developers.stellar.org/docs/start/list-of-operations/#path-payment-strict-receive
  *
@@ -29,12 +28,10 @@ import {
  * @param opts.path - array of Asset objects to use as the path
  * @param opts.source - The source account for the payment.
  *     Defaults to the transaction's source account.
- *
- * @returns The resulting path payment strict receive op
  */
 export function pathPaymentStrictReceive(
   this: OperationClass,
-  opts: PathPaymentStrictReceiveOpts
+  opts: PathPaymentStrictReceiveOpts,
 ): xdr.Operation<PathPaymentStrictReceiveResult> {
   if (!opts.sendAsset) {
     throw new Error("Must specify a send asset");
@@ -64,12 +61,12 @@ export function pathPaymentStrictReceive(
     destination,
     destAsset: opts.destAsset.toXDRObject(),
     destAmount: this._toXDRAmount(opts.destAmount),
-    path: path.map((x) => x.toXDRObject())
+    path: path.map((x) => x.toXDRObject()),
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.pathPaymentStrictReceive(paymentOp)
+    body: xdr.OperationBody.pathPaymentStrictReceive(paymentOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

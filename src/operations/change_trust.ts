@@ -5,14 +5,14 @@ import {
   ChangeTrustResult,
   ChangeTrustOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 const MAX_INT64 = "9223372036854775807";
 
 /**
- * Returns an XDR ChangeTrustOp. A "change trust" operation adds, removes, or updates a
- * trust line for a given asset from the source account to another.
+ * A "change trust" operation adds, removes, or updates a trust line for a
+ * given asset from the source account to another.
  *
  * @alias Operation.changeTrust
  * @param opts - Options object
@@ -23,7 +23,7 @@ const MAX_INT64 = "9223372036854775807";
  */
 export function changeTrust(
   this: OperationClass,
-  opts: ChangeTrustOpts
+  opts: ChangeTrustOpts,
 ): xdr.Operation<ChangeTrustResult> {
   let line: xdr.ChangeTrustAsset;
 
@@ -47,7 +47,7 @@ export function changeTrust(
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.changeTrust(changeTrustOp)
+    body: xdr.OperationBody.changeTrust(changeTrustOp),
   };
 
   this.setSourceAccount(opAttributes, opts);

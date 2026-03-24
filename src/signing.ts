@@ -29,14 +29,14 @@ export function sign(data: Buffer, rawSecret: Buffer | Uint8Array): Buffer {
 export function verify(
   data: Buffer,
   signature: Buffer,
-  rawPublicKey: Buffer | Uint8Array
+  rawPublicKey: Buffer | Uint8Array,
 ): boolean {
   return ed25519.verify(
     Buffer.from(signature),
     Buffer.from(data),
     Buffer.from(rawPublicKey),
     {
-      zip215: false
-    }
+      zip215: false,
+    },
   );
 }

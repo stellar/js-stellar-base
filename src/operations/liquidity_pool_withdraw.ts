@@ -3,7 +3,7 @@ import {
   LiquidityPoolWithdrawResult,
   OperationClass,
   LiquidityPoolWithdrawOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -18,18 +18,17 @@ import {
  * @param opts.minAmountA - Minimum amount of first asset to withdraw.
  * @param opts.minAmountB - Minimum amount of second asset to withdraw.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
- * @returns The resulting operation (xdr.LiquidityPoolWithdrawOp).
  */
 export function liquidityPoolWithdraw(
   this: OperationClass,
-  opts: LiquidityPoolWithdrawOpts = {} as LiquidityPoolWithdrawOpts
+  opts: LiquidityPoolWithdrawOpts = {} as LiquidityPoolWithdrawOpts,
 ): xdr.Operation<LiquidityPoolWithdrawResult> {
   if (!opts.liquidityPoolId) {
     throw new TypeError("liquidityPoolId argument is required");
   }
   const liquidityPoolId = Buffer.from(
     opts.liquidityPoolId,
-    "hex"
+    "hex",
   ) as unknown as xdr.PoolId;
 
   if (!this.isValidAmount(opts.amount)) {
@@ -51,12 +50,12 @@ export function liquidityPoolWithdraw(
     liquidityPoolId,
     amount,
     minAmountA,
-    minAmountB
+    minAmountB,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.liquidityPoolWithdraw(liquidityPoolWithdrawOp)
+    body: xdr.OperationBody.liquidityPoolWithdraw(liquidityPoolWithdrawOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

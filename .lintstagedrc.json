@@ -1,0 +1,6 @@
+{
+  "**/*.ts": [
+    "pnpm run fmt",
+    "eslint -c ./eslint.config.cjs src/"
+  ]
+}

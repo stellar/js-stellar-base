@@ -64,7 +64,7 @@ export class Contract {
     return Operation.invokeContractFunction({
       contract: this.address().toString(),
       function: method,
-      args: params
+      args: params,
     });
   }
 
@@ -78,8 +78,8 @@ export class Contract {
       new xdr.LedgerKeyContractData({
         contract: this.address().toScAddress(),
         key: xdr.ScVal.scvLedgerKeyContractInstance(),
-        durability: xdr.ContractDataDurability.persistent()
-      })
+        durability: xdr.ContractDataDurability.persistent(),
+      }),
     );
   }
 }

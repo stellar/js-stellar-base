@@ -39,4 +39,11 @@ describe("Operation.bumpSequence()", () => {
     if (obj.type !== "bumpSequence") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
+
+  it("roundtrips through XDR hex encoding", () => {
+    const op = Operation.bumpSequence({ bumpTo: "77833036561510299" });
+    const hex = op.toXDR("hex");
+    const roundtripped = xdr.Operation.fromXDR(hex, "hex");
+    expect(roundtripped.body().switch().name).toBe("bumpSequence");
+  });
 });

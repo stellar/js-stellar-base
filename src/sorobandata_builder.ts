@@ -34,7 +34,7 @@ export class SorobanDataBuilder {
    *      starts with an empty instance
    */
   constructor(
-    sorobanData?: Buffer | Uint8Array | xdr.SorobanTransactionData | string
+    sorobanData?: Buffer | Uint8Array | xdr.SorobanTransactionData | string,
   ) {
     let data: xdr.SorobanTransactionData;
 
@@ -44,10 +44,10 @@ export class SorobanDataBuilder {
           footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
           instructions: 0,
           diskReadBytes: 0,
-          writeBytes: 0
+          writeBytes: 0,
         }),
         ext: new xdr.SorobanTransactionDataExt(0),
-        resourceFee: new xdr.Int64(0)
+        resourceFee: new xdr.Int64(0),
       });
     } else if (
       typeof sorobanData === "string" ||
@@ -67,7 +67,7 @@ export class SorobanDataBuilder {
    * @param data - raw input to decode
    */
   static fromXDR(
-    data: Buffer | Uint8Array | string
+    data: Buffer | Uint8Array | string,
   ): xdr.SorobanTransactionData {
     if (typeof data === "string") {
       return xdr.SorobanTransactionData.fromXDR(data, "base64");
@@ -99,7 +99,7 @@ export class SorobanDataBuilder {
   setResources(
     cpuInstrs: number,
     diskReadBytes: number,
-    writeBytes: number
+    writeBytes: number,
   ): SorobanDataBuilder {
     this._data.resources().instructions(cpuInstrs);
     this._data.resources().diskReadBytes(diskReadBytes);
@@ -116,11 +116,11 @@ export class SorobanDataBuilder {
    */
   appendFootprint(
     readOnly: xdr.LedgerKey[],
-    readWrite: xdr.LedgerKey[]
+    readWrite: xdr.LedgerKey[],
   ): SorobanDataBuilder {
     return this.setFootprint(
       this.getReadOnly().concat(readOnly),
-      this.getReadWrite().concat(readWrite)
+      this.getReadWrite().concat(readWrite),
     );
   }
 
@@ -140,7 +140,7 @@ export class SorobanDataBuilder {
    */
   setFootprint(
     readOnly?: xdr.LedgerKey[] | null,
-    readWrite?: xdr.LedgerKey[] | null
+    readWrite?: xdr.LedgerKey[] | null,
   ): SorobanDataBuilder {
     if (readOnly !== null) {
       // null means "leave me alone"
