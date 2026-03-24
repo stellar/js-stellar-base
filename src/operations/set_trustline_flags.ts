@@ -4,7 +4,7 @@ import {
   OperationClass,
   SetTrustLineFlagsOpts,
   TrustLineFlagMap,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -38,7 +38,7 @@ import {
  */
 export function setTrustLineFlags(
   this: OperationClass,
-  opts: SetTrustLineFlagsOpts
+  opts: SetTrustLineFlagsOpts,
 ): xdr.Operation {
   if (typeof opts.flags !== "object" || Object.keys(opts.flags).length === 0) {
     throw new Error("opts.flags must be a map of boolean flags to modify");
@@ -48,7 +48,7 @@ export function setTrustLineFlags(
     authorized: xdr.TrustLineFlags.authorizedFlag(),
     authorizedToMaintainLiabilities:
       xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
-    clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+    clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag(),
   };
 
   /* eslint no-bitwise: "off" */
@@ -83,9 +83,9 @@ export function setTrustLineFlags(
         trustor,
         asset,
         clearFlags: clearFlag,
-        setFlags: setFlag
-      })
-    )
+        setFlags: setFlag,
+      }),
+    ),
   };
   this.setSourceAccount(opAttributes, opts);
 

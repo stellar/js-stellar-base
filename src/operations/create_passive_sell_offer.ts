@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   CreatePassiveSellOfferOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -23,7 +23,7 @@ import {
  */
 export function createPassiveSellOffer(
   this: OperationClass,
-  opts: CreatePassiveSellOfferOpts
+  opts: CreatePassiveSellOfferOpts,
 ): xdr.Operation {
   const selling: xdr.Asset = opts.selling.toXDRObject();
   const buying: xdr.Asset = opts.buying.toXDRObject();
@@ -44,12 +44,12 @@ export function createPassiveSellOffer(
     selling,
     buying,
     amount,
-    price
+    price,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp)
+    body: xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp),
   };
 
   this.setSourceAccount(opAttributes, opts);

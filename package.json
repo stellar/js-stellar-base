@@ -27,10 +27,10 @@
     "test:vitest:ui": "vitest --ui",
     "test:vitest:watch": "vitest --project node",
     "test:vitest:coverage": "vitest --coverage --project node",
-    "docs": "jsdoc -c ./config/.jsdoc.json --verbose",
-    "lint": "eslint -c ./config/eslint.config.cjs src/ && dtslint --localTs node_modules/typescript/lib types/",
+    "docs": "jsdoc -c ./.jsdoc.json --verbose",
+    "lint": "eslint -c ./eslint.config.cjs src/ && dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "pnpm run clean && pnpm run fmt && pnpm run lint && pnpm run build:prod && pnpm run test",
-    "fmt": "prettier --config ./config/prettier.config.cjs --ignore-path ./config/.prettierignore --write './**/*.js'",
+    "fmt": "prettier --config ./prettier.config.cjs --ignore-path ./.prettierignore --write 'src/**/*.ts'",
     "prepare": "pnpm run build:prod && husky install",
     "clean": "rm -rf lib/ dist/ coverage/"
   },
@@ -42,15 +42,6 @@
     "/lib/**/*.js",
     "/lib/types/**/*.d.ts"
   ],
-  "lint-staged": {
-    "src/**/*.{js,ts}": [
-      "pnpm run fmt",
-      "eslint -c ./config/eslint.config.cjs src/"
-    ],
-    "**/*.json": [
-      "pnpm run fmt"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stellar/js-stellar-base.git"

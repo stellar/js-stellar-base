@@ -9,11 +9,11 @@ import { OperationClass, InflationOpts, OperationAttributes } from "./types.js";
  */
 export function inflation(
   this: OperationClass,
-  opts: InflationOpts = {}
+  opts: InflationOpts = {},
 ): xdr.Operation {
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.inflation()
+    body: xdr.OperationBody.inflation(),
   };
   this.setSourceAccount(opAttributes, opts);
   return new xdr.Operation(opAttributes);

@@ -44,7 +44,7 @@ export class Claimant {
    */
   static predicateAnd(
     left: xdr.ClaimPredicate,
-    right: xdr.ClaimPredicate
+    right: xdr.ClaimPredicate,
   ): xdr.ClaimPredicate {
     if (!(left instanceof xdr.ClaimPredicate)) {
       throw new Error("left Predicate should be an xdr.ClaimPredicate");
@@ -63,7 +63,7 @@ export class Claimant {
    */
   static predicateOr(
     left: xdr.ClaimPredicate,
-    right: xdr.ClaimPredicate
+    right: xdr.ClaimPredicate,
   ): xdr.ClaimPredicate {
     if (!(left instanceof xdr.ClaimPredicate)) {
       throw new Error("left Predicate should be an xdr.ClaimPredicate");
@@ -98,7 +98,7 @@ export class Claimant {
    */
   static predicateBeforeAbsoluteTime(absBefore: string): xdr.ClaimPredicate {
     return xdr.ClaimPredicate.claimPredicateBeforeAbsoluteTime(
-      xdr.Int64.fromString(absBefore)
+      xdr.Int64.fromString(absBefore),
     );
   }
 
@@ -113,7 +113,7 @@ export class Claimant {
    */
   static predicateBeforeRelativeTime(seconds: string): xdr.ClaimPredicate {
     return xdr.ClaimPredicate.claimPredicateBeforeRelativeTime(
-      xdr.Int64.fromString(seconds)
+      xdr.Int64.fromString(seconds),
     );
   }
 
@@ -128,7 +128,7 @@ export class Claimant {
         value = claimantXdr.v0();
         return new this(
           StrKey.encodeEd25519PublicKey(value.destination().ed25519()),
-          value.predicate()
+          value.predicate(),
         );
       default:
         throw new Error(`Invalid claimant type: ${claimantXdr.switch().name}`);
@@ -141,7 +141,7 @@ export class Claimant {
   toXDRObject(): xdr.Claimant {
     const claimant = new xdr.ClaimantV0({
       destination: Keypair.fromPublicKey(this._destination).xdrAccountId(),
-      predicate: this._predicate
+      predicate: this._predicate,
     });
 
     return xdr.Claimant.claimantTypeV0(claimant);

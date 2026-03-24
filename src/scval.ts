@@ -156,7 +156,7 @@ export interface NativeToScValOpts {
  */
 export function nativeToScVal(
   val: unknown,
-  opts: NativeToScValOpts = {}
+  opts: NativeToScValOpts = {},
 ): xdr.ScVal {
   switch (typeof val) {
     case "object": {
@@ -191,7 +191,7 @@ export function nativeToScVal(
             return xdr.ScVal.scvString(copy);
           default:
             throw new TypeError(
-              `invalid type (${JSON.stringify(opts.type)}) specified for bytes-like value`
+              `invalid type (${JSON.stringify(opts.type)}) specified for bytes-like value`,
             );
         }
       }
@@ -208,15 +208,15 @@ export function nativeToScVal(
                 // `{type: undefined}`)
                 {
                   ...(opts.type.length > idx && {
-                    type: opts.type[idx] as ScValType
-                  })
-                }
+                    type: opts.type[idx] as ScValType,
+                  }),
+                },
               );
             }
 
             // Otherwise apply a generic (or missing) type specifier on it.
             return nativeToScVal(v, opts);
-          })
+          }),
         );
       }
 
@@ -224,7 +224,7 @@ export function nativeToScVal(
         throw new TypeError(
           `cannot interpret ${
             val.constructor?.name
-          } value as ScVal (${JSON.stringify(val)})`
+          } value as ScVal (${JSON.stringify(val)})`,
         );
       }
 
@@ -246,9 +246,9 @@ export function nativeToScVal(
 
             return new xdr.ScMapEntry({
               key: nativeToScVal(k, keyOpts),
-              val: nativeToScVal(v, valOpts)
+              val: nativeToScVal(v, valOpts),
             });
-          })
+          }),
       );
     }
 
@@ -303,7 +303,7 @@ export function nativeToScVal(
           }
 
           throw new TypeError(
-            `invalid type (${JSON.stringify(opts.type)}) specified for string value`
+            `invalid type (${JSON.stringify(opts.type)}) specified for string value`,
           );
       }
     }
@@ -319,7 +319,7 @@ export function nativeToScVal(
 
     default:
       throw new TypeError(
-        `failed to convert typeof ${typeof val} (${JSON.stringify(val)})`
+        `failed to convert typeof ${typeof val} (${JSON.stringify(val)})`,
       );
   }
 }
@@ -379,8 +379,8 @@ export function scValToNative(scv: xdr.ScVal): any {
       return Object.fromEntries(
         (scv.map() ?? []).map((entry: xdr.ScMapEntry) => [
           scValToNative(entry.key()),
-          scValToNative(entry.val())
-        ])
+          scValToNative(entry.val()),
+        ]),
       );
 
     // these return the primitive type directly
@@ -443,7 +443,7 @@ export function scValToNative(scv: xdr.ScVal): any {
           return {
             type: "system",
             code: err.code().value,
-            value: err.code().name
+            value: err.code().name,
           };
         }
       }

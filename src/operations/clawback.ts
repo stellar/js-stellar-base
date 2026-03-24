@@ -19,7 +19,7 @@ import { ClawbackOpts, OperationAttributes, OperationClass } from "./types.js";
  */
 export function clawback(
   this: OperationClass,
-  opts: ClawbackOpts
+  opts: ClawbackOpts,
 ): xdr.Operation {
   if (!this.isValidAmount(opts.amount)) {
     throw new TypeError(this.constructAmountRequirementsError("amount"));
@@ -35,12 +35,12 @@ export function clawback(
   const clawbackOp = new xdr.ClawbackOp({
     amount: this._toXDRAmount(opts.amount),
     asset: opts.asset.toXDRObject(),
-    from
+    from,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.clawback(clawbackOp)
+    body: xdr.OperationBody.clawback(clawbackOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

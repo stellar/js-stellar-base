@@ -4,7 +4,7 @@ import { Keypair } from "../keypair.js";
 import {
   OperationClass,
   BeginSponsoringFutureReservesOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -22,18 +22,18 @@ import {
  */
 export function beginSponsoringFutureReserves(
   this: OperationClass,
-  opts: BeginSponsoringFutureReservesOpts
+  opts: BeginSponsoringFutureReservesOpts,
 ): xdr.Operation {
   if (!StrKey.isValidEd25519PublicKey(opts.sponsoredId)) {
     throw new Error("sponsoredId is invalid");
   }
   const op = new xdr.BeginSponsoringFutureReservesOp({
-    sponsoredId: Keypair.fromPublicKey(opts.sponsoredId).xdrAccountId()
+    sponsoredId: Keypair.fromPublicKey(opts.sponsoredId).xdrAccountId(),
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.beginSponsoringFutureReserves(op)
+    body: xdr.OperationBody.beginSponsoringFutureReserves(op),
   };
   this.setSourceAccount(opAttributes, opts);
 

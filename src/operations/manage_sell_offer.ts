@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   ManageSellOfferOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -22,7 +22,7 @@ import {
  */
 export function manageSellOffer(
   this: OperationClass,
-  opts: ManageSellOfferOpts
+  opts: ManageSellOfferOpts,
 ): xdr.Operation {
   const selling: xdr.Asset = opts.selling.toXDRObject();
   const buying: xdr.Asset = opts.buying.toXDRObject();
@@ -47,12 +47,12 @@ export function manageSellOffer(
     buying,
     amount,
     price,
-    offerId
+    offerId,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.manageSellOffer(manageSellOfferOp)
+    body: xdr.OperationBody.manageSellOffer(manageSellOfferOp),
   };
 
   this.setSourceAccount(opAttributes, opts);

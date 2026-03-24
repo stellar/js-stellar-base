@@ -3,7 +3,7 @@ import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account
 import {
   PathPaymentStrictSendOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -28,7 +28,7 @@ import {
  */
 export function pathPaymentStrictSend(
   this: OperationClass,
-  opts: PathPaymentStrictSendOpts
+  opts: PathPaymentStrictSendOpts,
 ): xdr.Operation {
   if (!opts.sendAsset) {
     throw new Error("Must specify a send asset");
@@ -67,12 +67,12 @@ export function pathPaymentStrictSend(
     destination,
     destAsset,
     destMin,
-    path
+    path,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.pathPaymentStrictSend(payment)
+    body: xdr.OperationBody.pathPaymentStrictSend(payment),
   };
 
   this.setSourceAccount(opAttributes, opts);

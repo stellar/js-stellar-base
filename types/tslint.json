@@ -1,8 +1,17 @@
 {
   "extends": "@definitelytyped/dtslint/dtslint.json",
   "rules": {
-    "indent": [true, "spaces"],
-    "trailing-comma": [true, "always"],
-    "semicolon": [true, "always"]
+    "indent": [
+      true,
+      "spaces"
+    ],
+    "trailing-comma": [
+      true,
+      "always"
+    ],
+    "semicolon": [
+      true,
+      "always"
+    ]
   }
 }

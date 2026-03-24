@@ -51,7 +51,7 @@ export class LiquidityPoolId {
     // Buffer.from produces the correct runtime value; cast to xdr.PoolId to satisfy the type checker.
     const xdrPoolId = Buffer.from(
       this.liquidityPoolId,
-      "hex"
+      "hex",
     ) as unknown as xdr.PoolId;
     return xdr.TrustLineAsset.assetTypePoolShare(xdrPoolId);
   }

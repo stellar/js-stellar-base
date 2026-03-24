@@ -25,7 +25,7 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
    */
   constructor(
     envelope: xdr.TransactionEnvelope | string,
-    networkPassphrase: string
+    networkPassphrase: string,
   ) {
     if (typeof envelope === "string") {
       const buffer = Buffer.from(envelope, "base64");
@@ -36,7 +36,7 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
 
     if (envelopeType !== xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
       throw new Error(
-        `Invalid TransactionEnvelope: expected an envelopeTypeTxFeeBump but received an ${envelopeType.name}.`
+        `Invalid TransactionEnvelope: expected an envelopeTypeTxFeeBump but received an ${envelopeType.name}.`,
       );
     }
 
@@ -49,12 +49,12 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
     super(tx, signatures, fee, networkPassphrase);
 
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
-      tx.innerTx().v1()
+      tx.innerTx().v1(),
     );
     this._feeSource = encodeMuxedAccountToAddress(this.tx.feeSource());
     this._innerTransaction = new Transaction(
       innerTxEnvelope,
-      networkPassphrase
+      networkPassphrase,
     );
   }
 
@@ -90,12 +90,12 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
   override signatureBase(): Buffer {
     const taggedTransaction =
       xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTxFeeBump(
-        this.tx
+        this.tx,
       );
 
     const txSignature = new xdr.TransactionSignaturePayload({
       networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),
-      taggedTransaction
+      taggedTransaction,
     });
 
     return txSignature.toXDR();
@@ -107,7 +107,7 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
   override toEnvelope(): xdr.TransactionEnvelope {
     const envelope = new xdr.FeeBumpTransactionEnvelope({
       tx: xdr.FeeBumpTransaction.fromXDR(this.tx.toXDR()), // make a copy of the tx
-      signatures: this.signatures.slice() // make a copy of the signatures
+      signatures: this.signatures.slice(), // make a copy of the signatures
     });
 
     return xdr.TransactionEnvelope.envelopeTypeTxFeeBump(envelope);

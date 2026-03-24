@@ -5,7 +5,7 @@ import {
   decodeAddressToMuxedAccount,
   encodeMuxedAccountToAddress,
   encodeMuxedAccount,
-  extractBaseAddress
+  extractBaseAddress,
 } from "./util/decode_encode_muxed_account.js";
 
 /**

@@ -3,7 +3,7 @@ import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account
 import {
   AccountMergeOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -16,12 +16,12 @@ import {
  */
 export function accountMerge(
   this: OperationClass,
-  opts: AccountMergeOpts
+  opts: AccountMergeOpts,
 ): xdr.Operation {
   let body: xdr.OperationBody;
   try {
     body = xdr.OperationBody.accountMerge(
-      decodeAddressToMuxedAccount(opts.destination)
+      decodeAddressToMuxedAccount(opts.destination),
     );
   } catch {
     throw new Error("destination is invalid");
@@ -29,7 +29,7 @@ export function accountMerge(
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body
+    body,
   };
   this.setSourceAccount(opAttributes, opts);
 

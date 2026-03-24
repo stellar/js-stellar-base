@@ -3,7 +3,7 @@ import { validateClaimableBalanceId } from "./claim_claimable_balance.js";
 import {
   ClawbackClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -23,20 +23,20 @@ import {
  */
 export function clawbackClaimableBalance(
   this: OperationClass,
-  opts: ClawbackClaimableBalanceOpts = {} as ClawbackClaimableBalanceOpts
+  opts: ClawbackClaimableBalanceOpts = {} as ClawbackClaimableBalanceOpts,
 ): xdr.Operation {
   validateClaimableBalanceId(opts.balanceId);
 
   const balanceId: xdr.ClaimableBalanceId = xdr.ClaimableBalanceId.fromXDR(
     opts.balanceId,
-    "hex"
+    "hex",
   );
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
     body: xdr.OperationBody.clawbackClaimableBalance(
-      new xdr.ClawbackClaimableBalanceOp({ balanceId })
-    )
+      new xdr.ClawbackClaimableBalanceOp({ balanceId }),
+    ),
   };
 
   this.setSourceAccount(opAttributes, opts);

@@ -16,7 +16,7 @@ export function decodeAddressToMuxedAccount(address: string): xdr.MuxedAccount {
   }
 
   return xdr.MuxedAccount.keyTypeEd25519(
-    StrKey.decodeEd25519PublicKey(address)
+    StrKey.decodeEd25519PublicKey(address),
   );
 }
 
@@ -31,7 +31,7 @@ export function decodeAddressToMuxedAccount(address: string): xdr.MuxedAccount {
  * @see https://stellar.org/protocol/sep-23
  */
 export function encodeMuxedAccountToAddress(
-  muxedAccount: xdr.MuxedAccount
+  muxedAccount: xdr.MuxedAccount,
 ): string {
   if (
     muxedAccount.switch().value ===
@@ -51,7 +51,7 @@ export function encodeMuxedAccountToAddress(
  */
 export function encodeMuxedAccount(
   address: string,
-  id: string
+  id: string,
 ): xdr.MuxedAccount {
   if (!StrKey.isValidEd25519PublicKey(address)) {
     throw new Error("address should be a Stellar account ID (G...)");
@@ -62,8 +62,8 @@ export function encodeMuxedAccount(
   return xdr.MuxedAccount.keyTypeMuxedEd25519(
     new xdr.MuxedAccountMed25519({
       id: xdr.Uint64.fromString(id),
-      ed25519: StrKey.decodeEd25519PublicKey(address)
-    })
+      ed25519: StrKey.decodeEd25519PublicKey(address),
+    }),
   );
 }
 
@@ -104,14 +104,14 @@ function _decodeAddressFullyToMuxedAccount(address: string): xdr.MuxedAccount {
   return xdr.MuxedAccount.keyTypeMuxedEd25519(
     new xdr.MuxedAccountMed25519({
       id: xdr.Uint64.fromXDR(rawBytes.subarray(-8)),
-      ed25519: rawBytes.subarray(0, -8)
-    })
+      ed25519: rawBytes.subarray(0, -8),
+    }),
   );
 }
 
 // Converts an xdr.MuxedAccount into its *true* "M..." string representation.
 function _encodeMuxedAccountFullyToAddress(
-  muxedAccount: xdr.MuxedAccount
+  muxedAccount: xdr.MuxedAccount,
 ): string {
   if (muxedAccount.switch() === xdr.CryptoKeyType.keyTypeEd25519()) {
     return encodeMuxedAccountToAddress(muxedAccount);
@@ -119,6 +119,6 @@ function _encodeMuxedAccountFullyToAddress(
 
   const muxed = muxedAccount.med25519();
   return StrKey.encodeMed25519PublicKey(
-    Buffer.concat([muxed.ed25519(), muxed.id().toXDR("raw")])
+    Buffer.concat([muxed.ed25519(), muxed.id().toXDR("raw")]),
   );
 }

@@ -73,7 +73,7 @@ export class ScInt extends XdrLargeInt {
    */
   constructor(
     value: bigint | number | string,
-    opts?: { type?: ScIntType; [key: string]: unknown }
+    opts?: { type?: ScIntType; [key: string]: unknown },
   ) {
     const bigValue = BigInt(value);
     const signed = bigValue < 0n;
@@ -98,7 +98,7 @@ export class ScInt extends XdrLargeInt {
 
         default:
           throw RangeError(
-            `expected 64/128/256 bits for input (${value}), got ${bitlen}`
+            `expected 64/128/256 bits for input (${value}), got ${bitlen}`,
           );
       }
     }
