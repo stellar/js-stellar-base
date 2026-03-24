@@ -44,15 +44,21 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
     case "scvI64":
     case "scvTimepoint":
     case "scvDuration":
+      if (scIntType === undefined) {
+        throw TypeError(`invalid integer type for ${switchName}`);
+      }
       return new XdrLargeInt(
-        scIntType as ScIntType,
+        scIntType,
         value as xdr.Int64 | xdr.Uint64,
       ).toBigInt();
 
     case "scvU128":
     case "scvI128": {
+      if (scIntType === undefined) {
+        throw TypeError(`invalid integer type for ${switchName}`);
+      }
       const int128Value = value as xdr.Int128Parts | xdr.UInt128Parts;
-      return new XdrLargeInt(scIntType as ScIntType, [
+      return new XdrLargeInt(scIntType, [
         int128Value.lo(),
         int128Value.hi(),
       ]).toBigInt();
@@ -60,8 +66,11 @@ export function scValToBigInt(scv: xdr.ScVal): bigint {
 
     case "scvU256":
     case "scvI256": {
+      if (scIntType === undefined) {
+        throw TypeError(`invalid integer type for ${switchName}`);
+      }
       const int256Value = value as xdr.Int256Parts | xdr.UInt256Parts;
-      return new XdrLargeInt(scIntType as ScIntType, [
+      return new XdrLargeInt(scIntType, [
         int256Value.loLo(),
         int256Value.loHi(),
         int256Value.hiLo(),
