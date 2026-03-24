@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  ClaimClaimableBalanceResult,
   ClaimClaimableBalanceOpts,
   OperationAttributes,
   OperationClass
@@ -20,7 +21,7 @@ import {
 export function claimClaimableBalance(
   this: OperationClass,
   opts: ClaimClaimableBalanceOpts = {} as ClaimClaimableBalanceOpts
-): xdr.Operation {
+): xdr.Operation<ClaimClaimableBalanceResult> {
   validateClaimableBalanceId(opts.balanceId);
 
   const balanceId: xdr.ClaimableBalanceId = xdr.ClaimableBalanceId.fromXDR(

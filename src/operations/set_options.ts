@@ -4,7 +4,9 @@ import { StrKey } from "../strkey.js";
 import {
   OperationClass,
   SetOptionsOpts,
-  OperationAttributes
+  SetOptionsResult,
+  OperationAttributes,
+  SignerOpts
 } from "./types.js";
 
 function weightCheckFunction(value: number, name: string): boolean {
@@ -47,10 +49,10 @@ function weightCheckFunction(value: number, name: string): boolean {
  * @returns XDR operation
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
-export function setOptions(
+export function setOptions<T extends SignerOpts = never>(
   this: OperationClass,
-  opts: SetOptionsOpts
-): xdr.Operation {
+  opts: SetOptionsOpts<T>
+): xdr.Operation<SetOptionsResult<T>> {
   let inflationDest: xdr.AccountId | null = null;
 
   if (opts.inflationDest) {

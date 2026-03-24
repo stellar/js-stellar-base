@@ -2,6 +2,7 @@ import xdr from "../xdr.js";
 import { StrKey } from "../strkey.js";
 import { Keypair } from "../keypair.js";
 import {
+  BeginSponsoringFutureReservesResult,
   OperationClass,
   BeginSponsoringFutureReservesOpts,
   OperationAttributes
@@ -24,7 +25,7 @@ import {
 export function beginSponsoringFutureReserves(
   this: OperationClass,
   opts: BeginSponsoringFutureReservesOpts
-): xdr.Operation {
+): xdr.Operation<BeginSponsoringFutureReservesResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.sponsoredId)) {
     throw new Error("sponsoredId is invalid");
   }

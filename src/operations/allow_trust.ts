@@ -2,6 +2,7 @@ import xdr from "../xdr.js";
 import { Keypair } from "../keypair.js";
 import { StrKey } from "../strkey.js";
 import {
+  AllowTrustResult,
   OperationClass,
   AllowTrustOpts,
   OperationAttributes
@@ -25,7 +26,7 @@ import {
 export function allowTrust(
   this: OperationClass,
   opts: AllowTrustOpts
-): xdr.Operation {
+): xdr.Operation<AllowTrustResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
     throw new Error("trustor is invalid");
   }

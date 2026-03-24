@@ -1,6 +1,7 @@
 import xdr from "../xdr.js";
 import { Asset } from "../asset.js";
 import {
+  CreateClaimableBalanceResult,
   CreateClaimableBalanceOpts,
   OperationAttributes,
   OperationClass
@@ -39,7 +40,7 @@ import {
 export function createClaimableBalance(
   this: OperationClass,
   opts: CreateClaimableBalanceOpts
-): xdr.Operation {
+): xdr.Operation<CreateClaimableBalanceResult> {
   if (!(opts.asset instanceof Asset)) {
     throw new Error(
       "must provide an asset for create claimable balance operation"

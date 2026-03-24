@@ -1,6 +1,11 @@
 import xdr from "../xdr.js";
 import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account.js";
-import { OperationAttributes, OperationClass, PaymentOpts } from "./types.js";
+import {
+  OperationAttributes,
+  OperationClass,
+  PaymentOpts,
+  PaymentResult
+} from "./types.js";
 
 /**
  * Create a payment operation.
@@ -21,7 +26,7 @@ import { OperationAttributes, OperationClass, PaymentOpts } from "./types.js";
 export function payment(
   this: OperationClass,
   opts: PaymentOpts
-): xdr.Operation {
+): xdr.Operation<PaymentResult> {
   if (!opts.asset) {
     throw new Error("Must provide an asset for a payment operation");
   }

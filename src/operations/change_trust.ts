@@ -2,6 +2,7 @@ import xdr from "../xdr.js";
 import { Asset } from "../asset.js";
 import { LiquidityPoolAsset } from "../liquidity_pool_asset.js";
 import {
+  ChangeTrustResult,
   ChangeTrustOpts,
   OperationAttributes,
   OperationClass
@@ -23,7 +24,7 @@ const MAX_INT64 = "9223372036854775807";
 export function changeTrust(
   this: OperationClass,
   opts: ChangeTrustOpts
-): xdr.Operation {
+): xdr.Operation<ChangeTrustResult> {
   let line: xdr.ChangeTrustAsset;
 
   if (opts.asset instanceof Asset) {

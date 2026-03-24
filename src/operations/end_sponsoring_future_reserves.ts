@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  EndSponsoringFutureReservesResult,
   OperationClass,
   EndSponsoringFutureReservesOpts,
   OperationAttributes
@@ -20,7 +21,7 @@ import {
 export function endSponsoringFutureReserves(
   this: OperationClass,
   opts: EndSponsoringFutureReservesOpts = {}
-): xdr.Operation {
+): xdr.Operation<EndSponsoringFutureReservesResult> {
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
     body: xdr.OperationBody.endSponsoringFutureReserves()

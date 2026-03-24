@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  LiquidityPoolWithdrawResult,
   OperationClass,
   LiquidityPoolWithdrawOpts,
   OperationAttributes
@@ -22,7 +23,7 @@ import {
 export function liquidityPoolWithdraw(
   this: OperationClass,
   opts: LiquidityPoolWithdrawOpts = {} as LiquidityPoolWithdrawOpts
-): xdr.Operation {
+): xdr.Operation<LiquidityPoolWithdrawResult> {
   if (!opts.liquidityPoolId) {
     throw new TypeError("liquidityPoolId argument is required");
   }

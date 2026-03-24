@@ -3,6 +3,7 @@ import { Keypair } from "../keypair.js";
 import {
   OperationClass,
   SetTrustLineFlagsOpts,
+  SetTrustLineFlagsResult,
   TrustLineFlagMap,
   OperationAttributes
 } from "./types.js";
@@ -40,7 +41,7 @@ import {
 export function setTrustLineFlags(
   this: OperationClass,
   opts: SetTrustLineFlagsOpts
-): xdr.Operation {
+): xdr.Operation<SetTrustLineFlagsResult> {
   if (typeof opts.flags !== "object" || Object.keys(opts.flags).length === 0) {
     throw new Error("opts.flags must be a map of boolean flags to modify");
   }

@@ -1,6 +1,11 @@
 import xdr from "../xdr.js";
 import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account.js";
-import { ClawbackOpts, OperationAttributes, OperationClass } from "./types.js";
+import {
+  ClawbackOpts,
+  ClawbackResult,
+  OperationAttributes,
+  OperationClass
+} from "./types.js";
 
 /**
  * Creates a clawback operation.
@@ -23,7 +28,7 @@ import { ClawbackOpts, OperationAttributes, OperationClass } from "./types.js";
 export function clawback(
   this: OperationClass,
   opts: ClawbackOpts
-): xdr.Operation {
+): xdr.Operation<ClawbackResult> {
   if (!this.isValidAmount(opts.amount)) {
     throw new TypeError(this.constructAmountRequirementsError("amount"));
   }

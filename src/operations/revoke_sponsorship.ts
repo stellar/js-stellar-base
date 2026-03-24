@@ -5,12 +5,19 @@ import { Asset } from "../asset.js";
 import { LiquidityPoolId } from "../liquidity_pool_id.js";
 import {
   RevokeAccountSponsorshipOpts,
+  RevokeAccountSponsorshipResult,
   RevokeTrustlineSponsorshipOpts,
+  RevokeTrustlineSponsorshipResult,
   RevokeOfferSponsorshipOpts,
+  RevokeOfferSponsorshipResult,
   RevokeDataSponsorshipOpts,
+  RevokeDataSponsorshipResult,
   RevokeClaimableBalanceSponsorshipOpts,
+  RevokeClaimableBalanceSponsorshipResult,
   RevokeLiquidityPoolSponsorshipOpts,
+  RevokeLiquidityPoolSponsorshipResult,
   RevokeSignerSponsorshipOpts,
+  RevokeSignerSponsorshipResult,
   OperationAttributes,
   OperationClass
 } from "./types.js";
@@ -31,7 +38,7 @@ import {
 export function revokeAccountSponsorship(
   this: OperationClass,
   opts: RevokeAccountSponsorshipOpts = {} as RevokeAccountSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeAccountSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error("account is invalid");
   }
@@ -73,7 +80,7 @@ export function revokeAccountSponsorship(
 export function revokeTrustlineSponsorship(
   this: OperationClass,
   opts: RevokeTrustlineSponsorshipOpts = {} as RevokeTrustlineSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeTrustlineSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error("account is invalid");
   }
@@ -123,7 +130,7 @@ export function revokeTrustlineSponsorship(
 export function revokeOfferSponsorship(
   this: OperationClass,
   opts: RevokeOfferSponsorshipOpts = {} as RevokeOfferSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeOfferSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.seller)) {
     throw new Error("seller is invalid");
   }
@@ -167,7 +174,7 @@ export function revokeOfferSponsorship(
 export function revokeDataSponsorship(
   this: OperationClass,
   opts: RevokeDataSponsorshipOpts = {} as RevokeDataSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeDataSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error("account is invalid");
   }
@@ -209,7 +216,7 @@ export function revokeDataSponsorship(
 export function revokeClaimableBalanceSponsorship(
   this: OperationClass,
   opts: RevokeClaimableBalanceSponsorshipOpts = {} as RevokeClaimableBalanceSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeClaimableBalanceSponsorshipResult> {
   if (typeof opts.balanceId !== "string") {
     throw new Error("balanceId is invalid");
   }
@@ -246,7 +253,7 @@ export function revokeClaimableBalanceSponsorship(
 export function revokeLiquidityPoolSponsorship(
   this: OperationClass,
   opts: RevokeLiquidityPoolSponsorshipOpts = {} as RevokeLiquidityPoolSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeLiquidityPoolSponsorshipResult> {
   if (typeof opts.liquidityPoolId !== "string") {
     throw new Error("liquidityPoolId is invalid");
   }
@@ -293,7 +300,7 @@ export function revokeLiquidityPoolSponsorship(
 export function revokeSignerSponsorship(
   this: OperationClass,
   opts: RevokeSignerSponsorshipOpts = {} as RevokeSignerSponsorshipOpts
-): xdr.Operation {
+): xdr.Operation<RevokeSignerSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
     throw new Error("account is invalid");
   }

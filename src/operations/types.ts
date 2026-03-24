@@ -18,7 +18,9 @@ export interface OperationAttributes {
 // operations/*.ts), extract the shared utilities (setSourceAccount, _toXDRAmount, etc.) into
 // a new src/operations/helpers.ts module that both operation.ts and operations/*.ts can import.
 export interface OperationClass {
-  invokeHostFunction(opts: InvokeHostFunctionOpts): xdr.Operation;
+  invokeHostFunction(
+    opts: InvokeHostFunctionOpts
+  ): xdr.Operation<InvokeHostFunctionResult>;
   isValidAmount(value: string, allowZero?: boolean): boolean;
   constructAmountRequirementsError(arg: string): string;
   _toXDRAmount(value: string): xdr.Int64;
@@ -94,16 +96,44 @@ export interface SetTrustLineFlagsOpts {
   flags: TrustLineFlagMap;
   source?: string;
 }
-
-export interface SignerOpts {
-  ed25519PublicKey?: string;
-  sha256Hash?: Buffer | string;
-  preAuthTx?: Buffer | string;
-  ed25519SignedPayload?: string;
-  weight: number | string;
+export interface BaseSignerOpt {
+  weight?: number | string;
 }
 
-export interface SetOptionsOpts {
+export interface Ed25519PublicKeySignerOpt extends BaseSignerOpt {
+  ed25519PublicKey: string;
+  sha256Hash?: never;
+  preAuthTx?: never;
+  ed25519SignedPayload?: never;
+}
+
+export interface Sha256HashSignerOpt extends BaseSignerOpt {
+  ed25519PublicKey?: never;
+  sha256Hash: Buffer | string;
+  preAuthTx?: never;
+  ed25519SignedPayload?: never;
+}
+
+export interface PreAuthTxSignerOpt extends BaseSignerOpt {
+  ed25519PublicKey?: never;
+  sha256Hash?: never;
+  preAuthTx: Buffer | string;
+  ed25519SignedPayload?: never;
+}
+
+export interface Ed25519SignedPayloadSignerOpt extends BaseSignerOpt {
+  ed25519PublicKey?: never;
+  sha256Hash?: never;
+  preAuthTx?: never;
+  ed25519SignedPayload: string;
+}
+export type SignerOpts =
+  | Ed25519PublicKeySignerOpt
+  | Ed25519SignedPayloadSignerOpt
+  | PreAuthTxSignerOpt
+  | Sha256HashSignerOpt;
+
+export interface SetOptionsOpts<T extends SignerOpts = never> {
   inflationDest?: string;
   clearFlags?: number | string;
   setFlags?: number | string;
@@ -111,7 +141,7 @@ export interface SetOptionsOpts {
   lowThreshold?: number | string;
   medThreshold?: number | string;
   highThreshold?: number | string;
-  signer?: SignerOpts;
+  signer?: T;
   homeDomain?: string;
   source?: string;
 }
@@ -211,7 +241,7 @@ export interface RevokeLiquidityPoolSponsorshipOpts {
 
 export interface RevokeSignerSponsorshipOpts {
   account: string;
-  signer: SignerKeyOptions;
+  signer: SignerOpts;
   source?: string;
 }
 
@@ -518,7 +548,7 @@ export interface ManageBuyOfferResult extends BaseOperation<OperationType.Manage
 }
 
 export interface SetOptionsResult<
-  T extends Signer = never
+  T extends SignerOpts = never
 > extends BaseOperation<OperationType.SetOptions> {
   inflationDest?: string;
   // AuthFlag represents individual flag bits (1, 2, 4, 8). At runtime these fields
@@ -607,7 +637,7 @@ export interface RevokeLiquidityPoolSponsorshipResult extends BaseOperation<Oper
 
 export interface RevokeSignerSponsorshipResult extends BaseOperation<OperationType.RevokeSignerSponsorship> {
   account: string;
-  signer: SignerKeyOptions;
+  signer: SignerOpts;
 }
 
 export interface ClawbackResult extends BaseOperation<OperationType.Clawback> {
@@ -658,7 +688,7 @@ export type RestoreFootprintResult =
   BaseOperation<OperationType.RestoreFootprint>;
 
 /**
- * Union of all possible operation result objects returned by Operation.fromXDRObject.
+ * Union of all possible operation objects returned by Operation.fromXDRObject.
  */
 export type OperationRecord =
   | AccountMergeResult
@@ -692,5 +722,5 @@ export type OperationRecord =
   | RevokeOfferSponsorshipResult
   | RevokeSignerSponsorshipResult
   | RevokeTrustlineSponsorshipResult
-  | SetOptionsResult<Signer>
+  | SetOptionsResult<SignerOpts>
   | SetTrustLineFlagsResult;
