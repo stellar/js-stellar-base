@@ -73,7 +73,7 @@ export interface LiquidityPoolWithdrawOpts {
 export interface AllowTrustOpts {
   trustor: string;
   assetCode: string;
-  authorize?: boolean | number;
+  authorize?: AuthFlag | boolean;
   source?: string;
 }
 
@@ -105,8 +105,8 @@ export interface SignerOpts {
 
 export interface SetOptionsOpts {
   inflationDest?: string;
-  clearFlags?: number | string;
-  setFlags?: number | string;
+  clearFlags?: AuthFlag;
+  setFlags?: AuthFlag;
   masterWeight?: number | string;
   lowThreshold?: number | string;
   medThreshold?: number | string;
@@ -411,19 +411,14 @@ export type OperationType =
 
 // Literal types matching the AuthRequiredFlag/AuthRevocableFlag/AuthImmutableFlag/AuthClawbackEnabledFlag
 // constants exported from src/operation.ts.
-// TODO: Once src/index.js is migrated to src/index.ts, replace these literals with
-// `typeof AuthRequiredFlag` etc. to avoid duplication with the runtime constants.
-export namespace AuthFlag {
-  export type required = 1;
-  export type revocable = 2;
-  export type immutable = 4;
-  export type clawbackEnabled = 8;
-}
-export type AuthFlag =
-  | AuthFlag.clawbackEnabled
-  | AuthFlag.immutable
-  | AuthFlag.required
-  | AuthFlag.revocable;
+
+export const AuthFlag = {
+  required: 1,
+  revocable: 2,
+  immutable: 4,
+  clawbackEnabled: 8,
+} as const;
+export type AuthFlag = (typeof AuthFlag)[keyof typeof AuthFlag];
 
 export namespace TrustLineFlag {
   export type deauthorize = 0;
