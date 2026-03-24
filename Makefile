@@ -1,4 +1,4 @@
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/4b7a2ef7931ab2ca2499be68d849f38190b443ca
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/cff714a5ebaaaf2dac343b3546c2df73f0b7a36e
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FILES_CURR= \
 	Stellar-SCP.x \
@@ -15,7 +15,7 @@ XDR_FILES_CURR= \
 	Stellar-exporter.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/4b7a2ef7931ab2ca2499be68d849f38190b443ca
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/cff714a5ebaaaf2dac343b3546c2df73f0b7a36e
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \
