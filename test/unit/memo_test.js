@@ -134,6 +134,10 @@ describe('Memo.id()', function () {
     expect(() => StellarBase.Memo.id('-1')).to.throw(/Expects a uint64/);
     // decimal
     expect(() => StellarBase.Memo.id('1.5')).to.throw(/Expects a uint64/);
+    // trailing decimal zero (BigNumber accepts but must be rejected)
+    expect(() => StellarBase.Memo.id('1.0')).to.throw(/Expects a uint64/);
+    // scientific notation (BigNumber accepts but BigInt()/UnsignedHyper crashes)
+    expect(() => StellarBase.Memo.id('1e18')).to.throw(/Expects a uint64/);
     // overflow: 2^64 silently became 0 before this fix
     expect(() => StellarBase.Memo.id('18446744073709551616')).to.throw(
       /Expects a uint64/
