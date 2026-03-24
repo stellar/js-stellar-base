@@ -15,8 +15,8 @@ import { encodeMuxedAccountToAddress } from "./util/decode_encode_muxed_account.
  * submitting to the network or forwarding on to additional signers.
  */
 export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> {
-  _feeSource: string;
-  _innerTransaction: Transaction;
+  private _feeSource: string;
+  private _innerTransaction: Transaction;
 
   /**
    * @param envelope - transaction envelope object or base64 encoded string.

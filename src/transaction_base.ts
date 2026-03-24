@@ -8,10 +8,10 @@ import { Keypair } from "./keypair.js";
 export class TransactionBase<
   TTx extends xdr.FeeBumpTransaction | xdr.Transaction | xdr.TransactionV0,
 > {
-  _tx: TTx;
-  _signatures: xdr.DecoratedSignature[];
-  _fee: string;
-  _networkPassphrase: string;
+  private _tx: TTx;
+  private _signatures: xdr.DecoratedSignature[];
+  private _fee: string;
+  private _networkPassphrase: string;
 
   constructor(
     tx: TTx,

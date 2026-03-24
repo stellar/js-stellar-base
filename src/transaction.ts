@@ -25,20 +25,20 @@ import { OperationRecord } from "./operations/types.js";
 export class Transaction extends TransactionBase<
   xdr.Transaction | xdr.TransactionV0
 > {
-  _envelopeType: xdr.EnvelopeType;
-  _source: string = "";
-  _memo: xdr.Memo;
-  _sequence: string;
-  _operations: OperationRecord[];
-  _timeBounds?: { minTime: string; maxTime: string };
-  _ledgerBounds?: { minLedger: number; maxLedger: number };
-  _minAccountSequence?: string;
+  private _envelopeType: xdr.EnvelopeType;
+  private _source: string = "";
+  private _memo: xdr.Memo;
+  private _sequence: string;
+  private _operations: OperationRecord[];
+  private _timeBounds?: { minTime: string; maxTime: string };
+  private _ledgerBounds?: { minLedger: number; maxLedger: number };
+  private _minAccountSequence?: string;
   // TODO: types/index.d.ts declares this as `number`, but the XDR type is
   // Duration = Uint64 (64-bit), which can exceed Number.MAX_SAFE_INTEGER.
   // This is a breaking type change that should be surfaced when types/index.d.ts is updated.
-  _minAccountSequenceAge?: xdr.Uint64;
-  _minAccountSequenceLedgerGap?: number;
-  _extraSigners?: xdr.SignerKey[];
+  private _minAccountSequenceAge?: xdr.Uint64;
+  private _minAccountSequenceLedgerGap?: number;
+  private _extraSigners?: xdr.SignerKey[];
 
   /**
    * @param envelope - transaction envelope object or base64 encoded string
