@@ -168,8 +168,13 @@ export function setOptions(
         "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.",
       );
     }
-
-    signer = new xdr.Signer({ key: key!, weight: weight! });
+    if (weight === undefined) {
+      throw new Error("signer.weight is required.");
+    }
+    if (key === undefined) {
+      throw new Error("signer key is required.");
+    }
+    signer = new xdr.Signer({ key: key, weight: weight });
   }
 
   const setOptionsOp = new xdr.SetOptionsOp({
