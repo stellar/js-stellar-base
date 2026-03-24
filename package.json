@@ -30,7 +30,7 @@
     "docs": "jsdoc -c ./.jsdoc.json --verbose",
     "lint": "eslint -c ./eslint.config.cjs src/ && dtslint --localTs node_modules/typescript/lib types/",
     "preversion": "pnpm run clean && pnpm run fmt && pnpm run lint && pnpm run build:prod && pnpm run test",
-    "fmt": "prettier --config ./prettier.config.cjs --ignore-path ./.prettierignore --write '**/*.ts'",
+    "fmt": "prettier --config ./prettier.config.cjs --ignore-path ./.prettierignore --write 'src/**/*.ts'",
     "prepare": "pnpm run build:prod && husky install",
     "clean": "rm -rf lib/ dist/ coverage/"
   },

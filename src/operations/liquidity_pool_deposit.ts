@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   LiquidityPoolDepositOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -25,7 +25,7 @@ import {
  */
 export function liquidityPoolDeposit(
   this: OperationClass,
-  opts: LiquidityPoolDepositOpts = {} as LiquidityPoolDepositOpts
+  opts: LiquidityPoolDepositOpts = {} as LiquidityPoolDepositOpts,
 ): xdr.Operation {
   const { liquidityPoolId, maxAmountA, maxAmountB, minPrice, maxPrice } = opts;
 
@@ -37,7 +37,7 @@ export function liquidityPoolDeposit(
   // Buffer.from produces the correct runtime value; cast to satisfy the type checker.
   const liquidityPoolIdXdr = Buffer.from(
     liquidityPoolId,
-    "hex"
+    "hex",
   ) as unknown as xdr.PoolId;
 
   if (!this.isValidAmount(maxAmountA, true)) {
@@ -65,12 +65,12 @@ export function liquidityPoolDeposit(
     maxAmountA: maxAmountAXdr,
     maxAmountB: maxAmountBXdr,
     minPrice: minPriceXdr,
-    maxPrice: maxPriceXdr
+    maxPrice: maxPriceXdr,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.liquidityPoolDeposit(liquidityPoolDepositOp)
+    body: xdr.OperationBody.liquidityPoolDeposit(liquidityPoolDepositOp),
   };
 
   this.setSourceAccount(opAttributes, opts);

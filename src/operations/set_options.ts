@@ -4,7 +4,7 @@ import { StrKey } from "../strkey.js";
 import {
   OperationClass,
   SetOptionsOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 function weightCheckFunction(value: number, name: string): boolean {
@@ -48,7 +48,7 @@ function weightCheckFunction(value: number, name: string): boolean {
  */
 export function setOptions(
   this: OperationClass,
-  opts: SetOptionsOpts
+  opts: SetOptionsOpts,
 ): xdr.Operation {
   let inflationDest: xdr.AccountId | null = null;
 
@@ -67,25 +67,25 @@ export function setOptions(
     this._checkUnsignedIntValue(
       "masterWeight",
       opts.masterWeight,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
   const lowThreshold =
     this._checkUnsignedIntValue(
       "lowThreshold",
       opts.lowThreshold,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
   const medThreshold =
     this._checkUnsignedIntValue(
       "medThreshold",
       opts.medThreshold,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
   const highThreshold =
     this._checkUnsignedIntValue(
       "highThreshold",
       opts.highThreshold,
-      weightCheckFunction
+      weightCheckFunction,
     ) ?? null;
 
   if (opts.homeDomain !== undefined && typeof opts.homeDomain !== "string") {
@@ -99,7 +99,7 @@ export function setOptions(
     const weight = this._checkUnsignedIntValue(
       "signer.weight",
       opts.signer.weight,
-      weightCheckFunction
+      weightCheckFunction,
     );
     let key: xdr.SignerKey | undefined;
 
@@ -110,7 +110,7 @@ export function setOptions(
         throw new Error("signer.ed25519PublicKey is invalid.");
       }
       const rawKey = StrKey.decodeEd25519PublicKey(
-        opts.signer.ed25519PublicKey
+        opts.signer.ed25519PublicKey,
       );
 
       key = xdr.SignerKey.signerKeyTypeEd25519(rawKey);
@@ -154,7 +154,7 @@ export function setOptions(
         throw new Error("signer.ed25519SignedPayload is invalid.");
       }
       const rawKey = StrKey.decodeSignedPayload(
-        opts.signer.ed25519SignedPayload
+        opts.signer.ed25519SignedPayload,
       );
       const signedPayloadXdr =
         xdr.SignerKeyEd25519SignedPayload.fromXDR(rawKey);
@@ -165,7 +165,7 @@ export function setOptions(
 
     if (setValues !== 1) {
       throw new Error(
-        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx."
+        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.",
       );
     }
 
@@ -181,12 +181,12 @@ export function setOptions(
     medThreshold,
     highThreshold,
     homeDomain: homeDomain as string | null,
-    signer
+    signer,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.setOptions(setOptionsOp)
+    body: xdr.OperationBody.setOptions(setOptionsOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

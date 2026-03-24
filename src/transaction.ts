@@ -7,7 +7,7 @@ import { Memo } from "./memo.js";
 import { TransactionBase } from "./transaction_base.js";
 import {
   extractBaseAddress,
-  encodeMuxedAccountToAddress
+  encodeMuxedAccountToAddress,
 } from "./util/decode_encode_muxed_account.js";
 import { OperationRecord } from "./operations/types.js";
 
@@ -47,7 +47,7 @@ export class Transaction extends TransactionBase<
    */
   constructor(
     envelope: xdr.TransactionEnvelope | string,
-    networkPassphrase: string
+    networkPassphrase: string,
   ) {
     if (typeof envelope === "string") {
       const buffer = Buffer.from(envelope, "base64");
@@ -62,7 +62,7 @@ export class Transaction extends TransactionBase<
       )
     ) {
       throw new Error(
-        `Invalid TransactionEnvelope: expected an envelopeTypeTxV0 or envelopeTypeTx but received an ${envelopeType.name}.`
+        `Invalid TransactionEnvelope: expected an envelopeTypeTxV0 or envelopeTypeTx but received an ${envelopeType.name}.`,
       );
     }
 
@@ -82,12 +82,12 @@ export class Transaction extends TransactionBase<
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
         this._source = StrKey.encodeEd25519PublicKey(
-          (this.tx as xdr.TransactionV0).sourceAccountEd25519()
+          (this.tx as xdr.TransactionV0).sourceAccountEd25519(),
         );
         break;
       default:
         this._source = encodeMuxedAccountToAddress(
-          (this.tx as xdr.Transaction).sourceAccount()
+          (this.tx as xdr.Transaction).sourceAccount(),
         );
         break;
     }
@@ -122,7 +122,7 @@ export class Transaction extends TransactionBase<
     if (timeBounds) {
       this._timeBounds = {
         minTime: timeBounds.minTime().toString(),
-        maxTime: timeBounds.maxTime().toString()
+        maxTime: timeBounds.maxTime().toString(),
       };
     }
 
@@ -131,7 +131,7 @@ export class Transaction extends TransactionBase<
       if (ledgerBounds) {
         this._ledgerBounds = {
           minLedger: ledgerBounds.minLedger(),
-          maxLedger: ledgerBounds.maxLedger()
+          maxLedger: ledgerBounds.maxLedger(),
         };
       }
 
@@ -258,19 +258,19 @@ export class Transaction extends TransactionBase<
           // stripped off, we need to put it back to build a valid transaction
           // which we can use to build a TransactionSignaturePayloadTaggedTransaction
           Buffer.alloc(4), // AccountID discriminant: publicKeyTypeEd25519 = 0
-          tx.toXDR()
-        ])
+          tx.toXDR(),
+        ]),
       );
     }
 
     const taggedTransaction =
       xdr.TransactionSignaturePayloadTaggedTransaction.envelopeTypeTx(
-        tx as xdr.Transaction
+        tx as xdr.Transaction,
       );
 
     const txSignature = new xdr.TransactionSignaturePayload({
       networkId: xdr.Hash.fromXDR(hash(this.networkPassphrase)),
-      taggedTransaction
+      taggedTransaction,
     });
 
     return txSignature.toXDR();
@@ -289,21 +289,21 @@ export class Transaction extends TransactionBase<
         envelope = xdr.TransactionEnvelope.envelopeTypeTxV0(
           new xdr.TransactionV0Envelope({
             tx: xdr.TransactionV0.fromXDR(rawTx), // make a copy of tx
-            signatures
-          })
+            signatures,
+          }),
         );
         break;
       case xdr.EnvelopeType.envelopeTypeTx():
         envelope = xdr.TransactionEnvelope.envelopeTypeTx(
           new xdr.TransactionV1Envelope({
             tx: xdr.Transaction.fromXDR(rawTx), // make a copy of tx
-            signatures
-          })
+            signatures,
+          }),
         );
         break;
       default:
         throw new Error(
-          `Invalid TransactionEnvelope: expected an envelopeTypeTxV0 or envelopeTypeTx but received an ${this._envelopeType.name}.`
+          `Invalid TransactionEnvelope: expected an envelopeTypeTxV0 or envelopeTypeTx but received an ${this._envelopeType.name}.`,
         );
     }
 
@@ -339,24 +339,24 @@ export class Transaction extends TransactionBase<
 
     try {
       Operation.createClaimableBalance(
-        op as Parameters<typeof Operation.createClaimableBalance>[0]
+        op as Parameters<typeof Operation.createClaimableBalance>[0],
       );
     } catch (err) {
       throw new TypeError(
-        `expected createClaimableBalance, got ${op.type}: ${String(err)}`
+        `expected createClaimableBalance, got ${op.type}: ${String(err)}`,
       );
     }
 
     // Always use the transaction's *unmuxed* source.
     const account = StrKey.decodeEd25519PublicKey(
-      extractBaseAddress(this.source)
+      extractBaseAddress(this.source),
     );
     const operationId = xdr.HashIdPreimage.envelopeTypeOpId(
       new xdr.HashIdPreimageOperationId({
         sourceAccount: xdr.PublicKey.publicKeyTypeEd25519(account),
         seqNum: xdr.Int64.fromString(this.sequence),
-        opNum: opIndex
-      })
+        opNum: opIndex,
+      }),
     );
 
     const opIdHash = hash(operationId.toXDR("raw"));

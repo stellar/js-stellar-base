@@ -38,7 +38,7 @@ export const LiquidityPoolFeeV18 = 30;
  */
 export function getLiquidityPoolId(
   liquidityPoolType: LiquidityPoolType,
-  liquidityPoolParameters: LiquidityPoolParameters
+  liquidityPoolParameters: LiquidityPoolParameters,
 ) {
   if (liquidityPoolType !== "constant_product") {
     throw new Error("liquidityPoolType is invalid");
@@ -67,8 +67,8 @@ export function getLiquidityPoolId(
     new xdr.LiquidityPoolConstantProductParameters({
       assetA: assetA.toXDRObject(),
       assetB: assetB.toXDRObject(),
-      fee
-    })
+      fee,
+    }),
   ).toXDR();
 
   return hash(payload);

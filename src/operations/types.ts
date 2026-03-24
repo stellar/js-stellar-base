@@ -25,12 +25,12 @@ export interface OperationClass {
   _toXDRPrice(price: number | object | string): xdr.Price;
   setSourceAccount(
     opAttributes: OperationAttributes,
-    opts: { source?: string }
+    opts: { source?: string },
   ): void;
   _checkUnsignedIntValue(
     name: string,
     value: number | string | undefined,
-    isValidFunction?: ((value: number, name: string) => boolean) | null
+    isValidFunction?: ((value: number, name: string) => boolean) | null,
   ): number | undefined;
 }
 
@@ -518,7 +518,7 @@ export interface ManageBuyOfferResult extends BaseOperation<OperationType.Manage
 }
 
 export interface SetOptionsResult<
-  T extends Signer = never
+  T extends Signer = never,
 > extends BaseOperation<OperationType.SetOptions> {
   inflationDest?: string;
   // AuthFlag represents individual flag bits (1, 2, 4, 8). At runtime these fields

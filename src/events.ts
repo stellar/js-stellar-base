@@ -25,7 +25,7 @@ interface SorobanEvent {
  *    friendly format
  */
 export function humanizeEvents(
-  events: xdr.ContractEvent[] | xdr.DiagnosticEvent[]
+  events: xdr.ContractEvent[] | xdr.DiagnosticEvent[],
 ): SorobanEvent[] {
   return events.map((e) => {
     // A pseudo-instanceof check for xdr.DiagnosticEvent more reliable
@@ -45,7 +45,7 @@ function extractEvent(event: xdr.ContractEvent): SorobanEvent {
   return {
     ...(contractId !== null &&
       contractId !== undefined && {
-        contractId: StrKey.encodeContract(contractId as unknown as Buffer)
+        contractId: StrKey.encodeContract(contractId as unknown as Buffer),
       }),
     type: event.type().name,
     topics: event
@@ -55,6 +55,6 @@ function extractEvent(event: xdr.ContractEvent): SorobanEvent {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       .map((t: xdr.ScVal) => scValToNative(t)),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    data: scValToNative(event.body().value().data())
+    data: scValToNative(event.body().value().data()),
   };
 }

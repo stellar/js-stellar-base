@@ -4,7 +4,7 @@ import { StrKey } from "../strkey.js";
 import {
   OperationClass,
   AllowTrustOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -23,7 +23,7 @@ import {
  */
 export function allowTrust(
   this: OperationClass,
-  opts: AllowTrustOpts
+  opts: AllowTrustOpts,
 ): xdr.Operation {
   if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
     throw new Error("trustor is invalid");
@@ -56,12 +56,12 @@ export function allowTrust(
   const allowTrustOp = new xdr.AllowTrustOp({
     trustor,
     asset,
-    authorize
+    authorize,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.allowTrust(allowTrustOp)
+    body: xdr.OperationBody.allowTrust(allowTrustOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

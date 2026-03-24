@@ -122,19 +122,19 @@ export class Address {
       case xdr.ScAddressType.scAddressTypeMuxedAccount().value: {
         const raw = Buffer.concat([
           scAddress.muxedAccount().ed25519(),
-          scAddress.muxedAccount().id().toXDR("raw")
+          scAddress.muxedAccount().id().toXDR("raw"),
         ]);
         return Address.muxedAccount(raw);
       }
       case xdr.ScAddressType.scAddressTypeClaimableBalance().value: {
         const cbi = scAddress.claimableBalanceId();
         return Address.claimableBalance(
-          Buffer.concat([Buffer.from([cbi.switch().value]), cbi.v0()])
+          Buffer.concat([Buffer.from([cbi.switch().value]), cbi.v0()]),
         );
       }
       case xdr.ScAddressType.scAddressTypeLiquidityPool().value:
         return Address.liquidityPool(
-          scAddress.liquidityPoolId() as unknown as Buffer
+          scAddress.liquidityPoolId() as unknown as Buffer,
         );
       default:
         throw new Error(`Unsupported address type: ${scAddress.switch().name}`);
@@ -175,28 +175,30 @@ export class Address {
     switch (this._type) {
       case "account":
         return xdr.ScAddress.scAddressTypeAccount(
-          xdr.PublicKey.publicKeyTypeEd25519(this._key)
+          xdr.PublicKey.publicKeyTypeEd25519(this._key),
         );
       case "contract":
         return xdr.ScAddress.scAddressTypeContract(
-          this._key as unknown as xdr.Hash
+          this._key as unknown as xdr.Hash,
         );
       case "liquidityPool":
         return xdr.ScAddress.scAddressTypeLiquidityPool(
-          this._key as unknown as xdr.Hash
+          this._key as unknown as xdr.Hash,
         );
 
       case "claimableBalance":
         return xdr.ScAddress.scAddressTypeClaimableBalance(
-          xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(this._key.subarray(1))
+          xdr.ClaimableBalanceId.claimableBalanceIdTypeV0(
+            this._key.subarray(1),
+          ),
         );
 
       case "muxedAccount":
         return xdr.ScAddress.scAddressTypeMuxedAccount(
           new xdr.MuxedEd25519Account({
             ed25519: this._key.subarray(0, 32),
-            id: xdr.Uint64.fromXDR(this._key.subarray(32, 40), "raw")
-          })
+            id: xdr.Uint64.fromXDR(this._key.subarray(32, 40), "raw"),
+          }),
         );
 
       default:

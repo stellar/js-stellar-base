@@ -6,7 +6,7 @@ import { Keypair } from "./keypair.js";
  * @ignore
  */
 export class TransactionBase<
-  TTx extends xdr.FeeBumpTransaction | xdr.Transaction | xdr.TransactionV0
+  TTx extends xdr.FeeBumpTransaction | xdr.Transaction | xdr.TransactionV0,
 > {
   _tx: TTx;
   _signatures: xdr.DecoratedSignature[];
@@ -17,11 +17,11 @@ export class TransactionBase<
     tx: TTx,
     signatures: xdr.DecoratedSignature[],
     fee: string,
-    networkPassphrase: string
+    networkPassphrase: string,
   ) {
     if (typeof networkPassphrase !== "string") {
       throw new Error(
-        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`
+        `Invalid passphrase provided to Transaction: expected a string but got a ${typeof networkPassphrase}`,
       );
     }
 
@@ -157,8 +157,8 @@ export class TransactionBase<
     this.signatures.push(
       new xdr.DecoratedSignature({
         hint,
-        signature: signatureBuffer
-      })
+        signature: signatureBuffer,
+      }),
     );
   }
 

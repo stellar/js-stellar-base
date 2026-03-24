@@ -24,7 +24,7 @@ export {
   revokeDataSponsorship,
   revokeClaimableBalanceSponsorship,
   revokeLiquidityPoolSponsorship,
-  revokeSignerSponsorship
+  revokeSignerSponsorship,
 } from "./revoke_sponsorship.js";
 export { clawback } from "./clawback.js";
 export { setTrustLineFlags } from "./set_trustline_flags.js";
@@ -35,7 +35,7 @@ export {
   invokeContractFunction,
   createStellarAssetContract,
   createCustomContract,
-  uploadContractWasm
+  uploadContractWasm,
 } from "./invoke_host_function.js";
 export { extendFootprintTtl } from "./extend_footprint_ttl.js";
 export { restoreFootprint } from "./restore_footprint.js";
@@ -45,5 +45,5 @@ export type {
   OperationOptions,
   OperationType,
   Signer,
-  OperationRecord
+  OperationRecord,
 } from "./types.js";

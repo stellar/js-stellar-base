@@ -10,7 +10,7 @@ import { trimEnd } from "./util/util.js";
 import { best_r } from "./util/continued_fraction.js";
 import {
   decodeAddressToMuxedAccount,
-  encodeMuxedAccountToAddress
+  encodeMuxedAccountToAddress,
 } from "./util/decode_encode_muxed_account.js";
 
 import * as ops from "./operations/index.js";
@@ -52,7 +52,7 @@ import type {
   InvokeHostFunctionResult,
   ExtendFootprintTTLResult,
   RestoreFootprintResult,
-  Signer
+  Signer,
 } from "./operations/types.js";
 
 const ONE = 10000000;
@@ -140,7 +140,7 @@ export class Operation {
   /** Sets the source account on the operation attributes from the opts. */
   static setSourceAccount(
     opAttributes: OperationAttributes,
-    opts: { source?: string }
+    opts: { source?: string },
   ) {
     if (opts.source) {
       try {
@@ -159,7 +159,7 @@ export class Operation {
    */
   /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
   static fromXDRObject<T extends OperationRecord = OperationRecord>(
-    operation: xdr.Operation
+    operation: xdr.Operation,
   ): T {
     const result: Record<string, unknown> = {};
     const sourceAccount = operation.sourceAccount();
@@ -273,7 +273,7 @@ export class Operation {
           } else if (arm === "ed25519SignedPayload") {
             const signedPayload = attrs.signer().key().ed25519SignedPayload();
             signer.ed25519SignedPayload = StrKey.encodeSignedPayload(
-              signedPayload.toXDR()
+              signedPayload.toXDR(),
             );
           }
 
@@ -388,7 +388,7 @@ export class Operation {
           authorized: xdr.TrustLineFlags.authorizedFlag(),
           authorizedToMaintainLiabilities:
             xdr.TrustLineFlags.authorizedToMaintainLiabilitiesFlag(),
-          clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag()
+          clawbackEnabled: xdr.TrustLineFlags.trustlineClawbackEnabledFlag(),
         };
 
         const getFlagValue = (key: string) => {
@@ -518,7 +518,7 @@ export class Operation {
   static _checkUnsignedIntValue(
     name: string,
     value: number | string | undefined,
-    isValidFunction: ((value: number, name: string) => boolean) | null = null
+    isValidFunction: ((value: number, name: string) => boolean) | null = null,
   ): number | undefined {
     if (typeof value === "undefined") {
       return undefined;
@@ -584,7 +584,7 @@ export class Operation {
    * @param price - the price as a number, string, or `{n, d}` fraction
    */
   static _toXDRPrice(
-    price: number | string | { n: number; d: number }
+    price: number | string | { n: number; d: number },
   ): xdr.Price {
     let xdrObject: xdr.Price;
 
@@ -594,7 +594,7 @@ export class Operation {
       const approx = best_r(price);
       xdrObject = new xdr.Price({
         n: parseInt(String(approx[0]), 10),
-        d: parseInt(String(approx[1]), 10)
+        d: parseInt(String(approx[1]), 10),
       });
     }
 
@@ -652,7 +652,7 @@ export class Operation {
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
 function extractRevokeSponshipDetails(
   attrs: any,
-  result: Record<string, unknown>
+  result: Record<string, unknown>,
 ) {
   switch (attrs.switch().name) {
     case "revokeSponsorshipLedgerEntry": {
@@ -667,7 +667,7 @@ function extractRevokeSponshipDetails(
         case xdr.LedgerEntryType.trustline().name: {
           result.type = "revokeTrustlineSponsorship";
           result.account = accountIdtoAddress(
-            ledgerKey.trustLine().accountId()
+            ledgerKey.trustLine().accountId(),
           );
           const xdrAsset = ledgerKey.trustLine().asset();
           switch (xdrAsset.switch()) {
@@ -727,14 +727,14 @@ function extractRevokeSponshipDetails(
 }
 
 function convertXDRSignerKeyToObject(
-  signerKey: xdr.SignerKey
+  signerKey: xdr.SignerKey,
 ): Record<string, unknown> {
   const attrs: Record<string, unknown> = {};
 
   switch (signerKey.switch().name) {
     case xdr.SignerKeyType.signerKeyTypeEd25519().name: {
       attrs.ed25519PublicKey = StrKey.encodeEd25519PublicKey(
-        signerKey.ed25519()
+        signerKey.ed25519(),
       );
       break;
     }

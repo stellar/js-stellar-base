@@ -17,7 +17,7 @@ import { OperationAttributes, OperationClass, PaymentOpts } from "./types.js";
  */
 export function payment(
   this: OperationClass,
-  opts: PaymentOpts
+  opts: PaymentOpts,
 ): xdr.Operation {
   if (!opts.asset) {
     throw new Error("Must provide an asset for a payment operation");
@@ -36,12 +36,12 @@ export function payment(
   const paymentOp = new xdr.PaymentOp({
     destination,
     asset: opts.asset.toXDRObject(),
-    amount: this._toXDRAmount(opts.amount)
+    amount: this._toXDRAmount(opts.amount),
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.payment(paymentOp)
+    body: xdr.OperationBody.payment(paymentOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

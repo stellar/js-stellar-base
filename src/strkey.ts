@@ -23,7 +23,7 @@ const versionBytes: Record<VersionByteName, number> = {
   signedPayload: 15 << 3, // P
   contract: 2 << 3, // C
   liquidityPool: 11 << 3, // L
-  claimableBalance: 1 << 3 // B
+  claimableBalance: 1 << 3, // B
 };
 
 const strkeyTypes: Record<string, VersionByteName> = {
@@ -35,13 +35,13 @@ const strkeyTypes: Record<string, VersionByteName> = {
   P: "signedPayload",
   C: "contract",
   L: "liquidityPool",
-  B: "claimableBalance"
+  B: "claimableBalance",
 };
 
 type StrKeyPrefix = keyof typeof strkeyTypes;
 
 function hasVersionByteName(
-  versionByteName: string
+  versionByteName: string,
 ): versionByteName is VersionByteName {
   return Object.prototype.hasOwnProperty.call(versionBytes, versionByteName);
 }
@@ -408,14 +408,14 @@ export function decodeCheck(versionByteName: string, encoded: string): Buffer {
   if (!hasVersionByteName(versionByteName)) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
-        `Expected one of ${Object.keys(versionBytes).join(", ")}`
+        `Expected one of ${Object.keys(versionBytes).join(", ")}`,
     );
   }
   const expectedVersion = versionBytes[versionByteName];
 
   if (versionByte !== expectedVersion) {
     throw new Error(
-      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`
+      `invalid version byte. expected ${expectedVersion}, got ${versionByte}`,
     );
   }
 
@@ -443,7 +443,7 @@ export function encodeCheck(versionByteName: string, data: Buffer): string {
   if (!hasVersionByteName(versionByteName)) {
     throw new Error(
       `${versionByteName} is not a valid version byte name. ` +
-        `Expected one of ${Object.keys(versionBytes).join(", ")}`
+        `Expected one of ${Object.keys(versionBytes).join(", ")}`,
     );
   }
   const versionByte = versionBytes[versionByteName];
@@ -488,7 +488,7 @@ function calculateChecksum(payload: Uint8Array): Uint8Array {
     0xed0f, 0xdd6c, 0xcd4d, 0xbdaa, 0xad8b, 0x9de8, 0x8dc9, 0x7c26, 0x6c07,
     0x5c64, 0x4c45, 0x3ca2, 0x2c83, 0x1ce0, 0x0cc1, 0xef1f, 0xff3e, 0xcf5d,
     0xdf7c, 0xaf9b, 0xbfba, 0x8fd9, 0x9ff8, 0x6e17, 0x7e36, 0x4e55, 0x5e74,
-    0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
+    0x2e93, 0x3eb2, 0x0ed1, 0x1ef0,
   ];
 
   let crc16 = 0x0;

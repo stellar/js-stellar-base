@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   ExtendFootprintTtlOpts,
   OperationAttributes,
-  OperationClass
+  OperationClass,
 } from "./types.js";
 
 /**
@@ -33,7 +33,7 @@ import {
  */
 export function extendFootprintTtl(
   this: OperationClass,
-  opts: ExtendFootprintTtlOpts
+  opts: ExtendFootprintTtlOpts,
 ): xdr.Operation {
   if ((opts.extendTo ?? -1) <= 0) {
     throw new RangeError("extendTo has to be positive");
@@ -41,12 +41,12 @@ export function extendFootprintTtl(
 
   const extendFootprintOp = new xdr.ExtendFootprintTtlOp({
     ext: new xdr.ExtensionPoint(0),
-    extendTo: opts.extendTo
+    extendTo: opts.extendTo,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp)
+    body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp),
   };
   this.setSourceAccount(opAttributes, opts);
 
@@ -54,6 +54,6 @@ export function extendFootprintTtl(
     opAttributes as {
       sourceAccount: xdr.MuxedAccount | null;
       body: xdr.OperationBody;
-    }
+    },
   );
 }

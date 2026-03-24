@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   OperationClass,
   LiquidityPoolWithdrawOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -20,14 +20,14 @@ import {
  */
 export function liquidityPoolWithdraw(
   this: OperationClass,
-  opts: LiquidityPoolWithdrawOpts = {} as LiquidityPoolWithdrawOpts
+  opts: LiquidityPoolWithdrawOpts = {} as LiquidityPoolWithdrawOpts,
 ): xdr.Operation {
   if (!opts.liquidityPoolId) {
     throw new TypeError("liquidityPoolId argument is required");
   }
   const liquidityPoolId = Buffer.from(
     opts.liquidityPoolId,
-    "hex"
+    "hex",
   ) as unknown as xdr.PoolId;
 
   if (!this.isValidAmount(opts.amount)) {
@@ -49,12 +49,12 @@ export function liquidityPoolWithdraw(
     liquidityPoolId,
     amount,
     minAmountA,
-    minAmountB
+    minAmountB,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.liquidityPoolWithdraw(liquidityPoolWithdrawOp)
+    body: xdr.OperationBody.liquidityPoolWithdraw(liquidityPoolWithdrawOp),
   };
   this.setSourceAccount(opAttributes, opts);
 

@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   OperationClass,
   ManageDataOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -15,7 +15,7 @@ import {
  */
 export function manageData(
   this: OperationClass,
-  opts: ManageDataOpts
+  opts: ManageDataOpts,
 ): xdr.Operation {
   if (!(typeof opts.name === "string" && opts.name.length <= 64)) {
     throw new Error("name must be a string, up to 64 characters");
@@ -42,12 +42,12 @@ export function manageData(
 
   const manageDataOp = new xdr.ManageDataOp({
     dataName: opts.name,
-    dataValue
+    dataValue,
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.manageData(manageDataOp)
+    body: xdr.OperationBody.manageData(manageDataOp),
   };
   this.setSourceAccount(opAttributes, opts);
 
@@ -55,6 +55,6 @@ export function manageData(
     opAttributes as {
       sourceAccount: xdr.MuxedAccount | null;
       body: xdr.OperationBody;
-    }
+    },
   );
 }

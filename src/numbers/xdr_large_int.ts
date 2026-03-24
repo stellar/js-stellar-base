@@ -105,7 +105,7 @@ export class XdrLargeInt {
     if (bi > Number.MAX_SAFE_INTEGER || bi < Number.MIN_SAFE_INTEGER) {
       throw RangeError(
         `value ${bi} not in range for Number ` +
-          `[${Number.MAX_SAFE_INTEGER}, ${Number.MIN_SAFE_INTEGER}]`
+          `[${Number.MAX_SAFE_INTEGER}, ${Number.MIN_SAFE_INTEGER}]`,
       );
     }
 
@@ -136,7 +136,7 @@ export class XdrLargeInt {
   toU64(): xdr.ScVal {
     this._sizeCheck(64);
     return xdr.ScVal.scvU64(
-      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
+      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())), // reiterpret as unsigned
     );
   }
 
@@ -144,7 +144,7 @@ export class XdrLargeInt {
   toTimepoint(): xdr.ScVal {
     this._sizeCheck(64);
     return xdr.ScVal.scvTimepoint(
-      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
+      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())), // reiterpret as unsigned
     );
   }
 
@@ -152,7 +152,7 @@ export class XdrLargeInt {
   toDuration(): xdr.ScVal {
     this._sizeCheck(64);
     return xdr.ScVal.scvDuration(
-      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())) // reiterpret as unsigned
+      new xdr.Uint64(BigInt.asUintN(64, this.toBigInt())), // reiterpret as unsigned
     );
   }
 
@@ -171,8 +171,8 @@ export class XdrLargeInt {
     return xdr.ScVal.scvI128(
       new xdr.Int128Parts({
         hi: new xdr.Int64(hi64),
-        lo: new xdr.Uint64(lo64)
-      })
+        lo: new xdr.Uint64(lo64),
+      }),
     );
   }
 
@@ -188,8 +188,8 @@ export class XdrLargeInt {
     return xdr.ScVal.scvU128(
       new xdr.UInt128Parts({
         hi: new xdr.Uint64(BigInt.asUintN(64, v >> 64n)),
-        lo: new xdr.Uint64(BigInt.asUintN(64, v))
-      })
+        lo: new xdr.Uint64(BigInt.asUintN(64, v)),
+      }),
     );
   }
 
@@ -210,8 +210,8 @@ export class XdrLargeInt {
         hiHi: new xdr.Int64(hiHi64),
         hiLo: new xdr.Uint64(hiLo64),
         loHi: new xdr.Uint64(loHi64),
-        loLo: new xdr.Uint64(loLo64)
-      })
+        loLo: new xdr.Uint64(loLo64),
+      }),
     );
   }
 
@@ -232,8 +232,8 @@ export class XdrLargeInt {
         hiHi: new xdr.Uint64(hiHi64),
         hiLo: new xdr.Uint64(hiLo64),
         loHi: new xdr.Uint64(loHi64),
-        loLo: new xdr.Uint64(loLo64)
-      })
+        loLo: new xdr.Uint64(loLo64),
+      }),
     );
   }
 
@@ -275,7 +275,7 @@ export class XdrLargeInt {
   toJSON(): { value: string; type: string } {
     return {
       value: this.toBigInt().toString(),
-      type: this.type
+      type: this.type,
     };
   }
 

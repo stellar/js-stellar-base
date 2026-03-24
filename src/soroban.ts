@@ -25,12 +25,12 @@ export class Soroban {
     if (decimals > 0) {
       if (decimals > formatted.length) {
         formatted = ["0", formatted.toString().padStart(decimals, "0")].join(
-          "."
+          ".",
         );
       } else {
         formatted = [
           formatted.slice(0, -decimals),
-          formatted.slice(-decimals)
+          formatted.slice(-decimals),
         ].join(".");
       }
     }
@@ -70,12 +70,12 @@ export class Soroban {
 
     if (fraction?.length && fraction.length > decimals) {
       throw new Error(
-        `Too many decimal places in "${value}": expected at most ${decimals}, got ${fraction.length}`
+        `Too many decimal places in "${value}": expected at most ${decimals}, got ${fraction.length}`,
       );
     }
 
     const shifted = BigInt(
-      whole + (fraction?.padEnd(decimals, "0") ?? "0".repeat(decimals))
+      whole + (fraction?.padEnd(decimals, "0") ?? "0".repeat(decimals)),
     );
 
     return shifted.toString();

@@ -8,7 +8,7 @@ export const AssetType = {
   native: "native",
   credit4: "credit_alphanum4",
   credit12: "credit_alphanum12",
-  liquidityPoolShares: "liquidity_pool_shares"
+  liquidityPoolShares: "liquidity_pool_shares",
 } as const;
 export type AssetType = (typeof AssetType)[keyof typeof AssetType];
 
@@ -35,7 +35,7 @@ export class Asset {
   constructor(code: string, issuer?: string) {
     if (!/^[a-zA-Z0-9]{1,12}$/.test(code)) {
       throw new Error(
-        "Asset code is invalid (maximum alphanumeric, 12 characters at max)"
+        "Asset code is invalid (maximum alphanumeric, 12 characters at max)",
       );
     }
     if (String(code).toLowerCase() !== "xlm" && !issuer) {
@@ -125,9 +125,9 @@ export class Asset {
       new xdr.HashIdPreimageContractId({
         networkId,
         contractIdPreimage: xdr.ContractIdPreimage.contractIdPreimageFromAsset(
-          this.toXDRObject()
-        )
-      })
+          this.toXDRObject(),
+        ),
+      }),
     );
 
     return StrKey.encodeContract(hash(preimage.toXDR()));
@@ -163,7 +163,7 @@ export class Asset {
 
     const assetType = new xdrType({
       assetCode: paddedCode,
-      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId()
+      issuer: Keypair.fromPublicKey(this.issuer).xdrAccountId(),
     });
 
     return new xdrAsset(xdrTypeString, assetType);

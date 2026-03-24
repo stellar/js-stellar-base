@@ -60,7 +60,7 @@ export class Memo<T extends MemoType = MemoType> {
   constructor(type: MemoTypeHash | MemoTypeReturn, value: Buffer);
   constructor(
     type: MemoTypeHash | MemoTypeID | MemoTypeReturn | MemoTypeText,
-    value: string
+    value: string,
   );
   constructor(type: T, value: MemoValue);
   /**
@@ -190,7 +190,7 @@ export class Memo<T extends MemoType = MemoType> {
 
   private static _validateHashValue(value: MemoValue): void {
     const error = new Error(
-      `Expects a 32 byte hash value or hex encoded string. Got ${String(value)}`
+      `Expects a 32 byte hash value or hex encoded string. Got ${String(value)}`,
     );
 
     if (value === null || typeof value === "undefined") {
@@ -267,8 +267,8 @@ export class Memo<T extends MemoType = MemoType> {
       case MemoID:
         return xdr.Memo.memoId(
           xdr.Uint64.fromString(
-            UnsignedHyper.fromString(this._value as string).toString()
-          )
+            UnsignedHyper.fromString(this._value as string).toString(),
+          ),
         );
       case MemoText:
         return xdr.Memo.memoText(this._value as string);

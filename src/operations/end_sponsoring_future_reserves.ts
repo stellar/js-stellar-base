@@ -2,7 +2,7 @@ import xdr from "../xdr.js";
 import {
   OperationClass,
   EndSponsoringFutureReservesOpts,
-  OperationAttributes
+  OperationAttributes,
 } from "./types.js";
 
 /**
@@ -17,11 +17,11 @@ import {
  */
 export function endSponsoringFutureReserves(
   this: OperationClass,
-  opts: EndSponsoringFutureReservesOpts = {}
+  opts: EndSponsoringFutureReservesOpts = {},
 ): xdr.Operation {
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
-    body: xdr.OperationBody.endSponsoringFutureReserves()
+    body: xdr.OperationBody.endSponsoringFutureReserves(),
   };
   this.setSourceAccount(opAttributes, opts);
 
