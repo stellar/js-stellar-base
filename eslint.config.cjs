@@ -18,13 +18,13 @@ function addTypeScriptLanguageOptions(config) {
         ...config.languageOptions?.globals,
         ...globals.es2020,
         ...globals["shared-node-browser"],
-        Buffer: "readonly"
+        Buffer: "readonly",
       },
       parserOptions: {
-        projectService: true
+        projectService: true,
       },
-      sourceType: "module"
-    }
+      sourceType: "module",
+    },
   };
 }
 
@@ -39,18 +39,18 @@ const javascriptConfig = [
         ...globals["shared-node-browser"],
         // This can be removed once we migrate fully to ESM
         ...globals.commonjs,
-        Buffer: "readonly"
-      }
+        Buffer: "readonly",
+      },
     },
     rules: {
-      "no-unused-vars": ["error", { caughtErrors: "none" }]
-    }
-  }
+      "no-unused-vars": ["error", { caughtErrors: "none" }],
+    },
+  },
 ];
 
 module.exports = eslintConfig.defineConfig(
   includeIgnoreFile(gitignorePath),
-  { ignores: ["src/generated"] },
+  { ignores: ["src/generated", "types/test.ts"] },
   javascriptConfig,
   tseslint.configs.recommendedTypeChecked.map(addTypeScriptLanguageOptions),
   addTypeScriptLanguageOptions({
@@ -64,14 +64,14 @@ module.exports = eslintConfig.defineConfig(
       "@typescript-eslint/require-await": "error",
       "@typescript-eslint/sort-type-constituents": "error",
       "@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "none" }],
-      "no-return-await": "off"
-    }
+      "no-return-await": "off",
+    },
   }),
   {
     files: ["**/*.ts"],
     plugins: { "import-x": importPlugin },
     rules: {
-      "import-x/extensions": ["error", "always", { ignorePackages: true }]
-    }
-  }
+      "import-x/extensions": ["error", "always", { ignorePackages: true }],
+    },
+  },
 );

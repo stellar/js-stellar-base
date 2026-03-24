@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 /// <reference types="node" />
 import * as StellarSdk from 'stellar-base';
 
