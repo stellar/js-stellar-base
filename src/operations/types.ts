@@ -141,7 +141,9 @@ export interface SetOptionsOpts<T extends SignerOpts = never> {
   lowThreshold?: number | string;
   medThreshold?: number | string;
   highThreshold?: number | string;
-  signer?: T;
+  // The weight field is optional in SignerOpts, but if a signer is provided in SetOptionsOpts, it must include a weight.
+  // Leaving the weight undefined would result in the signer no longer having signing power
+  signer?: T & { weight: number | string };
   homeDomain?: string;
   source?: string;
 }
