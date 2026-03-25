@@ -105,8 +105,8 @@ export interface SignerOpts {
 
 export interface SetOptionsOpts {
   inflationDest?: string;
-  clearFlags?: AuthFlag;
-  setFlags?: AuthFlag;
+  clearFlags?: AuthFlags;
+  setFlags?: AuthFlags;
   masterWeight?: number | string;
   lowThreshold?: number | string;
   medThreshold?: number | string;
@@ -419,7 +419,10 @@ export const AuthFlag = {
   clawbackEnabled: 8,
 } as const;
 export type AuthFlag = (typeof AuthFlag)[keyof typeof AuthFlag];
-
+/**
+ * A single {@link AuthFlag} or multiple flags combined with `|` (e.g. `AuthRequiredFlag | AuthRevocableFlag`).
+ */
+export type AuthFlags = AuthFlag | (number & {});
 export namespace TrustLineFlag {
   export type deauthorize = 0;
   export type authorize = 1;
@@ -520,8 +523,8 @@ export interface SetOptionsResult<
   // hold raw uint32 bitmasks, so combined values (e.g. AuthRequired | AuthRevocable = 3)
   // are valid but not expressible as AuthFlag. Use bitwise AND to test individual flags:
   //   if (result.clearFlags & AuthRequiredFlag) { ... }
-  clearFlags?: AuthFlag;
-  setFlags?: AuthFlag;
+  clearFlags?: AuthFlags;
+  setFlags?: AuthFlags;
   masterWeight?: number;
   lowThreshold?: number;
   medThreshold?: number;
