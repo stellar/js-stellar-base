@@ -34,7 +34,7 @@ export type ScIntType =
  */
 export class XdrLargeInt {
   int: LargeInt;
-  type: string;
+  type: ScIntType;
 
   /**
    * @param type - specifies a data type to use to represent the integer, one
@@ -257,7 +257,10 @@ export class XdrLargeInt {
       case "duration":
         return this.toDuration();
       default:
-        throw TypeError(`invalid type: ${this.type}`);
+        // This should be unreachable if the compiler enforces valid types
+        // This serves as a runtime check if the type is somehow invalid
+        // (e.g. from user input or a future extension)
+        throw TypeError(`invalid type: ${this.type as string}`);
     }
   }
 
@@ -286,7 +289,7 @@ export class XdrLargeInt {
   }
 
   /** Returns true if the given string is a valid XDR large integer type name. */
-  static isType(type: string): boolean {
+  static isType(type: string): type is ScIntType {
     switch (type) {
       case "i64":
       case "i128":
@@ -307,8 +310,15 @@ export class XdrLargeInt {
    * to a type description for {@link XdrLargeInt} construction (e.g. 'i128')
    *
    * @param scvType - the `xdr.ScValType` as a string
+   * @returns the corresponding {@link ScIntType} if it's an integer type, or
+   *    `undefined` if it's not an integer type
    */
-  static getType(scvType: string): string {
-    return scvType.slice(3).toLowerCase();
+  static getType(scvType: string): ScIntType | undefined {
+    const type = scvType.slice(3).toLowerCase();
+    if (this.isType(type)) {
+      return type;
+    }
+
+    return undefined;
   }
 }

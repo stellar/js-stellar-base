@@ -192,10 +192,10 @@ export class Asset {
    *
    *  - `native`,
    *  - `credit_alphanum4`,
-   *  - `credit_alphanum12`, or
-   *  - `unknown` as the error case (which should never occur)
+   *  - `credit_alphanum12`
+   * @throws {Error} Throws `Error` if asset type is unsupported.
    */
-  getAssetType(): AssetType | "unknown" {
+  getAssetType(): AssetType {
     switch (this.getRawAssetType().value) {
       case xdr.AssetType.assetTypeNative().value:
         return AssetType.native;
@@ -204,7 +204,9 @@ export class Asset {
       case xdr.AssetType.assetTypeCreditAlphanum12().value:
         return AssetType.credit12;
       default:
-        return "unknown";
+        throw new Error(
+          "Supported asset types are: native, credit_alphanum4, credit_alphanum12",
+        );
     }
   }
 

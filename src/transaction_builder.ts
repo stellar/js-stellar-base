@@ -275,7 +275,7 @@ export class TransactionBuilder {
 
     const builder = new TransactionBuilder(source, builderOpts);
 
-    tx._tx.operations().forEach((op) => builder.addOperation(op));
+    tx.tx.operations().forEach((op) => builder.addOperation(op));
 
     return builder;
   }

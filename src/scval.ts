@@ -299,7 +299,7 @@ export function nativeToScVal(
 
         default:
           if (XdrLargeInt.isType(optType)) {
-            return new XdrLargeInt(optType as ScIntType, val).toScVal();
+            return new XdrLargeInt(optType, val).toScVal();
           }
 
           throw new TypeError(
