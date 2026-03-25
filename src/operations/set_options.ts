@@ -165,11 +165,11 @@ export function setOptions(
 
     if (setValues !== 1) {
       throw new Error(
-        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx.",
+        "Signer object must contain exactly one of signer.ed25519PublicKey, signer.sha256Hash, signer.preAuthTx, or signer.ed25519SignedPayload.",
       );
     }
     if (weight === undefined) {
-      throw new Error("signer.weight is required.");
+      throw new Error("signer weight is required.");
     }
     if (key === undefined) {
       throw new Error("signer key is required.");
