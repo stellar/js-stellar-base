@@ -202,32 +202,21 @@ StellarSdk.TransactionBuilder.fromXDR(feeBumptransaction.toEnvelope(), StellarSd
 
 const noSignerXDR = StellarSdk.Operation.setOptions({ lowThreshold: 1 });
 
-StellarSdk.Operation.fromXDRObject(noSignerXDR); // $ExpectType OperationRecord
-const noSigner = StellarSdk.Operation.fromXDRObject(noSignerXDR); // $ExpectType OperationRecord
-if (noSigner.type === 'setOptions') {
-  noSigner.signer; // $ExpectType Signer | undefined
-}
+StellarSdk.Operation.fromXDRObject(noSignerXDR); // $ExpectType SetOptionsResult<never>
 const newSignerXDR1 = StellarSdk.Operation.setOptions({
   signer: { ed25519PublicKey: sourceKey.publicKey(), weight: '1' }
 });
-const newSigner1 = StellarSdk.Operation.fromXDRObject(newSignerXDR1); // $ExpectType OperationRecord
-if (newSigner1.type === 'setOptions') {
-  newSigner1.signer; // $ExpectType Signer | undefined
-}
+StellarSdk.Operation.fromXDRObject(newSignerXDR1); // $ExpectType SetOptionsResult<{ ed25519PublicKey: string; weight: string; }>
+
 const newSignerXDR2 = StellarSdk.Operation.setOptions({
   signer: { sha256Hash: Buffer.from(''), weight: '1' }
 });
-const newSigner2 = StellarSdk.Operation.fromXDRObject(newSignerXDR2); // $ExpectType OperationRecord
-if (newSigner2.type === 'setOptions') {
-  newSigner2.signer; // $ExpectType Signer | undefined
-}
+StellarSdk.Operation.fromXDRObject(newSignerXDR2); // $ExpectType SetOptionsResult<{ sha256Hash: Buffer<ArrayBuffer>; weight: string; }>
 const newSignerXDR3 = StellarSdk.Operation.setOptions({
   signer: { preAuthTx: '', weight: 1 }
 });
-const newSigner3 = StellarSdk.Operation.fromXDRObject(newSignerXDR3); // $ExpectType OperationRecord
-if (newSigner3.type === 'setOptions') {
-  newSigner3.signer; // $ExpectType Signer | undefined
-}
+StellarSdk.Operation.fromXDRObject(newSignerXDR3); // $ExpectType SetOptionsResult<{ preAuthTx: string; weight: number; }>
+
 
 StellarSdk.TimeoutInfinite; // $ExpectType 0
 

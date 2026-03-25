@@ -48,8 +48,6 @@ describe("Operation.clawbackClaimableBalance()", () => {
     const op = Operation.clawbackClaimableBalance({ balanceId });
     const hex = op.toXDR("hex");
     const roundtripped = xdr.Operation.fromXDR(hex, "hex");
-    expect(roundtripped.body().switch().name).toBe(
-      "clawbackClaimableBalance",
-    );
+    expect(roundtripped.body().switch().name).toBe("clawbackClaimableBalance");
   });
 });

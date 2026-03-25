@@ -1,5 +1,10 @@
 import xdr from "../xdr.js";
-import { OperationClass, InflationOpts, OperationAttributes } from "./types.js";
+import {
+  InflationOpts,
+  InflationResult,
+  OperationAttributes,
+  OperationClass,
+} from "./types.js";
 
 /**
  * This operation generates the inflation.
@@ -10,7 +15,7 @@ import { OperationClass, InflationOpts, OperationAttributes } from "./types.js";
 export function inflation(
   this: OperationClass,
   opts: InflationOpts = {},
-): xdr.Operation {
+): xdr.Operation<InflationResult> {
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
     body: xdr.OperationBody.inflation(),

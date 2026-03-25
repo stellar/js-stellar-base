@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "pnpm run build:types && rollup -c",
-    "build:types": "tsc -p tsconfig.types.json && mkdir -p lib/types/generated && cp src/generated/*.d.ts lib/types/generated/ && cp types/curr.d.ts types/next.d.ts lib/types/",
+    "build:types": "tsc -p tsconfig.types.json && mkdir -p lib/types/generated && cp src/generated/*.d.ts lib/types/generated/",
     "build:node:prod": "cross-env NODE_ENV=production pnpm run build",
     "build:prod": "cross-env NODE_ENV=production pnpm run build",
     "test": "pnpm run build && pnpm run test:vitest",

@@ -1,6 +1,7 @@
 import BigNumber from "../util/bignumber.js";
 import xdr from "../xdr.js";
 import {
+  BumpSequenceResult,
   BumpSequenceOpts,
   OperationAttributes,
   OperationClass,
@@ -16,7 +17,7 @@ import {
 export function bumpSequence(
   this: OperationClass,
   opts: BumpSequenceOpts,
-): xdr.Operation {
+): xdr.Operation<BumpSequenceResult> {
   if (typeof opts.bumpTo !== "string") {
     throw new Error("bumpTo must be a string");
   }

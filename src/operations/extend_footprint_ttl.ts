@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  ExtendFootprintTTLResult,
   ExtendFootprintTtlOpts,
   OperationAttributes,
   OperationClass,
@@ -34,7 +35,7 @@ import {
 export function extendFootprintTtl(
   this: OperationClass,
   opts: ExtendFootprintTtlOpts,
-): xdr.Operation {
+): xdr.Operation<ExtendFootprintTTLResult> {
   if ((opts.extendTo ?? -1) <= 0) {
     throw new RangeError("extendTo has to be positive");
   }

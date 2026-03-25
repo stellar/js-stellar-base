@@ -8,6 +8,7 @@ import {
   CreateStellarAssetContractOpts,
   InvokeContractFunctionOpts,
   InvokeHostFunctionOpts,
+  InvokeHostFunctionResult,
   OperationAttributes,
   OperationClass,
   UploadContractWasmOpts,
@@ -33,7 +34,7 @@ import {
 export function invokeHostFunction(
   this: OperationClass,
   opts: InvokeHostFunctionOpts,
-): xdr.Operation {
+): xdr.Operation<InvokeHostFunctionResult> {
   if (!opts.func) {
     throw new TypeError(
       `host function invocation ('func') required (got ${JSON.stringify(opts)})`,
@@ -102,7 +103,7 @@ export function invokeHostFunction(
 export function invokeContractFunction(
   this: OperationClass,
   opts: InvokeContractFunctionOpts,
-): xdr.Operation {
+): xdr.Operation<InvokeHostFunctionResult> {
   const c = new Address(opts.contract);
 
   if (c.type !== "contract") {
@@ -143,7 +144,7 @@ export function invokeContractFunction(
 export function createCustomContract(
   this: OperationClass,
   opts: CreateCustomContractOpts,
-): xdr.Operation {
+): xdr.Operation<InvokeHostFunctionResult> {
   const salt = Buffer.from(opts.salt || getSalty());
 
   if (!opts.wasmHash || opts.wasmHash.length !== 32) {
@@ -196,7 +197,7 @@ export function createCustomContract(
 export function createStellarAssetContract(
   this: OperationClass,
   opts: CreateStellarAssetContractOpts,
-): xdr.Operation {
+): xdr.Operation<InvokeHostFunctionResult> {
   let asset = opts.asset;
 
   if (typeof asset === "string") {
@@ -243,7 +244,7 @@ export function createStellarAssetContract(
 export function uploadContractWasm(
   this: OperationClass,
   opts: UploadContractWasmOpts,
-): xdr.Operation {
+): xdr.Operation<InvokeHostFunctionResult> {
   return this.invokeHostFunction({
     func: xdr.HostFunction.hostFunctionTypeUploadContractWasm(
       Buffer.from(opts.wasm), // coalesce so we can drop `Buffer` someday

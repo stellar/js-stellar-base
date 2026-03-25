@@ -1,6 +1,7 @@
 import xdr from "../xdr.js";
 import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account.js";
 import {
+  PathPaymentStrictSendResult,
   PathPaymentStrictSendOpts,
   OperationAttributes,
   OperationClass,
@@ -29,7 +30,7 @@ import {
 export function pathPaymentStrictSend(
   this: OperationClass,
   opts: PathPaymentStrictSendOpts,
-): xdr.Operation {
+): xdr.Operation<PathPaymentStrictSendResult> {
   if (!opts.sendAsset) {
     throw new Error("Must specify a send asset");
   }

@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  LiquidityPoolDepositResult,
   LiquidityPoolDepositOpts,
   OperationAttributes,
   OperationClass,
@@ -26,7 +27,7 @@ import {
 export function liquidityPoolDeposit(
   this: OperationClass,
   opts: LiquidityPoolDepositOpts = {} as LiquidityPoolDepositOpts,
-): xdr.Operation {
+): xdr.Operation<LiquidityPoolDepositResult> {
   const { liquidityPoolId, maxAmountA, maxAmountB, minPrice, maxPrice } = opts;
 
   if (!liquidityPoolId) {

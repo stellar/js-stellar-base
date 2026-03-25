@@ -2,6 +2,7 @@ import xdr from "../xdr.js";
 import { Keypair } from "../keypair.js";
 import { StrKey } from "../strkey.js";
 import {
+  CreateAccountResult,
   CreateAccountOpts,
   OperationAttributes,
   OperationClass,
@@ -20,7 +21,7 @@ import {
 export function createAccount(
   this: OperationClass,
   opts: CreateAccountOpts,
-): xdr.Operation {
+): xdr.Operation<CreateAccountResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
     throw new Error("destination is invalid");
   }

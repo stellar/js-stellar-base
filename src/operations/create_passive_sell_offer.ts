@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  CreatePassiveSellOfferResult,
   CreatePassiveSellOfferOpts,
   OperationAttributes,
   OperationClass,
@@ -24,7 +25,7 @@ import {
 export function createPassiveSellOffer(
   this: OperationClass,
   opts: CreatePassiveSellOfferOpts,
-): xdr.Operation {
+): xdr.Operation<CreatePassiveSellOfferResult> {
   const selling: xdr.Asset = opts.selling.toXDRObject();
   const buying: xdr.Asset = opts.buying.toXDRObject();
 

@@ -159,7 +159,7 @@ export class Operation {
    */
   /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
   static fromXDRObject<T extends OperationRecord = OperationRecord>(
-    operation: xdr.Operation,
+    operation: xdr.Operation<T>,
   ): T {
     const result: Record<string, unknown> = {};
     const sourceAccount = operation.sourceAccount();

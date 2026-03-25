@@ -2,6 +2,7 @@ import xdr from "../xdr.js";
 import {
   OperationAttributes,
   OperationClass,
+  RestoreFootprintResult,
   RestoreFootprintOpts,
 } from "./types.js";
 
@@ -27,7 +28,7 @@ import {
 export function restoreFootprint(
   this: OperationClass,
   opts: RestoreFootprintOpts = {},
-): xdr.Operation {
+): xdr.Operation<RestoreFootprintResult> {
   const op = new xdr.RestoreFootprintOp({
     ext: new xdr.ExtensionPoint(0),
   });

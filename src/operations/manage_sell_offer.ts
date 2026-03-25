@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  ManageSellOfferResult,
   ManageSellOfferOpts,
   OperationAttributes,
   OperationClass,
@@ -23,7 +24,7 @@ import {
 export function manageSellOffer(
   this: OperationClass,
   opts: ManageSellOfferOpts,
-): xdr.Operation {
+): xdr.Operation<ManageSellOfferResult> {
   const selling: xdr.Asset = opts.selling.toXDRObject();
   const buying: xdr.Asset = opts.buying.toXDRObject();
 

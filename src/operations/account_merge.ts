@@ -2,6 +2,7 @@ import xdr from "../xdr.js";
 import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account.js";
 import {
   AccountMergeOpts,
+  AccountMergeResult,
   OperationAttributes,
   OperationClass,
 } from "./types.js";
@@ -17,7 +18,7 @@ import {
 export function accountMerge(
   this: OperationClass,
   opts: AccountMergeOpts,
-): xdr.Operation {
+): xdr.Operation<AccountMergeResult> {
   let body: xdr.OperationBody;
   try {
     body = xdr.OperationBody.accountMerge(

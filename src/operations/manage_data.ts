@@ -1,5 +1,6 @@
 import xdr from "../xdr.js";
 import {
+  ManageDataResult,
   OperationClass,
   ManageDataOpts,
   OperationAttributes,
@@ -16,7 +17,7 @@ import {
 export function manageData(
   this: OperationClass,
   opts: ManageDataOpts,
-): xdr.Operation {
+): xdr.Operation<ManageDataResult> {
   if (!(typeof opts.name === "string" && opts.name.length <= 64)) {
     throw new Error("name must be a string, up to 64 characters");
   }
