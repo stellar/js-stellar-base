@@ -73,7 +73,7 @@ export interface LiquidityPoolWithdrawOpts {
 export interface AllowTrustOpts {
   trustor: string;
   assetCode: string;
-  authorize?: AuthFlag | boolean;
+  authorize?: TrustLineFlag | boolean;
   source?: string;
 }
 
