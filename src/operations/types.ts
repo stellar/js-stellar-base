@@ -100,39 +100,40 @@ export interface BaseSignerOpt {
   weight?: number | string;
 }
 
-export interface Ed25519PublicKeySignerOpt extends BaseSignerOpt {
+export interface Ed25519PublicKeySignerOpt {
   ed25519PublicKey: string;
   sha256Hash?: never;
   preAuthTx?: never;
   ed25519SignedPayload?: never;
 }
 
-export interface Sha256HashSignerOpt extends BaseSignerOpt {
+export interface Sha256HashSignerOpt {
   ed25519PublicKey?: never;
   sha256Hash: Buffer | string;
   preAuthTx?: never;
   ed25519SignedPayload?: never;
 }
 
-export interface PreAuthTxSignerOpt extends BaseSignerOpt {
+export interface PreAuthTxSignerOpt {
   ed25519PublicKey?: never;
   sha256Hash?: never;
   preAuthTx: Buffer | string;
   ed25519SignedPayload?: never;
 }
 
-export interface Ed25519SignedPayloadSignerOpt extends BaseSignerOpt {
+export interface Ed25519SignedPayloadSignerOpt {
   ed25519PublicKey?: never;
   sha256Hash?: never;
   preAuthTx?: never;
   ed25519SignedPayload: string;
 }
-export type SignerOpts =
-  | Ed25519PublicKeySignerOpt
-  | Ed25519SignedPayloadSignerOpt
-  | PreAuthTxSignerOpt
-  | Sha256HashSignerOpt;
-
+export type SignerOpts = BaseSignerOpt &
+  (
+    | Ed25519PublicKeySignerOpt
+    | Ed25519SignedPayloadSignerOpt
+    | PreAuthTxSignerOpt
+    | Sha256HashSignerOpt
+  ); // weight is required for SetOptions, but not for RevokeSignerSponsorship
 export interface SetOptionsOpts<T extends SignerOpts = never> {
   inflationDest?: string;
   clearFlags?: number | string;
@@ -241,9 +242,14 @@ export interface RevokeLiquidityPoolSponsorshipOpts {
   source?: string;
 }
 
+export type RevokeSignerOpts =
+  | Ed25519PublicKeySignerOpt
+  | PreAuthTxSignerOpt
+  | Sha256HashSignerOpt;
+
 export interface RevokeSignerSponsorshipOpts {
   account: string;
-  signer: SignerOpts;
+  signer: RevokeSignerOpts; // weight is not needed to identify the signer to revoke sponsorship for
   source?: string;
 }
 
@@ -639,7 +645,7 @@ export interface RevokeLiquidityPoolSponsorshipResult extends BaseOperation<Oper
 
 export interface RevokeSignerSponsorshipResult extends BaseOperation<OperationType.RevokeSignerSponsorship> {
   account: string;
-  signer: SignerOpts;
+  signer: RevokeSignerOpts;
 }
 
 export interface ClawbackResult extends BaseOperation<OperationType.Clawback> {
