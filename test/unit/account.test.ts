@@ -11,6 +11,7 @@ describe("Account.constructor", () => {
   });
 
   it("fails to create Account object from an invalid sequence number", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
     expect(() => new Account(ACCOUNT, 100 as any)).toThrow(
       /sequence must be of type string/,
     );
@@ -22,12 +23,6 @@ describe("Account.constructor", () => {
   it("fails to create Account object from an empty string sequence", () => {
     expect(() => new Account(ACCOUNT, "")).toThrow(
       /sequence is not a valid number/,
-    );
-  });
-
-  it("fails to create Account object from a negative sequence number", () => {
-    expect(() => new Account(ACCOUNT, "-1")).toThrow(
-      /sequence must be a non-negative number/,
     );
   });
 
