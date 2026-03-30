@@ -401,7 +401,8 @@ describe("Operation.revokeSignerSponsorship()", () => {
     expect(() =>
       Operation.revokeSignerSponsorship({
         account,
-        signer: {} as never,
+        // @ts-expect-error: intentionally passing invalid signer to test runtime validation
+        signer: { invalidKeyType: "" },
       }),
     ).toThrow(/signer is invalid/);
   });

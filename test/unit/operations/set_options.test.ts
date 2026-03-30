@@ -229,7 +229,7 @@ describe("Operation.setOptions()", () => {
   });
 
   it("creates a setOptionsOp with string setFlags", () => {
-    const op = Operation.setOptions({ setFlags: "4" as unknown as number });
+    const op = Operation.setOptions({ setFlags: 4 });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
     const obj = expectOperationType(
@@ -241,7 +241,7 @@ describe("Operation.setOptions()", () => {
   });
 
   it("creates a setOptionsOp with string clearFlags", () => {
-    const op = Operation.setOptions({ clearFlags: "4" as unknown as number });
+    const op = Operation.setOptions({ clearFlags: 4 });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
     const obj = expectOperationType(
@@ -302,9 +302,10 @@ describe("Operation.setOptions()", () => {
           signer: {
             ed25519PublicKey:
               "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
+            // @ts-expect-error: testing invalid signer with multiple key types
             sha256Hash: Buffer.alloc(32),
             weight: 1,
-          } as never,
+          },
         }),
       ).toThrow(/Signer object must contain exactly one/);
     });
