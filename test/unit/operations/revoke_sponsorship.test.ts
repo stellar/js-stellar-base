@@ -4,6 +4,10 @@ import { Asset } from "../../../src/asset.js";
 import { LiquidityPoolId } from "../../../src/liquidity_pool_id.js";
 import { hash } from "../../../src/hashing.js";
 import xdr from "../../../src/xdr.js";
+import {
+  expectOperationType,
+  expectObjectWithProperty,
+} from "../../support/operation.js";
 
 const account = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
 const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
@@ -12,13 +16,12 @@ describe("Operation.revokeAccountSponsorship()", () => {
   it("creates a revokeAccountSponsorshipOp", () => {
     const op = Operation.revokeAccountSponsorship({ account });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeAccountSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeAccountSponsorship");
-
-    if (obj.type !== "revokeAccountSponsorship")
-      throw new Error("unexpected type");
     expect(obj.account).toBe(account);
   });
 
@@ -35,11 +38,10 @@ describe("Operation.revokeAccountSponsorship()", () => {
 
   it("preserves an optional source account", () => {
     const op = Operation.revokeAccountSponsorship({ account, source });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeAccountSponsorship",
     );
-
-    expect(obj.type).toBe("revokeAccountSponsorship");
     expect(obj.source).toBe(source);
   });
 
@@ -59,10 +61,12 @@ describe("Operation.revokeTrustlineSponsorship()", () => {
     );
     const op = Operation.revokeTrustlineSponsorship({ account, asset });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeTrustlineSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeTrustlineSponsorship");
   });
 
   it("creates a revokeTrustlineSponsorshipOp with a LiquidityPoolId", () => {
@@ -71,10 +75,12 @@ describe("Operation.revokeTrustlineSponsorship()", () => {
     );
     const op = Operation.revokeTrustlineSponsorship({ account, asset });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeTrustlineSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeTrustlineSponsorship");
   });
 
   it("fails with an invalid account", () => {
@@ -106,11 +112,10 @@ describe("Operation.revokeTrustlineSponsorship()", () => {
       asset,
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeTrustlineSponsorship",
     );
-
-    expect(obj.type).toBe("revokeTrustlineSponsorship");
     expect(obj.source).toBe(source);
   });
 
@@ -132,13 +137,12 @@ describe("Operation.revokeOfferSponsorship()", () => {
     const offerId = "1234";
     const op = Operation.revokeOfferSponsorship({ seller, offerId });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeOfferSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeOfferSponsorship");
-
-    if (obj.type !== "revokeOfferSponsorship")
-      throw new Error("unexpected type");
     expect(obj.seller).toBe(seller);
     expect(obj.offerId).toBe(offerId);
   });
@@ -167,11 +171,10 @@ describe("Operation.revokeOfferSponsorship()", () => {
       offerId: "1234",
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeOfferSponsorship",
     );
-
-    expect(obj.type).toBe("revokeOfferSponsorship");
     expect(obj.source).toBe(source);
   });
 
@@ -191,13 +194,12 @@ describe("Operation.revokeDataSponsorship()", () => {
     const name = "foo";
     const op = Operation.revokeDataSponsorship({ account, name });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeDataSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeDataSponsorship");
-
-    if (obj.type !== "revokeDataSponsorship")
-      throw new Error("unexpected type");
     expect(obj.account).toBe(account);
     expect(obj.name).toBe(name);
   });
@@ -232,11 +234,10 @@ describe("Operation.revokeDataSponsorship()", () => {
       name: "foo",
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeDataSponsorship",
     );
-
-    expect(obj.type).toBe("revokeDataSponsorship");
     expect(obj.source).toBe(source);
   });
 
@@ -255,13 +256,12 @@ describe("Operation.revokeClaimableBalanceSponsorship()", () => {
   it("creates a revokeClaimableBalanceSponsorshipOp", () => {
     const op = Operation.revokeClaimableBalanceSponsorship({ balanceId });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeClaimableBalanceSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeClaimableBalanceSponsorship");
-
-    if (obj.type !== "revokeClaimableBalanceSponsorship")
-      throw new Error("unexpected type");
     expect(obj.balanceId).toBe(balanceId);
   });
 
@@ -277,11 +277,10 @@ describe("Operation.revokeClaimableBalanceSponsorship()", () => {
       balanceId,
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeClaimableBalanceSponsorship",
     );
-
-    expect(obj.type).toBe("revokeClaimableBalanceSponsorship");
     expect(obj.source).toBe(source);
   });
 
@@ -300,13 +299,12 @@ describe("Operation.revokeLiquidityPoolSponsorship()", () => {
   it("creates a revokeLiquidityPoolSponsorshipOp", () => {
     const op = Operation.revokeLiquidityPoolSponsorship({ liquidityPoolId });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeLiquidityPoolSponsorship",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeLiquidityPoolSponsorship");
-
-    if (obj.type !== "revokeLiquidityPoolSponsorship")
-      throw new Error("unexpected type");
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
   });
 
@@ -322,11 +320,10 @@ describe("Operation.revokeLiquidityPoolSponsorship()", () => {
       liquidityPoolId,
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeLiquidityPoolSponsorship",
     );
-
-    expect(obj.type).toBe("revokeLiquidityPoolSponsorship");
     expect(obj.source).toBe(source);
   });
 
@@ -343,30 +340,30 @@ describe("Operation.revokeSignerSponsorship()", () => {
     const signer = { ed25519PublicKey: account };
     const op = Operation.revokeSignerSponsorship({ account, signer });
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeSignerSponsorship",
+    );
+    const decodedSigner = expectObjectWithProperty(
+      obj.signer,
+      "ed25519PublicKey",
+    );
 
     expect(operation.body().switch().name).toBe("revokeSponsorship");
-    expect(obj.type).toBe("revokeSignerSponsorship");
-
-    if (obj.type !== "revokeSignerSponsorship")
-      throw new Error("unexpected type");
     expect(obj.account).toBe(account);
-    expect(obj.signer.ed25519PublicKey).toBe(signer.ed25519PublicKey);
+    expect(decodedSigner.ed25519PublicKey).toBe(signer.ed25519PublicKey);
   });
 
   it("creates a revokeSignerSponsorshipOp with a preAuthTx signer", () => {
     const signer = { preAuthTx: hash(Buffer.from("Tx hash")).toString("hex") };
     const op = Operation.revokeSignerSponsorship({ account, signer });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeSignerSponsorship",
     );
-
-    expect(obj.type).toBe("revokeSignerSponsorship");
-
-    if (obj.type !== "revokeSignerSponsorship")
-      throw new Error("unexpected type");
+    const decodedSigner = expectObjectWithProperty(obj.signer, "preAuthTx");
     expect(obj.account).toBe(account);
-    expect(obj.signer.preAuthTx).toBe(signer.preAuthTx);
+    expect(decodedSigner.preAuthTx).toBe(signer.preAuthTx);
   });
 
   it("creates a revokeSignerSponsorshipOp with a sha256Hash signer", () => {
@@ -374,16 +371,13 @@ describe("Operation.revokeSignerSponsorship()", () => {
       sha256Hash: hash(Buffer.from("Hash Preimage")).toString("hex"),
     };
     const op = Operation.revokeSignerSponsorship({ account, signer });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeSignerSponsorship",
     );
-
-    expect(obj.type).toBe("revokeSignerSponsorship");
-
-    if (obj.type !== "revokeSignerSponsorship")
-      throw new Error("unexpected type");
+    const decodedSigner = expectObjectWithProperty(obj.signer, "sha256Hash");
     expect(obj.account).toBe(account);
-    expect(obj.signer.sha256Hash).toBe(signer.sha256Hash);
+    expect(decodedSigner.sha256Hash).toBe(signer.sha256Hash);
   });
 
   it("fails with an invalid account", () => {
@@ -407,7 +401,7 @@ describe("Operation.revokeSignerSponsorship()", () => {
     expect(() =>
       Operation.revokeSignerSponsorship({
         account,
-        signer: {},
+        signer: {} as never,
       }),
     ).toThrow(/signer is invalid/);
   });
@@ -419,11 +413,10 @@ describe("Operation.revokeSignerSponsorship()", () => {
       signer,
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "revokeSignerSponsorship",
     );
-
-    expect(obj.type).toBe("revokeSignerSponsorship");
     expect(obj.source).toBe(source);
   });
 

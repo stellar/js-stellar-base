@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.restoreFootprint()", () => {
   it("creates a restoreFootprint operation", () => {
@@ -8,8 +9,7 @@ describe("Operation.restoreFootprint()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     expect(operation.body().switch().name).toBe("restoreFootprint");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("restoreFootprint");
+    expectOperationType(Operation.fromXDRObject(operation), "restoreFootprint");
   });
 
   it("creates a restoreFootprint operation with source account", () => {
@@ -17,8 +17,10 @@ describe("Operation.restoreFootprint()", () => {
     const op = Operation.restoreFootprint({ source });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("restoreFootprint");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "restoreFootprint",
+    );
     expect(obj.source).toBe(source);
   });
 
@@ -26,8 +28,10 @@ describe("Operation.restoreFootprint()", () => {
     const op = Operation.restoreFootprint({});
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("restoreFootprint");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "restoreFootprint",
+    );
     expect(obj.source).toBeUndefined();
   });
 

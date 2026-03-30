@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectDefined } from "../../support/expect_defined.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.manageData()", () => {
   it("creates a manageData operation with string value", () => {
@@ -8,10 +10,12 @@ describe("Operation.manageData()", () => {
     const op = Operation.manageData(opts);
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("manageData");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
     expect(obj.name).toBe("name");
-    expect(obj.value.toString("ascii")).toBe("value");
+    expect(expectDefined(obj.value).toString("ascii")).toBe("value");
   });
 
   it("creates a manageData operation with Buffer value", () => {
@@ -19,10 +23,14 @@ describe("Operation.manageData()", () => {
     const op = Operation.manageData(opts);
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("manageData");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
     expect(obj.name).toBe("name");
-    expect(obj.value.toString("hex")).toBe(opts.value.toString("hex"));
+    expect(expectDefined(obj.value).toString("hex")).toBe(
+      opts.value.toString("hex"),
+    );
   });
 
   it("creates a manageData operation with null value (deletes entry)", () => {
@@ -30,8 +38,10 @@ describe("Operation.manageData()", () => {
     const op = Operation.manageData(opts);
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("manageData");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
     expect(obj.name).toBe("name");
     expect(obj.value).toBeUndefined();
   });
@@ -42,8 +52,10 @@ describe("Operation.manageData()", () => {
     const op = Operation.manageData(opts);
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("manageData");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
     expect(obj.source).toBe(source);
   });
 
@@ -52,7 +64,10 @@ describe("Operation.manageData()", () => {
     const op = Operation.manageData({ name, value: "v" });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
     expect(obj.name).toBe(name);
   });
 
@@ -61,8 +76,11 @@ describe("Operation.manageData()", () => {
     const op = Operation.manageData({ name: "test", value });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.value.length).toBe(64);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
+    expect(expectDefined(obj.value).length).toBe(64);
   });
 
   describe("fails to create manageData operation", () => {
@@ -100,7 +118,10 @@ describe("Operation.manageData()", () => {
       const op = Operation.manageData({ name: "", value: "v" });
       const xdrHex = op.toXDR("hex");
       const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-      const obj = Operation.fromXDRObject(operation);
+      const obj = expectOperationType(
+        Operation.fromXDRObject(operation),
+        "manageData",
+      );
       expect(obj.name).toBe("");
     });
 

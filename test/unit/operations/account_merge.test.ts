@@ -5,6 +5,7 @@ import {
   encodeMuxedAccountToAddress,
   encodeMuxedAccount,
 } from "../../../src/util/decode_encode_muxed_account.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.accountMerge()", () => {
   const base = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
@@ -13,8 +14,11 @@ describe("Operation.accountMerge()", () => {
     const op = Operation.accountMerge({ destination: base });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("accountMerge");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "accountMerge",
+    );
+
     expect(obj.destination).toBe(base);
   });
 
@@ -25,8 +29,11 @@ describe("Operation.accountMerge()", () => {
     const op = Operation.accountMerge({ destination: dest, source });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("accountMerge");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "accountMerge",
+    );
+
     expect(obj.destination).toBe(dest);
     expect(obj.source).toBe(source);
   });
@@ -35,8 +42,11 @@ describe("Operation.accountMerge()", () => {
     const op = Operation.accountMerge({ destination: base, source: base });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("accountMerge");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "accountMerge",
+    );
+
     expect(obj.destination).toBe(base);
     expect(obj.source).toBe(base);
   });

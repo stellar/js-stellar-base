@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import BigNumber from "bignumber.js";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const liquidityPoolId =
   "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7";
@@ -104,9 +105,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
     expect(body.maxAmountA().toString()).toBe("100000000");
     expect(body.maxAmountB().toString()).toBe("200000000");
 
-    const obj = Operation.fromXDRObject(xdrOp);
-    expect(obj.type).toBe("liquidityPoolDeposit");
-    if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdrOp),
+      "liquidityPoolDeposit",
+    );
 
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
@@ -124,12 +126,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
       maxPrice: { n: 11, d: 20 },
     };
     const op = Operation.liquidityPoolDeposit(opts);
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "liquidityPoolDeposit",
     );
-
-    expect(obj.type).toBe("liquidityPoolDeposit");
-    if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
 
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
@@ -147,12 +147,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
       maxPrice: 0.55,
     };
     const op = Operation.liquidityPoolDeposit(opts);
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "liquidityPoolDeposit",
     );
-
-    expect(obj.type).toBe("liquidityPoolDeposit");
-    if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
 
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
@@ -170,12 +168,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
       maxPrice: new BigNumber(11).dividedBy(20),
     };
     const op = Operation.liquidityPoolDeposit(opts);
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "liquidityPoolDeposit",
     );
-
-    expect(obj.type).toBe("liquidityPoolDeposit");
-    if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
 
     expect(obj.liquidityPoolId).toBe(liquidityPoolId);
     expect(obj.maxAmountA).toBe(maxAmountA);
@@ -194,11 +190,10 @@ describe("Operation.liquidityPoolDeposit()", () => {
       maxPrice: "0.55",
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "liquidityPoolDeposit",
     );
-
-    if (obj.type !== "liquidityPoolDeposit") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 

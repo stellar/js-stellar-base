@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import { Operation } from "../../../src/operation.js";
 import { Asset } from "../../../src/asset.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const selling = new Asset(
   "USD",
@@ -25,11 +26,10 @@ describe("Operation.createPassiveSellOffer()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("createPassiveSellOffer");
-    if (obj.type !== "createPassiveSellOffer")
-      throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "createPassiveSellOffer",
+    );
 
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
@@ -50,13 +50,10 @@ describe("Operation.createPassiveSellOffer()", () => {
       amount,
       price,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "createPassiveSellOffer",
     );
-
-    expect(obj.type).toBe("createPassiveSellOffer");
-    if (obj.type !== "createPassiveSellOffer")
-      throw new Error("unexpected type");
 
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
@@ -72,13 +69,10 @@ describe("Operation.createPassiveSellOffer()", () => {
       amount,
       price,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "createPassiveSellOffer",
     );
-
-    expect(obj.type).toBe("createPassiveSellOffer");
-    if (obj.type !== "createPassiveSellOffer")
-      throw new Error("unexpected type");
 
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
@@ -130,12 +124,11 @@ describe("Operation.createPassiveSellOffer()", () => {
       price: "3.07",
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "createPassiveSellOffer",
     );
 
-    if (obj.type !== "createPassiveSellOffer")
-      throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 

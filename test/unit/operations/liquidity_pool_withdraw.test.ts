@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.liquidityPoolWithdraw()", () => {
   const liquidityPoolId =
@@ -21,8 +22,10 @@ describe("Operation.liquidityPoolWithdraw()", () => {
     expect(xdrObj.body().value().minAmountA().toString()).toBe("100000000");
     expect(xdrObj.body().value().minAmountB().toString()).toBe("200000000");
 
-    const operation = Operation.fromXDRObject(xdrObj);
-    expect(operation.type).toBe("liquidityPoolWithdraw");
+    const operation = expectOperationType(
+      Operation.fromXDRObject(xdrObj),
+      "liquidityPoolWithdraw",
+    );
     expect(operation.liquidityPoolId).toBe(opts.liquidityPoolId);
     expect(operation.amount).toBe(opts.amount);
     expect(operation.minAmountA).toBe(opts.minAmountA);
@@ -41,8 +44,10 @@ describe("Operation.liquidityPoolWithdraw()", () => {
     const op = Operation.liquidityPoolWithdraw(opts);
     const xdrHex = op.toXDR("hex");
     const xdrObj = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const operation = Operation.fromXDRObject(xdrObj);
-    expect(operation.type).toBe("liquidityPoolWithdraw");
+    const operation = expectOperationType(
+      Operation.fromXDRObject(xdrObj),
+      "liquidityPoolWithdraw",
+    );
     expect(operation.source).toBe(source);
   });
 
@@ -56,7 +61,10 @@ describe("Operation.liquidityPoolWithdraw()", () => {
     const op = Operation.liquidityPoolWithdraw(opts);
     const xdrHex = op.toXDR("hex");
     const xdrObj = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const operation = Operation.fromXDRObject(xdrObj);
+    const operation = expectOperationType(
+      Operation.fromXDRObject(xdrObj),
+      "liquidityPoolWithdraw",
+    );
     expect(operation.minAmountA).toBe("0.0000000");
   });
 
@@ -70,7 +78,10 @@ describe("Operation.liquidityPoolWithdraw()", () => {
     const op = Operation.liquidityPoolWithdraw(opts);
     const xdrHex = op.toXDR("hex");
     const xdrObj = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const operation = Operation.fromXDRObject(xdrObj);
+    const operation = expectOperationType(
+      Operation.fromXDRObject(xdrObj),
+      "liquidityPoolWithdraw",
+    );
     expect(operation.minAmountB).toBe("0.0000000");
   });
 

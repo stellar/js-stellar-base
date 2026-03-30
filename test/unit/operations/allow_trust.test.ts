@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.allowTrust()", () => {
   const trustor = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
@@ -13,8 +14,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("allowTrust");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.trustor).toBe(trustor);
     expect(obj.assetCode).toBe("USD");
     expect(obj.authorize).toBe(1);
@@ -28,8 +31,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("allowTrust");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.authorize).toBe(0);
   });
 
@@ -41,8 +46,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("allowTrust");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.authorize).toBe(2);
   });
 
@@ -54,7 +61,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.assetCode).toBe("USD");
   });
 
@@ -66,7 +76,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.assetCode).toBe("LONGASSET");
   });
 
@@ -78,7 +91,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.assetCode).toBe("ABCD");
   });
 
@@ -90,7 +106,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.assetCode).toBe("ABCDEFGHIJKL");
   });
 
@@ -104,8 +123,10 @@ describe("Operation.allowTrust()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("allowTrust");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "allowTrust",
+    );
     expect(obj.source).toBe(source);
   });
 

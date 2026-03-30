@@ -1684,6 +1684,7 @@ describe("TransactionBuilder.cloneFrom", () => {
       cloneTx = TransactionBuilder.cloneFrom(tx).build();
     }).not.toThrow();
 
+    cloneTx = TransactionBuilder.cloneFrom(tx).build();
     // Math.floor(1000/3) = 333 per-op -> 333 * 3 = 999
     expect(cloneTx).toBeDefined();
     expect(expectDefined(cloneTx).fee).toBe("999");

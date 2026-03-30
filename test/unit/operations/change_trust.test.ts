@@ -4,6 +4,7 @@ import { Asset } from "../../../src/asset.js";
 import { LiquidityPoolAsset } from "../../../src/liquidity_pool_asset.js";
 import { LiquidityPoolFeeV18 } from "../../../src/get_liquidity_pool_id.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const usd = new Asset(
   "USD",
@@ -21,10 +22,10 @@ describe("Operation.changeTrust()", () => {
     const op = Operation.changeTrust({ asset: usd });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("changeTrust");
-    if (obj.type !== "changeTrust") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "changeTrust",
+    );
 
     expect(obj.line).toEqual(usd);
     expect(
@@ -37,10 +38,10 @@ describe("Operation.changeTrust()", () => {
     const op = Operation.changeTrust({ asset: usd, limit: "50.0000000" });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("changeTrust");
-    if (obj.type !== "changeTrust") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "changeTrust",
+    );
 
     expect(obj.line).toEqual(usd);
     expect(
@@ -54,26 +55,24 @@ describe("Operation.changeTrust()", () => {
     expect(op).toBeInstanceOf(xdr.Operation);
 
     const xdrOp = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(xdrOp);
-
-    expect(obj.type).toBe("changeTrust");
-    if (obj.type !== "changeTrust") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdrOp),
+      "changeTrust",
+    );
 
     expect(obj.line).toEqual(lpAsset);
-    expect(
-      (xdrOp.body().value() as xdr.ChangeTrustOp).limit().toString(),
-    ).toBe("9223372036854775807");
+    expect((xdrOp.body().value() as xdr.ChangeTrustOp).limit().toString()).toBe(
+      "9223372036854775807",
+    );
     expect(obj.limit).toBe("922337203685.4775807");
   });
 
   it("deletes an Asset trustline by setting limit to 0", () => {
     const op = Operation.changeTrust({ asset: usd, limit: "0.0000000" });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "changeTrust",
     );
-
-    expect(obj.type).toBe("changeTrust");
-    if (obj.type !== "changeTrust") throw new Error("unexpected type");
 
     expect(obj.line).toEqual(usd);
     expect(obj.limit).toBe("0.0000000");
@@ -81,12 +80,10 @@ describe("Operation.changeTrust()", () => {
 
   it("deletes a LiquidityPoolAsset trustline by setting limit to 0", () => {
     const op = Operation.changeTrust({ asset: lpAsset, limit: "0.0000000" });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "changeTrust",
     );
-
-    expect(obj.type).toBe("changeTrust");
-    if (obj.type !== "changeTrust") throw new Error("unexpected type");
 
     expect(obj.line).toEqual(lpAsset);
     expect(obj.limit).toBe("0.0000000");
@@ -109,11 +106,11 @@ describe("Operation.changeTrust()", () => {
   it("preserves an optional source account", () => {
     const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.changeTrust({ asset: usd, source });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "changeTrust",
     );
 
-    if (obj.type !== "changeTrust") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 });

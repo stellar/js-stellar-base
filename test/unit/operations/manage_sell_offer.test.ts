@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import { Operation } from "../../../src/operation.js";
 import { Asset } from "../../../src/asset.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const selling = new Asset(
   "USD",
@@ -25,10 +26,10 @@ describe("Operation.manageSellOffer()", () => {
     const op = Operation.manageSellOffer(opts);
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("manageSellOffer");
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageSellOffer",
+    );
 
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
@@ -49,12 +50,10 @@ describe("Operation.manageSellOffer()", () => {
       offerId: "1",
     };
     const op = Operation.manageSellOffer(opts);
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "manageSellOffer",
     );
-
-    expect(obj.type).toBe("manageSellOffer");
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
     expect(obj.price).toBe(new BigNumber(11).div(10).toString());
   });
 
@@ -79,12 +78,10 @@ describe("Operation.manageSellOffer()", () => {
       offerId: "1",
     };
     const op = Operation.manageSellOffer(opts);
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "manageSellOffer",
     );
-
-    expect(obj.type).toBe("manageSellOffer");
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
     expect(obj.price).toBe((3.07).toString());
   });
 
@@ -97,12 +94,10 @@ describe("Operation.manageSellOffer()", () => {
       offerId: "1",
     };
     const op = Operation.manageSellOffer(opts);
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "manageSellOffer",
     );
-
-    expect(obj.type).toBe("manageSellOffer");
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
     expect(obj.price).toBe("1.25");
   });
 
@@ -115,10 +110,10 @@ describe("Operation.manageSellOffer()", () => {
     };
     const op = Operation.manageSellOffer(opts);
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("manageSellOffer");
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageSellOffer",
+    );
 
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
@@ -140,10 +135,10 @@ describe("Operation.manageSellOffer()", () => {
     };
     const op = Operation.manageSellOffer(opts);
     const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("manageSellOffer");
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageSellOffer",
+    );
 
     expect(obj.selling.equals(selling)).toBe(true);
     expect(obj.buying.equals(buying)).toBe(true);
@@ -211,11 +206,11 @@ describe("Operation.manageSellOffer()", () => {
       offerId: "1",
       source,
     });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "manageSellOffer",
     );
 
-    if (obj.type !== "manageSellOffer") throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 

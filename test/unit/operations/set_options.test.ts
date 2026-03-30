@@ -14,6 +14,11 @@ import {
 import xdr from "../../../src/xdr.js";
 import { hash } from "../../../src/hashing.js";
 import { TimeoutInfinite } from "../../../src/transaction_builder.js";
+import { expectDefined } from "../../support/expect_defined.js";
+import {
+  expectObjectWithProperty,
+  expectOperationType,
+} from "../../support/operation.js";
 
 describe("Operation.setOptions()", () => {
   it("auth flags are set correctly", () => {
@@ -42,9 +47,15 @@ describe("Operation.setOptions()", () => {
     const op = Operation.setOptions(opts);
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+    const signer = expectObjectWithProperty(
+      expectDefined(obj.signer),
+      "ed25519PublicKey",
+    );
 
-    expect(obj.type).toBe("setOptions");
     expect(obj.inflationDest).toBe(opts.inflationDest);
     expect(obj.clearFlags).toBe(6);
     expect(obj.setFlags).toBe(9);
@@ -52,9 +63,9 @@ describe("Operation.setOptions()", () => {
     expect(obj.lowThreshold).toBe(opts.lowThreshold);
     expect(obj.medThreshold).toBe(opts.medThreshold);
     expect(obj.highThreshold).toBe(opts.highThreshold);
-    expect(obj.signer.ed25519PublicKey).toBe(opts.signer.ed25519PublicKey);
-    expect(obj.signer.weight).toBe(opts.signer.weight);
-    expect(obj.homeDomain.toString()).toBe(opts.homeDomain);
+    expect(signer.ed25519PublicKey).toBe(opts.signer.ed25519PublicKey);
+    expect(signer.weight).toBe(opts.signer.weight);
+    expect(expectDefined(obj.homeDomain).toString()).toBe(opts.homeDomain);
   });
 
   it("creates a setOptionsOp with preAuthTx signer (Buffer)", () => {
@@ -67,12 +78,19 @@ describe("Operation.setOptions()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+    const signer = expectObjectWithProperty(
+      expectDefined(obj.signer),
+      "preAuthTx",
+    );
 
-    expect(Buffer.from(obj.signer.preAuthTx).toString("hex")).toBe(
+    expect(Buffer.from(signer.preAuthTx).toString("hex")).toBe(
       txHash.toString("hex"),
     );
-    expect(obj.signer.weight).toBe(10);
+    expect(signer.weight).toBe(10);
   });
 
   it("creates a setOptionsOp with preAuthTx signer from hex string", () => {
@@ -87,10 +105,17 @@ describe("Operation.setOptions()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+    const signer = expectObjectWithProperty(
+      expectDefined(obj.signer),
+      "preAuthTx",
+    );
 
-    expect(Buffer.from(obj.signer.preAuthTx).toString("hex")).toBe(txHash);
-    expect(obj.signer.weight).toBe(10);
+    expect(Buffer.from(signer.preAuthTx).toString("hex")).toBe(txHash);
+    expect(signer.weight).toBe(10);
   });
 
   it("creates a setOptionsOp with sha256Hash signer (Buffer)", () => {
@@ -103,12 +128,19 @@ describe("Operation.setOptions()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+    const signer = expectObjectWithProperty(
+      expectDefined(obj.signer),
+      "sha256Hash",
+    );
 
-    expect(Buffer.from(obj.signer.sha256Hash).toString("hex")).toBe(
+    expect(Buffer.from(signer.sha256Hash).toString("hex")).toBe(
       sha256Hash.toString("hex"),
     );
-    expect(obj.signer.weight).toBe(10);
+    expect(signer.weight).toBe(10);
   });
 
   it("creates a setOptionsOp with sha256Hash signer from hex string", () => {
@@ -123,10 +155,17 @@ describe("Operation.setOptions()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+    const signer = expectObjectWithProperty(
+      expectDefined(obj.signer),
+      "sha256Hash",
+    );
 
-    expect(Buffer.from(obj.signer.sha256Hash).toString("hex")).toBe(sha256Hash);
-    expect(obj.signer.weight).toBe(10);
+    expect(Buffer.from(signer.sha256Hash).toString("hex")).toBe(sha256Hash);
+    expect(signer.weight).toBe(10);
   });
 
   it("creates a setOptionsOp with signed payload signer", () => {
@@ -147,10 +186,17 @@ describe("Operation.setOptions()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+    const signer = expectObjectWithProperty(
+      expectDefined(obj.signer),
+      "ed25519SignedPayload",
+    );
 
-    expect(obj.signer.ed25519SignedPayload).toBe(payloadKey);
-    expect(obj.signer.weight).toBe(10);
+    expect(signer.ed25519SignedPayload).toBe(payloadKey);
+    expect(signer.weight).toBe(10);
   });
 
   it("empty homeDomain is decoded correctly", () => {
@@ -175,25 +221,34 @@ describe("Operation.setOptions()", () => {
       .setTimeout(TimeoutInfinite)
       .build();
 
-    expect(tx1.operations[0].homeDomain).toBeUndefined();
-    expect(tx2.operations[0].homeDomain).toBe("");
+    const tx1Operation = expectOperationType(tx1.operations[0]!, "setOptions");
+    const tx2Operation = expectOperationType(tx2.operations[0]!, "setOptions");
+
+    expect(tx1Operation.homeDomain).toBeUndefined();
+    expect(tx2Operation.homeDomain).toBe("");
   });
 
   it("creates a setOptionsOp with string setFlags", () => {
-    const op = Operation.setOptions({ setFlags: "4" });
+    const op = Operation.setOptions({ setFlags: "4" as unknown as number });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("setOptions");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+
     expect(obj.setFlags).toBe(4);
   });
 
   it("creates a setOptionsOp with string clearFlags", () => {
-    const op = Operation.setOptions({ clearFlags: "4" });
+    const op = Operation.setOptions({ clearFlags: "4" as unknown as number });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("setOptions");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "setOptions",
+    );
+
     expect(obj.clearFlags).toBe(4);
   });
 
@@ -249,7 +304,7 @@ describe("Operation.setOptions()", () => {
               "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7",
             sha256Hash: Buffer.alloc(32),
             weight: 1,
-          },
+          } as never,
         }),
       ).toThrow(/Signer object must contain exactly one/);
     });

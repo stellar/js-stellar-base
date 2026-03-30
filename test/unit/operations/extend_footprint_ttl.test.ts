@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.extendFootprintTtl()", () => {
   it("creates an extendFootprintTtl operation", () => {
@@ -8,8 +9,10 @@ describe("Operation.extendFootprintTtl()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     expect(operation.body().switch().name).toBe("extendFootprintTtl");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("extendFootprintTtl");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "extendFootprintTtl",
+    );
     expect(obj.extendTo).toBe(1234);
   });
 
@@ -18,8 +21,10 @@ describe("Operation.extendFootprintTtl()", () => {
     const op = Operation.extendFootprintTtl({ extendTo: 5000, source });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("extendFootprintTtl");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "extendFootprintTtl",
+    );
     expect(obj.extendTo).toBe(5000);
     expect(obj.source).toBe(source);
   });
@@ -66,7 +71,10 @@ describe("Operation.extendFootprintTtl()", () => {
     const op = Operation.extendFootprintTtl({ extendTo: 1 });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "extendFootprintTtl",
+    );
     expect(obj.extendTo).toBe(1);
   });
 });
