@@ -2,9 +2,16 @@
 
 ## Unreleased
 
+## [`v15.0.0`](https://github.com/stellar/js-stellar-base/compare/v14.1.0...v15.0.0): Protocol 26
+
 ### Breaking Changes
 
 * `TransactionBase.networkPassphrase` setter now throws an error to enforce immutability ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
+* React Native apps using the Hermes engine must polyfill broken typed array methods such as `subarray`; this compatibility is no longer provided by `@stellar/js-xdr`. One option is [`@exodus/patch-broken-hermes-typed-arrays`](https://www.npmjs.com/package/@exodus/patch-broken-hermes-typed-arrays). If needed, please review and consider manually adding it to your project.
+* Construction and encoding of sized XDR integer values now throw on overflow and underflow instead of silently clamping, via `@stellar/js-xdr` ([#133](https://github.com/stellar/js-xdr/pull/133)). This may affect code that previously relied on permissive bigint coercion.
+
+### Added
+* XDR definitions have been updated to align with Protocol 26 ([#944](https://github.com/stellar/js-stellar-base/pull/944)).
 
 ### Fixed
 
@@ -18,6 +25,7 @@
 * `Auth.bytesToInt64` now correctly handles bytes with upper-32-bit values set by processing each 32-bit half independently ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
 * `ScInt` constructor now correctly handles string input ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
 * `Soroban.parseTokenAmount` now throws when the input value has more decimal places than the specified `decimals` argument ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
+* XDR `Array` and `VarArray` decoding now fails fast when the declared array length exceeds the remaining bytes, via `@stellar/js-xdr` ([#132](https://github.com/stellar/js-xdr/pull/132)).
 
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 
