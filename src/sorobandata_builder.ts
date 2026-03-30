@@ -15,13 +15,13 @@ export type IntLike = bigint | number | string;
  * // You want to use an existing data blob but override specific parts.
  * const newData = new SorobanDataBuilder(existing)
  *   .setReadOnly(someLedgerKeys)
- *   .setRefundableFee("1000")
+ *   .setResourceFee("1000")
  *   .build();
  *
  * // You want an instance from scratch
  * const newData = new SorobanDataBuilder()
  *   .setFootprint([someLedgerKey], [])
- *   .setRefundableFee("1000")
+ *   .setResourceFee("1000")
  *   .build();
  */
 export class SorobanDataBuilder {

@@ -10,7 +10,6 @@ import {
 /**
  * Create a new claimable balance operation.
  *
- * @alias Operation.createClaimableBalance
  *
  * @param opts - Options object
  * @param opts.asset - The asset for the claimable balance.

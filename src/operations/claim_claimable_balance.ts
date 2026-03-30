@@ -8,7 +8,6 @@ import {
 
 /**
  * Create a new claim claimable balance operation.
- * @alias Operation.claimClaimableBalance
  * @param opts - Options object
  * @param opts.balanceId - The claimable balance id to be claimed.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.

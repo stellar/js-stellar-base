@@ -241,6 +241,11 @@ export class Asset {
     return this.code === asset.getCode() && this.issuer === asset.getIssuer();
   }
 
+  /**
+   * Returns a string representation of this asset.
+   *
+   * Native assets return `"native"`. Non-native assets return `"code:issuer"`.
+   */
   toString(): string {
     if (this.isNative()) {
       return "native";

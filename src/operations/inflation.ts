@@ -8,7 +8,6 @@ import {
 
 /**
  * This operation generates the inflation.
- * @alias Operation.inflation
  * @param opts - Options object
  * @param opts.source - The optional source account.
  */

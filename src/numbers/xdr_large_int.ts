@@ -282,7 +282,7 @@ export class XdrLargeInt {
     };
   }
 
-  _sizeCheck(bits: number): void {
+  private _sizeCheck(bits: number): void {
     if (this.int.size > bits) {
       throw RangeError(`value too large for ${bits} bits (${this.type})`);
     }

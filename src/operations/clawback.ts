@@ -10,7 +10,6 @@ import {
 /**
  * Creates a clawback operation.
  *
- * @alias Operation.clawback
  *
  * @param opts - Options object
  * @param opts.asset - The asset being clawed back.

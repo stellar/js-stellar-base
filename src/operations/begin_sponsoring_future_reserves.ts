@@ -10,7 +10,6 @@ import {
 
 /**
  * Create a "begin sponsoring future reserves" operation.
- * @alias Operation.beginSponsoringFutureReserves
  * @param opts - Options object
  * @param opts.sponsoredId - The sponsored account id.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.

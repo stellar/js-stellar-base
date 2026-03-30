@@ -15,7 +15,6 @@ import {
  * through a path. XLM payments create the destination account if it does not
  * exist.
  *
- * @alias Operation.pathPaymentStrictSend
  * @see https://developers.stellar.org/docs/start/list-of-operations/#path-payment-strict-send
  *
  * @param opts - Options object

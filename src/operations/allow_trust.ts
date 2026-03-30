@@ -14,8 +14,6 @@ import {
  * An "allow trust" operation authorizes another account to hold your
  * account's credit for a given asset.
  *
- * @alias Operation.allowTrust
- *
  * @param opts - Options object
  * @param opts.trustor - The trusting account (the one being authorized)
  * @param opts.assetCode - The asset code being authorized.
@@ -50,8 +48,10 @@ export function allowTrust(
     } else {
       authorize = 0;
     }
+  } else if (opts.authorize == null) {
+    throw new Error("authorize is required");
   } else {
-    authorize = opts.authorize as number;
+    authorize = opts.authorize;
   }
 
   const allowTrustOp = new xdr.AllowTrustOp({

@@ -18,7 +18,6 @@ import {
  * account-wide via operations.SetOptions (setting
  * xdr.AccountFlags.clawbackEnabled).
  *
- * @alias Operation.setTrustLineFlags
  *
  * @param opts - Options object
  * @param opts.trustor - the account whose trustline this is

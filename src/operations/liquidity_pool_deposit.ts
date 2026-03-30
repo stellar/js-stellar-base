@@ -9,7 +9,6 @@ import {
 /**
  * Creates a liquidity pool deposit operation.
  *
- * @alias Operation.liquidityPoolDeposit
  * @see https://developers.stellar.org/docs/start/list-of-operations/#liquidity-pool-deposit
  *
  * @param opts - Options object
