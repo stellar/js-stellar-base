@@ -1,6 +1,6 @@
 {
   "name": "@stellar/stellar-base",
-  "version": "14.1.0",
+  "version": "15.0.0",
   "description": "Low-level support library for the Stellar network.",
   "main": "./lib/index.js",
   "browser": {
@@ -122,8 +122,8 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
-    "@noble/curves": "^1.9.6",
-    "@stellar/js-xdr": "^3.1.2",
+    "@noble/curves": "^1.9.7",
+    "@stellar/js-xdr": "^4.0.0",
     "base32.js": "^0.1.0",
     "bignumber.js": "^9.3.1",
     "buffer": "^6.0.3",
