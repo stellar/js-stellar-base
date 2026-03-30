@@ -5,11 +5,10 @@ import { Address } from "../../../src/address.js";
 import { Asset } from "../../../src/asset.js";
 import { hash } from "../../../src/hashing.js";
 import { nativeToScVal } from "../../../src/scval.js";
-import type {
-  InvokeHostFunctionResult,
-  InvokeHostFunctionOpts,
-} from "../../../src/operations/types.js";
+import type { InvokeHostFunctionOpts } from "../../../src/operations/types.js";
 import xdr from "../../../src/xdr.js";
+import { expectDefined } from "../../support/expect_defined.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation", () => {
   describe(".invokeHostFunction()", () => {
@@ -36,13 +35,12 @@ describe("Operation", () => {
       const operation = xdr.Operation.fromXDR(hex, "hex");
 
       expect(operation.body().switch().name).toBe("invokeHostFunction");
-      const obj = Operation.fromXDRObject(
-        operation,
-      ) as InvokeHostFunctionResult;
-
-      expect(obj.type).toBe("invokeHostFunction");
+      const obj = expectOperationType(
+        Operation.fromXDRObject(operation),
+        "invokeHostFunction",
+      );
       expect(obj.func.switch().name).toBe("hostFunctionTypeInvokeContract");
-      expect(obj.auth).toEqual([]);
+      expect(expectDefined(obj.auth)).toEqual([]);
 
       expect(
         Operation.invokeContractFunction({
@@ -75,11 +73,10 @@ describe("Operation", () => {
         // round trip back
         const hex = op.toXDR("hex");
         const xdrOp = xdr.Operation.fromXDR(hex, "hex");
-        const decodedOp = Operation.fromXDRObject(
-          xdrOp,
-        ) as InvokeHostFunctionResult;
-
-        expect(decodedOp.type).toBe("invokeHostFunction");
+        const decodedOp = expectOperationType(
+          Operation.fromXDRObject(xdrOp),
+          "invokeHostFunction",
+        );
         expect(decodedOp.func.switch().name).toBe(
           "hostFunctionTypeCreateContractV2",
         );
@@ -91,7 +88,7 @@ describe("Operation", () => {
             .fromAddress()
             .salt(),
         ).toEqual(h);
-        expect(decodedOp.auth).toHaveLength(0);
+        expect(expectDefined(decodedOp.auth)).toHaveLength(0);
       });
 
       describe("lets you wrap tokens", () => {
@@ -110,11 +107,10 @@ describe("Operation", () => {
             // round trip back
             const hex = op.toXDR("hex");
             const xdrOp = xdr.Operation.fromXDR(hex, "hex");
-            const decodedOp = Operation.fromXDRObject(
-              xdrOp,
-            ) as InvokeHostFunctionResult;
-
-            expect(decodedOp.type).toBe("invokeHostFunction");
+            const decodedOp = expectOperationType(
+              Operation.fromXDRObject(xdrOp),
+              "invokeHostFunction",
+            );
             expect(decodedOp.func.switch().name).toBe(
               "hostFunctionTypeCreateContract",
             );
@@ -127,7 +123,7 @@ describe("Operation", () => {
                   .fromAsset(),
               ).toString(),
             ).toBe(asset.toString());
-            expect(decodedOp.auth).toHaveLength(0);
+            expect(expectDefined(decodedOp.auth)).toHaveLength(0);
           });
         });
       });
@@ -140,16 +136,15 @@ describe("Operation", () => {
         // round trip back
         const hex = op.toXDR("hex");
         const xdrOp = xdr.Operation.fromXDR(hex, "hex");
-        const decodedOp = Operation.fromXDRObject(
-          xdrOp,
-        ) as InvokeHostFunctionResult;
-
-        expect(decodedOp.type).toBe("invokeHostFunction");
+        const decodedOp = expectOperationType(
+          Operation.fromXDRObject(xdrOp),
+          "invokeHostFunction",
+        );
         expect(decodedOp.func.switch().name).toBe(
           "hostFunctionTypeUploadContractWasm",
         );
         expect(decodedOp.func.wasm()).toEqual(wasm);
-        expect(decodedOp.auth).toHaveLength(0);
+        expect(expectDefined(decodedOp.auth)).toHaveLength(0);
       });
 
       it("lets you create contracts with a constructor", () => {
@@ -170,11 +165,10 @@ describe("Operation", () => {
         // round trip back
         const hex = op.toXDR("hex");
         const xdrOp = xdr.Operation.fromXDR(hex, "hex");
-        const decodedOp = Operation.fromXDRObject(
-          xdrOp,
-        ) as InvokeHostFunctionResult;
-
-        expect(decodedOp.type).toBe("invokeHostFunction");
+        const decodedOp = expectOperationType(
+          Operation.fromXDRObject(xdrOp),
+          "invokeHostFunction",
+        );
         expect(decodedOp.func.switch().name).toBe(
           "hostFunctionTypeCreateContractV2",
         );
@@ -196,7 +190,7 @@ describe("Operation", () => {
         expect(ctorArgs[1]).toBeDefined();
         expect(constructorArgs[0]).toBeDefined();
         expect(ctorArgs[1]).toEqual(constructorArgs[1]);
-        expect(decodedOp.auth).toHaveLength(0);
+        expect(expectDefined(decodedOp.auth)).toHaveLength(0);
 
         // note: we used a string initially but once the operation is
         // encoded/decoded it will be a Buffer internally, so we need to
@@ -243,8 +237,7 @@ describe("Operation", () => {
     // ---------------------------------------------------------------
 
     it("creates operation with source account", () => {
-      const source =
-        "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
+      const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
       const op = Operation.invokeHostFunction({
         auth: [],
         func: xdr.HostFunction.hostFunctionTypeInvokeContract(
@@ -258,11 +251,10 @@ describe("Operation", () => {
       });
       const hex = op.toXDR("hex");
       const operation = xdr.Operation.fromXDR(hex, "hex");
-      const obj = Operation.fromXDRObject(
-        operation,
-      ) as InvokeHostFunctionResult;
-
-      expect(obj.type).toBe("invokeHostFunction");
+      const obj = expectOperationType(
+        Operation.fromXDRObject(operation),
+        "invokeHostFunction",
+      );
       expect(obj.source).toBe(source);
     });
 
@@ -278,11 +270,11 @@ describe("Operation", () => {
       });
       const hex = op.toXDR("hex");
       const operation = xdr.Operation.fromXDR(hex, "hex");
-      const obj = Operation.fromXDRObject(
-        operation,
-      ) as InvokeHostFunctionResult;
-
-      expect(obj.auth).toHaveLength(0);
+      const obj = expectOperationType(
+        Operation.fromXDRObject(operation),
+        "invokeHostFunction",
+      );
+      expect(expectDefined(obj.auth)).toHaveLength(0);
     });
 
     it("throws when invokeContractFunction receives a non-contract address", () => {
@@ -339,9 +331,10 @@ describe("Operation", () => {
 
         const hex = op.toXDR("hex");
         const xdrOp = xdr.Operation.fromXDR(hex, "hex");
-        const decodedOp = Operation.fromXDRObject(
-          xdrOp,
-        ) as InvokeHostFunctionResult;
+        const decodedOp = expectOperationType(
+          Operation.fromXDRObject(xdrOp),
+          "invokeHostFunction",
+        );
 
         const salt = decodedOp.func
           .createContractV2()

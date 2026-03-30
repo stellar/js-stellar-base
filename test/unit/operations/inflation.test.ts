@@ -1,14 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.inflation()", () => {
   it("creates an inflation operation", () => {
     const op = Operation.inflation();
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("inflation");
+    expectOperationType(Operation.fromXDRObject(operation), "inflation");
   });
 
   it("creates an inflation operation with source account", () => {
@@ -16,8 +16,10 @@ describe("Operation.inflation()", () => {
     const op = Operation.inflation({ source });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("inflation");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "inflation",
+    );
     expect(obj.source).toBe(source);
   });
 
@@ -25,8 +27,10 @@ describe("Operation.inflation()", () => {
     const op = Operation.inflation({});
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("inflation");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "inflation",
+    );
     expect(obj.source).toBeUndefined();
   });
 

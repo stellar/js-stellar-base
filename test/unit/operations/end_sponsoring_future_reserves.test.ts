@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.endSponsoringFutureReserves()", () => {
   it("creates an endSponsoringFutureReserves operation", () => {
@@ -8,8 +9,10 @@ describe("Operation.endSponsoringFutureReserves()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     expect(operation.body().switch().name).toBe("endSponsoringFutureReserves");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("endSponsoringFutureReserves");
+    expectOperationType(
+      Operation.fromXDRObject(operation),
+      "endSponsoringFutureReserves",
+    );
   });
 
   it("creates an endSponsoringFutureReserves operation with source account", () => {
@@ -18,8 +21,10 @@ describe("Operation.endSponsoringFutureReserves()", () => {
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
     expect(operation.body().switch().name).toBe("endSponsoringFutureReserves");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("endSponsoringFutureReserves");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "endSponsoringFutureReserves",
+    );
     expect(obj.source).toBe(source);
   });
 
@@ -27,8 +32,10 @@ describe("Operation.endSponsoringFutureReserves()", () => {
     const op = Operation.endSponsoringFutureReserves({});
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("endSponsoringFutureReserves");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "endSponsoringFutureReserves",
+    );
     expect(obj.source).toBeUndefined();
   });
 

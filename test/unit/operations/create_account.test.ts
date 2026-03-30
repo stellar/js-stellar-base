@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.createAccount()", () => {
   const destination =
@@ -11,12 +12,14 @@ describe("Operation.createAccount()", () => {
     const op = Operation.createAccount({ destination, startingBalance });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("createAccount");
-    expect(obj.destination).toBe(destination);
-    expect(operation.body().value().startingBalance().toString()).toBe(
-      "10000000000",
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "createAccount",
     );
+    expect(obj.destination).toBe(destination);
+    expect(
+      operation.body().createAccountOp().startingBalance().toString(),
+    ).toBe("10000000000");
     expect(obj.startingBalance).toBe(startingBalance);
   });
 
@@ -38,8 +41,10 @@ describe("Operation.createAccount()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("createAccount");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "createAccount",
+    );
     expect(obj.source).toBe(source);
   });
 

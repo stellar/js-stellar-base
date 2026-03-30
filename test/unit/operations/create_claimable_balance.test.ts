@@ -3,6 +3,8 @@ import { Operation } from "../../../src/operation.js";
 import { Asset } from "../../../src/asset.js";
 import { Claimant } from "../../../src/claimant.js";
 import xdr from "../../../src/xdr.js";
+import { expectDefined } from "../../support/expect_defined.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const asset = new Asset(
   "USD",
@@ -18,23 +20,17 @@ describe("Operation.createClaimableBalance()", () => {
     const op = Operation.createClaimableBalance({ asset, amount, claimants });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("createClaimableBalance");
-
-    if (obj.type !== "createClaimableBalance")
-      throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "createClaimableBalance",
+    );
 
     expect(obj.asset.toString()).toBe(asset.toString());
     expect(obj.amount).toBe(amount);
     expect(obj.claimants).toHaveLength(1);
 
-    const firstClaimant = obj.claimants[0];
-    if (firstClaimant === undefined) throw new Error("missing claimant");
-
-    const expectedClaimant = claimants[0];
-    if (expectedClaimant === undefined)
-      throw new Error("missing fixture claimant");
+    const firstClaimant = expectDefined(obj.claimants[0]);
+    const expectedClaimant = expectDefined(claimants[0]);
 
     expect(firstClaimant.toXDRObject().toXDR("hex")).toBe(
       expectedClaimant.toXDRObject().toXDR("hex"),
@@ -79,12 +75,10 @@ describe("Operation.createClaimableBalance()", () => {
       source,
     });
 
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "createClaimableBalance",
     );
-
-    if (obj.type !== "createClaimableBalance")
-      throw new Error("unexpected type");
 
     expect(obj.source).toBe(source);
   });

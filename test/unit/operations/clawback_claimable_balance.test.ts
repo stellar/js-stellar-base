@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import xdr from "../../../src/xdr.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const balanceId =
   "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be";
@@ -10,11 +11,10 @@ describe("Operation.clawbackClaimableBalance()", () => {
     const op = Operation.clawbackClaimableBalance({ balanceId });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("clawbackClaimableBalance");
-    if (obj.type !== "clawbackClaimableBalance")
-      throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "clawbackClaimableBalance",
+    );
 
     expect(obj.balanceId).toBe(balanceId);
   });
@@ -35,12 +35,11 @@ describe("Operation.clawbackClaimableBalance()", () => {
   it("preserves an optional source account", () => {
     const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const op = Operation.clawbackClaimableBalance({ balanceId, source });
-    const obj = Operation.fromXDRObject(
-      xdr.Operation.fromXDR(op.toXDR("hex"), "hex"),
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      "clawbackClaimableBalance",
     );
 
-    if (obj.type !== "clawbackClaimableBalance")
-      throw new Error("unexpected type");
     expect(obj.source).toBe(source);
   });
 

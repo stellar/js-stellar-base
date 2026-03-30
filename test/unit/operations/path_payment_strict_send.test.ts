@@ -6,6 +6,8 @@ import {
   encodeMuxedAccount,
 } from "../../../src/util/decode_encode_muxed_account.js";
 import xdr from "../../../src/xdr.js";
+import { expectDefined } from "../../support/expect_defined.js";
+import { expectOperationType } from "../../support/operation.js";
 
 const sendAsset = new Asset(
   "USD",
@@ -35,12 +37,11 @@ describe("Operation.pathPaymentStrictSend()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "pathPaymentStrictSend",
+    );
     const body = operation.body().value() as xdr.PathPaymentStrictSendOp;
-
-    expect(obj.type).toBe("pathPaymentStrictSend");
-    if (obj.type !== "pathPaymentStrictSend")
-      throw new Error("unexpected type");
 
     expect(obj.sendAsset.equals(sendAsset)).toBe(true);
     expect(body.sendAmount().toString()).toBe("30070000");
@@ -50,10 +51,8 @@ describe("Operation.pathPaymentStrictSend()", () => {
     expect(body.destMin().toString()).toBe("31415000");
     expect(obj.destMin).toBe(destMin);
 
-    const path0 = obj.path[0];
-    const path1 = obj.path[1];
-    if (path0 === undefined || path1 === undefined)
-      throw new Error("missing path element");
+    const path0 = expectDefined(obj.path[0]);
+    const path1 = expectDefined(obj.path[1]);
 
     expect(path0.getCode()).toBe("USD");
     expect(path0.getIssuer()).toBe(
@@ -93,11 +92,10 @@ describe("Operation.pathPaymentStrictSend()", () => {
       xdr.Operation.fromXDR(packed.toXDR("hex"), "hex");
     }).not.toThrow();
 
-    const unpacked = Operation.fromXDRObject(packed);
-    expect(unpacked.type).toBe("pathPaymentStrictSend");
-
-    if (unpacked.type !== "pathPaymentStrictSend")
-      throw new Error("unexpected type");
+    const unpacked = expectOperationType(
+      Operation.fromXDRObject(packed),
+      "pathPaymentStrictSend",
+    );
     expect(unpacked.source).toBe(muxedSource);
     expect(unpacked.destination).toBe(muxedDestination);
   });
@@ -188,11 +186,10 @@ describe("Operation.pathPaymentStrictSend()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-
-    expect(obj.type).toBe("pathPaymentStrictSend");
-    if (obj.type !== "pathPaymentStrictSend")
-      throw new Error("unexpected type");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "pathPaymentStrictSend",
+    );
     expect(obj.path).toHaveLength(0);
   });
 

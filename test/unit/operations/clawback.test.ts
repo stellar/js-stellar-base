@@ -6,6 +6,7 @@ import {
   encodeMuxedAccountToAddress,
   encodeMuxedAccount,
 } from "../../../src/util/decode_encode_muxed_account.js";
+import { expectOperationType } from "../../support/operation.js";
 
 describe("Operation.clawback()", () => {
   const account = "GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7";
@@ -16,8 +17,10 @@ describe("Operation.clawback()", () => {
     const op = Operation.clawback({ from: account, amount, asset });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("clawback");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "clawback",
+    );
     expect(obj.asset.equals(asset)).toBe(true);
     expect(obj.from).toBe(account);
     expect(obj.amount).toBe(amount);
@@ -30,8 +33,7 @@ describe("Operation.clawback()", () => {
     const op = Operation.clawback({ from: muxedFrom, amount, asset });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("clawback");
+    expectOperationType(Operation.fromXDRObject(operation), "clawback");
   });
 
   it("supports a source account", () => {
@@ -43,8 +45,10 @@ describe("Operation.clawback()", () => {
     });
     const xdrHex = op.toXDR("hex");
     const operation = xdr.Operation.fromXDR(xdrHex, "hex");
-    const obj = Operation.fromXDRObject(operation);
-    expect(obj.type).toBe("clawback");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "clawback",
+    );
     expect(obj.source).toBe(account);
   });
 
