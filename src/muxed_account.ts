@@ -68,8 +68,8 @@ export class MuxedAccount {
    *
    * @param  mAddress    - an M-address to transform
    * @param  sequenceNum - the sequence number of the underlying {@link
-   *     Account}, to use for the underlying base account (@link
-   *     MuxedAccount.baseAccount). If you're using the SDK, you can use
+   *     Account}, to use for the underlying base account {@link
+   *     MuxedAccount.baseAccount}. If you're using the SDK, you can use
    *     `server.loadAccount` to fetch this if you don't know it.
    */
   static fromAddress(mAddress: string, sequenceNum: string): MuxedAccount {

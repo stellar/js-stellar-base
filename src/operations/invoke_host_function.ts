@@ -17,7 +17,6 @@ import {
 /**
  * Invokes a single smart contract host function.
  *
- * @alias Operation.invokeHostFunction
  *
  * @param opts - options object
  * @param opts.func - host function to execute (with its wrapped parameters)
@@ -87,7 +86,6 @@ export function invokeHostFunction(
 /**
  * Returns an operation that invokes a contract function.
  *
- * @alias Operation.invokeContractFunction
  *
  * @param opts - the set of parameters
  * @param opts.contract - a strkey-fied contract address (`C...`)
@@ -129,7 +127,6 @@ export function invokeContractFunction(
  * Returns an operation that creates a custom WASM contract and atomically
  * invokes its constructor.
  *
- * @alias Operation.createCustomContract
  *
  * @param opts - the set of parameters
  * @param opts.address - the contract uploader address
@@ -183,7 +180,6 @@ export function createCustomContract(
 /**
  * Returns an operation that wraps a Stellar asset into a token contract.
  *
- * @alias Operation.createStellarAssetContract
  *
  * @param opts - the set of parameters
  * @param opts.asset - the Stellar asset to wrap, either as an {@link Asset} object or in canonical form (SEP-11, `code:issuer`)
@@ -233,7 +229,6 @@ export function createStellarAssetContract(
 /**
  * Returns an operation that uploads WASM for a contract.
  *
- * @alias Operation.uploadContractWasm
  *
  * @param opts - the set of parameters
  * @param opts.wasm - a WASM blob to upload to the ledger

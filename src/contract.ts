@@ -31,17 +31,17 @@ export class Contract {
    * Returns Stellar contract ID as a strkey, ex.
    * `CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE`.
    */
-  contractId() {
+  contractId(): string {
     return StrKey.encodeContract(this._id);
   }
 
   /** Returns the ID as a strkey (C...). */
-  toString() {
+  toString(): string {
     return this.contractId();
   }
 
   /** Returns the wrapped address of this contract. */
-  address() {
+  address(): Address {
     return Address.contract(this._id);
   }
 
@@ -73,7 +73,7 @@ export class Contract {
    * this contract, for convenience when manually adding it to your
    * transaction's overall footprint or doing bump/restore operations.
    */
-  getFootprint() {
+  getFootprint(): xdr.LedgerKey {
     return xdr.LedgerKey.contractData(
       new xdr.LedgerKeyContractData({
         contract: this.address().toScAddress(),

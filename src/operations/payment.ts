@@ -10,7 +10,6 @@ import {
 /**
  * Create a payment operation.
  *
- * @alias Operation.payment
  * @see https://developers.stellar.org/docs/start/list-of-operations/#payment
  *
  * @param opts - options object

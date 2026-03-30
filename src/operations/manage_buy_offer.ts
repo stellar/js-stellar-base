@@ -9,7 +9,6 @@ import {
 /**
  * Returns a XDR ManageBuyOfferOp. A "manage buy offer" operation creates, updates, or
  * deletes a buy offer.
- * @alias Operation.manageBuyOffer
  * @param opts - Options object
  * @param opts.selling - What you're selling.
  * @param opts.buying - What you're buying.

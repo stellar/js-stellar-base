@@ -27,7 +27,6 @@ function weightCheckFunction(value: number, name: string): boolean {
  *
  * It's possible to set/clear multiple flags at once using logical or.
  *
- * @alias Operation.setOptions
  *
  * @param opts - Options object
  * @param opts.inflationDest - Set this account ID as the account's inflation destination.

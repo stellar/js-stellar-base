@@ -10,7 +10,6 @@ import {
 /**
  * Creates a clawback operation for a claimable balance.
  *
- * @alias Operation.clawbackClaimableBalance
  * @param opts - Options object
  * @param opts.balanceId - The claimable balance ID to be clawed back.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.

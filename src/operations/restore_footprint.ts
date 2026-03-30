@@ -20,7 +20,6 @@ import {
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
  * usage as part of {@link xdr.SorobanTransactionData}.
  *
- * @alias Operation.restoreFootprint
  *
  * @param opts - an optional set of parameters
  * @param opts.source - an optional source account

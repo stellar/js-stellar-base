@@ -11,7 +11,6 @@ import {
  *
  * @see https://developers.stellar.org/docs/start/list-of-operations/#liquidity-pool-withdraw
  *
- * @alias Operation.liquidityPoolWithdraw
  * @param opts - Options object
  * @param opts.liquidityPoolId - The liquidity pool ID.
  * @param opts.amount - Amount of pool shares to withdraw.

@@ -11,7 +11,6 @@ import {
 /**
  * Create and fund a non-existent account.
  *
- * @alias Operation.createAccount
  * @param opts - Options object
  * @param opts.destination - Destination account ID to create an account for.
  * @param opts.startingBalance - Amount in XLM the account should be funded for. Must be greater

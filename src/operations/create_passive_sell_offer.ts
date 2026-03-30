@@ -11,7 +11,6 @@ import {
  * counter offer that exactly matches this offer. This is useful for offers
  * just used as 1:1 exchanges for path payments. Use manage offer to manage
  * this offer after using this operation to create it.
- * @alias Operation.createPassiveSellOffer
  * @param opts - Options object
  * @param opts.selling - What you're selling.
  * @param opts.buying - What you're buying.

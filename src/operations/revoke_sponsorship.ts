@@ -25,7 +25,6 @@ import {
 /**
  * Create a "revoke sponsorship" operation for an account.
  *
- * @alias Operation.revokeAccountSponsorship
  * @param opts - Options object
  * @param opts.account - The sponsored account ID.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
@@ -62,7 +61,6 @@ export function revokeAccountSponsorship(
 /**
  * Create a "revoke sponsorship" operation for a trustline.
  *
- * @alias Operation.revokeTrustlineSponsorship
  * @param opts - Options object
  * @param opts.account - The account ID which owns the trustline.
  * @param opts.asset - The trustline asset.
@@ -115,7 +113,6 @@ export function revokeTrustlineSponsorship(
 /**
  * Create a "revoke sponsorship" operation for an offer.
  *
- * @alias Operation.revokeOfferSponsorship
  * @param opts - Options object
  * @param opts.seller - The account ID which created the offer.
  * @param opts.offerId - The offer ID.
@@ -159,7 +156,6 @@ export function revokeOfferSponsorship(
 /**
  * Create a "revoke sponsorship" operation for a data entry.
  *
- * @alias Operation.revokeDataSponsorship
  * @param opts - Options object
  * @param opts.account - The account ID which owns the data entry.
  * @param opts.name - The name of the data entry.
@@ -203,7 +199,6 @@ export function revokeDataSponsorship(
 /**
  * Create a "revoke sponsorship" operation for a claimable balance.
  *
- * @alias Operation.revokeClaimableBalanceSponsorship
  * @param opts - Options object
  * @param opts.balanceId - The sponsored claimable balance ID.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
@@ -240,7 +235,6 @@ export function revokeClaimableBalanceSponsorship(
 /**
  * Creates a "revoke sponsorship" operation for a liquidity pool.
  *
- * @alias Operation.revokeLiquidityPoolSponsorship
  * @param opts - Options object.
  * @param opts.liquidityPoolId - The sponsored liquidity pool ID in 'hex' string.
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
@@ -280,7 +274,6 @@ export function revokeLiquidityPoolSponsorship(
 /**
  * Create a "revoke sponsorship" operation for a signer.
  *
- * @alias Operation.revokeSignerSponsorship
  * @param opts - Options object
  * @param opts.account - The account ID where the signer sponsorship is being removed from.
  * @param opts.signer - The signer whose sponsorship is being removed. Exactly one of the following must be set:

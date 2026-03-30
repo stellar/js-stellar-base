@@ -25,7 +25,6 @@ import {
  * {@link xdr.SorobanTransactionData} instance that contains fee data & resource
  * usage as part of {@link xdr.SorobanResources}.
  *
- * @alias Operation.extendFootprintTtl
  *
  * @param opts - object holding operation parameters
  * @param opts.extendTo - the minimum TTL that all the entries in
@@ -51,10 +50,5 @@ export function extendFootprintTtl(
   };
   this.setSourceAccount(opAttributes, opts);
 
-  return new xdr.Operation(
-    opAttributes as {
-      sourceAccount: xdr.MuxedAccount | null;
-      body: xdr.OperationBody;
-    },
-  );
+  return new xdr.Operation(opAttributes);
 }
