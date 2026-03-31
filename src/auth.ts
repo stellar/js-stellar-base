@@ -225,6 +225,9 @@ export async function authorizeEntry(
  * @param networkPassphrase - the network passphrase is incorporated into the
  *    signature (see {@link Networks} for options)
  *
+ * @note `publicKey` appears before the required `networkPassphrase` for
+ *    backwards compatibility. Reordering would be a breaking change.
+ *
  * @see authorizeEntry
  */
 export function authorizeInvocation(

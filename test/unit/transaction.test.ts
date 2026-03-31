@@ -17,7 +17,7 @@ import { Claimant } from "../../src/claimant.js";
 import { SignerKey } from "../../src/signerkey.js";
 import { StrKey } from "../../src/strkey.js";
 import { hash } from "../../src/hashing.js";
-import { PaymentResult } from "../../src/operations/types.js";
+import type { PaymentResult } from "../../src/operations/types.js";
 import xdr from "../../src/xdr.js";
 
 function expectBuffersToBeEqual(
