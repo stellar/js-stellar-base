@@ -218,6 +218,7 @@ export function createStellarAssetContract(
         ),
       }),
     ),
+    auth: opts.auth || [],
     ...(opts.source !== undefined && { source: opts.source }),
   });
 }
@@ -239,6 +240,7 @@ export function uploadContractWasm(
     func: xdr.HostFunction.hostFunctionTypeUploadContractWasm(
       Buffer.from(opts.wasm), // coalesce so we can drop `Buffer` someday
     ),
+    auth: opts.auth || [],
     ...(opts.source !== undefined && { source: opts.source }),
   });
 }
