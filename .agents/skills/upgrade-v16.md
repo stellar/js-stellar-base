@@ -122,20 +122,7 @@ correct network depends on the user's intent.
 
 ---
 
-### CHECK 7 — `createStellarAssetContract` or `uploadContractWasm` with `auth`
-
-**Search**: Grep for `createStellarAssetContract\s*\(` and
-`uploadContractWasm\s*\(`
-
-**Needs-review**: For each call site, read the options object. If it contains an
-`auth` property, alert the user: "`auth` is no longer forwarded to
-`invokeHostFunction` by `createStellarAssetContract` / `uploadContractWasm`. You
-must call `invokeHostFunction` directly if you need to pass authorization
-entries."
-
----
-
-### CHECK 8 — `Operation.isValidAmount` / `Operation.constructAmountRequirementsError` / `Operation.setSourceAccount`
+### CHECK 7 — `Operation.isValidAmount` / `Operation.constructAmountRequirementsError` / `Operation.setSourceAccount`
 
 **Search**: Grep for
 `Operation\.(isValidAmount|constructAmountRequirementsError|setSourceAccount)\b`
@@ -147,7 +134,7 @@ the source if your bundler supports it."
 
 ---
 
-### CHECK 9 — `op.type === 'revokeSponsorship'` or `OperationType.RevokeSponsorship`
+### CHECK 8 — `op.type === 'revokeSponsorship'` or `OperationType.RevokeSponsorship`
 
 **Search**: Grep for `revokeSponsorship` (case-sensitive, excluding filenames
 containing `revoke_sponsorship`)
@@ -162,7 +149,7 @@ specific type strings: `revokeAccountSponsorship`, `revokeTrustlineSponsorship`,
 
 ---
 
-### CHECK 10 — `AssetType.` or `AuthFlag.` in type position
+### CHECK 9 — `AssetType.` or `AuthFlag.` in type position
 
 **Search**: Grep for `:\s*(AssetType|AuthFlag)\.\w+` (used as a type annotation)
 
@@ -172,7 +159,7 @@ value (`AssetType.native`), it still works — skip.
 
 ---
 
-### CHECK 11 — `SorobanDataBuilder.fromXDR(...)` chained with builder methods
+### CHECK 10 — `SorobanDataBuilder.fromXDR(...)` chained with builder methods
 
 **Search**: Grep for
 `SorobanDataBuilder\.fromXDR\(.*\)\.\s*(set|append|get|build)`
@@ -184,7 +171,7 @@ methods, wrap the result:
 
 ---
 
-### CHECK 12 — `Transaction<` generic type parameters
+### CHECK 11 — `Transaction<` generic type parameters
 
 **Search**: Grep for `Transaction\s*<\s*(Memo|Operation)`
 
@@ -194,7 +181,7 @@ methods, wrap the result:
 
 ---
 
-### CHECK 13 — `asset.code =` or `asset.issuer =` (mutation)
+### CHECK 12 — `asset.code =` or `asset.issuer =` (mutation)
 
 **Search**: Grep for `\.\s*(code|issuer)\s*=\s*[^=]` — then filter to lines that
 reference asset-like variables.
@@ -204,7 +191,7 @@ Create a new `Asset` instance instead of mutating."
 
 ---
 
-### CHECK 14 — `rawSecretKey()` with falsy check
+### CHECK 13 — `rawSecretKey()` with falsy check
 
 **Search**: Grep for `rawSecretKey\(\)`
 
@@ -215,7 +202,7 @@ or check `kp.canSign()` first."
 
 ---
 
-### CHECK 15 — `CreateInvocation` `.token` usage
+### CHECK 14 — `CreateInvocation` `.token` usage
 
 **Search**: Grep for `\.token\b` in files that also reference `CreateInvocation`
 or `buildInvocationTree` or `InvocationTree`
@@ -224,7 +211,7 @@ or `buildInvocationTree` or `InvocationTree`
 
 ---
 
-### CHECK 16 — `XdrLargeInt.getType(` without undefined check
+### CHECK 15 — `XdrLargeInt.getType(` without undefined check
 
 **Search**: Grep for `XdrLargeInt\.getType\(`
 
@@ -234,7 +221,7 @@ using the result."
 
 ---
 
-### CHECK 17 — `Keypair.xdrMuxedAccount` or `Memo` setter usage
+### CHECK 16 — `Keypair.xdrMuxedAccount` or `Memo` setter usage
 
 **Search**: Grep for `\.type\s*=\s*` or `\.value\s*=\s*` near `memo` references.
 
@@ -243,7 +230,7 @@ using the result."
 
 ---
 
-### CHECK 18 — `toXDRPrice` with zero denominator
+### CHECK 17 — `toXDRPrice` with zero denominator
 
 **Search**: Grep for `[{,]\s*d\s*:\s*0\s*[},]`
 
@@ -252,13 +239,13 @@ using the result."
 
 ---
 
-### CHECK 19 — `instanceof TransactionI`
+### CHECK 18 — `instanceof TransactionI`
 
 Already covered by CHECK 3. Skip duplicate.
 
 ---
 
-### CHECK 20 — `Signer` weight as `number` without string handling
+### CHECK 19 — `Signer` weight as `number` without string handling
 
 **Search**: Grep for `signer\.weight` or `\.weight\b` near signer-related code
 

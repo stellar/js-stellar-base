@@ -40,7 +40,8 @@
   "files": [
     "/dist/*.js",
     "/lib/**/*.js",
-    "/lib/types/**/*.d.ts"
+    "/lib/types/**/*.d.ts",
+    "/.agents"
   ],
   "repository": {
     "type": "git",
