@@ -2,10 +2,15 @@ import xdr from "../xdr.js";
 import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account.js";
 import {
   OperationAttributes,
-  OperationClass,
   PathPaymentStrictReceiveResult,
   PathPaymentStrictReceiveOpts,
 } from "./types.js";
+import {
+  isValidAmount,
+  constructAmountRequirementsError,
+  toXDRAmount,
+  setSourceAccount,
+} from "../util/operations.js";
 
 /**
  * Creates a PathPaymentStrictReceive operation.
@@ -29,20 +34,19 @@ import {
  *     Defaults to the transaction's source account.
  */
 export function pathPaymentStrictReceive(
-  this: OperationClass,
   opts: PathPaymentStrictReceiveOpts,
 ): xdr.Operation<PathPaymentStrictReceiveResult> {
   if (!opts.sendAsset) {
     throw new Error("Must specify a send asset");
   }
-  if (!this.isValidAmount(opts.sendMax)) {
-    throw new TypeError(this.constructAmountRequirementsError("sendMax"));
+  if (!isValidAmount(opts.sendMax)) {
+    throw new TypeError(constructAmountRequirementsError("sendMax"));
   }
   if (!opts.destAsset) {
     throw new Error("Must provide a destAsset for a payment operation");
   }
-  if (!this.isValidAmount(opts.destAmount)) {
-    throw new TypeError(this.constructAmountRequirementsError("destAmount"));
+  if (!isValidAmount(opts.destAmount)) {
+    throw new TypeError(constructAmountRequirementsError("destAmount"));
   }
 
   let destination: xdr.MuxedAccount;
@@ -56,10 +60,10 @@ export function pathPaymentStrictReceive(
 
   const paymentOp = new xdr.PathPaymentStrictReceiveOp({
     sendAsset: opts.sendAsset.toXDRObject(),
-    sendMax: this._toXDRAmount(opts.sendMax),
+    sendMax: toXDRAmount(opts.sendMax),
     destination,
     destAsset: opts.destAsset.toXDRObject(),
-    destAmount: this._toXDRAmount(opts.destAmount),
+    destAmount: toXDRAmount(opts.destAmount),
     path: path.map((x) => x.toXDRObject()),
   });
 
@@ -67,7 +71,7 @@ export function pathPaymentStrictReceive(
     sourceAccount: null,
     body: xdr.OperationBody.pathPaymentStrictReceive(paymentOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

@@ -10,9 +10,9 @@ import {
   InvokeHostFunctionOpts,
   InvokeHostFunctionResult,
   OperationAttributes,
-  OperationClass,
   UploadContractWasmOpts,
 } from "./types.js";
+import { setSourceAccount } from "../util/operations.js";
 
 /**
  * Invokes a single smart contract host function.
@@ -31,7 +31,6 @@ import {
  * @see Contract.call
  */
 export function invokeHostFunction(
-  this: OperationClass,
   opts: InvokeHostFunctionOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   if (!opts.func) {
@@ -78,7 +77,7 @@ export function invokeHostFunction(
     sourceAccount: null,
     body: xdr.OperationBody.invokeHostFunction(invokeHostFunctionOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -99,7 +98,6 @@ export function invokeHostFunction(
  * @see Address
  */
 export function invokeContractFunction(
-  this: OperationClass,
   opts: InvokeContractFunctionOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   const c = new Address(opts.contract);
@@ -110,7 +108,7 @@ export function invokeContractFunction(
     );
   }
 
-  return this.invokeHostFunction({
+  return invokeHostFunction({
     func: xdr.HostFunction.hostFunctionTypeInvokeContract(
       new xdr.InvokeContractArgs({
         contractAddress: c.toScAddress(),
@@ -139,7 +137,6 @@ export function invokeContractFunction(
  * @see https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
  */
 export function createCustomContract(
-  this: OperationClass,
   opts: CreateCustomContractOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   const salt = Buffer.from(opts.salt || getSalty());
@@ -156,7 +153,7 @@ export function createCustomContract(
     );
   }
 
-  return this.invokeHostFunction({
+  return invokeHostFunction({
     func: xdr.HostFunction.hostFunctionTypeCreateContractV2(
       new xdr.CreateContractArgsV2({
         executable: xdr.ContractExecutable.contractExecutableWasm(
@@ -191,7 +188,6 @@ export function createCustomContract(
  * @see Operation.invokeHostFunction
  */
 export function createStellarAssetContract(
-  this: OperationClass,
   opts: CreateStellarAssetContractOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
   let asset = opts.asset;
@@ -213,7 +209,7 @@ export function createStellarAssetContract(
     );
   }
 
-  return this.invokeHostFunction({
+  return invokeHostFunction({
     func: xdr.HostFunction.hostFunctionTypeCreateContract(
       new xdr.CreateContractArgs({
         executable: xdr.ContractExecutable.contractExecutableStellarAsset(),
@@ -237,10 +233,9 @@ export function createStellarAssetContract(
  * @see https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
  */
 export function uploadContractWasm(
-  this: OperationClass,
   opts: UploadContractWasmOpts,
 ): xdr.Operation<InvokeHostFunctionResult> {
-  return this.invokeHostFunction({
+  return invokeHostFunction({
     func: xdr.HostFunction.hostFunctionTypeUploadContractWasm(
       Buffer.from(opts.wasm), // coalesce so we can drop `Buffer` someday
     ),

@@ -1,7 +1,7 @@
+import { setSourceAccount } from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   OperationAttributes,
-  OperationClass,
   RestoreFootprintResult,
   RestoreFootprintOpts,
 } from "./types.js";
@@ -25,7 +25,6 @@ import {
  * @param opts.source - an optional source account
  */
 export function restoreFootprint(
-  this: OperationClass,
   opts: RestoreFootprintOpts = {},
 ): xdr.Operation<RestoreFootprintResult> {
   const op = new xdr.RestoreFootprintOp({
@@ -35,6 +34,6 @@ export function restoreFootprint(
     sourceAccount: null,
     body: xdr.OperationBody.restoreFootprint(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
   return new xdr.Operation(opAttributes);
 }

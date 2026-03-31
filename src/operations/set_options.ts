@@ -2,12 +2,12 @@ import xdr from "../xdr.js";
 import { Keypair } from "../keypair.js";
 import { StrKey } from "../strkey.js";
 import {
-  OperationClass,
   SetOptionsOpts,
   SetOptionsResult,
   OperationAttributes,
   SignerOpts,
 } from "./types.js";
+import { checkUnsignedIntValue, setSourceAccount } from "../util/operations.js";
 
 function weightCheckFunction(value: number, name: string): boolean {
   if (value >= 0 && value <= 255) {
@@ -48,7 +48,6 @@ function weightCheckFunction(value: number, name: string): boolean {
  * @see [Account flags](https://developers.stellar.org/docs/glossary/accounts/#flags)
  */
 export function setOptions<T extends SignerOpts = never>(
-  this: OperationClass,
   opts: SetOptionsOpts<T>,
 ): xdr.Operation<SetOptionsResult<T>> {
   let inflationDest: xdr.AccountId | null = null;
@@ -61,29 +60,28 @@ export function setOptions<T extends SignerOpts = never>(
   }
 
   const clearFlags =
-    this._checkUnsignedIntValue("clearFlags", opts.clearFlags) ?? null;
-  const setFlags =
-    this._checkUnsignedIntValue("setFlags", opts.setFlags) ?? null;
+    checkUnsignedIntValue("clearFlags", opts.clearFlags) ?? null;
+  const setFlags = checkUnsignedIntValue("setFlags", opts.setFlags) ?? null;
   const masterWeight =
-    this._checkUnsignedIntValue(
+    checkUnsignedIntValue(
       "masterWeight",
       opts.masterWeight,
       weightCheckFunction,
     ) ?? null;
   const lowThreshold =
-    this._checkUnsignedIntValue(
+    checkUnsignedIntValue(
       "lowThreshold",
       opts.lowThreshold,
       weightCheckFunction,
     ) ?? null;
   const medThreshold =
-    this._checkUnsignedIntValue(
+    checkUnsignedIntValue(
       "medThreshold",
       opts.medThreshold,
       weightCheckFunction,
     ) ?? null;
   const highThreshold =
-    this._checkUnsignedIntValue(
+    checkUnsignedIntValue(
       "highThreshold",
       opts.highThreshold,
       weightCheckFunction,
@@ -97,7 +95,7 @@ export function setOptions<T extends SignerOpts = never>(
   let signer: xdr.Signer | null = null;
 
   if (opts.signer) {
-    const weight = this._checkUnsignedIntValue(
+    const weight = checkUnsignedIntValue(
       "signer.weight",
       opts.signer.weight,
       weightCheckFunction,
@@ -194,7 +192,7 @@ export function setOptions<T extends SignerOpts = never>(
     sourceAccount: null,
     body: xdr.OperationBody.setOptions(setOptionsOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

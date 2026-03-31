@@ -1,12 +1,12 @@
 import xdr from "../xdr.js";
 import { Keypair } from "../keypair.js";
 import {
-  OperationClass,
   SetTrustLineFlagsOpts,
   SetTrustLineFlagsResult,
   TrustLineFlagMap,
   OperationAttributes,
 } from "./types.js";
+import { setSourceAccount } from "../util/operations.js";
 
 /**
  * Creates a trustline flag configuring operation.
@@ -37,7 +37,6 @@ import {
  * @see https://developers.stellar.org/docs/start/list-of-operations/#set-options
  */
 export function setTrustLineFlags(
-  this: OperationClass,
   opts: SetTrustLineFlagsOpts,
 ): xdr.Operation<SetTrustLineFlagsResult> {
   if (typeof opts.flags !== "object" || Object.keys(opts.flags).length === 0) {
@@ -87,7 +86,7 @@ export function setTrustLineFlags(
       }),
     ),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

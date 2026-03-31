@@ -1,7 +1,7 @@
+import { setSourceAccount } from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   ManageDataResult,
-  OperationClass,
   ManageDataOpts,
   OperationAttributes,
 } from "./types.js";
@@ -14,7 +14,6 @@ import {
  * @param opts.source - The optional source account.
  */
 export function manageData(
-  this: OperationClass,
   opts: ManageDataOpts,
 ): xdr.Operation<ManageDataResult> {
   if (!(typeof opts.name === "string" && opts.name.length <= 64)) {
@@ -49,7 +48,7 @@ export function manageData(
     sourceAccount: null,
     body: xdr.OperationBody.manageData(manageDataOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(
     opAttributes as {

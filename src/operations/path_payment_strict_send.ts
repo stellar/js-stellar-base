@@ -4,8 +4,13 @@ import {
   PathPaymentStrictSendResult,
   PathPaymentStrictSendOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
+import {
+  isValidAmount,
+  constructAmountRequirementsError,
+  toXDRAmount,
+  setSourceAccount,
+} from "../util/operations.js";
 
 /**
  * Creates a PathPaymentStrictSend operation.
@@ -27,27 +32,26 @@ import {
  * @param opts.source - The source account for the payment. Defaults to the transaction's source account.
  */
 export function pathPaymentStrictSend(
-  this: OperationClass,
   opts: PathPaymentStrictSendOpts,
 ): xdr.Operation<PathPaymentStrictSendResult> {
   if (!opts.sendAsset) {
     throw new Error("Must specify a send asset");
   }
 
-  if (!this.isValidAmount(opts.sendAmount)) {
-    throw new TypeError(this.constructAmountRequirementsError("sendAmount"));
+  if (!isValidAmount(opts.sendAmount)) {
+    throw new TypeError(constructAmountRequirementsError("sendAmount"));
   }
 
   if (!opts.destAsset) {
     throw new Error("Must provide a destAsset for a payment operation");
   }
 
-  if (!this.isValidAmount(opts.destMin)) {
-    throw new TypeError(this.constructAmountRequirementsError("destMin"));
+  if (!isValidAmount(opts.destMin)) {
+    throw new TypeError(constructAmountRequirementsError("destMin"));
   }
 
   const sendAsset: xdr.Asset = opts.sendAsset.toXDRObject();
-  const sendAmount: xdr.Int64 = this._toXDRAmount(opts.sendAmount);
+  const sendAmount: xdr.Int64 = toXDRAmount(opts.sendAmount);
 
   let destination: xdr.MuxedAccount;
 
@@ -58,7 +62,7 @@ export function pathPaymentStrictSend(
   }
 
   const destAsset: xdr.Asset = opts.destAsset.toXDRObject();
-  const destMin: xdr.Int64 = this._toXDRAmount(opts.destMin);
+  const destMin: xdr.Int64 = toXDRAmount(opts.destMin);
   const path = (opts.path ?? []).map((x) => x.toXDRObject());
 
   const payment = new xdr.PathPaymentStrictSendOp({
@@ -75,7 +79,7 @@ export function pathPaymentStrictSend(
     body: xdr.OperationBody.pathPaymentStrictSend(payment),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

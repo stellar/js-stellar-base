@@ -5,8 +5,13 @@ import {
   ChangeTrustResult,
   ChangeTrustOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
+import {
+  constructAmountRequirementsError,
+  isValidAmount,
+  setSourceAccount,
+  toXDRAmount,
+} from "../util/operations.js";
 
 const MAX_INT64 = "9223372036854775807";
 
@@ -21,7 +26,6 @@ const MAX_INT64 = "9223372036854775807";
  * @param opts.source - The source account (defaults to transaction source).
  */
 export function changeTrust(
-  this: OperationClass,
   opts: ChangeTrustOpts,
 ): xdr.Operation<ChangeTrustResult> {
   let line: xdr.ChangeTrustAsset;
@@ -34,12 +38,12 @@ export function changeTrust(
     throw new TypeError("asset must be Asset or LiquidityPoolAsset");
   }
 
-  if (opts.limit !== undefined && !this.isValidAmount(opts.limit, true)) {
-    throw new TypeError(this.constructAmountRequirementsError("limit"));
+  if (opts.limit !== undefined && !isValidAmount(opts.limit, true)) {
+    throw new TypeError(constructAmountRequirementsError("limit"));
   }
 
   const limit: xdr.Int64 = opts.limit
-    ? this._toXDRAmount(opts.limit)
+    ? toXDRAmount(opts.limit)
     : xdr.Int64.fromString(MAX_INT64);
 
   const changeTrustOp = new xdr.ChangeTrustOp({ line, limit });
@@ -49,7 +53,7 @@ export function changeTrust(
     body: xdr.OperationBody.changeTrust(changeTrustOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

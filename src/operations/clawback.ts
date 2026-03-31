@@ -1,11 +1,12 @@
 import xdr from "../xdr.js";
 import { decodeAddressToMuxedAccount } from "../util/decode_encode_muxed_account.js";
+import { ClawbackOpts, ClawbackResult, OperationAttributes } from "./types.js";
 import {
-  ClawbackOpts,
-  ClawbackResult,
-  OperationAttributes,
-  OperationClass,
-} from "./types.js";
+  constructAmountRequirementsError,
+  isValidAmount,
+  setSourceAccount,
+  toXDRAmount,
+} from "../util/operations.js";
 
 /**
  * Creates a clawback operation.
@@ -21,12 +22,9 @@ import {
  *
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-operation
  */
-export function clawback(
-  this: OperationClass,
-  opts: ClawbackOpts,
-): xdr.Operation<ClawbackResult> {
-  if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+export function clawback(opts: ClawbackOpts): xdr.Operation<ClawbackResult> {
+  if (!isValidAmount(opts.amount)) {
+    throw new TypeError(constructAmountRequirementsError("amount"));
   }
 
   let from: xdr.MuxedAccount;
@@ -37,7 +35,7 @@ export function clawback(
   }
 
   const clawbackOp = new xdr.ClawbackOp({
-    amount: this._toXDRAmount(opts.amount),
+    amount: toXDRAmount(opts.amount),
     asset: opts.asset.toXDRObject(),
     from,
   });
@@ -46,7 +44,7 @@ export function clawback(
     sourceAccount: null,
     body: xdr.OperationBody.clawback(clawbackOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

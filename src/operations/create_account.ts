@@ -5,8 +5,13 @@ import {
   CreateAccountResult,
   CreateAccountOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
+import {
+  constructAmountRequirementsError,
+  isValidAmount,
+  setSourceAccount,
+  toXDRAmount,
+} from "../util/operations.js";
 
 /**
  * Create and fund a non-existent account.
@@ -18,28 +23,25 @@ import {
  * @param opts.source - The source account for the payment. Defaults to the transaction's source account.
  */
 export function createAccount(
-  this: OperationClass,
   opts: CreateAccountOpts,
 ): xdr.Operation<CreateAccountResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.destination)) {
     throw new Error("destination is invalid");
   }
-  if (!this.isValidAmount(opts.startingBalance, true)) {
-    throw new TypeError(
-      this.constructAmountRequirementsError("startingBalance"),
-    );
+  if (!isValidAmount(opts.startingBalance, true)) {
+    throw new TypeError(constructAmountRequirementsError("startingBalance"));
   }
 
   const createAccountOp = new xdr.CreateAccountOp({
     destination: Keypair.fromPublicKey(opts.destination).xdrAccountId(),
-    startingBalance: this._toXDRAmount(opts.startingBalance),
+    startingBalance: toXDRAmount(opts.startingBalance),
   });
 
   const opAttributes: OperationAttributes = {
     sourceAccount: null,
     body: xdr.OperationBody.createAccount(createAccountOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

@@ -19,8 +19,8 @@ import {
   RevokeSignerSponsorshipOpts,
   RevokeSignerSponsorshipResult,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
+import { setSourceAccount } from "../util/operations.js";
 
 /**
  * Create a "revoke sponsorship" operation for an account.
@@ -35,7 +35,6 @@ import {
  * });
  */
 export function revokeAccountSponsorship(
-  this: OperationClass,
   opts: RevokeAccountSponsorshipOpts = {} as RevokeAccountSponsorshipOpts,
 ): xdr.Operation<RevokeAccountSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
@@ -53,7 +52,7 @@ export function revokeAccountSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -76,7 +75,6 @@ export function revokeAccountSponsorship(
  * });
  */
 export function revokeTrustlineSponsorship(
-  this: OperationClass,
   opts: RevokeTrustlineSponsorshipOpts = {} as RevokeTrustlineSponsorshipOpts,
 ): xdr.Operation<RevokeTrustlineSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
@@ -105,7 +103,7 @@ export function revokeTrustlineSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -125,7 +123,6 @@ export function revokeTrustlineSponsorship(
  * });
  */
 export function revokeOfferSponsorship(
-  this: OperationClass,
   opts: RevokeOfferSponsorshipOpts = {} as RevokeOfferSponsorshipOpts,
 ): xdr.Operation<RevokeOfferSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.seller)) {
@@ -148,7 +145,7 @@ export function revokeOfferSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -168,7 +165,6 @@ export function revokeOfferSponsorship(
  * });
  */
 export function revokeDataSponsorship(
-  this: OperationClass,
   opts: RevokeDataSponsorshipOpts = {} as RevokeDataSponsorshipOpts,
 ): xdr.Operation<RevokeDataSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
@@ -191,7 +187,7 @@ export function revokeDataSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -209,7 +205,6 @@ export function revokeDataSponsorship(
  * });
  */
 export function revokeClaimableBalanceSponsorship(
-  this: OperationClass,
   opts: RevokeClaimableBalanceSponsorshipOpts = {} as RevokeClaimableBalanceSponsorshipOpts,
 ): xdr.Operation<RevokeClaimableBalanceSponsorshipResult> {
   if (typeof opts.balanceId !== "string") {
@@ -227,7 +222,7 @@ export function revokeClaimableBalanceSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -245,7 +240,6 @@ export function revokeClaimableBalanceSponsorship(
  * });
  */
 export function revokeLiquidityPoolSponsorship(
-  this: OperationClass,
   opts: RevokeLiquidityPoolSponsorshipOpts = {} as RevokeLiquidityPoolSponsorshipOpts,
 ): xdr.Operation<RevokeLiquidityPoolSponsorshipResult> {
   if (typeof opts.liquidityPoolId !== "string") {
@@ -266,7 +260,7 @@ export function revokeLiquidityPoolSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
@@ -291,7 +285,6 @@ export function revokeLiquidityPoolSponsorship(
  * })
  */
 export function revokeSignerSponsorship(
-  this: OperationClass,
   opts: RevokeSignerSponsorshipOpts = {} as RevokeSignerSponsorshipOpts,
 ): xdr.Operation<RevokeSignerSponsorshipResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.account)) {
@@ -349,7 +342,7 @@ export function revokeSignerSponsorship(
     sourceAccount: null,
     body: xdr.OperationBody.revokeSponsorship(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

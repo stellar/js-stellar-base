@@ -4,8 +4,8 @@ import {
   AccountMergeOpts,
   AccountMergeResult,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
+import { setSourceAccount } from "../util/operations.js";
 
 /**
  * Transfers native balance to destination account.
@@ -16,7 +16,6 @@ import {
  *     transaction source)
  */
 export function accountMerge(
-  this: OperationClass,
   opts: AccountMergeOpts,
 ): xdr.Operation<AccountMergeResult> {
   let body: xdr.OperationBody;
@@ -32,7 +31,7 @@ export function accountMerge(
     sourceAccount: null,
     body,
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
