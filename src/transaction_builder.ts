@@ -266,11 +266,6 @@ export class TransactionBuilder {
     }
     if (tx.minAccountSequenceAge !== undefined) {
       builderOpts.minAccountSequenceAge = tx.minAccountSequenceAge;
-      console.log("minAccountSequenceAge", tx.minAccountSequenceAge);
-      console.log(
-        "builderOpts.minAccountSequenceAge",
-        builderOpts.minAccountSequenceAge,
-      );
     }
     if (tx.minAccountSequenceLedgerGap !== undefined) {
       builderOpts.minAccountSequenceLedgerGap = tx.minAccountSequenceLedgerGap;
@@ -283,10 +278,7 @@ export class TransactionBuilder {
 
     // User-provided opts override transaction defaults
     Object.assign(builderOpts, opts);
-    console.log(
-      "builderOpts.minAccountSequenceAge",
-      builderOpts.minAccountSequenceAge,
-    );
+
     const builder = new TransactionBuilder(source, builderOpts);
 
     tx.tx.operations().forEach((op) => builder.addOperation(op));
