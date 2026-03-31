@@ -929,6 +929,31 @@ describe("Transaction", () => {
       );
     });
 
+    it("uses transaction source even when op has its own source", () => {
+      const gSource = new Account(address, "1234");
+      const tx = makeBuilder(gSource)
+        .addOperation(
+          Operation.createClaimableBalance({
+            asset: Asset.native(),
+            amount: "100",
+            claimants: [
+              new Claimant(address, Claimant.predicateUnconditional()),
+            ],
+            source: Keypair.random().publicKey(),
+          }),
+        )
+        .build();
+
+      // Per Stellar Core (mParentTx.getSourceID()), the balance ID is always
+      // derived from the transaction source, not the operation source.
+      // The expected hash is the same as the "calculates from transaction src"
+      // test because the tx source, sequence, and opIndex are identical.
+      const balanceId = tx.getClaimableBalanceId(0);
+      expect(balanceId).toBe(
+        "00000000536af35c666a28d26775008321655e9eda2039154270484e3f81d72c66d5c26f",
+      );
+    });
+
     it("throws on invalid operations", () => {
       const gSource = new Account(address, "1234");
       const tx = makeBuilder(gSource)
