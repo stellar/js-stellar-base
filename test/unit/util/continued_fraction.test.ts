@@ -24,7 +24,7 @@ describe("best_r", () => {
       ["4757,50", "95.14"],
       ["3729,5000", "0.74580"],
       ["4119,1", "4119.0"],
-      ["118,37", new BigNumber(118).div(37)]
+      ["118,37", new BigNumber(118).div(37)],
     ];
 
     for (const [expected, input] of tests) {
@@ -37,12 +37,23 @@ describe("best_r", () => {
     expect(best_r("-1.73").toString()).toBe("-173,100");
   });
 
-  it("throws an error when best rational approximation cannot be found", () => {
-    expect(() => best_r("0.0000000003")).toThrowError(
-      /Couldn't find approximation/
-    );
-    expect(() => best_r("2147483648")).toThrowError(
-      /Couldn't find approximation/
-    );
+  it("approximates values near int32 boundaries", () => {
+    // Very small value: best int32 approximation is 1/MAX_INT
+    expect(best_r("0.0000000003").toString()).toBe("1,2147483647");
+    // Value just above MAX_INT: best int32 approximation is MAX_INT/1
+    expect(best_r("2147483648").toString()).toBe("2147483647,1");
+  });
+
+  it("round-trips XDR prices at int32 boundaries", () => {
+    // Regression: fromXDRPrice({n:1, d:2147483647}) produces a string like
+    // "4.6566128752457969e-10" which must survive best_r without throwing.
+    const BigNum = new BigNumber(1).div(new BigNumber(2147483647));
+    const [n, d] = best_r(BigNum);
+    expect(n).toBe(1);
+    expect(d).toBe(2147483647);
+  });
+
+  it("throws an error for zero", () => {
+    expect(() => best_r("0")).toThrowError(/Couldn't find approximation/);
   });
 });

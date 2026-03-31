@@ -1,6 +1,7 @@
 import BigNumber from "./bignumber.js";
 
 const MAX_INT = ((1 << 31) >>> 0) - 1;
+const MAX_INT_BN = new BigNumber(MAX_INT);
 
 /**
  * Calculates and returns the best rational approximation of the given real
@@ -55,6 +56,50 @@ export function best_r(
   const [n, d] = lastFraction;
 
   if (n.isZero() || d.isZero()) {
+    // Standard convergents produced a degenerate fraction (e.g. for values
+    // where 1/value > MAX_INT). Recover by computing a semi-convergent: find
+    // the largest coefficient that keeps both n and d within int32 bounds.
+    // Skip recovery for genuinely zero input — there is no valid approximation.
+    const input = new BigNumber(rawNumber);
+
+    if (input.isZero()) {
+      throw new Error("Couldn't find approximation");
+    }
+
+    const prev1 = fractions[fractions.length - 1];
+    const prev2 = fractions[fractions.length - 2];
+
+    if (prev1 && prev2) {
+      let aMax = MAX_INT_BN;
+
+      if (prev1[0].gt(0)) {
+        aMax = BigNumber.min(
+          aMax,
+          MAX_INT_BN.minus(prev2[0])
+            .div(prev1[0])
+            .integerValue(BigNumber.ROUND_FLOOR),
+        );
+      }
+
+      if (prev1[1].gt(0)) {
+        aMax = BigNumber.min(
+          aMax,
+          MAX_INT_BN.minus(prev2[1])
+            .div(prev1[1])
+            .integerValue(BigNumber.ROUND_FLOOR),
+        );
+      }
+
+      if (aMax.gte(1)) {
+        const hn = aMax.times(prev1[0]).plus(prev2[0]);
+        const kn = aMax.times(prev1[1]).plus(prev2[1]);
+
+        if (!hn.isZero() && !kn.isZero()) {
+          return [hn.toNumber(), kn.toNumber()];
+        }
+      }
+    }
+
     throw new Error("Couldn't find approximation");
   }
 
