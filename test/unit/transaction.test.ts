@@ -17,6 +17,7 @@ import { Claimant } from "../../src/claimant.js";
 import { SignerKey } from "../../src/signerkey.js";
 import { StrKey } from "../../src/strkey.js";
 import { hash } from "../../src/hashing.js";
+import { PaymentResult } from "../../src/operations/types.js";
 import xdr from "../../src/xdr.js";
 
 function expectBuffersToBeEqual(
@@ -218,6 +219,190 @@ describe("Transaction", () => {
       transaction.addDecoratedSignature(sig);
       expect(transaction.signatures.length).toBe(1);
       expect(transaction.signatures[0]).toBe(sig);
+    });
+  });
+
+  describe("tx getter immutability", () => {
+    it("returns a defensive copy when immutableTx is enabled", () => {
+      const source = new Account(
+        "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
+        "0",
+      );
+      const tx = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase: Networks.TESTNET,
+        immutableTx: true,
+      })
+        .addOperation(
+          Operation.payment({
+            destination:
+              "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+            asset: Asset.native(),
+            amount: "10",
+          }),
+        )
+        .setTimeout(TimeoutInfinite)
+        .build();
+
+      const hashBefore = tx.hash().toString("hex");
+
+      // Attempt to mutate the XDR via the tx getter — should have no effect
+      tx.tx.fee(999999);
+
+      const hashAfter = tx.hash().toString("hex");
+      expect(hashAfter).toBe(hashBefore);
+    });
+
+    it("signed transaction matches displayed fields when immutableTx is enabled", () => {
+      const kp = Keypair.random();
+      const dest = Keypair.random();
+      const source = new Account(kp.publicKey(), "0");
+
+      const tx = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase: Networks.TESTNET,
+        immutableTx: true,
+      })
+        .addOperation(
+          Operation.payment({
+            destination: dest.publicKey(),
+            asset: Asset.native(),
+            amount: "10",
+          }),
+        )
+        .setTimeout(TimeoutInfinite)
+        .build();
+
+      // Mutate via the tx getter — should have no effect
+      tx.tx.fee(50000);
+
+      // Sign and rebuild
+      tx.sign(kp);
+      const rebuilt = new Transaction(tx.toXDR(), Networks.TESTNET);
+
+      // The serialized transaction must match the cached getter values
+      expect(rebuilt.fee).toBe(tx.fee);
+      const rebuiltOp = rebuilt.operations[0] as PaymentResult;
+      const originalOp = tx.operations[0] as PaymentResult;
+      expect(rebuiltOp.amount).toBe(originalOp.amount);
+    });
+
+    it("returns the live reference by default (immutableTx not set)", () => {
+      const source = new Account(
+        "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
+        "0",
+      );
+      const tx = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase: Networks.TESTNET,
+      })
+        .addOperation(
+          Operation.payment({
+            destination:
+              "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+            asset: Asset.native(),
+            amount: "10",
+          }),
+        )
+        .setTimeout(TimeoutInfinite)
+        .build();
+
+      // Without immutableTx, tx getter returns the same reference
+      const ref1 = tx.tx;
+      const ref2 = tx.tx;
+      expect(ref1).toBe(ref2);
+    });
+
+    it("returns different copies on each access when immutableTx is enabled", () => {
+      const source = new Account(
+        "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
+        "0",
+      );
+      const tx = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase: Networks.TESTNET,
+        immutableTx: true,
+      })
+        .addOperation(
+          Operation.payment({
+            destination:
+              "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+            asset: Asset.native(),
+            amount: "10",
+          }),
+        )
+        .setTimeout(TimeoutInfinite)
+        .build();
+
+      // Each access returns a fresh copy
+      const ref1 = tx.tx;
+      const ref2 = tx.tx;
+      expect(ref1).not.toBe(ref2);
+      // But they are equivalent
+      expect(ref1.fee()).toBe(ref2.fee());
+    });
+
+    it("works with Transaction constructed from XDR", () => {
+      const kp = Keypair.random();
+      const source = new Account(kp.publicKey(), "0");
+
+      const original = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase: Networks.TESTNET,
+      })
+        .addOperation(
+          Operation.payment({
+            destination: Keypair.random().publicKey(),
+            asset: Asset.native(),
+            amount: "10",
+          }),
+        )
+        .setTimeout(TimeoutInfinite)
+        .build();
+
+      original.sign(kp);
+      const xdrString = original.toXDR();
+
+      // Reconstruct with immutableTx
+      const tx = new Transaction(xdrString, Networks.TESTNET, {
+        immutableTx: true,
+      });
+
+      const hashBefore = tx.hash().toString("hex");
+      tx.tx.fee(999999);
+      const hashAfter = tx.hash().toString("hex");
+      expect(hashAfter).toBe(hashBefore);
+    });
+
+    it("works with TransactionBuilder.fromXDR", () => {
+      const kp = Keypair.random();
+      const source = new Account(kp.publicKey(), "0");
+
+      const original = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase: Networks.TESTNET,
+      })
+        .addOperation(
+          Operation.payment({
+            destination: Keypair.random().publicKey(),
+            asset: Asset.native(),
+            amount: "10",
+          }),
+        )
+        .setTimeout(TimeoutInfinite)
+        .build();
+
+      original.sign(kp);
+      const xdrString = original.toXDR();
+
+      const tx = TransactionBuilder.fromXDR(xdrString, Networks.TESTNET, {
+        immutableTx: true,
+      }) as Transaction;
+
+      const hashBefore = tx.hash().toString("hex");
+      tx.tx.fee(999999);
+      const hashAfter = tx.hash().toString("hex");
+      expect(hashAfter).toBe(hashBefore);
     });
   });
 

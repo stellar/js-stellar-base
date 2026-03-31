@@ -41,10 +41,14 @@ export class Transaction extends TransactionBase<
    * @param envelope - transaction envelope object or base64 encoded string
    * @param networkPassphrase - passphrase of the target stellar network
    *     (e.g. "Public Global Stellar Network ; September 2015")
+   * @param opts - additional options
+   * @param opts.immutableTx - when true, the `tx` getter returns a
+   *     defensive copy so external code cannot mutate the signed transaction
    */
   constructor(
     envelope: xdr.TransactionEnvelope | string,
     networkPassphrase: string,
+    opts?: { immutableTx?: boolean },
   ) {
     if (typeof envelope === "string") {
       const buffer = Buffer.from(envelope, "base64");
@@ -70,7 +74,7 @@ export class Transaction extends TransactionBase<
     const fee = tx.fee().toString();
     const signatures = (txEnvelope.signatures() || []).slice();
 
-    super(tx, signatures, fee, networkPassphrase);
+    super(tx, signatures, fee, networkPassphrase, opts?.immutableTx ?? false);
 
     this._envelopeType = envelopeType;
     this._memo = tx.memo();
