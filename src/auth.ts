@@ -2,6 +2,7 @@ import xdr from "./xdr.js";
 
 import { Keypair } from "./keypair.js";
 import { StrKey } from "./strkey.js";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Networks } from "./network.js";
 import { hash } from "./hashing.js";
 
@@ -123,7 +124,7 @@ export async function authorizeEntry(
   entry: xdr.SorobanAuthorizationEntry,
   signer: Keypair | SigningCallback,
   validUntilLedgerSeq: number,
-  networkPassphrase: string = Networks.TESTNET,
+  networkPassphrase: string,
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // no-op if it's source account auth
   if (
@@ -222,8 +223,7 @@ export async function authorizeEntry(
  *    {@link Keypair} to `signer`, this can be omitted, as it just uses
  *    {@link Keypair.publicKey})
  * @param networkPassphrase - the network passphrase is incorporated into the
- *    signature (see {@link Networks} for options, default:
- *    {@link Networks.TESTNET})
+ *    signature (see {@link Networks} for options)
  *
  * @see authorizeEntry
  */
@@ -232,7 +232,7 @@ export function authorizeInvocation(
   validUntilLedgerSeq: number,
   invocation: xdr.SorobanAuthorizedInvocation,
   publicKey: string = "",
-  networkPassphrase: string = Networks.TESTNET,
+  networkPassphrase: string,
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and

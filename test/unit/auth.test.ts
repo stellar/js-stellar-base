@@ -10,6 +10,7 @@ import { StrKey } from "../../src/strkey.js";
 import { hash } from "../../src/hashing.js";
 import { scValToNative } from "../../src/scval.js";
 import { expectDefined } from "../support/expect_defined.js";
+import { Networks } from "../../src/network.js";
 import xdr from "../../src/xdr.js";
 
 describe("building authorization entries", () => {
@@ -44,7 +45,12 @@ describe("building authorization entries", () => {
 
   describe("authorizeEntry", () => {
     it("signs the entry correctly with a Keypair", async () => {
-      const signedEntry = await authorizeEntry(authEntry, kp, 10);
+      const signedEntry = await authorizeEntry(
+        authEntry,
+        kp,
+        10,
+        Networks.TESTNET,
+      );
 
       expect(signedEntry.rootInvocation().toXDR()).toEqual(
         authEntry.rootInvocation().toXDR(),
@@ -73,7 +79,12 @@ describe("building authorization entries", () => {
       const callback: SigningCallback = async (preimage) =>
         kp.sign(hash(preimage.toXDR()));
 
-      const signedEntry = await authorizeEntry(authEntry, callback, 10);
+      const signedEntry = await authorizeEntry(
+        authEntry,
+        callback,
+        10,
+        Networks.TESTNET,
+      );
 
       const signedAddr = signedEntry.credentials().address();
       expect(signedAddr.signatureExpirationLedger()).toBe(10);
@@ -95,7 +106,12 @@ describe("building authorization entries", () => {
         publicKey: kp.publicKey(),
       });
 
-      const signedEntry = await authorizeEntry(authEntry, callback, 10);
+      const signedEntry = await authorizeEntry(
+        authEntry,
+        callback,
+        10,
+        Networks.TESTNET,
+      );
 
       const signedAddr = signedEntry.credentials().address();
       expect(signedAddr.signatureExpirationLedger()).toBe(10);
@@ -117,7 +133,12 @@ describe("building authorization entries", () => {
         credentials: xdr.SorobanCredentials.sorobanCredentialsSourceAccount(),
       });
 
-      const result = await authorizeEntry(sourceAccountEntry, kp, 10);
+      const result = await authorizeEntry(
+        sourceAccountEntry,
+        kp,
+        10,
+        Networks.TESTNET,
+      );
       expect(result.toXDR()).toEqual(sourceAccountEntry.toXDR());
     });
 
@@ -141,7 +162,12 @@ describe("building authorization entries", () => {
         ),
       });
 
-      const signed = await authorizeEntry(entryForRandom, randomKp, 10);
+      const signed = await authorizeEntry(
+        entryForRandom,
+        randomKp,
+        10,
+        Networks.TESTNET,
+      );
       expect(signed.credentials().address().signatureExpirationLedger()).toBe(
         10,
       );
@@ -157,20 +183,48 @@ describe("building authorization entries", () => {
         publicKey: kp.publicKey(), // claims to be kp but signed with wrongKp
       });
 
-      await expect(authorizeEntry(authEntry, badCallback, 10)).rejects.toThrow(
-        /signature doesn't match payload/,
-      );
+      await expect(
+        authorizeEntry(authEntry, badCallback, 10, Networks.TESTNET),
+      ).rejects.toThrow(/signature doesn't match payload/);
     });
 
     it("throws with a bad signature from a callback", async () => {
-      const badCallback: SigningCallback = async (_preimage) => ({
+      const badCallback: SigningCallback = async () => ({
         signature: Buffer.from("bad-signature-data"),
         publicKey: kp.publicKey(),
       });
 
-      await expect(authorizeEntry(authEntry, badCallback, 10)).rejects.toThrow(
-        /signature doesn't match payload/,
+      await expect(
+        authorizeEntry(authEntry, badCallback, 10, Networks.TESTNET),
+      ).rejects.toThrow(/signature doesn't match payload/);
+    });
+
+    it("produces different signatures for different networks", async () => {
+      const signedTestnet = await authorizeEntry(
+        authEntry,
+        kp,
+        10,
+        Networks.TESTNET,
       );
+      const signedPublic = await authorizeEntry(
+        authEntry,
+        kp,
+        10,
+        Networks.PUBLIC,
+      );
+
+      const sigTestnet = signedTestnet
+        .credentials()
+        .address()
+        .signature()
+        .toXDR("hex");
+      const sigPublic = signedPublic
+        .credentials()
+        .address()
+        .signature()
+        .toXDR("hex");
+
+      expect(sigTestnet).not.toBe(sigPublic);
     });
   });
 
@@ -180,6 +234,8 @@ describe("building authorization entries", () => {
         kp,
         10,
         authEntry.rootInvocation(),
+        "",
+        Networks.TESTNET,
       );
 
       expect(signedEntry.rootInvocation().toXDR()).toEqual(
@@ -204,6 +260,7 @@ describe("building authorization entries", () => {
         10,
         authEntry.rootInvocation(),
         kp.publicKey(),
+        Networks.TESTNET,
       );
 
       const signedAddr = signedEntry.credentials().address();
@@ -220,7 +277,13 @@ describe("building authorization entries", () => {
       // When called with a non-Keypair signer and no explicit publicKey, the
       // implementation throws Error("authorizeInvocation requires publicKey parameter").
       expect(() =>
-        authorizeInvocation(callback, 10, authEntry.rootInvocation()),
+        authorizeInvocation(
+          callback,
+          10,
+          authEntry.rootInvocation(),
+          "",
+          Networks.TESTNET,
+        ),
       ).toThrow("authorizeInvocation requires publicKey parameter");
     });
   });
@@ -248,6 +311,8 @@ describe("building authorization entries", () => {
         kp,
         10,
         authEntry.rootInvocation(),
+        "",
+        Networks.TESTNET,
       );
       expect(entry.credentials().address().nonce().toBigInt()).toBe(
         4294967296n,
@@ -260,6 +325,8 @@ describe("building authorization entries", () => {
         kp,
         10,
         authEntry.rootInvocation(),
+        "",
+        Networks.TESTNET,
       );
       expect(entry.credentials().address().nonce().toBigInt()).toBe(-1n);
     });
@@ -270,6 +337,8 @@ describe("building authorization entries", () => {
         kp,
         10,
         authEntry.rootInvocation(),
+        "",
+        Networks.TESTNET,
       );
       expect(entry.credentials().address().nonce().toBigInt()).toBe(
         -9223372036854775808n,
@@ -282,6 +351,8 @@ describe("building authorization entries", () => {
         kp,
         10,
         authEntry.rootInvocation(),
+        "",
+        Networks.TESTNET,
       );
       expect(entry.credentials().address().nonce().toBigInt()).toBe(0n);
     });
@@ -290,7 +361,13 @@ describe("building authorization entries", () => {
       stubRawBytes([0, 0, 0]); // only 3 bytes
 
       expect(() =>
-        authorizeInvocation(kp, 10, authEntry.rootInvocation()),
+        authorizeInvocation(
+          kp,
+          10,
+          authEntry.rootInvocation(),
+          "",
+          Networks.TESTNET,
+        ),
       ).toThrow(/need at least 8 bytes to convert to Int64, got 3/);
     });
   });
