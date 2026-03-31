@@ -469,8 +469,6 @@ export function scvSortedMap(items: xdr.ScMapEntry[]): xdr.ScVal {
     const nativeA = scValToNative(a.key()) as bigint | number | string;
     const nativeB = scValToNative(b.key()) as bigint | number | string;
 
-    // TODO: I don't think assuming that the keys are all the same type is a safe assumption,
-    // converting them all to strings and doing a localeCompare might be safer, but unsure if this is how the Soroban runtime expects it to be sorted
     switch (typeof nativeA) {
       case "number":
       case "bigint":
