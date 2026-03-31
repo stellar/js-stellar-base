@@ -4,25 +4,149 @@
 
 ### Breaking Changes
 
-- `Transaction.minAccountSequenceAge` is now typed as `bigint` instead of `number`. The underlying XDR type (`Duration = Uint64`) is 64-bit
-  and can exceed `Number.MAX_SAFE_INTEGER`.
-- `TransactionBuilder.minAccountSequenceAge` is now typed as `bigint` instead
-  of `number` for the same reason.
-- Removed the unused `supportMuxing` parameter from
-  `decodeAddressToMuxedAccount` and `encodeMuxedAccountToAddress` type
-  declarations. The parameter was previously accepted but silently ignored at
-  runtime. TypeScript callers passing this argument will need to remove it.
+- `Transaction.minAccountSequenceAge` is now typed as `bigint` instead of
+  `number`. The underlying XDR type (`Duration = Uint64`) is 64-bit and can
+  exceed `Number.MAX_SAFE_INTEGER`. On the `Transaction` side, the runtime value
+  is now a native `bigint` instead of an `xdr.UnsignedHyper` object.
+- `TransactionBuilder.setMinAccountSequenceAge` now requires a `bigint`
+  parameter instead of `number`. Callers must use e.g. `60n` instead of `60`.
+  The corresponding `TransactionBuilderOptions.minAccountSequenceAge` field is
+  also `bigint`.
+- `TransactionBuilder` constructor now preserves `0n` for
+  `minAccountSequenceAge` instead of coercing falsy values to `null`. This may
+  change whether `hasV2Preconditions()` returns `true` when the field is
+  explicitly set to `0n`.
+- `Transaction.extraSigners` is now typed as `xdr.SignerKey[]` instead of
+  `string[]`. The old type declaration was incorrect — the runtime always stored
+  `xdr.SignerKey[]` objects. Use `SignerKey.encodeSignerKey()` to convert to
+  StrKey strings.
+- `Transaction` no longer has generic type parameters `<TMemo, TOps>`. Code like
+  `Transaction<Memo<MemoType.Text>>` will no longer compile.
+- The default `networkPassphrase` for `authorizeEntry` and
+  `authorizeInvocation` has changed from `Networks.FUTURENET` to
+  `Networks.TESTNET`. Callers omitting this argument will silently produce
+  signatures for a different network.
+- `Operation.createStellarAssetContract` and `Operation.uploadContractWasm` no longer forward the
+  `auth` option to `invokeHostFunction`. Callers who previously passed `auth`
+  to these functions will have it silently ignored.
+- `Operation.isValidAmount()`, `Operation.constructAmountRequirementsError()`,
+  and `Operation.setSourceAccount()` have been removed from the `Operation`
+  class. They are now standalone functions in `src/util/operations.ts` and are
+  not re-exported from the package index. These were never in the published type
+  declarations but were accessible at runtime.
+- The revoke sponsorship operation `type` field has been split from a single
+  `"revokeSponsorship"` into 7 specific strings: `"revokeAccountSponsorship"`,
+  `"revokeTrustlineSponsorship"`, `"revokeOfferSponsorship"`,
+  `"revokeDataSponsorship"`, `"revokeClaimableBalanceSponsorship"`,
+  `"revokeLiquidityPoolSponsorship"`, `"revokeSignerSponsorship"`. The old
+  generic `OperationType.RevokeSponsorship` is kept but deprecated. Note: the
+  runtime always returned the specific strings — this corrects the type
+  declarations.
+- The module no longer has a default export. `import StellarBase from
+  '@stellar/stellar-base'` will return `undefined`. Use
+  `import * as StellarBase from '@stellar/stellar-base'` or named imports.
+- The `FastSigning` constant has been removed. The library now uses
+  `@noble/curves/ed25519` exclusively.
+- `TransactionI` has been removed. Use `TransactionBase` instead.
+- `AssetType` and `AuthFlag` are now `const` objects with derived types instead
+  of TypeScript namespaces. Runtime usage (`AssetType.native` as a value) still
+  works, but type-position usage (`let x: AssetType.native`) will break.
 - `Asset.code` and `Asset.issuer` are now `readonly`. Consumers that were
   directly mutating these properties will need to create a new `Asset` instance
   instead.
-- `Asset.getIssuer()` now returns `string | undefined` instead of `string`.
+- `Asset.issuer` is now typed as `string | undefined` instead of `string`.
   Native assets have no issuer, so this corrects the type to reflect runtime
   behavior. Consumers may need to add `undefined` checks.
+- `SorobanDataBuilder.fromXDR` return type corrected from `SorobanDataBuilder`
+  to `xdr.SorobanTransactionData`. The old type declaration was wrong — the
+  runtime always returned `xdr.SorobanTransactionData`.
+- `Keypair.rawSecretKey()` now throws `Error("no secret seed available")` when
+  called on a public-key-only Keypair, instead of returning `undefined`.
+- `CreateInvocation.token` has been renamed to `CreateInvocation.asset` in the
+  type declarations to match the actual runtime property set by
+  `buildInvocationTree`. TypeScript callers referencing `.token` should switch
+  to `.asset`.
+- `XdrLargeInt.getType()` now returns `ScIntType | undefined` instead of always
+  returning a raw lowercased string. Non-integer types yield `undefined`.
+- `ScIntType` now includes `'timepoint'` and `'duration'`. Code that
+  exhaustively switches on `ScIntType` values will need new cases.
+- Removed the unused `supportMuxing` parameter from
+  `decodeAddressToMuxedAccount` and `encodeMuxedAccountToAddress` type
+  declarations. The parameter was previously accepted but silently ignored at
+  runtime.
+- `XdrLargeInt` constructor now spreads values when constructing
+  `Int128`/`Int256`/`Uint128`/`Uint256` (e.g., `new Int128(...values)` instead
+  of `new Int128(values)`), fixing nested-array behavior in the `LargeInt` base
+  class.
+- `Signer.weight` type widened from `number | undefined` to
+  `number | string | undefined`.
+- `Signer.Sha256Hash.sha256Hash` and `Signer.PreAuthTx.preAuthTx` types widened
+  from `Buffer` to `Buffer | string`.
+- `RevokeSignerSponsorship.signer` no longer accepts `Ed25519SignedPayload`
+  signer variants.
+- `SetOptions` result signer conditional type simplified — the generic parameter
+  is used directly instead of the old complex conditional mapping.
+- `SetOptions.clearFlags`/`setFlags` widened from `AuthFlag` to
+  `AuthFlags` (`AuthFlag | (number & {})`), accepting any number for combined
+  bitmask values.
+- `toXDRPrice` now rejects denominator equal to zero (`d <= 0` instead of
+  `d < 0`).
+- `checkUnsignedIntValue` string-to-number conversion changed from
+  `parseFloat()` to `Number()`. Strings with trailing non-numeric characters
+  (e.g., `"123abc"`) that previously silently succeeded will now be rejected.
 
-- `CreateInvocation.token` has been renamed to `CreateInvocation.asset` in
-  the type declarations to match the actual runtime property set by
-  `buildInvocationTree`. TypeScript callers referencing `.token` should
-  switch to `.asset`.
+### Added
+
+- `Address` class now has a `type` getter and `AddressType` type export.
+- `Address` now has static methods `claimableBalance()`, `liquidityPool()`, and
+  `muxedAccount()` (these existed at runtime before but were missing from the
+  type declarations).
+- `hash` function now accepts `string` in addition to `Buffer`.
+- `sign` and `verify` parameter types widened to accept `Uint8Array` in addition
+  to `Buffer`.
+- `Keypair.xdrMuxedAccount(id)` parameter is now optional.
+- `SorobanDataBuilder.setReadOnly` and `setReadWrite` parameters are now
+  optional, matching existing runtime behavior.
+- `scvSortedMap` is now available as a named export (the `xdr.scvSortedMap`
+  monkey-patch is preserved for backward compatibility).
+- New type exports: `AddressType`, `NativeToScValOpts`, `WasmCreateDetails`,
+  `OperationRecord`, `isValidDate`.
+- `Memo.return()` type declaration now correctly accepts `Buffer | string`
+  (previously only `string` in the type declarations, though both were accepted
+  at runtime).
+
+### Fixed
+
+- `authorizeInvocation` is now stricter when called with a callback signer
+  and no `publicKey` — it throws
+  `"authorizeInvocation requires publicKey parameter"` instead of failing with
+  an obscure error.
+- `Claimant` constructor now validates the `destination` parameter even when
+  falsy, throwing `"Destination is invalid"` instead of silently accepting
+  `undefined` or `""`.
+- `Account` constructor now validates that the `sequence` parameter is a valid
+  number, throwing `"sequence is not a valid number"` for `NaN` inputs.
+- `Asset.getAssetType()` now throws an error for unrecognized asset types
+  instead of returning `"unknown"`.
+- `Memo` is now fully immutable — the `type` and `value` setters throw
+  `"Memo is immutable"`.
+- `Memo.toXDRObject()` now throws `Error("Invalid memo type")` for invalid
+  types instead of returning `null`.
+- `set_options` no longer mutates the caller's `opts.signer.preAuthTx` /
+  `opts.signer.sha256Hash` in place.
+- `allow_trust` now throws `"authorize is required"` when the `authorize` option
+  is null or undefined, instead of silently passing through.
+- `nativeToScVal` now validates bounds for `u32`/`i32` types, throwing
+  `TypeError` for out-of-range values that previously passed through to the XDR
+  layer.
+- `scvSortedMap` sort comparator now correctly returns `0` for equal values,
+  fixing a violation of the sort contract.
+- `createCustomContract` error message for invalid salt now correctly prints the
+  salt value instead of the wasmHash.
+- `Address.toScAddress()` for claimable balances now uses the v0 constructor
+  directly instead of dynamic string construction.
+- `TransactionBase.signHashX` error message typo fixed
+  ("cannnot" → "cannot").
 
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 
