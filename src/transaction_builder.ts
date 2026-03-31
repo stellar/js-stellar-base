@@ -185,8 +185,14 @@ export class TransactionBuilder {
     this.timebounds = opts.timebounds ? { ...opts.timebounds } : null;
     this.ledgerbounds = opts.ledgerbounds ? { ...opts.ledgerbounds } : null;
     this.minAccountSequence = opts.minAccountSequence || null;
-    this.minAccountSequenceAge = opts.minAccountSequenceAge || null;
-    this.minAccountSequenceLedgerGap = opts.minAccountSequenceLedgerGap || null;
+    this.minAccountSequenceAge =
+      opts.minAccountSequenceAge !== undefined
+        ? opts.minAccountSequenceAge
+        : null;
+    this.minAccountSequenceLedgerGap =
+      opts.minAccountSequenceLedgerGap !== undefined
+        ? opts.minAccountSequenceLedgerGap
+        : null;
     this.extraSigners = opts.extraSigners ? [...opts.extraSigners] : null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
@@ -258,10 +264,15 @@ export class TransactionBuilder {
     if (tx.minAccountSequence) {
       builderOpts.minAccountSequence = tx.minAccountSequence;
     }
-    if (tx.minAccountSequenceAge) {
+    if (tx.minAccountSequenceAge !== undefined) {
       builderOpts.minAccountSequenceAge = tx.minAccountSequenceAge;
+      console.log("minAccountSequenceAge", tx.minAccountSequenceAge);
+      console.log(
+        "builderOpts.minAccountSequenceAge",
+        builderOpts.minAccountSequenceAge,
+      );
     }
-    if (tx.minAccountSequenceLedgerGap) {
+    if (tx.minAccountSequenceLedgerGap !== undefined) {
       builderOpts.minAccountSequenceLedgerGap = tx.minAccountSequenceLedgerGap;
     }
     if (tx.extraSigners) {
@@ -272,7 +283,10 @@ export class TransactionBuilder {
 
     // User-provided opts override transaction defaults
     Object.assign(builderOpts, opts);
-
+    console.log(
+      "builderOpts.minAccountSequenceAge",
+      builderOpts.minAccountSequenceAge,
+    );
     const builder = new TransactionBuilder(source, builderOpts);
 
     tx.tx.operations().forEach((op) => builder.addOperation(op));
