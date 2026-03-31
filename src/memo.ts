@@ -29,6 +29,14 @@ export type MemoTypeText = typeof MemoText;
 export type MemoTypeHash = typeof MemoHash;
 export type MemoTypeReturn = typeof MemoReturn;
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace MemoType {
+  export type None = MemoTypeNone;
+  export type ID = MemoTypeID;
+  export type Text = MemoTypeText;
+  export type Hash = MemoTypeHash;
+  export type Return = MemoTypeReturn;
+}
 export type MemoType =
   | MemoTypeHash
   | MemoTypeID
@@ -56,10 +64,10 @@ export class Memo<T extends MemoType = MemoType> {
   private _type: T;
   private _value: MemoValue;
 
-  constructor(type: MemoTypeNone, value?: null);
-  constructor(type: MemoTypeHash | MemoTypeReturn, value: Buffer);
+  constructor(type: MemoType.None, value?: null);
+  constructor(type: MemoType.Hash | MemoType.Return, value: Buffer);
   constructor(
-    type: MemoTypeHash | MemoTypeID | MemoTypeReturn | MemoTypeText,
+    type: MemoType.Hash | MemoType.ID | MemoType.Return | MemoType.Text,
     value: string,
   );
   constructor(type: T, value: MemoValue);
