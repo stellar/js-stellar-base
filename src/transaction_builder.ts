@@ -83,7 +83,7 @@ export interface TransactionBuilderOptions {
   /** Minimum source account sequence number this transaction is valid for. */
   minAccountSequence?: string;
   /** Minimum seconds between source account sequence time and ledger time. */
-  minAccountSequenceAge?: number;
+  minAccountSequenceAge?: bigint;
   /** Minimum ledgers between source account sequence and current ledger. */
   minAccountSequenceLedgerGap?: number;
   /** List of extra signers required for this transaction. */
@@ -155,7 +155,7 @@ export class TransactionBuilder {
   } | null;
   ledgerbounds: { minLedger?: number; maxLedger?: number } | null;
   minAccountSequence: string | null;
-  minAccountSequenceAge: number | null;
+  minAccountSequenceAge: bigint | null;
   minAccountSequenceLedgerGap: number | null;
   extraSigners: string[] | null;
   memo: Memo;
@@ -259,7 +259,7 @@ export class TransactionBuilder {
       builderOpts.minAccountSequence = tx.minAccountSequence;
     }
     if (tx.minAccountSequenceAge) {
-      builderOpts.minAccountSequenceAge = Number(tx.minAccountSequenceAge);
+      builderOpts.minAccountSequenceAge = tx.minAccountSequenceAge;
     }
     if (tx.minAccountSequenceLedgerGap) {
       builderOpts.minAccountSequenceLedgerGap = tx.minAccountSequenceLedgerGap;
@@ -513,9 +513,9 @@ export class TransactionBuilder {
    *     will become valid. If the value is `0`, the transaction is unrestricted
    *     by the account sequence age. Cannot be negative.
    */
-  setMinAccountSequenceAge(durationInSeconds: number): TransactionBuilder {
-    if (typeof durationInSeconds !== "number") {
-      throw new Error("min_account_sequence_age must be a number");
+  setMinAccountSequenceAge(durationInSeconds: bigint): TransactionBuilder {
+    if (typeof durationInSeconds !== "bigint") {
+      throw new Error("min_account_sequence_age must be a bigint");
     }
     if (this.minAccountSequenceAge !== null) {
       throw new Error(
