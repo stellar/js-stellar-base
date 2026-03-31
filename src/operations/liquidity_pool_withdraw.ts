@@ -1,7 +1,12 @@
+import {
+  isValidAmount,
+  constructAmountRequirementsError,
+  toXDRAmount,
+  setSourceAccount,
+} from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   LiquidityPoolWithdrawResult,
-  OperationClass,
   LiquidityPoolWithdrawOpts,
   OperationAttributes,
 } from "./types.js";
@@ -19,7 +24,6 @@ import {
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
  */
 export function liquidityPoolWithdraw(
-  this: OperationClass,
   opts: LiquidityPoolWithdrawOpts = {} as LiquidityPoolWithdrawOpts,
 ): xdr.Operation<LiquidityPoolWithdrawResult> {
   if (!opts.liquidityPoolId) {
@@ -30,20 +34,20 @@ export function liquidityPoolWithdraw(
     "hex",
   ) as unknown as xdr.PoolId;
 
-  if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+  if (!isValidAmount(opts.amount)) {
+    throw new TypeError(constructAmountRequirementsError("amount"));
   }
-  const amount = this._toXDRAmount(opts.amount);
+  const amount = toXDRAmount(opts.amount);
 
-  if (!this.isValidAmount(opts.minAmountA, true)) {
-    throw new TypeError(this.constructAmountRequirementsError("minAmountA"));
+  if (!isValidAmount(opts.minAmountA, true)) {
+    throw new TypeError(constructAmountRequirementsError("minAmountA"));
   }
-  const minAmountA = this._toXDRAmount(opts.minAmountA);
+  const minAmountA = toXDRAmount(opts.minAmountA);
 
-  if (!this.isValidAmount(opts.minAmountB, true)) {
-    throw new TypeError(this.constructAmountRequirementsError("minAmountB"));
+  if (!isValidAmount(opts.minAmountB, true)) {
+    throw new TypeError(constructAmountRequirementsError("minAmountB"));
   }
-  const minAmountB = this._toXDRAmount(opts.minAmountB);
+  const minAmountB = toXDRAmount(opts.minAmountB);
 
   const liquidityPoolWithdrawOp = new xdr.LiquidityPoolWithdrawOp({
     liquidityPoolId,
@@ -56,7 +60,7 @@ export function liquidityPoolWithdraw(
     sourceAccount: null,
     body: xdr.OperationBody.liquidityPoolWithdraw(liquidityPoolWithdrawOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

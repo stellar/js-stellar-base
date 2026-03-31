@@ -149,7 +149,7 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .setTimebounds(Date.now(), Date.now() + 5000)
   .setLedgerbounds(5, 10)
   .setMinAccountSequence("5")
-  .setMinAccountSequenceAge(5)
+  .setMinAccountSequenceAge(BigInt(5))
   .setMinAccountSequenceLedgerGap(5)
   .setExtraSigners([sourceKey.publicKey()])
   .build(); // $ExpectType () => Transaction

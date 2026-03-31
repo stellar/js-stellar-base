@@ -33,10 +33,7 @@ export class Transaction extends TransactionBase<
   private _timeBounds?: { minTime: string; maxTime: string };
   private _ledgerBounds?: { minLedger: number; maxLedger: number };
   private _minAccountSequence?: string;
-  // TODO: types/index.d.ts declares this as `number`, but the XDR type is
-  // Duration = Uint64 (64-bit), which can exceed Number.MAX_SAFE_INTEGER.
-  // This is a breaking type change that should be surfaced when types/index.d.ts is updated.
-  private _minAccountSequenceAge?: xdr.Uint64;
+  private _minAccountSequenceAge?: bigint;
   private _minAccountSequenceLedgerGap?: number;
   private _extraSigners?: xdr.SignerKey[];
 
@@ -140,7 +137,7 @@ export class Transaction extends TransactionBase<
         this._minAccountSequence = minSeq.toString();
       }
 
-      this._minAccountSequenceAge = cond.minSeqAge();
+      this._minAccountSequenceAge = cond.minSeqAge().toBigInt();
       this._minAccountSequenceLedgerGap = cond.minSeqLedgerGap();
       this._extraSigners = cond.extraSigners();
     }

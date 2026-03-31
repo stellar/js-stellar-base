@@ -1,9 +1,15 @@
+import {
+  constructAmountRequirementsError,
+  isValidAmount,
+  setSourceAccount,
+  toXDRAmount,
+  toXDRPrice,
+} from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   CreatePassiveSellOfferResult,
   CreatePassiveSellOfferOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -22,23 +28,22 @@ import {
  * @throws Throws `Error` when the best rational approximation of `price` cannot be found.
  */
 export function createPassiveSellOffer(
-  this: OperationClass,
   opts: CreatePassiveSellOfferOpts,
 ): xdr.Operation<CreatePassiveSellOfferResult> {
   const selling: xdr.Asset = opts.selling.toXDRObject();
   const buying: xdr.Asset = opts.buying.toXDRObject();
 
-  if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+  if (!isValidAmount(opts.amount)) {
+    throw new TypeError(constructAmountRequirementsError("amount"));
   }
 
-  const amount: xdr.Int64 = this._toXDRAmount(opts.amount);
+  const amount: xdr.Int64 = toXDRAmount(opts.amount);
 
   if (opts.price === undefined) {
     throw new TypeError("price argument is required");
   }
 
-  const price: xdr.Price = this._toXDRPrice(opts.price);
+  const price: xdr.Price = toXDRPrice(opts.price);
 
   const createPassiveSellOfferOp = new xdr.CreatePassiveSellOfferOp({
     selling,
@@ -52,7 +57,7 @@ export function createPassiveSellOffer(
     body: xdr.OperationBody.createPassiveSellOffer(createPassiveSellOfferOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

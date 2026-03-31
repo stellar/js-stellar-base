@@ -4,6 +4,10 @@
 
 ### Breaking Changes
 
+- `Transaction.minAccountSequenceAge` is now typed as `bigint` instead of `number`. The underlying XDR type (`Duration = Uint64`) is 64-bit
+  and can exceed `Number.MAX_SAFE_INTEGER`.
+- `TransactionBuilder.minAccountSequenceAge` is now typed as `bigint` instead
+  of `number` for the same reason.
 - Removed the unused `supportMuxing` parameter from
   `decodeAddressToMuxedAccount` and `encodeMuxedAccountToAddress` type
   declarations. The parameter was previously accepted but silently ignored at

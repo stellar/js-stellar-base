@@ -1,10 +1,10 @@
+import { setSourceAccount } from "../util/operations.js";
 import xdr from "../xdr.js";
 import { validateClaimableBalanceId } from "./claim_claimable_balance.js";
 import {
   ClawbackClaimableBalanceResult,
   ClawbackClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -22,7 +22,6 @@ import {
  * @see https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#clawback-claimable-balance-operation
  */
 export function clawbackClaimableBalance(
-  this: OperationClass,
   opts: ClawbackClaimableBalanceOpts = {} as ClawbackClaimableBalanceOpts,
 ): xdr.Operation<ClawbackClaimableBalanceResult> {
   validateClaimableBalanceId(opts.balanceId);
@@ -39,7 +38,7 @@ export function clawbackClaimableBalance(
     ),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

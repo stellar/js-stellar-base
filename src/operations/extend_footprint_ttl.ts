@@ -1,9 +1,9 @@
+import { setSourceAccount } from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   ExtendFootprintTTLResult,
   ExtendFootprintTtlOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -32,7 +32,6 @@ import {
  * @param opts.source - an optional source account
  */
 export function extendFootprintTtl(
-  this: OperationClass,
   opts: ExtendFootprintTtlOpts,
 ): xdr.Operation<ExtendFootprintTTLResult> {
   if ((opts.extendTo ?? -1) <= 0) {
@@ -48,7 +47,7 @@ export function extendFootprintTtl(
     sourceAccount: null,
     body: xdr.OperationBody.extendFootprintTtl(extendFootprintOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

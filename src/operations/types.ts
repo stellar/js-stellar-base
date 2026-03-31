@@ -11,31 +11,6 @@ export interface OperationAttributes {
   sourceAccount: xdr.MuxedAccount | null;
 }
 
-// TODO: Remove this interface and replace `this: OperationClass` in all operation functions
-// with plain imported helpers. The `this:` parameter is a TypeScript migration artifact —
-// modern TS prefers explicit dependencies over implicit `this` context. To do this without
-// introducing a circular dependency (operations/*.ts → operation.ts → operations/index.ts →
-// operations/*.ts), extract the shared utilities (setSourceAccount, _toXDRAmount, etc.) into
-// a new src/operations/helpers.ts module that both operation.ts and operations/*.ts can import.
-export interface OperationClass {
-  invokeHostFunction(
-    opts: InvokeHostFunctionOpts,
-  ): xdr.Operation<InvokeHostFunctionResult>;
-  isValidAmount(value: string, allowZero?: boolean): boolean;
-  constructAmountRequirementsError(arg: string): string;
-  _toXDRAmount(value: string): xdr.Int64;
-  _toXDRPrice(price: number | object | string): xdr.Price;
-  setSourceAccount(
-    opAttributes: OperationAttributes,
-    opts: { source?: string },
-  ): void;
-  _checkUnsignedIntValue(
-    name: string,
-    value: number | string | undefined,
-    isValidFunction?: ((value: number, name: string) => boolean) | null,
-  ): number | undefined;
-}
-
 export interface ChangeTrustOpts {
   asset: Asset | LiquidityPoolAsset;
   limit?: string;
@@ -153,7 +128,7 @@ export interface CreatePassiveSellOfferOpts {
   selling: Asset;
   buying: Asset;
   amount: string;
-  price: number | object | string;
+  price: BigNumber | number | string | { n: number; d: number };
   source?: string;
 }
 
@@ -165,7 +140,7 @@ export interface ManageBuyOfferOpts {
   selling: Asset;
   buying: Asset;
   buyAmount: string;
-  price: number | object | string;
+  price: BigNumber | number | string | { n: number; d: number };
   offerId?: number | string;
   source?: string;
 }
@@ -257,8 +232,8 @@ export interface LiquidityPoolDepositOpts {
   liquidityPoolId: string;
   maxAmountA: string;
   maxAmountB: string;
-  minPrice: number | object | string;
-  maxPrice: number | object | string;
+  minPrice: BigNumber | number | string | { n: number; d: number };
+  maxPrice: BigNumber | number | string | { n: number; d: number };
   source?: string;
 }
 

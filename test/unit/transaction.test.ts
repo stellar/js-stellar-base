@@ -845,17 +845,20 @@ describe("Transaction", () => {
     });
 
     it("minAccountSequenceAge", () => {
+      const expectedMinAccountSequenceAge = BigInt(5);
       const tx = makeBuilder()
         .setTimeout(5)
-        .setMinAccountSequenceAge(5)
+        .setMinAccountSequenceAge(expectedMinAccountSequenceAge)
         .build();
       if (tx.minAccountSequenceAge === undefined) {
         throw new Error("Expected minAccountSequenceAge to be defined");
       }
-      expect(tx.minAccountSequenceAge.toString()).toEqual("5");
+      expect(tx.minAccountSequenceAge.toString()).toEqual(
+        expectedMinAccountSequenceAge.toString(),
+      );
 
       const val = tx.toEnvelope().v1().tx().cond().v2().minSeqAge();
-      expect(val.toString()).toEqual("5");
+      expect(val.toString()).toEqual(expectedMinAccountSequenceAge.toString());
     });
 
     it("minAccountSequenceLedgerGap", () => {

@@ -1,10 +1,10 @@
 import BigNumber from "../util/bignumber.js";
+import { setSourceAccount } from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   BumpSequenceResult,
   BumpSequenceOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -14,7 +14,6 @@ import {
  * @param opts.source - The optional source account.
  */
 export function bumpSequence(
-  this: OperationClass,
   opts: BumpSequenceOpts,
 ): xdr.Operation<BumpSequenceResult> {
   if (typeof opts.bumpTo !== "string") {
@@ -36,7 +35,7 @@ export function bumpSequence(
     body: xdr.OperationBody.bumpSequence(bumpSequenceOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

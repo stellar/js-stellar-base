@@ -46,9 +46,6 @@ export class LiquidityPoolId {
    * {@link Asset.toTrustLineXDRObject `Asset.toTrustLineXDRObject`} method.
    */
   toXDRObject(): xdr.TrustLineAsset {
-    // TODO: check generated XDR types to make sure they are up to date.
-    // xdr.PoolId exists at runtime but is typed as a plain type alias (Hash = Opaque[]).
-    // Buffer.from produces the correct runtime value; cast to xdr.PoolId to satisfy the type checker.
     const xdrPoolId = Buffer.from(
       this.liquidityPoolId,
       "hex",

@@ -1915,7 +1915,7 @@ describe("setMinAccountSequenceAge", () => {
       timebounds: { minTime: 0, maxTime: 0 },
     })
       .addOperation(op)
-      .setMinAccountSequenceAge(100);
+      .setMinAccountSequenceAge(BigInt(100));
 
     expect(builder).toBeInstanceOf(TransactionBuilder);
   });
@@ -1930,7 +1930,7 @@ describe("setMinAccountSequenceAge", () => {
         .addOperation(op)
         // @ts-expect-error: intentionally passing string to test runtime validation
         .setMinAccountSequenceAge("100");
-    }).toThrow("min_account_sequence_age must be a number");
+    }).toThrow("min_account_sequence_age must be a bigint");
   });
 
   it("throws when already set", () => {
@@ -1941,8 +1941,8 @@ describe("setMinAccountSequenceAge", () => {
         timebounds: { minTime: 0, maxTime: 0 },
       })
         .addOperation(op)
-        .setMinAccountSequenceAge(100)
-        .setMinAccountSequenceAge(200);
+        .setMinAccountSequenceAge(BigInt(100))
+        .setMinAccountSequenceAge(BigInt(200));
     }).toThrow("min_account_sequence_age has been already set");
   });
 
@@ -1954,8 +1954,23 @@ describe("setMinAccountSequenceAge", () => {
         timebounds: { minTime: 0, maxTime: 0 },
       })
         .addOperation(op)
-        .setMinAccountSequenceAge(-1);
+        .setMinAccountSequenceAge(BigInt(-1));
     }).toThrow("min_account_sequence_age cannot be negative");
+  });
+
+  it("roundtrips with 0", () => {
+    const transactionBuilder = new TransactionBuilder(source, {
+      fee: "100",
+      networkPassphrase,
+      timebounds: { minTime: 0, maxTime: 0 },
+    })
+      .addOperation(op)
+      .setMinAccountSequenceAge(BigInt(0));
+    console.log(transactionBuilder.build().minAccountSequenceAge);
+    expect(
+      TransactionBuilder.cloneFrom(transactionBuilder.build())
+        .minAccountSequenceAge,
+    ).toBe(BigInt(0));
   });
 });
 
@@ -2006,6 +2021,19 @@ describe("setMinAccountSequenceLedgerGap", () => {
         .addOperation(op)
         .setMinAccountSequenceLedgerGap(-1);
     }).toThrow("min_account_sequence_ledger_gap cannot be negative");
+  });
+  it("roundtrips with 0", () => {
+    const transactionBuilder = new TransactionBuilder(source, {
+      fee: "100",
+      networkPassphrase,
+      timebounds: { minTime: 0, maxTime: 0 },
+    })
+      .addOperation(op)
+      .setMinAccountSequenceLedgerGap(0);
+    expect(
+      TransactionBuilder.cloneFrom(transactionBuilder.build())
+        .minAccountSequenceLedgerGap,
+    ).toBe(0);
   });
 });
 

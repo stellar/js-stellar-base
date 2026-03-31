@@ -83,7 +83,7 @@ export interface TransactionBuilderOptions {
   /** Minimum source account sequence number this transaction is valid for. */
   minAccountSequence?: string;
   /** Minimum seconds between source account sequence time and ledger time. */
-  minAccountSequenceAge?: number;
+  minAccountSequenceAge?: bigint;
   /** Minimum ledgers between source account sequence and current ledger. */
   minAccountSequenceLedgerGap?: number;
   /** List of extra signers required for this transaction. */
@@ -155,7 +155,7 @@ export class TransactionBuilder {
   } | null;
   ledgerbounds: { minLedger?: number; maxLedger?: number } | null;
   minAccountSequence: string | null;
-  minAccountSequenceAge: number | null;
+  minAccountSequenceAge: bigint | null;
   minAccountSequenceLedgerGap: number | null;
   extraSigners: string[] | null;
   memo: Memo;
@@ -185,8 +185,14 @@ export class TransactionBuilder {
     this.timebounds = opts.timebounds ? { ...opts.timebounds } : null;
     this.ledgerbounds = opts.ledgerbounds ? { ...opts.ledgerbounds } : null;
     this.minAccountSequence = opts.minAccountSequence || null;
-    this.minAccountSequenceAge = opts.minAccountSequenceAge || null;
-    this.minAccountSequenceLedgerGap = opts.minAccountSequenceLedgerGap || null;
+    this.minAccountSequenceAge =
+      opts.minAccountSequenceAge !== undefined
+        ? opts.minAccountSequenceAge
+        : null;
+    this.minAccountSequenceLedgerGap =
+      opts.minAccountSequenceLedgerGap !== undefined
+        ? opts.minAccountSequenceLedgerGap
+        : null;
     this.extraSigners = opts.extraSigners ? [...opts.extraSigners] : null;
     this.memo = opts.memo || Memo.none();
     this.networkPassphrase = opts.networkPassphrase || null;
@@ -258,10 +264,15 @@ export class TransactionBuilder {
     if (tx.minAccountSequence) {
       builderOpts.minAccountSequence = tx.minAccountSequence;
     }
-    if (tx.minAccountSequenceAge) {
-      builderOpts.minAccountSequenceAge = Number(tx.minAccountSequenceAge);
+    if (tx.minAccountSequenceAge !== undefined) {
+      builderOpts.minAccountSequenceAge = tx.minAccountSequenceAge;
+      console.log("minAccountSequenceAge", tx.minAccountSequenceAge);
+      console.log(
+        "builderOpts.minAccountSequenceAge",
+        builderOpts.minAccountSequenceAge,
+      );
     }
-    if (tx.minAccountSequenceLedgerGap) {
+    if (tx.minAccountSequenceLedgerGap !== undefined) {
       builderOpts.minAccountSequenceLedgerGap = tx.minAccountSequenceLedgerGap;
     }
     if (tx.extraSigners) {
@@ -272,7 +283,10 @@ export class TransactionBuilder {
 
     // User-provided opts override transaction defaults
     Object.assign(builderOpts, opts);
-
+    console.log(
+      "builderOpts.minAccountSequenceAge",
+      builderOpts.minAccountSequenceAge,
+    );
     const builder = new TransactionBuilder(source, builderOpts);
 
     tx.tx.operations().forEach((op) => builder.addOperation(op));
@@ -513,9 +527,9 @@ export class TransactionBuilder {
    *     will become valid. If the value is `0`, the transaction is unrestricted
    *     by the account sequence age. Cannot be negative.
    */
-  setMinAccountSequenceAge(durationInSeconds: number): TransactionBuilder {
-    if (typeof durationInSeconds !== "number") {
-      throw new Error("min_account_sequence_age must be a number");
+  setMinAccountSequenceAge(durationInSeconds: bigint): TransactionBuilder {
+    if (typeof durationInSeconds !== "bigint") {
+      throw new Error("min_account_sequence_age must be a bigint");
     }
     if (this.minAccountSequenceAge !== null) {
       throw new Error(

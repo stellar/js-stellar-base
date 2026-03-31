@@ -1,9 +1,15 @@
+import {
+  isValidAmount,
+  constructAmountRequirementsError,
+  toXDRAmount,
+  setSourceAccount,
+  toXDRPrice,
+} from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   ManageBuyOfferResult,
   ManageBuyOfferOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -21,23 +27,22 @@ import {
  * @throws Throws `Error` when the best rational approximation of `price` cannot be found.
  */
 export function manageBuyOffer(
-  this: OperationClass,
   opts: ManageBuyOfferOpts,
 ): xdr.Operation<ManageBuyOfferResult> {
   const selling: xdr.Asset = opts.selling.toXDRObject();
   const buying: xdr.Asset = opts.buying.toXDRObject();
 
-  if (!this.isValidAmount(opts.buyAmount, true)) {
-    throw new TypeError(this.constructAmountRequirementsError("buyAmount"));
+  if (!isValidAmount(opts.buyAmount, true)) {
+    throw new TypeError(constructAmountRequirementsError("buyAmount"));
   }
 
-  const buyAmount: xdr.Int64 = this._toXDRAmount(opts.buyAmount);
+  const buyAmount: xdr.Int64 = toXDRAmount(opts.buyAmount);
 
   if (opts.price === undefined) {
     throw new TypeError("price argument is required");
   }
 
-  const price: xdr.Price = this._toXDRPrice(opts.price);
+  const price: xdr.Price = toXDRPrice(opts.price);
 
   const offerIdStr = opts.offerId !== undefined ? opts.offerId.toString() : "0";
   const offerId: xdr.Int64 = xdr.Int64.fromString(offerIdStr);
@@ -55,7 +60,7 @@ export function manageBuyOffer(
     body: xdr.OperationBody.manageBuyOffer(manageBuyOfferOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

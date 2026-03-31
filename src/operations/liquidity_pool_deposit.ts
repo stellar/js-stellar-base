@@ -1,9 +1,15 @@
+import {
+  isValidAmount,
+  constructAmountRequirementsError,
+  toXDRAmount,
+  toXDRPrice,
+  setSourceAccount,
+} from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   LiquidityPoolDepositResult,
   LiquidityPoolDepositOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -24,7 +30,6 @@ import {
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
  */
 export function liquidityPoolDeposit(
-  this: OperationClass,
   opts: LiquidityPoolDepositOpts = {} as LiquidityPoolDepositOpts,
 ): xdr.Operation<LiquidityPoolDepositResult> {
   const { liquidityPoolId, maxAmountA, maxAmountB, minPrice, maxPrice } = opts;
@@ -40,25 +45,25 @@ export function liquidityPoolDeposit(
     "hex",
   ) as unknown as xdr.PoolId;
 
-  if (!this.isValidAmount(maxAmountA, true)) {
-    throw new TypeError(this.constructAmountRequirementsError("maxAmountA"));
+  if (!isValidAmount(maxAmountA, true)) {
+    throw new TypeError(constructAmountRequirementsError("maxAmountA"));
   }
-  const maxAmountAXdr: xdr.Int64 = this._toXDRAmount(maxAmountA);
+  const maxAmountAXdr: xdr.Int64 = toXDRAmount(maxAmountA);
 
-  if (!this.isValidAmount(maxAmountB, true)) {
-    throw new TypeError(this.constructAmountRequirementsError("maxAmountB"));
+  if (!isValidAmount(maxAmountB, true)) {
+    throw new TypeError(constructAmountRequirementsError("maxAmountB"));
   }
-  const maxAmountBXdr: xdr.Int64 = this._toXDRAmount(maxAmountB);
+  const maxAmountBXdr: xdr.Int64 = toXDRAmount(maxAmountB);
 
   if (minPrice === undefined) {
     throw new TypeError("minPrice argument is required");
   }
-  const minPriceXdr: xdr.Price = this._toXDRPrice(minPrice);
+  const minPriceXdr: xdr.Price = toXDRPrice(minPrice);
 
   if (maxPrice === undefined) {
     throw new TypeError("maxPrice argument is required");
   }
-  const maxPriceXdr: xdr.Price = this._toXDRPrice(maxPrice);
+  const maxPriceXdr: xdr.Price = toXDRPrice(maxPrice);
 
   const liquidityPoolDepositOp = new xdr.LiquidityPoolDepositOp({
     liquidityPoolId: liquidityPoolIdXdr,
@@ -73,7 +78,7 @@ export function liquidityPoolDeposit(
     body: xdr.OperationBody.liquidityPoolDeposit(liquidityPoolDepositOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

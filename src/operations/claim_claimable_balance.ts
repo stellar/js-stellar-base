@@ -1,9 +1,9 @@
+import { setSourceAccount } from "../util/operations.js";
 import xdr from "../xdr.js";
 import {
   ClaimClaimableBalanceResult,
   ClaimClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
 
 /**
@@ -18,7 +18,6 @@ import {
  * });
  */
 export function claimClaimableBalance(
-  this: OperationClass,
   opts: ClaimClaimableBalanceOpts = {} as ClaimClaimableBalanceOpts,
 ): xdr.Operation<ClaimClaimableBalanceResult> {
   validateClaimableBalanceId(opts.balanceId);
@@ -36,7 +35,7 @@ export function claimClaimableBalance(
     body: xdr.OperationBody.claimClaimableBalance(claimClaimableBalanceOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

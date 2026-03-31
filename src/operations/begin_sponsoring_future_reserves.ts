@@ -3,10 +3,10 @@ import { StrKey } from "../strkey.js";
 import { Keypair } from "../keypair.js";
 import {
   BeginSponsoringFutureReservesResult,
-  OperationClass,
   BeginSponsoringFutureReservesOpts,
   OperationAttributes,
 } from "./types.js";
+import { setSourceAccount } from "../util/operations.js";
 
 /**
  * Create a "begin sponsoring future reserves" operation.
@@ -21,7 +21,6 @@ import {
  *
  */
 export function beginSponsoringFutureReserves(
-  this: OperationClass,
   opts: BeginSponsoringFutureReservesOpts,
 ): xdr.Operation<BeginSponsoringFutureReservesResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.sponsoredId)) {
@@ -35,7 +34,7 @@ export function beginSponsoringFutureReserves(
     sourceAccount: null,
     body: xdr.OperationBody.beginSponsoringFutureReserves(op),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

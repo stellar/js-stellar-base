@@ -3,10 +3,10 @@ import { Keypair } from "../keypair.js";
 import { StrKey } from "../strkey.js";
 import {
   AllowTrustResult,
-  OperationClass,
   AllowTrustOpts,
   OperationAttributes,
 } from "./types.js";
+import { setSourceAccount } from "../util/operations.js";
 
 /**
  * @deprecated since v5.0
@@ -21,7 +21,6 @@ import {
  * @param opts.source - The source account (defaults to transaction source).
  */
 export function allowTrust(
-  this: OperationClass,
   opts: AllowTrustOpts,
 ): xdr.Operation<AllowTrustResult> {
   if (!StrKey.isValidEd25519PublicKey(opts.trustor)) {
@@ -64,7 +63,7 @@ export function allowTrust(
     sourceAccount: null,
     body: xdr.OperationBody.allowTrust(allowTrustOp),
   };
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }

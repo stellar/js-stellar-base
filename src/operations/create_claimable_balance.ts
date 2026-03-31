@@ -4,8 +4,13 @@ import {
   CreateClaimableBalanceResult,
   CreateClaimableBalanceOpts,
   OperationAttributes,
-  OperationClass,
 } from "./types.js";
+import {
+  constructAmountRequirementsError,
+  isValidAmount,
+  setSourceAccount,
+  toXDRAmount,
+} from "../util/operations.js";
 
 /**
  * Create a new claimable balance operation.
@@ -37,7 +42,6 @@ import {
  * });
  */
 export function createClaimableBalance(
-  this: OperationClass,
   opts: CreateClaimableBalanceOpts,
 ): xdr.Operation<CreateClaimableBalanceResult> {
   if (!(opts.asset instanceof Asset)) {
@@ -46,8 +50,8 @@ export function createClaimableBalance(
     );
   }
 
-  if (!this.isValidAmount(opts.amount)) {
-    throw new TypeError(this.constructAmountRequirementsError("amount"));
+  if (!isValidAmount(opts.amount)) {
+    throw new TypeError(constructAmountRequirementsError("amount"));
   }
 
   if (!Array.isArray(opts.claimants) || opts.claimants.length === 0) {
@@ -55,7 +59,7 @@ export function createClaimableBalance(
   }
 
   const asset: xdr.Asset = opts.asset.toXDRObject();
-  const amount: xdr.Int64 = this._toXDRAmount(opts.amount);
+  const amount: xdr.Int64 = toXDRAmount(opts.amount);
   const claimants: xdr.Claimant[] = opts.claimants.map((c) => c.toXDRObject());
 
   const createClaimableBalanceOp = new xdr.CreateClaimableBalanceOp({
@@ -69,7 +73,7 @@ export function createClaimableBalance(
     body: xdr.OperationBody.createClaimableBalance(createClaimableBalanceOp),
   };
 
-  this.setSourceAccount(opAttributes, opts);
+  setSourceAccount(opAttributes, opts);
 
   return new xdr.Operation(opAttributes);
 }
