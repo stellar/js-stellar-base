@@ -220,7 +220,7 @@ export function nativeToScVal(
         );
       }
 
-      if (val.constructor?.name !== "Object") {
+      if (Object.getPrototypeOf(val) !== Object.prototype) {
         throw new TypeError(
           `cannot interpret ${
             val.constructor?.name
@@ -240,7 +240,9 @@ export function nativeToScVal(
             // the type can be specified with an entry for the key and the value,
             // e.g. val = { 'hello': 1 } and opts.type = { hello: [ 'symbol',
             // 'u128' ]} or you can use `null` for the default interpretation
-            const [keyType, valType] = mapTypeSpec[k] ?? [null, null];
+            const [keyType, valType] = Object.hasOwn(mapTypeSpec, k)
+              ? (mapTypeSpec[k] ?? [null, null])
+              : [null, null];
             const keyOpts: NativeToScValOpts = keyType ? { type: keyType } : {};
             const valOpts: NativeToScValOpts = valType ? { type: valType } : {};
 
