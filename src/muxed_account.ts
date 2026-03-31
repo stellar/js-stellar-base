@@ -8,6 +8,24 @@ import {
   extractBaseAddress,
 } from "./util/decode_encode_muxed_account.js";
 
+const MAX_UINT64 = BigInt("18446744073709551615"); // 2^64 - 1
+
+function validateUint64Id(id: string): void {
+  let value: bigint;
+
+  try {
+    value = BigInt(id);
+  } catch {
+    throw new Error(`id is not a valid uint64 string: ${id}`);
+  }
+
+  if (value < BigInt(0) || value > MAX_UINT64) {
+    throw new Error(
+      `id value out of range for uint64 [0, ${MAX_UINT64}]: ${id}`,
+    );
+  }
+}
+
 /**
  * Represents a muxed account for transactions and operations.
  *
@@ -56,6 +74,8 @@ export class MuxedAccount {
     if (!StrKey.isValidEd25519PublicKey(accountId)) {
       throw new Error("accountId is invalid");
     }
+
+    validateUint64Id(id);
 
     this.account = baseAccount;
     this._muxedXdr = encodeMuxedAccount(accountId, id);
@@ -111,6 +131,8 @@ export class MuxedAccount {
     if (typeof id !== "string") {
       throw new Error("id should be a string representing a number (uint64)");
     }
+
+    validateUint64Id(id);
 
     this._muxedXdr.med25519().id(xdr.Uint64.fromString(id));
     this._mAddress = encodeMuxedAccountToAddress(this._muxedXdr);
