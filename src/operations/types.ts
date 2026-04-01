@@ -455,11 +455,11 @@ export namespace Signer {
     weight?: number;
   }
   export interface Sha256Hash {
-    sha256Hash: Buffer | string;
+    sha256Hash: Buffer;
     weight?: number;
   }
   export interface PreAuthTx {
-    preAuthTx: Buffer | string;
+    preAuthTx: Buffer;
     weight?: number;
   }
   export interface Ed25519SignedPayload {

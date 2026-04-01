@@ -75,8 +75,6 @@
   `Int128`/`Int256`/`Uint128`/`Uint256` (e.g., `new Int128(...values)` instead
   of `new Int128(values)`), fixing nested-array behavior in the `LargeInt` base
   class.
-- `Signer.Sha256Hash.sha256Hash` and `Signer.PreAuthTx.preAuthTx` types widened
-  from `Buffer` to `Buffer | string`.
 - `RevokeSignerSponsorship.signer` no longer accepts `Ed25519SignedPayload`
   signer variants.
 - `SetOptions` result signer conditional type simplified — the generic parameter
