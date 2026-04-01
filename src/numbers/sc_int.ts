@@ -108,9 +108,10 @@ export class ScInt extends XdrLargeInt {
 }
 
 function nearestBigIntSize(bigI: bigint): number {
-  // Note: Even though BigInt.toString(2) includes the negative sign for
-  // negative values (???), the following is still accurate, because the
-  // negative sign would be represented by a sign bit.
-  const bitlen = bigI.toString(2).length;
+  // Use the absolute value because BigInt.toString(2) prepends a "-" for
+  // negative values, which would inflate the length by 1 and misclassify
+  // exact boundary values like -(2^63), -(2^127), and -(2^255).
+  const abs = bigI < 0n ? -bigI : bigI;
+  const bitlen = abs.toString(2).length;
   return [64, 128, 256].find((len) => bitlen <= len) ?? bitlen;
 }
