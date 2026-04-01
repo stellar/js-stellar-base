@@ -262,11 +262,13 @@ export interface CreateCustomContractOpts {
 
 export interface CreateStellarAssetContractOpts {
   asset: Asset | string;
+  auth?: xdr.SorobanAuthorizationEntry[];
   source?: string;
 }
 
 export interface UploadContractWasmOpts {
   wasm: Buffer | Uint8Array;
+  auth?: xdr.SorobanAuthorizationEntry[];
   source?: string;
 }
 

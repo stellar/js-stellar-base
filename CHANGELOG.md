@@ -26,9 +26,6 @@
   `authorizeInvocation` has changed from `Networks.FUTURENET` to
   `Networks.TESTNET`. Callers omitting this argument will silently produce
   signatures for a different network.
-- `Operation.createStellarAssetContract` and `Operation.uploadContractWasm` no longer forward the
-  `auth` option to `invokeHostFunction`. Callers who previously passed `auth`
-  to these functions will have it silently ignored.
 - `Operation.isValidAmount()`, `Operation.constructAmountRequirementsError()`,
   and `Operation.setSourceAccount()` have been removed from the `Operation`
   class. They are now standalone functions in `src/util/operations.ts` and are
@@ -114,6 +111,7 @@
 - `Memo.return()` type declaration now correctly accepts `Buffer | string`
   (previously only `string` in the type declarations, though both were accepted
   at runtime).
+- `Operation.createStellarAssetContract` and `Operation.uploadContractWasm` now accept an optional auth field in TypeScript, matching existing runtime behavior.
 
 ### Fixed
 
