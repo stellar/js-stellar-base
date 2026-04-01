@@ -274,6 +274,7 @@ export function revokeLiquidityPoolSponsorship(
  * @param opts.signer.ed25519PublicKey - (optional) The ed25519 public key of the signer.
  * @param opts.signer.sha256Hash - (optional) sha256 hash (Buffer or hex string).
  * @param opts.signer.preAuthTx - (optional) Hash (Buffer or hex string) of transaction.
+ * @param opts.signer.ed25519SignedPayload - (optional) Signed payload signer (StrKey P... address).
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
  *
  * @example

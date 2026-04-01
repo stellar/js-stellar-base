@@ -728,6 +728,7 @@ export class TransactionBuilder {
     const contractId = asset.contractId(this.networkPassphrase);
     const functionName = "transfer";
     const source = this.source.accountId();
+    const sourceBaseAddress = extractBaseAddress(source);
     const args = [
       nativeToScVal(source, { type: "address" }),
       nativeToScVal(destination, { type: "address" }),
@@ -821,15 +822,15 @@ export class TransactionBuilder {
       footprint.readWrite().push(
         xdr.LedgerKey.account(
           new xdr.LedgerKeyAccount({
-            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+            accountId: Keypair.fromPublicKey(sourceBaseAddress).xdrPublicKey(),
           }),
         ),
       );
-    } else if (asset.getIssuer() !== source) {
+    } else if (asset.getIssuer() !== sourceBaseAddress) {
       footprint.readWrite().push(
         xdr.LedgerKey.trustline(
           new xdr.LedgerKeyTrustLine({
-            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+            accountId: Keypair.fromPublicKey(sourceBaseAddress).xdrPublicKey(),
             asset: asset.toTrustLineXDRObject(),
           }),
         ),

@@ -2260,8 +2260,8 @@ describe("addSacTransferOperation with invalid destination", () => {
     const destKp = Keypair.random();
     const muxedDest = StrKey.encodeMed25519PublicKey(
       Buffer.concat([
-        Buffer.alloc(8),
         StrKey.decodeEd25519PublicKey(destKp.publicKey()),
+        Buffer.alloc(8),
       ]),
     );
 
@@ -2281,8 +2281,8 @@ describe("addSacTransferOperation with invalid destination", () => {
     const destKp = Keypair.random();
     const muxedDest = StrKey.encodeMed25519PublicKey(
       Buffer.concat([
-        Buffer.alloc(8),
         StrKey.decodeEd25519PublicKey(destKp.publicKey()),
+        Buffer.alloc(8),
       ]),
     );
     const asset = new Asset(
@@ -2297,6 +2297,30 @@ describe("addSacTransferOperation with invalid destination", () => {
         timebounds: { minTime: 0, maxTime: 0 },
       })
         .addSacTransferOperation(muxedDest, asset, "10000000")
+        .setTimeout(TimeoutInfinite)
+        .build();
+    }).not.toThrow();
+  });
+
+  it("succeeds with a MuxedAccount source for native asset transfer", () => {
+    const muxedSource = MuxedAccount.fromAddress(
+      StrKey.encodeMed25519PublicKey(
+        Buffer.concat([
+          StrKey.decodeEd25519PublicKey(source.accountId()),
+          Buffer.alloc(8),
+        ]),
+      ),
+      source.sequenceNumber(),
+    );
+    const destKp = Keypair.random();
+
+    expect(() => {
+      new TransactionBuilder(muxedSource, {
+        fee: "100",
+        networkPassphrase,
+        timebounds: { minTime: 0, maxTime: 0 },
+      })
+        .addSacTransferOperation(destKp.publicKey(), Asset.native(), "10000000")
         .setTimeout(TimeoutInfinite)
         .build();
     }).not.toThrow();
