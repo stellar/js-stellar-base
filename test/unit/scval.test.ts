@@ -958,6 +958,17 @@ describe("nativeToScVal", () => {
       expect(entries[2].key().value()).toBe("z");
     });
 
+    it("sorts mixed-case keys by codepoint order, not locale order", () => {
+      // Codepoint order: 'B' (66) < '_' (95) < 'a' (97)
+      // localeCompare would give: _key, admin, Balance (case-insensitive)
+      // Correct byte order: Balance, _key, admin
+      const scv = nativeToScVal({ admin: 1, _key: 2, Balance: 3 });
+      const entries = scv.value() as any[];
+      expect(entries[0].key().value()).toBe("Balance");
+      expect(entries[1].key().value()).toBe("_key");
+      expect(entries[2].key().value()).toBe("admin");
+    });
+
     it("handles empty object", () => {
       const scv = nativeToScVal({});
       expect(scv.switch().name).toBe("scvMap");
@@ -1561,6 +1572,31 @@ describe("scvSortedMap", () => {
     const result = sorted.value() as any[];
     expect(result[0].key().value()).toBe("a");
     expect(result[1].key().value()).toBe("b");
+  });
+
+  it("sorts mixed-case string keys by codepoint order, not locale order", () => {
+    // Codepoint order: 'A' (65) < 'I' (73) < '_' (95) < 'a' (97) < 'i' (105)
+    // localeCompare would sort case-insensitively: _admin, Admin, balance
+    // Correct byte order: Admin, _admin, balance
+    const entries = [
+      new xdr.ScMapEntry({
+        key: xdr.ScVal.scvSymbol("balance"),
+        val: xdr.ScVal.scvU32(3),
+      }),
+      new xdr.ScMapEntry({
+        key: xdr.ScVal.scvSymbol("Admin"),
+        val: xdr.ScVal.scvU32(1),
+      }),
+      new xdr.ScMapEntry({
+        key: xdr.ScVal.scvSymbol("_admin"),
+        val: xdr.ScVal.scvU32(2),
+      }),
+    ];
+    const sorted = scvSortedMap(entries);
+    const result = sorted.value() as any[];
+    expect(result[0].key().value()).toBe("Admin");
+    expect(result[1].key().value()).toBe("_admin");
+    expect(result[2].key().value()).toBe("balance");
   });
 });
 
