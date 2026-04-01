@@ -180,6 +180,7 @@ export function createCustomContract(
  *
  * @param opts - the set of parameters
  * @param opts.asset - the Stellar asset to wrap, either as an {@link Asset} object or in canonical form (SEP-11, `code:issuer`)
+ * @param opts.auth - an optional list outlining the tree of authorizations required for the upload
  * @param opts.source - an optional source account
  *
  * @see https://stellar.org/protocol/sep-11#alphanum4-alphanum12
@@ -229,6 +230,7 @@ export function createStellarAssetContract(
  *
  * @param opts - the set of parameters
  * @param opts.wasm - a WASM blob to upload to the ledger
+ * @param opts.auth - an optional list outlining the tree of authorizations required for the upload
  * @param opts.source - an optional source account
  *
  * @see https://soroban.stellar.org/docs/fundamentals-and-concepts/invoking-contracts-with-transactions#function
