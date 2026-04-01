@@ -452,19 +452,19 @@ export type TrustLineFlag =
 export namespace Signer {
   export interface Ed25519PublicKey {
     ed25519PublicKey: string;
-    weight?: number | string;
+    weight?: number;
   }
   export interface Sha256Hash {
     sha256Hash: Buffer | string;
-    weight?: number | string;
+    weight?: number;
   }
   export interface PreAuthTx {
     preAuthTx: Buffer | string;
-    weight?: number | string;
+    weight?: number;
   }
   export interface Ed25519SignedPayload {
     ed25519SignedPayload: string;
-    weight?: number | string;
+    weight?: number;
   }
 }
 export type Signer =
