@@ -535,7 +535,7 @@ checkUnsignedIntValue("123abc"); // now rejected (NaN)
 ## Common Gotchas
 
 - **Silent network change:** The default `networkPassphrase` for `authorizeEntry`/`authorizeInvocation` changed from `FUTURENET` to `TESTNET`. If you relied on the default, your signatures will now target the wrong network with no error. Always pass the network explicitly.
-- **`0n` is not falsy:** `BigInt(0)` is falsy in JavaScript, but `0n` is now preserved (not coerced to `null`) in `TransactionBuilder`. This may trigger `hasV2Preconditions()` returning `true` when it previously returned `false`.
+- **`0n` is now preserved, not coerced to `null`:** `0n` (the same value as `BigInt(0)`) is falsy in JavaScript, but `TransactionBuilder` now keeps `0n` instead of converting it to `null`. This may trigger `hasV2Preconditions()` returning `true` when it previously returned `false`.
 - **`extraSigners` was always objects:** The old `string[]` type was always wrong — the runtime stored `xdr.SignerKey[]`. If your code "worked" before, you may have been passing `SignerKey` objects where `string` was declared. Check that you're not double-converting.
 - **`SorobanDataBuilder.fromXDR` was never a builder:** If your code chained methods on the return value, it was always broken at runtime. The type correction may surface a real bug.
 - **`Keypair.rawSecretKey()` undefined check removal:** If you checked for `undefined` return, that code path will now throw instead. Switch to checking `canSign()` before calling.
