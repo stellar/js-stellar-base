@@ -26,11 +26,7 @@
   `authorizeInvocation` has changed from `Networks.FUTURENET` to
   `Networks.TESTNET`. Callers omitting this argument will silently produce
   signatures for a different network.
-- `Operation.isValidAmount()`, `Operation.constructAmountRequirementsError()`,
-  and `Operation.setSourceAccount()` have been removed from the `Operation`
-  class. They are now standalone functions in `src/util/operations.ts` and are
-  not re-exported from the package index. These were never in the published type
-  declarations but were accessible at runtime.
+- `Operation.isValidAmount()`, `Operation.constructAmountRequirementsError()`, and `Operation.setSourceAccount()` have been removed from the runtime `Operation` class. They now exist only as internal standalone functions in operations.ts and are not re-exported. These methods were never part of the published TypeScript declarations, but JavaScript callers could still access them before.
 - The revoke sponsorship operation `type` field has been split from a single
   `"revokeSponsorship"` into 7 specific strings: `"revokeAccountSponsorship"`,
   `"revokeTrustlineSponsorship"`, `"revokeOfferSponsorship"`,
