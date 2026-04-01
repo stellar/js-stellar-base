@@ -219,6 +219,7 @@ export interface RevokeLiquidityPoolSponsorshipOpts {
 
 export type RevokeSignerOpts =
   | Ed25519PublicKeySignerOpt
+  | Ed25519SignedPayloadSignerOpt
   | PreAuthTxSignerOpt
   | Sha256HashSignerOpt;
 
