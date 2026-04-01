@@ -2255,4 +2255,50 @@ describe("addSacTransferOperation with invalid destination", () => {
       );
     }).toThrow("networkPassphrase must be set to add a SAC transfer operation");
   });
+
+  it("succeeds with a muxed (M...) destination for native asset transfer", () => {
+    const destKp = Keypair.random();
+    const muxedDest = StrKey.encodeMed25519PublicKey(
+      Buffer.concat([
+        Buffer.alloc(8),
+        StrKey.decodeEd25519PublicKey(destKp.publicKey()),
+      ]),
+    );
+
+    expect(() => {
+      new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase,
+        timebounds: { minTime: 0, maxTime: 0 },
+      })
+        .addSacTransferOperation(muxedDest, Asset.native(), "10000000")
+        .setTimeout(TimeoutInfinite)
+        .build();
+    }).not.toThrow();
+  });
+
+  it("succeeds with a muxed (M...) destination for non-native asset transfer", () => {
+    const destKp = Keypair.random();
+    const muxedDest = StrKey.encodeMed25519PublicKey(
+      Buffer.concat([
+        Buffer.alloc(8),
+        StrKey.decodeEd25519PublicKey(destKp.publicKey()),
+      ]),
+    );
+    const asset = new Asset(
+      "USDC",
+      "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
+    );
+
+    expect(() => {
+      new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase,
+        timebounds: { minTime: 0, maxTime: 0 },
+      })
+        .addSacTransferOperation(muxedDest, asset, "10000000")
+        .setTimeout(TimeoutInfinite)
+        .build();
+    }).not.toThrow();
+  });
 });
