@@ -52,6 +52,13 @@ describe("Soroban", () => {
     it("handles negative amounts", () => {
       expect(Soroban.formatTokenAmount("-1000", 3)).toBe("-1.0");
     });
+
+    it("handles negative amounts requiring zero-padding", () => {
+      expect(Soroban.formatTokenAmount("-1", 3)).toBe("-0.001");
+      expect(Soroban.formatTokenAmount("-1", 1)).toBe("-0.1");
+      expect(Soroban.formatTokenAmount("-123", 4)).toBe("-0.0123");
+      expect(Soroban.formatTokenAmount("-123", 5)).toBe("-0.00123");
+    });
   });
 
   describe("parseTokenAmount", () => {
