@@ -139,6 +139,36 @@ describe("Operation.setTrustLineFlags()", () => {
     ).toThrow(/Source address is invalid/);
   });
 
+  it("throws when flag value is truthy but not boolean true", () => {
+    expect(() =>
+      Operation.setTrustLineFlags({
+        trustor: account,
+        asset,
+        flags: { authorized: 1 } as unknown as { authorized?: boolean },
+      }),
+    ).toThrow();
+  });
+
+  it("throws when flag value is falsy but not boolean false", () => {
+    expect(() =>
+      Operation.setTrustLineFlags({
+        trustor: account,
+        asset,
+        flags: { authorized: 0 } as unknown as { authorized?: boolean },
+      }),
+    ).toThrow();
+  });
+
+  it("throws when flag value is a string", () => {
+    expect(() =>
+      Operation.setTrustLineFlags({
+        trustor: account,
+        asset,
+        flags: { authorized: "true" } as unknown as { authorized?: boolean },
+      }),
+    ).toThrow();
+  });
+
   it("roundtrips through XDR hex encoding", () => {
     const op = Operation.setTrustLineFlags({
       trustor: account,
