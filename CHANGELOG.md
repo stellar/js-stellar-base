@@ -22,10 +22,6 @@
   StrKey strings.
 - `Transaction` no longer has generic type parameters `<TMemo, TOps>`. Code like
   `Transaction<Memo<MemoType.Text>>` will no longer compile.
-- The default `networkPassphrase` for `authorizeEntry` and
-  `authorizeInvocation` has changed from `Networks.FUTURENET` to
-  `Networks.TESTNET`. Callers omitting this argument will silently produce
-  signatures for a different network.
 - `Operation.isValidAmount()`, `Operation.constructAmountRequirementsError()`, and `Operation.setSourceAccount()` have been removed from the runtime `Operation` class. They now exist only as internal standalone functions in operations.ts and are not re-exported. These methods were never part of the published TypeScript declarations, but JavaScript callers could still access them before.
 - The revoke sponsorship operation `type` field has been split from a single
   `"revokeSponsorship"` into 7 specific strings: `"revokeAccountSponsorship"`,
@@ -84,10 +80,6 @@
   `parseFloat()` to `Number()`. Strings with trailing non-numeric characters
   (e.g., `"123abc"`) that previously silently succeeded will now be rejected.
 
-- `CreateInvocation.token` has been renamed to `CreateInvocation.asset` in
-  the type declarations to match the actual runtime property set by
-  `buildInvocationTree`. TypeScript callers referencing `.token` should
-  switch to `.asset`.
 - `authorizeInvocation()` now takes a single `AuthorizeInvocationParams`
   object instead of positional arguments. Callers must switch from
   `authorizeInvocation(signer, validUntilLedgerSeq, invocation, publicKey,
