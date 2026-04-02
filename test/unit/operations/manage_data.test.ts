@@ -46,6 +46,23 @@ describe("Operation.manageData()", () => {
     expect(obj.value).toBeUndefined();
   });
 
+  it("round-trips a null-value (delete) manageData through fromXDRObject and back", () => {
+    const op = Operation.manageData({ name: "test", value: null });
+    const xdrHex = op.toXDR("hex");
+    const operation = xdr.Operation.fromXDR(Buffer.from(xdrHex, "hex"));
+    const parsed = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "manageData",
+    );
+
+    // Rebuilding from the parsed result must not throw
+    const rebuilt = Operation.manageData({
+      name: parsed.name,
+      value: parsed.value,
+    });
+    expect(rebuilt).toBeInstanceOf(xdr.Operation);
+  });
+
   it("creates a manageData operation with source account", () => {
     const source = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ";
     const opts = { name: "test", value: "data", source };

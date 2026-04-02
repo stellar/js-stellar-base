@@ -23,7 +23,8 @@ export function manageData(
   if (
     typeof opts.value !== "string" &&
     !Buffer.isBuffer(opts.value) &&
-    opts.value !== null
+    opts.value !== null &&
+    opts.value !== undefined
   ) {
     throw new Error("value must be a string, Buffer or null");
   }
@@ -32,7 +33,7 @@ export function manageData(
   if (typeof opts.value === "string") {
     dataValue = Buffer.from(opts.value);
   } else {
-    dataValue = opts.value;
+    dataValue = opts.value ?? null;
   }
 
   if (dataValue !== null && dataValue.length > 64) {
