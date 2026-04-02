@@ -1789,6 +1789,26 @@ describe("constructor timebounds/ledgerbounds validation", () => {
         });
       }).toThrow("max_time cannot be negative");
     });
+
+    it("rejects non-numeric string minTime", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: "abc" as unknown as number, maxTime: 500 },
+        });
+      }).toThrow("timebounds value is not a valid number or Date");
+    });
+
+    it("rejects invalid Date maxTime", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 0, maxTime: new Date("invalid") },
+        });
+      }).toThrow("timebounds value is not a valid number or Date");
+    });
   });
 
   describe("ledgerbounds", () => {

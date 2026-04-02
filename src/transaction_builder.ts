@@ -318,11 +318,6 @@ export class TransactionBuilder {
     }
     if (tx.minAccountSequenceAge !== undefined) {
       builderOpts.minAccountSequenceAge = tx.minAccountSequenceAge;
-      console.log("minAccountSequenceAge", tx.minAccountSequenceAge);
-      console.log(
-        "builderOpts.minAccountSequenceAge",
-        builderOpts.minAccountSequenceAge,
-      );
     }
     if (tx.minAccountSequenceLedgerGap !== undefined) {
       builderOpts.minAccountSequenceLedgerGap = tx.minAccountSequenceLedgerGap;
@@ -335,10 +330,7 @@ export class TransactionBuilder {
 
     // User-provided opts override transaction defaults
     Object.assign(builderOpts, opts);
-    console.log(
-      "builderOpts.minAccountSequenceAge",
-      builderOpts.minAccountSequenceAge,
-    );
+
     const builder = new TransactionBuilder(source, builderOpts);
 
     tx.tx.operations().forEach((op) => builder.addOperation(op));
@@ -1219,9 +1211,12 @@ function toEpochSeconds(
     return undefined;
   }
 
-  if (value instanceof Date) {
-    return Math.floor(value.getTime() / 1000);
+  const num =
+    value instanceof Date ? Math.floor(value.getTime() / 1000) : Number(value);
+
+  if (Number.isNaN(num)) {
+    throw new Error("timebounds value is not a valid number or Date");
   }
 
-  return Number(value);
+  return num;
 }
