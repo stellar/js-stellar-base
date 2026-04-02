@@ -179,6 +179,18 @@
 - `TransactionBuilder.addSacTransferOperation` now supports muxed (M...)
   addresses for the destination and source. Previously, passing muxed addresses
   caused `Keypair.fromPublicKey` to throw.
+- `ScInt` auto-type selection now correctly classifies negative boundary values
+  (e.g., `-(2^63)` fits `i64`, not `i128`). The previous bit-length calculation
+  was off by one for negative `BigInt` values.
+- `changeTrust` now handles `line` internally as a fallback for `asset`,
+  fixing round-trip compatibility when feeding the output of
+  `Operation.fromXDRObject` (which returns `line`) back into the builder.
+- `manageData` now accepts `undefined` for `opts.value` (treated as a
+  delete-entry), fixing round-trip compatibility with `Operation.fromXDRObject`
+  which returns `undefined` for absent optional fields.
+- `TransactionBuilder` constructor now validates `timebounds` and
+  `ledgerbounds`: negative values and `min > max` now throw immediately instead
+  of producing silently invalid transactions.
 
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 

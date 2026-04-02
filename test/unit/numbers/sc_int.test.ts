@@ -161,6 +161,43 @@ describe("ScInt", () => {
       expect(sci.type).toBe("i64");
     });
 
+    it("selects i64 for the exact i64 minimum (-(2^63))", () => {
+      const min = -(2n ** 63n);
+      const sci = new ScInt(min);
+      expect(sci.type).toBe("i64");
+    });
+
+    it("selects i128 for the exact i128 minimum (-(2^127))", () => {
+      const min = -(2n ** 127n);
+      const sci = new ScInt(min);
+      expect(sci.type).toBe("i128");
+    });
+
+    it("selects i256 for the exact i256 minimum (-(2^255))", () => {
+      const min = -(2n ** 255n);
+      const sci = new ScInt(min);
+      expect(sci.type).toBe("i256");
+    });
+
+    it("selects i128 for -(2^63)-1 (just below i64 minimum)", () => {
+      const val = -(2n ** 63n) - 1n;
+      const sci = new ScInt(val);
+      expect(sci.type).toBe("i128");
+      expect(sci.toBigInt()).toBe(val);
+    });
+
+    it("selects i256 for -(2^127)-1 (just below i128 minimum)", () => {
+      const val = -(2n ** 127n) - 1n;
+      const sci = new ScInt(val);
+      expect(sci.type).toBe("i256");
+      expect(sci.toBigInt()).toBe(val);
+    });
+
+    it("throws for -(2^255)-1 (below i256 minimum)", () => {
+      const val = -(2n ** 255n) - 1n;
+      expect(() => new ScInt(val)).toThrow(RangeError);
+    });
+
     it("selects i128 for negative numbers beyond i64 range", () => {
       const val = -(1n << 64n);
       const sci = new ScInt(val);

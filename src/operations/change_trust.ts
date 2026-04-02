@@ -28,12 +28,17 @@ const MAX_INT64 = "9223372036854775807";
 export function changeTrust(
   opts: ChangeTrustOpts,
 ): xdr.Operation<ChangeTrustResult> {
+  // Accept `line` as an alias for `asset` so that the output of
+  // fromXDRObject (which uses `line`) can round-trip back through here.
+  const asset =
+    opts.asset ??
+    (opts as unknown as { line?: Asset | LiquidityPoolAsset }).line;
   let line: xdr.ChangeTrustAsset;
 
-  if (opts.asset instanceof Asset) {
-    line = opts.asset.toChangeTrustXDRObject();
-  } else if (opts.asset instanceof LiquidityPoolAsset) {
-    line = opts.asset.toXDRObject();
+  if (asset instanceof Asset) {
+    line = asset.toChangeTrustXDRObject();
+  } else if (asset instanceof LiquidityPoolAsset) {
+    line = asset.toXDRObject();
   } else {
     throw new TypeError("asset must be Asset or LiquidityPoolAsset");
   }
