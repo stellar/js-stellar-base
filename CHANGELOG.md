@@ -4,6 +4,8 @@
 
 ## [`v15.0.0`](https://github.com/stellar/js-stellar-base/compare/v14.1.0...v15.0.0): Protocol 26
 
+**[Migration Guide](docs/migration-guide/v15.md)** — step-by-step upgrade instructions with code examples and severity ratings.
+
 ### Breaking Changes
 
 * `TransactionBase.networkPassphrase` setter now throws an error to enforce immutability ([#891](https://github.com/stellar/js-stellar-base/pull/891)).
