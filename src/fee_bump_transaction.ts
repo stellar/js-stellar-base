@@ -22,14 +22,10 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
    * @param envelope - transaction envelope object or base64 encoded string.
    * @param networkPassphrase - passphrase of the target Stellar network
    *     (e.g. "Public Global Stellar Network ; September 2015").
-   * @param opts - additional options
-   * @param opts.immutableTx - when true, the `tx` getter returns a
-   *     defensive copy so external code cannot mutate the signed transaction
    */
   constructor(
     envelope: xdr.TransactionEnvelope | string,
     networkPassphrase: string,
-    opts?: { immutableTx?: boolean },
   ) {
     if (typeof envelope === "string") {
       const buffer = Buffer.from(envelope, "base64");
@@ -50,7 +46,7 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
     // clone signatures
     const signatures = (txEnvelope.signatures() || []).slice();
 
-    super(tx, signatures, fee, networkPassphrase, opts?.immutableTx ?? false);
+    super(tx, signatures, fee, networkPassphrase);
 
     const innerTxEnvelope = xdr.TransactionEnvelope.envelopeTypeTx(
       tx.innerTx().v1(),
@@ -59,7 +55,6 @@ export class FeeBumpTransaction extends TransactionBase<xdr.FeeBumpTransaction> 
     this._innerTransaction = new Transaction(
       innerTxEnvelope,
       networkPassphrase,
-      opts,
     );
   }
 

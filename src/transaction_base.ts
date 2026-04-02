@@ -12,14 +12,12 @@ export class TransactionBase<
   private _signatures: xdr.DecoratedSignature[];
   private _fee: string;
   private _networkPassphrase: string;
-  private _immutableTx: boolean;
 
   constructor(
     tx: TTx,
     signatures: xdr.DecoratedSignature[],
     fee: string,
     networkPassphrase: string,
-    immutableTx: boolean = false,
   ) {
     if (typeof networkPassphrase !== "string") {
       throw new Error(
@@ -31,7 +29,6 @@ export class TransactionBase<
     this._tx = tx;
     this._signatures = signatures;
     this._fee = fee;
-    this._immutableTx = immutableTx;
   }
 
   /** The list of signatures for this transaction. */
@@ -46,27 +43,29 @@ export class TransactionBase<
   /**
    * The underlying XDR transaction object.
    *
-   * When `immutableTx` is enabled, this returns a defensive copy so that
-   * external mutations cannot alter the transaction that will be signed or
-   * serialized.
+   * Returns a defensive copy so that external mutations cannot alter the
+   * transaction that will be signed or serialized.
+   *
+   * @throws {Error} if the internal transaction is not a recognized XDR type
    */
   get tx(): TTx {
-    if (this._immutableTx) {
-      const buf = this._tx.toXDR();
+    const buf = this._tx.toXDR();
 
-      // Making sure we have the right type here, since the base class doesn't
-      // know which transaction type it is.
-      if (this._tx instanceof xdr.Transaction) {
-        return xdr.Transaction.fromXDR(buf) as TTx;
-      }
+    // Making sure we have the right type here, since the base class doesn't
+    // know which transaction type it is.
+    if (this._tx instanceof xdr.Transaction) {
+      return xdr.Transaction.fromXDR(buf) as TTx;
+    }
 
-      if (this._tx instanceof xdr.TransactionV0) {
-        return xdr.TransactionV0.fromXDR(buf) as TTx;
-      }
+    if (this._tx instanceof xdr.TransactionV0) {
+      return xdr.TransactionV0.fromXDR(buf) as TTx;
+    }
 
+    if (this._tx instanceof xdr.FeeBumpTransaction) {
       return xdr.FeeBumpTransaction.fromXDR(buf) as TTx;
     }
-    return this._tx;
+
+    throw new Error("Unknown transaction type");
   }
 
   set tx(_value: TTx) {
