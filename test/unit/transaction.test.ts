@@ -223,7 +223,7 @@ describe("Transaction", () => {
   });
 
   describe("tx getter immutability", () => {
-    it("returns a defensive copy when immutableTx is enabled", () => {
+    it("returns a defensive copy", () => {
       const source = new Account(
         "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
         "0",
@@ -231,7 +231,6 @@ describe("Transaction", () => {
       const tx = new TransactionBuilder(source, {
         fee: "100",
         networkPassphrase: Networks.TESTNET,
-        immutableTx: true,
       })
         .addOperation(
           Operation.payment({
@@ -253,7 +252,7 @@ describe("Transaction", () => {
       expect(hashAfter).toBe(hashBefore);
     });
 
-    it("signed transaction matches displayed fields when immutableTx is enabled", () => {
+    it("signed transaction matches displayed fields", () => {
       const kp = Keypair.random();
       const dest = Keypair.random();
       const source = new Account(kp.publicKey(), "0");
@@ -261,7 +260,6 @@ describe("Transaction", () => {
       const tx = new TransactionBuilder(source, {
         fee: "100",
         networkPassphrase: Networks.TESTNET,
-        immutableTx: true,
       })
         .addOperation(
           Operation.payment({
@@ -287,7 +285,7 @@ describe("Transaction", () => {
       expect(rebuiltOp.amount).toBe(originalOp.amount);
     });
 
-    it("returns the live reference by default (immutableTx not set)", () => {
+    it("returns different copies on each access", () => {
       const source = new Account(
         "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
         "0",
@@ -295,33 +293,6 @@ describe("Transaction", () => {
       const tx = new TransactionBuilder(source, {
         fee: "100",
         networkPassphrase: Networks.TESTNET,
-      })
-        .addOperation(
-          Operation.payment({
-            destination:
-              "GDJJRRMBK4IWLEPJGIE6SXD2LP7REGZODU7WDC3I2D6MR37F4XSHBKX2",
-            asset: Asset.native(),
-            amount: "10",
-          }),
-        )
-        .setTimeout(TimeoutInfinite)
-        .build();
-
-      // Without immutableTx, tx getter returns the same reference
-      const ref1 = tx.tx;
-      const ref2 = tx.tx;
-      expect(ref1).toBe(ref2);
-    });
-
-    it("returns different copies on each access when immutableTx is enabled", () => {
-      const source = new Account(
-        "GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB",
-        "0",
-      );
-      const tx = new TransactionBuilder(source, {
-        fee: "100",
-        networkPassphrase: Networks.TESTNET,
-        immutableTx: true,
       })
         .addOperation(
           Operation.payment({
@@ -363,10 +334,7 @@ describe("Transaction", () => {
       original.sign(kp);
       const xdrString = original.toXDR();
 
-      // Reconstruct with immutableTx
-      const tx = new Transaction(xdrString, Networks.TESTNET, {
-        immutableTx: true,
-      });
+      const tx = new Transaction(xdrString, Networks.TESTNET);
 
       const hashBefore = tx.hash().toString("hex");
       tx.tx.fee(999999);
@@ -395,9 +363,10 @@ describe("Transaction", () => {
       original.sign(kp);
       const xdrString = original.toXDR();
 
-      const tx = TransactionBuilder.fromXDR(xdrString, Networks.TESTNET, {
-        immutableTx: true,
-      }) as Transaction;
+      const tx = TransactionBuilder.fromXDR(
+        xdrString,
+        Networks.TESTNET,
+      ) as Transaction;
 
       const hashBefore = tx.hash().toString("hex");
       tx.tx.fee(999999);

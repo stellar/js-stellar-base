@@ -97,12 +97,6 @@ export interface TransactionBuilderOptions {
    * non-contract transactions.
    */
   sorobanData?: xdr.SorobanTransactionData | string;
-  /**
-   * When true, the built transaction's `tx` getter returns a defensive copy
-   * so that external code cannot mutate the XDR that will be signed or
-   * serialized. Defaults to false for backwards compatibility.
-   */
-  immutableTx?: boolean;
 }
 
 /**
@@ -170,7 +164,6 @@ export class TransactionBuilder {
   memo: Memo;
   networkPassphrase: string | null;
   sorobanData: xdr.SorobanTransactionData | null;
-  immutableTx: boolean;
 
   /**
    * @param sourceAccount - source account for this transaction
@@ -210,7 +203,6 @@ export class TransactionBuilder {
     this.sorobanData = opts.sorobanData
       ? new SorobanDataBuilder(opts.sorobanData).build()
       : null;
-    this.immutableTx = opts.immutableTx ?? false;
   }
 
   /**
@@ -990,9 +982,7 @@ export class TransactionBuilder {
       throw new Error("networkPassphrase must be set to build a transaction");
     }
 
-    const tx = new Transaction(txEnvelope, this.networkPassphrase, {
-      immutableTx: this.immutableTx,
-    });
+    const tx = new Transaction(txEnvelope, this.networkPassphrase);
 
     this.source.incrementSequenceNumber();
 
@@ -1039,7 +1029,6 @@ export class TransactionBuilder {
     baseFee: string,
     innerTx: Transaction,
     networkPassphrase: string,
-    opts?: { immutableTx?: boolean },
   ): FeeBumpTransaction {
     const innerOps = innerTx.operations.length;
 
@@ -1133,7 +1122,7 @@ export class TransactionBuilder {
     const envelope =
       xdr.TransactionEnvelope.envelopeTypeTxFeeBump(feeBumpTxEnvelope);
 
-    return new FeeBumpTransaction(envelope, networkPassphrase, opts);
+    return new FeeBumpTransaction(envelope, networkPassphrase);
   }
 
   /**
@@ -1149,17 +1138,16 @@ export class TransactionBuilder {
   static fromXDR(
     envelope: xdr.TransactionEnvelope | string,
     networkPassphrase: string,
-    opts?: { immutableTx?: boolean },
   ): FeeBumpTransaction | Transaction {
     if (typeof envelope === "string") {
       envelope = xdr.TransactionEnvelope.fromXDR(envelope, "base64");
     }
 
     if (envelope.switch() === xdr.EnvelopeType.envelopeTypeTxFeeBump()) {
-      return new FeeBumpTransaction(envelope, networkPassphrase, opts);
+      return new FeeBumpTransaction(envelope, networkPassphrase);
     }
 
-    return new Transaction(envelope, networkPassphrase, opts);
+    return new Transaction(envelope, networkPassphrase);
   }
 }
 
