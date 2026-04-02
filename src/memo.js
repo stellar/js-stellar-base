@@ -102,30 +102,17 @@ export class Memo {
       throw error;
     }
 
+    // Reject anything that isn't plain decimal digits (no scientific notation,
+    // no decimals, no signs). BigNumber accepts formats like "1e18" and "1.0"
+    // which pass numeric checks but crash BigInt()/UnsignedHyper.fromString().
+    if (!/^\d+$/.test(value)) {
+      throw error;
+    }
+
     let number;
     try {
       number = new BigNumber(value);
     } catch (e) {
-      throw error;
-    }
-
-    // Infinity
-    if (!number.isFinite()) {
-      throw error;
-    }
-
-    // NaN
-    if (number.isNaN()) {
-      throw error;
-    }
-
-    // Negative
-    if (number.isNegative()) {
-      throw error;
-    }
-
-    // Decimal
-    if (!number.isInteger()) {
       throw error;
     }
 
