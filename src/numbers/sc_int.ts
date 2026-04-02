@@ -108,10 +108,17 @@ export class ScInt extends XdrLargeInt {
 }
 
 function nearestBigIntSize(bigI: bigint): number {
-  // Use the absolute value because BigInt.toString(2) prepends a "-" for
-  // negative values, which would inflate the length by 1 and misclassify
-  // exact boundary values like -(2^63), -(2^127), and -(2^255).
-  const abs = bigI < 0n ? -bigI : bigI;
-  const bitlen = abs.toString(2).length;
+  if (bigI < 0n) {
+    // Two's complement: N bits represent -(2^(N-1)) to 2^(N-1)-1.
+    // For negative values, compute the signed bit width as
+    // (bitlen of abs-1) + 1 to account for the sign bit. This correctly
+    // classifies -(2^63) as 64 bits (fits i64) and -(2^63)-1 as 65 bits
+    // (needs i128).
+    const abs = -bigI;
+    const bitlen = (abs - 1n).toString(2).length + 1;
+    return [64, 128, 256].find((len) => bitlen <= len) ?? bitlen;
+  }
+
+  const bitlen = bigI.toString(2).length;
   return [64, 128, 256].find((len) => bitlen <= len) ?? bitlen;
 }

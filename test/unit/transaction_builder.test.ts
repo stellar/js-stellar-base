@@ -1797,7 +1797,7 @@ describe("constructor timebounds/ledgerbounds validation", () => {
           networkPassphrase,
           timebounds: { minTime: "abc" as unknown as number, maxTime: 500 },
         });
-      }).toThrow("timebounds value is not a valid number or Date");
+      }).toThrow("timebounds value must be a finite integer or Date");
     });
 
     it("rejects invalid Date maxTime", () => {
@@ -1807,7 +1807,27 @@ describe("constructor timebounds/ledgerbounds validation", () => {
           networkPassphrase,
           timebounds: { minTime: 0, maxTime: new Date("invalid") },
         });
-      }).toThrow("timebounds value is not a valid number or Date");
+      }).toThrow("timebounds value must be a finite integer or Date");
+    });
+
+    it("rejects Infinity as a timebounds value", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 0, maxTime: Infinity },
+        });
+      }).toThrow("timebounds value must be a finite integer or Date");
+    });
+
+    it("rejects non-integer float as a timebounds value", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 1.5, maxTime: 500 },
+        });
+      }).toThrow("timebounds value must be a finite integer or Date");
     });
   });
 

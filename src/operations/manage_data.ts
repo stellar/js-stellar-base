@@ -20,6 +20,9 @@ export function manageData(
     throw new Error("name must be a string, up to 64 characters");
   }
 
+  // undefined is accepted (treated as null/delete) for internal round-trip
+  // compatibility: fromXDRObject returns undefined for absent optional fields.
+  // The public API contract is null for delete-entry.
   if (
     typeof opts.value !== "string" &&
     !Buffer.isBuffer(opts.value) &&

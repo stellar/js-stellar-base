@@ -1214,8 +1214,8 @@ function toEpochSeconds(
   const num =
     value instanceof Date ? Math.floor(value.getTime() / 1000) : Number(value);
 
-  if (Number.isNaN(num)) {
-    throw new Error("timebounds value is not a valid number or Date");
+  if (!Number.isFinite(num) || num % 1 !== 0) {
+    throw new Error("timebounds value must be a finite integer or Date");
   }
 
   return num;
