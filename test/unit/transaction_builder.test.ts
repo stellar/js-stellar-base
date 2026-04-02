@@ -709,9 +709,11 @@ describe("TransactionBuilder", () => {
         }).toThrow(/resourceFee must be greater than 0/);
       });
 
-      it("accepts resourceFee at i64 max", () => {
+      it("rejects resourceFee at i64 max (total fee overflows uint32)", () => {
         const asset = Asset.native();
 
+        // Transaction.fee is Uint32 in XDR. An i64-max resourceFee added to
+        // any baseFee will always exceed uint32 max.
         expect(() => {
           new TransactionBuilder(source, {
             fee: "100",
@@ -725,7 +727,7 @@ describe("TransactionBuilder", () => {
             })
             .setTimeout(TimeoutInfinite)
             .build();
-        }).not.toThrow();
+        }).toThrow(/exceeds the maximum uint32 value/);
       });
     });
   });
@@ -2481,6 +2483,41 @@ describe("addSacTransferOperation with invalid destination", () => {
       })
         .addSacTransferOperation(destKp.publicKey(), Asset.native(), "10000000")
         .setTimeout(TimeoutInfinite)
+        .build();
+    }).not.toThrow();
+  });
+});
+
+describe("fee overflow protection", () => {
+  const source = new Account(
+    "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
+    "0",
+  );
+  const networkPassphrase = Networks.TESTNET;
+
+  it("throws when baseFee * operations exceeds uint32 max", () => {
+    // fee = 4294967295 * 2 = 8589934590 > uint32 max
+    expect(() => {
+      new TransactionBuilder(source, {
+        fee: "4294967295",
+        networkPassphrase,
+        timebounds: { minTime: 0, maxTime: 0 },
+      })
+        .addOperation(Operation.inflation({}))
+        .addOperation(Operation.inflation({}))
+        .build();
+    }).toThrow(/fee/i);
+  });
+
+  it("allows fee exactly at uint32 max", () => {
+    // fee = 4294967295 * 1 = 4294967295 = uint32 max (valid)
+    expect(() => {
+      new TransactionBuilder(source, {
+        fee: "4294967295",
+        networkPassphrase,
+        timebounds: { minTime: 0, maxTime: 0 },
+      })
+        .addOperation(Operation.inflation({}))
         .build();
     }).not.toThrow();
   });
