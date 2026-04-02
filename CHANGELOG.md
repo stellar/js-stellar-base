@@ -67,8 +67,6 @@
   `Int128`/`Int256`/`Uint128`/`Uint256` (e.g., `new Int128(...values)` instead
   of `new Int128(values)`), fixing nested-array behavior in the `LargeInt` base
   class.
-- `RevokeSignerSponsorship.signer` no longer accepts `Ed25519SignedPayload`
-  signer variants.
 - `SetOptions` result signer conditional type simplified — the generic parameter
   is used directly instead of the old complex conditional mapping.
 - `SetOptions.clearFlags`/`setFlags` widened from `AuthFlag` to
@@ -79,7 +77,6 @@
 - `checkUnsignedIntValue` string-to-number conversion changed from
   `parseFloat()` to `Number()`. Strings with trailing non-numeric characters
   (e.g., `"123abc"`) that previously silently succeeded will now be rejected.
-
 - `authorizeInvocation()` now takes a single `AuthorizeInvocationParams`
   object instead of positional arguments. Callers must switch from
   `authorizeInvocation(signer, validUntilLedgerSeq, invocation, publicKey,
@@ -113,7 +110,15 @@
 - `Memo.return()` type declaration now correctly accepts `Buffer | string`
   (previously only `string` in the type declarations, though both were accepted
   at runtime).
-- `Operation.createStellarAssetContract` and `Operation.uploadContractWasm` now accept an optional auth field in TypeScript, matching existing runtime behavior.
+- `Operation.createStellarAssetContract` and `Operation.uploadContractWasm` now
+  accept an optional `auth` field. The auth array is now passed through to the
+  host function call at runtime (previously it was silently omitted).
+- `revokeSignerSponsorship` now supports `ed25519SignedPayload` signers via
+  `opts.signer.ed25519SignedPayload`. The corresponding
+  `Ed25519SignedPayloadSignerOpt` has been added to the `RevokeSignerOpts` type.
+- `Operation.fromXDRObject` now decodes `ed25519SignedPayload` signer keys,
+  returning a `signer.ed25519SignedPayload` StrKey string. Previously, this
+  signer type fell through to the default case and threw an error.
 
 ### Fixed
 
@@ -163,6 +168,17 @@
   directly instead of dynamic string construction.
 - `TransactionBase.signHashX` error message typo fixed
   ("cannnot" → "cannot").
+- `nativeToScVal` and `scvSortedMap` map key sorting now uses
+  locale-independent comparison (`<`/`>`) instead of `localeCompare`, ensuring
+  deterministic key order regardless of the runtime locale.
+- `Soroban.formatTokenAmount` now correctly handles negative amounts instead of
+  producing malformed output (e.g., `-1000000` with 7 decimals now returns
+  `"-0.1"` instead of `"-1000000"`).
+- `setTrustLineFlags` now throws `TypeError` when flag values are not booleans,
+  instead of silently ignoring non-boolean truthy/falsy values.
+- `TransactionBuilder.addSacTransferOperation` now supports muxed (M...)
+  addresses for the destination and source. Previously, passing muxed addresses
+  caused `Keypair.fromPublicKey` to throw.
 
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 
