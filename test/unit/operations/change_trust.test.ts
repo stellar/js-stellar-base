@@ -105,26 +105,30 @@ describe("Operation.changeTrust()", () => {
 
   it("round-trips an Asset changeTrust through fromXDRObject and back", () => {
     const op = Operation.changeTrust({ asset: usd, limit: "50.0000000" });
+    const xdrHex = op.toXDR("hex");
     const parsed = expectOperationType(
-      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      Operation.fromXDRObject(xdr.Operation.fromXDR(xdrHex, "hex")),
       "changeTrust",
     );
 
     // parsed has `line` (not `asset`); changeTrust accepts both
     const rebuilt = Operation.changeTrust(parsed);
     expect(rebuilt).toBeInstanceOf(xdr.Operation);
+    expect(rebuilt.toXDR("hex")).toBe(xdrHex);
   });
 
   it("round-trips a LiquidityPoolAsset changeTrust through fromXDRObject and back", () => {
     const op = Operation.changeTrust({ asset: lpAsset });
+    const xdrHex = op.toXDR("hex");
     const parsed = expectOperationType(
-      Operation.fromXDRObject(xdr.Operation.fromXDR(op.toXDR("hex"), "hex")),
+      Operation.fromXDRObject(xdr.Operation.fromXDR(xdrHex, "hex")),
       "changeTrust",
     );
 
     // parsed has `line` (not `asset`); changeTrust accepts both
     const rebuilt = Operation.changeTrust(parsed);
     expect(rebuilt).toBeInstanceOf(xdr.Operation);
+    expect(rebuilt.toXDR("hex")).toBe(xdrHex);
   });
 
   it("preserves an optional source account", () => {

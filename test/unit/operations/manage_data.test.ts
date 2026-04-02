@@ -61,6 +61,7 @@ describe("Operation.manageData()", () => {
       value: parsed.value,
     });
     expect(rebuilt).toBeInstanceOf(xdr.Operation);
+    expect(rebuilt.toXDR("hex")).toBe(xdrHex);
   });
 
   it("creates a manageData operation with source account", () => {
