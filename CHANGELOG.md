@@ -23,6 +23,38 @@
   the type declarations to match the actual runtime property set by
   `buildInvocationTree`. TypeScript callers referencing `.token` should
   switch to `.asset`.
+- `authorizeInvocation()` now takes a single `AuthorizeInvocationParams`
+  object instead of positional arguments. Callers must switch from
+  `authorizeInvocation(signer, validUntilLedgerSeq, invocation, publicKey,
+  networkPassphrase)` to
+  `authorizeInvocation({ signer, validUntilLedgerSeq, invocation,
+  networkPassphrase, publicKey })`.
+- `authorizeEntry()` no longer defaults `networkPassphrase` to
+  `Networks.TESTNET`. Callers that relied on the default must now pass the
+  network passphrase explicitly.
+- `TransactionBase.tx` now returns a defensive copy of the underlying XDR
+  object. External mutations on the returned value no longer affect the
+  transaction that will be signed or serialized. Code that relied on
+  mutating `tx` directly will need to be updated.
+
+### Fixed
+
+- `nativeToScVal` now uses `Object.getPrototypeOf(val) !== Object.prototype`
+  instead of `val.constructor?.name !== "Object"` to detect plain objects,
+  fixing false negatives for objects created across different realms or with
+  overridden `constructor` properties.
+- `nativeToScVal` now uses `Object.hasOwn` when looking up per-key type
+  specs in map conversions, preventing inherited properties from the
+  prototype chain from being used as type hints.
+- `best_r` (continued fraction approximation) no longer throws for small
+  numbers whose reciprocal exceeds `MAX_INT`. It now computes a
+  semi-convergent to recover a valid rational approximation.
+- `MuxedAccount` constructor and `setId` now validate that the `id` string
+  represents a valid uint64 value (0 to 2^64 - 1), throwing immediately on
+  out-of-range or non-numeric input.
+- `Transaction` constructor now reads `sourceAccountEd25519()` and
+  `sourceAccount()` from the local `tx` parameter instead of `this.tx`,
+  avoiding the overhead of a defensive copy during construction.
 
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 
