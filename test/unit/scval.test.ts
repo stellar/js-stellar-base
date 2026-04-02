@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from "vitest";
 
 import {
@@ -69,7 +68,7 @@ describe("parsing and building ScVals - from scval_test.js", () => {
         ["u64", xdr.ScVal.scvU64(new xdr.Uint64(1))],
         [
           "vec",
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+
           xdr.ScVal.scvVec(["same", "type", "list"].map(xdr.ScVal.scvString)),
         ],
         ["void", xdr.ScVal.scvVoid()],
@@ -149,7 +148,7 @@ describe("parsing and building ScVals - from scval_test.js", () => {
               [xdr.ScVal.scvBool(false), xdr.ScVal.scvString("second")],
               [
                 xdr.ScVal.scvU32(2),
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 xdr.ScVal.scvVec(inputVec.map(xdr.ScVal.scvString)),
               ],
             ].map(([key, val]: any) => new xdr.ScMapEntry({ key, val })),
@@ -1309,7 +1308,7 @@ describe("scValToNative", () => {
           val: xdr.ScVal.scvString("nope"),
         }),
       ]);
-      const result = scValToNative(scv) as any;
+      const result = scValToNative(scv);
       expect(result["1"]).toBe("one");
       expect(result["false"]).toBe("nope");
     });
@@ -1359,7 +1358,7 @@ describe("scValToNative", () => {
       const scv = xdr.ScVal.scvError(
         xdr.ScError.sceWasmVm(xdr.ScErrorCode.scecInvalidInput()),
       );
-      const result = scValToNative(scv) as any;
+      const result = scValToNative(scv);
       expect(result.type).toBe("system");
       expect(typeof result.code).toBe("number");
       expect(typeof result.value).toBe("string");
@@ -1373,7 +1372,7 @@ describe("scValToNative", () => {
       ];
       for (const code of codes) {
         const scv = xdr.ScVal.scvError(xdr.ScError.sceWasmVm(code));
-        const result = scValToNative(scv) as any;
+        const result = scValToNative(scv);
         expect(result.type).toBe("system");
       }
     });
@@ -1483,7 +1482,9 @@ describe("scvSortedMap", () => {
     const secondCopy = expectDefined(copy[1]);
 
     // Original array should be unchanged
-    expect(scValToNative(firstEntry.key())).toBe(scValToNative(firstCopy.key()));
+    expect(scValToNative(firstEntry.key())).toBe(
+      scValToNative(firstCopy.key()),
+    );
     expect(scValToNative(secondEntry.key())).toBe(
       scValToNative(secondCopy.key()),
     );
@@ -1598,7 +1599,7 @@ describe("round-trip: nativeToScVal -> scValToNative", () => {
   it("round-trips simple objects", () => {
     const obj = { x: 1n, y: 2n };
     const scv = nativeToScVal(obj);
-    const result = scValToNative(scv) as any;
+    const result = scValToNative(scv);
     // Keys become sorted, bigints stay as bigint
     expect(result.x).toBe(1n);
     expect(result.y).toBe(2n);
@@ -1611,7 +1612,7 @@ describe("round-trip: nativeToScVal -> scValToNative", () => {
       flag: true,
       nothing: null,
     };
-    const result = scValToNative(nativeToScVal(obj)) as any;
+    const result = scValToNative(nativeToScVal(obj));
     expect(result.name).toBe("test");
     expect(result.items).toEqual(["a", "b"]);
     expect(result.flag).toBe(true);
@@ -1685,7 +1686,7 @@ describe("edge cases and stress tests", () => {
       val = { nested: val };
     }
     const scv = nativeToScVal(val);
-    let result = scValToNative(scv) as any;
+    let result = scValToNative(scv);
     for (let i = 0; i < 10; i++) {
       expect(result).toHaveProperty("nested");
       result = result.nested;
@@ -1696,13 +1697,13 @@ describe("edge cases and stress tests", () => {
 
   it("handles deeply nested arrays", () => {
     const scv = nativeToScVal([[[1]], [[2]]]);
-    const result = scValToNative(scv) as any;
+    const result = scValToNative(scv);
     expect(result).toEqual([[[1n]], [[2n]]]);
   });
 
   it("handles object with numeric string keys", () => {
     const scv = nativeToScVal({ "0": "a", "1": "b", "2": "c" });
-    const result = scValToNative(scv) as any;
+    const result = scValToNative(scv);
     expect(result["0"]).toBe("a");
     expect(result["1"]).toBe("b");
     expect(result["2"]).toBe("c");
@@ -1713,7 +1714,7 @@ describe("edge cases and stress tests", () => {
       "key with spaces": true,
       "key-with-dashes": false,
     });
-    const result = scValToNative(scv) as any;
+    const result = scValToNative(scv);
     expect(result["key with spaces"]).toBe(true);
     expect(result["key-with-dashes"]).toBe(false);
   });
@@ -1779,7 +1780,7 @@ describe("edge cases and stress tests", () => {
         val: xdr.ScVal.scvString("no"),
       }),
     ]);
-    const result = scValToNative(scv) as any;
+    const result = scValToNative(scv);
     expect(result["true"]).toBe("yes");
     expect(result["false"]).toBe("no");
   });
@@ -1862,7 +1863,7 @@ describe("edge cases and stress tests", () => {
     const scv = nativeToScVal(gigaMap);
     expect(scv.switch().name).toBe("scvMap");
 
-    const result = scValToNative(scv) as any;
+    const result = scValToNative(scv);
     expect(result.bool).toBe(true);
     expect(result.void).toBe(null);
     expect(result.u64).toBe(1n);
@@ -1972,5 +1973,71 @@ describe("edge cases and stress tests", () => {
     expect(() => nativeToScVal(-2147483649, { type: "i32" })).toThrow(
       /invalid value.*for type i32/,
     );
+  });
+});
+
+describe("nativeToScVal prototype pollution safety", () => {
+  describe("Object.prototype keys in map type spec lookup", () => {
+    it("should handle object with 'toString' key without type hints", () => {
+      const result = nativeToScVal({ toString: "hello" });
+      const native = scValToNative(result);
+      expect(native).toEqual({ toString: "hello" });
+    });
+
+    it("should handle object with 'hasOwnProperty' key without type hints", () => {
+      const result = nativeToScVal({ hasOwnProperty: "test" });
+      const native = scValToNative(result);
+      expect(native).toEqual({ hasOwnProperty: "test" });
+    });
+
+    it("should handle object with 'valueOf' key without type hints", () => {
+      const result = nativeToScVal({ valueOf: 42 });
+      const native = scValToNative(result);
+      expect(native).toEqual({ valueOf: 42n }); // numbers roundtrip as bigint
+    });
+
+    it("should handle object with '__proto__' key without type hints", () => {
+      const result = nativeToScVal({ __proto__: "value" });
+      const native = scValToNative(result);
+      expect(native).toEqual({ __proto__: "value" });
+    });
+
+    it("should handle multiple prototype keys mixed with normal keys", () => {
+      const input = {
+        toString: "a",
+        normal: "b",
+        hasOwnProperty: "c",
+      };
+      const result = nativeToScVal(input);
+      const native = scValToNative(result);
+      expect(native).toEqual(input);
+    });
+  });
+
+  describe("val.constructor?.name check with 'constructor' key", () => {
+    it("should handle object with 'constructor' key (string value)", () => {
+      const result = nativeToScVal({ constructor: "test" });
+      const native = scValToNative(result);
+      expect(native).toEqual({ constructor: "test" });
+    });
+
+    it("should handle object with 'constructor' key (null value)", () => {
+      const result = nativeToScVal({ constructor: null });
+      const native = scValToNative(result);
+      expect(native).toEqual({ constructor: null });
+    });
+
+    it("should handle object with 'constructor' key (number value)", () => {
+      const result = nativeToScVal({ constructor: 42 });
+      const native = scValToNative(result);
+      expect(native).toEqual({ constructor: 42n }); // numbers roundtrip as bigint
+    });
+
+    it("should handle object with 'constructor' key alongside normal keys", () => {
+      const input = { constructor: "foo", name: "bar", value: 123 };
+      const result = nativeToScVal(input);
+      const native = scValToNative(result);
+      expect(native).toEqual({ constructor: "foo", name: "bar", value: 123n });
+    });
   });
 });

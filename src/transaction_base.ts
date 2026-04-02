@@ -40,9 +40,32 @@ export class TransactionBase<
     throw new Error("Transaction is immutable");
   }
 
-  /** The underlying XDR transaction object. */
+  /**
+   * The underlying XDR transaction object.
+   *
+   * Returns a defensive copy so that external mutations cannot alter the
+   * transaction that will be signed or serialized.
+   *
+   * @throws {Error} if the internal transaction is not a recognized XDR type
+   */
   get tx(): TTx {
-    return this._tx;
+    const buf = this._tx.toXDR();
+
+    // Making sure we have the right type here, since the base class doesn't
+    // know which transaction type it is.
+    if (this._tx instanceof xdr.Transaction) {
+      return xdr.Transaction.fromXDR(buf) as TTx;
+    }
+
+    if (this._tx instanceof xdr.TransactionV0) {
+      return xdr.TransactionV0.fromXDR(buf) as TTx;
+    }
+
+    if (this._tx instanceof xdr.FeeBumpTransaction) {
+      return xdr.FeeBumpTransaction.fromXDR(buf) as TTx;
+    }
+
+    throw new Error("Unknown transaction type");
   }
 
   set tx(_value: TTx) {

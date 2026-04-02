@@ -79,12 +79,12 @@ export class Transaction extends TransactionBase<
     switch (this._envelopeType) {
       case xdr.EnvelopeType.envelopeTypeTxV0():
         this._source = StrKey.encodeEd25519PublicKey(
-          (this.tx as xdr.TransactionV0).sourceAccountEd25519(),
+          (tx as xdr.TransactionV0).sourceAccountEd25519(),
         );
         break;
       default:
         this._source = encodeMuxedAccountToAddress(
-          (this.tx as xdr.Transaction).sourceAccount(),
+          (tx as xdr.Transaction).sourceAccount(),
         );
         break;
     }

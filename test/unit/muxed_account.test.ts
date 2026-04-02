@@ -113,6 +113,29 @@ describe("MuxedAccount.setId (error cases)", () => {
   });
 });
 
+describe("MuxedAccount uint64 overflow", () => {
+  // 2^64 = 18446744073709551616 (one above the max uint64 value)
+  const OVERFLOW_ID = "18446744073709551616";
+
+  it("rejects overflow in constructor", () => {
+    const base = new Account(PUBKEY, "0");
+    expect(() => new MuxedAccount(base, OVERFLOW_ID)).toThrow();
+  });
+
+  it("rejects overflow in setId", () => {
+    const base = new Account(PUBKEY, "0");
+    const mux = new MuxedAccount(base, "0");
+    expect(() => mux.setId(OVERFLOW_ID)).toThrow();
+  });
+
+  it("accepts the maximum valid uint64 value", () => {
+    const MAX_UINT64 = "18446744073709551615";
+    const base = new Account(PUBKEY, "0");
+    const mux = new MuxedAccount(base, MAX_UINT64);
+    expect(mux.id()).toBe(MAX_UINT64);
+  });
+});
+
 describe("MuxedAccount.fromAddress (error cases)", () => {
   it("throws when given a G-address instead of an M-address", () => {
     expect(() => MuxedAccount.fromAddress(PUBKEY, "0")).toThrow();

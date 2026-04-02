@@ -22,10 +22,6 @@
   StrKey strings.
 - `Transaction` no longer has generic type parameters `<TMemo, TOps>`. Code like
   `Transaction<Memo<MemoType.Text>>` will no longer compile.
-- The default `networkPassphrase` for `authorizeEntry` and
-  `authorizeInvocation` has changed from `Networks.FUTURENET` to
-  `Networks.TESTNET`. Callers omitting this argument will silently produce
-  signatures for a different network.
 - `Operation.isValidAmount()`, `Operation.constructAmountRequirementsError()`, and `Operation.setSourceAccount()` have been removed from the runtime `Operation` class. They now exist only as internal standalone functions in operations.ts and are not re-exported. These methods were never part of the published TypeScript declarations, but JavaScript callers could still access them before.
 - The revoke sponsorship operation `type` field has been split from a single
   `"revokeSponsorship"` into 7 specific strings: `"revokeAccountSponsorship"`,
@@ -84,6 +80,20 @@
   `parseFloat()` to `Number()`. Strings with trailing non-numeric characters
   (e.g., `"123abc"`) that previously silently succeeded will now be rejected.
 
+- `authorizeInvocation()` now takes a single `AuthorizeInvocationParams`
+  object instead of positional arguments. Callers must switch from
+  `authorizeInvocation(signer, validUntilLedgerSeq, invocation, publicKey,
+  networkPassphrase)` to
+  `authorizeInvocation({ signer, validUntilLedgerSeq, invocation,
+  networkPassphrase, publicKey })`.
+- `authorizeEntry()` no longer defaults `networkPassphrase` to
+  `Networks.TESTNET`. Callers that relied on the default must now pass the
+  network passphrase explicitly.
+- `TransactionBase.tx` now returns a defensive copy of the underlying XDR
+  object. External mutations on the returned value no longer affect the
+  transaction that will be signed or serialized. Code that relied on
+  mutating `tx` directly will need to be updated.
+
 ### Added
 
 - `Address` class now has a `type` getter and `AddressType` type export.
@@ -107,6 +117,25 @@
 
 ### Fixed
 
+- `nativeToScVal` now uses `Object.getPrototypeOf(val) !== Object.prototype`
+  instead of `val.constructor?.name !== "Object"` to detect plain objects,
+  fixing false negatives for objects created across different realms or with
+  overridden `constructor` properties.
+- `nativeToScVal` now uses `Object.hasOwn` when looking up per-key type
+  specs in map conversions, preventing inherited properties from the
+  prototype chain from being used as type hints.
+- `nativeToScVal` now validates bounds for `u32`/`i32` types, throwing
+  `TypeError` for out-of-range values that previously passed through to the XDR
+  layer.
+- `best_r` (continued fraction approximation) no longer throws for small
+  numbers whose reciprocal exceeds `MAX_INT`. It now computes a
+  semi-convergent to recover a valid rational approximation.
+- `MuxedAccount` constructor and `setId` now validate that the `id` string
+  represents a valid uint64 value (0 to 2^64 - 1), throwing immediately on
+  out-of-range or non-numeric input.
+- `Transaction` constructor now reads `sourceAccountEd25519()` and
+  `sourceAccount()` from the local `tx` parameter instead of `this.tx`,
+  avoiding the overhead of a defensive copy during construction.
 - `authorizeInvocation` is now stricter when called with a callback signer
   and no `publicKey` — it throws
   `"authorizeInvocation requires publicKey parameter"` instead of failing with
@@ -126,9 +155,6 @@
   `opts.signer.sha256Hash` in place.
 - `allow_trust` now throws `"authorize is required"` when the `authorize` option
   is null or undefined, instead of silently passing through.
-- `nativeToScVal` now validates bounds for `u32`/`i32` types, throwing
-  `TypeError` for out-of-range values that previously passed through to the XDR
-  layer.
 - `scvSortedMap` sort comparator now correctly returns `0` for equal values,
   fixing a violation of the sort contract.
 - `createCustomContract` error message for invalid salt now correctly prints the

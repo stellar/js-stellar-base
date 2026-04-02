@@ -2,6 +2,7 @@ import xdr from "./xdr.js";
 
 import { Keypair } from "./keypair.js";
 import { StrKey } from "./strkey.js";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Networks } from "./network.js";
 import { hash } from "./hashing.js";
 
@@ -123,7 +124,7 @@ export async function authorizeEntry(
   entry: xdr.SorobanAuthorizationEntry,
   signer: Keypair | SigningCallback,
   validUntilLedgerSeq: number,
-  networkPassphrase: string = Networks.TESTNET,
+  networkPassphrase: string,
 ): Promise<xdr.SorobanAuthorizationEntry> {
   // no-op if it's source account auth
   if (
@@ -208,32 +209,43 @@ export async function authorizeEntry(
  *
  * This is in contrast to {@link authorizeEntry}, which signs an existing entry.
  *
- * @param signer - either a {@link Keypair} instance (or anything with a
+ * @param params - the parameters for building and signing the authorization
+ * @param params.signer - either a {@link Keypair} instance (or anything with a
  *    `.sign(buf): Buffer-like` method) or a function which takes a payload (a
  *    {@link xdr.HashIdPreimageSorobanAuthorization} instance) input and returns
  *    the signature of the hash of the raw payload bytes (where the signing key
  *    should correspond to the address in the `entry`)
- * @param validUntilLedgerSeq - the (exclusive) future ledger sequence number
- *    until which this authorization entry should be valid (if
+ * @param params.validUntilLedgerSeq - the (exclusive) future ledger sequence
+ *    number until which this authorization entry should be valid (if
  *    `currentLedgerSeq==validUntilLedgerSeq`, this is expired)
- * @param invocation - the invocation tree that we're authorizing (likely, this
- *    comes from transaction simulation)
- * @param publicKey - the public identity of the signer (when providing a
+ * @param params.invocation - the invocation tree that we're authorizing
+ *    (likely, this comes from transaction simulation)
+ * @param params.networkPassphrase - the network passphrase is incorporated into
+ *    the signature (see {@link Networks} for options)
+ * @param params.publicKey - the public identity of the signer (when providing a
  *    {@link Keypair} to `signer`, this can be omitted, as it just uses
  *    {@link Keypair.publicKey})
- * @param networkPassphrase - the network passphrase is incorporated into the
- *    signature (see {@link Networks} for options, default:
- *    {@link Networks.TESTNET})
  *
  * @see authorizeEntry
  */
+export interface AuthorizeInvocationParams {
+  signer: Keypair | SigningCallback;
+  validUntilLedgerSeq: number;
+  invocation: xdr.SorobanAuthorizedInvocation;
+  networkPassphrase: string;
+  publicKey?: string;
+}
+
 export function authorizeInvocation(
-  signer: Keypair | SigningCallback,
-  validUntilLedgerSeq: number,
-  invocation: xdr.SorobanAuthorizedInvocation,
-  publicKey: string = "",
-  networkPassphrase: string = Networks.TESTNET,
+  params: AuthorizeInvocationParams,
 ): Promise<xdr.SorobanAuthorizationEntry> {
+  const {
+    signer,
+    validUntilLedgerSeq,
+    invocation,
+    networkPassphrase,
+    publicKey = "",
+  } = params;
   // We use keypairs as a source of randomness for the nonce to avoid mucking
   // with any crypto dependencies. Note that this just has to be random and
   // unique, not cryptographically secure, so it's fine.
