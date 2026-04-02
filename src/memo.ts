@@ -145,6 +145,13 @@ export class Memo<T extends MemoType = MemoType> {
       throw error;
     }
 
+    // Only plain decimal digit strings are accepted. Scientific notation
+    // ("1e18") and trailing-zero decimals ("1.0") pass BigNumber validation
+    // but crash in BigInt() during XDR serialization.
+    if (!/^[0-9]+$/.test(value)) {
+      throw error;
+    }
+
     let number: BigNumber;
     try {
       number = new BigNumber(value);

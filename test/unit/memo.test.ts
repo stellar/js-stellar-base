@@ -5,7 +5,7 @@ import {
   MemoID,
   MemoText,
   MemoHash,
-  MemoReturn
+  MemoReturn,
 } from "../../src/memo.js";
 
 describe("Memo", () => {
@@ -47,7 +47,7 @@ describe("Memo", () => {
     });
 
     it("returns a value for a correct argument (utf8)", () => {
-      let memoText = new Memo(MemoText, Buffer.from([0xd1]))
+      const memoText = new Memo(MemoText, Buffer.from([0xd1]))
         .toXDRObject()
         .toXDR();
       const expected = Buffer.from([
@@ -56,7 +56,7 @@ describe("Memo", () => {
         // length
         0x00, 0x00, 0x00, 0x01,
         // value
-        0xd1, 0x00, 0x00, 0x00
+        0xd1, 0x00, 0x00, 0x00,
       ]);
       expect(memoText.equals(expected)).toBe(true);
     });
@@ -97,32 +97,32 @@ describe("Memo", () => {
     it("throws an error when invalid argument was passed", () => {
       // @ts-expect-error testing missing arg
       expect(() => Memo.text()).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
       // @ts-expect-error testing invalid input
       expect(() => Memo.text({})).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
       // @ts-expect-error testing invalid input
       expect(() => Memo.text(10)).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
       // @ts-expect-error testing invalid input
       expect(() => Memo.text(Infinity)).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
       // @ts-expect-error testing invalid input
       expect(() => Memo.text(NaN)).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
     });
 
     it("throws an error when string is longer than 28 bytes", () => {
       expect(() => Memo.text("12345678901234567890123456789")).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
       expect(() => Memo.text("三代之時三代之時三代之時")).toThrow(
-        /Expects string, array or buffer, max 28 bytes/
+        /Expects string, array or buffer, max 28 bytes/,
       );
     });
   });
@@ -171,6 +171,26 @@ describe("Memo", () => {
     it("throws an error when value exceeds uint64 max", () => {
       expect(() => Memo.id("18446744073709551616")).toThrow(/Expects a uint64/);
     });
+
+    it("rejects scientific notation strings that BigInt cannot parse", () => {
+      // "1e18" passes BigNumber validation but BigInt("1e18") throws.
+      // Validation should reject it upfront instead of deferring the crash
+      // to toXDRObject().
+      expect(() => Memo.id("1e18")).toThrow(/Expects a uint64/);
+    });
+
+    it("rejects trailing-zero decimal strings that BigInt cannot parse", () => {
+      // "1.0" passes BigNumber.isInteger() but BigInt("1.0") throws.
+      expect(() => Memo.id("1.0")).toThrow(/Expects a uint64/);
+    });
+
+    it("scientific notation equivalent works when written as plain digits", () => {
+      // The value itself is valid — it's the string format that's the problem.
+      expect(() => Memo.id("1000000000000000000")).not.toThrow();
+      const memo = Memo.id("1000000000000000000");
+      const xdrMemo = memo.toXDRObject();
+      expect(xdrMemo.id().toString()).toBe("1000000000000000000");
+    });
   });
 
   describe(".hash() & .return()", () => {
@@ -191,7 +211,7 @@ describe("Memo", () => {
       expect(baseMemo.type).toBe(MemoHash);
       expect((baseMemo.value as Buffer).length).toBe(32);
       expect((baseMemo.value as Buffer).toString("hex")).toBe(
-        buffer.toString("hex")
+        buffer.toString("hex"),
       );
     });
 
@@ -214,7 +234,7 @@ describe("Memo", () => {
       expect(Buffer.isBuffer(baseMemo.value)).toBe(true);
       expect((baseMemo.value as Buffer).length).toBe(32);
       expect((baseMemo.value as Buffer).toString("hex")).toBe(
-        buffer.toString("hex")
+        buffer.toString("hex"),
       );
     });
 
@@ -224,8 +244,8 @@ describe("Memo", () => {
         expect(() => method(Buffer.alloc(32).toString("hex"))).not.toThrow();
         expect(() =>
           method(
-            "0000000000000000000000000000000000000000000000000000000000000000"
-          )
+            "0000000000000000000000000000000000000000000000000000000000000000",
+          ),
         ).not.toThrow();
       }
     });
@@ -251,20 +271,20 @@ describe("Memo", () => {
         expect(() => method("test")).toThrow(/Expects a 32 byte hash value/);
         // @ts-expect-error testing invalid input
         expect(() => method([0, 10, 20])).toThrow(
-          /Expects a 32 byte hash value/
+          /Expects a 32 byte hash value/,
         );
         expect(() => method(Buffer.alloc(33).toString("hex"))).toThrow(
-          /Expects a 32 byte hash value/
+          /Expects a 32 byte hash value/,
         );
         expect(() =>
           method(
-            "00000000000000000000000000000000000000000000000000000000000000"
-          )
+            "00000000000000000000000000000000000000000000000000000000000000",
+          ),
         ).toThrow(/Expects a 32 byte hash value/);
         expect(() =>
           method(
-            "000000000000000000000000000000000000000000000000000000000000000000"
-          )
+            "000000000000000000000000000000000000000000000000000000000000000000",
+          ),
         ).toThrow(/Expects a 32 byte hash value/);
       }
     });
@@ -291,20 +311,20 @@ describe("Memo", () => {
       const buffer = Buffer.alloc(32, 10);
       const memo = Memo.hash(buffer);
 
-      const value = memo.value as Buffer;
+      const value = memo.value;
       value[0] = 0xff;
 
-      expect((memo.value as Buffer)[0]).toBe(10);
+      expect(memo.value[0]).toBe(10);
     });
 
     it("returns a copy for MemoReturn so mutations do not affect the original", () => {
       const buffer = Buffer.alloc(32, 20);
       const memo = Memo.return(buffer);
 
-      const value = memo.value as Buffer;
+      const value = memo.value;
       value[0] = 0xff;
 
-      expect((memo.value as Buffer)[0]).toBe(20);
+      expect(memo.value[0]).toBe(20);
     });
   });
 });
