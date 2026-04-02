@@ -185,8 +185,57 @@ export class TransactionBuilder {
     this.operations = [];
 
     this.baseFee = opts.fee;
-    this.timebounds = opts.timebounds ? { ...opts.timebounds } : null;
-    this.ledgerbounds = opts.ledgerbounds ? { ...opts.ledgerbounds } : null;
+    if (opts.timebounds) {
+      const minTime = toEpochSeconds(opts.timebounds.minTime);
+      const maxTime = toEpochSeconds(opts.timebounds.maxTime);
+
+      if (minTime !== undefined && minTime < 0) {
+        throw new Error("min_time cannot be negative");
+      }
+
+      if (maxTime !== undefined && maxTime < 0) {
+        throw new Error("max_time cannot be negative");
+      }
+
+      if (
+        minTime !== undefined &&
+        maxTime !== undefined &&
+        maxTime > 0 &&
+        minTime > maxTime
+      ) {
+        throw new Error("min_time cannot be greater than max_time");
+      }
+
+      this.timebounds = { ...opts.timebounds };
+    } else {
+      this.timebounds = null;
+    }
+
+    if (opts.ledgerbounds) {
+      const minLedger = opts.ledgerbounds.minLedger;
+      const maxLedger = opts.ledgerbounds.maxLedger;
+
+      if (minLedger !== undefined && minLedger < 0) {
+        throw new Error("min_ledger cannot be negative");
+      }
+
+      if (maxLedger !== undefined && maxLedger < 0) {
+        throw new Error("max_ledger cannot be negative");
+      }
+
+      if (
+        minLedger !== undefined &&
+        maxLedger !== undefined &&
+        maxLedger > 0 &&
+        minLedger > maxLedger
+      ) {
+        throw new Error("min_ledger cannot be greater than max_ledger");
+      }
+
+      this.ledgerbounds = { ...opts.ledgerbounds };
+    } else {
+      this.ledgerbounds = null;
+    }
     this.minAccountSequence = opts.minAccountSequence || null;
     this.minAccountSequenceAge =
       opts.minAccountSequenceAge !== undefined
@@ -1157,4 +1206,22 @@ export class TransactionBuilder {
  */
 export function isValidDate(d: Date | number | string): d is Date {
   return d instanceof Date && !Number.isNaN(d.getTime());
+}
+
+/**
+ * Converts a Date, number, or string time value to epoch seconds for
+ * validation. Returns undefined if the value is undefined.
+ */
+function toEpochSeconds(
+  value: Date | number | string | undefined,
+): number | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (value instanceof Date) {
+    return Math.floor(value.getTime() / 1000);
+  }
+
+  return Number(value);
 }

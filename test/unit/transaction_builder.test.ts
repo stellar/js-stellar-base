@@ -1719,6 +1719,125 @@ describe("TransactionBuilder.cloneFrom", () => {
 
 // Additional coverage for setter methods and validation
 
+describe("constructor timebounds/ledgerbounds validation", () => {
+  const networkPassphrase = Networks.TESTNET;
+  const source = new Account(
+    "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
+    "0",
+  );
+
+  describe("timebounds", () => {
+    it("rejects inverted timebounds (minTime > non-zero maxTime)", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 9999999999, maxTime: 500 },
+        });
+      }).toThrow("min_time cannot be greater than max_time");
+    });
+
+    it("rejects inverted Date timebounds", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: {
+            minTime: new Date("2030-01-01"),
+            maxTime: new Date("2020-01-01"),
+          },
+        });
+      }).toThrow("min_time cannot be greater than max_time");
+    });
+
+    it("allows maxTime=0 (indefinite) with non-zero minTime", () => {
+      const builder = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase,
+        timebounds: { minTime: 1000, maxTime: 0 },
+      });
+      expect(builder.timebounds?.minTime).toBe(1000);
+      expect(builder.timebounds?.maxTime).toBe(0);
+    });
+
+    it("allows equal minTime and maxTime", () => {
+      const builder = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase,
+        timebounds: { minTime: 1000, maxTime: 1000 },
+      });
+      expect(builder.timebounds?.minTime).toBe(1000);
+      expect(builder.timebounds?.maxTime).toBe(1000);
+    });
+
+    it("rejects negative minTime", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: -1, maxTime: 500 },
+        });
+      }).toThrow("min_time cannot be negative");
+    });
+
+    it("rejects negative maxTime", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 0, maxTime: -1 },
+        });
+      }).toThrow("max_time cannot be negative");
+    });
+  });
+
+  describe("ledgerbounds", () => {
+    it("rejects inverted ledgerbounds (minLedger > non-zero maxLedger)", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 0, maxTime: 0 },
+          ledgerbounds: { minLedger: 5000, maxLedger: 100 },
+        });
+      }).toThrow("min_ledger cannot be greater than max_ledger");
+    });
+
+    it("allows maxLedger=0 (indefinite) with non-zero minLedger", () => {
+      const builder = new TransactionBuilder(source, {
+        fee: "100",
+        networkPassphrase,
+        timebounds: { minTime: 0, maxTime: 0 },
+        ledgerbounds: { minLedger: 1000, maxLedger: 0 },
+      });
+      expect(builder.ledgerbounds?.minLedger).toBe(1000);
+      expect(builder.ledgerbounds?.maxLedger).toBe(0);
+    });
+
+    it("rejects negative minLedger", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 0, maxTime: 0 },
+          ledgerbounds: { minLedger: -1, maxLedger: 100 },
+        });
+      }).toThrow("min_ledger cannot be negative");
+    });
+
+    it("rejects negative maxLedger", () => {
+      expect(() => {
+        new TransactionBuilder(source, {
+          fee: "100",
+          networkPassphrase,
+          timebounds: { minTime: 0, maxTime: 0 },
+          ledgerbounds: { minLedger: 0, maxLedger: -1 },
+        });
+      }).toThrow("max_ledger cannot be negative");
+    });
+  });
+});
+
 describe("setTimebounds", () => {
   const source = new Account(
     "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ",
