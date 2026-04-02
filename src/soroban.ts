@@ -21,7 +21,9 @@ export class Soroban {
       throw new TypeError("No decimals are allowed");
     }
 
-    let formatted = amount;
+    const negative = amount.startsWith("-");
+    let formatted = negative ? amount.slice(1) : amount;
+
     if (decimals > 0) {
       if (decimals > formatted.length) {
         formatted = ["0", formatted.toString().padStart(decimals, "0")].join(
@@ -35,10 +37,12 @@ export class Soroban {
       }
     }
 
-    return formatted
+    formatted = formatted
       .replace(/(\.\d*?)0+$/, "$1") // strip trailing zeroes
       .replace(/\.$/, ".0") // but keep at least one
       .replace(/^\./, "0."); // and a leading one
+
+    return negative ? `-${formatted}` : formatted;
   }
 
   /**

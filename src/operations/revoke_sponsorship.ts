@@ -274,6 +274,7 @@ export function revokeLiquidityPoolSponsorship(
  * @param opts.signer.ed25519PublicKey - (optional) The ed25519 public key of the signer.
  * @param opts.signer.sha256Hash - (optional) sha256 hash (Buffer or hex string).
  * @param opts.signer.preAuthTx - (optional) Hash (Buffer or hex string) of transaction.
+ * @param opts.signer.ed25519SignedPayload - (optional) Signed payload signer (StrKey P... address).
  * @param opts.source - The source account for the operation. Defaults to the transaction's source account.
  *
  * @example
@@ -327,6 +328,19 @@ export function revokeSignerSponsorship(
     }
 
     key = xdr.SignerKey.signerKeyTypeHashX(buffer);
+  } else if (opts.signer.ed25519SignedPayload) {
+    if (!StrKey.isValidSignedPayload(opts.signer.ed25519SignedPayload)) {
+      throw new Error("signer.ed25519SignedPayload is invalid.");
+    }
+
+    const rawPayload = StrKey.decodeSignedPayload(
+      opts.signer.ed25519SignedPayload,
+    );
+
+    const signedPayloadXdr =
+      xdr.SignerKeyEd25519SignedPayload.fromXDR(rawPayload);
+
+    key = xdr.SignerKey.signerKeyTypeEd25519SignedPayload(signedPayloadXdr);
   } else {
     throw new Error("signer is invalid");
   }

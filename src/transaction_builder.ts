@@ -5,7 +5,10 @@ import xdr from "./xdr.js";
 
 import { Account } from "./account.js";
 import { MuxedAccount } from "./muxed_account.js";
-import { decodeAddressToMuxedAccount } from "./util/decode_encode_muxed_account.js";
+import {
+  decodeAddressToMuxedAccount,
+  extractBaseAddress,
+} from "./util/decode_encode_muxed_account.js";
 
 import { Transaction } from "./transaction.js";
 import { FeeBumpTransaction } from "./fee_bump_transaction.js";
@@ -688,7 +691,15 @@ export class TransactionBuilder {
       }
     }
 
-    if (destination === this.source.accountId()) {
+    // Resolve M... muxed addresses to their underlying G... address for
+    // ledger key construction (Keypair.fromPublicKey only accepts G... keys).
+    const destinationBaseAddress = isDestinationContract
+      ? destination
+      : extractBaseAddress(destination);
+
+    if (
+      destinationBaseAddress === extractBaseAddress(this.source.accountId())
+    ) {
       throw new Error("Destination cannot be the same as the source account.");
     }
 
@@ -701,6 +712,7 @@ export class TransactionBuilder {
     const contractId = asset.contractId(this.networkPassphrase);
     const functionName = "transfer";
     const source = this.source.accountId();
+    const sourceBaseAddress = extractBaseAddress(source);
     const args = [
       nativeToScVal(source, { type: "address" }),
       nativeToScVal(destination, { type: "address" }),
@@ -770,15 +782,19 @@ export class TransactionBuilder {
       footprint.readWrite().push(
         xdr.LedgerKey.account(
           new xdr.LedgerKeyAccount({
-            accountId: Keypair.fromPublicKey(destination).xdrPublicKey(),
+            accountId: Keypair.fromPublicKey(
+              destinationBaseAddress,
+            ).xdrPublicKey(),
           }),
         ),
       );
-    } else if (asset.getIssuer() !== destination) {
+    } else if (asset.getIssuer() !== destinationBaseAddress) {
       footprint.readWrite().push(
         xdr.LedgerKey.trustline(
           new xdr.LedgerKeyTrustLine({
-            accountId: Keypair.fromPublicKey(destination).xdrPublicKey(),
+            accountId: Keypair.fromPublicKey(
+              destinationBaseAddress,
+            ).xdrPublicKey(),
             asset: asset.toTrustLineXDRObject(),
           }),
         ),
@@ -790,15 +806,15 @@ export class TransactionBuilder {
       footprint.readWrite().push(
         xdr.LedgerKey.account(
           new xdr.LedgerKeyAccount({
-            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+            accountId: Keypair.fromPublicKey(sourceBaseAddress).xdrPublicKey(),
           }),
         ),
       );
-    } else if (asset.getIssuer() !== source) {
+    } else if (asset.getIssuer() !== sourceBaseAddress) {
       footprint.readWrite().push(
         xdr.LedgerKey.trustline(
           new xdr.LedgerKeyTrustLine({
-            accountId: Keypair.fromPublicKey(source).xdrPublicKey(),
+            accountId: Keypair.fromPublicKey(sourceBaseAddress).xdrPublicKey(),
             asset: asset.toTrustLineXDRObject(),
           }),
         ),

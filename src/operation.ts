@@ -575,6 +575,14 @@ function convertXDRSignerKeyToObject(
       attrs.sha256Hash = signerKey.hashX().toString("hex");
       break;
     }
+    case xdr.SignerKeyType.signerKeyTypeEd25519SignedPayload().name: {
+      const signedPayload = signerKey.ed25519SignedPayload();
+
+      attrs.ed25519SignedPayload = StrKey.encodeSignedPayload(
+        signedPayload.toXDR(),
+      );
+      break;
+    }
     default: {
       throw new Error(`Unknown signerKey: ${signerKey.switch().name}`);
     }

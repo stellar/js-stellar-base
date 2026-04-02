@@ -65,6 +65,12 @@ export function setTrustLineFlags(
       throw new Error(`Invalid flag name: ${flagName}`);
     }
 
+    if (typeof flagValue !== "boolean" && typeof flagValue !== "undefined") {
+      throw new TypeError(
+        `opts.flags.${flagName} must be a boolean (got ${typeof flagValue})`,
+      );
+    }
+
     if (flagValue === true) {
       setFlag |= bit.value;
     } else if (flagValue === false) {

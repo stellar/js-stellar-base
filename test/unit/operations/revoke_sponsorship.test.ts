@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { Operation } from "../../../src/operation.js";
 import { Asset } from "../../../src/asset.js";
 import { LiquidityPoolId } from "../../../src/liquidity_pool_id.js";
+import { Keypair } from "../../../src/keypair.js";
+import { StrKey } from "../../../src/strkey.js";
 import { hash } from "../../../src/hashing.js";
 import xdr from "../../../src/xdr.js";
 import {
@@ -427,5 +429,76 @@ describe("Operation.revokeSignerSponsorship()", () => {
     const hex = op.toXDR("hex");
     const roundtripped = xdr.Operation.fromXDR(hex, "hex");
     expect(roundtripped.body().switch().name).toBe("revokeSponsorship");
+  });
+
+  it("deserializes a revokeSignerSponsorship with an ed25519SignedPayload signer", () => {
+    // Build the XDR operation manually to test the deserialization path
+    const kp = Keypair.random();
+    const payload = Buffer.alloc(10, 0xab);
+    const signedPayload = new xdr.SignerKeyEd25519SignedPayload({
+      ed25519: kp.rawPublicKey(),
+      payload,
+    });
+    const signerKey =
+      xdr.SignerKey.signerKeyTypeEd25519SignedPayload(signedPayload);
+
+    const revokeSigner = new xdr.RevokeSponsorshipOpSigner({
+      accountId: kp.xdrAccountId(),
+      signerKey,
+    });
+    const revokeOp =
+      xdr.RevokeSponsorshipOp.revokeSponsorshipSigner(revokeSigner);
+    const opBody = xdr.OperationBody.revokeSponsorship(revokeOp);
+    const xdrOp = new xdr.Operation({ sourceAccount: null, body: opBody });
+
+    const obj = expectOperationType(
+      Operation.fromXDRObject(xdrOp),
+      "revokeSignerSponsorship",
+    );
+    const decodedSigner = expectObjectWithProperty(
+      obj.signer,
+      "ed25519SignedPayload",
+    );
+
+    // The encoded signed payload should be a valid StrKey P... address
+    expect(
+      StrKey.isValidSignedPayload(decodedSigner.ed25519SignedPayload),
+    ).toBe(true);
+  });
+
+  it("creates a revokeSignerSponsorshipOp with an ed25519SignedPayload signer", () => {
+    // Build a valid signed payload StrKey from a keypair + payload
+    const kp = Keypair.random();
+    const payload = Buffer.alloc(10, 0xab);
+    const signedPayloadXdr = new xdr.SignerKeyEd25519SignedPayload({
+      ed25519: kp.rawPublicKey(),
+      payload,
+    });
+    const encodedPayload = StrKey.encodeSignedPayload(signedPayloadXdr.toXDR());
+
+    const signer = { ed25519SignedPayload: encodedPayload };
+    const op = Operation.revokeSignerSponsorship({ account, signer });
+    const operation = xdr.Operation.fromXDR(op.toXDR("hex"), "hex");
+    const obj = expectOperationType(
+      Operation.fromXDRObject(operation),
+      "revokeSignerSponsorship",
+    );
+    const decodedSigner = expectObjectWithProperty(
+      obj.signer,
+      "ed25519SignedPayload",
+    );
+
+    expect(operation.body().switch().name).toBe("revokeSponsorship");
+    expect(obj.account).toBe(account);
+    expect(decodedSigner.ed25519SignedPayload).toBe(encodedPayload);
+  });
+
+  it("fails with an invalid ed25519SignedPayload signer", () => {
+    expect(() =>
+      Operation.revokeSignerSponsorship({
+        account,
+        signer: { ed25519SignedPayload: "PBAD" },
+      }),
+    ).toThrow(/signer\.ed25519SignedPayload is invalid/);
   });
 });
