@@ -25,7 +25,9 @@ interface XdrAssetConstructor<T> {
  * asset XLM, the issuer will be undefined.
  */
 export class Asset {
+  /** The asset code. */
   readonly code: string;
+  /** The account ID of the issuer. Undefined for the native asset. */
   readonly issuer: string | undefined;
 
   /**
