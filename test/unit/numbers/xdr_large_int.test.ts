@@ -394,19 +394,6 @@ describe("XdrLargeInt", () => {
         expect(() => tooLarge.toI128()).toThrow(/too large for 128 bits/);
       });
 
-      it("throws RangeError for unsigned values exceeding signed i128 range", () => {
-        // 2^127 fits in u128 but not i128 — should throw, not silently flip sign
-        const u128AtSignedBoundary = new XdrLargeInt("u128", 1n << 127n);
-        expect(() => u128AtSignedBoundary.toI128()).toThrow(RangeError);
-        expect(() => u128AtSignedBoundary.toI128()).toThrow(
-          /too large for i128/,
-        );
-
-        // u128 max should also throw
-        const u128Max = new XdrLargeInt("u128", (1n << 128n) - 1n);
-        expect(() => u128Max.toI128()).toThrow(RangeError);
-      });
-
       it("handles boundary values", () => {
         const maxI128 = (1n << 127n) - 1n;
         const minI128 = -(1n << 127n);

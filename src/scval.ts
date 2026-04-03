@@ -306,6 +306,8 @@ export function nativeToScVal(
 
         case "i32": {
           const bigintVal = BigInt(val);
+          // TODO: Update this check once xdr.Int32.MIN_VALUE in XDR is properly
+          // set to negative. Check this globally.
           if (
             bigintVal < -BigInt(xdr.Int32.MIN_VALUE) ||
             bigintVal > BigInt(xdr.Int32.MAX_VALUE)
