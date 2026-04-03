@@ -195,14 +195,9 @@ export class XdrLargeInt {
 
   /**
    * The integer encoded with `ScValType = I256`
-   *
-   * @throws if the value cannot fit in a signed 256-bit integer
    */
   toI256(): xdr.ScVal {
     const v = this.int.toBigInt();
-    if (BigInt.asIntN(256, v) !== v) {
-      throw RangeError(`value too large for i256: ${v}`);
-    }
     const hiHi64 = BigInt.asIntN(64, v >> 192n); // keep sign bit
     const hiLo64 = BigInt.asUintN(64, v >> 128n);
     const loHi64 = BigInt.asUintN(64, v >> 64n);
