@@ -159,4 +159,9 @@ describe("toXDRPrice()", () => {
     expect(() => toXDRPrice({ n: 1, d: 0 })).toThrow(/price must be positive/);
     expect(() => toXDRPrice({ n: 0, d: 0 })).toThrow(/price must be positive/);
   });
+
+  it("throws 'price must be positive' for zero numeric price", () => {
+    expect(() => toXDRPrice("0")).toThrow(/price must be positive/);
+    expect(() => toXDRPrice(0)).toThrow(/price must be positive/);
+  });
 });

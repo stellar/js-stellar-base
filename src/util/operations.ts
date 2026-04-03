@@ -105,6 +105,9 @@ export function toXDRPrice(
   if (typeof price === "object" && "n" in price && "d" in price) {
     xdrObject = new xdr.Price(price);
   } else {
+    if (new BigNumber(price).lte(0)) {
+      throw new Error("price must be positive");
+    }
     const approx = best_r(price);
     xdrObject = new xdr.Price({
       n: parseInt(String(approx[0]), 10),
