@@ -298,6 +298,13 @@ export class TransactionBuilder {
       throw new TypeError(`unsupported tx source account: ${tx.source}`);
     }
 
+    if (tx.operations.length === 0) {
+      throw new Error(
+        "cannot clone a transaction with no operations: " +
+          "per-operation base fee cannot be determined",
+      );
+    }
+
     // the initial fee passed to the builder gets scaled up based on the number
     // of operations at the end, so we have to down-scale first
     const unscaledFee = Math.floor(parseInt(tx.fee, 10) / tx.operations.length);

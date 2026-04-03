@@ -1692,6 +1692,18 @@ describe("TransactionBuilder.cloneFrom", () => {
     expect(expectDefined(cloneTx).fee).toBe("999");
   });
 
+  it("throws when cloning a zero-operation transaction", () => {
+    const zeroOpTx = new TransactionBuilder(source, {
+      fee: "100",
+      timebounds: { minTime: 0, maxTime: 0 },
+      networkPassphrase,
+    }).build();
+
+    expect(() => TransactionBuilder.cloneFrom(zeroOpTx)).toThrow(
+      /cannot clone a transaction with no operations/,
+    );
+  });
+
   it("preserves extraSigners", () => {
     const extraSigner =
       "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ";
