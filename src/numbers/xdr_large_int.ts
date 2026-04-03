@@ -165,6 +165,9 @@ export class XdrLargeInt {
     this._sizeCheck(128);
 
     const v = this.int.toBigInt();
+    if (BigInt.asIntN(128, v) !== v) {
+      throw RangeError(`value too large for i128: ${v}`);
+    }
     const hi64 = BigInt.asIntN(64, v >> 64n); // encode top 64 w/ sign bit
     const lo64 = BigInt.asUintN(64, v); // grab btm 64, encode sign
 
@@ -196,10 +199,13 @@ export class XdrLargeInt {
   /**
    * The integer encoded with `ScValType = I256`
    *
-   * Note: No size check needed - I256 is the largest signed type.
+   * @throws if the value cannot fit in a signed 256-bit integer
    */
   toI256(): xdr.ScVal {
     const v = this.int.toBigInt();
+    if (BigInt.asIntN(256, v) !== v) {
+      throw RangeError(`value too large for i256: ${v}`);
+    }
     const hiHi64 = BigInt.asIntN(64, v >> 192n); // keep sign bit
     const hiLo64 = BigInt.asUintN(64, v >> 128n);
     const loHi64 = BigInt.asUintN(64, v >> 64n);

@@ -159,4 +159,22 @@ describe("toXDRPrice()", () => {
     expect(() => toXDRPrice({ n: 1, d: 0 })).toThrow(/price must be positive/);
     expect(() => toXDRPrice({ n: 0, d: 0 })).toThrow(/price must be positive/);
   });
+
+  it("throws 'price must be positive' for zero numeric price", () => {
+    expect(() => toXDRPrice("0")).toThrow(/price must be positive/);
+    expect(() => toXDRPrice(0)).toThrow(/price must be positive/);
+  });
+
+  it("throws for non-numeric string inputs", () => {
+    expect(() => toXDRPrice("abc")).toThrow(/not a number/i);
+    expect(() => toXDRPrice("")).toThrow(/not a number/i);
+  });
+
+  it("throws 'price must be positive' for NaN input", () => {
+    expect(() => toXDRPrice(NaN)).toThrow(/price must be positive/);
+  });
+
+  it("throws 'price must be positive' for Infinity input", () => {
+    expect(() => toXDRPrice(Infinity)).toThrow(/price must be positive/);
+  });
 });

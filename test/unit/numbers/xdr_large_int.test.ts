@@ -394,6 +394,14 @@ describe("XdrLargeInt", () => {
         expect(() => tooLarge.toI128()).toThrow(/too large for 128 bits/);
       });
 
+      it("throws RangeError for unsigned values exceeding signed i128 range", () => {
+        const u128AtSignedBoundary = new XdrLargeInt("u128", 1n << 127n);
+        expect(() => u128AtSignedBoundary.toI128()).toThrow(RangeError);
+
+        const u128Max = new XdrLargeInt("u128", (1n << 128n) - 1n);
+        expect(() => u128Max.toI128()).toThrow(RangeError);
+      });
+
       it("handles boundary values", () => {
         const maxI128 = (1n << 127n) - 1n;
         const minI128 = -(1n << 127n);
@@ -477,10 +485,18 @@ describe("XdrLargeInt", () => {
         expect(i256.hiHi().toBigInt()).toBe(-1n);
       });
 
-      it("does not throw for large values (no size check)", () => {
+      it("does not throw for large values within signed range", () => {
         const huge = (1n << 200n) - 1n;
         const xdrInt = new XdrLargeInt("i256", huge);
         expect(() => xdrInt.toI256()).not.toThrow();
+      });
+
+      it("throws RangeError for unsigned values exceeding signed i256 range", () => {
+        const u256AtSignedBoundary = new XdrLargeInt("u256", 1n << 255n);
+        expect(() => u256AtSignedBoundary.toI256()).toThrow(RangeError);
+
+        const u256Max = new XdrLargeInt("u256", (1n << 256n) - 1n);
+        expect(() => u256Max.toI256()).toThrow(RangeError);
       });
 
       it("handles large positive value", () => {
@@ -707,9 +723,13 @@ describe("XdrLargeInt", () => {
       expect(() => oversized64.toDuration()).toThrow(RangeError);
     });
 
-    it("does not throw in toI256/toU256 for any size", () => {
+    it("does not throw in toI256 for values within signed range", () => {
       const huge = (1n << 250n) - 1n;
       expect(() => new XdrLargeInt("i256", huge).toI256()).not.toThrow();
+    });
+
+    it("does not throw in toU256 for any size", () => {
+      const huge = (1n << 250n) - 1n;
       expect(() => new XdrLargeInt("u256", huge).toU256()).not.toThrow();
     });
   });

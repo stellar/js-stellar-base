@@ -24,6 +24,7 @@ import { Address } from "./address.js";
 import { Keypair } from "./keypair.js";
 
 const HYPER_MAX_VALUE = Hyper.MAX_VALUE as unknown as bigint;
+const UINT32_MAX = 4294967295; // 2^32 - 1
 
 /**
  * Minimum base fee for transactions. If this fee is below the network
@@ -295,6 +296,13 @@ export class TransactionBuilder {
       source = new Account(tx.source, sequenceNum);
     } else {
       throw new TypeError(`unsupported tx source account: ${tx.source}`);
+    }
+
+    if (tx.operations.length === 0) {
+      throw new Error(
+        "cannot clone a transaction with no operations: " +
+          "per-operation base fee cannot be determined",
+      );
     }
 
     // the initial fee passed to the builder gets scaled up based on the number
@@ -914,6 +922,14 @@ export class TransactionBuilder {
     const fee = new BigNumber(this.baseFee)
       .times(this.operations.length)
       .toNumber();
+
+    if (fee > UINT32_MAX) {
+      throw new Error(
+        `Total fee (baseFee * operations) exceeds the maximum uint32 value (${UINT32_MAX}). ` +
+          `Got ${fee} from baseFee=${this.baseFee} and ${this.operations.length} operation(s).`,
+      );
+    }
+
     const attrs: {
       fee: number;
       seqNum: xdr.SequenceNumber;
@@ -1006,6 +1022,13 @@ export class TransactionBuilder {
       attrs.fee = new BigNumber(attrs.fee)
         .plus(this.sorobanData.resourceFee().toString())
         .toNumber();
+
+      if (attrs.fee > UINT32_MAX) {
+        throw new Error(
+          `Total fee (baseFee * operations + resourceFee) exceeds the maximum uint32 value (${UINT32_MAX}). ` +
+            `Got ${attrs.fee}.`,
+        );
+      }
     } else {
       attrs.ext = new xdr.TransactionExt(0);
     }

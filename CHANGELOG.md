@@ -73,7 +73,9 @@
   `AuthFlags` (`AuthFlag | (number & {})`), accepting any number for combined
   bitmask values.
 - `toXDRPrice` now rejects denominator equal to zero (`d <= 0` instead of
-  `d < 0`).
+  `d < 0`). Numeric price values of zero, negative, `NaN`, and `Infinity` are
+  now rejected with `"price must be positive"` before reaching `best_r()`,
+  instead of producing a confusing `"Couldn't find approximation"` error.
 - `checkUnsignedIntValue` string-to-number conversion changed from
   `parseFloat()` to `Number()`. Strings with trailing non-numeric characters
   (e.g., `"123abc"`) that previously silently succeeded will now be rejected.
@@ -131,7 +133,9 @@
   prototype chain from being used as type hints.
 - `nativeToScVal` now validates bounds for `u32`/`i32` types, throwing
   `TypeError` for out-of-range values that previously passed through to the XDR
-  layer.
+  layer. The string-to-`u32`/`i32` path now uses `BigInt()` instead of
+  `parseInt()`, rejecting strings with trailing junk (e.g., `"123abc"`) and
+  correctly parsing hex/octal/binary prefixes instead of silently returning `0`.
 - `best_r` (continued fraction approximation) no longer throws for small
   numbers whose reciprocal exceeds `MAX_INT`. It now computes a
   semi-convergent to recover a valid rational approximation.
@@ -191,6 +195,18 @@
 - `TransactionBuilder` constructor now validates `timebounds` and
   `ledgerbounds`: negative values and `min > max` now throw immediately instead
   of producing silently invalid transactions.
+- `XdrLargeInt.toI128()` and `toI256()` now reject unsigned values that exceed
+  the signed range (e.g., `2^127` for i128, `2^255` for i256), throwing
+  `RangeError` instead of silently flipping the sign bit via `BigInt.asIntN`.
+- `Memo.id()` now rejects non-plain-digit strings such as scientific notation
+  (`"1e18"`) and decimal strings (`"1.0"`) that previously passed `BigNumber`
+  validation but crashed in `BigInt()` during XDR serialization.
+- `TransactionBuilder.build()` now throws when the total fee (`baseFee *
+  operations`, or `baseFee * operations + resourceFee` for Soroban) exceeds
+  the uint32 maximum (`4294967295`), instead of producing an invalid XDR value.
+- `TransactionBuilder.cloneFrom()` now throws when the source transaction has
+  zero operations, instead of producing a builder with `baseFee` set to
+  `Infinity`.
 
 ## [`v14.1.0`](https://github.com/stellar/js-stellar-base/compare/v14.0.4...v14.1.0):
 

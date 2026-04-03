@@ -293,11 +293,29 @@ export function nativeToScVal(
         case "address":
           return new Address(val).toScVal();
 
-        case "u32":
-          return xdr.ScVal.scvU32(parseInt(val, 10));
+        case "u32": {
+          const bigintVal = BigInt(val);
+          if (
+            bigintVal < BigInt(xdr.Uint32.MIN_VALUE) ||
+            bigintVal > BigInt(xdr.Uint32.MAX_VALUE)
+          ) {
+            throw new TypeError(`invalid value (${val}) for type u32`);
+          }
+          return xdr.ScVal.scvU32(Number(bigintVal));
+        }
 
-        case "i32":
-          return xdr.ScVal.scvI32(parseInt(val, 10));
+        case "i32": {
+          const bigintVal = BigInt(val);
+          // TODO: Update this check once xdr.Int32.MIN_VALUE in XDR is properly
+          // set to negative. Check this globally.
+          if (
+            bigintVal < -BigInt(xdr.Int32.MIN_VALUE) ||
+            bigintVal > BigInt(xdr.Int32.MAX_VALUE)
+          ) {
+            throw new TypeError(`invalid value (${val}) for type i32`);
+          }
+          return xdr.ScVal.scvI32(Number(bigintVal));
+        }
 
         default:
           if (XdrLargeInt.isType(optType)) {
