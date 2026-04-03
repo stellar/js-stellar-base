@@ -291,7 +291,7 @@ export class Keypair {
     let hint = Buffer.from(dataBuffer.subarray(-4));
     if (hint.length < 4) {
       // append zeroes as needed
-      hint = Buffer.concat([hint, Buffer.alloc(4 - dataBuffer.length, 0)]);
+      hint = Buffer.concat([hint, Buffer.alloc(4 - hint.length, 0)]);
     }
 
     // XOR each byte of hint with corresponding byte of keyHint
