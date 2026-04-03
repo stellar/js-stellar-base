@@ -336,6 +336,9 @@ describe("ScInt", () => {
       expect(sci.toBigInt()).toBe(max);
     });
 
+    // TODO: @stellar/js-xdr@4.0.0 now throws RangeError for oversized values
+    // instead of silently wrapping. Once the XDR upgrade is finalized, change
+    // this test to: expect(() => new ScInt(tooLarge, { type: "u64" })).toThrow(RangeError);
     it("wraps oversized values for specified type (overflow to zero)", () => {
       const tooLarge = 1n << 64n;
       const sci = new ScInt(tooLarge, { type: "u64" });

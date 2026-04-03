@@ -195,9 +195,9 @@
 - `TransactionBuilder` constructor now validates `timebounds` and
   `ledgerbounds`: negative values and `min > max` now throw immediately instead
   of producing silently invalid transactions.
-- `XdrLargeInt.toI128()` and `toI256()` signed range validation is now handled
-  by the upstream `@stellar/js-xdr` library. Tests are in place (skipped) and
-  will be enabled once the XDR package is updated.
+- `XdrLargeInt.toI128()` and `toI256()` now reject unsigned values that exceed
+  the signed range (e.g., `2^127` for i128, `2^255` for i256), throwing
+  `RangeError` instead of silently flipping the sign bit via `BigInt.asIntN`.
 - `Memo.id()` now rejects non-plain-digit strings such as scientific notation
   (`"1e18"`) and decimal strings (`"1.0"`) that previously passed `BigNumber`
   validation but crashed in `BigInt()` during XDR serialization.

@@ -394,9 +394,7 @@ describe("XdrLargeInt", () => {
         expect(() => tooLarge.toI128()).toThrow(/too large for 128 bits/);
       });
 
-      // Unskip after updating @stellar/js-xdr to a version that validates
-      // signed range in Int128/Int256 constructors.
-      it.skip("throws RangeError for unsigned values exceeding signed i128 range", () => {
+      it("throws RangeError for unsigned values exceeding signed i128 range", () => {
         const u128AtSignedBoundary = new XdrLargeInt("u128", 1n << 127n);
         expect(() => u128AtSignedBoundary.toI128()).toThrow(RangeError);
 
@@ -493,9 +491,7 @@ describe("XdrLargeInt", () => {
         expect(() => xdrInt.toI256()).not.toThrow();
       });
 
-      // Unskip after updating @stellar/js-xdr to a version that validates
-      // signed range in Int128/Int256 constructors.
-      it.skip("throws RangeError for unsigned values exceeding signed i256 range", () => {
+      it("throws RangeError for unsigned values exceeding signed i256 range", () => {
         const u256AtSignedBoundary = new XdrLargeInt("u256", 1n << 255n);
         expect(() => u256AtSignedBoundary.toI256()).toThrow(RangeError);
 
