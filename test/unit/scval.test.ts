@@ -1973,6 +1973,29 @@ describe("edge cases and stress tests", () => {
     expect(scv.value()).toBe(0);
   });
 
+  it("rejects string with trailing non-numeric characters for u32", () => {
+    expect(() => nativeToScVal("123abc", { type: "u32" })).toThrow(SyntaxError);
+  });
+
+  it("rejects string with trailing non-numeric characters for i32", () => {
+    expect(() => nativeToScVal("42xyz", { type: "i32" })).toThrow(SyntaxError);
+  });
+
+  it("correctly parses hex-prefix string for u32", () => {
+    // BigInt("0x10") = 16n — hex is parsed correctly, unlike parseInt which returned 0
+    const scv = nativeToScVal("0x10", { type: "u32" });
+    expect(scv.switch().name).toBe("scvU32");
+    expect(scv.value()).toBe(16);
+  });
+
+  it("rejects pure non-numeric string for u32", () => {
+    expect(() => nativeToScVal("hello", { type: "u32" })).toThrow(SyntaxError);
+  });
+
+  it("rejects scientific notation string for i32", () => {
+    expect(() => nativeToScVal("1e2", { type: "i32" })).toThrow(SyntaxError);
+  });
+
   it("nativeToScVal with no type hint auto-selects appropriate type", () => {
     // Positive -> unsigned
     expect(nativeToScVal(0).switch().name).not.toBe("scvI64");
