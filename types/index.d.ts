@@ -172,6 +172,10 @@ export class Keypair {
 export const LiquidityPoolFeeV18 = 30;
 
 export function getLiquidityPoolId(liquidityPoolType: LiquidityPoolType, liquidityPoolParameters: LiquidityPoolParameters): Buffer;
+export function getClaimableBalanceIdFromResult(
+  transactionResult: string | Buffer | xdr.TransactionResult,
+  opIndex?: number,
+): string;
 
 export namespace LiquidityPoolParameters {
   interface ConstantProduct {

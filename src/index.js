@@ -10,6 +10,7 @@ export {
   getLiquidityPoolId,
   LiquidityPoolFeeV18
 } from './get_liquidity_pool_id';
+export { getClaimableBalanceIdFromResult } from './get_claimable_balance_id';
 export { Keypair } from './keypair';
 export { UnsignedHyper, Hyper } from '@stellar/js-xdr';
 export { TransactionBase } from './transaction_base';
