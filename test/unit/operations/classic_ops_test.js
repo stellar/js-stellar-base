@@ -438,6 +438,22 @@ describe('Operation', function () {
         /destMin argument must be of type String/
       );
     });
+
+    it('fails to create path payment operation when destMin exceeds MAX_INT64', function () {
+      const opts = {
+        destination: 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ',
+        sendAmount: '20',
+        destMin: '922337203685.4775808',
+        sendAsset: StellarBase.Asset.native(),
+        destAsset: new StellarBase.Asset(
+          'USD',
+          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        )
+      };
+      expect(() => StellarBase.Operation.pathPaymentStrictSend(opts)).to.throw(
+        /destMin argument.*maximum 64-bit signed integer value/
+      );
+    });
   });
 
   describe('.changeTrust()', function () {

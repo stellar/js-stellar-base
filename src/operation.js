@@ -449,7 +449,7 @@ export class Operation {
   }
 
   static constructAmountRequirementsError(arg) {
-    return `${arg} argument must be of type String, represent a positive number and have at most 7 digits after the decimal`;
+    return `${arg} argument must be of type String, represent a positive number, have at most 7 digits after the decimal, and not exceed the maximum 64-bit signed integer value`;
   }
 
   /**
