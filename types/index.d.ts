@@ -263,7 +263,9 @@ export type AuthFlag =
   | AuthFlag.required
   | AuthFlag.immutable
   | AuthFlag.revocable
-  | AuthFlag.clawbackEnabled;
+  | AuthFlag.clawbackEnabled
+  | number;
+export type AuthFlagInput = AuthFlag | string;
 
 export namespace TrustLineFlag {
   type deauthorize = 0;
@@ -468,8 +470,8 @@ export namespace OperationOptions {
   }
   interface SetOptions<T extends SignerOptions = never> extends BaseOptions {
     inflationDest?: string;
-    clearFlags?: AuthFlag;
-    setFlags?: AuthFlag;
+    clearFlags?: AuthFlagInput;
+    setFlags?: AuthFlagInput;
     masterWeight?: number | string;
     lowThreshold?: number | string;
     medThreshold?: number | string;

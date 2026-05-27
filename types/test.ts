@@ -136,8 +136,8 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
     })
   ).addOperationAt(
     StellarSdk.Operation.setOptions({
-      setFlags:   (StellarSdk.AuthImmutableFlag | StellarSdk.AuthRequiredFlag) as StellarSdk.AuthFlag,
-      clearFlags: (StellarSdk.AuthRevocableFlag | StellarSdk.AuthClawbackEnabledFlag) as StellarSdk.AuthFlag,
+      setFlags:   StellarSdk.AuthImmutableFlag | StellarSdk.AuthRequiredFlag,
+      clearFlags: StellarSdk.AuthRevocableFlag | StellarSdk.AuthClawbackEnabledFlag,
     }),
     0
   ).clearOperationAt(2
@@ -152,6 +152,12 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
 
 const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>
+
+const stringFlagSetOptions = StellarSdk.Operation.setOptions({
+  clearFlags: "4",
+  setFlags: "8",
+});
+stringFlagSetOptions.toXDR("hex");
 
 transactionFromXDR.networkPassphrase; // $ExpectType string
 transactionFromXDR.networkPassphrase = "SDF";
