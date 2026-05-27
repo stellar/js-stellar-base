@@ -363,6 +363,13 @@ export namespace OperationType {
   type BeginSponsoringFutureReserves = 'beginSponsoringFutureReserves';
   type EndSponsoringFutureReserves = 'endSponsoringFutureReserves';
   type RevokeSponsorship = 'revokeSponsorship';
+  type RevokeAccountSponsorship = 'revokeAccountSponsorship';
+  type RevokeTrustlineSponsorship = 'revokeTrustlineSponsorship';
+  type RevokeOfferSponsorship = 'revokeOfferSponsorship';
+  type RevokeDataSponsorship = 'revokeDataSponsorship';
+  type RevokeClaimableBalanceSponsorship = 'revokeClaimableBalanceSponsorship';
+  type RevokeLiquidityPoolSponsorship = 'revokeLiquidityPoolSponsorship';
+  type RevokeSignerSponsorship = 'revokeSignerSponsorship';
   type Clawback = 'clawback';
   type ClawbackClaimableBalance = 'clawbackClaimableBalance';
   type SetTrustLineFlags = 'setTrustLineFlags';
@@ -392,6 +399,13 @@ export type OperationType =
   | OperationType.BeginSponsoringFutureReserves
   | OperationType.EndSponsoringFutureReserves
   | OperationType.RevokeSponsorship
+  | OperationType.RevokeAccountSponsorship
+  | OperationType.RevokeTrustlineSponsorship
+  | OperationType.RevokeOfferSponsorship
+  | OperationType.RevokeDataSponsorship
+  | OperationType.RevokeClaimableBalanceSponsorship
+  | OperationType.RevokeLiquidityPoolSponsorship
+  | OperationType.RevokeSignerSponsorship
   | OperationType.Clawback
   | OperationType.ClawbackClaimableBalance
   | OperationType.SetTrustLineFlags
@@ -793,14 +807,14 @@ export namespace Operation {
     options: OperationOptions.BaseOptions
   ): xdr.Operation<EndSponsoringFutureReserves>;
 
-  interface RevokeAccountSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeAccountSponsorship extends BaseOperation<OperationType.RevokeAccountSponsorship> {
     account: string;
   }
   function revokeAccountSponsorship(
     options: OperationOptions.RevokeAccountSponsorship
   ): xdr.Operation<RevokeAccountSponsorship>;
 
-  interface RevokeTrustlineSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeTrustlineSponsorship extends BaseOperation<OperationType.RevokeTrustlineSponsorship> {
     account: string;
     asset: Asset | LiquidityPoolId;
   }
@@ -808,7 +822,7 @@ export namespace Operation {
     options: OperationOptions.RevokeTrustlineSponsorship
   ): xdr.Operation<RevokeTrustlineSponsorship>;
 
-  interface RevokeOfferSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeOfferSponsorship extends BaseOperation<OperationType.RevokeOfferSponsorship> {
     seller: string;
     offerId: string;
   }
@@ -816,7 +830,7 @@ export namespace Operation {
     options: OperationOptions.RevokeOfferSponsorship
   ): xdr.Operation<RevokeOfferSponsorship>;
 
-  interface RevokeDataSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeDataSponsorship extends BaseOperation<OperationType.RevokeDataSponsorship> {
     account: string;
     name: string;
   }
@@ -824,21 +838,21 @@ export namespace Operation {
     options: OperationOptions.RevokeDataSponsorship
   ): xdr.Operation<RevokeDataSponsorship>;
 
-  interface RevokeClaimableBalanceSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeClaimableBalanceSponsorship extends BaseOperation<OperationType.RevokeClaimableBalanceSponsorship> {
     balanceId: string;
   }
   function revokeClaimableBalanceSponsorship(
     options: OperationOptions.RevokeClaimableBalanceSponsorship
   ): xdr.Operation<RevokeClaimableBalanceSponsorship>;
 
-  interface RevokeLiquidityPoolSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeLiquidityPoolSponsorship extends BaseOperation<OperationType.RevokeLiquidityPoolSponsorship> {
     liquidityPoolId: string;
   }
   function revokeLiquidityPoolSponsorship(
     options: OperationOptions.RevokeLiquidityPoolSponsorship
   ): xdr.Operation<RevokeLiquidityPoolSponsorship>;
 
-  interface RevokeSignerSponsorship extends BaseOperation<OperationType.RevokeSponsorship> {
+  interface RevokeSignerSponsorship extends BaseOperation<OperationType.RevokeSignerSponsorship> {
     account: string;
     signer: SignerKeyOptions;
   }

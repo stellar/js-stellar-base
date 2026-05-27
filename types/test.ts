@@ -151,6 +151,61 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
   .setExtraSigners([sourceKey.publicKey()])
   .build(); // $ExpectType () => Transaction<Memo<MemoType>, Operation[]>
 
+const revokeAccountSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeAccountSponsorship({
+    account: account.accountId(),
+  })
+);
+revokeAccountSponsorship.type; // $ExpectType "revokeAccountSponsorship"
+
+const revokeTrustlineSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeTrustlineSponsorship({
+    account: account.accountId(),
+    asset: usd,
+  })
+);
+revokeTrustlineSponsorship.type; // $ExpectType "revokeTrustlineSponsorship"
+
+const revokeOfferSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeOfferSponsorship({
+    seller: account.accountId(),
+    offerId: "12345",
+  })
+);
+revokeOfferSponsorship.type; // $ExpectType "revokeOfferSponsorship"
+
+const revokeDataSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeDataSponsorship({
+    account: account.accountId(),
+    name: "foo",
+  })
+);
+revokeDataSponsorship.type; // $ExpectType "revokeDataSponsorship"
+
+const revokeClaimableBalanceSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeClaimableBalanceSponsorship({
+    balanceId: "00000000da0d57da7d4850e7fc10d2a9d0ebc731f7afb40574c03395b17d49149b91f5be",
+  })
+);
+revokeClaimableBalanceSponsorship.type; // $ExpectType "revokeClaimableBalanceSponsorship"
+
+const revokeLiquidityPoolSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeLiquidityPoolSponsorship({
+    liquidityPoolId: "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7",
+  })
+);
+revokeLiquidityPoolSponsorship.type; // $ExpectType "revokeLiquidityPoolSponsorship"
+
+const revokeSignerSponsorship = StellarSdk.Operation.fromXDRObject(
+  StellarSdk.Operation.revokeSignerSponsorship({
+    account: account.accountId(),
+    signer: {
+      ed25519PublicKey: sourceKey.publicKey()
+    }
+  })
+);
+revokeSignerSponsorship.type; // $ExpectType "revokeSignerSponsorship"
+
 const transactionFromXDR = new StellarSdk.Transaction(transaction.toEnvelope(), StellarSdk.Networks.TESTNET); // $ExpectType Transaction<Memo<MemoType>, Operation[]>
 
 transactionFromXDR.networkPassphrase; // $ExpectType string
