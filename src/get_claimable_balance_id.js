@@ -46,7 +46,8 @@ function getOperationResults(transactionResult) {
  * @export
  * @param {string|Buffer|xdr.TransactionResult} transactionResult - The transaction
  * result XDR as base64, raw Buffer, or XDR object.
- * @param {number} opIndex - The operation index containing createClaimableBalance.
+ * @param {number} [opIndex=0] - The operation index containing
+ * createClaimableBalance. Defaults to the first operation result.
  *
  * @return {string} the claimable balance ID as a hex string.
  */
@@ -55,7 +56,7 @@ export function getClaimableBalanceIdFromResult(
   opIndex = 0
 ) {
   if (!Number.isInteger(opIndex) || opIndex < 0) {
-    throw new RangeError('invalid operation index');
+    throw new RangeError(`invalid operation index: ${opIndex}`);
   }
 
   const operationResults = getOperationResults(
@@ -63,7 +64,11 @@ export function getClaimableBalanceIdFromResult(
   );
 
   if (opIndex >= operationResults.length) {
-    throw new RangeError('invalid operation index');
+    throw new RangeError(
+      `invalid operation index: ${opIndex}; valid range is 0..${
+        operationResults.length - 1
+      }`
+    );
   }
 
   const operationResult = operationResults[opIndex];

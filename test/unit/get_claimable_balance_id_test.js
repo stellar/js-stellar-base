@@ -94,4 +94,15 @@ describe('StellarBase#getClaimableBalanceIdFromResult()', function () {
       StellarBase.getClaimableBalanceIdFromResult(transactionResult, 1)
     ).to.throw(/operation index/);
   });
+
+  it('throws when the transaction result is not successful', function () {
+    const { operationResult } = buildClaimableBalanceResult();
+    const transactionResult = buildTransactionResult(
+      StellarBase.xdr.TransactionResultResult.txFailed([operationResult])
+    );
+
+    expect(() =>
+      StellarBase.getClaimableBalanceIdFromResult(transactionResult)
+    ).to.throw(/txFailed/);
+  });
 });
