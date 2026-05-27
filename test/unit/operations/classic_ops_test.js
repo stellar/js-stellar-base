@@ -2256,6 +2256,32 @@ describe('Operation', function () {
       expect(obj.type).to.be.equal('revokeSignerSponsorship');
       expect(obj.account).to.be.equal(account);
       expect(obj.signer.sha256Hash).to.be.equal(signer.sha256Hash);
+
+      // ed25519SignedPayload signer
+      const signedPayload = new StellarBase.xdr.SignerKeyEd25519SignedPayload({
+        ed25519: StellarBase.StrKey.decodeEd25519PublicKey(account),
+        payload: Buffer.from('test')
+      });
+      const xdrSignerKey =
+        StellarBase.xdr.SignerKey.signerKeyTypeEd25519SignedPayload(
+          signedPayload
+        );
+      signer = {
+        ed25519SignedPayload: StellarBase.SignerKey.encodeSignerKey(
+          xdrSignerKey
+        )
+      };
+      op = StellarBase.Operation.revokeSignerSponsorship({
+        account,
+        signer
+      });
+      operation = StellarBase.xdr.Operation.fromXDR(op.toXDR('hex'), 'hex');
+      obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(obj.type).to.be.equal('revokeSignerSponsorship');
+      expect(obj.account).to.be.equal(account);
+      expect(obj.signer.ed25519SignedPayload).to.be.equal(
+        signer.ed25519SignedPayload
+      );
     });
     it('throws an error when account is invalid', function () {
       const signer = {
