@@ -102,3 +102,12 @@ reset-xdr:
 	rm -f types/curr.d.ts
 	rm -f types/next.d.ts
 	$(MAKE) generate
+
+# Post-process: inject `var NAME = VALUE;` declarations for every `xdr.const("NAME", VALUE)`.
+# The xdrgen master branch JS output no longer emits these explicit declarations,
+# but the released @stellar/js-xdr's TypeBuilder.const() does NOT inject into
+# the calling scope — so bare identifiers like `xdr.string(SCSYMBOL_LIMIT)`
+# would fail with ReferenceError at runtime. This restores the released v15.0.0
+# behavior until xdrgen/js-xdr are aligned.
+post-process-generated: src/generated/curr_generated.js src/generated/next_generated.js
+	python3 -c 'import re,pathlib\nfor f in ["src/generated/curr_generated.js","src/generated/next_generated.js"]:\n p=pathlib.Path(f)\n s=p.read_text()\n if "var SCSYMBOL_LIMIT" in s: continue\n consts=re.findall(r"xdr\\.const\\(\"([A-Z0-9_]+)\",\\s*(0x[0-9a-fA-F]+|\\d+)\\);",s)\n decls="\\n".join(f"var {n} = {v};" for n,v in consts)\n s=re.sub(r"(XDR\\.config\\(\\s*(?:xdr\\s*=>|function ?\\(xdr\\))\\s*\\{)",r"\\1\\n"+decls+"\\n",s,count=1)\n p.write_text(s)'

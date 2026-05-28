@@ -8,6 +8,24 @@ import * as XDR from '@stellar/js-xdr';
 
 
 var types = XDR.config(xdr => {
+var MASK_ACCOUNT_FLAGS = 0x7;
+var MASK_ACCOUNT_FLAGS_V17 = 0xF;
+var MAX_SIGNERS = 20;
+var MASK_TRUSTLINE_FLAGS = 1;
+var MASK_TRUSTLINE_FLAGS_V13 = 3;
+var MASK_TRUSTLINE_FLAGS_V17 = 7;
+var MASK_OFFERENTRY_FLAGS = 1;
+var MASK_CLAIMABLE_BALANCE_FLAGS = 0x1;
+var MASK_LEDGER_HEADER_FLAGS = 0x7;
+var AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED = 200;
+var TX_ADVERT_VECTOR_MAX_SIZE = 1000;
+var TX_DEMAND_VECTOR_MAX_SIZE = 1000;
+var MAX_OPS_PER_TX = 100;
+var LIQUIDITY_POOL_FEE_V18 = 30;
+var SCSYMBOL_LIMIT = 32;
+var SC_SPEC_DOC_LIMIT = 1024;
+var CONTRACT_COST_COUNT_LIMIT = 1024;
+
 
 // === xdr source ============================================================
 //
