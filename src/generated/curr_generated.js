@@ -8,6 +8,23 @@ import * as XDR from '@stellar/js-xdr';
 
 
 var types = XDR.config(xdr => {
+
+// Workaround for https://github.com/stellar/xdrgen/issues/152
+//
+// The "correct" way would be to replace bare instances of each constant with
+// xdr.lookup("..."), but that's more error-prone.
+const SCSYMBOL_LIMIT = 32;
+const SC_SPEC_DOC_LIMIT = 1024;
+
+
+// Workaround for https://github.com/stellar/xdrgen/issues/152
+//
+// The "correct" way would be to replace bare instances of each constant with
+// xdr.lookup("..."), but that's more error-prone.
+const SCSYMBOL_LIMIT = 32;
+const SC_SPEC_DOC_LIMIT = 1024;
+
+
 // === xdr source ============================================================
 //
 //   typedef opaque Value<>;
@@ -524,21 +541,21 @@ xdr.enum("AccountFlags", {
 
 // === xdr source ============================================================
 //
-//   const 0x7 = 0x7;
+//   const MASK_ACCOUNT_FLAGS = 0x7;
 //
 // ===========================================================================
 xdr.const("MASK_ACCOUNT_FLAGS", 0x7);
 
 // === xdr source ============================================================
 //
-//   const 0xF = 0xF;
+//   const MASK_ACCOUNT_FLAGS_V17 = 0xF;
 //
 // ===========================================================================
 xdr.const("MASK_ACCOUNT_FLAGS_V17", 0xF);
 
 // === xdr source ============================================================
 //
-//   const 20 = 20;
+//   const MAX_SIGNERS = 20;
 //
 // ===========================================================================
 xdr.const("MAX_SIGNERS", 20);
@@ -601,7 +618,7 @@ xdr.union("AccountEntryExtensionV2Ext", {
 //   {
 //       uint32 numSponsored;
 //       uint32 numSponsoring;
-//       SponsorshipDescriptor signerSponsoringIDs<20>;
+//       SponsorshipDescriptor signerSponsoringIDs<MAX_SIGNERS>;
 //   
 //       union switch (int v)
 //       {
@@ -707,7 +724,7 @@ xdr.union("AccountEntryExt", {
 //       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 //       Thresholds thresholds;
 //   
-//       Signer signers<20>; // possible signers for this account
+//       Signer signers<MAX_SIGNERS>; // possible signers for this account
 //   
 //       // reserved for future use
 //       union switch (int v)
@@ -757,21 +774,21 @@ xdr.enum("TrustLineFlags", {
 
 // === xdr source ============================================================
 //
-//   const 1 = 1;
+//   const MASK_TRUSTLINE_FLAGS = 1;
 //
 // ===========================================================================
 xdr.const("MASK_TRUSTLINE_FLAGS", 1);
 
 // === xdr source ============================================================
 //
-//   const 3 = 3;
+//   const MASK_TRUSTLINE_FLAGS_V13 = 3;
 //
 // ===========================================================================
 xdr.const("MASK_TRUSTLINE_FLAGS_V13", 3);
 
 // === xdr source ============================================================
 //
-//   const 7 = 7;
+//   const MASK_TRUSTLINE_FLAGS_V17 = 7;
 //
 // ===========================================================================
 xdr.const("MASK_TRUSTLINE_FLAGS_V17", 7);
@@ -1004,7 +1021,7 @@ xdr.enum("OfferEntryFlags", {
 
 // === xdr source ============================================================
 //
-//   const 1 = 1;
+//   const MASK_OFFERENTRY_FLAGS = 1;
 //
 // ===========================================================================
 xdr.const("MASK_OFFERENTRY_FLAGS", 1);
@@ -1239,7 +1256,7 @@ xdr.enum("ClaimableBalanceFlags", {
 
 // === xdr source ============================================================
 //
-//   const 0x1 = 0x1;
+//   const MASK_CLAIMABLE_BALANCE_FLAGS = 0x1;
 //
 // ===========================================================================
 xdr.const("MASK_CLAIMABLE_BALANCE_FLAGS", 0x1);
@@ -2302,7 +2319,7 @@ xdr.struct("StellarValue", [
 
 // === xdr source ============================================================
 //
-//   const 0x7 = 0x7;
+//   const MASK_LEDGER_HEADER_FLAGS = 0x7;
 //
 // ===========================================================================
 xdr.const("MASK_LEDGER_HEADER_FLAGS", 0x7);
@@ -3708,7 +3725,7 @@ xdr.struct("Hello", [
 
 // === xdr source ============================================================
 //
-//   const 200 = 200;
+//   const AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED = 200;
 //
 // ===========================================================================
 xdr.const("AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED", 200);
@@ -4194,14 +4211,14 @@ xdr.union("SurveyResponseBody", {
 
 // === xdr source ============================================================
 //
-//   const 1000 = 1000;
+//   const TX_ADVERT_VECTOR_MAX_SIZE = 1000;
 //
 // ===========================================================================
 xdr.const("TX_ADVERT_VECTOR_MAX_SIZE", 1000);
 
 // === xdr source ============================================================
 //
-//   typedef Hash TxAdvertVector<1000>;
+//   typedef Hash TxAdvertVector<TX_ADVERT_VECTOR_MAX_SIZE>;
 //
 // ===========================================================================
 xdr.typedef("TxAdvertVector", xdr.varArray(xdr.lookup("Hash"), xdr.lookup("TX_ADVERT_VECTOR_MAX_SIZE")));
@@ -4220,14 +4237,14 @@ xdr.struct("FloodAdvert", [
 
 // === xdr source ============================================================
 //
-//   const 1000 = 1000;
+//   const TX_DEMAND_VECTOR_MAX_SIZE = 1000;
 //
 // ===========================================================================
 xdr.const("TX_DEMAND_VECTOR_MAX_SIZE", 1000);
 
 // === xdr source ============================================================
 //
-//   typedef Hash TxDemandVector<1000>;
+//   typedef Hash TxDemandVector<TX_DEMAND_VECTOR_MAX_SIZE>;
 //
 // ===========================================================================
 xdr.typedef("TxDemandVector", xdr.varArray(xdr.lookup("Hash"), xdr.lookup("TX_DEMAND_VECTOR_MAX_SIZE")));
@@ -4398,7 +4415,7 @@ xdr.union("AuthenticatedMessage", {
 
 // === xdr source ============================================================
 //
-//   const 100 = 100;
+//   const MAX_OPS_PER_TX = 100;
 //
 // ===========================================================================
 xdr.const("MAX_OPS_PER_TX", 100);
@@ -4964,7 +4981,7 @@ xdr.struct("SetTrustLineFlagsOp", [
 
 // === xdr source ============================================================
 //
-//   const 30 = 30;
+//   const LIQUIDITY_POOL_FEE_V18 = 30;
 //
 // ===========================================================================
 xdr.const("LIQUIDITY_POOL_FEE_V18", 30);
@@ -6040,7 +6057,7 @@ xdr.union("TransactionV0Ext", {
 //       SequenceNumber seqNum;
 //       TimeBounds* timeBounds;
 //       Memo memo;
-//       Operation operations<100>;
+//       Operation operations<MAX_OPS_PER_TX>;
 //       union switch (int v)
 //       {
 //       case 0:
@@ -6117,7 +6134,7 @@ xdr.union("TransactionExt", {
 //   
 //       Memo memo;
 //   
-//       Operation operations<100>;
+//       Operation operations<MAX_OPS_PER_TX>;
 //   
 //       union switch (int v)
 //       {
@@ -9456,7 +9473,7 @@ xdr.union("ScAddress", {
 
 // === xdr source ============================================================
 //
-//   const 32 = 32;
+//   const SCSYMBOL_LIMIT = 32;
 //
 // ===========================================================================
 xdr.const("SCSYMBOL_LIMIT", 32);
@@ -9491,10 +9508,10 @@ xdr.typedef("ScString", xdr.string());
 
 // === xdr source ============================================================
 //
-//   typedef string SCSymbol<32>;
+//   typedef string SCSymbol<SCSYMBOL_LIMIT>;
 //
 // ===========================================================================
-xdr.typedef("ScSymbol", xdr.string(32));
+xdr.typedef("ScSymbol", xdr.string(SCSYMBOL_LIMIT));
 
 // === xdr source ============================================================
 //
@@ -9745,7 +9762,7 @@ xdr.union("ScMetaEntry", {
 
 // === xdr source ============================================================
 //
-//   const 1024 = 1024;
+//   const SC_SPEC_DOC_LIMIT = 1024;
 //
 // ===========================================================================
 xdr.const("SC_SPEC_DOC_LIMIT", 1024);
@@ -9993,14 +10010,14 @@ xdr.union("ScSpecTypeDef", {
 //
 //   struct SCSpecUDTStructFieldV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<30>;
 //       SCSpecTypeDef type;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtStructFieldV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(30)],
   ["type", xdr.lookup("ScSpecTypeDef")],
 ]);
@@ -10009,7 +10026,7 @@ xdr.struct("ScSpecUdtStructFieldV0", [
 //
 //   struct SCSpecUDTStructV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTStructFieldV0 fields<>;
@@ -10017,7 +10034,7 @@ xdr.struct("ScSpecUdtStructFieldV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtStructV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["fields", xdr.varArray(xdr.lookup("ScSpecUdtStructFieldV0"), 2147483647)],
@@ -10027,13 +10044,13 @@ xdr.struct("ScSpecUdtStructV0", [
 //
 //   struct SCSpecUDTUnionCaseVoidV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtUnionCaseVoidV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
 ]);
 
@@ -10041,14 +10058,14 @@ xdr.struct("ScSpecUdtUnionCaseVoidV0", [
 //
 //   struct SCSpecUDTUnionCaseTupleV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
 //       SCSpecTypeDef type<>;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtUnionCaseTupleV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
   ["type", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 2147483647)],
 ]);
@@ -10095,7 +10112,7 @@ xdr.union("ScSpecUdtUnionCaseV0", {
 //
 //   struct SCSpecUDTUnionV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTUnionCaseV0 cases<>;
@@ -10103,7 +10120,7 @@ xdr.union("ScSpecUdtUnionCaseV0", {
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtUnionV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["cases", xdr.varArray(xdr.lookup("ScSpecUdtUnionCaseV0"), 2147483647)],
@@ -10113,14 +10130,14 @@ xdr.struct("ScSpecUdtUnionV0", [
 //
 //   struct SCSpecUDTEnumCaseV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
 //       uint32 value;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtEnumCaseV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
   ["value", xdr.lookup("Uint32")],
 ]);
@@ -10129,7 +10146,7 @@ xdr.struct("ScSpecUdtEnumCaseV0", [
 //
 //   struct SCSpecUDTEnumV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTEnumCaseV0 cases<>;
@@ -10137,7 +10154,7 @@ xdr.struct("ScSpecUdtEnumCaseV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtEnumV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["cases", xdr.varArray(xdr.lookup("ScSpecUdtEnumCaseV0"), 2147483647)],
@@ -10147,14 +10164,14 @@ xdr.struct("ScSpecUdtEnumV0", [
 //
 //   struct SCSpecUDTErrorEnumCaseV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<60>;
 //       uint32 value;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtErrorEnumCaseV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(60)],
   ["value", xdr.lookup("Uint32")],
 ]);
@@ -10163,7 +10180,7 @@ xdr.struct("ScSpecUdtErrorEnumCaseV0", [
 //
 //   struct SCSpecUDTErrorEnumV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       string name<60>;
 //       SCSpecUDTErrorEnumCaseV0 cases<>;
@@ -10171,7 +10188,7 @@ xdr.struct("ScSpecUdtErrorEnumCaseV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecUdtErrorEnumV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.string(60)],
   ["cases", xdr.varArray(xdr.lookup("ScSpecUdtErrorEnumCaseV0"), 2147483647)],
@@ -10181,14 +10198,14 @@ xdr.struct("ScSpecUdtErrorEnumV0", [
 //
 //   struct SCSpecFunctionInputV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<30>;
 //       SCSpecTypeDef type;
 //   };
 //
 // ===========================================================================
 xdr.struct("ScSpecFunctionInputV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(30)],
   ["type", xdr.lookup("ScSpecTypeDef")],
 ]);
@@ -10197,7 +10214,7 @@ xdr.struct("ScSpecFunctionInputV0", [
 //
 //   struct SCSpecFunctionV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       SCSymbol name;
 //       SCSpecFunctionInputV0 inputs<>;
 //       SCSpecTypeDef outputs<1>;
@@ -10205,7 +10222,7 @@ xdr.struct("ScSpecFunctionInputV0", [
 //
 // ===========================================================================
 xdr.struct("ScSpecFunctionV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.lookup("ScSymbol")],
   ["inputs", xdr.varArray(xdr.lookup("ScSpecFunctionInputV0"), 2147483647)],
   ["outputs", xdr.varArray(xdr.lookup("ScSpecTypeDef"), 1)],
@@ -10229,7 +10246,7 @@ xdr.enum("ScSpecEventParamLocationV0", {
 //
 //   struct SCSpecEventParamV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string name<30>;
 //       SCSpecTypeDef type;
 //       SCSpecEventParamLocationV0 location;
@@ -10237,7 +10254,7 @@ xdr.enum("ScSpecEventParamLocationV0", {
 //
 // ===========================================================================
 xdr.struct("ScSpecEventParamV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["name", xdr.string(30)],
   ["type", xdr.lookup("ScSpecTypeDef")],
   ["location", xdr.lookup("ScSpecEventParamLocationV0")],
@@ -10263,7 +10280,7 @@ xdr.enum("ScSpecEventDataFormat", {
 //
 //   struct SCSpecEventV0
 //   {
-//       string doc<1024>;
+//       string doc<SC_SPEC_DOC_LIMIT>;
 //       string lib<80>;
 //       SCSymbol name;
 //       SCSymbol prefixTopics<2>;
@@ -10273,7 +10290,7 @@ xdr.enum("ScSpecEventDataFormat", {
 //
 // ===========================================================================
 xdr.struct("ScSpecEventV0", [
-  ["doc", xdr.string(1024)],
+  ["doc", xdr.string(SC_SPEC_DOC_LIMIT)],
   ["lib", xdr.string(80)],
   ["name", xdr.lookup("ScSymbol")],
   ["prefixTopics", xdr.varArray(xdr.lookup("ScSymbol"), 2)],
@@ -10946,14 +10963,14 @@ xdr.struct("FreezeBypassTxsDelta", [
 
 // === xdr source ============================================================
 //
-//   const 1024 = 1024;
+//   const CONTRACT_COST_COUNT_LIMIT = 1024;
 //
 // ===========================================================================
 xdr.const("CONTRACT_COST_COUNT_LIMIT", 1024);
 
 // === xdr source ============================================================
 //
-//   typedef ContractCostParamEntry ContractCostParams<1024>;
+//   typedef ContractCostParamEntry ContractCostParams<CONTRACT_COST_COUNT_LIMIT>;
 //
 // ===========================================================================
 xdr.typedef("ContractCostParams", xdr.varArray(xdr.lookup("ContractCostParamEntry"), xdr.lookup("CONTRACT_COST_COUNT_LIMIT")));
