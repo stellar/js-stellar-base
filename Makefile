@@ -110,4 +110,4 @@ reset-xdr:
 # would fail with ReferenceError at runtime. This restores the released v15.0.0
 # behavior until xdrgen/js-xdr are aligned.
 post-process-generated: src/generated/curr_generated.js src/generated/next_generated.js
-	python3 -c 'import re,pathlib\nfor f in ["src/generated/curr_generated.js","src/generated/next_generated.js"]:\n p=pathlib.Path(f)\n s=p.read_text()\n if "var SCSYMBOL_LIMIT" in s: continue\n consts=re.findall(r"xdr\\.const\\(\"([A-Z0-9_]+)\",\\s*(0x[0-9a-fA-F]+|\\d+)\\);",s)\n decls="\\n".join(f"var {n} = {v};" for n,v in consts)\n s=re.sub(r"(XDR\\.config\\(\\s*(?:xdr\\s*=>|function ?\\(xdr\\))\\s*\\{)",r"\\1\\n"+decls+"\\n",s,count=1)\n p.write_text(s)'
+	python3 scripts/post-process-generated.py
