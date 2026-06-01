@@ -1216,8 +1216,35 @@ describe('Operation', function () {
         '31234560'
       );
       expect(obj.buyAmount).to.be.equal(opts.buyAmount);
+      expect(obj.amount).to.be.equal(opts.buyAmount);
       expect(obj.price).to.be.equal(opts.price);
       expect(obj.offerId).to.be.equal(opts.offerId);
+    });
+
+    it('creates a manageBuyOfferOp with amount alias', function () {
+      var opts = {};
+      opts.selling = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      opts.buying = new StellarBase.Asset(
+        'USD',
+        'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+      );
+      opts.amount = '4.2500000';
+      opts.price = '8.141592';
+      opts.offerId = '1';
+      let op = StellarBase.Operation.manageBuyOffer(opts);
+      var xdr = op.toXDR('hex');
+      var operation = StellarBase.xdr.Operation.fromXDR(
+        Buffer.from(xdr, 'hex')
+      );
+      var obj = StellarBase.Operation.fromXDRObject(operation);
+      expect(operation.body().value().buyAmount().toString()).to.be.equal(
+        '42500000'
+      );
+      expect(obj.buyAmount).to.be.equal(opts.amount);
+      expect(obj.amount).to.be.equal(opts.amount);
     });
 
     it('creates a manageBuyOfferOp (price fraction)', function () {
@@ -1386,6 +1413,24 @@ describe('Operation', function () {
       };
       expect(() => StellarBase.Operation.manageBuyOffer(opts)).to.throw(
         /buyAmount argument must be of type String/
+      );
+    });
+
+    it('fails to create manageBuyOffer operation with an invalid amount alias', function () {
+      let opts = {
+        amount: 20,
+        price: '10',
+        selling: new StellarBase.Asset(
+          'USD',
+          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        ),
+        buying: new StellarBase.Asset(
+          'USD',
+          'GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7'
+        )
+      };
+      expect(() => StellarBase.Operation.manageBuyOffer(opts)).to.throw(
+        /amount argument must be of type String/
       );
     });
 

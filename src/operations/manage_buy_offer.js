@@ -9,6 +9,7 @@ import xdr from '../xdr';
  * @param {Asset} opts.selling - What you're selling.
  * @param {Asset} opts.buying - What you're buying.
  * @param {string} opts.buyAmount - The total amount you're buying. If 0, deletes the offer.
+ * @param {string} opts.amount - Alias for `buyAmount`.
  * @param {number|string|BigNumber|Object} opts.price - Price of 1 unit of `buying` in terms of `selling`.
  * @param {number} opts.price.n - If `opts.price` is an object: the price numerator
  * @param {number} opts.price.d - If `opts.price` is an object: the price denominator
@@ -21,10 +22,12 @@ export function manageBuyOffer(opts) {
   const attributes = {};
   attributes.selling = opts.selling.toXDRObject();
   attributes.buying = opts.buying.toXDRObject();
-  if (!this.isValidAmount(opts.buyAmount, true)) {
-    throw new TypeError(this.constructAmountRequirementsError('buyAmount'));
+  const buyAmount = opts.buyAmount !== undefined ? opts.buyAmount : opts.amount;
+  const amountArg = opts.buyAmount !== undefined ? 'buyAmount' : 'amount';
+  if (!this.isValidAmount(buyAmount, true)) {
+    throw new TypeError(this.constructAmountRequirementsError(amountArg));
   }
-  attributes.buyAmount = this._toXDRAmount(opts.buyAmount);
+  attributes.buyAmount = this._toXDRAmount(buyAmount);
   if (opts.price === undefined) {
     throw new TypeError('price argument is required');
   }

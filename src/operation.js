@@ -253,6 +253,7 @@ export class Operation {
         result.selling = Asset.fromOperation(attrs.selling());
         result.buying = Asset.fromOperation(attrs.buying());
         result.buyAmount = this._fromXDRAmount(attrs.buyAmount());
+        result.amount = result.buyAmount;
         result.price = this._fromXDRPrice(attrs.price());
         result.offerId = attrs.offerId().toString();
         break;

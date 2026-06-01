@@ -430,13 +430,17 @@ export namespace OperationOptions {
   interface ManageSellOffer extends CreatePassiveSellOffer {
     offerId?: number | string;
   }
-  interface ManageBuyOffer extends BaseOptions {
+  interface ManageBuyOfferBase extends BaseOptions {
     selling: Asset;
     buying: Asset;
-    buyAmount: string;
     price: number | string | object /* bignumber.js */;
     offerId?: number | string;
   }
+  type ManageBuyOffer = ManageBuyOfferBase &
+    (
+      | { buyAmount: string; amount?: string }
+      | { amount: string; buyAmount?: string }
+    );
   // tslint:disable-next-line
   interface Inflation extends BaseOptions {
     // tslint:disable-line
@@ -693,6 +697,7 @@ export namespace Operation {
     selling: Asset;
     buying: Asset;
     buyAmount: string;
+    amount: string;
     price: string;
     offerId: string;
   }

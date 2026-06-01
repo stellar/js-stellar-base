@@ -27,6 +27,13 @@ const transaction = new StellarSdk.TransactionBuilder(account, {
       asset: usd,
     })
   ).addOperation(
+    StellarSdk.Operation.manageBuyOffer({
+      selling: StellarSdk.Asset.native(),
+      buying: usd,
+      amount: "100",
+      price: "0.25",
+    })
+  ).addOperation(
     StellarSdk.Operation.createClaimableBalance({
       amount: "10",
       asset: StellarSdk.Asset.native(),
