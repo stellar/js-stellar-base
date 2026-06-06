@@ -302,7 +302,7 @@ function isValid(versionByteName, encoded) {
       break;
 
     case 'claimableBalance':
-      if (encoded.length !== 58) {
+      if (encoded.length !== 56 && encoded.length !== 58) {
         return false;
       }
       break;
@@ -341,7 +341,10 @@ function isValid(versionByteName, encoded) {
       return decoded.length === 32;
 
     case 'claimableBalance':
-      return decoded.length === 32 + 1; // +1 byte for discriminant
+      return (
+        decoded.length === 32 ||
+        (decoded.length === 32 + 1 && decoded[0] === 0)
+      );
 
     case 'med25519PublicKey':
       return decoded.length === 40; // +8 bytes for the ID
