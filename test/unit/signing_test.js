@@ -30,6 +30,16 @@ describe('StellarBase#sign', function () {
     let actualSig = StellarBase.sign(data, secretKey).toString('hex');
     expect(actualSig).to.eql(expectedSig);
   });
+
+  it('can sign with a Keypair raw secret seed', function () {
+    let data = Buffer.from('hello world', 'utf8');
+    let keypair = StellarBase.Keypair.fromRawEd25519Seed(seed);
+    let actualSig = StellarBase.sign(data, keypair.rawSecretKey());
+
+    expect(actualSig.toString('hex')).to.eql(expectedSig);
+    expect(StellarBase.verify(data, actualSig, keypair.rawPublicKey())).to.be
+      .ok;
+  });
 });
 
 describe('StellarBase#verify', function () {

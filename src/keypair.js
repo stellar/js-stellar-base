@@ -191,7 +191,7 @@ export class Keypair {
   }
 
   /**
-   * Returns raw secret key.
+   * Returns the raw 32-byte secret seed.
    * @returns {Buffer}
    */
   rawSecretKey() {
