@@ -1,0 +1,19 @@
+name: npm deprecate
+
+on:
+  pull_request:
+
+jobs:
+  deprecate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Deprecate package on npm
+        run: npm deprecate "@stellar/stellar-base" "This package is now rolled into @stellar/stellar-sdk. Please use @stellar/stellar-sdk to continue receiving updates and support."
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
