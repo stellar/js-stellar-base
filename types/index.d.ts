@@ -17,12 +17,18 @@ export class Address {
   static fromString(address: string): Address;
   static account(buffer: Buffer): Address;
   static contract(buffer: Buffer): Address;
+  static muxedContract(
+    contractId: Buffer,
+    id: number | bigint | string | xdr.Uint64,
+  ): Address;
   static fromScVal(scVal: xdr.ScVal): Address;
   static fromScAddress(scAddress: xdr.ScAddress): Address;
   toString(): string;
   toScVal(): xdr.ScVal;
   toScAddress(): xdr.ScAddress;
   toBuffer(): Buffer;
+  contractId(): Buffer;
+  muxedId(): xdr.Uint64;
 }
 
 export class Contract {

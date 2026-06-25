@@ -6,9 +6,13 @@ import xdr from './xdr';
  *
  * `Address` represents a single address in the Stellar network that can be
  * inputted to or outputted by a smart contract. An address can represent an
- * account, muxed account, contract, claimable balance, or a liquidity pool
- * (the latter two can only be present as the *output* of Core in the form
- * of an event, never an input to a smart contract).
+ * account, muxed account, contract, muxed contract, claimable balance, or a
+ * liquidity pool (the latter two can only be present as the *output* of Core
+ * in the form of an event, never an input to a smart contract).
+ *
+ * Muxed-contract addresses (CAP-0084) have no canonical StrKey yet, so they
+ * cannot be constructed from a string; build them with
+ * {@link Address.muxedContract} or {@link Address.fromScAddress}.
  *
  * @constructor
  *
@@ -97,6 +101,31 @@ export class Address {
   }
 
   /**
+   * Creates a new muxed-contract Address object (CAP-0084).
+   *
+   * A muxed-contract address (`SC_ADDRESS_TYPE_MUXED_CONTRACT`) pairs a
+   * 32-byte contract ID with a `uint64` multiplexing ID. There is no canonical
+   * StrKey form for it yet, so unlike the other factories it does not route
+   * through the {@link Address} constructor and the resulting address cannot be
+   * parsed back out of a string. Round-trip it through {@link Address.fromScAddress}
+   * / {@link Address#toScAddress} instead; {@link Address#toString} renders the
+   * display-only form `<C-strkey>:<id>`.
+   *
+   * @param {Buffer} contractId - the raw 32 bytes of the contract ID
+   * @param {number|bigint|string|xdr.Uint64} id - the uint64 multiplexing ID;
+   *     pass a string or {@link xdr.Uint64} for values above
+   *     `Number.MAX_SAFE_INTEGER` to avoid precision loss
+   * @returns {Address}
+   */
+  static muxedContract(contractId, id) {
+    const address = Object.create(Address.prototype);
+    address._type = 'muxedContract';
+    address._key = Buffer.from(contractId);
+    address._muxId = id instanceof xdr.Uint64 ? id : new xdr.Uint64(id);
+    return address;
+  }
+
+  /**
    * Convert this from an xdr.ScVal type.
    *
    * @param {xdr.ScVal} scVal - The xdr.ScVal type to parse
@@ -133,6 +162,10 @@ export class Address {
       }
       case xdr.ScAddressType.scAddressTypeLiquidityPool().value:
         return Address.liquidityPool(scAddress.liquidityPoolId());
+      case xdr.ScAddressType.scAddressTypeMuxedContract().value: {
+        const muxed = scAddress.muxedContract();
+        return Address.muxedContract(muxed.contractId(), muxed.id());
+      }
       default:
         throw new Error(`Unsupported address type: ${scAddress.switch().name}`);
     }
@@ -155,6 +188,11 @@ export class Address {
         return StrKey.encodeLiquidityPool(this._key);
       case 'muxedAccount':
         return StrKey.encodeMed25519PublicKey(this._key);
+      case 'muxedContract':
+        // Display-only form `<C-strkey>:<id>`. This is NOT a canonical StrKey:
+        // the Address constructor cannot parse it back, so muxed-contract
+        // addresses round-trip via ScAddress/ScVal, not via this string.
+        return `${StrKey.encodeContract(this._key)}:${this._muxId.toString()}`;
       default:
         throw new Error('Unsupported address type');
     }
@@ -201,6 +239,14 @@ export class Address {
           })
         );
 
+      case 'muxedContract':
+        return xdr.ScAddress.scAddressTypeMuxedContract(
+          new xdr.MuxedContract({
+            id: this._muxId,
+            contractId: this._key
+          })
+        );
+
       default:
         throw new Error(`Unsupported address type: ${this._type}`);
     }
@@ -210,8 +256,41 @@ export class Address {
    * Return the raw public key bytes for this address.
    *
    * @returns {Buffer}
+   * @throws {Error} for muxed-contract addresses, which have no single-buffer
+   *     encoding (use {@link Address#contractId} / {@link Address#muxedId})
    */
   toBuffer() {
+    if (this._type === 'muxedContract') {
+      throw new Error('toBuffer is not supported for muxed-contract addresses');
+    }
     return this._key;
+  }
+
+  /**
+   * For a muxed-contract address, returns the raw 32-byte contract ID.
+   *
+   * @returns {Buffer}
+   * @throws {Error} if this is not a muxed-contract address
+   */
+  contractId() {
+    if (this._type !== 'muxedContract') {
+      throw new Error(
+        'contractId() is only valid for muxed-contract addresses'
+      );
+    }
+    return this._key;
+  }
+
+  /**
+   * For a muxed-contract address, returns the `uint64` multiplexing ID.
+   *
+   * @returns {xdr.Uint64}
+   * @throws {Error} if this is not a muxed-contract address
+   */
+  muxedId() {
+    if (this._type !== 'muxedContract') {
+      throw new Error('muxedId() is only valid for muxed-contract addresses');
+    }
+    return this._muxId;
   }
 }
