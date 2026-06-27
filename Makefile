@@ -1,9 +1,12 @@
 # CAP-83 + CAP-84 pre-release: pin to the protocol-28 .x and resolve
 # feature gates via `stellar-xdr xfile preprocess` (rs-stellar-xdr #503) before
 # xdrgen, since the Ruby xdrgen used here does not understand #ifdef.
+# CAP_0084_MUXED_CONTRACT is gated to the `next` channel only: the muxed
+# contract address arm is not enabled on `curr` until protocol 28 ships.
 XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/7b5618146590e15d2e250538dccbc7c89ac55c58
 XDR_BASE_LOCAL_CURR=xdr/curr
-XDR_FEATURES=CAP_0083,CAP_0084_MUXED_CONTRACT
+XDR_FEATURES_CURR=CAP_0083
+XDR_FEATURES_NEXT=CAP_0083,CAP_0084_MUXED_CONTRACT
 XDR_FILES_CURR= \
 	Stellar-SCP.x \
 	Stellar-ledger-entries.x \
@@ -91,12 +94,12 @@ clean:
 $(XDR_FILES_LOCAL_CURR):
 	mkdir -p $(dir $@)
 	curl -L -o $@ $(XDR_BASE_URL_CURR)/$(notdir $@)
-	stellar-xdr xfile preprocess --features "$(XDR_FEATURES)" $@ > $@.pp && mv -f $@.pp $@
+	stellar-xdr xfile preprocess --features "$(XDR_FEATURES_CURR)" $@ > $@.pp && mv -f $@.pp $@
 
 $(XDR_FILES_LOCAL_NEXT):
 	mkdir -p $(dir $@)
 	curl -L -o $@ $(XDR_BASE_URL_NEXT)/$(notdir $@)
-	stellar-xdr xfile preprocess --features "$(XDR_FEATURES)" $@ > $@.pp && mv -f $@.pp $@
+	stellar-xdr xfile preprocess --features "$(XDR_FEATURES_NEXT)" $@ > $@.pp && mv -f $@.pp $@
 
 reset-xdr:
 	rm -f xdr/*/*.x

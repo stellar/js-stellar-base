@@ -330,6 +330,15 @@ describe('Address', function () {
     const MUXED_CONTRACT_ID = '18446744073709551615';
     const CONTRACT_RAW = StellarBase.StrKey.decodeContract(CONTRACT);
 
+    // CAP-0084's SC_ADDRESS_TYPE_MUXED_CONTRACT arm is gated to the `next`
+    // channel, so the curr-bound default codec cannot construct or encode it
+    // yet. Codec round-trip coverage runs only once the arm lands in the
+    // active codec; the Address-level assertions below are codec-agnostic.
+    const codecHasMuxedContract =
+      typeof StellarBase.xdr.ScAddressType.scAddressTypeMuxedContract ===
+      'function';
+    const itCodec = codecHasMuxedContract ? it : it.skip;
+
     function muxedContractScAddress(id) {
       return StellarBase.xdr.ScAddress.scAddressTypeMuxedContract(
         new StellarBase.xdr.MuxedContract({
@@ -356,7 +365,7 @@ describe('Address', function () {
       expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
     });
 
-    it('fromScAddress decodes the arm without precision loss', function () {
+    itCodec('fromScAddress decodes the arm without precision loss', function () {
       const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
       const a = StellarBase.Address.fromScAddress(sc);
       expect(a.contractId()).to.deep.equal(CONTRACT_RAW);
@@ -364,7 +373,7 @@ describe('Address', function () {
       expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
     });
 
-    it('round-trips Address -> ScAddress byte-for-byte', function () {
+    itCodec('round-trips Address -> ScAddress byte-for-byte', function () {
       const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
       const out = StellarBase.Address.fromScAddress(sc).toScAddress();
       expect(out.switch()).to.equal(
@@ -374,7 +383,7 @@ describe('Address', function () {
       expect(StellarBase.xdr.ScAddress.fromXDR(out.toXDR())).to.eql(sc);
     });
 
-    it('round-trips through ScVal', function () {
+    itCodec('round-trips through ScVal', function () {
       const scVal = StellarBase.Address.muxedContract(
         CONTRACT_RAW,
         MUXED_CONTRACT_ID
