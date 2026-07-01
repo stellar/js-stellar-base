@@ -3,7 +3,7 @@
 # xdrgen, since the Ruby xdrgen used here does not understand #ifdef.
 # CAP_0084_MUXED_CONTRACT is gated to the `next` channel only: the muxed
 # contract address arm is not enabled on `curr` until protocol 28 ships.
-XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/7b5618146590e15d2e250538dccbc7c89ac55c58
+XDR_BASE_URL_CURR=https://github.com/stellar/stellar-xdr/raw/787382ef2099cca168ca1cb282730d6b7b9e2f16
 XDR_BASE_LOCAL_CURR=xdr/curr
 XDR_FEATURES_CURR=CAP_0083
 XDR_FEATURES_NEXT=CAP_0083,CAP_0084_MUXED_CONTRACT
@@ -22,7 +22,7 @@ XDR_FILES_CURR= \
 	Stellar-exporter.x
 XDR_FILES_LOCAL_CURR=$(addprefix xdr/curr/,$(XDR_FILES_CURR))
 
-XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/7b5618146590e15d2e250538dccbc7c89ac55c58
+XDR_BASE_URL_NEXT=https://github.com/stellar/stellar-xdr/raw/787382ef2099cca168ca1cb282730d6b7b9e2f16
 XDR_BASE_LOCAL_NEXT=xdr/next
 XDR_FILES_NEXT= \
 	Stellar-SCP.x \
