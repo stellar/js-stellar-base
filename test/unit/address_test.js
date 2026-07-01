@@ -365,13 +365,16 @@ describe('Address', function () {
       expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
     });
 
-    itCodec('fromScAddress decodes the arm without precision loss', function () {
-      const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
-      const a = StellarBase.Address.fromScAddress(sc);
-      expect(a.contractId()).to.deep.equal(CONTRACT_RAW);
-      expect(a.muxedId().toString()).to.equal(MUXED_CONTRACT_ID);
-      expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
-    });
+    itCodec(
+      'fromScAddress decodes the arm without precision loss',
+      function () {
+        const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
+        const a = StellarBase.Address.fromScAddress(sc);
+        expect(a.contractId()).to.deep.equal(CONTRACT_RAW);
+        expect(a.muxedId().toString()).to.equal(MUXED_CONTRACT_ID);
+        expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
+      }
+    );
 
     itCodec('round-trips Address -> ScAddress byte-for-byte', function () {
       const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
