@@ -363,3 +363,9 @@ const root = new StellarSdk.xdr.SorobanAuthorizedInvocation({
   subInvocations: [],
 });
 StellarSdk.walkInvocationTree(root, (_node, _depth, _parent) => {});
+
+// CAP-0085: externally managed contract executable creation shape
+const externalRefCreate: StellarSdk.CreateInvocation = {
+  type: 'external_ref',
+  externalRef: { owner: 'C...', tag: 'mytag' }
+};
