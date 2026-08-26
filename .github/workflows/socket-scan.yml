@@ -33,12 +33,6 @@ on:
 permissions:
   contents: read
 
-env:
-  # Force JS-based GitHub actions (actions/checkout, actions/setup-*, etc.) to
-  # use Node 24 instead of the soon-to-be-deprecated Node 20. Safe to remove
-  # after 2026-06-16 (when Node 24 becomes the default and this becomes a no-op).
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   socket-scan:
     runs-on: ubuntu-latest
