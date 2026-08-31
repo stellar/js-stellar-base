@@ -530,13 +530,24 @@ export namespace xdr {
   }
 
   class StellarValueType {
-    readonly name: 'stellarValueBasic' | 'stellarValueSigned';
+    readonly name:
+      | 'stellarValueBasic'
+      | 'stellarValueSigned'
+      | 'stellarValueEmptyTxSet'
+      | 'stellarValueSignedMs'
+      | 'stellarValueEmptyTxSetMs';
 
-    readonly value: 0 | 1;
+    readonly value: 0 | 1 | 2 | 3 | 4;
 
     static stellarValueBasic(): StellarValueType;
 
     static stellarValueSigned(): StellarValueType;
+
+    static stellarValueEmptyTxSet(): StellarValueType;
+
+    static stellarValueSignedMs(): StellarValueType;
+
+    static stellarValueEmptyTxSetMs(): StellarValueType;
   }
 
   class LedgerHeaderFlags {
@@ -2818,6 +2829,8 @@ export namespace xdr {
   type TimePoint = Uint64;
 
   type Duration = Uint64;
+
+  type TimePointMilliseconds = Uint64;
 
   const Signature: VarOpaque;
 
@@ -11820,6 +11833,129 @@ export namespace xdr {
     static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
   }
 
+  class StellarValueProposedValue {
+    constructor(attributes: {
+      txSetHash: Buffer;
+      previousLedgerHash: Buffer;
+      previousLedgerVersion: number;
+      lcValueSignature: LedgerCloseValueSignature;
+    });
+
+    txSetHash(value?: Buffer): Buffer;
+
+    previousLedgerHash(value?: Buffer): Buffer;
+
+    previousLedgerVersion(value?: number): number;
+
+    lcValueSignature(
+      value?: LedgerCloseValueSignature,
+    ): LedgerCloseValueSignature;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): StellarValueProposedValue;
+
+    static write(value: StellarValueProposedValue, io: Buffer): void;
+
+    static isValid(value: StellarValueProposedValue): boolean;
+
+    static toXDR(value: StellarValueProposedValue): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): StellarValueProposedValue;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64',
+    ): StellarValueProposedValue;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class StellarValueSignedMsValue {
+    constructor(attributes: {
+      closeTimeMs: TimePointMilliseconds;
+      lcValueSignature: LedgerCloseValueSignature;
+    });
+
+    closeTimeMs(value?: TimePointMilliseconds): TimePointMilliseconds;
+
+    lcValueSignature(
+      value?: LedgerCloseValueSignature,
+    ): LedgerCloseValueSignature;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): StellarValueSignedMsValue;
+
+    static write(value: StellarValueSignedMsValue, io: Buffer): void;
+
+    static isValid(value: StellarValueSignedMsValue): boolean;
+
+    static toXDR(value: StellarValueSignedMsValue): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): StellarValueSignedMsValue;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64',
+    ): StellarValueSignedMsValue;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
+  class StellarValueProposedMsValue {
+    constructor(attributes: {
+      closeTimeMs: TimePointMilliseconds;
+      txSetHash: Buffer;
+      previousLedgerHash: Buffer;
+      previousLedgerVersion: number;
+      lcValueSignature: LedgerCloseValueSignature;
+    });
+
+    closeTimeMs(value?: TimePointMilliseconds): TimePointMilliseconds;
+
+    txSetHash(value?: Buffer): Buffer;
+
+    previousLedgerHash(value?: Buffer): Buffer;
+
+    previousLedgerVersion(value?: number): number;
+
+    lcValueSignature(
+      value?: LedgerCloseValueSignature,
+    ): LedgerCloseValueSignature;
+
+    toXDR(format?: 'raw'): Buffer;
+
+    toXDR(format: 'hex' | 'base64'): string;
+
+    static read(io: Buffer): StellarValueProposedMsValue;
+
+    static write(value: StellarValueProposedMsValue, io: Buffer): void;
+
+    static isValid(value: StellarValueProposedMsValue): boolean;
+
+    static toXDR(value: StellarValueProposedMsValue): Buffer;
+
+    static fromXDR(input: Buffer, format?: 'raw'): StellarValueProposedMsValue;
+
+    static fromXDR(
+      input: string,
+      format: 'hex' | 'base64',
+    ): StellarValueProposedMsValue;
+
+    static validateXDR(input: Buffer, format?: 'raw'): boolean;
+
+    static validateXDR(input: string, format: 'hex' | 'base64'): boolean;
+  }
+
   class StellarValueExt {
     switch(): StellarValueType;
 
@@ -11827,13 +11963,38 @@ export namespace xdr {
       value?: LedgerCloseValueSignature,
     ): LedgerCloseValueSignature;
 
+    proposedValue(value?: StellarValueProposedValue): StellarValueProposedValue;
+
+    signedMsValue(value?: StellarValueSignedMsValue): StellarValueSignedMsValue;
+
+    proposedMsValue(
+      value?: StellarValueProposedMsValue,
+    ): StellarValueProposedMsValue;
+
     static stellarValueBasic(): StellarValueExt;
 
     static stellarValueSigned(
       value: LedgerCloseValueSignature,
     ): StellarValueExt;
 
-    value(): LedgerCloseValueSignature | void;
+    static stellarValueEmptyTxSet(
+      value: StellarValueProposedValue,
+    ): StellarValueExt;
+
+    static stellarValueSignedMs(
+      value: StellarValueSignedMsValue,
+    ): StellarValueExt;
+
+    static stellarValueEmptyTxSetMs(
+      value: StellarValueProposedMsValue,
+    ): StellarValueExt;
+
+    value():
+      | LedgerCloseValueSignature
+      | StellarValueProposedValue
+      | StellarValueSignedMsValue
+      | StellarValueProposedMsValue
+      | void;
 
     toXDR(format?: 'raw'): Buffer;
 

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* XDR definitions updated for Protocol 30 / CAP-0088 (millisecond-resolution close times): new `TimePointMilliseconds` typedef, `STELLAR_VALUE_SIGNED_MS` / `STELLAR_VALUE_EMPTY_TX_SET_MS` arms on `StellarValueType`, and matching `signedMsValue` / `proposedMsValue` arms on `StellarValue.ext`, gated behind the `MS_CLOSE_TIME` feature in the regen (next channel only). The existing whole-second `closeTime` is unchanged.
+
 ## [`v15.0.0`](https://github.com/stellar/js-stellar-base/compare/v14.1.0...v15.0.0): Protocol 26
 
 **[Migration Guide](docs/migration-guide/v15.md)** — step-by-step upgrade instructions with code examples and severity ratings.
