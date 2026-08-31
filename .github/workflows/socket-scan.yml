@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: "24.18.0"
       - name: Install Socket CLI
-        run: npm install -g socket
+        run: npm install -g socket@1.1.162
 
       - name: Run Socket reachability scan
         env:
