@@ -1270,13 +1270,17 @@ export function authorizeEntry(
 ): Promise<xdr.SorobanAuthorizationEntry>;
 
 export interface CreateInvocation {
-  type: 'wasm' | 'sac';
+  type: 'wasm' | 'sac' | 'external_ref';
   token?: string;
   wasm?: {
       hash: string;
       address: string;
       salt: string;
       constructorArgs?: any[];
+  };
+  externalRef?: {
+      owner: string;
+      tag: string;
   };
 }
 

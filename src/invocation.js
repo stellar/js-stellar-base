@@ -5,8 +5,9 @@ import { scValToNative } from './scval';
 /**
  * @typedef CreateInvocation
  *
- * @prop {'wasm'|'sac'} type  a type indicating if this creation was a custom
- *    contract or a wrapping of an existing Stellar asset
+ * @prop {'wasm'|'sac'|'external_ref'} type  a type indicating if this creation
+ *    was a custom contract, a wrapping of an existing Stellar asset, or an
+ *    externally managed contract executable (CAP-0085)
  * @prop {string} [token] when `type=='sac'`, the canonical {@link Asset} that
  *    is being wrapped by this Stellar Asset Contract
  * @prop {object} [wasm]  when `type=='wasm'`, add'l creation parameters
@@ -18,6 +19,13 @@ import { scValToNative } from './scval';
  * @prop {any[]}  [wasm.constructorArgs] a list of natively-represented values
  *    (see {@link scValToNative}) that are passed to the constructor when
  *    creating this contract
+ * @prop {object} [externalRef] when `type=='external_ref'` (CAP-0085), the
+ *    externally managed executable parameters. NOTE: the exact
+ *    `ContractIdPreimage` validation for this arm is not yet finalized in the
+ *    CAP; the preimage is not validated when building the tree.
+ * @prop {string} externalRef.owner  the strkey of the executable's owner
+ *    address
+ * @prop {string} externalRef.tag    the executable tag (an SCString payload)
  */
 
 /**
@@ -118,7 +126,14 @@ export function buildInvocationTree(root) {
       // The first part may not be true in V2, but we'd need to update this code
       // anyway so it can still be an error.
       const [exec, preimage] = [inner.executable(), inner.contractIdPreimage()];
-      if (!!exec.switch().value !== !!preimage.switch().value) {
+      // The wasm(0)↔address(0) / token(1)↔asset(1) invariant only applies to
+      // the pre-CAP-0085 executable arms. The external-ref arm (2) uses a
+      // preimage shape that is not yet finalized in the CAP, so skip the check
+      // for it (see the `case 2` below).
+      if (
+        exec.switch().value < 2 &&
+        !!exec.switch().value !== !!preimage.switch().value
+      ) {
         throw new Error(
           `creation function appears invalid: ${JSON.stringify(
             inner
@@ -154,6 +169,27 @@ export function buildInvocationTree(root) {
             preimage.fromAsset()
           ).toString();
           break;
+
+        // contractExecutableExternalRef (CAP-0085, `next` channel only)
+        //
+        // NEEDS SPEC REVIEW: the exact `ContractIdPreimage` shape for
+        // external-ref creation is not yet finalized in the CAP, so we decode
+        // the executable's owner/tag but do not attempt to validate the
+        // preimage here. This keeps auth-tree building non-throwing for a
+        // CREATE_CONTRACT_V2 carrying an external-ref executable.
+        case 2: {
+          const ref = exec.externalRef();
+          const tag = ref.tag(); // ScString: string|Buffer
+          output.args.type = 'external_ref';
+          output.args.externalRef = {
+            owner: Address.fromScAddress(ref.executableOwner()).toString(),
+            tag:
+              Buffer.isBuffer(tag) || ArrayBuffer.isView(tag)
+                ? new TextDecoder().decode(tag)
+                : tag
+          };
+          break;
+        }
 
         default:
           throw new Error(`unknown creation type: ${JSON.stringify(exec)}`);

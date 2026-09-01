@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* XDR definitions updated for Protocol 28 / CAP-0085 (externally managed contract executables): new `SCV_EXECUTABLE_TAG` arm on `ScValType`, `CONTRACT_EXECUTABLE_EXTERNAL_REF` arm + `ContractExecutableExternalRef` struct on `ContractExecutable`, gated behind the `CAP_0085_EXECUTABLE_REF` feature in the regen (next channel only). `scValToNative` decodes the `SCV_EXECUTABLE_TAG` string payload, and `buildInvocationTree` handles the external-ref executable arm gracefully (external-ref preimage validation deferred pending the CAP spec).
+
 ## [`v15.0.0`](https://github.com/stellar/js-stellar-base/compare/v14.1.0...v15.0.0): Protocol 26
 
 **[Migration Guide](docs/migration-guide/v15.md)** — step-by-step upgrade instructions with code examples and severity ratings.

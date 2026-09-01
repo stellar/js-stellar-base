@@ -71,6 +71,7 @@ enum SCValType
     // instance and an address' nonce, respectively.
     SCV_LEDGER_KEY_CONTRACT_INSTANCE = 20,
     SCV_LEDGER_KEY_NONCE = 21
+
 };
 
 enum SCErrorType
@@ -167,6 +168,7 @@ enum ContractExecutableType
     CONTRACT_EXECUTABLE_WASM = 0,
     CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
 };
+
 
 union ContractExecutable switch (ContractExecutableType type)
 {
@@ -285,6 +287,7 @@ case SCV_LEDGER_KEY_CONTRACT_INSTANCE:
     void;
 case SCV_LEDGER_KEY_NONCE:
     SCNonceKey nonce_key;
+
 };
 
 struct SCMapEntry

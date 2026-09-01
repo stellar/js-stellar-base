@@ -363,6 +363,12 @@ export function scValToNative(scv) {
     // Note that we assume a utf8 encoding (ascii-compatible). For other
     // encodings, you should probably use bytes anyway. If it cannot be decoded,
     // the raw bytes are returned.
+    // CAP-0085: the externally managed executable tag carries an SCString
+    // payload, so decode it the same way as scvString. This arm is gated to
+    // the `next` channel, so guard the case label with optional chaining (it
+    // resolves to `undefined` and never matches a real switch value when the
+    // arm is absent from the `curr` codec).
+    case xdr.ScValType.scvExecutableTag?.()?.value:
     case xdr.ScValType.scvSymbol().value:
     case xdr.ScValType.scvString().value: {
       const v = scv.value(); // string|Buffer
