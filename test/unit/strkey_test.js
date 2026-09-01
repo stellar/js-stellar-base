@@ -429,6 +429,20 @@ describe('StrKey', function () {
   });
 
   describe('#claimableBalances', function () {
+    it('valid w/ 32-byte strkey', function () {
+      const strkey =
+        'BA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJV5AS';
+      const asHex =
+        '3f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a';
+      expect(StellarBase.StrKey.isValidClaimableBalance(strkey)).to.be.true;
+      expect(
+        StellarBase.StrKey.decodeClaimableBalance(strkey).toString('hex')
+      ).to.equal(asHex);
+      expect(
+        StellarBase.StrKey.encodeClaimableBalance(Buffer.from(asHex, 'hex'))
+      ).to.equal(strkey);
+    });
+
     it('valid w/ 33-byte strkey', function () {
       const strkey =
         'BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TU';
@@ -441,6 +455,15 @@ describe('StrKey', function () {
       expect(
         StellarBase.StrKey.encodeClaimableBalance(Buffer.from(asHex, 'hex'))
       ).to.equal(strkey);
+    });
+
+    it('rejects a 33-byte strkey with a non-v0 discriminant', function () {
+      const asHex =
+        '013f0c34bf93ad0d9971d04ccc90f705511c838aad9734a4a2fb0d7a03fc7fe89a';
+      const strkey = StellarBase.StrKey.encodeClaimableBalance(
+        Buffer.from(asHex, 'hex')
+      );
+      expect(StellarBase.StrKey.isValidClaimableBalance(strkey)).to.be.false;
     });
   });
 
