@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* XDR definitions updated for Protocol 28 / CAP-0084 (muxed contract addresses): new `SC_ADDRESS_TYPE_MUXED_CONTRACT` arm on `ScAddress` and `MuxedContract` struct, gated behind the `CAP_0084_MUXED_CONTRACT` feature in the regen. `Address` now decodes/encodes the muxed-contract arm (`Address.muxedContract(contractId, id)`, `Address.fromScAddress`/`toScAddress`) with `contractId()` / `muxedId()` accessors, and renders it as `<C-strkey>:<id>` (display only — there is no canonical strkey yet, so the string is not parsable back via the `Address` constructor, and `toBuffer()` is unsupported for this arm).
+
 ## [`v15.0.0`](https://github.com/stellar/js-stellar-base/compare/v14.1.0...v15.0.0): Protocol 26
 
 **[Migration Guide](docs/migration-guide/v15.md)** — step-by-step upgrade instructions with code examples and severity ratings.

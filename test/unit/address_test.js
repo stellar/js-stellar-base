@@ -322,4 +322,100 @@ describe('Address', function () {
       );
     });
   });
+
+  describe('muxed-contract addresses (CAP-0084)', function () {
+    // 2^64 - 1: a uint64 well above Number.MAX_SAFE_INTEGER, used to prove the
+    // muxing id survives a fromScAddress -> toScAddress round-trip and the
+    // muxedId() accessor without precision loss.
+    const MUXED_CONTRACT_ID = '18446744073709551615';
+    const CONTRACT_RAW = StellarBase.StrKey.decodeContract(CONTRACT);
+
+    // CAP-0084's SC_ADDRESS_TYPE_MUXED_CONTRACT arm is gated to the `next`
+    // channel, so the curr-bound default codec cannot construct or encode it
+    // yet. Codec round-trip coverage runs only once the arm lands in the
+    // active codec; the Address-level assertions below are codec-agnostic.
+    const codecHasMuxedContract =
+      typeof StellarBase.xdr.ScAddressType.scAddressTypeMuxedContract ===
+      'function';
+    const itCodec = codecHasMuxedContract ? it : it.skip;
+
+    function muxedContractScAddress(id) {
+      return StellarBase.xdr.ScAddress.scAddressTypeMuxedContract(
+        new StellarBase.xdr.MuxedContract({
+          id: new StellarBase.xdr.Uint64(id),
+          contractId: CONTRACT_RAW
+        })
+      );
+    }
+
+    it('.muxedContract factory exposes its components', function () {
+      const a = StellarBase.Address.muxedContract(
+        CONTRACT_RAW,
+        MUXED_CONTRACT_ID
+      );
+      expect(a.contractId()).to.deep.equal(CONTRACT_RAW);
+      expect(a.muxedId().toString()).to.equal(MUXED_CONTRACT_ID);
+    });
+
+    it('renders the display form <C-strkey>:<id>', function () {
+      const a = StellarBase.Address.muxedContract(
+        CONTRACT_RAW,
+        MUXED_CONTRACT_ID
+      );
+      expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
+    });
+
+    itCodec(
+      'fromScAddress decodes the arm without precision loss',
+      function () {
+        const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
+        const a = StellarBase.Address.fromScAddress(sc);
+        expect(a.contractId()).to.deep.equal(CONTRACT_RAW);
+        expect(a.muxedId().toString()).to.equal(MUXED_CONTRACT_ID);
+        expect(a.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
+      }
+    );
+
+    itCodec('round-trips Address -> ScAddress byte-for-byte', function () {
+      const sc = muxedContractScAddress(MUXED_CONTRACT_ID);
+      const out = StellarBase.Address.fromScAddress(sc).toScAddress();
+      expect(out.switch()).to.equal(
+        StellarBase.xdr.ScAddressType.scAddressTypeMuxedContract()
+      );
+      expect(out.toXDR()).to.deep.equal(sc.toXDR());
+      expect(StellarBase.xdr.ScAddress.fromXDR(out.toXDR())).to.eql(sc);
+    });
+
+    itCodec('round-trips through ScVal', function () {
+      const scVal = StellarBase.Address.muxedContract(
+        CONTRACT_RAW,
+        MUXED_CONTRACT_ID
+      ).toScVal();
+      const back = StellarBase.Address.fromScVal(scVal);
+      expect(back.toString()).to.equal(`${CONTRACT}:${MUXED_CONTRACT_ID}`);
+      expect(back.muxedId().toString()).to.equal(MUXED_CONTRACT_ID);
+    });
+
+    it('toBuffer throws (no canonical single-buffer encoding)', function () {
+      const a = StellarBase.Address.muxedContract(
+        CONTRACT_RAW,
+        MUXED_CONTRACT_ID
+      );
+      expect(() => a.toBuffer()).to.throw(
+        /toBuffer is not supported for muxed-contract addresses/
+      );
+    });
+
+    it('constructor cannot parse the display string (no strkey yet)', function () {
+      expect(
+        () => new StellarBase.Address(`${CONTRACT}:${MUXED_CONTRACT_ID}`)
+      ).to.throw(/Unsupported address type/);
+    });
+
+    it('contractId/muxedId throw for non-muxed-contract addresses', function () {
+      const c = new StellarBase.Address(CONTRACT);
+      expect(() => c.muxedId()).to.throw(/only valid for muxed-contract/);
+      expect(() => c.contractId()).to.throw(/only valid for muxed-contract/);
+    });
+  });
 });

@@ -13,3 +13,4 @@
 .vscode/
 .copilot/
 tsconfig.tsbuildinfo
+*.tgz

@@ -363,3 +363,11 @@ const root = new StellarSdk.xdr.SorobanAuthorizedInvocation({
   subInvocations: [],
 });
 StellarSdk.walkInvocationTree(root, (_node, _depth, _parent) => {});
+
+// CAP-0084 muxed-contract Address surface
+const muxedContractAddr = StellarSdk.Address.muxedContract(Buffer.alloc(32), '18446744073709551615'); // $ExpectType Address
+StellarSdk.Address.muxedContract(Buffer.alloc(32), 42);
+StellarSdk.Address.muxedContract(Buffer.alloc(32), BigInt(42));
+const muxedContractId: Buffer = muxedContractAddr.contractId();
+const muxedContractMuxId: StellarSdk.xdr.Uint64 = muxedContractAddr.muxedId();
+const muxedContractBuffer: Buffer = muxedContractAddr.toBuffer();
